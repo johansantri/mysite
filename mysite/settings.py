@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'taggit',
     'ckeditor_uploader',
     'ckeditor',
     'polls.apps.PollsConfig',
@@ -41,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+TAGGIT_CASE_INSENSITIVE = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

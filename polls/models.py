@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 from ckeditor_uploader.fields import RichTextUploadingField
+from taggit.managers import TaggableManager
 
 # Create your models here.
 class Question(models.Model):
@@ -37,7 +38,7 @@ class Post(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     status = models.IntegerField(choices=STATUS, default=0)
     image = models.ImageField(upload_to='blog_images/')
-
+    tags = TaggableManager() 
     class Meta:
         ordering = ['-created_on']
 
