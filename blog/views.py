@@ -9,6 +9,7 @@ from django.views.generic import ListView, DetailView
 from django.contrib.auth import login, authenticate 
 from django.contrib.auth.forms import UserCreationForm
 from .forms import SignUpForm 
+from django.contrib import messages
 
 class PostList(ListView):
     model = Post
@@ -20,6 +21,8 @@ class PostList(ListView):
 def post_list(request, tag_slug=None):
     posts = Post.published.all()
 
+    paginator = Paginator(posts, 5) # 10 posts in each page
+    page = request.GET.get('page')
      # post tag
     tag = None
     if tag_slug:
@@ -32,8 +35,7 @@ def post_list(request, tag_slug=None):
         posts=Post.published.filter(Q(title__icontains=query) | Q(tags__name__icontains=query)).distinct()
             
     
-    paginator = Paginator(posts, 10) # 10 posts in each page
-    page = request.GET.get('page')
+   
     try:
         posts = paginator.page(page)
     except PageNotAnInteger:
@@ -122,6 +124,8 @@ def signup(request):
                 username = form.cleaned_data.get('username') 
                 password = form.cleaned_data.get('password1') 
                 new_user = authenticate(username=username, password=password) 
+                username = form.cleaned_data.get('username')
+                messages.success(request, f'Account created for {username}!')
                 if new_user is not None:
                     login(request, new_user) 
                     return redirect('/') 

@@ -4,11 +4,28 @@
 {% block content %}
 
 <h2>Sign up</h2>
-<form method="post" action="."> 
+<hr>
+<form method="POST" actione="."  > 
     {% csrf_token %} 
-    {{form}} 
-    <input type="submit" value="Sign up"> 
-  </form> 
+     
+       
+            
+            <label>Username:    {{form.username}} </label>
+       
+       
+
+            <label>Email:  {{form.email}} </label>
+       
+        
+       
+            <label>Password:  {{form.password1}} </label>
+     
+          
+            <label>Password:  {{form.password2}} </label>
+        
+        <br>
+        <input type="submit" class="btn btn-primary btn-sm" value="Signup"> 
+    </form>
 
 
 {% endblock content %}
