@@ -6,6 +6,9 @@ from taggit.models import Tag
 from django.db.models import Count
 from django.db.models import Q
 from django.views.generic import ListView, DetailView
+from django.contrib.auth import login, authenticate 
+from django.contrib.auth.forms import UserCreationForm
+from .forms import SignUpForm 
 
 class PostList(ListView):
     model = Post
@@ -106,3 +109,26 @@ def reply_page(request):
             return redirect(post_url+'#'+str(reply.id))
 
     return redirect("/")
+
+
+
+
+def signup(request): 
+    if request.user.is_anonymous:
+        if request.method == "POST":
+            form = SignUpForm(request.POST) 
+            if form.is_valid(): 
+                form.save() 
+                username = form.cleaned_data.get('username') 
+                password = form.cleaned_data.get('password1') 
+                new_user = authenticate(username=username, password=password) 
+                if new_user is not None:
+                    login(request, new_user) 
+                    return redirect('/') 
+    else:
+        return redirect('/')
+    form = SignUpForm()
+    context = { 
+            'form': form 
+    } 
+    return render(request, 'signup.html', context) 
