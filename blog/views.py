@@ -21,8 +21,8 @@ class PostList(ListView):
 def post_list(request, tag_slug=None):
     posts = Post.published.all()
 
-    paginator = Paginator(posts, 5) # 10 posts in each page
-    page = request.GET.get('page')
+  
+    
      # post tag
     tag = None
     if tag_slug:
@@ -34,10 +34,11 @@ def post_list(request, tag_slug=None):
     if query:
         posts=Post.published.filter(Q(title__icontains=query) | Q(tags__name__icontains=query)).distinct()
             
-    
-   
+    paginator = Paginator(posts, 5) # 5 posts in each page
+    page = request.GET.get('page')
     try:
         posts = paginator.page(page)
+
     except PageNotAnInteger:
         # If page is not an integer deliver the first page
         posts = paginator.page(1)
