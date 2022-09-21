@@ -10,6 +10,12 @@ from taggit.managers import TaggableManager
 class PublishedManager(models.Manager):
     def get_queryset(self):
         return super(PublishedManager,self).get_queryset().filter(status='published')
+#category
+class Category(models.Model):
+    category_text = models.CharField(max_length=200)
+    def __str__(self):
+        return self.category_text
+
 # post model
 class Post(models.Model):
     STATUS_CHOICES = (
@@ -18,8 +24,10 @@ class Post(models.Model):
     )
 
     title = models.CharField(max_length=250)
+   
     slug = models.SlugField(max_length=250, unique_for_date='publish')
     author = models.ForeignKey(User,on_delete=models.CASCADE,related_name='blog_posts')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     #body = models.TextField()
     body=RichTextUploadingField()
     publish = models.DateTimeField(default=timezone.now)
