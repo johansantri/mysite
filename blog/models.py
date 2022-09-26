@@ -69,3 +69,5 @@ class Comment(models.Model):
         return self.body
     def get_comments(self):
         return Comment.objects.filter(parent=self).filter(active=True)
+
+

@@ -1,10 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Post, Comment
+from .models import Post, Comment, Category
 from django.core.paginator import Paginator, EmptyPage,PageNotAnInteger
 from .forms import CommentForm
 from taggit.models import Tag
 from django.db.models import Count
 from django.db.models import Q
+from django.db import connection
 from django.views.generic import ListView, DetailView
 from django.contrib.auth import login, authenticate 
 from django.contrib.auth.forms import UserCreationForm
@@ -18,11 +19,17 @@ class PostList(ListView):
     context_object_name = "posts"
     template_name = "post_list.html"
 
-def post_list(request, tag_slug=None):
+def post_list(request, tag_slug=None,):
     posts = Post.published.all()
-
-  
     
+    #po = Post.objects.all().order_by().values_list('category_id', flat=True).distinct()
+    cursor = connection.cursor()
+    cursor.execute('SELECT DISTINCT blog_category.category_text FROM blog_post JOIN blog_category ON blog_post.category_id=blog_category.id')
+   
+    po = cursor.fetchall()
+
+    #po = Post.published.filter().prefetch_related('category').distinct()
+
      # post tag
     tag = None
     if tag_slug:
@@ -48,7 +55,7 @@ def post_list(request, tag_slug=None):
     
    
         
-    return render(request,'post_list.html',{'posts':posts, page:'pages', 'tag':tag})
+    return render(request,'post_list.html',{'posts':posts, page:'pages', 'tag':tag,'po':po})
 
 
 class PostDetail(DetailView):
@@ -58,7 +65,10 @@ class PostDetail(DetailView):
 
 def post_detail(request, post):
     post=get_object_or_404(Post,slug=post,status='published')
-
+    cursor = connection.cursor()
+    cursor.execute('SELECT DISTINCT blog_category.category_text FROM blog_post JOIN blog_category ON blog_post.category_id=blog_category.id')
+   
+    po = cursor.fetchall()
     # List of active comments for this post
     comments = post.comments.filter(active=True)
     new_comment = None
@@ -82,7 +92,7 @@ def post_detail(request, post):
     similar_posts = Post.published.filter(tags__in=post_tags_ids).exclude(id=post.id)
     similar_posts = similar_posts.annotate(same_tags=Count('tags')).order_by('-same_tags','-publish')[:6]
     
-    return render(request, 'post_detail.html',{'post':post,'comments': comments,'comment_form':comment_form,'similar_posts':similar_posts})
+    return render(request, 'post_detail.html',{'post':post,'comments': comments,'comment_form':comment_form,'similar_posts':similar_posts,'po':po})
 
 
 # handling reply, reply view
@@ -137,3 +147,5 @@ def signup(request):
             'form': form 
     } 
     return render(request, 'signup.html', context) 
+
+

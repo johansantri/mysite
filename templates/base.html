@@ -46,14 +46,17 @@
             Tutorial
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li>
-              <a class="dropdown-item {% if request.path == '/tag/python/' %}active{% endif %}" href="{{ request.scheme }}://{{ request.get_host }}/tag/python/">Python</a>
-            </li>
             
+            {% for Category in po %}
             <li>
-              <a class="dropdown-item {% if request.path == '/tag/django/' %}active{% endif %}" href="{{ request.scheme }}://{{ request.get_host }}/tag/django/">Django</a>
+              <a class="dropdown-item {% if request.path == '/tag/django/' %}active{% endif %}" href="{{ request.scheme }}://{{ request.get_host }}/tag/{{Category.0}}">{{Category.0}}</a>
+  
+            
             </li>
+           
+            
           
+            {% endfor %}
           </ul>
         </li>
 
