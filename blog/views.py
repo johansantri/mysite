@@ -41,7 +41,7 @@ def post_list(request, tag_slug=None,):
     if query:
         posts=Post.published.filter(Q(title__icontains=query) | Q(tags__name__icontains=query)| Q(category__category_text__icontains=query)).distinct()
             
-    paginator = Paginator(posts, 5) # 5 posts in each page
+    paginator = Paginator(posts, 3) # 5 posts in each page
     page = request.GET.get('page')
     try:
         posts = paginator.page(page)
