@@ -13,6 +13,7 @@ class PublishedManager(models.Manager):
 #category
 class Category(models.Model):
     category_text = models.CharField(max_length=200)
+   
     def __str__(self):
         return self.category_text
 
@@ -27,7 +28,7 @@ class Post(models.Model):
    
     slug = models.SlugField(max_length=250, unique_for_date='publish')
     author = models.ForeignKey(User,on_delete=models.CASCADE,related_name='blog_posts')
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, related_name="blog_posts", on_delete=models.CASCADE)
     #body = models.TextField()
     body=RichTextUploadingField()
     publish = models.DateTimeField(default=timezone.now)

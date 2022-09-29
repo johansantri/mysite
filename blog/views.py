@@ -22,13 +22,13 @@ class PostList(ListView):
 def post_list(request, tag_slug=None,):
     posts = Post.published.all()
     
-    #po = Post.objects.all().order_by().values_list('category_id', flat=True).distinct()
+   #categori
     cursor = connection.cursor()
     cursor.execute('SELECT DISTINCT blog_category.category_text FROM blog_post JOIN blog_category ON blog_post.category_id=blog_category.id')
    
     po = cursor.fetchall()
-
-    #po = Post.published.filter().prefetch_related('category').distinct()
+    
+  
 
      # post tag
     tag = None
@@ -39,7 +39,7 @@ def post_list(request, tag_slug=None,):
     # search
     query = request.GET.get("q")
     if query:
-        posts=Post.published.filter(Q(title__icontains=query) | Q(tags__name__icontains=query)).distinct()
+        posts=Post.published.filter(Q(title__icontains=query) | Q(tags__name__icontains=query)| Q(category__category_text__icontains=query)).distinct()
             
     paginator = Paginator(posts, 5) # 5 posts in each page
     page = request.GET.get('page')
