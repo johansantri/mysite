@@ -19,7 +19,7 @@ clone & Run mysite
 ---------
 Changing Permissions With chmod
 
- `chmod 777 mysite/*`
+ `sudo chmod 777 -R app/mysite/`
  
  access 
  http://127.0.0.1:8000/
