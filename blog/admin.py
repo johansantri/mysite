@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 admin.site.register(Category)
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'slug', 'author', 'publish', 'status')
+    list_display = ('title', 'slug', 'author', 'publish', 'status','category')
     list_filter = ('status', 'created', 'publish', 'author')
     search_fields = ('title', 'body')
     prepopulated_fields = {'slug': ('title',)}

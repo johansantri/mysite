@@ -37,11 +37,22 @@
           <li class="nav-item">
             <a class="nav-link {% if request.path == '/tag/linux/' %}active{% endif %}" aria-current="page" href="{{ request.scheme }}://{{ request.get_host }}">home</a>
           </li>
-          {% for Category in po %}
-          <li class="nav-item">
-            <a class="nav-link {% if request.path == '/tag/linux/' %}active{% endif %}" aria-current="page" href="{{ request.scheme }}://{{ request.get_host }}/?q={{Category.0}}">{{Category.0}}</a>
+         
+      
+ 
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Category
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              {% for Category in po %}
+              <li><a class="dropdown-item" href="{{ request.scheme }}://{{ request.get_host }}/?q={{Category.0}}">{{Category.0}}</a></li>
+          
+              {% endfor %}
+            </ul>
           </li>
-          {% endfor %}
+
           <li class="nav-item">
             <a class="nav-link {% if request.path == '/tag/linux/' %}active{% endif %}" aria-current="page" href="{{ request.scheme }}://{{ request.get_host }}/sitemap.xml">sitmap</a>
           </li>
