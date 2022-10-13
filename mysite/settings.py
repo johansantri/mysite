@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'taggit',
     'blog',
+    'crispy_forms',
     'django.contrib.sites',
     'django.contrib.sitemaps',
     'django.contrib.admin',
@@ -44,6 +45,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 TAGGIT_CASE_INSENSITIVE = True
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
