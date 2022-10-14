@@ -25,7 +25,7 @@
 
   <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
     <div class="container">
-      <a class="navbar-brand" href="/admin">{{ user.username }} </a>
+      
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -38,7 +38,10 @@
             <a class="nav-link {% if request.path == '/tag/linux/' %}active{% endif %}" aria-current="page" href="{{ request.scheme }}://{{ request.get_host }}">home</a>
           </li>
          
-      
+          <li class="nav-item">
+            <a class="nav-link {% if request.path == '/tag/linux/' %}active{% endif %}" aria-current="page" href="{{ request.scheme }}://{{ request.get_host }}/sitemap.xml">sitmap</a>
+          </li>
+         
  
 
           <li class="nav-item dropdown">
@@ -57,13 +60,13 @@
           <ul class="navbar-nav mr-auto">
             {% if user.is_authenticated %}
             
+           
+            <li class="nav-item">
+              <a class="nav-link" href="/admin">{{user.username}}</a>
+            </li>
             <li class="nav-item">
               <a class="nav-link" href="/logout">Logout</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">{{user.username}}</a>
-            </li>
-      
             {% else %}
       
             <li class="nav-item">
@@ -74,9 +77,6 @@
           </ul>
 
 
-          <li class="nav-item">
-            <a class="nav-link {% if request.path == '/tag/linux/' %}active{% endif %}" aria-current="page" href="{{ request.scheme }}://{{ request.get_host }}/sitemap.xml">sitmap</a>
-          </li>
          
          
        
