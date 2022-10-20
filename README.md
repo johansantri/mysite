@@ -11,7 +11,8 @@ clone & Run mysite
 6. `pip install django-ckeditor`
 7. `pip install django-taggit`
 8. `pip install django-crispy-forms`
-9. `python3 manage.py runserver`
+9. `python -m pip install Pillow`
+10. `python3 manage.py runserver`
 
 
 
