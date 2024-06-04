@@ -52,7 +52,7 @@
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
               {% for Category in po %}
-              <li><a class="dropdown-item" href="{{ request.scheme }}://{{ request.get_host }}/?q={{Category.0}}">{{Category.0}}</a></li>
+              <li><a class="dropdown-item" href="{{ request.scheme }}://{{ request.get_host }}/?q={{Category.0}}" hx-get="{{ request.scheme }}://{{ request.get_host }}/?q={{Category.0}}" hx-target="#content-div" hx-push-url="true">{{Category.0}}</a></li>
           
               {% endfor %}
             </ul>
