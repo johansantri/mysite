@@ -84,7 +84,7 @@
        
 
         </ul>
-        <form class="d-flex" action="/" hx-get="{{ post.get_absolute_url }}" hx-target="#content-div" hx-push-url="true"  >
+        <form class="d-flex" action="/" hx-get="/" hx-target="#content-div" hx-push-url="true"  >
           <input class="form-control mr-0" type="search" value="{{request.GET.q}}"  name="q" placeholder="Search" aria-label="Search">
         </form>
        &nbsp; 
