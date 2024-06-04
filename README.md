@@ -18,3 +18,7 @@ clone & Run mysite
  
  access 
  http://127.0.0.1:8000/
+
+username : josan
+pwd : 123456
+---------
