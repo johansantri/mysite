@@ -84,8 +84,8 @@
        
 
         </ul>
-        <form class="d-flex" action="/">
-          <input class="form-control mr-0" type="search" value="{{request.GET.q}}" name="q" placeholder="Search" aria-label="Search">
+        <form class="d-flex" action="/" hx-get="{{ post.get_absolute_url }}" hx-target="#content-div" hx-push-url="true"  >
+          <input class="form-control mr-0" type="search" value="{{request.GET.q}}"  name="q" placeholder="Search" aria-label="Search">
         </form>
        &nbsp; 
       </div>
@@ -94,7 +94,7 @@
     
     <main class="container my-3">
         
-        <h2 class="my-3">
+        <h2 class="my-3"  >
           {% if request.GET.q is not null %}
             Search Results for "{{ request.GET.q }}"
           {% endif %}
