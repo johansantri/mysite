@@ -25,6 +25,8 @@
         <a href="{% url 'blog:post_tag' tag.slug %}" class="link-light text-decoration-none badge bg-secondary">
             {{tag.name}}
         </a>
+
+        
         <!-- {% if not forloop.last %}, {% endif %} -->
         {% endfor %}
     </p>
