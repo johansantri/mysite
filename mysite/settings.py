@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'taggit',
     'blog',
     'crispy_forms',
+    'crispy_bootstrap4',
     'django.contrib.sites',
     'django.contrib.sitemaps',
     'django.contrib.admin',
