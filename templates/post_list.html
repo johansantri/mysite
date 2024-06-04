@@ -1,5 +1,5 @@
 
-{% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 {% if tag %}
@@ -18,7 +18,7 @@
             <div class="col-md-7 ps-md-3 pt-3 pt-md-0 d-flex flex-column">
 
                 <h2 class="card-title h5">
-                    <a href="{{ post.get_absolute_url }}">
+                    <a href="{{ post.get_absolute_url }}" hx-get="{{ post.get_absolute_url }}" hx-target="#content-div" hx-push-url="true" >
                         {{ post.title }}
                     </a>
                 </h2>
@@ -34,7 +34,7 @@
 
 
                 <div>
-                    <a href="{{ post.get_absolute_url }}" class="btn btn-primary btn-sm">Read more</a>
+                    <a href="{{ post.get_absolute_url }}" hx-get="{{ post.get_absolute_url }}" hx-target="#content-div" hx-push-url="true"  class="btn btn-primary btn-sm">Read more</a>
                 </div>
 
             </div>

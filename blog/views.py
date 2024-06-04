@@ -57,7 +57,11 @@ def post_list(request, tag_slug=None,):
     
    
         
-    return render(request,'post_list.html',{'posts':posts, page:'pages', 'tag':tag,'po':po})
+    
+    if request.htmx:
+        return render(request,'post_list.html',{'posts':posts, page:'pages', 'tag':tag,'po':po})
+    else:
+        return render(request,'post_full.html',{'posts':posts, page:'pages', 'tag':tag,'po':po})
 
 
 class PostDetail(DetailView):
@@ -94,8 +98,11 @@ def post_detail(request, post):
     similar_posts = Post.published.filter(tags__in=post_tags_ids).exclude(id=post.id)
     similar_posts = similar_posts.annotate(same_tags=Count('tags')).order_by('-same_tags','-publish')[:6]
     
-    return render(request, 'post_detail.html',{'post':post,'comments': comments,'comment_form':comment_form,'similar_posts':similar_posts,'po':po})
-
+    
+    if request.htmx:
+        return render(request, 'post_detail.html',{'post':post,'comments': comments,'comment_form':comment_form,'similar_posts':similar_posts,'po':po})
+    else:
+        return render(request, 'detail_full.html',{'post':post,'comments': comments,'comment_form':comment_form,'similar_posts':similar_posts,'po':po})
 
 # handling reply, reply view
 def reply_page(request):
