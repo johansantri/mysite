@@ -1,4 +1,4 @@
-# mysite
+# mysite with django and htmx
 
 Quickstart
 ---------
