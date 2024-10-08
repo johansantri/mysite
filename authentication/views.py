@@ -18,15 +18,10 @@ from .models import Profile
 
 # Create your views here.
 
-#@login_required(login_url='login')
-def homepage(request):
-    if request.user.is_superuser:
-        return redirect ("/admin")
-    if request.user.is_staff:
-        return redirect("/post_us")
-    if request.user.is_active:
-        return redirect('profile_list')
-    return redirect('login')
+
+def home(request):
+    return render(request,'home/index.html')
+
 
 
 def register(request):

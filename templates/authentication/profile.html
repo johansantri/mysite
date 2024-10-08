@@ -1,4 +1,4 @@
-<h1>tes</h1>
+<h1>profile</h1>
 {% if profiles %}
     {% for profile in profiles %}
     <p> username:  <a href="{% url 'profile' request.user.id%}">{{ profile.user.username}}</a></p>

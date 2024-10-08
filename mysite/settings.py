@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'authentication',
     'home',
+    'import_export',
 ]
 
 MIDDLEWARE = [
@@ -115,7 +116,7 @@ USE_TZ = True
 
 #login email and verfi email
 LOGIN_URL = "login"
-LOGIN_REDIRECT_URL = "homepage"
+LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "login"
 
 # Setting up Email Backend
