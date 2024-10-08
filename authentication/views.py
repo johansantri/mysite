@@ -12,7 +12,7 @@ from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-
+from django.contrib.auth import logout
 from authentication.forms import UserRegistrationForm
 from .models import Profile
 
@@ -22,12 +22,16 @@ from .models import Profile
 def home(request):
     return render(request,'home/index.html')
 
-def pro(request):
+def pro(request,username):
     if request.user.is_authenticated:
+        username=User.objects.get(username=username)
+
         return render(request,'home/profile.html')
     return redirect('home')
     
-
+def logout_view(request):
+    logout(request)
+    return redirect('login')
 def register(request):
     form = UserRegistrationForm()
 

@@ -13,7 +13,7 @@ urlpatterns = [
          ),
 
     # logout view from auth_view
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('logout/', views.logout_view, name='logout'),
 
     # path for register view
     path('register/', views.register, name='register'),
@@ -38,7 +38,9 @@ urlpatterns = [
 
     # path for homepage where successfull login will redirect
     path('', views.home, name='home'),
-    path('profile/', views.pro, name='profile'),
+    #path('profile/(?P<username>\w+)/$', views.pro, name='profile'),
+    path('profile/<slug:username>/',views.pro, name='profile'), 
+                       
 
 
 

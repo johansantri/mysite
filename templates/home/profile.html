@@ -1,7 +1,26 @@
+
 {% extends 'base.html' %}
   
 
 {% block content %}
-<h1>profile</h1>
-{{user.username}}
+<p>account information,</p>
+<div class="card" style="width: 18rem;">
+    {% if user.photo  %}
+    <img src="{{ user.photo.url }}" class="card-img-top" alt="{{user.email}}">
+    {% endif %}
+   
+    <div class="card-body">
+      <h5 class="card-title">{{user.first_name}}</h5>
+      <p class="card-text">{{user.address}}</p>
+    </div>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">{{user.email}}</li>
+      <li class="list-group-item">{{user.phone}}</li>
+      <li class="list-group-item">{{user.country}}</li>
+    </ul>
+    <div class="card-body">
+      <a href="#" class="card-link">{{user.hobby}}</a>
+     
+    </div>
+  </div>
 {% endblock content %}
