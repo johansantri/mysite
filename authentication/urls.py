@@ -38,7 +38,7 @@ urlpatterns = [
 
     # path for homepage where successfull login will redirect
     path('', views.home, name='home'),
-   # path('profile/', views.profile, name='profile'),
+    path('profile/', views.pro, name='profile'),
 
 
 

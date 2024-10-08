@@ -22,7 +22,11 @@ from .models import Profile
 def home(request):
     return render(request,'home/index.html')
 
-
+def pro(request):
+    if request.user.is_authenticated:
+        return render(request,'home/profile.html')
+    return redirect('home')
+    
 
 def register(request):
     form = UserRegistrationForm()

@@ -69,17 +69,21 @@
             <li class="nav-item">
               <a class="nav-link" href="/post_us">auth</a>
             </li>
-            <li class="nav-item">
-              
-                
-                <form id="logout-form" method="post" action="{% url 'admin:logout' %}">
+     
+
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {{user.username}}
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+               
+                <li><a class="dropdown-item" href="/profile" >profile</a></li>
+                <li > <form id="logout-form" method="post" action="{% url 'admin:logout' %}">
                   {% csrf_token %}
                  
                   <button type="submit" class="btn btn-link">Logout</button>
-                </form>
-                
-                
-                 
+                </form></li>
+              </ul>
             </li>
             {% else %}
       
