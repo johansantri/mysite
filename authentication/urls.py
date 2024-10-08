@@ -40,6 +40,7 @@ urlpatterns = [
     path('', views.home, name='home'),
     #path('profile/(?P<username>\w+)/$', views.pro, name='profile'),
     path('profile/<slug:username>/',views.pro, name='profile'), 
+    
                        
 
 

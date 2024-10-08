@@ -27,7 +27,8 @@ def pro(request,username):
         username=User.objects.get(username=username)
 
         return render(request,'home/profile.html')
-    return redirect('home')
+    return redirect("/login/?next=%s" % request.path)
+
     
 def logout_view(request):
     logout(request)
