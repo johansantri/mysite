@@ -52,6 +52,7 @@ def current_year():
 
 class Course (models.Model):
     course_name = models.CharField(max_length=250)
+    slug = models.CharField(max_length=250)
     topic = models.CharField(max_length=250)
     course_overview = models.TextField(null=True)
     category = models.CharField(max_length=50, choices=Ct,null=True)

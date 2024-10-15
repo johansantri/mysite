@@ -14,7 +14,8 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label class="form-label">course name</label>
-                    <input class="form-control" type="text" name="course_name" maxlength="200" required placeholder="Enter here">
+                    <input class="form-control" type="text" name="course_name" oninput="listingslug(this.value)" id="course_name" maxlength="200" required placeholder="Enter here">
+                    <input type="hidden" class="form-control" id="slug" placeholder="slug" >
                   </div>
             </div>
             <div class="col-md-6">
@@ -48,7 +49,7 @@
                   <div class="mb-3">
                       <label class="form-label ">author <span class="badge text-bg-info"> <a href=""> inactive</a></span></label>
                      
-                  <select class="form-control js-example-basic-single" name="category" id="category" required>
+                  <select class="form-control js-example-basic-single" name="author" id="author" required>
                     <option>select mail</option>
                     {% for uss in us %}
                     <option value="{{ uss.id }}">
