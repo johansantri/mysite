@@ -46,26 +46,28 @@ def partnerAdd(request):
 
 # Create your views here.
 def partnerEdit(request, pk):
-    par = Partner.objects.get(id=pk)
-    user_list = User.objects.all()
-    if request.method == "POST":
-        if len(request.FILES) != 0:
-            if len(par.logo) > 0:
-                os.remove(par.logo.path)
-                 #prod.image = request.FILES['image']
-            par.logo = request.FILES['partner_logo']
-        par.partner_name = request.POST.get('partner_name')
-        par.abbreviation = request.POST.get('partner_abbreviation')
-        par.e_mail_id = request.POST.get('partner_email')
-        par.phone = request.POST.get('partner_phone')
-        par.address = request.POST.get('partner_address')
-        par.tax = request.POST.get('partner_tax')
-        par.status = request.POST.get('partner_status')
-        
-        par.checks = request.POST.get('partner_check')
-        par.save()
-        messages.success(request, "Partner Updated Successfully")
-        return redirect('/list')
+    if request.user.is_authenticated:
+        par = Partner.objects.get(id=pk)
+        user_list = User.objects.all()
+        if request.method == "POST":
+            if len(request.FILES) != 0:
+                if len(par.logo) > 0:
+                    os.remove(par.logo.path)
+                        #prod.image = request.FILES['image']
+                par.logo = request.FILES['partner_logo']
+            par.partner_name = request.POST.get('partner_name')
+            par.abbreviation = request.POST.get('partner_abbreviation')
+            par.e_mail_id = request.POST.get('partner_email')
+            par.phone = request.POST.get('partner_phone')
+            par.address = request.POST.get('partner_address')
+            par.tax = request.POST.get('partner_tax')
+            par.status = request.POST.get('partner_status')
+            
+            par.checks = request.POST.get('partner_check')
+            par.save()
+            messages.success(request, "Partner Updated Successfully")
+            return redirect('/list')
 
-    context = {'partner':par,'user':user_list}
-    return render(request, 'partner/partner_edit.html', context)
+        context = {'partner':par,'user':user_list}
+        return render(request, 'partner/partner_edit.html', context)
+    return redirect("/login/?next=%s" % request.path)

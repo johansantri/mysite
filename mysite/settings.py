@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'home',
     'import_export',
     'partner',
+    'courses',
 ]
 
 MIDDLEWARE = [

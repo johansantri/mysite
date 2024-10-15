@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% block content %}
+
+ 
+  <div class="row">
+    <div class="col-md-12">
+      <div class="tile">
+        <h3 class="tile-title">Update partner</h3>
+        <div class="tile-body">
+          <form method="POST" action="" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label">name</label>
+                    <input class="form-control" type="text" name="partner_name" value="{{ partner.partner_name }}" maxlength="200" required placeholder="Enter full name">
+                  </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label"> abbreviation</label>
+                    <input class="form-control" type="text" name="partner_abbreviation" value="{{ partner.abbreviation }}" maxlength="50" required placeholder="Enter abbreviation">
+                  </div>
+            </div>
+           </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label">email</label>
+                    <select class="form-control js-example-basic-single" id="exampleSelect1"  required name="partner_email">
+                       
+                       
+                      <option value="{{ partner.e_mail_id }}" selected>{{partner.e_mail.email}} </option>
+
+                       
+
+                        {% for us in user %} 
+                        <option class="form-control" value="{{us.id}}">{{us.email}}</option>
+                       
+                        {% endfor %}
+                      
+                      </select>
+                  </div>
+
+                  
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label">phone</label>
+                    <input class="form-control" type="number" name="partner_phone" value="{{ partner.phone }}" maxlength="20" required placeholder="Enter phone address">
+                  </div>
+              </div>
+            </div>
+         
+            <div class="mb-3">
+              <label class="form-label">address</label>
+              <textarea class="form-control" rows="4" name="partner_address"  maxlength="200" required placeholder="Enter your address">{{ partner.address }}</textarea>
+            </div>
+           <div class="row">
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label class="form-label">tax  </label><small class="form-text text-muted"> max 50 %</small>
+                    <input class="form-control" type="number" name="partner_tax" value="{{ partner.tax }}" max="50" max="1" required placeholder="Enter tax">
+                  </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label class="form-label">status</label>
+                    <select class="form-control" id="exampleSelect1" value="{{ partner.status }}" required name="partner_status">
+                      <option >select status</option>
+                      <option value="1">active</option>
+                      <option value="0">inactive</option>
+                      {% if partner.status == '1' %}
+                      <option value="{{ partner.status }}" selected>active</option>
+                      {% else %}
+                      <option value="{{ partner.status }}" selected>inactive</option>
+                    {% endif%}
+                    </select>
+                  </div>
+                 
+            </div>
+
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label class="form-label"> logo</label>
+                    {% if partner.logo %}
+                    <img src="{{ partner.logo.url }}" alt="image here" style="width: 50px; height: 50px;">
+                {% endif %}
+                    <input class="form-control" type="file" name="partner_logo"  >
+                  </div>
+
+            </div>
+           </div>
+            <div class="mb-3">
+              <div class="form-check">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="checkbox" checked name="partner_check" value="{{ partner.checks }}" required>I accept the terms and send notif to the partner mail
+                </label>
+              </div>
+            </div>
+            <div class="tile-footer">
+              <button class="btn btn-warning"  type="submit"><i class="bi bi-check-circle-fill me-2"></i>update</button>&nbsp;&nbsp;&nbsp;<a class="btn btn-secondary" href="{% url 'partner:partner_view'%}"><i class="bi bi-x-circle-fill me-2"></i>Cancel</a>
+            </div>
+          </form>
+        </div>
+       
+      </div>
+    </div>
+    
+
+ 
+  </div>
+
+  
+{% endblock %}
