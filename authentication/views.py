@@ -16,6 +16,7 @@ from django.contrib.auth import logout
 from authentication.forms import UserRegistrationForm
 from .models import Profile
 
+
 # Create your views here.
 
 

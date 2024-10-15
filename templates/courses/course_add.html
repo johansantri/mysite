@@ -6,113 +6,40 @@
     <div class="col-md-12">
       <div class="tile">
         <h3 class="tile-title">Create new course</h3>
-            
+        {% if messages %}
+        <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+        </ul>
+        {% endif %}
         <div class="tile-body">
-          <form id="sumbitformpratner" method="POST" action="" enctype="multipart/form-data">
+          <form  method="POST" action="" >
             {% csrf_token %}
             <div class="row">
             <div class="col-md-6">
                 <div class="mb-3">
-                    <label class="form-label">course name</label>
-                    <input class="form-control" type="text" name="course_name" oninput="listingslug(this.value)" id="course_name" maxlength="200" required placeholder="Enter here">
+                    <label class="form-label">course name {% for error in form.course_name.errors %} <span>{{error}} {% endfor %}</span> </label>
+                    <input class="form-control" type="text" name="course_name" oninput="listingslug(this.value)" id="course_name" maxlength="200"  placeholder="Enter here">
                     <input type="hidden" class="form-control" id="slug" placeholder="slug" >
+                  <input type="hidden" value="{{ request.user.id }}" name="author_id">
                   </div>
             </div>
             <div class="col-md-6">
                 <div class="mb-3">
                     <label class="form-label"> topic</label>
-                    <input class="form-control" type="text" name="topic" maxlength="50" required placeholder="Enter abbreviation">
+                    <input class="form-control" type="text" name="topic" maxlength="50"  placeholder="Enter abbreviation">
                   </div>
             </div>
            </div>
             <div class="row">
-              <div class="col-md-6">
-                <div class="mb-3">
-                    <label class="form-label ">category course <span class="badge text-bg-info"> <a href=""> inactive</a></span></label>
-                   
-                <select class="form-control js-example-basic-single" name="category" id="category" required>
-                  <option>select mail</option>
-                  {% for uss in us %}
-                  <option value="{{ uss.id }}">
-                    {{ uss.email }}
-                    
-                  </option>
-                  {% endfor%}
-                </select>
-                  </div>
+           
 
-                  
-              </div>
-
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="mb-3">
-                      <label class="form-label ">author <span class="badge text-bg-info"> <a href=""> inactive</a></span></label>
-                     
-                  <select class="form-control js-example-basic-single" name="author" id="author" required>
-                    <option>select mail</option>
-                    {% for uss in us %}
-                    <option value="{{ uss.id }}">
-                      {{ uss.email }}
-                      
-                    </option>
-                    {% endfor%}
-                  </select>
-                    </div>
-  
-                    
-                </div>
-
-
-              <div class="col-md-6">
-                <div class="mb-3">
-                    <label class="form-label">course year</label>
-                    <input class="form-control" type="date" name="course_year" maxlength="20" required placeholder="Enter phone address">
-                  </div>
-              </div>
-            </div>
          
-            <div class="mb-3">
-              <label class="form-label">course overview</label>
-              <textarea class="form-control" rows="4" name="course_overview" maxlength="200" required placeholder="Enter your address"></textarea>
-            </div>
-           <div class="row">
-            <div class="col-md-4">
-                <div class="mb-3">
-                    <label class="form-label">tax  </label><small class="form-text text-muted"> max 50 %</small>
-                    <input class="form-control" type="number" name="partner_tax" max="50" max="1" required placeholder="Enter tax">
-                  </div>
-            </div>
-            <div class="col-md-4">
-                <div class="mb-3">
-                    <label class="form-label">status</label>
-                    <select class="form-control" id="exampleSelect1" required name="partner_status">
-                      <option >select status</option>
-                      <option value="1">active</option>
-                      <option value="0">inactive</option>
-                  
-                    </select>
-                  </div>
-                 
-            </div>
-
-            <div class="col-md-4">
-                <div class="mb-3">
-                    <label class="form-label"> thumbnail</label>
-                    <input class="form-control" type="file" name="image_course" required >
-                  </div>
-
-            </div>
-           </div>
-            <div class="mb-3">
-              <div class="form-check">
-                <label class="form-check-label">
-                  <input class="form-check-input" type="checkbox" name="partner_check" required>I accept the terms and send notif to the partner mail
-                </label>
-              </div>
-            </div>
+       
+          
             <div class="tile-footer">
-              <button class="btn btn-primary"  type="submit"><i class="bi bi-check-circle-fill me-2"></i>create now</button>&nbsp;&nbsp;&nbsp;<a class="btn btn-secondary" href="{% url 'partner:partner_view'%}"><i class="bi bi-x-circle-fill me-2"></i>Cancel</a>
+              <button class="btn btn-primary"  type="submit"><i class="bi bi-check-circle-fill me-2"></i>create now</button>&nbsp;&nbsp;&nbsp;<a class="btn btn-secondary" href="{% url 'courses:course_view'%}"><i class="bi bi-x-circle-fill me-2"></i>Cancel</a>
             </div>
           </form>
         </div>
