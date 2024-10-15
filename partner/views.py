@@ -64,7 +64,7 @@ def partnerEdit(request, pk):
         
         par.checks = request.POST.get('partner_check')
         par.save()
-        messages.success(request, "Product Updated Successfully")
+        messages.success(request, "Partner Updated Successfully")
         return redirect('/list')
 
     context = {'partner':par,'user':user_list}

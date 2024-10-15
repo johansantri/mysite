@@ -6,14 +6,15 @@
     <div class="col-md-12">
       <div class="tile">
         <h3 class="tile-title">Create new partner</h3>
+            
         <div class="tile-body">
           <form id="sumbitformpratner" method="POST" action="" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="row">
             <div class="col-md-6">
                 <div class="mb-3">
-                    <label class="form-label">name</label>
-                    <input class="form-control" type="text" name="partner_name" maxlength="200" required placeholder="Enter full name">
+                    <label class="form-label">name of partner</label>
+                    <input class="form-control" type="text" name="partner_name" maxlength="200" required placeholder="Enter here">
                   </div>
             </div>
             <div class="col-md-6">
@@ -28,7 +29,7 @@
                 <div class="mb-3">
                     <label class="form-label ">email <span class="badge text-bg-info"> <a href=""> inactive</a></span></label>
                    
-                <select class="form-control js-example-basic-single" name="partner_email"  required>
+                <select class="form-control js-example-basic-single" name="partner_email" id="partner_email" required>
                   <option>select mail</option>
                   {% for uss in us %}
                   <option value="{{ uss.id }}">
