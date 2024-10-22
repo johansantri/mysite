@@ -1,25 +1,34 @@
-
-from typing import Any
-from django import forms
 from .models import Course
-from django.contrib.auth.models import User 
-from django.contrib.auth.forms import UserCreationForm 
+from django import forms
 
+class CourseForm(forms.ModelForm):
+    class Meta:
+        model = Course
+        fields = ('course_name','org_partner','course_number','course_run','slug','category')
 
-def is_anagram(x,y):
-   return sorted(x)==sorted(y)
-
-class CourseForm(forms.Form):
-   course_name = forms.CharField(
-      label='course name',
-      max_length=10,
-      widget=forms.TextInput(attrs={'class':"input"})
-   )
+        label = {
+        "course_name" : "Course_name",
+        "org_partner" : "org_partner",
+        "course_number" : "course_number",
+        "course_run" : "course_run",
+        "slug" : "slug",
+        "category" : "category",
        
+        }
 
-   def clean_test_value(self):
+        widgets ={
+        "course_name" : forms.TextInput(attrs={"placeholder":"full stack","class":"form-control"}),
+        "slug" : forms.TextInput(attrs={"placeholder":"full stack","class":"form-control","type":"text","id":"slug"}),
+        "course_number" : forms.TextInput(attrs={"placeholder":"cs201","class":"form-control"}),
+        "course_run" : forms.TextInput(attrs={"placeholder":"2023","class":"form-control"}),
+        "slug" : forms.TextInput(attrs={"placeholder":"","class":"form-control"}),
+        "org_partner" : forms.Select(attrs={"placeholder":"-","class":"form-control js-example-basic-single","id":"id_org_partner"}),
+        "category" : forms.Select(attrs={"placeholder":"-","class":"form-control js-example-basic-single"}),
+        
+        }
+
+    def clean_course_name(self):
       data = self.cleaned_data.get('course_name')
-      if not is_anagram(data,'listin'):
-         raise forms.ValidationError('this is not an anagram')
+      if data == "":
+         raise forms.ValidationError('this is not an required')
       return data
-

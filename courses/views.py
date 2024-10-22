@@ -5,6 +5,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.conf import settings
 from .models import Course
+from django.core.paginator import Paginator, EmptyPage,PageNotAnInteger
+from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.models import User
 import os
@@ -13,27 +15,37 @@ from django.http import HttpResponse,JsonResponse
 
 def courseView(request):
     if request.user.is_authenticated:
-           course_list = Course.objects.all()
-           context = {'courselist':course_list}   
+            posts = Course.objects.all()
+            count = Course.objects.all().count()
 
-           return render (request,'courses/course_view.html', context)
+            query = request.GET.get('q')
+            if query is not None and query !='':
+                posts=Course.objects.filter(Q(course_name__icontains=query) | Q(status_course__icontains=query)).distinct()  
+            count = posts.count()     
+            page = Paginator(posts,5)
+            page_list = request.GET.get('page')
+            page = page.get_page(page_list)
+
+            context= {'count': count, 'page':page}  
+
+            return render (request,'courses/course_view.html', context)
     else:
           
         return redirect ('/')
 
 def courseAdd(request):
-   
-    if request.method == "POST":
-          form = CourseForm(request.POST)
-
-          if form.is_valid():
-                redirect('/') 
-    else:
+    if request.user.is_authenticated:
+        context = {}   
+        form = CourseForm(request.POST or None)
+        if form.is_valid():
+            form.save()               
+            return redirect('/course')    
         form = CourseForm()
-    context = {'form':form}
-     
-   
-    return render (request,'courses/course_add.html', context)
+        context = {'form':form}    
+        return render (request,'courses/course_add.html', context)
+    else:
+        return redirect('login')
+    
    
         
    

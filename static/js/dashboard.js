@@ -3,6 +3,10 @@ $( '#partner_email' ).select2( {
   theme: 'bootstrap-5'
 } );
 
+$( '#id_org_partner' ).select2( {
+	theme: 'bootstrap-5'
+  } );
+
 $( '#author' ).select2( {
   theme: 'bootstrap-5'
 } );
@@ -19,7 +23,7 @@ function slugify(text) {
   }
   
   function listingslug(text) {
-	document.getElementById("slug").value = slugify(text);
+	document.getElementById("id_slug").value = slugify(text);
   }
 
  

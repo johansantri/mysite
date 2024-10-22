@@ -13,25 +13,46 @@
         {% endfor %}
         </ul>
         {% endif %}
+
         <div class="tile-body">
           <form  method="POST" action="" >
             {% csrf_token %}
             <div class="row">
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label class="form-label">course name {% for error in form.course_name.errors %} <span>{{error}} {% endfor %}</span> </label>
-                    <input class="form-control" type="text" name="course_name" oninput="listingslug(this.value)" id="course_name" maxlength="200"  placeholder="Enter here">
-                    <input type="hidden" class="form-control" id="slug" placeholder="slug" >
-                  <input type="hidden" value="{{ request.user.id }}" name="author_id">
-                  </div>
+              <div class="col-md-12">
+                {{form.course_name.label_tag}}
+                {{form.course_name}}
+                {% for error in form.course_name.errors %} <span class="badge bg-danger">{{error}} {% endfor %}</span>
+                {{form.slug}}
+              </div>
+              <div class="col-md-12">
+                {{form.org_partner.label_tag}}
+                {{form.org_partner}}
+                {% for error in form.org_partner.errors %} <span class="badge bg-danger">{{error}} {% endfor %}</span>
+                
+
+                <div class="col-md-12">
+                  {{form.course_run.label_tag}}
+                  {{form.course_run}}
+                  {% for error in form.course_run.errors %} <span class="badge bg-danger">{{error}} {% endfor %}</span>
+                 
+                </div>
+
+                <div class="col-md-12">
+                  {{form.course_number.label_tag}}
+                  {{form.course_number}}
+                  {% for error in form.course_number.errors %} <span class="badge bg-danger">{{error}} {% endfor %}</span>
+                 
+                </div>
+                <div class="col-md-12">
+                  {{form.category.label_tag}}
+                  {{form.category}}
+                  {% for error in form.category.errors %} <span class="badge bg-danger">{{error}} {% endfor %}</span>
+                 
+                </div>
+              </div>
             </div>
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label class="form-label"> topic</label>
-                    <input class="form-control" type="text" name="topic" maxlength="50"  placeholder="Enter abbreviation">
-                  </div>
-            </div>
-           </div>
+          
+          
             <div class="row">
            
 
@@ -39,6 +60,8 @@
        
           
             <div class="tile-footer">
+              &nbsp;
+              <br>
               <button class="btn btn-primary"  type="submit"><i class="bi bi-check-circle-fill me-2"></i>create now</button>&nbsp;&nbsp;&nbsp;<a class="btn btn-secondary" href="{% url 'courses:course_view'%}"><i class="bi bi-x-circle-fill me-2"></i>Cancel</a>
             </div>
           </form>

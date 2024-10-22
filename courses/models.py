@@ -20,16 +20,13 @@ St = (
     ('publish','publish'),
     ('pending','pending'),
 )
-Lg = (
-    ('en','english'),
-    ('id','indonesia'),
-)
+
 Tc = (
     ('self','self-paced'),
     ('instructor','instructor-paced'),
 )
 Ct = (
-    ('tecnologi','tecnologi'),
+    ('technology','technology'),
     ('law','law'),
     ('economic','economic'),
     ('social','social'),
@@ -52,26 +49,15 @@ def current_year():
 
 class Course (models.Model):
     course_name = models.CharField(max_length=250)
-    slug = models.CharField(max_length=250)
-    topic = models.CharField(max_length=250)
-    course_overview = models.TextField(null=True)
-    category = models.CharField(max_length=50, choices=Ct,null=True)
-    number_of_questions = models.IntegerField(null=True)
-    time = models.IntegerField(help_text="durations of the quiz in minutes",null=True)
-    required_score_to_pas = models.IntegerField("required score in %", null=True)
-    level = models.CharField(max_length=10, choices=Choi, default='basic', null=True)
-    status_course = models.CharField(max_length=10, choices=St, default='draft')
-    start_date = models.DateField(null=True)
-    end_date = models.DateField(null=True)
-    start_enrol = models.DateField(null=True)
-    end_enrol = models.DateField(null=True)
-    effort = models.CharField(max_length=20, null=True)
-    lang = models.CharField(max_length=30, choices=Lg, default='id')
-    org_partner = models.ForeignKey(Partner, on_delete=models.CASCADE)
-    type_course = models.CharField(max_length=10, choices=Tc, default='self')
-    image_course = models.ImageField(upload_to=filepath,null=True)
-    author=models.ForeignKey(User,on_delete=models.CASCADE)
-    course_year=models.IntegerField(null=True, default=current_year)
+    course_number = models.CharField(max_length=250, blank=True)
+    course_run = models.CharField(max_length=250, blank=True)
+    slug = models.CharField(max_length=250, blank=True)
+    
+    category = models.CharField(max_length=50, choices=Ct,null=True, blank=True)      
+    level = models.CharField(max_length=10, choices=Choi, default='basic', null=True, blank=True)
+    status_course = models.CharField(max_length=10, choices=St, default='draft',blank=True)          
+    org_partner = models.ForeignKey(Partner, on_delete=models.CASCADE)    
+   # author=models.ForeignKey(User,on_delete=models.CASCADE) 
 
     def __str__(self):
         return f"{self.course_name} {self.status_course}"
