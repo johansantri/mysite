@@ -47,7 +47,7 @@
       <tr>
        
         
-        <td>{{pag.course_name}}</td>
+        <td> <a href="{% url 'courses:course_edit' pag.id %}">{{pag.course_name}}</a></td>
         <td>{{pag.org_partner}}</td>
         <td>{{pag.category}}</td>
         <td>{{pag.status_course}}</td>
