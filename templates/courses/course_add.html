@@ -17,33 +17,33 @@
         <div class="tile-body">
           <form  method="POST" action="" >
             {% csrf_token %}
-            <div class="row">
-              <div class="col-md-12">
+          
+              <div class="mb-3">
                 {{form.course_name.label_tag}}
                 {{form.course_name}}
                 {% for error in form.course_name.errors %} <span class="badge bg-danger">{{error}} {% endfor %}</span>
               
               </div>
-              <div class="col-md-12">
+              <div class="mb-3">
                 {{form.org_partner.label_tag}}
                 {{form.org_partner}}
                 {% for error in form.org_partner.errors %} <span class="badge bg-danger">{{error}} {% endfor %}</span>
                 
 
-                <div class="col-md-12">
+                <div class="mb-3">
                   {{form.course_run.label_tag}}
                   {{form.course_run}}
                   {% for error in form.course_run.errors %} <span class="badge bg-danger">{{error}} {% endfor %}</span>
                  
                 </div>
 
-                <div class="col-md-12">
+                <div class="mb-3">
                   {{form.course_number.label_tag}}
                   {{form.course_number}}
                   {% for error in form.course_number.errors %} <span class="badge bg-danger">{{error}} {% endfor %}</span>
                  
                 </div>
-                <div class="col-md-12">
+                <div class="mb-3">
                   {{form.category.label_tag}}
                   {{form.category}}
                   {% for error in form.category.errors %} <span class="badge bg-danger">{{error}} {% endfor %}</span>
@@ -51,7 +51,7 @@
                   {{form.slug}}
                 </div>
               </div>
-            </div>
+           
           
           
             <div class="row">
@@ -76,4 +76,8 @@
   </div>
 
   
+
+
+
+
 {% endblock %}

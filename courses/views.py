@@ -34,17 +34,22 @@ def courseView(request):
         return redirect ('/')
 
 def courseAdd(request):
-    if request.user.is_authenticated:
-        context = {}   
-        form = CourseForm(request.POST or None)
+ 
+    if request.method == 'POST':
+            
+        form = CourseForm(request.POST)
         if form.is_valid():
-            form.save()               
-            return redirect('/course')    
+            course = form.save(commit=False)
+            
+            course.save()            
+            return redirect('/course') 
+    else:       
         form = CourseForm()
-        context = {'form':form}    
-        return render (request,'courses/course_add.html', context)
-    else:
-        return redirect('login')
+    context = {'form':form}    
+    return render (request,'courses/course_add.html', context)
+            
+ 
+   
     
    
         

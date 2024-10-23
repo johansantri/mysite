@@ -1,20 +1,19 @@
-from .models import Course
+from .models import Course, Partner
 from django import forms
 
 class CourseForm(forms.ModelForm):
-    class Meta:
+    class Meta:        
         model = Course
         fields = ('course_name','org_partner','course_number','course_run','slug','category')
-
         label = {
-        "course_name" : "Course_name",
-        "org_partner" : "org_partner",
-        "course_number" : "course_number",
-        "course_run" : "course_run",
-        "slug" : "slug",
-        "category" : "category",
-       
-        }
+                "course_name" : "Course_name",
+                "org_partner" : "org_partner",
+                "course_number" : "course_number",
+                "course_run" : "course_run",
+                "slug" : "slug",
+                "category" : "category",
+            
+                }
 
         widgets ={
         "course_name" : forms.TextInput(attrs={"placeholder":"full stack d","class":"form-control","oninput":"listingslug(value)"}),
@@ -25,6 +24,19 @@ class CourseForm(forms.ModelForm):
         "org_partner" : forms.Select(attrs={"placeholder":"-","class":"form-control js-example-basic-single","id":"id_org_partner"}),
         "category" : forms.Select(attrs={"placeholder":"-","class":"form-control js-example-basic-single"}),
         
-        }
+        } 
+
+    def clean(self):
+        cleaned_data= super().clean()
+        course_name = cleaned_data.get("course_name")
+        if course_name and len (course_name) < 3:
+            self.add_error('course_name','name should be at least 3')
+
+        if course_name and len (course_name) > 200:
+            self.add_error('course_name','name should be at least 5')
+
+        
+            
+        
 
     
