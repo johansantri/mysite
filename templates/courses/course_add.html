@@ -22,7 +22,7 @@
                 {{form.course_name.label_tag}}
                 {{form.course_name}}
                 {% for error in form.course_name.errors %} <span class="badge bg-danger">{{error}} {% endfor %}</span>
-                {{form.slug}}
+              
               </div>
               <div class="col-md-12">
                 {{form.org_partner.label_tag}}
@@ -47,7 +47,7 @@
                   {{form.category.label_tag}}
                   {{form.category}}
                   {% for error in form.category.errors %} <span class="badge bg-danger">{{error}} {% endfor %}</span>
-                 
+                  {{form.slug}}
                 </div>
               </div>
             </div>

@@ -17,8 +17,8 @@ class CourseForm(forms.ModelForm):
         }
 
         widgets ={
-        "course_name" : forms.TextInput(attrs={"placeholder":"full stack","class":"form-control"}),
-        "slug" : forms.TextInput(attrs={"placeholder":"full stack","class":"form-control","type":"text","id":"slug"}),
+        "course_name" : forms.TextInput(attrs={"placeholder":"full stack d","class":"form-control","oninput":"listingslug(value)"}),
+        "slug" : forms.TextInput(attrs={"placeholder":"full stack","class":"form-control",'type':'hidden'}),
         "course_number" : forms.TextInput(attrs={"placeholder":"cs201","class":"form-control"}),
         "course_run" : forms.TextInput(attrs={"placeholder":"2023","class":"form-control"}),
         "slug" : forms.TextInput(attrs={"placeholder":"","class":"form-control"}),
