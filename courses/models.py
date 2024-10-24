@@ -57,7 +57,7 @@ class Course (models.Model):
     level = models.CharField(max_length=10, choices=Choi, default='basic', null=True, blank=True)
     status_course = models.CharField(max_length=10, choices=St, default='draft',blank=True)          
     org_partner = models.ForeignKey(Partner, on_delete=models.CASCADE)    
-   # author=models.ForeignKey(User,on_delete=models.CASCADE) 
+    author=models.ManyToManyField(User, blank=True) 
 
     def __str__(self):
         return f"{self.course_name} {self.status_course}"

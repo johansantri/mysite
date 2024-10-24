@@ -4,7 +4,7 @@ from django import forms
 class CourseForm(forms.ModelForm):
     class Meta:        
         model = Course
-        fields = ('course_name','org_partner','course_number','course_run','slug','category')
+        fields = ('course_name','org_partner','course_number','course_run','slug','category','author')
         label = {
                 "course_name" : "Course_name",
                 "org_partner" : "org_partner",
@@ -12,6 +12,7 @@ class CourseForm(forms.ModelForm):
                 "course_run" : "course_run",
                 "slug" : "slug",
                 "category" : "category",
+               # "author" : "author",
             
                 }
 
@@ -23,6 +24,7 @@ class CourseForm(forms.ModelForm):
         
         "org_partner" : forms.Select(attrs={"placeholder":"-","class":"form-control js-example-basic-single","id":"id_org_partner"}),
         "category" : forms.Select(attrs={"placeholder":"-","class":"form-control js-example-basic-single"}),
+        #"author" : forms.SelectMultiple(attrs={"placeholder":"-","class":"form-control js-example-basic-single"}),
         
         } 
 

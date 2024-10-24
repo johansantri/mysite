@@ -56,27 +56,19 @@ def courseAdd(request):
    
 
 # Create your views here.
-def courseEdit(request, pk):
-    par = Course.objects.get(id=pk)
-    user_list = User.objects.all()
-    if request.method == "POST":
-        if len(request.FILES) != 0:
-            if len(par.logo) > 0:
-                os.remove(par.logo.path)
-                 #prod.image = request.FILES['image']
-            par.logo = request.FILES['partner_logo']
-        par.partner_name = request.POST.get('partner_name')
-        par.abbreviation = request.POST.get('partner_abbreviation')
-        par.e_mail_id = request.POST.get('partner_email')
-        par.phone = request.POST.get('partner_phone')
-        par.address = request.POST.get('partner_address')
-        par.tax = request.POST.get('partner_tax')
-        par.status = request.POST.get('partner_status')
-        
-        par.checks = request.POST.get('partner_check')
-        par.save()
-        messages.success(request, "Partner Updated Successfully")
-        return redirect('/list')
 
-    context = {'coures':par,'user':user_list}
-    return render(request, 'courses/course_edit.html', context)
+def courseEdit(request, pk):
+    cour = Course.objects.get(id=pk)
+
+    if request.method == 'POST':
+        form = CourseForm(request.POST, instance=cour)
+        if form.is_valid():
+            # update the existing `Band` in the database
+            form.save()
+            # redirect to the detail page of the `Band` we just updated
+            return redirect('/course') 
+    else:
+        form = CourseForm(instance=cour)
+
+    context = {'form':form}    
+    return render (request,'courses/course_edit.html', context)
