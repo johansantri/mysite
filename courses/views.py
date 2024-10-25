@@ -12,6 +12,7 @@ from django.contrib.auth.models import User
 import os
 from .forms import CourseForm
 from django.http import HttpResponse,JsonResponse
+from django.contrib.auth.decorators import login_required
 
 def courseView(request):
     if request.user.is_authenticated:
@@ -32,7 +33,7 @@ def courseView(request):
     else:
           
         return redirect ('/')
-
+@login_required
 def courseAdd(request):
  
     if request.method == 'POST':
@@ -40,7 +41,7 @@ def courseAdd(request):
         form = CourseForm(request.POST)
         if form.is_valid():
             course = form.save(commit=False)
-            
+            course.author_id = request.user.id
             course.save()            
             return redirect('/course') 
     else:       
@@ -56,7 +57,7 @@ def courseAdd(request):
    
 
 # Create your views here.
-
+@login_required
 def courseEdit(request, pk):
     cour = Course.objects.get(id=pk)
 

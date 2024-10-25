@@ -4,9 +4,17 @@ from django.contrib.auth.models import User
 import datetime
 import os
 
-# Create your models here.
 
 
+    
+class Category (models.Model):
+    category_name = models.CharField(max_length=200,blank=True) 
+    category_slug = models.CharField(max_length=200,blank=True)                 
+  
+   
+
+    def __str__(self):
+        return f"{self.category_name} "
 
 Choi = (
     ('basic','basic'),
@@ -25,16 +33,7 @@ Tc = (
     ('self','self-paced'),
     ('instructor','instructor-paced'),
 )
-Ct = (
-    ('technology','technology'),
-    ('law','law'),
-    ('economic','economic'),
-    ('social','social'),
-    ('agriculture','agriculture'),
-    ('mining','mining'),
-    ('management','management'),
-    ('program','program'),
-)
+
 
 def filepath(request, filename):
     old_filename = filename
@@ -53,13 +52,22 @@ class Course (models.Model):
     course_run = models.CharField(max_length=250, blank=True)
     slug = models.CharField(max_length=250, blank=True)
     
-    category = models.CharField(max_length=50, choices=Ct,null=True, blank=True)      
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)       
     level = models.CharField(max_length=10, choices=Choi, default='basic', null=True, blank=True)
     status_course = models.CharField(max_length=10, choices=St, default='draft',blank=True)          
     org_partner = models.ForeignKey(Partner, on_delete=models.CASCADE)    
-    author=models.ManyToManyField(User, blank=True) 
+    author=models.ForeignKey(User, on_delete=models.CASCADE) 
 
     def __str__(self):
         return f"{self.course_name} {self.status_course}"
     
 
+# Create your models here.
+class Instructor (models.Model):
+    name = models.ForeignKey(User, on_delete=models.CASCADE)              
+    org = models.ForeignKey(Partner, on_delete=models.CASCADE)    
+    mycourse = models.ForeignKey(Course, on_delete=models.CASCADE)  
+   
+
+    def __str__(self):
+        return f"{self.name} - {self.org} - {self.mycourse}"

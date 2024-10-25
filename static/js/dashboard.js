@@ -10,6 +10,9 @@ $( '#id_org_partner' ).select2( {
 $( '#author' ).select2( {
   theme: 'bootstrap-5'
 } );
+$( '#id_author' ).select2( {
+	theme: 'bootstrap-5'
+  } );
 
 function slugify(text) {
 	return text
@@ -26,4 +29,19 @@ function slugify(text) {
 	document.getElementById("id_slug").value = slugify(text);
   }
 
+
+var emails = "ab@gmail.comefgh@gmail.comterb@gmail.com"
+var emailsArray = new Array()
+
+while (emails !== '')
+{
+  //ensures that dot is searched after @ symbol (so it can find this email as well: test.test@test.com)
+  //adding 4 characters makes up for dot + TLD ('.com'.length === 4)
+  var endOfEmail = emails.indexOf('.',emails.indexOf('@')) + 4
+  var tmpEmail = emails.substring(0, endOfEmail)
+  emails = emails.substring(endOfEmail)
+  emailsArray.push(tmpEmail)
+}
+
+console.log(emailsArray)
  

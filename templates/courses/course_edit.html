@@ -50,7 +50,13 @@
                 
                   {{form.slug}}
                 </div>
-             
+                <div class="mb-3">
+                  {{form.author.label_tag}}
+                  {{form.author}}
+                  {% for error in form.author.errors %} <span class="badge bg-danger">{{error}} {% endfor %}</span>
+                
+               
+                </div>
               </div>
            
           
