@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-# Create your models here.
+import uuid
 import datetime
 import os
 
@@ -24,3 +24,13 @@ class Partner(models.Model):
 
     def __str__(self):
         return f"{self.partner_name}"
+    
+class Invitation(models.Model):
+    email = models.EmailField(unique=True)
+    token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)  # Unique token for invitation link
+    invited_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="invitations_sent")
+    accepted = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"Invitation for {self.email}"

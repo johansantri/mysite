@@ -1,10 +1,16 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 from django.conf import settings
-from .models import Partner
+from .models import Partner,Invitation
 from django.contrib import messages
 from django.contrib.auth.models import User
 import os
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.contrib.auth.forms import UserCreationForm
+from authentication.forms import UserRegistrationForm
+from django.http import HttpResponseForbidden
 
 def partnerView(request):
     if request.user.is_authenticated:
@@ -71,3 +77,48 @@ def partnerEdit(request, pk):
         context = {'partner':par,'user':user_list}
         return render(request, 'partner/partner_edit.html', context)
     return redirect("/login/?next=%s" % request.path)
+
+
+@login_required
+def invite_user(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        # Check if an invitation to this email already exists
+        if Invitation.objects.filter(email=email).exists():
+            messages.error(request, "An invitation has already been sent to this email.")
+        else:
+            # Create a new invitation
+            invitation = Invitation.objects.create(email=email, invited_by=request.user)
+            # Send an email to the invited user with a signup link
+            signup_url = request.build_absolute_uri(f'/accept-invite/{invitation.token}/')
+            send_mail(
+                'You have been invited to partner ICE institute!',
+                f'You have been invited to join our platform. Click the link to sign up: {signup_url}',
+                'from@example.com',
+                [email],
+            )
+            messages.success(request, f"Invitation sent to {email}!")
+            return redirect('/invite')
+    
+    return render(request, 'partner/invite_user.html')
+
+
+def accept_invitation(request, token):
+    invitation = get_object_or_404(Invitation, token=token)
+    
+    if invitation.accepted:
+        return HttpResponseForbidden("This invitation has already been used.")
+    
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save()  # Create a new user
+            # Mark the invitation as accepted
+            invitation.accepted = True
+            invitation.save()
+            # Optionally, link the newly created user to the invitation (if needed)
+            return redirect('login')  # Redirect to login or other page after successful signup
+    else:
+        form = UserRegistrationForm()
+
+    return render(request, 'authentication/register.html', {'form': form})
