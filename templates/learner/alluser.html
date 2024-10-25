@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">all user</h1>
+    {% if messages %}
+    <ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+    <div class="btn-toolbar mb-2 mb-md-0">
+   
+      
+  
+      <div class="btn-group me-2">
+        <a type="button" href="{% url "courses:course_add"%}" class="btn btn-outline-success">Add learner</a>
+        <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+      </div>
+      <form class="d-flex" action="/learner" hx-get="/" hx-target="#content-div" hx-push-url="true"  >
+        <input class="form-control mr-0" type="search" value="{{request.GET.q}}"  name="q" placeholder="Search" aria-label="Search">
+      </form>
+      
+     
+  
+    </div>
+  
+  </div>
+  <p  >
+    {% if request.GET.q is not null %}
+      Search Results Course "{{ request.GET.q }}" &nbsp; <a href="{% url "learner:learner_view"%}">back</a>
+    {% endif %}
+  </p>
+
+
+
+<table class="table table-hover">
+    <thead>
+      <tr>
+        
+        <th scope="col">username</th>
+        <th scope="col">email</th>
+        <th scope="col">joined</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+        {% for post in page %}
+      <tr>
+        
+        <td>   {{ post.username }}</td>
+        <td>   {{ post.email }}</td>
+        <td>   {{ post.date_joined }}</td>
+      </tr>
+
+      {% endfor %}
+      
+    </tbody>
+  </table>
+
+<p>total {{ count }} ||  page {{page.number }}/ {{page.paginator.num_pages}}</p>
+
+
+
+  <nav aria-label="Page navigation example">
+    <ul class="pagination">
+       
+      <li class="page-item">
+        {% if page.has_previous %}
+        <a class="page-link" href="?page={{page.previous_page_number}} {% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Previous</a>
+        {% endif %}
+    </li>
+    {% for num_page in page.paginator.page_range %}
+    
+    {% if page.number == num_page %}
+      <li class="page-item"><a class="page-link" href="?page={{page.number}} {% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">{{page.number}}</a></li>
+     
+      {% endif %}
+     
+
+      
+
+
+
+      {% endfor %}
+      <li class="page-item">
+        {% if page.has_next %}
+        <a class="page-link" href="?page={{page.next_page_number}} {% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Next</a>
+        {% endif %}
+    </li>
+    </ul>
+  </nav>
+
+<hr>
+
+
+
+
+
+
+
+
+
+
+{% endblock content %}

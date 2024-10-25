@@ -14,7 +14,7 @@
     
 
     <div class="btn-group me-2">
-      <a type="button" href="{% url "courses:course_add"%}" class="btn btn-sm btn-outline-success">Add course</a>
+      <a type="button" href="{% url "courses:course_add"%}" class="btn btn-outline-success">Add course</a>
       <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
     </div>
     <form class="d-flex" action="/course" hx-get="/" hx-target="#content-div" hx-push-url="true"  >

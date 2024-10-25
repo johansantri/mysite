@@ -16,5 +16,28 @@
     <p>{{ message }}</p>
 {% endfor %}
 </div>
+
+<table class="table table-striped table-hover">
+    <thead>
+      <tr>
+        
+        <th scope="col">email</th>
+        <th scope="col">status</th>
+        <th scope="col">date invite</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for invs in inv %}
+      <tr>
+        
+        <td>{{invs.email}}</td>
+        <td>{{invs.accepted}}</td>
+        <td>{{invs.created_at}}</td>
+      </tr>
+      {% endfor %}
+     
+    </tbody>
+  </table>
+
 </div>
 {% endblock %}
