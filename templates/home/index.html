@@ -3,8 +3,14 @@
 
 {% block content %}
 <h1>home</h1>
+{% if user.is_staff %}
+    <p>Welcome, staff member! You have access to the admin tools. {{user.username}}</p>
+    <a href="{% url 'admin:index' %}">Go to Admin Panel</a>
+{% else %}
+    <p>Welcome, {{ user.username }}!</p>
+{% endif %}
 
-{{user.username}}
+
 
 
 {% endblock content %}

@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 # Create your views here.
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth.models import User
 from django.conf import settings
 from .models import Course
@@ -16,12 +16,13 @@ from django.contrib.auth.decorators import login_required
 
 def courseView(request):
     if request.user.is_authenticated:
-            posts = Course.objects.all()
+            posts = Course.objects.filter(author_id=request.user.id)
             count = Course.objects.all().count()
 
             query = request.GET.get('q')
             if query is not None and query !='':
-                posts=Course.objects.filter(Q(course_name__icontains=query) | Q(status_course__icontains=query)).distinct()  
+                posts=Course.objects.filter(Q(course_name__icontains=query) | Q(status_course__icontains=query),author_id=request.user.id).distinct() 
+                 
             count = posts.count()     
             page = Paginator(posts,5)
             page_list = request.GET.get('page')
@@ -33,6 +34,7 @@ def courseView(request):
     else:
           
         return redirect ('/')
+    
 @login_required
 def courseAdd(request):
  
@@ -60,6 +62,7 @@ def courseAdd(request):
 @login_required
 def courseEdit(request, pk):
     cour = Course.objects.get(id=pk)
+    cour = get_object_or_404(Course, id=pk, author_id=request.user.id)
 
     if request.method == 'POST':
         form = CourseForm(request.POST, instance=cour)
