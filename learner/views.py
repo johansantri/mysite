@@ -5,7 +5,7 @@ from django.db.models import Count
 from django.db.models import Q
 import os
 from .forms import LearnerForm
-
+from django.contrib import messages
 # Create your views here.
 def learnerView(request):
     if not request.user.is_superuser:
@@ -53,6 +53,7 @@ def learnerEdit(request, pk):
             # update the existing `Band` in the database
                 form.save()
             # redirect to the detail page of the `Band` we just updated
+            messages.success(request, 'success update learner')  
             return redirect('/learner') 
         else:
             form = LearnerForm(instance=cour)
@@ -72,7 +73,8 @@ def learnerAdd(request):
         if form.is_valid():
             course = form.save(commit=False)
             #course.author_id = request.user.id
-            course.save()            
+            course.save()    
+            messages.success(request, 'success add learner')        
             return redirect('/learner') 
     else:       
         form = LearnerForm()
