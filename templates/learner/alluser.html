@@ -52,7 +52,7 @@
         {% for post in page %}
       <tr>
         
-        <td>   {{ post.username }}</td>
+        <td >  <a href="{% url 'learner:learner_edit' post.id %}"> {{ post.username }}</a></td>
         <td>   {{ post.email }}</td>
         <td>   {{ post.date_joined }}</td>
       </tr>

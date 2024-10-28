@@ -1,8 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, redirect,get_object_or_404
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage,PageNotAnInteger
 from django.db.models import Count
 from django.db.models import Q
+import os
+from .forms import LearnerForm
 
 # Create your views here.
 def learnerView(request):
@@ -20,3 +22,21 @@ def learnerView(request):
     context= {'count': count, 'page':page}
 
     return render(request,'learner/alluser.html',context)
+
+
+def learnerEdit(request, pk):
+    cour = User.objects.get(id=pk)
+    cour = get_object_or_404(User, id=pk)
+
+    if request.method == 'POST':
+        form = LearnerForm(request.POST, instance=cour)
+        if form.is_valid():
+            # update the existing `Band` in the database
+            form.save()
+            # redirect to the detail page of the `Band` we just updated
+            return redirect('/learner') 
+    else:
+        form = LearnerForm(instance=cour)
+
+    context = {'form':form}    
+    return render (request,'learner/learner_detail.html', context)
