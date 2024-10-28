@@ -8,7 +8,25 @@ from .forms import LearnerForm
 
 # Create your views here.
 def learnerView(request):
+    if not request.user.is_superuser:
+            posts = User.objects.filter(id=request.user.id)
+            #posts = get_object_or_404(User, id=request.user.id)
+            count = User.objects.all().count()
+            
+            query = request.GET.get('q')
+            if query is not None and query !='':
+                posts=User.objects.filter(Q(email__icontains=query) | Q(username__icontains=query)).distinct()  
+                count = posts.count()     
+            page = Paginator(posts,10)
+            page_list = request.GET.get('page')
+            page = page.get_page(page_list)
+            
+            context= {'count': count, 'page':page}
+
+            return render(request,'learner/alluser.html',context)
+    
     posts = User.objects.all()
+    #posts = get_object_or_404(User, id=request.user.id)
     count = User.objects.all().count()
     
     query = request.GET.get('q')
@@ -26,7 +44,7 @@ def learnerView(request):
 
 def learnerEdit(request, pk):
     cour = User.objects.get(id=pk)
-    cour = get_object_or_404(User, id=pk)
+    cour = get_object_or_404(User, id=request.user.pk)
 
     if request.method == 'POST':
         form = LearnerForm(request.POST, instance=cour)

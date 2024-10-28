@@ -4,7 +4,7 @@ from django import forms
 class LearnerForm(forms.ModelForm):
     class Meta:        
         model = User
-        fields = ('first_name','last_name','username','email','hobby','birth','address','country','phone','gender','education','photo')
+        fields = ('first_name','last_name','username','email','hobby','birth','address','country','phone','gender','education','photo','is_active')
         label = {
                 "email" : "email",
                 "first_name" : "first_name",
@@ -36,6 +36,7 @@ class LearnerForm(forms.ModelForm):
         "gender" : forms.Select(attrs={"placeholder":"Mancing","class":"form-select"}),
         "education" : forms.Select(attrs={"placeholder":"Mancing","class":"form-select"}),
         "photo" : forms.ClearableFileInput(attrs={"class":"form-control-file"}),
+        "is_active":forms.CheckboxInput(attrs={"class":"form-check-input"})
 
         
         
