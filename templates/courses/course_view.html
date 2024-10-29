@@ -36,7 +36,10 @@
       <tr>
        
         <th>course</th>
+        <th>number</th>
+        <th>year</th>
         <th>org</th>
+    
         <th>cat</th>
         <th>status</th>
        
@@ -47,8 +50,11 @@
       <tr>
        
         
-        <td> <a href="{% url 'courses:course_edit' pag.id %}">{{pag.course_name}}</a></td>
+        <td> <a href="{% url 'courses:course_detail' pag.id %}">{{pag.course_name}}</a> </td>
+        <td>{{pag.course_number}}</td>
+        <td>{{pag.course_run}}</td>
         <td>{{pag.org_partner}}</td>
+    
         <td>{{pag.category}}</td>
         <td>{{pag.status_course}}</td>
       

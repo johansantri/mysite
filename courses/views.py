@@ -60,7 +60,7 @@ def courseAdd(request):
 
 # Create your views here.
 @login_required
-def courseEdit(request, pk):
+def courseDetail(request, pk):
     cour = Course.objects.get(id=pk)
     cour = get_object_or_404(Course, id=pk, author_id=request.user.id)
 
@@ -75,4 +75,4 @@ def courseEdit(request, pk):
         form = CourseForm(instance=cour)
 
     context = {'form':form}    
-    return render (request,'courses/course_edit.html', context)
+    return render (request,'courses/course_detail.html', context)
