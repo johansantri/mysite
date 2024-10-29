@@ -29,7 +29,7 @@
 <table class="table table-striped table-hover">
     <thead>
       <tr>
-        <th>#</th>
+        
         <th>name</th>
         <th>email</th>
         <th>phone</th>
@@ -40,7 +40,7 @@
     <tbody>
       {% for part in partnerlist %}
       <tr>
-        <td>1</td>
+        
         <td><a href="{% url 'partner:partner_edit' part.id %}">{{part.partner_name}}</a></td>
         <td>{{part.e_mail}}</td>
         <td>{{part.phone}}</td>
