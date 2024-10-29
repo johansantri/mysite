@@ -14,14 +14,20 @@ from django.http import HttpResponseForbidden
 
 @login_required
 def partnerView(request):
-    if request.user.is_authenticated:
+    if not request.user.is_superuser:
+    
+           partner_list = Partner.objects.filter(id=request.user.id)
+           context = {'partnerlist':partner_list}   
+
+           return render (request,'partner/partner_view.html', context)
+           #return redirect ('/')
+    else:
            partner_list = Partner.objects.all()
            context = {'partnerlist':partner_list}   
 
            return render (request,'partner/partner_view.html', context)
-    else:
           
-        return redirect ('/')
+        #return redirect ('/')
     
 
 @login_required

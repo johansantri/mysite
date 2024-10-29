@@ -43,18 +43,38 @@ def learnerView(request):
 
 
 def learnerEdit(request, pk):
-    cour = User.objects.get(id=pk)
-    cour = get_object_or_404(User, id=request.user.pk)
+    try:
+        cour = User.objects.get(id=pk)
+        cour = get_object_or_404(User, id=request.user.pk)
 
-    if request.method == 'POST':
-        form = LearnerForm(request.POST, instance=cour)
-        if form.is_valid():
+        if request.method == 'POST':
+            form = LearnerForm(request.POST, instance=cour)
+            if form.is_valid():
             # update the existing `Band` in the database
-            form.save()
+                form.save()
             # redirect to the detail page of the `Band` we just updated
             return redirect('/learner') 
-    else:
-        form = LearnerForm(instance=cour)
+        else:
+            form = LearnerForm(instance=cour)
 
+        context = {'form':form}    
+        return render (request,'learner/learner_detail.html', context)
+    except:
+         return redirect('/learner')
+    
+
+
+def learnerAdd(request):
+ 
+    if request.method == 'POST':
+            
+        form = LearnerForm(request.POST)
+        if form.is_valid():
+            course = form.save(commit=False)
+            #course.author_id = request.user.id
+            course.save()            
+            return redirect('/learner') 
+    else:       
+        form = LearnerForm()
     context = {'form':form}    
-    return render (request,'learner/learner_detail.html', context)
+    return render (request,'learner/learner_add.html', context)

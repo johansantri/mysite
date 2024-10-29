@@ -12,12 +12,14 @@
     {% endfor %}
     </ul>
     {% endif %}
+
+    {%  if request.user.is_superuser %}
     <div class="btn-toolbar mb-2 mb-md-0">
    
       
   
       <div class="btn-group me-2">
-        <a type="button" href="{% url "courses:course_add"%}" class="btn btn-outline-success">Add learner</a>
+        <a type="button" href="{% url "learner:learner_add"%}" class="btn btn-outline-success">Add learner</a>
         <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
       </div>
       <form class="d-flex" action="/learner" hx-get="/" hx-target="#content-div" hx-push-url="true"  >
@@ -27,6 +29,9 @@
      
   
     </div>
+    {% else %}
+    <p>this is information</p>
+    {% endif %}
   
   </div>
   <p  >

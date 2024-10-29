@@ -9,6 +9,8 @@
   {% endfor %}
   </ul>
   {% endif %}
+
+  {%  if request.user.is_superuser %}
   <div class="btn-toolbar mb-2 mb-md-0">
  
     <div class="btn-group me-2">
@@ -20,6 +22,9 @@
    
 
   </div>
+  {% else %}
+  <p>partner area</p>
+  {% endif %}
 </div>
 <table class="table table-striped table-hover">
     <thead>
