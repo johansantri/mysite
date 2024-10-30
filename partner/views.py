@@ -83,14 +83,14 @@ def partnerEdit(request, pk):
                 par.checks = request.POST.get('partner_check')
                 par.save()
                 messages.success(request, "Partner Updated Successfully")
-                return redirect('/list')
+                return redirect('/partners')
 
             context = {'partner':par,'user':user_list}
             return render(request, 'partner/partner_edit.html', context)
         else:
             return redirect('login')
      except:
-         return redirect('/list')
+         return redirect('/partners')
 
 
 @login_required
