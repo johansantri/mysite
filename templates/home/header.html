@@ -148,15 +148,27 @@
                     <li class="nav-item user-nav">
                         <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">
                             <span class="user-img">
-                                <img src="{% static "assets/img/user/user-17.jpg"%}" alt="Img">
+                                {% if user.photo %}
+                                <img src="{{ user.photo.url }}" alt="Img">
+                                {% elif not user.photo %}
+                                <img src="{% static "assets/img/user/user1.jpg"%}" alt="Img">
+                                {% endif %}
                                 <span class="status online"></span>
                             </span>
                         </a>
                         <div class="users dropdown-menu dropdown-menu-right" data-popper-placement="bottom-end">
                             <div class="user-header">
                                 <div class="avatar avatar-sm">
-                                    <img src="{% static "assets/img/user/user-17.jpg"%}" alt="User Image"
-                                        class="avatar-img rounded-circle">
+                                    {% if user.photo %}
+                    
+                                    <a href="instructor-profile.html"><img src="{{ user.photo.url }}"
+                                        alt="Img" class="avatar-img rounded-circle"></a>
+                                        {% elif not user.photo %}
+                                        
+                                        <a href="instructor-profile.html"><img src="{% static "assets/img/user/user1.jpg"%}"
+                                            alt="Img" class="avatar-img rounded-circle"></a>
+                                            {% endif %}
+                                    
                                 </div>
                                 <div class="user-text">
                                     <h6>{{user.username}}</h6>

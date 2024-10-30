@@ -16,7 +16,7 @@ from django.http import HttpResponseForbidden
 def partnerView(request):
     if not request.user.is_superuser:
     
-           partner_list = Partner.objects.filter(id=request.user.id)
+           partner_list = Partner.objects.filter(e_mail_id=request.user.id)
            context = {'partnerlist':partner_list}   
 
            return render (request,'partner/partner_view.html', context)
@@ -50,7 +50,7 @@ def partnerAdd(request):
                     par.logo = request.FILES['partner_logo']
                     par.save()
                     messages.success(request, "PARTNER ADD SUCCESSFULLY")
-                    return redirect('/list')
+                    return redirect('/partners')
         
         user_list = User.objects.all()
         context = {'us':user_list}
@@ -62,9 +62,11 @@ def partnerAdd(request):
 # Create your views here.
 
 def partnerEdit(request, pk):
-     try:   
-        if request.user.is_authenticated:
+  
+        if request.user.is_superuser:
+            par = Partner.objects.get(id=pk)
             par =get_object_or_404(Partner,id=pk)
+            
             user_list = User.objects.all()
             if request.method == "POST":
                 if len(request.FILES) != 0:
@@ -85,12 +87,12 @@ def partnerEdit(request, pk):
                 messages.success(request, "Partner Updated Successfully")
                 return redirect('/partners')
 
-            context = {'partner':par,'user':user_list}
+            context = {'partner':par,'tes':user_list}
             return render(request, 'partner/partner_edit.html', context)
         else:
-            return redirect('login')
-     except:
-         return redirect('/partners')
+        
+         return redirect('login')
+
 
 
 @login_required
@@ -123,6 +125,7 @@ def accept_invitation(request, token):
     
     if invitation.accepted:
         return HttpResponseForbidden("This invitation has already been used.")
+        
     
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)

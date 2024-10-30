@@ -1,6 +1,10 @@
 {% extends 'home/base.html' %}
 {% block content %}
+<div class="page-content">
+  <div class="container">
 <div class="row">
+  {% include "home/sidebar.html" %}
+    <div class="col-xl-9 col-lg-9">
     <div class="col-md-12">
         <div class="tile">
           <h3 class="tile-title">invite users</h3>
@@ -9,6 +13,9 @@
     {{ form.as_p }}
     <button type="submit">Create Account</button>
 </form>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>

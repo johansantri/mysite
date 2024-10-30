@@ -55,7 +55,7 @@ class Course (models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)       
     level = models.CharField(max_length=10, choices=Choi, default='basic', null=True, blank=True)
     status_course = models.CharField(max_length=10, choices=St, default='draft',blank=True)          
-    org_partner = models.ForeignKey(Partner, on_delete=models.CASCADE)    
+    org_partner = models.OneToOneField(Partner, on_delete=models.CASCADE)    
     author=models.ForeignKey(User, on_delete=models.CASCADE) 
 
     def __str__(self):

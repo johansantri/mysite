@@ -13,7 +13,7 @@ def filepath(request, filename):
 class Partner(models.Model):
     partner_name = models.TextField(max_length=191)
     abbreviation = models.CharField(max_length=50)
-    e_mail = models.ForeignKey(User,on_delete=models.CASCADE)
+    e_mail = models.OneToOneField(User,on_delete=models.CASCADE)
     phone = models.CharField(max_length=50)
     address = models.TextField(max_length=50)
     tax = models.CharField(max_length=50)
