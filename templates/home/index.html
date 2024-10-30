@@ -20,7 +20,7 @@
                         </div>
                         <div class="profile-group">
                             <div class="profile-name text-center">
-                                <h4><a href="instructor-profile.html">{{user.username}}</a></h4>
+                                <h4><a href="{% url 'profile' user.username %}">{{user.username}}</a></h4>
                                 <p>Instructor</p>
                                 <a href="add-course.html" class="add-course btn-primary">Add New Course</a>
                             </div>
