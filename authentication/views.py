@@ -23,6 +23,9 @@ from .models import Profile
 def home(request):
     return render(request,'home/index.html')
 
+def dasbord(request):
+    return render(request,'home/dasbord.html')
+
 def pro(request,username):
     if request.user.is_authenticated:
         username=User.objects.get(username=username)
