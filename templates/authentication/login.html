@@ -1,25 +1,153 @@
-{% extends 'base.html' %}
 
-{% block content %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
 
-<h3>Login</h3>
+<head>
 
-{% if messages %}
-<ul class="messages">
-  {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-  {% endfor %}
-</ul>
-{% endif %}
-<form method="post">
-    {% csrf_token %}
-    {{ form }}
-    <br>
-    <input type="submit" value="Login" class="btn btn-success">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+	<title>Dreams LMS</title>
 
-</form>
-<br>
-<p>To register account <a href="{% url 'register' %}">Click here</a></p>
-<p>Forgot Password?: <a href="{% url 'password_reset'%}">password_reset</a></p>
+	<!-- Favicon -->
+	<link rel="shortcut icon" type="image/x-icon" href="{% static "assets/img/favicon.svg"%}">
 
-{% endblock content %}
+	<!-- Theme Settings Js -->
+	<script src="{% static "assets/js/theme-script.js"%}"></script>
+
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="{% static "assets/css/bootstrap.min.css"%}">
+
+	<!-- Fontawesome CSS -->
+	<link rel="stylesheet" href="{% static "assets/plugins/fontawesome/css/fontawesome.min.css"%}">
+	<link rel="stylesheet" href="{% static "assets/plugins/fontawesome/css/all.min.css"%}">
+
+	<!-- Owl Carousel CSS -->
+	<link rel="stylesheet" href="{% static "assets/css/owl.carousel.min.css"%}">
+	<link rel="stylesheet" href="{% static "assets/css/owl.theme.default.min.css"%}">
+
+	<!-- Feathericon CSS -->
+	<link rel="stylesheet" href="{% static "assets/plugins/feather/feather.css"%}">
+
+	<!-- Main CSS -->
+	<link rel="stylesheet" href="{% static "assets/css/style.css"%}">
+
+</head>
+
+<body>
+
+	<!-- Main Wrapper -->
+	<div class="main-wrapper log-wrap">
+
+		<div class="row">
+
+
+
+
+          {% if messages %}
+          <ul class="messages">
+            {% for message in messages %}
+              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+
+
+
+			<!-- Login Banner -->
+			<div class="col-md-6 login-bg">
+				<div class="owl-carousel login-slide owl-theme">
+					<div class="welcome-login">
+						<div class="login-banner">
+							<img src="{% static "assets/img/login-img.png"%}" class="img-fluid" alt="Logo">
+						</div>
+						<div class="mentor-course text-center">
+							<h2>Welcome to <br>DreamsLMS Courses.</h2>
+							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+								ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
+						</div>
+					</div>
+					<div class="welcome-login">
+						<div class="login-banner">
+							<img src="{% static "assets/img/login-img.png"%}" class="img-fluid" alt="Logo">
+						</div>
+						<div class="mentor-course text-center">
+							<h2>Welcome to <br>DreamsLMS Courses.</h2>
+							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+								ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
+						</div>
+					</div>
+					<div class="welcome-login">
+						<div class="login-banner">
+							<img src="{% static "assets/img/login-img.png"%}" class="img-fluid" alt="Logo">
+						</div>
+						<div class="mentor-course text-center">
+							<h2>Welcome to <br>DreamsLMS Courses.</h2>
+							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+								ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- /Login Banner -->
+
+			<div class="col-md-6 login-wrap-bg">
+
+				<!-- Login -->
+				<div class="login-wrapper">
+					<div class="loginbox">
+						<div class="w-100">
+							<div class="img-logo">
+								<img src="{% static "assets/img/logo.svg"%}" class="img-fluid" alt="Logo">
+								<div class="back-home">
+									<a href="{% url 'home' %}">Back to Home</a>
+								</div>
+							</div>
+							<h1>Sign into Your Account</h1>
+							<form method="post">
+                {% csrf_token %}
+                {{ form }}
+                <br>
+								<div class="d-grid">
+									<button class="btn btn-primary btn-start" type="submit">Sign In</button>
+								</div>
+							</form>
+						</div>
+					</div>
+					<div class="google-bg text-center">
+						<span><a href="#">Or sign in with</a></span>
+						<div class="sign-google">
+							<ul>
+								<li><a href="#"><img src="{% static "assets/img/net-icon-01.png"%}" class="img-fluid" alt="Logo"> Sign
+										In using Google</a></li>
+								<li><a href="#"><img src="{% static "assets/img/net-icon-02.png"%}" class="img-fluid" alt="Logo">Sign
+										In using Facebook</a></li>
+							</ul>
+						</div>
+						<p class="mb-0">New User ? <a href="{% url 'register' %}">Create an Account</a></p><p>Forgot Password?: <a href="{% url 'password_reset'%}">password_reset</a></p>
+					</div>
+				</div>
+				<!-- /Login -->
+
+			</div>
+
+		</div>
+
+	</div>
+	<!-- /Main Wrapper -->
+
+	<!-- jQuery -->
+	<script src="{% static "assets/js/jquery-3.7.1.min.js"%}"></script>
+
+	<!-- Bootstrap Core JS -->
+	<script src="{% static "assets/js/bootstrap.bundle.min.js"%}"></script>
+
+	<!-- Owl Carousel -->
+	<script src="{% static "assets/js/owl.carousel.min.js"%}"></script>
+
+	<!-- Custom JS -->
+	<script src="{% static "assets/js/script.js"%}"></script>
+
+</body>
+
+</html>

@@ -1,168 +1,193 @@
 {% load static %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Hugo 0.84.0">
-    <title>Dashboard Template · Bootstrap v5.0</title>
 
-    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/dashboard/">
+<head>
 
-    
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+	<title>Dreams LMS</title>
 
-    <!-- Bootstrap core CSS -->
-<link href="{% static "css/bootstrap.min.css"%}" rel="stylesheet" >
+	<!-- Favicon -->
+	<link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.svg">
 
-    <!-- Favicons -->
-<link rel="apple-touch-icon" href="https://getbootstrap.com/docs/5.0/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
+	<!-- Theme Settings Js -->
+	<script src="{% static "assets/js/theme-script.js"%}"></script>
 
-<link rel="icon" href="https://getbootstrap.com/docs/5.0/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="{% static "assets/css/bootstrap.min.css"%}">
 
-<!-- select 2-->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+	<!-- Fontawesome CSS -->
+	<link rel="stylesheet" href="{% static "assets/plugins/fontawesome/css/fontawesome.min.css"%}">
+	<link rel="stylesheet" href="{% static "assets/plugins/fontawesome/css/all.min.css"%}">
 
-<meta name="theme-color" content="#7952b3">
+	<!-- Feather CSS -->
+	<link rel="stylesheet" href="{% static "assets/css/feather.css"%}">
 
+	<!-- Boxioons CSS -->
+	<link rel="stylesheet" href="{% static "assets/plugins/boxicons/css/boxicons.min.css"%}">
 
-    <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        user-select: none;
-      }
+	<!-- Main CSS -->
+	<link rel="stylesheet" href="{% static "assets/css/style.css"%}">
 
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
-      }
-    </style>
+</head>
 
-    
-    <!-- Custom styles for this template -->
-    <link href="{% static "css/dashboard.css"%}" rel="stylesheet">
-  </head>
-  <body>
-    
-<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Company name</a>
-  <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
-  <div class="navbar-nav">
-    <div class="nav-item text-nowrap">
-      {% if user.is_authenticated %}
-      <li class="nav-item dropdown">
-      <a class="nav-link px-3" href="{% url 'logout'%}">Sign out</a>
-      {% else %}
-      <a class="nav-link px-3" href="{% url 'login'%}">Sign in</a>
-      {% endif %}
-    </div>
-  </div>
-</header>
+<body>
 
+	<!-- Main Wrapper -->
+	<div class="main-wrapper">
 
+		<!-- Header -->
+		{% include 'header.html' %} 
+		<!-- /Header -->
 
+		<!-- Breadcrumb -->
+		{% include 'bread.html' %}
+		<!-- /Breadcrumb -->
 
-<div class="container-fluid">
-  <div class="row">
-    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-      <div class="position-sticky pt-3">
-        {% if user.is_authenticated %}
-        <ul class="nav flex-column">
-          
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="{% url 'profile' user.username %}">
-              <span data-feather="home"></span>
-              {{user.username}}
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url "partner:partner_view" %}">
-              <span data-feather="file"></span>
-              Partner
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url "courses:course_view" %}">
-              <span data-feather="layers"></span>
-              Course
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url "learner:learner_view" %}">
-              <span data-feather="users"></span>
-              Learner
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="book"></span>
-              Instrcutor
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="dollar-sign"></span>
-              Transaction
-            </a>
-          </li>
-        </ul>
-        {% else %}
-        
-        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-          <span>Saved reports</span>
-          <a class="link-secondary" href="#" aria-label="Add a new report">
-            <span data-feather="plus-circle"></span>
-          </a>
-        </h6>
-    
-        {% endif %}
-      </div>
-    </nav>
+		<!-- Page Content -->
+		{% block content %} {% endblock content %}
+		<!-- /Page Content -->
 
+		<!-- Footer -->
+		<footer class="footer">
 
-   
-    
-    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-      
-      
-      
-      
-      
-      <div class="table-responsive">
-        
-        {% block content %} {% endblock content %}
-      </div>
-      
-    </main>
-   
+			<!-- Footer Top -->
+			<div class="footer-top">
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-4 col-md-6">
 
+							<!-- Footer Widget -->
+							<div class="footer-widget footer-about">
+								<div class="footer-logo">
+									<img src="{% static "assets/img/logo.svg"%}" alt="logo">
+								</div>
+								<div class="footer-about-content">
+									<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut consequat mauris
+										Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut consequat mauris</p>
+								</div>
+							</div>
+							<!-- /Footer Widget -->
 
+						</div>
 
-  </div>
-</div>
+						<div class="col-lg-2 col-md-6">
 
+							<!-- Footer Widget -->
+							<div class="footer-widget footer-menu">
+								<h2 class="footer-title">For Instructor</h2>
+								<ul>
+									<li><a href="instructor-profile.html">Profile</a></li>
+									<li><a href="login.html">Login</a></li>
+									<li><a href="register.html">Register</a></li>
+									<li><a href="instructor-list.html">Instructor</a></li>
+									<li><a href="instructor-dashboard.html"> Dashboard</a></li>
+								</ul>
+							</div>
+							<!-- /Footer Widget -->
 
+						</div>
 
+						<div class="col-lg-2 col-md-6">
 
+							<!-- Footer Widget -->
+							<div class="footer-widget footer-menu">
+								<h2 class="footer-title">For Student</h2>
+								<ul>
+									<li><a href="student-profile.html">Profile</a></li>
+									<li><a href="login.html">Login</a></li>
+									<li><a href="register.html">Register</a></li>
+									<li><a href="students-list.html">Student</a></li>
+									<li><a href="student-dashboard.html"> Dashboard</a></li>
+								</ul>
+							</div>
+							<!-- /Footer Widget -->
 
-    <script src="{% static "js/bootstrap.bundle.min.js"%}" ></script>
+						</div>
 
-      <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js" integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script>
-      <!--select 2 js-->
+						<div class="col-lg-4 col-md-6">
 
-      <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>
+							<!-- Footer Widget -->
+							<div class="footer-widget footer-contact">
+								<h2 class="footer-title">News letter</h2>
+								<div class="news-letter">
+									<form>
+										<input type="text" class="form-control" placeholder="Enter your email address"
+											name="email">
+									</form>
+								</div>
+								<div class="footer-contact-info">
+									<div class="footer-address">
+										<img src="{% static "assets/img/icon/icon-20.svg"%}" alt="Img" class="img-fluid">
+										<p> 3556 Beech Street, San Francisco,<br> California, CA 94108 </p>
+									</div>
+									<p>
+										<img src="{% static "assets/img/icon/icon-19.svg"%}" alt="Img" class="img-fluid">
+										dreamslms@example.com
+									</p>
+									<p class="mb-0">
+										<img src="{% static "assets/img/icon/icon-21.svg"%}" alt="Img" class="img-fluid">
+										+19 123-456-7890
+									</p>
+								</div>
+							</div>
+							<!-- /Footer Widget -->
 
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+						</div>
 
-      <script src="{% static "js/dashboard.js"%}"></script>
-  </body>
+					</div>
+				</div>
+			</div>
+			<!-- /Footer Top -->
+
+			<!-- Footer Bottom -->
+			<div class="footer-bottom">
+				<div class="container">
+
+					<!-- Copyright -->
+					<div class="copyright">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="privacy-policy">
+									<ul>
+										<li><a href="term-condition.html">Terms</a></li>
+										<li><a href="privacy-policy.html">Privacy</a></li>
+									</ul>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="copyright-text">
+									<p class="mb-0">&copy; 2024 DreamsLMS. All rights reserved.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- /Copyright -->
+
+				</div>
+			</div>
+			<!-- /Footer Bottom -->
+
+		</footer>
+		<!-- /Footer -->
+
+	</div>
+	<!-- /Main Wrapper -->
+
+	<!-- jQuery -->
+	<script src="{% static "assets/js/jquery-3.7.1.min.js"%}"></script>
+
+	<!-- Bootstrap Core JS -->
+	<script src="{% static "assets/js/bootstrap.bundle.min.js"%}"></script>
+
+	<!-- Sticky Sidebar JS -->
+	<script src="{% static "assets/plugins/theia-sticky-sidebar/ResizeSensor.js"%}"></script>
+	<script src="{% static "assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js"%}"></script>
+
+	<!-- Custom JS -->
+	<script src="{% static "assets/js/script.js"%}"></script>
+
+</body>
+
 </html>
