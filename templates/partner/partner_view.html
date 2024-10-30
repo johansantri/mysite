@@ -1,67 +1,73 @@
 {% extends 'home/base.html' %}
 {% block content %}
 <div class="page-content">
-  <div class="container">
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-  <h1 class="h2">Partner</h1>
-  {% if messages %}
-  <ul class="messages">
-  {% for message in messages %}
-  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}><span class="badge bg-warning text-dark">{{ message }}</span></li>
-  {% endfor %}
-  </ul>
-  {% endif %}
+      <div class="container">
+        <div class="row">
+        {% include "home/sidebar.html" %}
+            <div class="col-xl-9 col-lg-9">
+              <h1 class="h2">Partner</h1>
+              {% if messages %}
+              <ul class="messages">
+              {% for message in messages %}
+              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}><span class="badge bg-warning text-dark">{{ message }}</span></li>
+              {% endfor %}
+              </ul>
+              {% endif %}
 
-  {%  if request.user.is_superuser %}
-  <div class="btn-toolbar mb-2 mb-md-0">
- 
-    <div class="btn-group me-2">
-      <a type="button" href="{% url "partner:partner_add"%}" class="btn btn-outline-success">Add Partner</a>
-      <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
-    </div>
- 
+              {%  if request.user.is_superuser %}
+              <div class="btn-toolbar mb-2 mb-md-0">
 
-   
+              <div class="btn-group me-2">
+              <a type="button" href="{% url "partner:partner_add"%}" class="btn btn-outline-success">Add Partner</a>
+              <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+              </div>
+              <form class="d-flex" action="/partner" hx-get="/" hx-target="#content-div" hx-push-url="true"  >
+                <input class="form-control mr-0" type="search" value="{{request.GET.q}}"  name="q" placeholder="Search Partner" aria-label="Search">
+              </form>
 
-  </div>
-  {% else %}
-  <p>partner area</p>
-  {% endif %}
-</div>
-<table class="table table-striped table-hover">
-    <thead>
-      <tr>
-        
-        <th>name</th>
-        <th>email</th>
-        <th>phone</th>
-        <th>status</th>
-        <th>join</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for part in partnerlist %}
-      <tr>
-        
-        <td><a href="{% url 'partner:partner_edit' part.id %}">{{part.partner_name}}</a></td>
-        <td>{{part.e_mail}}</td>
-        <td>{{part.phone}}</td>
-        <td>
-          {% if part.status == '1' %}
-          <span class="badge bg-primary">active</span>
-          {% else %}
-          <span class="badge bg-warning text-dark">inactive</span>
-          {% endif %}
-        </td>
-        <td>{{part.join}}</td>
-      </tr>
-     {% endfor %}
-    </tbody>
-  </table>
-</div>
- 
 
-   
+
+              </div>
+              {% else %}
+              <p>partner area</p>
+              {% endif %}
+              <table class="table table-striped table-hover">
+                <thead>
+                  <tr>
+                    
+                    <th>name</th>
+                    <th>email</th>
+                    <th>phone</th>
+                    <th>status</th>
+                    <th>join</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for part in partnerlist %}
+                  <tr>
+                    
+                    <td><a href="{% url 'partner:partner_edit' part.id %}">{{part.partner_name}}</a></td>
+                    <td>{{part.e_mail}}</td>
+                    <td>{{part.phone}}</td>
+                    <td>
+                      {% if part.status == '1' %}
+                      <span class="badge bg-primary">active</span>
+                      {% else %}
+                      <span class="badge bg-warning text-dark">inactive</span>
+                      {% endif %}
+                    </td>
+                    <td>{{part.join}}</td>
+                  </tr>
+                 {% endfor %}
+                </tbody>
+              </table>
+
+            </div>
+
+        </div>
+      </div>  
+
+
 
 </div>
   {% endblock %}

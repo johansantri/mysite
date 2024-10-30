@@ -11,11 +11,11 @@ def learnerView(request):
     if not request.user.is_superuser:
             posts = User.objects.filter(id=request.user.id)
             #posts = get_object_or_404(User, id=request.user.id)
-            count = User.objects.all().count()
+            count = User.objects.filter(id=request.user.id).count()
             
             query = request.GET.get('q')
             if query is not None and query !='':
-                posts=User.objects.filter(Q(email__icontains=query) | Q(username__icontains=query)).distinct()  
+                posts=User.objects.filter(Q(email__icontains=query) | Q(username__icontains=query)).distinct().filter(id=request.user.id)  
                 count = posts.count()     
             page = Paginator(posts,10)
             page_list = request.GET.get('page')

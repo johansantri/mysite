@@ -21,7 +21,7 @@
                     {% if user.is_authenticated %}
                     <h4><a href="{% url 'profile' user.username %}">{{user.username}}</a></h4>
                     {% endif %}
-                    <p>Instructor</p>
+                    <p>{{user.email}}</p>
                     <a href="{% url "courses:course_add" %}" class="add-course btn-primary">Add New Course</a>
                 </div>
             </div>
@@ -38,13 +38,13 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{% url 'profile' user.username %}" class="nav-link">
-                        <i class="bx bxs-user"></i>My Profile
+                    <a href="{% url 'learner:learner_view' %}" class="nav-link">
+                        <i class="bx bxs-user"></i>Learner
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="instructor-enrolled-course.html" class="nav-link">
-                        <i class="bx bxs-graduation"></i>Enrolled Courses
+                    <a href="{% url 'partner:partner_view' %}" class="nav-link">
+                        <i class="bx bxs-graduation"></i>Partner
                     </a>
                 </li>
                 <li class="nav-item">
@@ -93,39 +93,7 @@
                     </a>
                 </li>
             </ul>
-            <h3>Instructor</h3>
-            <ul>
-                <li class="nav-item">
-                    <a href="instructor-course.html" class="nav-link ">
-                        <i class="bx bxs-rocket"></i>My Courses
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="instructor-announcements.html" class="nav-link">
-                        <i class="bx bxs-volume-full"></i>Announcements
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="instructor-withdraw.html" class="nav-link ">
-                        <i class="bx bxs-wallet"></i>Withdrawls
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="instructor-quiz-attempts.html" class="nav-link">
-                        <i class="bx bxs-shapes"></i>Quiz Attempts
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="instructor-assignment.html" class="nav-link ">
-                        <i class="bx bxs-file"></i>Assignments
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="instructor-earnings.html" class="nav-link">
-                        <i class="bx bxs-badge-dollar"></i>Earnings
-                    </a>
-                </li>
-            </ul>
+
             <h3>Account Settings</h3>
             <ul>
                 <li class="nav-item">
