@@ -14,13 +14,15 @@
                     <div class="settings-menu">
                         <div class="profile-bg">
                             <div class="profile-img">
-                                <a href="instructor-profile.html"><img src="{% static "assets/img/user/user-17.jpg"%}"
+                                <a href="instructor-profile.html"><img src="{{ user.photo.url }}"
                                         alt="Img"></a>
                             </div>
                         </div>
                         <div class="profile-group">
                             <div class="profile-name text-center">
+                                {% if user.is_authenticated %}
                                 <h4><a href="{% url 'profile' user.username %}">{{user.username}}</a></h4>
+                                {% endif %}
                                 <p>Instructor</p>
                                 <a href="add-course.html" class="add-course btn-primary">Add New Course</a>
                             </div>
