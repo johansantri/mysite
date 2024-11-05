@@ -22,7 +22,7 @@
                     <h4><a href="{% url 'profile' user.username %}">{{user.username}}</a></h4>
                     {% endif %}
                     <p>{{user.email}}</p>
-                    <a href="{% url "courses:course_add" %}" class="add-course btn-primary">Add New Course</a>
+                   <!-- <a href="{% url "courses:course_add" %}" class="add-course btn-primary">Add New Course</a>-->
                 </div>
             </div>
         </div>
@@ -48,8 +48,8 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="instructor-wishlist.html" class="nav-link">
-                        <i class="bx bxs-heart"></i>Instructor
+                    <a href="{% url 'courses:course_view'%}" class="nav-link">
+                        <i class="bx bxs-heart"></i>Course
                     </a>
                 </li>
                 <li class="nav-item">

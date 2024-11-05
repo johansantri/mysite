@@ -33,7 +33,7 @@ def partnerView(request):
 @login_required
 def partnerAdd(request):
 
-    if request.user.is_staff == True:
+    if request.user.is_superuser:
         if request.method == "POST":
                 par = Partner()
                 par.partner_name = request.POST.get('partner_name')
