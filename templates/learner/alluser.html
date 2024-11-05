@@ -7,7 +7,7 @@
         <div class="col-xl-9 col-lg-9">
       
 
-            <h1 class="h2">all user</h1>
+          <h1 class="h2">user area</h1>
             {% if messages %}
             <ul class="messages">
             {% for message in messages %}
@@ -15,7 +15,7 @@
             {% endfor %}
             </ul>
             {% endif %}
-          
+            {%  if request.user.is_superuser %}
             <div class="btn-toolbar mb-2 mb-md-0">
           
               
@@ -36,6 +36,10 @@
                 Search Results Course "{{ request.GET.q }}" &nbsp; <a href="{% url "learner:learner_view"%}">back</a>
               {% endif %}
             </p>
+            {% else%}
+          
+            {% endif%}
+            
             <table class="table table-hover">
               <thead>
                 <tr>
