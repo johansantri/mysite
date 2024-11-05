@@ -34,7 +34,15 @@ class LearnerForm(UserCreationForm):
         })
 
         
-            
-        
+class UserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name','last_name','username', 'email','hobby','birth','address','country','phone','gender','education','photo','tiktok','youtube','facebook','instagram','linkedin','twitter']
 
-    
+    def __init__(self, *args, **kwargs):
+        super(UserUpdateForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({
+                'class': 'form-control',
+                'placeholder': 'Enter value'
+            }) 

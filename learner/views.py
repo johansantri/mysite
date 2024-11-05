@@ -4,7 +4,7 @@ from django.core.paginator import Paginator, EmptyPage,PageNotAnInteger
 from django.db.models import Count
 from django.db.models import Q
 import os
-from .forms import LearnerForm
+from .forms import LearnerForm,UserUpdateForm
 from django.contrib import messages
 # Create your views here.
 def learnerView(request):
@@ -48,7 +48,7 @@ def learnerEdit(request, pk):
         cour = get_object_or_404(User, id=request.user.pk)
 
         if request.method == 'POST':
-            form = LearnerForm(request.POST, instance=cour)
+            form = UserUpdateForm(request.POST, instance=cour)
             if form.is_valid():
             # update the existing `Band` in the database
                 form.save()
@@ -56,7 +56,7 @@ def learnerEdit(request, pk):
             messages.success(request, 'success update learner')  
             return redirect('/learner') 
         else:
-            form = LearnerForm(instance=cour)
+            form = UserUpdateForm(instance=cour)
 
         context = {'form':form}    
         return render (request,'learner/learner_detail.html', context)
