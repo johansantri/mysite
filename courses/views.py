@@ -55,24 +55,38 @@ def courseView(request):
     
 @login_required
 def courseAdd(request):
-    if not request.user.is_superuser:
-           messages.success(request, 'you canot access to add new course')
-           return redirect('/course') 
-    
-
-    if request.method == 'POST':
+    if request.user.is_superuser:
+        if request.method == 'POST':
         
-        form = CourseForm(request.POST)
-        if form.is_valid():
-            course = form.save(commit=False)
-            course.author_id = request.user.id
-            course.save()  
-            messages.success(request, 'Data berhasil disimpan!')          
-            return redirect('/course') 
-    else:       
-        form = CourseForm()
-    context = {'form':form}    
-    return render (request,'courses/course_add.html', context)
+            form = CourseForm(request.POST)
+            if form.is_valid():
+                course = form.save(commit=False)
+                course.author_id = request.user.id
+                course.save()  
+                messages.success(request, 'Data berhasil disimpan!')          
+                return redirect('/course') 
+        else:       
+            form = CourseForm()
+        context = {'form':form}    
+        return render (request,'courses/course_add.html', context)
+
+    elif request.user.is_staff:
+          if request.method == 'POST':
+        
+            form = CourseForm(request.POST)
+            if form.is_valid():
+                course = form.save(commit=False)
+                course.author_id = request.user.id
+                course.save()  
+                messages.success(request, 'Data berhasil disimpan!')          
+                return redirect('/course') 
+          else:       
+               form = CourseForm()
+          context = {'form':form}    
+          return render (request,'courses/course_add.html', context)
+    else:
+        messages.success(request, 'anda tidak dapat menambahkan course baru')          
+        return redirect('/course') 
             
  
    
