@@ -42,8 +42,11 @@
                   
                   <th scope="col">username</th>
                   <th scope="col">email</th>
-                  <th scope="col">joined and last</th>
+                  <th scope="col">joined and last login</th>
+                  <th scope="col">super admin</th>
+                  <th scope="col">staff</th>
                   <th scope="col">status</th>
+                 
                 </tr>
               </thead>
           
@@ -55,6 +58,20 @@
                   <td >  <a href="{% url 'learner:learner_edit' post.id %}"> {{ post.username }}</a></td>
                   <td>   {{ post.email }}</td>
                   <td>   {{ post.date_joined }} and <span class="badge bg-success"> {{ post.last_login}} </span></td>
+                  <td>
+                    {% if post.is_superuser == 1 %}
+                    <i class="fa fa-check" aria-hidden="true"></i>
+                  {% else %}
+                  <i class="fa fa-times" aria-hidden="true"></i>
+                  {% endif%}
+                </td>
+                <td>
+                  {% if post.is_staff == 1 %}
+                  <i class="fa fa-check" aria-hidden="true"></i>
+                {% else %}
+                <i class="fa fa-times" aria-hidden="true"></i>
+                {% endif%}
+              </td>
                   <td>
                     {% if post.is_active == 1 %}
                     <span class="badge bg-primary">active</span>
