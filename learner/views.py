@@ -6,6 +6,7 @@ from django.db.models import Q
 import os
 from .forms import LearnerForm,UserUpdateForm
 from django.contrib import messages
+
 # Create your views here.
 def learnerView(request):
     if not request.user.is_superuser:
@@ -48,7 +49,7 @@ def learnerEdit(request, pk):
         cour = get_object_or_404(User, id=request.user.pk)
 
         if request.method == 'POST':
-            form = UserUpdateForm(request.POST, instance=cour)
+            form = UserUpdateForm(request.POST,request.FILES, instance=cour)
             if form.is_valid():
             # update the existing `Band` in the database
                 form.save()
