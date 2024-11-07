@@ -28,6 +28,7 @@ class CourseForm(forms.ModelForm):
         
         } 
 
+
     def clean(self):
         cleaned_data= super().clean()
         course_name = cleaned_data.get("course_name")
