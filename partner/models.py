@@ -23,7 +23,7 @@ class Partner(models.Model):
     join = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.partner_name}"
+        return f"{self.partner_name} | {self.e_mail}"
     
 class Invitation(models.Model):
     email = models.EmailField(unique=True)
