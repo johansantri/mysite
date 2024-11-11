@@ -38,8 +38,5 @@ class CourseForm(forms.ModelForm):
         if course_name and len (course_name) > 200:
             self.add_error('course_name','name should be at least 5')
 
-        
-            
-        
 
     

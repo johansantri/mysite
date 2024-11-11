@@ -62,12 +62,3 @@ class Course (models.Model):
         return f"{self.course_name} {self.status_course}"
     
 
-# Create your models here.
-class Instructor (models.Model):
-    name = models.ForeignKey(User, on_delete=models.CASCADE)              
-    org = models.ForeignKey(Partner, on_delete=models.CASCADE)    
-    mycourse = models.ForeignKey(Course, on_delete=models.CASCADE)  
-   
-
-    def __str__(self):
-        return f"{self.name} - {self.org} - {self.mycourse}"

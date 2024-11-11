@@ -1,0 +1,6 @@
+<h2>{{ form.instance.pk|yesno:"Edit Employee,Add New Employee" }}</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">{{ form.instance.pk|yesno:"Update,Create" }}</button>
+</form>

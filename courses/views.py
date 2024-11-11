@@ -15,6 +15,8 @@ from django.http import HttpResponse,JsonResponse
 from django.contrib.auth.decorators import login_required
 
 
+
+
 def courseView(request):
     if not request.user.is_superuser:
             if request.user.is_authenticated:
@@ -82,7 +84,8 @@ def courseAdd(request):
                 return redirect('/course') 
           else:       
                form = CourseForm()
-          context = {'form':form}    
+          context = {'form':form}   
+          print(form) 
           return render (request,'courses/course_add.html', context)
     else:
         messages.success(request, 'anda tidak dapat menambahkan course baru')          
@@ -130,3 +133,6 @@ def courseDetail(request, pk):
 
     context = {'form':form}    
     return render (request,'courses/course_detail.html', context)
+
+
+
