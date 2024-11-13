@@ -3,93 +3,89 @@
 
 <div class="page-content">
   <div class="container">
-  <div class="row">
-    {% include "home/sidebar.html" %}
-    <div class="col-xl-9 col-lg-9">
-      <div class="support-wrap">
-      <div class="tile">
-        <h3 class="tile-title">update course</h3>
-        {% if messages %}
-        <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-        </ul>
-        {% endif %}
+    <div class="row">
+      {% include "home/sidebar.html" %}
+      <div class="col-xl-9 col-lg-9">
+        <div class="support-wrap">
+          <div class="tile">
+            <h3 class="tile-title">Update Course</h3>
+            
+            {% if messages %}
+              <ul class="messages">
+                {% for message in messages %}
+                  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
 
-        <div class="tile-body">
-          <form  method="POST" action="" >
-            {% csrf_token %}
-          
-              <div class="mb-3">
-                {{form.course_name.label_tag}}
-                {{form.course_name}}
-                {% for error in form.course_name.errors %} <span class="badge bg-danger">{{error}} {% endfor %}</span>
-              
-              </div>
-              <div class="mb-3">
-                {{form.org_partner.label_tag}}
-                {{form.org_partner}}
-                {% for error in form.org_partner.errors %} <span class="badge bg-danger">{{error}} {% endfor %}</span>
+            <div class="tile-body">
+              <form method="POST" action="">
+                {% csrf_token %}
                 
-
                 <div class="mb-3">
-                  {{form.course_run.label_tag}}
-                  {{form.course_run}}
-                  {% for error in form.course_run.errors %} <span class="badge bg-danger">{{error}} {% endfor %}</span>
-                 
+                  {{ form.course_name.label_tag }}
+                  {{ form.course_name }}
+                  {% for error in form.course_name.errors %}
+                    <span class="badge bg-danger">{{ error }}</span>
+                  {% endfor %}
                 </div>
-
-                <div class="mb-3">
-                  {{form.course_number.label_tag}}
-                  {{form.course_number}}
-                  {% for error in form.course_number.errors %} <span class="badge bg-danger">{{error}} {% endfor %}</span>
-                 
-                </div>
-                <div class="mb-3">
-                  {{form.category.label_tag}}
-                  {{form.category}}
-                  {% for error in form.category.errors %} <span class="badge bg-danger">{{error}} {% endfor %}</span>
                 
-                  {{form.slug}}
-                </div>
                 <div class="mb-3">
-                  {{form.author.label_tag}}
-                  {{form.author}}
-                  {% for error in form.author.errors %} <span class="badge bg-danger">{{error}} {% endfor %}</span>
-                
-               
+                  {{ form.org_partner.label_tag }}
+                  {{ form.org_partner }}
+                  {% for error in form.org_partner.errors %}
+                    <span class="badge bg-danger">{{ error }}</span>
+                  {% endfor %}
                 </div>
-              </div>
-           
-          
-          
-            <div class="row">
-           
 
-         
-       
-          
-            <div class="tile-footer">
-              &nbsp;
-              <br>
-              <button class="btn btn-success"  type="submit"><i class="bi bi-check-circle-fill me-2"></i>update now</button>&nbsp;&nbsp;&nbsp;<a class="btn btn-secondary" href="{% url 'courses:course_view'%}"><i class="bi bi-x-circle-fill me-2"></i>Cancel</a>
+                <div class="mb-3">
+                  {{ form.course_run.label_tag }}
+                  {{ form.course_run }}
+                  {% for error in form.course_run.errors %}
+                    <span class="badge bg-danger">{{ error }}</span>
+                  {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                  {{ form.course_number.label_tag }}
+                  {{ form.course_number }}
+                  {% for error in form.course_number.errors %}
+                    <span class="badge bg-danger">{{ error }}</span>
+                  {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                  {{ form.category.label_tag }}
+                  {{ form.category }}
+                  {% for error in form.category.errors %}
+                    <span class="badge bg-danger">{{ error }}</span>
+                  {% endfor %}
+                  {{ form.slug }}
+                </div>
+
+                <div class="mb-3">
+                  {{ form.author.label_tag }}
+                  {{ form.author }}
+                  {% for error in form.author.errors %}
+                    <span class="badge bg-danger">{{ error }}</span>
+                  {% endfor %}
+                </div>
+                
+                <div class="tile-footer">
+                  <button class="btn btn-success" type="submit">
+                    <i class="bi bi-check-circle-fill me-2"></i>Update Now
+                  </button>
+                  <a class="btn btn-secondary" href="{% url 'courses:course_view' %}">
+                    <i class="bi bi-x-circle-fill me-2"></i>Cancel
+                  </a>
+                </div>
+              </form>
             </div>
-          </form>
+          </div>
         </div>
-       
       </div>
     </div>
   </div>
-    
-
- 
-  </div>
-
 </div>
-</div>
-
-
-
 
 {% endblock %}

@@ -2,46 +2,41 @@
 {% block content %}
 <div class="page-content">
   <div class="container">
- 
-  <div class="row">
-    {% include "home/sidebar.html" %}
-    <div class="col-xl-9 col-lg-9">
-    <div class="col-md-12">
-      <div class="support-wrap">
-      <div class="tile">
-        <h3 class="tile-title">add learner</h3>
-        {% if messages %}
-        <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-        </ul>
-        {% endif %}
+    <div class="row">
+      {% include "home/sidebar.html" %}
+      
+      <div class="col-xl-9 col-lg-9">
+        <div class="support-wrap">
+          <div class="tile">
+            <h3 class="tile-title">Add Learner</h3>
+            
+            {% if messages %}
+              <ul class="messages">
+                {% for message in messages %}
+                  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
 
-        <div class="tile-body">
-          <form  method="POST" action="" >
-            {% csrf_token %}
-          {{form}}
-          
-            <div class="tile-footer">
-              &nbsp;
-              <br>
-              <button class="btn btn-success"  type="submit"><i class="bi bi-check-circle-fill me-2"></i>add now</button>&nbsp;&nbsp;&nbsp;<a class="btn btn-secondary" href="{% url 'learner:learner_view'%}"><i class="bi bi-x-circle-fill me-2"></i>Cancel</a>
+            <div class="tile-body">
+              <form method="POST" action="">
+                {% csrf_token %}
+                {{ form }}
+                
+                <div class="tile-footer">
+                  <button class="btn btn-success" type="submit">
+                    <i class="bi bi-check-circle-fill me-2"></i>Add Now
+                  </button>
+                  <a class="btn btn-secondary" href="{% url 'learner:learner_view' %}">
+                    <i class="bi bi-x-circle-fill me-2"></i>Cancel
+                  </a>
+                </div>
+              </form>
             </div>
-          </form>
+          </div>
         </div>
-       
       </div>
     </div>
-    
-
- 
   </div>
 </div>
-</div>
-</div>
-
-</div>
-
-
 {% endblock %}

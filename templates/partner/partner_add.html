@@ -2,111 +2,107 @@
 {% block content %}
 <div class="page-content">
   <div class="container">
- 
-  <div class="row">
-    {% include "home/sidebar.html" %}
-    <div class="col-xl-9 col-lg-9">
-    <div class="col-md-12">
-      <div class="support-wrap">
-      <div class="tile">
-        <h3 class="tile-title">Create new partner</h3>
+    <div class="row">
+      {% include "home/sidebar.html" %}
+      
+      <div class="col-xl-9 col-lg-9 col-md-12">
+        <div class="support-wrap">
+          <div class="tile">
+            <h3 class="tile-title">Create New Partner</h3>
             
-        <div class="tile-body">
-          <form id="sumbitformpratner" method="POST" action="" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="row">
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label class="form-label">name of partner</label>
-                    <input class="form-control" type="text" name="partner_name" maxlength="200" required placeholder="Enter here">
+            <div class="tile-body">
+              <form id="submitFormPartner" method="POST" action="" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label class="form-label">Name of Partner</label>
+                      <input class="form-control" type="text" name="partner_name" maxlength="200" required placeholder="Enter here">
+                    </div>
                   </div>
-            </div>
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label class="form-label"> abbreviation</label>
-                    <input class="form-control" type="text" name="partner_abbreviation" maxlength="50" required placeholder="Enter abbreviation">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label class="form-label">Abbreviation</label>
+                      <input class="form-control" type="text" name="partner_abbreviation" maxlength="50" required placeholder="Enter abbreviation">
+                    </div>
                   </div>
-            </div>
-           </div>
-            <div class="row">
-              <div class="col-md-6">
-                <div class="mb-3">
-                    <label class="form-label ">email <span class="badge text-bg-info"> <a href="{% url 'partner:invite_user' %}"> invite</a></span></label>
-                   
-                <select class="form-control js-example-basic-single" name="partner_email" id="partner_email" required>
-                  <option>select mail</option>
-                  {% for uss in us %}
-                  <option value="{{ uss.id }}">
-                    {{ uss.email }}
-                    
-                  </option>
-                  {% endfor%}
-                </select>
+                </div>
+                
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label class="form-label">Email 
+                        <span class="badge text-bg-info"><a href="{% url 'partner:invite_user' %}">Invite</a></span>
+                      </label>
+                      <select class="form-control js-example-basic-single" name="partner_email" id="partner_email" required>
+                        <option>Select email</option>
+                        {% for user in us %}
+                          <option value="{{ user.id }}">{{ user.email }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
                   </div>
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label class="form-label">Phone</label>
+                      <input class="form-control" type="number" name="partner_phone" maxlength="20" required placeholder="Enter phone number">
+                    </div>
+                  </div>
+                </div>
 
-                  
-              </div>
-              <div class="col-md-6">
                 <div class="mb-3">
-                    <label class="form-label">phone</label>
-                    <input class="form-control" type="number" name="partner_phone" maxlength="20" required placeholder="Enter phone address">
-                  </div>
-              </div>
-            </div>
-         
-            <div class="mb-3">
-              <label class="form-label">address</label>
-              <textarea class="form-control" rows="4" name="partner_address" maxlength="200" required placeholder="Enter your address"></textarea>
-            </div>
-           <div class="row">
-            <div class="col-md-4">
-                <div class="mb-3">
-                    <label class="form-label">tax  </label><small class="form-text text-muted"> max 50 %</small>
-                    <input class="form-control" type="number" name="partner_tax" max="50" max="1" required placeholder="Enter tax">
-                  </div>
-            </div>
-            <div class="col-md-4">
-                <div class="mb-3">
-                    <label class="form-label">status</label>
-                    <select class="form-control" id="exampleSelect1" required name="partner_status">
-                      <option >select status</option>
-                      <option value="1">active</option>
-                      <option value="0">inactive</option>
-                  
-                    </select>
-                  </div>
-                 
-            </div>
+                  <label class="form-label">Address</label>
+                  <textarea class="form-control" rows="4" name="partner_address" maxlength="200" required placeholder="Enter address"></textarea>
+                </div>
 
-            <div class="col-md-4">
-                <div class="mb-3">
-                    <label class="form-label"> logo</label>
-                    <input class="form-control" type="file" name="partner_logo" required >
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="mb-3">
+                      <label class="form-label">Tax</label>
+                      <small class="form-text text-muted">Max 50%</small>
+                      <input class="form-control" type="number" name="partner_tax" max="50" min="1" required placeholder="Enter tax percentage">
+                    </div>
                   </div>
+                  <div class="col-md-4">
+                    <div class="mb-3">
+                      <label class="form-label">Status</label>
+                      <select class="form-control" id="partner_status" name="partner_status" required>
+                        <option>Select status</option>
+                        <option value="1">Active</option>
+                        <option value="0">Inactive</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="mb-3">
+                      <label class="form-label">Logo</label>
+                      <input class="form-control" type="file" name="partner_logo" required>
+                    </div>
+                  </div>
+                </div>
 
+                <div class="mb-3">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="partner_check" required>
+                    <label class="form-check-label">I accept the terms and send notification to the partner’s email</label>
+                  </div>
+                </div>
+
+                <div class="tile-footer">
+                  <button class="btn btn-primary" type="submit">
+                    <i class="bi bi-check-circle-fill me-2"></i>Create Now
+                  </button>
+                  <a class="btn btn-secondary" href="{% url 'partner:partner_view' %}">
+                    <i class="bi bi-x-circle-fill me-2"></i>Cancel
+                  </a>
+                </div>
+              </form>
             </div>
-           </div>
-            <div class="mb-3">
-              <div class="form-check">
-                <label class="form-check-label">
-                  <input class="form-check-input" type="checkbox" name="partner_check" required>I accept the terms and send notif to the partner mail
-                </label>
-              </div>
-            </div>
-            <div class="tile-footer">
-              <button class="btn btn-primary"  type="submit"><i class="bi bi-check-circle-fill me-2"></i>create now</button>&nbsp;&nbsp;&nbsp;<a class="btn btn-secondary" href="{% url 'partner:partner_view'%}"><i class="bi bi-x-circle-fill me-2"></i>Cancel</a>
-            </div>
-          </form>
+          </div>
         </div>
-       
       </div>
     </div>
-    
-
-  </div>
   </div>
 </div>
-</div>
-</div>
-  
 {% endblock %}

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'partner',
     'courses',
     'learner',
+    
 ]
 
 MIDDLEWARE = [

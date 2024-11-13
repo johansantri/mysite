@@ -50,95 +50,80 @@ def partnerView(request):
     return render(request,'partner/partner_view.html',context)
     
 
+
 @login_required
 def partnerAdd(request):
+    if not request.user.is_superuser:
+        return redirect('/')
 
-    if request.user.is_superuser:
-        if request.method == "POST":
-                
-                par = Partner()
-                par.partner_name = request.POST.get('partner_name')
-                par.abbreviation = request.POST.get('partner_abbreviation')
-                par.e_mail_id = request.POST.get('partner_email')
-                par.phone = request.POST.get('partner_phone')
-                par.address = request.POST.get('partner_address')
-                par.tax = request.POST.get('partner_tax')
-                par.status = request.POST.get('partner_status')
-                #par.partner_logo = request.POST.get('partner_logo')
-                par.checks = request.POST.get('partner_check')
+    if request.method == "POST":
+        par = create_partner_from_request(request)
+        if len(request.FILES) != 0:
+            par.logo = request.FILES['partner_logo']
+        par.save()
+        messages.success(request, "PARTNER ADDED SUCCESSFULLY")
+        return redirect('/partners')
+    
+    user_list = User.objects.all()
+    context = {'us': user_list}
+    return render(request, 'partner/partner_add.html', context)
 
-                if len(request.FILES) != 0:
-                    par.logo = request.FILES['partner_logo']
-                    par.save()
-                    messages.success(request, "PARTNER ADD SUCCESSFULLY")
-                    return redirect('/partners')
-                
-        user_list = User.objects.all()
-        context = {'us':user_list}
-        return render (request,'partner/partner_add.html', context)
-    else:
-        
-        return redirect ('/')
+def create_partner_from_request(request):
+    """Helper function to create a Partner object from POST data."""
+    return Partner(
+        partner_name=request.POST.get('partner_name'),
+        abbreviation=request.POST.get('partner_abbreviation'),
+        e_mail_id=request.POST.get('partner_email'),
+        phone=request.POST.get('partner_phone'),
+        address=request.POST.get('partner_address'),
+        tax=request.POST.get('partner_tax'),
+        status=request.POST.get('partner_status'),
+        checks=request.POST.get('partner_check')
+    )
 
-# Create your views here.
+# update
 
 def partnerEdit(request, pk):
-  
-        if request.user.is_superuser:
-            par = Partner.objects.get(id=pk)
-            par =get_object_or_404(Partner,id=pk)
-            
-            user_list = User.objects.all()
-            if request.method == "POST":
-                if len(request.FILES) != 0:
-                    if len(par.logo) > 0:
-                        os.remove(par.logo.path)
-                            #prod.image = request.FILES['image']
-                    par.logo = request.FILES['partner_logo']
-                par.partner_name = request.POST.get('partner_name')
-                par.abbreviation = request.POST.get('partner_abbreviation')
-                par.e_mail_id = request.POST.get('partner_email')
-                par.phone = request.POST.get('partner_phone')
-                par.address = request.POST.get('partner_address')
-                par.tax = request.POST.get('partner_tax')
-                par.status = request.POST.get('partner_status')
-                
-                par.checks = request.POST.get('partner_check')
-                par.save()
-                messages.success(request, "Partner Updated Successfully")
-                return redirect('/partners')
-
-            context = {'partner':par,'tes':user_list}
-            return render(request, 'partner/partner_edit.html', context)
-        elif request.user.is_staff:
-                #par = Partner.objects.get(id=pk)
-                par =get_object_or_404(Partner,id=pk,e_mail_id=request.user.id)
-               
-                
-               # user_list = User.objects.all()
-                if request.method == "POST":
-                    if len(request.FILES) != 0:
-                        if len(par.logo) > 0:
-                            os.remove(par.logo.path)
-                                #prod.image = request.FILES['image']
-                        par.logo = request.FILES['partner_logo']
-                    par.partner_name = request.POST.get('partner_name')
-                    par.abbreviation = request.POST.get('partner_abbreviation')
-                    par.e_mail_id = request.POST.get('partner_email')
-                    par.phone = request.POST.get('partner_phone')
-                    par.address = request.POST.get('partner_address')
-                    par.tax = request.POST.get('partner_tax')
-                    par.status = request.POST.get('partner_status')
-                    
-                    par.checks = request.POST.get('partner_check')
-                    par.save()
-                    messages.success(request, "Partner Updated Successfully")
-                    return redirect('/partners')
-
-                context = {'partner':par}
-                return render(request, 'partner/partner_edit.html', context)
-        
+    partner = get_partner_by_role(request.user, pk)
+    if not partner:
         return redirect('login')
+
+    if request.method == "POST":
+        update_partner_from_request(request, partner)
+        if len(request.FILES) != 0:
+            update_partner_logo(request, partner)
+        partner.save()
+        messages.success(request, "Partner Updated Successfully")
+        return redirect('/partners')
+
+    user_list = User.objects.all() if request.user.is_superuser else None
+    context = {'partner': partner, 'tes': user_list}
+    return render(request, 'partner/partner_edit.html', context)
+
+def get_partner_by_role(user, pk):
+    """Retrieve the partner based on user role."""
+    if user.is_superuser:
+        return get_object_or_404(Partner, id=pk)
+    elif user.is_staff:
+        return get_object_or_404(Partner, id=pk, e_mail_id=user.id)
+    return None
+
+def update_partner_from_request(request, partner):
+    """Update partner fields from POST data."""
+    partner.partner_name = request.POST.get('partner_name')
+    partner.abbreviation = request.POST.get('partner_abbreviation')
+    partner.e_mail_id = request.POST.get('partner_email')
+    partner.phone = request.POST.get('partner_phone')
+    partner.address = request.POST.get('partner_address')
+    partner.tax = request.POST.get('partner_tax')
+    partner.status = request.POST.get('partner_status')
+    partner.checks = request.POST.get('partner_check')
+
+def update_partner_logo(request, partner):
+    """Handle partner logo update."""
+    if partner.logo and os.path.exists(partner.logo.path):
+        os.remove(partner.logo.path)
+    partner.logo = request.FILES['partner_logo']
 
 
 
@@ -146,44 +131,51 @@ def partnerEdit(request, pk):
 def invite_user(request):
     if request.method == 'POST':
         email = request.POST.get('email')
-        # Check if an invitation to this email already exists
-        if Invitation.objects.filter(email=email).exists():
+        
+        if invitation_exists(email):
             messages.error(request, "An invitation has already been sent to this email.")
         else:
-            # Create a new invitation
-            invitation = Invitation.objects.create(email=email, invited_by=request.user)
-            # Send an email to the invited user with a signup link
-            signup_url = request.build_absolute_uri(f'/accept-invite/{invitation.token}/')
-            send_mail(
-                'You have been invited to partner ICE institute!',
-                f'You have been invited to join our platform. Click the link to sign up: {signup_url}',
-                'from@example.com',
-                [email],
-            )
+            send_invitation(request, email)
             messages.success(request, f"Invitation sent to {email}!")
             return redirect('/invite')
-    inv = Invitation.objects.all()
     
-    return render(request, 'partner/invite_user.html',{'inv': inv})
+    invitations = Invitation.objects.all()
+    return render(request, 'partner/invite_user.html', {'inv': invitations})
+
+def invitation_exists(email):
+    """Check if an invitation to this email already exists."""
+    return Invitation.objects.filter(email=email).exists()
+
+def send_invitation(request, email):
+    """Create an invitation and send an email to the invited user."""
+    invitation = Invitation.objects.create(email=email, invited_by=request.user)
+    signup_url = request.build_absolute_uri(f'/accept-invite/{invitation.token}/')
+    send_mail(
+        'You have been invited to partner ICE institute!',
+        f'You have been invited to join our platform. Click the link to sign up: {signup_url}',
+        'from@example.com',
+        [email],
+    )
 
 
 def accept_invitation(request, token):
     invitation = get_object_or_404(Invitation, token=token)
-    
+
     if invitation.accepted:
         return HttpResponseForbidden("This invitation has already been used.")
-        
-    
+
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save()  # Create a new user
-            # Mark the invitation as accepted
-            invitation.accepted = True
-            invitation.save()
-            # Optionally, link the newly created user to the invitation (if needed)
-            return redirect('login')  # Redirect to login or other page after successful signup
+            user = form.save()
+            mark_invitation_as_accepted(invitation)
+            return redirect('login')
     else:
         form = UserRegistrationForm()
 
     return render(request, 'authentication/register.html', {'form': form})
+
+def mark_invitation_as_accepted(invitation):
+    """Mark the invitation as accepted."""
+    invitation.accepted = True
+    invitation.save()
