@@ -8,26 +8,46 @@ from django.contrib.auth.models import User
 import os
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.contrib.auth.forms import UserCreationForm
+
 from authentication.forms import UserRegistrationForm
 from django.http import HttpResponseForbidden
+from django.core.paginator import Paginator
+from django.db.models import Q
 
 @login_required
 def partnerView(request):
     if not request.user.is_superuser:
+            posts = Partner.objects.filter(id=request.user.id)
+            #posts = get_object_or_404(User, id=request.user.id)
+            count = Partner.objects.filter(id=request.user.id).count()
+            
+            query = request.GET.get('q')
+            if query is not None and query !='':
+                posts=User.objects.filter(Q(partner_name__icontains=query) | Q(abbreviation__icontains=query)).distinct().filter(id=request.user.id)  
+                count = posts.count()     
+            page = Paginator(posts,10)
+            page_list = request.GET.get('page')
+            page = page.get_page(page_list)
+            
+            context= {'count': count, 'page':page}
+
+            return render(request,'learner/alluser.html',context)
+        
+    posts = Partner.objects.all()
+    #posts = get_object_or_404(User, id=request.user.id)
+    count = Partner.objects.all().count()
     
-           partner_list = Partner.objects.filter(e_mail_id=request.user.id)
-           context = {'partnerlist':partner_list}   
+    query = request.GET.get('q')
+    if query is not None and query !='':
+        posts=Partner.objects.filter(Q(partner_name__icontains=query) | Q(abbreviation__icontains=query)).distinct()  
+        count = posts.count()     
+    page = Paginator(posts,10)
+    page_list = request.GET.get('page')
+    page = page.get_page(page_list)
+    
+    context= {'count': count, 'page':page}
 
-           return render (request,'partner/partner_view.html', context)
-           #return redirect ('/')
-    else:
-           partner_list = Partner.objects.all()
-           context = {'partnerlist':partner_list}   
-
-           return render (request,'partner/partner_view.html', context)
-          
-        #return redirect ('/')
+    return render(request,'partner/partner_view.html',context)
     
 
 @login_required
@@ -35,6 +55,7 @@ def partnerAdd(request):
 
     if request.user.is_superuser:
         if request.method == "POST":
+                
                 par = Partner()
                 par.partner_name = request.POST.get('partner_name')
                 par.abbreviation = request.POST.get('partner_abbreviation')
@@ -51,7 +72,7 @@ def partnerAdd(request):
                     par.save()
                     messages.success(request, "PARTNER ADD SUCCESSFULLY")
                     return redirect('/partners')
-        
+                
         user_list = User.objects.all()
         context = {'us':user_list}
         return render (request,'partner/partner_add.html', context)

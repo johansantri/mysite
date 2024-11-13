@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, redirect,get_object_or_404
 from django.contrib.auth.models import User
-from django.core.paginator import Paginator, EmptyPage,PageNotAnInteger
+from django.core.paginator import Paginator
 from django.db.models import Count
 from django.db.models import Q
 import os
