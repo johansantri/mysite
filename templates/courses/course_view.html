@@ -21,7 +21,7 @@
               
           
               <div class="btn-group me-2">
-                <a type="button" href="{% url "courses:course_add"%}" class="btn btn-outline-success">Add course</a>
+                <a type="button" href="{% url "courses:course_create_view"%}" class="btn btn-outline-success">Add course</a>
                 <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
               </div>
               <form class="d-flex" action="/course" hx-get="/" hx-target="#content-div" hx-push-url="true"  >
@@ -56,7 +56,7 @@
                     <tr>
                     
                       
-                      <td> <a href="{% url 'courses:course_detail' pag.id %}">{{pag.course_name}}</a> </td>
+                      <td> <a href="">{{pag.course_name}}</a> </td>
                       <td>{{pag.course_number}}</td>
                       <td>{{pag.course_run}}</td>
                       <td>{{pag.org_partner}}</td>

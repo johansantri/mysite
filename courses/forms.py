@@ -1,18 +1,13 @@
+# forms.py
 from django import forms
-from .models import Course
+from .models import Course, Partner
 
 class CourseForm(forms.ModelForm):
     class Meta:
         model = Course
-        fields = ('course_name', 'org_partner', 'course_number', 'course_run', 'slug', 'category')
-        labels = {
-            "course_name": "Course Name",
-            "org_partner": "Organization Partner",
-            "course_number": "Course Number",
-            "course_run": "Course Run",
-            "slug": "Slug",
-            "category": "Category",
-        }
+        fields = ['course_name', 'course_number', 'course_run', 'slug', 'category', 'level', 'status_course', 'org_partner']
+
+        
         widgets = {
             "course_name": forms.TextInput(attrs={
                 "placeholder": "Full Stack Development",
@@ -39,14 +34,40 @@ class CourseForm(forms.ModelForm):
                 "class": "form-control js-example-basic-single"
             })
         }
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)  # Get the logged-in user from the view
+        super().__init__(*args, **kwargs)
+        if user:
+            # Filter org_partner to show only partners associated with the logged-in user
+            self.fields['org_partner'].queryset = Partner.objects.filter(user=user)
 
-    def clean(self):
-        cleaned_data = super().clean()
-        course_name = cleaned_data.get("course_name")
+class PartnerForm(forms.ModelForm):
+    class Meta:
+        model = Partner
+        fields = ['name',  'abbreviation', 'user']
 
-        if course_name:
-            if len(course_name) < 3:
-                self.add_error('course_name', 'Name should be at least 3 characters long.')
-            elif len(course_name) > 200:
-                self.add_error('course_name', 'Name should be no more than 200 characters.')
+       
+        widgets = {
+            "name": forms.TextInput(attrs={
+                "placeholder": " ",
+                "class": "form-control",
+                "oninput": "listingslug(value)"
+            }),
+            
+            "abbreviation": forms.TextInput(attrs={
+                "placeholder": " ",
+                "class": "form-control"
+            }),
+            "user": forms.Select(attrs={
+                "class": "form-control",
+                "maxlength": "200"
+            })
+            
+            
+        }
 
+    def clean_user(self):
+        user_value = self.cleaned_data.get('user')
+        if Partner.objects.filter(user=user_value).exists():
+            raise forms.ValidationError("This value already exists. Please choose another email.")
+        return user_value

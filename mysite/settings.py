@@ -40,9 +40,7 @@ INSTALLED_APPS = [
     'authentication',
     'home',
     'import_export',
-    'partner',
     'courses',
-    'learner',
     
 ]
 

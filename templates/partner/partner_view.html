@@ -18,7 +18,7 @@
               <div class="btn-toolbar mb-2 mb-md-0">
 
               <div class="btn-group me-2">
-              <a type="button" href="{% url "partner:partner_add"%}" class="btn btn-outline-success">Add Partner</a>
+              <a type="button" href="{% url "courses:partner_create_view"%}" class="btn btn-outline-success">Add Partner</a>
               <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
               </div>
               <form class="d-flex" action="/partner" hx-get="/" hx-target="#content-div" hx-push-url="true"  >
@@ -38,7 +38,7 @@
                     <th>name</th>
                     <th>email</th>
                     <th>phone</th>
-                    <th>status</th>
+                   
                     <th>join</th>
                   </tr>
                 </thead>
@@ -46,17 +46,11 @@
                   {% for part in page %}
                   <tr>
                     
-                    <td><a href="{% url 'partner:partner_edit' part.id %}">{{part.partner_name}}</a></td>
-                    <td>{{part.e_mail}}</td>
+                    <td><a href="">{{part.name}}</a></td>
+                    <td>{{part.user}}</td>
                     <td>{{part.phone}}</td>
-                    <td>
-                      {% if part.status == '1' %}
-                      <span class="badge bg-primary">active</span>
-                      {% else %}
-                      <span class="badge bg-warning text-dark">inactive</span>
-                      {% endif %}
-                    </td>
-                    <td>{{part.join}}</td>
+                  
+                    <td>{{part.created_ad}}</td>
                   </tr>
                  {% endfor %}
                 </tbody>
