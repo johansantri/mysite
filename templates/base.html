@@ -195,7 +195,7 @@
 								<a class="nav-link header-sign" href="{% url 'dasbord'%}">{{user.username}}</a>
 								
 							</li>
-							{% elif request.user.is_authenticated and request.user.is_admin %}
+							{% elif request.user.is_authenticated and request.user.is_superuser %}
 							<li class="nav-item">
 								<a class="nav-link header-login" href="{% url 'dasbord'%}">{{user.username}}</a>
 								
