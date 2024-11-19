@@ -75,9 +75,7 @@
                   <div class="add-course-inner-header">
                  
                   </div>
-                  <div class="add-course-section">
-                    <a href="javascript:void(0);" class="btn">Add Section</a>
-                  </div>
+                
                   <div class="add-course-form">
                     <div class="curriculum-grid">
                       <div class="curriculum-head">
@@ -287,14 +285,43 @@
                     </div>
                   </div>
                   <div class="widget-btn">
-                    <a class="btn btn-black prev_btn">Previous</a>
-                    <a class="btn btn-info-light next_btn">Continue</a>
+                    
+                    
+                    <!-- Button trigger modal -->
+<button type="button" class="btn btn-info-light " data-bs-toggle="modal" data-bs-target="#exampleModal">
+  + New Section
+</button>
                   </div>
                 </div>
               </fieldset>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Input New Section</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <input class="form-control" type="text" name="text" id="text">
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Save</button>
+        
       </div>
     </div>
   </div>
