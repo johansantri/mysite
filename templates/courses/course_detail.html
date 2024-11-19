@@ -8,78 +8,208 @@
       <div class="col-xl-9 col-lg-9">
         <div class="support-wrap">
           <div class="tile">
-            <h3 class="tile-title">Update Course</h3>
             
-            {% if messages %}
-              <ul class="messages">
-                {% for message in messages %}
-                  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                {% endfor %}
-              </ul>
-            {% endif %}
+            
+          
 
             <div class="tile-body">
-              <form method="POST" action="">
-                {% csrf_token %}
-                
-                <div class="mb-3">
-                  {{ form.course_name.label_tag }}
-                  {{ form.course_name }}
-                  {% for error in form.course_name.errors %}
-                    <span class="badge bg-danger">{{ error }}</span>
-                  {% endfor %}
+              <fieldset class="field-card">
+                <div class="add-course-info">
+                  <div class="add-course-inner-header">
+                    <h4>{{course.course_name}}</h4>
+                  </div>
+                  <div class="add-course-section">
+                    <a href="javascript:void(0);" class="btn">Add Section</a>
+                  </div>
+                  <div class="add-course-form">
+                    <div class="curriculum-grid">
+                      <div class="curriculum-head">
+                        <p>Section 1: Introduction</p>
+                        <a href="javascript:void(0);" class="btn">Add Lecture</a>
+                      </div>
+                      <div class="curriculum-info">
+                        <div id="accordion">
+                          <div class="faq-grid">
+                            <div class="faq-header">
+                              <a class="collapsed faq-collapse" data-bs-toggle="collapse" href="#collapseOne">
+                                 <i class="fas fa-align-justify"></i> Introduction
+                              </a>
+                              <div class="faq-right">
+                                <a href="javascript:void(0);">
+                                  <i class="far fa-pen-to-square me-1"></i>
+                                </a>
+                                <a href="javascript:void(0);" class="me-0">
+                                  <i class="far fa-trash-can"></i>
+                                </a>
+                              </div>
+                            </div>
+                            <div id="collapseOne" class="collapse" data-bs-parent="#accordion">
+                              <div class="faq-body">
+                                  <div class="add-article-btns">
+                                    <a href="javascript:void(0);" class="btn">Add Article</a>
+                                    <a href="javascript:void(0);" class="btn me-0">Add Description</a>
+                                  </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="faq-grid">
+                            <div class="faq-header">
+                              <a class="collapsed faq-collapse" data-bs-toggle="collapse" href="#collapseTwo">
+                                 <i class="fas fa-align-justify"></i> Installing Development Software
+                              </a>
+                              <div class="faq-right">
+                                <a href="javascript:void(0);">
+                                  <i class="far fa-pen-to-square me-1"></i>
+                                </a>
+                                <a href="javascript:void(0);" class="me-0">
+                                  <i class="far fa-trash-can"></i>
+                                </a>
+                              </div>
+                            </div>
+                            <div id="collapseTwo" class="collapse" data-bs-parent="#accordion">
+                              <div class="faq-body">
+                                  <div class="add-article-btns">
+                                    <a href="javascript:void(0);" class="btn">Add Article</a>
+                                    <a href="javascript:void(0);" class="btn me-0">Add Description</a>
+                                  </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="faq-grid mb-0">
+                            <div class="faq-header">
+                              <a class="collapsed faq-collapse" data-bs-toggle="collapse" href="#collapseThree">
+                                 <i class="fas fa-align-justify"></i> Hello World Project from GitHub
+                              </a>
+                              <div class="faq-right">
+                                <a href="javascript:void(0);">
+                                  <i class="far fa-pen-to-square me-1"></i>
+                                </a>
+                                <a href="javascript:void(0);" class="me-0">
+                                  <i class="far fa-trash-can"></i>
+                                </a>
+                              </div>
+                            </div>
+                            <div id="collapseThree" class="collapse" data-bs-parent="#accordion">
+                              <div class="faq-body">
+                                  <div class="add-article-btns">
+                                    <a href="javascript:void(0);" class="btn">Add Article</a>
+                                    <a href="javascript:void(0);" class="btn me-0">Add Description</a>
+                                  </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="curriculum-grid mb-0">
+                      <div class="curriculum-head">
+                        <p>Section 1: JavaScript Beginnings</p>
+                        <a href="javascript:void(0);" class="btn">Add Lecture</a>
+                      </div>
+                      <div class="curriculum-info">
+                        <div id="accordion-one">
+                          <div class="faq-grid">
+                            <div class="faq-header">
+                              <a class="collapsed faq-collapse" data-bs-toggle="collapse" href="#collapseFour">
+                                 <i class="fas fa-align-justify"></i> Introduction
+                              </a>
+                              <div class="faq-right">
+                                <a href="javascript:void(0);">
+                                  <i class="far fa-pen-to-square me-1"></i>
+                                </a>
+                                <a href="javascript:void(0);" class="me-0">
+                                  <i class="far fa-trash-can"></i>
+                                </a>
+                              </div>
+                            </div>
+                            <div id="collapseFour" class="collapse" data-bs-parent="#accordion-one">
+                              <div class="faq-body">
+                                  <div class="add-article-btns">
+                                    <a href="javascript:void(0);" class="btn">Add Article</a>
+                                    <a href="javascript:void(0);" class="btn me-0">Add Description</a>
+                                  </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="faq-grid">
+                            <div class="faq-header">
+                              <a class="collapsed faq-collapse" data-bs-toggle="collapse" href="#collapseFive">
+                                 <i class="fas fa-align-justify"></i> Installing Development Software
+                              </a>
+                              <div class="faq-right">
+                                <a href="javascript:void(0);">
+                                  <i class="far fa-pen-to-square me-1"></i>
+                                </a>
+                                <a href="javascript:void(0);" class="me-0">
+                                  <i class="far fa-trash-can"></i>
+                                </a>
+                              </div>
+                            </div>
+                            <div id="collapseFive" class="collapse" data-bs-parent="#accordion-one">
+                              <div class="faq-body">
+                                  <div class="add-article-btns">
+                                    <a href="javascript:void(0);" class="btn">Add Article</a>
+                                    <a href="javascript:void(0);" class="btn me-0">Add Description</a>
+                                  </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="faq-grid">
+                            <div class="faq-header">
+                              <a class="collapsed faq-collapse" data-bs-toggle="collapse" href="#collapseSix">
+                                 <i class="fas fa-align-justify"></i> Hello World Project from GitHub
+                              </a>
+                              <div class="faq-right">
+                                <a href="javascript:void(0);">
+                                  <i class="far fa-pen-to-square me-1"></i>
+                                </a>
+                                <a href="javascript:void(0);" class="me-0">
+                                  <i class="far fa-trash-can"></i>
+                                </a>
+                              </div>
+                            </div>
+                            <div id="collapseSix" class="collapse" data-bs-parent="#accordion-one">
+                              <div class="faq-body">
+                                  <div class="add-article-btns">
+                                    <a href="javascript:void(0);" class="btn">Add Article</a>
+                                    <a href="javascript:void(0);" class="btn me-0">Add Description</a>
+                                  </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="faq-grid mb-0">
+                            <div class="faq-header">
+                              <a class="collapsed faq-collapse" data-bs-toggle="collapse" href="#collapseSeven">
+                                 <i class="fas fa-align-justify"></i> Our Sample Website
+                              </a>
+                              <div class="faq-right">
+                                <a href="javascript:void(0);">
+                                  <i class="far fa-pen-to-square me-1"></i>
+                                </a>
+                                <a href="javascript:void(0);" class="me-0">
+                                  <i class="far fa-trash-can"></i>
+                                </a>
+                              </div>
+                            </div>
+                            <div id="collapseSeven" class="collapse" data-bs-parent="#accordion-one">
+                              <div class="faq-body">
+                                  <div class="add-article-btns">
+                                    <a href="javascript:void(0);" class="btn">Add Article</a>
+                                    <a href="javascript:void(0);" class="btn me-0">Add Description</a>
+                                  </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="widget-btn">
+                    <a class="btn btn-black prev_btn">Previous</a>
+                    <a class="btn btn-info-light next_btn">Continue</a>
+                  </div>
                 </div>
-                
-                <div class="mb-3">
-                  {{ form.org_partner.label_tag }}
-                  {{ form.org_partner }}
-                  {% for error in form.org_partner.errors %}
-                    <span class="badge bg-danger">{{ error }}</span>
-                  {% endfor %}
-                </div>
-
-                <div class="mb-3">
-                  {{ form.course_run.label_tag }}
-                  {{ form.course_run }}
-                  {% for error in form.course_run.errors %}
-                    <span class="badge bg-danger">{{ error }}</span>
-                  {% endfor %}
-                </div>
-
-                <div class="mb-3">
-                  {{ form.course_number.label_tag }}
-                  {{ form.course_number }}
-                  {% for error in form.course_number.errors %}
-                    <span class="badge bg-danger">{{ error }}</span>
-                  {% endfor %}
-                </div>
-
-                <div class="mb-3">
-                  {{ form.category.label_tag }}
-                  {{ form.category }}
-                  {% for error in form.category.errors %}
-                    <span class="badge bg-danger">{{ error }}</span>
-                  {% endfor %}
-                  {{ form.slug }}
-                </div>
-
-                <div class="mb-3">
-                  {{ form.author.label_tag }}
-                  {{ form.author }}
-                  {% for error in form.author.errors %}
-                    <span class="badge bg-danger">{{ error }}</span>
-                  {% endfor %}
-                </div>
-                
-                <div class="tile-footer">
-                  <button class="btn btn-success" type="submit">
-                    <i class="bi bi-check-circle-fill me-2"></i>Update Now
-                  </button>
-                  <a class="btn btn-secondary" href="{% url 'courses:course_view' %}">
-                    <i class="bi bi-x-circle-fill me-2"></i>Cancel
-                  </a>
-                </div>
-              </form>
+              </fieldset>
             </div>
           </div>
         </div>

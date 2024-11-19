@@ -45,7 +45,10 @@ def course_create_view(request):
     return render(request, 'courses/course_add.html', {'form': form})
 
 
-
+def studio(request,id):
+    course= get_object_or_404(Course, id=id)
+  
+    return render(request, 'courses/course_detail.html', {'course': course})
 
 
 #add partner
