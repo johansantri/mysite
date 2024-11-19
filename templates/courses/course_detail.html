@@ -80,7 +80,7 @@
                     <div class="curriculum-grid">
                       <div class="curriculum-head">
                         <p>Section 1: Introduction</p>
-                        <a href="javascript:void(0);" class="btn">Add Lecture</a>
+                        <a href="" class="btn" data-bs-toggle="modal" data-bs-target="#subsectionModal">Add sub section</a>
                       </div>
                       <div class="curriculum-info">
                         <div id="accordion">
@@ -126,7 +126,7 @@
                                       <hr>
                                       
                                     </div>
-                                    <a href="javascript:void(0);" class="btn">Add Article</a>
+                                    <a href="#" class="btn"  >Add Article</a>
                                     <a href="javascript:void(0);" class="btn me-0">Add Description</a>
                                   </div>
                               </div>
@@ -303,15 +303,34 @@
 </div>
 
 
-
-
-
-<!-- Modal -->
+<!-- Modal new section -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Input New Section</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Input new section</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <input class="form-control" type="text" name="text" id="text">
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Save</button>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal new sub section -->
+<div class="modal fade" id="subsectionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Input sub section</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
