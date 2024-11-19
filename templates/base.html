@@ -190,7 +190,17 @@
 									</a>
 								</div>
 							</li>
-							{% if user.is_authenticated %}
+							{% if request.user.is_authenticated and request.user.is_partner %}
+							<li class="nav-item">
+								<a class="nav-link header-sign" href="{% url 'dasbord'%}">{{user.username}}</a>
+								
+							</li>
+							{% elif request.user.is_authenticated and request.user.is_admin %}
+							<li class="nav-item">
+								<a class="nav-link header-login" href="{% url 'dasbord'%}">{{user.username}}</a>
+								
+							</li>
+							{% elif request.user.is_authenticated %}
 							<li class="nav-item">
 								<a class="nav-link header-sign" href="{% url 'logout'%}">logout</a>
 							</li>
@@ -199,6 +209,7 @@
 								<a class="nav-link header-login" href="{% url 'login'%}">Login</a>
 							</li>
 							{% endif%}
+
 						</ul>
 					</div>
 				</nav>
