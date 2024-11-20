@@ -31,7 +31,7 @@ class Category(models.Model):
 
 class Course(models.Model):
     course_name = models.CharField(max_length=250)
-    slug = AutoSlugField(populate_from='title', unique=True, null=False, editable=False)
+    #slug = AutoSlugField(populate_from='title', unique=True, null=False, editable=False)
     course_number = models.CharField(max_length=250, blank=True)
     course_run = models.CharField(max_length=250, blank=True)
     slug = models.CharField(max_length=250, blank=True)
@@ -39,7 +39,8 @@ class Course(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="category_courses")
     level = models.CharField(max_length=10, choices=[('basic', 'Basic'), ('advanced', 'Advanced')], default='basic', null=True, blank=True)
     status_course = models.CharField(max_length=10, choices=[('draft', 'Draft'), ('published', 'Published')], default='draft', blank=True)
-   
+    created_at = models.DateTimeField(auto_now_add=True)
+    edited_on = models.DateTimeField(auto_now=True) 
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):

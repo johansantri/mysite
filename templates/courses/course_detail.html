@@ -126,7 +126,7 @@
                                       <hr>
                                       
                                     </div>
-                                    <a href="#" class="btn"  >Add Article</a>
+                                    <a href="#" class="btn"  >Add unit</a>
                                     <a href="javascript:void(0);" class="btn me-0">Add Description</a>
                                   </div>
                               </div>
@@ -181,8 +181,10 @@
                         </div>
                       </div>
                     </div>
+                    <!-- ini batas section-->
                     <div class="curriculum-grid mb-0">
                       <div class="curriculum-head">
+                        
                         <p>Section 1: JavaScript Beginnings</p>
                         <a href="javascript:void(0);" class="btn">Add Lecture</a>
                       </div>
@@ -283,6 +285,7 @@
                         </div>
                       </div>
                     </div>
+                    <!--end batas-->
                   </div>
                   <div class="widget-btn">
                     
@@ -345,5 +348,229 @@
     </div>
   </div>
 </div>
+
+
+
+
+
+
+
+<!--tes-->
+
+<div class="accordion" id="accordionExample">
+  <div class="accordion-item">
+    {% for i in section %}
+    {% if not i.children.all %}
+      <h2 class="accordion-header" id="headingOne">
+        <!-- Button trigger modal -->
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{i.slug}}" aria-expanded="true" aria-controls="collapseOne">
+             <h5 id="coba-{{i.id}}"  ondblclick="mySection(this.id)" data-bs-toggle="modal" data-bs-target="#exampleModal{{i.id}}" >y{{i.title}}  </h5> 
+          
+          </button>
+   
+          
+        <!--modal update sectiomn-->
+
+
+              <!-- Modal -->
+              <div class="modal fade" id="exampleModal{{i.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">update section</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                  <form  method="POST" action="" >
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3" >
+                             
+                             <p id="hasil" ></p>
+                                <input class="form-control" type="text" name="updatetitle{{i.id}}" id="updatetitle-{{i.id}}" maxlength="250" value="{{i.title}}"  required placeholder="Section">
+                                <input class="form-control" type="text" name="{{i.id}}" id="id{{i.id}}" value="{{i.id}}" hidden disabled>
+                              </div>            
+                            
+                        </div>                       
+                 
+                   </div>                       
+                
+                  </form>
+
+                 
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary" id="{{i.id}}" onClick="update_click(this.id)">Save changes</button>
+                </div>
+              </div>
+              </div>
+              </div>
+
+        <!--end modal edit-->
+          
+      </h2>
+      
+
+
+
+      <div id="{{i.slug}}" class="accordion-collapse collapse " aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+        <div class="accordion-body">
+
+            <div class="accordion" id="sub-accordionExample">
+             
+
+
+
+
+
+      <!--add new sub section-->
+      <form class="row">
+                      
+        <div class="mb-3 col-md-10">
+         <label></label>
+          <input class="form-control" type="text" id="titlex-{{i.id}}" required placeholder="Enter new sub section">
+          <input class="form-control" type="text" name="{{course.org_partner.id}}" id="section_id_coursesx-{{i.id}}" value="{{i.mk_id}}" hidden disabled>
+          <input class="form-control" type="text" name="parent_idx" id="parent_idx-{{i.id}}" value="{{i.id}}" hidden disabled>
+        </div>
+     
+        <div class="mb-3 col-md-2 align-self-end">
+          <button class="btn btn-primary" type="button" id="{{i.id}}" onClick="reply_click(this.id)"><i class="bi bi-check-circle-fill me-2"></i>add</button>
+        </div>
+      </form>
+<!--end form new subsection-->
+             
+            </div>
+        </div>
+    </div>
+
+
+
+             
+
+      {% else %}
+      <h2 class="accordion-header" id="headingOne">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{i.slug}}" aria-expanded="true" aria-controls="collapseOne">
+          <h5 id="coba-{{i.id}}"  ondblclick="mySection(this.id)" data-bs-toggle="modal" data-bs-target="#exampleModal{{i.id}}" >xxxx{{i.title}}  </h5> 
+        </button>
+    </h2>
+
+      <!--modal update sectiomn-->
+         
+              
+
+              <!-- Modal -->
+              <div class="modal fade" id="exampleModal{{i.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">update section</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+
+                    <form  method="POST" action="" >
+                      {% csrf_token %}
+                      <div class="row">
+                          <div class="col-md-12">
+                              <div class="mb-3" >
+                               
+                               <p id="hasil" ></p>
+                               <input class="form-control" type="text" name="updatetitle{{i.id}}" id="updatetitle-{{i.id}}" maxlength="250" value="{{i.title}}"  required placeholder="Section">
+                               <input class="form-control" type="text" name="{{i.id}}" id="id{{i.id}}" value="{{i.id}}" hidden disabled>
+                                </div>
+            
+                              
+                          </div>
+                       
+                   
+                     </div>
+                         
+                    </form>
+
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary"  id="{{i.id}}" onClick="update_click(this.id)">Save changes</button>
+                  </div>
+                </div>
+                </div>
+                </div>
+
+          <!--end modal edit-->
+
+      <div id="{{i.slug}}" class="accordion-collapse collapse " aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+          <div class="accordion-body">
+
+              <div class="accordion" id="sub-accordionExample">
+                    <div class="accordion-item">
+                      {% for obj in i.children.all %}
+                    {% if not obj.children.all %}
+                        <h2 class="accordion-header" id="sub-headingOne"> 
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{obj.slug}}" aria-expanded="false" aria-controls="collapseOne">
+                                 <a href="">2{{obj.title}} </a> 
+                            </button>
+                        </h2>
+                        
+                        {% else %}
+
+                        <h2 class="accordion-header" id="sub-headingOne">
+                          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{obj.slug}}" aria-expanded="false" aria-controls="collapseOne">
+                           11111  {{obj.title}}
+                          </button>
+                      </h2>
+
+                      {% for subobj in obj.children.all %}
+
+                        <div id="{{obj.slug}}" class="accordion-collapse collapse show" aria-labelledby="sub-headingOne" data-bs-parent="#sub-accordionExample">
+                            <div class="accordion-body">
+                                <strong>yyyyy{{subobj.title}}.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                        {% endif %}
+                {% endfor %}
+                    </div>
+               
+
+<!--add new sub section-->
+                    <form class="row">
+                      
+                      <div class="mb-3 col-md-10">
+                       <label></label>
+                        <input class="form-control" type="text" id="titlex-{{i.id}}" required placeholder="Enter new sub section">
+                        <input class="form-control" type="text" name="{{course.org_partner.id}}" id="section_id_coursesx-{{i.id}}" value="{{i.mk_id}}" hidden>
+                        <input class="form-control" type="text" name="parent_idx" id="parent_idx-{{i.id}}" value="{{i.id}}"  hidden>
+                      </div>
+                   
+                      <div class="mb-3 col-md-2 align-self-end">
+                        <button class="btn btn-primary" type="button" id="{{i.id}}" onClick="reply_click(this.id)"><i class="bi bi-check-circle-fill me-2"></i>add</button>
+                      </div>
+                    </form>
+<!--end form new subsection-->
+
+                   
+
+
+
+              </div>
+          </div>
+      </div>
+
+
+
+      {% endif %}
+      {% endfor %}
+
+  </div>
+</div>
+
+
+
+
+
 
 {% endblock %}

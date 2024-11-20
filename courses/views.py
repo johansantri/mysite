@@ -4,8 +4,8 @@ from django.db.models import Q
 
 from django.contrib.auth.decorators import login_required
 from .forms import CourseForm, PartnerForm
-
-from .models import Course, Partner
+from django.http import JsonResponse
+from .models import Course, Partner, Section
 
 def courseView(request):
     if not request.user.is_authenticated:
@@ -45,10 +45,36 @@ def course_create_view(request):
     return render(request, 'courses/course_add.html', {'form': form})
 
 
-def studio(request,id):
-    course= get_object_or_404(Course, id=id)
-  
-    return render(request, 'courses/course_detail.html', {'course': course})
+def studio(request, id):
+    course = get_object_or_404(Course, id=id)
+    sections = Section.objects.filter(parent=None, courses_id=course.id)  # Make sure `courses_id` matches your field in Section model
+
+    # Prepare data
+    data = {
+        'course': {
+            'id': course.id,
+            'name': course.course_name,
+            'number': course.course_number,
+            'level': course.level,
+            'category': course.category.name,
+            'org': course.org_partner.name,
+            'status': course.status_course,
+            'created_at': course.created_at,
+            'edited_on': course.edited_on
+        },
+        'sections': [
+            {
+                'id': section.id,
+                'title': section.title,
+                'slug': section.slug,
+                'created_at': section.created_at
+            } for section in sections
+        ]
+    }
+
+    # Return JSON response
+    return JsonResponse(data,safe=False)
+    #return render(request, 'courses/course_detail.html', context)
 
 
 #add partner
