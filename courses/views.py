@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 
 from django.contrib.auth.decorators import login_required
@@ -7,16 +7,61 @@ from .forms import CourseForm, PartnerForm
 from django.http import JsonResponse
 from .models import Course, Partner, Section
 
+
 def courseView(request):
+    # Check if the user is authenticated
     if not request.user.is_authenticated:
         return redirect('/')
 
-    posts = Course.objects.all() if request.user.is_superuser else Course.objects.filter(author_id=request.user.id)
-    posts = filter_courses_by_query(request, posts)
-    page = paginate_courses(request, posts)
+    # Determine which courses to display
+    if request.user.is_superuser:
+        courses = Course.objects.all()
+    elif hasattr(request.user, 'is_partner') and request.user.is_partner:
+        courses = Course.objects.filter(author_id=request.user.id)
+    else:
+        courses = Course.objects.none()  # Return an empty QuerySet for unauthorized users
 
-    context = {'count': posts.count(), 'page': page}
-    return render(request, 'courses/course_view.html', context)
+    search_query = request.GET.get('search', '').strip()
+    if search_query:
+        courses = courses.filter(course_name__icontains=search_query)
+
+    # Fetch only necessary fields
+    courses = courses.values('id', 'course_name', 'course_number')
+
+    # Get the page number from the request
+    page_number = request.GET.get('page', 1)
+    try:
+        page_number = int(page_number)
+    except ValueError:
+        page_number = 1
+
+    # Paginate the courses
+    paginator = Paginator(courses, 5)  # 5 courses per page
+    try:
+        page_obj = paginator.page(page_number)
+    except PageNotAnInteger:
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({"error": "Page not found"}, status=404)
+        return redirect('/')  # Redirect for non-Ajax requests
+
+    # Prepare paginated data to return as JSON
+    data = {
+        "items": list(page_obj),  # Convert page object to a list of dictionaries
+        "count": paginator.count,
+        "page_number": page_obj.number,
+        "num_pages": paginator.num_pages,
+        "has_next": page_obj.has_next(),
+        "has_previous": page_obj.has_previous(),
+    }
+
+    # If it's an Ajax request, return JSON response
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse(data)
+
+    # Render the page normally for non-Ajax requests
+    return render(request, 'courses/course_view.html', {'page_obj': page_obj,'search_query': search_query})
 
 def filter_courses_by_query(request, posts):
     """Filter courses based on search query."""
@@ -38,7 +83,7 @@ def course_create_view(request):
             form = form.save(commit=False)
             form.author_id = request.user.id
             form.save()  # Save the course with the selected partner
-            return redirect('/course')  # Redirect to a course list page or success page
+            return redirect('/courses')  # Redirect to a course list page or success page
     else:
         form = CourseForm(user=request.user)  # Pass the logged-in user to the form
 
