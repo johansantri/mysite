@@ -33,6 +33,11 @@
           <span>Page 1 of 1</span>
           <button class="next btn btn-warning btn-sm">Next</button>
       </div>
+
+
+
+
+      
       <script>
         document.addEventListener('DOMContentLoaded', function () {
           let currentPage = 1;
@@ -63,7 +68,7 @@
                       // Add new rows to the table
                       data.items.forEach(item => {
                           const row = document.createElement('tr');
-                          row.innerHTML = `<td>${item.course_name}</td><td>${item.course_number}</td>`;
+                          row.innerHTML = `<td><a href="${item.id}"> ${item.course_name}</a></td><td>${item.course_number}</td>`;
                           tbody.appendChild(row);
                       });
                       document.getElementById('total-courses').textContent = `Total Courses: ${data.count}`;
