@@ -1,0 +1,5 @@
+{% if is_correct %}
+    <p style="color: green;">Correct! {{ correct_choice.text }}</p>
+{% else %}
+    <p style="color: red;">Wrong! The correct answer is "{{ correct_choice.text }}".</p>
+{% endif %}

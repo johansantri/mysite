@@ -16,6 +16,7 @@ def courseView(request):
     # Determine which courses to display
     if request.user.is_superuser:
         courses = Course.objects.all()
+    #partner
     elif hasattr(request.user, 'is_partner') and request.user.is_partner:
         courses = Course.objects.filter(author_id=request.user.id)
     else:
@@ -61,7 +62,7 @@ def courseView(request):
         return JsonResponse(data)
 
     # Render the page normally for non-Ajax requests
-    return render(request, 'courses/course_view.html', {'page_obj': page_obj,'search_query': search_query})
+    return render(request, 'courses/course_view.html')
 
 def filter_courses_by_query(request, posts):
     """Filter courses based on search query."""
@@ -118,8 +119,15 @@ def studio(request, id):
     }
 
     # Return JSON response
-    return JsonResponse(data,safe=False)
+    #return JsonResponse(data,safe=False)
     #return render(request, 'courses/course_detail.html', context)
+
+       # If it's an Ajax request, return JSON response
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse(data)
+
+    # Render the page normally for non-Ajax requests
+    return render(request, 'courses/course_detail.html', {'data': data})
 
 
 #add partner

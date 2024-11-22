@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz</title>
+    <script src="https://unpkg.com/htmx.org@2.0.3" integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq" crossorigin="anonymous"></script>
+</head>
+<body>
+    {% block content %}{% endblock %}
+    <script>
+		document.body.addEventListener('htmx:configRequest', function(evt) {
+			evt.detail.parameters['auth_token'] = getAuthToken(); // add a new parameter into the request
+			evt.detail.headers['X-CSRFToken'] = '{{ csrf_token }}'; // add a new header into the request
+		});
+	</script>
+</body>
+</html>

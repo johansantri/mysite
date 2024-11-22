@@ -1,0 +1,29 @@
+{% extends "quiz/base.html" %}
+
+
+{% block content %}
+<h1>All Quiz Scores</h1>
+<table>
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Score</th>
+            <th>Total Questions</th>
+            <th>Grade</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for score in scores %}
+            <tr>
+                <td>{{ score.user }}</td>
+                <td>{{ score.score }}</td>
+                <td>{{ score.total_questions }}</td>
+                <td>{{ score.grade }}</td>
+                <td>{{ score.date }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'quiz' %}"><button>Back to Quiz</button></a>
+{% endblock %}

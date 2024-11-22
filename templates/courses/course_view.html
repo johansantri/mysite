@@ -14,6 +14,7 @@
                 placeholder="Search for courses..."
             />
             <button id="search-button" class="btn btn-success btn-sm">Search</button>
+            
         </div>
         
       <table id="courses-table" class="table table-striped table-hover">
@@ -68,7 +69,7 @@
                       // Add new rows to the table
                       data.items.forEach(item => {
                           const row = document.createElement('tr');
-                          row.innerHTML = `<td><a href="${item.id}"> ${item.course_name}</a></td><td>${item.course_number}</td>`;
+                          row.innerHTML = `<td><a href="../studio/${item.id}"> ${item.course_name}</a></td><td>${item.course_number}</td>`;
                           tbody.appendChild(row);
                       });
                       document.getElementById('total-courses').textContent = `Total Courses: ${data.count}`;

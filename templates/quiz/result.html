@@ -1,0 +1,18 @@
+{% extends "quiz/base.html" %}
+
+{% block content %}
+<h1>Quiz Results</h1>
+<p>Your score: {{ score }} out of {{ total_questions }}</p>
+<p>Your grade: <strong>{{ grade }}</strong></p>
+<a href="{% url 'quiz' %}"><button>Try Again</button></a>
+<a href="{% url 'score_list' %}"><button>View All Scores</button></a>
+
+
+{% if grade == "A" %}
+    <p>Great job! You're a quiz master!</p>
+{% elif grade == "F" %}
+    <p>Don't worry, try again and improve your score!</p>
+{% endif %}
+
+
+{% endblock %}
