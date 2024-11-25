@@ -22,3 +22,13 @@ class Score(models.Model):
 
     def __str__(self):
         return f"{self.user or 'Anonymous'} - {self.score}/{self.total_questions} ({self.grade}) on {self.date.strftime('%Y-%m-%d')}"
+    
+class AttemptedQuestion(models.Model):
+    user = models.CharField(max_length=255)  # Username or anonymous identifier
+    question = models.ForeignKey('Question', on_delete=models.CASCADE)
+    selected_choice = models.ForeignKey('Choice', on_delete=models.CASCADE)
+    is_correct = models.BooleanField()
+    date_attempted = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user} - {self.question.text} - {'Correct' if self.is_correct else 'Incorrect'}"

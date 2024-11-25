@@ -1,0 +1,32 @@
+{% extends "quiz/base.html" %}
+
+{% block content %}
+<h2>Question History</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Question</th>
+            <th>Your Answer</th>
+            <th>Correct?</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for attempt in history %}
+        <tr>
+            <td>{{ attempt.date_attempted }}</td>
+            <td>{{ attempt.question.text }}</td>
+            <td>{{ attempt.selected_choice.text }}</td>
+            <td>
+                {% if attempt.is_correct %}
+                    Yes
+                {% else %}
+                    No
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'quiz' %}"><button>Back to Quiz</button></a>
+{% endblock %}

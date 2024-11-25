@@ -1,0 +1,8 @@
+{% extends "quiz/base.html" %}
+
+{% block content %}
+<h2>Submission Limit Reached</h2>
+<p>{{ message }}</p>
+<p>You are allowed a maximum of {{ submission_limit }} submissions.</p>
+<a href="{% url 'score_list' %}"><button>View Your Scores</button></a>
+{% endblock %}

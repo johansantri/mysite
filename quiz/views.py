@@ -2,6 +2,8 @@ import random
 from django.shortcuts import render,redirect
 from .models import Question, Choice, Score
 from django.http import JsonResponse
+from .models import AttemptedQuestion
+SUBMISSION_LIMIT = 1
 
 def quiz_view(request):
     if 'question_ids' not in request.session or not request.session['question_ids']:
@@ -30,8 +32,22 @@ def check_answer(request, question_id):
         question = Question.objects.get(id=question_id)
         selected_choice_id = request.POST.get('choice')
         selected_choice = question.choices.get(id=selected_choice_id)
+        is_correct = selected_choice.is_correct
     except (Question.DoesNotExist, Choice.DoesNotExist, TypeError):
         return JsonResponse({'error': 'Invalid choice or question'}, status=400)
+    
+    # Save the attempt to the history
+    if request.user.is_authenticated:
+        user = request.user.username
+    else:
+        user = f"Anonymous-{request.session.session_key}"
+
+    AttemptedQuestion.objects.create(
+        user=user,
+        question=question,
+        selected_choice=selected_choice,
+        is_correct=is_correct,
+    )
 
     is_correct = selected_choice.is_correct
 
@@ -93,6 +109,21 @@ def calculate_grade(score, total_questions):
 
 
 def quiz_result(request):
+    # Determine the user identifier (username for authenticated users, session ID for anonymous users)
+    if request.user.is_authenticated:
+        user = request.user.username
+    else:
+        user = f"Anonymous-{request.session.session_key}"
+
+    # Count previous submissions for this user
+    user_submissions = Score.objects.filter(user=user).count()
+
+    # Check if the submission limit has been reached
+    if user_submissions >= SUBMISSION_LIMIT:
+        return render(request, 'quiz/limit_reached.html', {
+            'message': f"You have reached the maximum number of quiz attempts ({SUBMISSION_LIMIT}).",
+            'submission_limit': SUBMISSION_LIMIT,
+        })
     score = request.session.get('score', 0)
     answered_questions = request.session.get('answered_questions', [])
     total_questions = len(answered_questions)
@@ -122,5 +153,14 @@ def quiz_result(request):
         'total_questions': total_questions,
         'grade': grade,
     })
+
+def question_history(request):
+    if request.user.is_authenticated:
+        user = request.user.username
+    else:
+        user = f"Anonymous-{request.session.session_key}"
+
+    history = AttemptedQuestion.objects.filter(user=user).order_by('-date_attempted')
+    return render(request, 'quiz/history.html', {'history': history})
 
 
