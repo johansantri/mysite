@@ -129,7 +129,10 @@ def studio(request, id):
     # Render the page normally for non-Ajax requests
     return render(request, 'courses/course_detail.html', {'data': data})
 
-
+def section_detail(request, id):
+    section = get_object_or_404(Section, id=id)
+    subsections = Section.objects.all()
+    return render(request, 'courses/section_detail.html', {'section': section,'subsections':subsections})
 #add partner
 
 def partnerView(request):
@@ -172,3 +175,4 @@ def partner_create_view(request):
         form = PartnerForm()  # Pass the logged-in user to the form
 
     return render(request, 'partner/partner_add.html', {'form': form})
+

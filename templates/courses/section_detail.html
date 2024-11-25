@@ -1,0 +1,15 @@
+{% extends "home/base.html" %}
+
+{% block content %}
+<h2>Section Details</h2>
+<p><strong>Title:</strong> {{ section.title }}</p>
+<p><strong>Slug:</strong> {{ section.slug }}</p>
+<p><strong>Created At:</strong> {{ section.created_at }}</p>
+{% if section.parent %}
+    <p><strong>Parent Section:</strong> {{ section.parent.title }}</p>
+{% endif %}
+{% if section.courses %}
+    <p><strong>Course:</strong> {{ section.courses.course_name }}</p>
+{% endif %}
+<a href="{% url 'courses:studio' section.courses.id %}">Back to Course</a>
+{% endblock %}
