@@ -6,6 +6,7 @@
 <p>Your grade: <strong>{{ grade }}</strong></p>
 <a href="{% url 'quiz' %}"><button>Try Again</button></a>
 <a href="{% url 'score_list' %}"><button>View All Scores</button></a>
+<a href="{% url 'restart_quiz' %}"><button>restart</button></a>
 
 
 {% if grade == "A" %}
