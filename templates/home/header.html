@@ -175,13 +175,20 @@
                                     <p class="text-muted mb-0">{{user.email}}</p>
                                 </div>
                             </div>
+                            {% if user.username%}
                             <a class="dropdown-item" href="{% url 'dasbord'%}"><i
                                     class="feather-home me-1"></i> Dashboard</a>
+                                    
                             <a class="dropdown-item" href="{% url 'profile' user.username %}"><i
                                     class="feather-star me-1"></i>Profile</a>
-
+                                
                             <a class="dropdown-item" href="{% url 'logout' %}"><i class="feather-log-out me-1"></i>
                                 Logout</a>
+                                {% elif  not user.username %}
+                                <a class="dropdown-item" href="{% url 'logout' %}"><i class="feather-log-out me-1"></i>
+                                    Logout</a>
+                                </a>
+                                {% endif %}
                         </div>
                     </li>
                 </ul>
