@@ -1,15 +1,104 @@
-{% extends "home/base.html" %}
-
-{% block content %}
-<h2>Section Details</h2>
-<p><strong>Title:</strong> {{ section.title }}</p>
-<p><strong>Slug:</strong> {{ section.slug }}</p>
-<p><strong>Created At:</strong> {{ section.created_at }}</p>
-{% if section.parent %}
-    <p><strong>Parent Section:</strong> {{ section.parent.title }}</p>
-{% endif %}
-{% if section.courses %}
-    <p><strong>Course:</strong> {{ section.courses.course_name }}</p>
-{% endif %}
-<a href="{% url 'courses:studio' section.courses.id %}">Back to Course</a>
-{% endblock %}
+<div class="curriculum-grid mb-0">
+    <div class="curriculum-head">
+      <p>Section 1: JavaScript Beginnings</p>
+      <a href="javascript:void(0);" class="btn">Add Lecture</a>
+    </div>
+    <div class="curriculum-info">
+      <div id="accordion-one">
+        <!--batas subsection-->
+        <div class="faq-grid">
+          <div class="faq-header">
+            <a class="collapsed faq-collapse" data-bs-toggle="collapse" href="#collapseFour">
+               <i class="fas fa-align-justify"></i> Introduction
+            </a>
+            <div class="faq-right">
+              <a href="javascript:void(0);">
+                <i class="far fa-pen-to-square me-1"></i>
+              </a>
+              <a href="javascript:void(0);" class="me-0">
+                <i class="far fa-trash-can"></i>
+              </a>
+            </div>
+          </div>
+          <div id="collapseFour" class="collapse" data-bs-parent="#accordion-one">
+            <div class="faq-body">
+                <div class="add-article-btns">
+                  <a href="javascript:void(0);" class="btn">Add Article</a>
+                  <a href="javascript:void(0);" class="btn me-0">Add Description</a>
+                </div>
+            </div>
+          </div>
+        </div>
+        <!--end batas subsection-->
+        <div class="faq-grid">
+          <div class="faq-header">
+            <a class="collapsed faq-collapse" data-bs-toggle="collapse" href="#collapseFive">
+               <i class="fas fa-align-justify"></i> Installing Development Software
+            </a>
+            <div class="faq-right">
+              <a href="javascript:void(0);">
+                <i class="far fa-pen-to-square me-1"></i>
+              </a>
+              <a href="javascript:void(0);" class="me-0">
+                <i class="far fa-trash-can"></i>
+              </a>
+            </div>
+          </div>
+          <div id="collapseFive" class="collapse" data-bs-parent="#accordion-one">
+            <div class="faq-body">
+                <div class="add-article-btns">
+                  <a href="javascript:void(0);" class="btn">Add Article</a>
+                  <a href="javascript:void(0);" class="btn me-0">Add Description</a>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class="faq-grid">
+          <div class="faq-header">
+            <a class="collapsed faq-collapse" data-bs-toggle="collapse" href="#collapseSix">
+               <i class="fas fa-align-justify"></i> Hello World Project from GitHub
+            </a>
+            <div class="faq-right">
+              <a href="javascript:void(0);">
+                <i class="far fa-pen-to-square me-1"></i>
+              </a>
+              <a href="javascript:void(0);" class="me-0">
+                <i class="far fa-trash-can"></i>
+              </a>
+            </div>
+          </div>
+          <div id="collapseSix" class="collapse" data-bs-parent="#accordion-one">
+            <div class="faq-body">
+                <div class="add-article-btns">
+                  <a href="javascript:void(0);" class="btn">Add Article</a>
+                  <a href="javascript:void(0);" class="btn me-0">Add Description</a>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class="faq-grid mb-0">
+          <div class="faq-header">
+            <a class="collapsed faq-collapse" data-bs-toggle="collapse" href="#collapseSeven">
+               <i class="fas fa-align-justify"></i> Our Sample Website
+            </a>
+            <div class="faq-right">
+              <a href="javascript:void(0);">
+                <i class="far fa-pen-to-square me-1"></i>
+              </a>
+              <a href="javascript:void(0);" class="me-0">
+                <i class="far fa-trash-can"></i>
+              </a>
+            </div>
+          </div>
+          <div id="collapseSeven" class="collapse" data-bs-parent="#accordion-one">
+            <div class="faq-body">
+                <div class="add-article-btns">
+                  <a href="javascript:void(0);" class="btn">Add Article</a>
+                  <a href="javascript:void(0);" class="btn me-0">Add Description</a>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

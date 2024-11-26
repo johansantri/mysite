@@ -93,46 +93,14 @@ def course_create_view(request):
 
 def studio(request, id):
     course = get_object_or_404(Course, id=id)
-    sections = Section.objects.filter(parent=None, courses_id=course.id)  # Make sure `courses_id` matches your field in Section model
+    section = Section.objects.filter(parent=None, courses_id=course.id)  # Make sure `courses_id` matches your field in Section model
 
-    # Prepare data
-    data = {
-        'course': {
-            'id': course.id,
-            'name': course.course_name,
-            'number': course.course_number,
-            'level': course.level,
-            'category': course.category.name,
-            'org': course.org_partner.name,
-            'status': course.status_course,
-            'created_at': course.created_at,
-            'edited_on': course.edited_on
-        },
-        'sections': [
-            {
-                'id': section.id,
-                'title': section.title,
-                'slug': section.slug,
-                'created_at': section.created_at
-            } for section in sections
-        ]
-    }
-
-    # Return JSON response
-    #return JsonResponse(data,safe=False)
-    #return render(request, 'courses/course_detail.html', context)
-
-       # If it's an Ajax request, return JSON response
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        return JsonResponse(data)
+    print(section)
 
     # Render the page normally for non-Ajax requests
-    return render(request, 'courses/course_detail.html', {'data': data})
+    return render(request, 'courses/course_detail.html', {'course': course,'section':section})
 
-def section_detail(request, id):
-    section = get_object_or_404(Section, id=id)
-    subsections = Section.objects.all()
-    return render(request, 'courses/section_detail.html', {'section': section,'subsections':subsections})
+
 #add partner
 
 def partnerView(request):

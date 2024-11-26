@@ -10,7 +10,7 @@ urlpatterns = [
     path("partner/", views.partnerView, name= "partner_view"),
     path("course-add/", views.course_create_view, name= "course_create_view"),
     path("partner-add/", views.partner_create_view, name= "partner_create_view"),
-    path('section/<int:id>/', views.section_detail, name='section_detail'),
+    
     
    
    

@@ -6,267 +6,137 @@
     <div class="row">
       {% include "home/sidebar.html" %}
       <div class="col-xl-9 col-lg-9">
-        <div class="support-wrap">
-          <div class="tile">
-            
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
-              <div class="container-fluid">
-                <a class="navbar-brand" href="#">{{ data.course.name }}</a> 
+       
+ 
+
+        <fieldset class="field-card">
+          <div class="add-course-info">
+            <div class="add-course-inner-header">
+              <h4>{{course.course_name}}</h4>
+              <hr>
+              <p>{{course.org_partner}} - {{course.type_course}} {{course.status_course}}</p>
+            </div>
+       
+
+            {% for i in section %}
+                {% if not i.children.all %}
                
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                  <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                  <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                  
-                    <li class="nav-item dropdown">
-                      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Content
-                      </a>
-                      <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                      </ul>
-                    </li>
-
-                    <li class="nav-item dropdown">
-                      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Setting
-                      </a>
-                      <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                      </ul>
-                    </li>
-
-                    <li class="nav-item dropdown">
-                      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Tools
-                      </a>
-                      <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                      </ul>
-                    </li>
-                   
-                  </ul>
-
-
-                  
-                  <form class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                  </form>
-                </div>
-              </div>
-
-              
-            </nav>
-          
-
-            <div class="tile-body">
-              <fieldset class="field-card">
-                <div class="add-course-info">
-                  <div class="add-course-inner-header">
-                 
+                <!--jika kosong mulai dari sini-->
+                <div class="curriculum-grid mb-0">
+                  <div class="curriculum-head">
+                    <p>Section 1: {{i.title}}</p>
+                    <a href="javascript:void(0);" class="btn">Add Lecture</a>
                   </div>
-
-                  
-                
-                  <div class="add-course-form">
-                    {% if data.sections %}
-                    {% for section in data.sections %}
-                    <div class="curriculum-grid">
-                      <div class="curriculum-head">
-
-                        <p>{{ section.title }}</p>
-                        
-                        <a href="" class="btn" data-bs-toggle="modal" data-bs-target="#subsectionModal">Add sub section</a>
-                      </div>
-                      <!--sub-->
-                      
-                      <div class="curriculum-info">
-                        <div id="accordion">
-                          <div class="faq-grid">
-                            
-                            <div class="faq-header">
-                              <a class="collapsed faq-collapse" data-bs-toggle="collapse" href="#collapseOne-{{section.id}}">
-                                 <i class="fas fa-align-justify"></i> Introduction 
-
-                              </a>
-                           
-                              
-                              <div class="faq-right">
-                                <a href="javascript:void(0);">
-                                  <i class="far fa-pen-to-square me-1"></i>
-                                </a>
-                                <a href="javascript:void(0);" class="me-0">
-                                  <i class="far fa-trash-can"></i>
-                                </a>
-                              </div>
-                            </div>
-
-                           
-
-                            <div id="collapseOne-{{section.id}}" class="collapse" data-bs-parent="#accordion">
-                              <div class="faq-body">
-                                  <div class="add-article-btns">
-                                    <div class="container">
-                                      <p> <a href ="">HTML DOM Input Text Object </a>
-                                        
-                                      </p>
-                                     
-                                 
-                                      
-                                      <hr>
-                                      
-                                    </div>
-                                    <a href="#" class="btn"  >Add unit</a>
-                                    <a href="javascript:void(0);" class="btn me-0">Add Description</a>
-                                  </div>
-                              </div>
-                            </div>
-                            
-
-                          </div>
-
-                          
-                          
-                        </div>
-                      </div>
+                  <div class="curriculum-info">
+                    <div id="accordion-one">
                      
-                      <!--endsub-->
-
-                    
                     </div>
-                    {% endfor %}
-
-
-                    {% else %}
-
-
-                    <!-- ini batas section-->
-                    <div class="curriculum-grid mb-0">
-                      <div class="curriculum-head">
-                        
-                        <p>Section 2: JavaScript Beginnings</p>
-                        <a href="javascript:void(0);" class="btn">Add Lecture</a>
-                      </div>
-                      <div class="curriculum-info">
-                        <div id="accordion-one">
-                          <div class="faq-grid">
-                            <div class="faq-header">
-                              <a class="collapsed faq-collapse" data-bs-toggle="collapse" href="#collapseFour">
-                                 <i class="fas fa-align-justify"></i> Introduction
-                              </a>
-                              <div class="faq-right">
-                                <a href="javascript:void(0);">
-                                  <i class="far fa-pen-to-square me-1"></i>
-                                </a>
-                                <a href="javascript:void(0);" class="me-0">
-                                  <i class="far fa-trash-can"></i>
-                                </a>
-                              </div>
-                            </div>
-                            <div id="collapseFour" class="collapse" data-bs-parent="#accordion-one">
-                              <div class="faq-body">
-                                  <div class="add-article-btns">
-                                    <a href="javascript:void(0);" class="btn">Add Article</a>
-                                    <a href="javascript:void(0);" class="btn me-0">Add Description</a>
-                                  </div>
-                              </div>
-                            </div>
-                          </div>
-
+                  </div>
+                </div>
+                <!--end kosong-->
+                {% else %}
+                          <!--DIMULAI DARI SINI-->
                          
 
-                        </div>
-                      </div>
-                    </div>
-                    <!--end batas-->
+                          <div class="curriculum-grid mb-0">
+                            <div class="curriculum-head">
+                              <p>A {{i.title}}</p>
+                              <a href="javascript:void(0);" class="btn">Add Lecture</a>
+                            </div>
+                            <div class="curriculum-info">
+                              <div id="accordion-one">
 
-                    {% endif %}
-                  </div>
-                  <div class="widget-btn">
-                    
-                    
-                    <!-- Button trigger modal -->
-<button type="button" class="btn btn-info-light " data-bs-toggle="modal" data-bs-target="#exampleModal">
-  + New Section
-</button>
-                  </div>
-                </div>
-              </fieldset>
+                                {% for obj in i.children.all %}
+                                {% if not obj.children.all %}
+                                    
+                                    <div class="faq-grid">
+                                      <div class="faq-header">
+                                        <a class="collapsed faq-collapse" data-bs-toggle="collapse" href="#collapseFour">
+                                           <i class="fas fa-align-justify"></i> Introduction 3 {{obj.title}}
+                                        </a>
+                                        <div class="faq-right">
+                                          <a href="javascript:void(0);">
+                                            <i class="far fa-pen-to-square me-1"></i>
+                                          </a>
+                                          <a href="javascript:void(0);" class="me-0">
+                                            <i class="far fa-trash-can"></i>
+                                          </a>
+                                        </div>
+                                      </div>
+                                      <div id="collapseFour" class="collapse" data-bs-parent="#accordion-one">
+                                        <div class="faq-body">
+                                            <div class="add-article-btns">
+                                              <a href="javascript:void(0);" class="btn">Add Article</a>
+                                              <a href="javascript:void(0);" class="btn me-0">Add Description</a>
+                                            </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                {% else %}
+
+                                <!--batas subsection-->
+                                <div class="faq-grid">
+                                  <div class="faq-header">
+                                    <a class="collapsed faq-collapse" data-bs-toggle="collapse" href="#collapseFour-{{i.slug}}">
+                                       <i class="fas fa-align-justify"></i> A.1 {{obj.title}}
+                                    </a>
+                                    <div class="faq-right">
+                                      <a href="javascript:void(0);">
+                                        <i class="far fa-pen-to-square me-1"></i>
+                                      </a>
+                                      <a href="javascript:void(0);" class="me-0">
+                                        <i class="far fa-trash-can"></i>
+                                      </a>
+                                    </div>
+                                  </div>
+                                  <div id="collapseFour-{{i.slug}}" class="collapse" data-bs-parent="#accordion-one">
+                                    <div class="faq-body">
+                                        <div class="add-article-btns">
+
+                                          {% for subobj in obj.children.all %}
+                                <p>A.1.1 {{subobj.title}}</p>
+                                {% endfor %}
+                                          <a href="javascript:void(0);" class="btn">Add Article</a>
+                                          <a href="javascript:void(0);" class="btn me-0">Add Description</a>
+                                        </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                
+
+                              {% endif %}
+                    {% endfor %}
+
+                                <!--end batas subsection-->
+                               
+                                
+                                
+                              </div>
+                            </div>
+                          </div>
+                          
+                         
+                                        <p></p>
+                                    
+                            <!--SAMPAI SINI-->
+                {% endif %}
+            {% endfor %}
+
+            <div class="widget-btn">
+              <a class="btn btn-black prev_btn">Previous</a>
+              <a class="btn btn-info-light next_btn">Continue</a>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!-- Modal new section -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Input new section</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <input class="form-control" type="text" name="text" id="text">
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Save</button>
+        </fieldset>
         
-      </div>
+
+  </div>
+  </div>
+
+
     </div>
   </div>
-</div>
-
-
-<!-- Modal new sub section -->
-<div class="modal fade" id="subsectionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Input sub section</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <input class="form-control" type="text" name="text" id="text">
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Save</button>
-        
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-
-
-
-
-</div>
-</div>
-
-
-  </div>
-</div>
 
 
 
