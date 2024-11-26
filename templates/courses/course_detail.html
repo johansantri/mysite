@@ -24,7 +24,9 @@
                 <!--jika kosong mulai dari sini-->
                 <div class="curriculum-grid mb-0">
                   <div class="curriculum-head">
-                    <p>Section 1: {{i.title}}</p>
+                    <div class="col-8">
+                      <input  name="" value="{{i.title}}" style="background:rgba(227, 227, 227, 0.41);" type="text" class="form-control"/>
+                     </div>
                     <a href="javascript:void(0);" class="btn">+ Subsection</a>
                   </div>
                   <div class="curriculum-info">
@@ -42,7 +44,7 @@
                           <div class="curriculum-grid mb-0">
                             <div class="curriculum-head">
                               
-                             <div class="col-10">
+                             <div class="col-8">
                               <input  name="" value="{{i.title}}" style="background:rgba(227, 227, 227, 0.41);" type="text" class="form-control"/>
                              </div>
                               <a href="javascript:void(0);" class="btn">+ Subsection</a>
@@ -57,7 +59,7 @@
                                     <div class="faq-grid">
                                       <div class="faq-header">
                                         <a class="collapsed faq-collapse" data-bs-toggle="collapse" href="#collapseFour">
-                                           <i class="fas fa-align-justify"></i> <div class="col-10">
+                                           <i class="fas fa-align-justify"></i> <div class="col-8">
                                             <input  name="" value="{{obj.title}}"  type="text" class="form-control"/>
                                            </div>
                                         </a>
@@ -86,7 +88,7 @@
                                 <div class="faq-grid">
                                   <div class="faq-header">
                                     <a class="collapsed faq-collapse" data-bs-toggle="collapse" href="#collapseFour-{{i.slug}}">
-                                       <i class="fas fa-align-justify"></i> <div class="col-10">
+                                       <i class="fas fa-align-justify"></i> <div class="col-8">
                                         <input  name="" value="{{obj.title}}"  type="text" class="form-control"/>
                                        </div>
                                     </a>
@@ -104,7 +106,10 @@
                                         <div class="add-article-btns">
 
                                           {% for subobj in obj.children.all %}
-                                <p>A.1.1 {{subobj.title}}</p>
+                              
+                                <a href="javascript:void(0);" >A.1.1 {{subobj.title}}</a>
+                                <br>
+                                
                                 {% endfor %}
                                           <a href="javascript:void(0);" class="btn">Add Article</a>
                                           <a href="javascript:void(0);" class="btn me-0">Add Description</a>
@@ -133,9 +138,9 @@
                 {% endif %}
             {% endfor %}
 
-            <div class="widget-btn">
-              <a class="btn btn-black prev_btn">Previous</a>
-              <a class="btn btn-info-light next_btn">Continue</a>
+           
+            <div class="row widget-btn">
+            <button type="button" class="btn btn-success" >+ Section</button>
             </div>
           </div>
         </fieldset>
