@@ -25,7 +25,7 @@
                 <div class="curriculum-grid mb-0">
                   <div class="curriculum-head">
                     <p>Section 1: {{i.title}}</p>
-                    <a href="javascript:void(0);" class="btn">Add Lecture</a>
+                    <a href="javascript:void(0);" class="btn">+ Subsection</a>
                   </div>
                   <div class="curriculum-info">
                     <div id="accordion-one">
@@ -37,11 +37,16 @@
                 {% else %}
                           <!--DIMULAI DARI SINI-->
                          
+                         
 
                           <div class="curriculum-grid mb-0">
                             <div class="curriculum-head">
-                              <p>A {{i.title}}</p>
-                              <a href="javascript:void(0);" class="btn">Add Lecture</a>
+                              
+                             <div class="col-10">
+                              <input  name="" value="{{i.title}}" style="background:rgba(227, 227, 227, 0.41);" type="text" class="form-control"/>
+                             </div>
+                              <a href="javascript:void(0);" class="btn">+ Subsection</a>
+                              
                             </div>
                             <div class="curriculum-info">
                               <div id="accordion-one">
@@ -52,8 +57,11 @@
                                     <div class="faq-grid">
                                       <div class="faq-header">
                                         <a class="collapsed faq-collapse" data-bs-toggle="collapse" href="#collapseFour">
-                                           <i class="fas fa-align-justify"></i> Introduction 3 {{obj.title}}
+                                           <i class="fas fa-align-justify"></i> <div class="col-10">
+                                            <input  name="" value="{{obj.title}}"  type="text" class="form-control"/>
+                                           </div>
                                         </a>
+                                        
                                         <div class="faq-right">
                                           <a href="javascript:void(0);">
                                             <i class="far fa-pen-to-square me-1"></i>
@@ -78,7 +86,9 @@
                                 <div class="faq-grid">
                                   <div class="faq-header">
                                     <a class="collapsed faq-collapse" data-bs-toggle="collapse" href="#collapseFour-{{i.slug}}">
-                                       <i class="fas fa-align-justify"></i> A.1 {{obj.title}}
+                                       <i class="fas fa-align-justify"></i> <div class="col-10">
+                                        <input  name="" value="{{obj.title}}"  type="text" class="form-control"/>
+                                       </div>
                                     </a>
                                     <div class="faq-right">
                                       <a href="javascript:void(0);">
