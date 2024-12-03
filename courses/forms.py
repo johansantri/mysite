@@ -1,6 +1,13 @@
 # forms.py
 from django import forms
-from .models import Course, Partner
+from .models import Course, Partner, Section
+
+
+#add section
+class SectionForm(forms.ModelForm):
+    class Meta:
+        model = Section
+        fields = ['title','courses']
 
 class CourseForm(forms.ModelForm):
     class Meta:

@@ -3,10 +3,39 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 
 from django.contrib.auth.decorators import login_required
-from .forms import CourseForm, PartnerForm
+from .forms import CourseForm, PartnerForm, SectionForm
 from django.http import JsonResponse
 from .models import Course, Partner, Section
 
+
+#add section
+def create_section(request):
+    if request.method == "POST":
+        form = SectionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'status': 'success', 'message': 'Section created!'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Form is not valid'})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+# Delete section
+def delete_section(request, pk):
+    item = get_object_or_404(Section, pk=pk)
+    item.delete()
+    return JsonResponse({'status': 'success', 'message': 'section deleted!'})
+
+# Update Section
+def update_section(request, pk):
+    item = get_object_or_404(Section, pk=pk)
+    if request.method == "POST":
+        form = SectionForm(request.POST, instance=item)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'status': 'success', 'message': 'Item updated!'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Form is not valid'})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
 def courseView(request):
     # Check if the user is authenticated
