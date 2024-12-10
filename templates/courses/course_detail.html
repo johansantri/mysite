@@ -103,7 +103,7 @@
                 <!--jika kosong mulai dari sini-->
                 <div class="curriculum-grid mb-0" >
                   <div class="curriculum-head" >
-                    <div class="col-8" onClick="update_click(this.id)" id="{{i.id}}">
+                    <div class="col-8" >
                       
                       <input  name="titleupsection" id="titleupsection-{{i.id}}" autocomplete="off" value="{{i.title}}" style="background:rgba(227, 227, 227, 0.41);" type="text" class="form-control ada"/>
                       <input  name="idupsection" id="idupsection-{{i.id}}" value="{{i.id}}" style="background:rgba(227, 227, 227, 0.41);" type="hidden" class="form-control ada"/>
@@ -239,10 +239,11 @@
 
     </div>
   </div>
+
 <!--script-->
 <script>
   $(document).ready(function() {
-    
+    //$('#muncul').hide();
     // Create section
     //create function
     function submitForm(){
@@ -265,16 +266,16 @@
               'title': title,
               'courses': courses,
           },
-            success: function(response) {
-                if (response.status == 'success') {
-                    
-                    $('#createModal').modal('hide');
-                    $('#title').val('');
-                  // $('#courses').val('');
-                   location.reload();
+                success: function(response) {
+                    if (response.status == 'success') {
+                        
+                        $('#createModal').modal('hide');
+                        $('#title').val('');
+                      // $('#courses').val('');
+                      location.reload();
+                    }
                 }
-            }
-        });
+                });
         //endajax
     }
     //endfunction
@@ -311,59 +312,65 @@
         success: function(response) {
             if (response.status == 'success') {
              //   $('#item-' + itemId).remove();
-               // location.reload();
+                location.reload();
             }
         }
     });
   });
 
 
-  function update_click(clicked_id) {
-    // Dynamically build the selectors based on the clicked_id
-    var titleSelector = `#titleupsection-${clicked_id}`;
-    var itemIdSelector = `#idupsection-${clicked_id}`;
-    var idCourse = `#courses_id-${clicked_id}`;
-    // Get the values from the respective inputs
-    var title = $(titleSelector).val();
-    var itemId = $(itemIdSelector).val();
-    var id_course = $(idCourse).val();
 
-    // Debug: Log the values to the console
-    console.log(title);
-    console.log(itemId);
-    console.log(id_course);
-    // Get the CSRF token for security
-    var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+function sendData(itemId) {
+        var title = $('#titleupsection-' + itemId).val();
+        var course = $('#idupsection-' + itemId).val();
+        var courseId = $('#courses_id-' + itemId).val();
 
-    // Make the AJAX request to update the section
-    $.ajax({
-        url: `/update-section/${itemId}/`,
-        method: 'POST',
-        data: {
-            'csrfmiddlewaretoken': csrfToken,
-            'id': itemId,
-            'title': title,
-            'courses':id_course
-        },
-        success: function(response) {
-            if (response.status === 'success') {
-                // Optionally hide a modal or update the UI
-                //alert(`Section updated successfully with ID: ${itemId}`);
-               // location.reload();  // Reload the page to reflect the changes
-               console.log(`Section updated successfully with `)
-              
-            } else {
-                alert('Update failed. Please try again.');
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('AJAX Error:', status, error);
-            alert('An error occurred. Please try again later.');
+        // Check if all fields have been filled
+        if (!title || !course || !courseId) {
+            alert('Please fill in all fields');
+            return;
         }
+
+        // Get CSRF token for the request
+        var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+
+         // Make the AJAX request to update the section
+    $.ajax({
+      url: `/update-section/${itemId}/`,
+      method: 'POST',
+      data: {
+          'csrfmiddlewaretoken': csrfToken,
+          'id': course,
+          'title': title,
+          'courses':courseId
+      },
+      success: function(response) {
+          if (response.status === 'success') {
+              // Optionally hide a modal or update the UI
+              //alert(`Section updated successfully with ID: ${itemId}`);
+             // location.reload();  // Reload the page to reflect the changes
+             console.log(`Section updated successfully with `)
+  
+            
+          } else {
+              alert('Update failed. Please try again.');
+          }
+      },
+      error: function(xhr, status, error) {
+          console.error('AJAX Error:', status, error);
+          alert('An error occurred. Please try again later.');
+      }
     });
-}
+      }
 
-
+       // Handle keypress (Enter key) for dynamically generated input fields
+    $('input[id^="titleupsection-"], input[id^="idupsection-"], input[id^="courses_id-"]').keypress(function (event) {
+      if (event.keyCode === 13) {  // Enter key code
+          var inputId = $(this).attr('id');
+          var itemId = inputId.split('-')[1];  // Extract the item ID from the ID of the input
+          sendData(itemId);  // Call the sendData function
+      }
+  });
 </script>
 
 
