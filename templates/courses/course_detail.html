@@ -319,58 +319,59 @@
   });
 
 
+            //sendata update
+          function sendData(itemId) {
+                    var title = $('#titleupsection-' + itemId).val();
+                    var course = $('#idupsection-' + itemId).val();
+                    var courseId = $('#courses_id-' + itemId).val();
 
-function sendData(itemId) {
-        var title = $('#titleupsection-' + itemId).val();
-        var course = $('#idupsection-' + itemId).val();
-        var courseId = $('#courses_id-' + itemId).val();
+                    // Check if all fields have been filled
+                    if (!title || !course || !courseId) {
+                        alert('Please fill in all fields');
+                        return;
+                    }
 
-        // Check if all fields have been filled
-        if (!title || !course || !courseId) {
-            alert('Please fill in all fields');
-            return;
-        }
+                    // Get CSRF token for the request
+                    var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
 
-        // Get CSRF token for the request
-        var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+                    // Make the AJAX request to update the section
+                $.ajax({
+                  url: `/update-section/${itemId}/`,
+                  method: 'POST',
+                  data: {
+                      'csrfmiddlewaretoken': csrfToken,
+                      'id': course,
+                      'title': title,
+                      'courses':courseId
+                  },
+                  success: function(response) {
+                      if (response.status === 'success') {
+                          // Optionally hide a modal or update the UI
+                          //alert(`Section updated successfully with ID: ${itemId}`);
+                        // location.reload();  // Reload the page to reflect the changes
+                        console.log(`Section updated successfully with `)
+              
+                        
+                      } else {
+                          alert('Update failed. Please try again.');
+                      }
+                  },
+                  error: function(xhr, status, error) {
+                      console.error('AJAX Error:', status, error);
+                      alert('An error occurred. Please try again later.');
+                  }
+                });
+                  }
 
-         // Make the AJAX request to update the section
-    $.ajax({
-      url: `/update-section/${itemId}/`,
-      method: 'POST',
-      data: {
-          'csrfmiddlewaretoken': csrfToken,
-          'id': course,
-          'title': title,
-          'courses':courseId
-      },
-      success: function(response) {
-          if (response.status === 'success') {
-              // Optionally hide a modal or update the UI
-              //alert(`Section updated successfully with ID: ${itemId}`);
-             // location.reload();  // Reload the page to reflect the changes
-             console.log(`Section updated successfully with `)
-  
-            
-          } else {
-              alert('Update failed. Please try again.');
-          }
-      },
-      error: function(xhr, status, error) {
-          console.error('AJAX Error:', status, error);
-          alert('An error occurred. Please try again later.');
-      }
-    });
-      }
-
-       // Handle keypress (Enter key) for dynamically generated input fields
-    $('input[id^="titleupsection-"], input[id^="idupsection-"], input[id^="courses_id-"]').keypress(function (event) {
-      if (event.keyCode === 13) {  // Enter key code
-          var inputId = $(this).attr('id');
-          var itemId = inputId.split('-')[1];  // Extract the item ID from the ID of the input
-          sendData(itemId);  // Call the sendData function
-      }
-  });
+                  // Handle keypress (Enter key) for dynamically generated input fields
+                $('input[id^="titleupsection-"]').keypress(function (event) {
+                  if (event.keyCode === 13) {  // Enter key code
+                      var inputId = $(this).attr('id');
+                      var itemId = inputId.split('-')[1];  // Extract the item ID from the ID of the input
+                     // console.log(itemId);
+                      sendData(itemId);  // Call the sendData function
+                  }
+              });
 </script>
 
 
