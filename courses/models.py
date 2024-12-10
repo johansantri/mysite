@@ -50,7 +50,7 @@ class Course(models.Model):
 class Section(models.Model):
     parent = models.ForeignKey('self', related_name='children', on_delete=models.CASCADE, blank = True, null=True)
     title = models.CharField(max_length=100) 
-    slug = AutoSlugField(populate_from='title', unique=True, null=False, editable=False)
+    slug = AutoSlugField(populate_from='title', unique=True, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     courses=models.ForeignKey(Course,on_delete=models.CASCADE,related_name='course_id')
 

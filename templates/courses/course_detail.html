@@ -1,6 +1,7 @@
 {% extends 'home/base.html' %}
 {% block content %}
 
+
 <div class="page-content">
   <div class="container">
     <div class="row">
@@ -74,7 +75,7 @@
                           {% csrf_token %}
                         <div class="modal-body">
                           <span id="courses" style="display:none">{{course.id}}</span>
-                          <input type="text" class="form-control" id="title" name="title" value="{{course.course_name}}" aria-describedby="section">
+                          <input type="text" class="form-control" autocomplete="off" id="title" name="title" value="{{course.course_name}}" aria-describedby="section">
                           <div id="error-message" style="color: red; display: none;"></div>
                           
                         </div>
@@ -100,13 +101,15 @@
                 {% if not i.children.all %}
                
                 <!--jika kosong mulai dari sini-->
-                <div class="curriculum-grid mb-0">
-                  <div class="curriculum-head">
-                    <div class="col-8">
-                      <input  name="titleupsection" id="titleupsection" value="{{i.title}}" style="background:rgba(227, 227, 227, 0.41);" type="text" class="form-control"/>
-                      <input  name="idupsection" id="idupsection" value="{{i.id}}" style="background:rgba(227, 227, 227, 0.41);" type="hidden" class="form-control"/>
+                <div class="curriculum-grid mb-0" >
+                  <div class="curriculum-head" >
+                    <div class="col-8" onClick="update_click(this.id)" id="{{i.id}}">
+                      
+                      <input  name="titleupsection" id="titleupsection-{{i.id}}" autocomplete="off" value="{{i.title}}" style="background:rgba(227, 227, 227, 0.41);" type="text" class="form-control ada"/>
+                      <input  name="idupsection" id="idupsection-{{i.id}}" value="{{i.id}}" style="background:rgba(227, 227, 227, 0.41);" type="hidden" class="form-control ada"/>
+                      <input  name="courses_id" id="courses_id-{{i.id}}" value="{{i.courses_id}}" style="background:rgba(227, 227, 227, 0.41);" type="hidden" class="form-control ada"/>
                      </div>
-                    <a href="javascript:void(0);" class="btn delete-btn-section" data-id="{{ i.id }}"><i class="fa fa-trash-can"></i> delete sub</a>  <a href="javascript:void(0);" class="btn"><i class="fa fa-plus"> </i> add sub</a>
+                       <a href="javascript:void(0);" class="btn delete-btn-section" data-id="{{ i.id }}"><i class="fa fa-trash-can"></i> </a>  <a href="javascript:void(0);" class="btn"><i class="fa fa-plus"> </i> </a>
                    
                   </div>
                   <div class="curriculum-info">
@@ -239,6 +242,7 @@
 <!--script-->
 <script>
   $(document).ready(function() {
+    
     // Create section
     //create function
     function submitForm(){
@@ -306,50 +310,60 @@
       },
         success: function(response) {
             if (response.status == 'success') {
-                $('#item-' + itemId).remove();
-                location.reload();
+             //   $('#item-' + itemId).remove();
+               // location.reload();
             }
         }
     });
   });
 
 
-      // Update item
-      $('#updateForm').submit(function(e) {
-        e.preventDefault();
-        
-    });
+  function update_click(clicked_id) {
+    // Dynamically build the selectors based on the clicked_id
+    var titleSelector = `#titleupsection-${clicked_id}`;
+    var itemIdSelector = `#idupsection-${clicked_id}`;
+    var idCourse = `#courses_id-${clicked_id}`;
+    // Get the values from the respective inputs
+    var title = $(titleSelector).val();
+    var itemId = $(itemIdSelector).val();
+    var id_course = $(idCourse).val();
 
+    // Debug: Log the values to the console
+    console.log(title);
+    console.log(itemId);
+    console.log(id_course);
+    // Get the CSRF token for security
+    var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
 
-    $('#titleupsection').keypress(function(event) {
-      if (event.which === 13) {  // "Enter" key has a keyCode of 13
-      event.preventDefault();  // Prevent form submission
-      var title = $('#titleupsection').val();
-      var courses = $('#courses').text();
-
-      // Get CSRF token
-      var csrfToken = $('input[name="csrfmiddlewaretoken"]').val(); 
-      var itemId = $('#idupsection').val();
-        $.ajax({
-          url: `/update-section/${itemId}/`,
-            method: 'POST',
-            data: {
-              'csrfmiddlewaretoken': csrfToken,
-              'id':itemId,
-              'title': title,
-              'courses': courses,
-          },
-            success: function(response) {
-                if (response.status == 'success') {
-                   // $('#updateModal').modal('hide');
-                    location.reload();
-                }
+    // Make the AJAX request to update the section
+    $.ajax({
+        url: `/update-section/${itemId}/`,
+        method: 'POST',
+        data: {
+            'csrfmiddlewaretoken': csrfToken,
+            'id': itemId,
+            'title': title,
+            'courses':id_course
+        },
+        success: function(response) {
+            if (response.status === 'success') {
+                // Optionally hide a modal or update the UI
+                //alert(`Section updated successfully with ID: ${itemId}`);
+               // location.reload();  // Reload the page to reflect the changes
+               console.log(`Section updated successfully with `)
+              
+            } else {
+                alert('Update failed. Please try again.');
             }
-        });
-      
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX Error:', status, error);
+            alert('An error occurred. Please try again later.');
+        }
+    });
+}
 
-      }
-      });
+
 </script>
 
 

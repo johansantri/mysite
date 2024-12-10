@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
-
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from .forms import CourseForm, PartnerForm, SectionForm
 from django.http import JsonResponse
@@ -9,6 +9,7 @@ from .models import Course, Partner, Section
 
 
 #add section
+@csrf_exempt
 def create_section(request):
     if request.method == "POST":
         form = SectionForm(request.POST)
@@ -20,12 +21,14 @@ def create_section(request):
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
 # Delete section
+@csrf_exempt
 def delete_section(request, pk):
     item = get_object_or_404(Section, pk=pk)
     item.delete()
     return JsonResponse({'status': 'success', 'message': 'section deleted!'})
 
 # Update Section
+@csrf_exempt
 def update_section(request, pk):
     item = get_object_or_404(Section, pk=pk)
     if request.method == "POST":
@@ -34,7 +37,8 @@ def update_section(request, pk):
             form.save()
             return JsonResponse({'status': 'success', 'message': 'Item updated!'})
         else:
-            return JsonResponse({'status': 'error', 'message': 'Form is not valid'})
+            # Log or return specific form errors for debugging
+            return JsonResponse({'status': 'error', 'message': 'Form is not valid', 'errors': form.errors})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
 def courseView(request):
@@ -124,7 +128,7 @@ def studio(request, id):
     course = get_object_or_404(Course, id=id)
     section = Section.objects.filter(parent=None, courses_id=course.id)  # Make sure `courses_id` matches your field in Section model
 
-    print(section)
+   # print(section)
 
     # Render the page normally for non-Ajax requests
     return render(request, 'courses/course_detail.html', {'course': course,'section':section})
