@@ -63,7 +63,7 @@
         </nav>
        
        
-                  <!-- Modal -->
+                  <!-- Modal section baru-->
                   <div class="modal fade" id="exampleModal-{{course.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                       <div class="modal-content">
@@ -88,6 +88,10 @@
                     </div>
                   </div>
 
+                  <!--and modal section baru-->
+
+
+
         <fieldset class="field-card">
           <div class="add-course-info">
             <div class="add-course-inner-header">
@@ -100,7 +104,7 @@
             {% for i in section %}
                 {% if not i.children.all %}
                
-                <!--jika kosong mulai dari sini-->
+                <!--jika section kosong mulai dari sini-->
                 <div class="curriculum-grid mb-0" >
                   <div class="curriculum-head" >
                     <div class="col-8" >
@@ -110,7 +114,8 @@
                       <input  name="idupsection" id="idupsection-{{i.id}}" value="{{i.id}}" style="background:rgba(227, 227, 227, 0.41);" type="hidden" class="form-control ada"/>
                       <input  name="courses_id" id="courses_id-{{i.id}}" value="{{i.courses_id}}" style="background:rgba(227, 227, 227, 0.41);" type="hidden" class="form-control ada"/>
                      </div>
-                       <a href="javascript:void(0);" class="btn delete-btn-section" data-id="{{ i.id }}"><i class="fa fa-trash-can"></i> </a>  <a href="javascript:void(0);" class="btn"><i class="fa fa-plus"> </i> </a>
+                       <a href="javascript:void(0);" class="btn delete-btn-section" data-id="{{ i.id }}"><i class="fa fa-trash-can"></i> </a> 
+                       <a href="javascript:void(0);" class="btn" data-id="{{i.id}}" data-bs-toggle="modal" data-bs-target="#exampleModal-{{i.id}}"><i class="fa fa-plus"> </i> </a>
                    
                   </div>
                   <div class="curriculum-info">
@@ -121,6 +126,34 @@
                 </div>
                 <br>
                 <!--end kosong-->
+
+
+                  <!-- Modal Subsection -->
+                  <div class="modal fade" id="exampleModal-{{i.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">New Subsection</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            {% csrf_token %}
+                            <div class="modal-body">
+                                <input type="text" class="form-control" autocomplete="off" id="title-{{i.id}}" name="title" placeholder="Subsection">
+                                <input type="hidden" class="form-control" id="courses-{{i.id}}" name="courses" value="{{course.id}}">
+                                <input type="hidden" class="form-control" id="parent-{{i.id}}" name="parent" value="{{i.id}}">
+                                <div id="error-message-{{i.id}}" style="color: red; display: none;"></div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" id="createSubForm-{{i.id}}" class="btn btn-primary">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+
+
+                  <!--and modal sub section kosong-->
+
                 {% else %}
                           <!--DIMULAI DARI SINI-->
                          
@@ -240,12 +273,67 @@
 
     </div>
   </div>
-
-<!--script-->
+<!--script sub section-->
 <script>
+  
+  // This function handles form submission
+function createSub(id) {
+  var itemId = id.split('-')[1]; // Extract the item ID from the button ID
+  var title = $('#title-' + itemId).val();
+  var courses = $('#courses-' + itemId).val();
+  var parent = $('#parent-' + itemId).val();
+  var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+
+  // Validation: Check if title is provided
+  if (!title) {
+      $('#error-message-' + itemId).text('Title is required').show();
+      return;
+  }
+
+  // AJAX request to save the new subsection
+  $.ajax({
+      url: '{% url "courses:create_section" %}',  // Replace with the correct endpoint for saving the subsection
+      method: 'POST',
+      data: {
+          'csrfmiddlewaretoken': csrfToken,
+          'title': title,
+          'courses': courses,
+          'parent': parent
+      },
+      success: function(response) {
+          if (response.status === 'success') {
+              $('#exampleModal-' + itemId).modal('hide');  // Close the modal
+              alert('Subsection created successfully!');
+              location.reload();  // Optional: reload page to reflect changes
+          } else {
+              $('#error-message-' + itemId).text(response.message).show();
+          }
+      },
+      error: function(xhr, status, error) {
+          console.error('AJAX Error: ' + status + ' - ' + error);
+          $('#error-message-' + itemId).text('An error occurred. Please try again.').show();
+      }
+  });
+}
+
+// Attach the event listener dynamically to all Save buttons
+$(document).ready(function() {
+  $(document).on('click', '.btn-primary', function() {
+      var buttonId = $(this).attr('id');  // Get the ID of the button clicked
+      createSub(buttonId);  // Call createSub function with the button's ID
+  });
+});
+
+
+
+</script>
+<!--end sub script-->
+<!--script section-->
+<script>
+ 
+
   $(document).ready(function() {
-    //$('#muncul').hide();
-    // Create section
+    
     //create function
     function submitForm(){
       var title = $('#title').val();
@@ -296,28 +384,28 @@
           });
           //end enter
                                 
-        });
+          });
 
 
-  // delete section
-  
-  $('.delete-btn-section').click(function() {
-    var itemId = $(this).data('id');
-    var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
-    $.ajax({
-        url: `/delete-section/${itemId}/`,
-        method: 'POST',
-        data: {
-          'csrfmiddlewaretoken': csrfToken
-      },
-        success: function(response) {
-            if (response.status == 'success') {
-             //   $('#item-' + itemId).remove();
-                location.reload();
-            }
-        }
-    });
-  });
+          // delete section
+          
+          $('.delete-btn-section').click(function() {
+            var itemId = $(this).data('id');
+            var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+            $.ajax({
+                url: `/delete-section/${itemId}/`,
+                method: 'POST',
+                data: {
+                  'csrfmiddlewaretoken': csrfToken
+              },
+                success: function(response) {
+                    if (response.status == 'success') {
+                    //   $('#item-' + itemId).remove();
+                        location.reload();
+                    }
+                }
+            });
+          });
 
 
             //sendata update
@@ -374,6 +462,8 @@
                       sendData(itemId);  // Call the sendData function
                   }
               });
+
+
 </script>
 
 

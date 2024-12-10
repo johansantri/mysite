@@ -7,7 +7,7 @@ from .models import Course, Partner, Section
 class SectionForm(forms.ModelForm):
     class Meta:
         model = Section
-        fields = ['title','courses']
+        fields = ['title','courses','parent']
 
 class CourseForm(forms.ModelForm):
     class Meta:
