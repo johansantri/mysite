@@ -106,6 +106,7 @@
                     <div class="col-8" >
                       
                       <input  name="titleupsection" id="titleupsection-{{i.id}}" autocomplete="off" value="{{i.title}}" style="background:rgba(227, 227, 227, 0.41);" type="text" class="form-control ada"/>
+                      <div id="error-section-{{i.id}}" style="color: red; display: none;"></div>
                       <input  name="idupsection" id="idupsection-{{i.id}}" value="{{i.id}}" style="background:rgba(227, 227, 227, 0.41);" type="hidden" class="form-control ada"/>
                       <input  name="courses_id" id="courses_id-{{i.id}}" value="{{i.courses_id}}" style="background:rgba(227, 227, 227, 0.41);" type="hidden" class="form-control ada"/>
                      </div>
@@ -327,7 +328,7 @@
 
                     // Check if all fields have been filled
                     if (!title || !course || !courseId) {
-                        alert('Please fill in all fields');
+                        $('#error-section-'+itemId).text('required').show();
                         return;
                     }
 
@@ -349,6 +350,7 @@
                           // Optionally hide a modal or update the UI
                           //alert(`Section updated successfully with ID: ${itemId}`);
                         // location.reload();  // Reload the page to reflect the changes
+                        $('#error-section-'+itemId).text('required').hide();
                         console.log(`Section updated successfully with `)
               
                         
