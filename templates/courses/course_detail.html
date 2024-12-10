@@ -155,6 +155,34 @@
                   <!--and modal sub section kosong-->
 
                 {% else %}
+
+
+                 <!-- Modal new sub -->
+                 <div class="modal fade" id="newModal-{{i.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered">
+                      <div class="modal-content">
+                          <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLabel">New Subsection</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          {% csrf_token %}
+                          <div class="modal-body">
+                              <input type="text" class="form-control" autocomplete="off" id="title-{{i.id}}" name="title" placeholder="Subsection">
+                              <input type="hidden" class="form-control" id="courses-{{i.id}}" name="courses" value="{{course.id}}">
+                              <input type="hidden" class="form-control" id="parent-{{i.id}}" name="parent" value="{{i.id}}">
+                              <div id="error-message-{{i.id}}" style="color: red; display: none;"></div>
+                          </div>
+                          <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                              <button type="button" id="createSubForm-{{i.id}}" class="btn btn-primary">Save</button>
+                          </div>
+                      </div>
+                  </div>
+                </div>
+
+
+                <!--and modal sub section kosong-->
+
                           <!--DIMULAI DARI SINI-->
                          
                          
@@ -163,9 +191,15 @@
                             <div class="curriculum-head">
                               
                              <div class="col-8">
-                              <input  name="" value="{{i.title}}" style="background:rgba(227, 227, 227, 0.41);" type="text" class="form-control"/>
+                              <input  name="" value="{{i.title}}" id="titlepusection-{{i.id}}" style="background:rgba(227, 227, 227, 0.41);" type="text" class="form-control"/>
+                              
+                              <div id="error-section-{{i.id}}" style="color: red; display: none;"></div>
+                              <input  name="idupsection" id="idpusection-{{i.id}}" value="{{i.id}}" style="background:rgba(227, 227, 227, 0.41);" type="hidden" class="form-control ada"/>
+                              <input  name="courses_id" id="courses_id-{{i.id}}" value="{{i.courses_id}}" style="background:rgba(227, 227, 227, 0.41);" type="hidden" class="form-control ada"/>
                              </div>
-                             <a href="javascript:void(0);" class="btn"><i class="fa fa-trash-can"></i> delete sub</a>  <a href="javascript:void(0);" class="btn"><i class="fa fa-plus"> </i> add sub</a>
+                             <a href="javascript:void(0);" class="btn delete-btn-section" data-id="{{ i.id }}"><i class="fa fa-trash-can"></i> </a>  
+                             
+                             <a href="javascript:void(0);" class="btn" data-id="{{i.id}}" data-bs-toggle="modal" data-bs-target="#newModal-{{i.id}}"><i class="fa fa-plus"> </i> </a>
                               
                             </div>
                             <div class="curriculum-info">
@@ -176,7 +210,7 @@
                                     
                                     <div class="faq-grid">
                                       <div class="faq-header">
-                                        <a class="collapsed faq-collapse" data-bs-toggle="collapse" href="#collapseFour">
+                                        <a class="collapsed faq-collapse" data-bs-toggle="collapse" href="#collapseFour-{{obj.id}}">
                                            <i class="fas fa-align-justify"></i> <div class="col-8">
                                             <input  name="" value="{{obj.title}}"  type="text" class="form-control"/>
                                            </div>
@@ -191,7 +225,7 @@
                                           </a>
                                         </div>
                                       </div>
-                                      <div id="collapseFour" class="collapse" data-bs-parent="#accordion-one">
+                                      <div id="collapseFour-{{obj.id}}" class="collapse" data-bs-parent="#accordion-one">
                                         <div class="faq-body">
                                             <div class="add-article-btns">
                                               <a href="javascript:void(0);" class="btn">Add Article</a>
@@ -387,7 +421,7 @@ $(document).ready(function() {
           });
 
 
-          // delete section
+          // delete section new
           
           $('.delete-btn-section').click(function() {
             var itemId = $(this).data('id');
@@ -407,6 +441,8 @@ $(document).ready(function() {
             });
           });
 
+             
+  
 
             //sendata update
           function sendData(itemId) {
