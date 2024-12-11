@@ -109,36 +109,47 @@ def paginate_courses(request, posts):
     paginator = Paginator(posts, 5)
     page_number = request.GET.get('page')
     return paginator.get_page(page_number)
-
+#create course
 def course_create_view(request):
-    if request.method == 'POST':
-        form = CourseForm(request.POST, user=request.user)  # Pass the logged-in user to the form
-        if form.is_valid():
-            form = form.save(commit=False)
-            form.author_id = request.user.id
-            form.save()  # Save the course with the selected partner
-            return redirect('/courses')  # Redirect to a course list page or success page
-    else:
-        form = CourseForm(user=request.user)  # Pass the logged-in user to the form
-
+    if request.user.is_partner or request.user.is_superuser:
+        if request.method == 'POST':
+            form = CourseForm(request.POST, user=request.user)  # Pass the logged-in user to the form
+            if form.is_valid():
+                form = form.save(commit=False)
+                form.author_id = request.user.id
+                form.save()  # Save the course with the selected partner
+                return redirect('/partner')  # Redirect to a course list page or success page
+        else:
+            form = CourseForm(user=request.user)  # Pass the logged-in user to the form
+    else :
+        return redirect('/partner')
     return render(request, 'courses/course_add.html', {'form': form})
 
-
+#studio detail courses
 def studio(request, id):
-    if not request.user.is_partner:
-        return redirect('/')
+ 
 
-    # Assuming `id` refers to the course id you're trying to filter
-    course = Course.objects.filter(id=id, author_id=request.user.id).first()
-    
+    # Determine the course based on the user's role
+    if request.user.is_superuser:
+        course = Course.objects.filter(id=id).first()
+    else:
+        course = Course.objects.filter(id=id, author_id=request.user.id).first()
+
+    # If no course is found, redirect to the courses list page
     if not course:
-        return redirect('/courses')  # If no course is found, redirect to the homepage
+        return redirect('/courses')
 
-    # Get sections related to the course
+    # Fetch sections related to the specific course
     section = Section.objects.filter(parent=None, courses_id=course.id)
 
-    # Render the page normally for non-Ajax requests
+    # Render the page with the course and sections data
     return render(request, 'courses/course_detail.html', {'course': course, 'section': section})
+
+
+
+
+
+
 
 
 

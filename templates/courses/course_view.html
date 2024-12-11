@@ -14,7 +14,12 @@
                 placeholder="Search for courses..."
             />
             <button id="search-button" class="btn btn-success btn-sm">Search</button>
-            
+            {% if user.is_superuser%}
+            <a href="{% url 'courses:course_create_view'%}" class="btn btn-primary">new</a>
+            {% endif %}
+            {% if user.is_partner%}
+            <a href="{% url 'courses:course_create_view'%}" class="btn btn-primary">new</a>
+            {% endif %}
         </div>
         
       <table id="courses-table" class="table table-striped table-hover">
