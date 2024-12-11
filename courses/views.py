@@ -125,13 +125,21 @@ def course_create_view(request):
 
 
 def studio(request, id):
-    course = get_object_or_404(Course, id=id)
-    section = Section.objects.filter(parent=None, courses_id=course.id)  # Make sure `courses_id` matches your field in Section model
+    if not request.user.is_partner:
+        return redirect('/')
 
-   # print(section)
+    # Assuming `id` refers to the course id you're trying to filter
+    course = Course.objects.filter(id=id, author_id=request.user.id).first()
+    
+    if not course:
+        return redirect('/courses')  # If no course is found, redirect to the homepage
+
+    # Get sections related to the course
+    section = Section.objects.filter(parent=None, courses_id=course.id)
 
     # Render the page normally for non-Ajax requests
-    return render(request, 'courses/course_detail.html', {'course': course,'section':section})
+    return render(request, 'courses/course_detail.html', {'course': course, 'section': section})
+
 
 
 #add partner
