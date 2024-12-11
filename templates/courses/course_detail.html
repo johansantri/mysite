@@ -53,7 +53,7 @@
               <h4 class="d-flex">{{course.course_name}}</h4>
               
                 
-                                             
+                                          
               
             </div>
             
@@ -61,7 +61,7 @@
 
           
         </nav>
-       
+        <hr>  
        
                   <!-- Modal section baru-->
                   <div class="modal fade" id="exampleModal-{{course.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -111,8 +111,8 @@
                       
                       <input  name="titleupsection" id="titleupsection-{{i.id}}" autocomplete="off" value="{{i.title}}" style="background:rgba(227, 227, 227, 0.41);" type="text" class="form-control ada"/>
                       <div id="error-section-{{i.id}}" style="color: red; display: none;"></div>
-                      <input  name="idupsection" id="idupsection-{{i.id}}" value="{{i.id}}" style="background:rgba(227, 227, 227, 0.41);" type="hidden" class="form-control ada"/>
-                      <input  name="courses_id" id="courses_id-{{i.id}}" value="{{i.courses_id}}" style="background:rgba(227, 227, 227, 0.41);" type="hidden" class="form-control ada"/>
+                      <input  name="idupsection" id="idupsection-{{i.id}}" value="{{i.id}}" style="background:rgba(227, 227, 227, 0.41);" type="hidden" class="form-control "/>
+                      <input  name="courses_id" id="courses_id-{{i.id}}" value="{{i.courses_id}}" style="background:rgba(227, 227, 227, 0.41);" type="hidden" class="form-control "/>
                      </div>
                        <a href="javascript:void(0);" class="btn delete-btn-section" data-id="{{ i.id }}"><i class="fa fa-trash-can"></i> </a> 
                        <a href="javascript:void(0);" class="btn" data-id="{{i.id}}" data-bs-toggle="modal" data-bs-target="#exampleModal-{{i.id}}"><i class="fa fa-plus"> </i> </a>
@@ -212,8 +212,12 @@
                                       <div class="faq-header">
                                         <a class="collapsed faq-collapse" data-bs-toggle="collapse" href="#collapseFour-{{obj.id}}">
                                            <i class="fas fa-align-justify"></i> <div class="col-8">
-                                            <input  name="" value="{{obj.title}}"  type="text" class="form-control"/>
-                                           </div>
+                                            <input  name="titlepusection" value="{{obj.title}}" id="titlepusection-{{obj.id}}"  type="text" class="form-control"/>
+                                            <input  name="parent_id" id="parent_id-{{obj.id}}" value="{{obj.parent_id}}"  type="hidden" class="form-control "/>
+                                            <input  name="courses_id" id="courses_id-{{obj.id}}" value="{{obj.courses_id}}"  type="hidden" class="form-control "/>
+                                            
+
+                                          </div>
                                         </a>
                                         
                                         <div class="faq-right">
@@ -229,6 +233,9 @@
                                         <div class="faq-body">
                                             <div class="add-article-btns">
                                               <a href="javascript:void(0);" class="btn">Add Article</a>
+                                              <a href="javascript:void(0);" class="btn me-0">Add Description</a>
+                                              <a href="javascript:void(0);" class="btn me-0">Add Description</a>
+                                              <a href="javascript:void(0);" class="btn me-0">Add Description</a>
                                               <a href="javascript:void(0);" class="btn me-0">Add Description</a>
                                             </div>
                                         </div>
@@ -359,6 +366,72 @@ $(document).ready(function() {
 });
 
 
+// Handle keypress (Enter key) for dynamically generated input fields
+$('input[id^="title-"]').keypress(function (event) {
+  if (event.keyCode === 13) {  // Enter key code
+    var buttonId = $(this).attr('id');  // Get the ID of the button clicked
+    createSub(buttonId);  // Call createSub function with the button's ID
+  }
+  });
+
+
+ //sendata update subsection
+ function sendDataSub(itemId) {
+  var title = $('#titlepusection-' + itemId).val();
+ // var course = $('#idupsection-' + itemId).val();
+  var courseId = $('#courses_id-' + itemId).val();
+  var parent = $('#parent_id-'+ itemId).val();
+
+  // Check if all fields have been filled
+  if (!title  || !courseId) {
+      $('#error-section-'+itemId).text('required').show();
+      return;
+  }
+  //alert()
+  // Get CSRF token for the request
+  var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+
+  // Make the AJAX request to update the section
+$.ajax({
+url: `/update-section/${itemId}/`,
+method: 'POST',
+data: {
+    'csrfmiddlewaretoken': csrfToken,
+    //'id': course,
+    'title': title,
+    'courses':courseId,
+    'parent':parent
+},
+success: function(response) {
+    if (response.status === 'success') {
+        // Optionally hide a modal or update the UI
+        //alert(`Section updated successfully with ID: ${itemId}`);
+      // location.reload();  // Reload the page to reflect the changes
+      $('#error-section-'+itemId).text('required').hide();
+      console.log(`Section updated successfully with `)
+
+      
+    } else {
+        alert('Update failed. Please try again.');
+    }
+},
+error: function(xhr, status, error) {
+    console.error('AJAX Error:', status, error);
+    alert('An error occurred. Please try again later.');
+}
+});
+}
+
+// Handle keypress (Enter key) for dynamically generated input fields
+$('input[id^="titlepusection-"]').keypress(function (event) {
+if (event.keyCode === 13) {  // Enter key code
+    var inputId = $(this).attr('id');
+    var itemId = inputId.split('-')[1];  // Extract the item ID from the ID of the input
+   // console.log(itemId);
+   sendDataSub(itemId);  // Call the sendData function
+}
+});
+
 
 </script>
 <!--end sub script-->
@@ -444,61 +517,69 @@ $(document).ready(function() {
              
   
 
-            //sendata update
+           
+
+
+
+              //sendata update section
           function sendData(itemId) {
-                    var title = $('#titleupsection-' + itemId).val();
-                    var course = $('#idupsection-' + itemId).val();
-                    var courseId = $('#courses_id-' + itemId).val();
+            var title = $('#titleupsection-' + itemId).val();
+            var course = $('#idupsection-' + itemId).val();
+            var courseId = $('#courses_id-' + itemId).val();
+            //var parent = $('#parent_id-'+ itemId).val();
 
-                    // Check if all fields have been filled
-                    if (!title || !course || !courseId) {
-                        $('#error-section-'+itemId).text('required').show();
-                        return;
-                    }
+            // Check if all fields have been filled
+            if (!title || !course || !courseId) {
+                $('#error-section-'+itemId).text('required').show();
+                return;
+            }
 
-                    // Get CSRF token for the request
-                    var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+            // Get CSRF token for the request
+            var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
 
-                    // Make the AJAX request to update the section
-                $.ajax({
-                  url: `/update-section/${itemId}/`,
-                  method: 'POST',
-                  data: {
-                      'csrfmiddlewaretoken': csrfToken,
-                      'id': course,
-                      'title': title,
-                      'courses':courseId
-                  },
-                  success: function(response) {
-                      if (response.status === 'success') {
-                          // Optionally hide a modal or update the UI
-                          //alert(`Section updated successfully with ID: ${itemId}`);
-                        // location.reload();  // Reload the page to reflect the changes
-                        $('#error-section-'+itemId).text('required').hide();
-                        console.log(`Section updated successfully with `)
+            // Make the AJAX request to update the section
+        $.ajax({
+          url: `/update-section/${itemId}/`,
+          method: 'POST',
+          data: {
+              'csrfmiddlewaretoken': csrfToken,
+              'id': course,
+              'title': title,
+              'courses':courseId
+              //'parent':parent
+          },
+          success: function(response) {
+              if (response.status === 'success') {
+                  // Optionally hide a modal or update the UI
+                  //alert(`Section updated successfully with ID: ${itemId}`);
+                // location.reload();  // Reload the page to reflect the changes
+                $('#error-section-'+itemId).text('required').hide();
+                console.log(`Section updated successfully with `)
+      
+                
+              } else {
+                  alert('Update failed. Please try again.');
+              }
+          },
+          error: function(xhr, status, error) {
+              console.error('AJAX Error:', status, error);
+              alert('An error occurred. Please try again later.');
+          }
+        });
+          }
+
+          // Handle keypress (Enter key) for dynamically generated input fields
+        $('input[id^="titleupsection-"]').keypress(function (event) {
+          if (event.keyCode === 13) {  // Enter key code
+              var inputId = $(this).attr('id');
+              var itemId = inputId.split('-')[1];  // Extract the item ID from the ID of the input
+             // console.log(itemId);
+              sendData(itemId);  // Call the sendData function
+          }
+      });
+
+
               
-                        
-                      } else {
-                          alert('Update failed. Please try again.');
-                      }
-                  },
-                  error: function(xhr, status, error) {
-                      console.error('AJAX Error:', status, error);
-                      alert('An error occurred. Please try again later.');
-                  }
-                });
-                  }
-
-                  // Handle keypress (Enter key) for dynamically generated input fields
-                $('input[id^="titleupsection-"]').keypress(function (event) {
-                  if (event.keyCode === 13) {  // Enter key code
-                      var inputId = $(this).attr('id');
-                      var itemId = inputId.split('-')[1];  // Extract the item ID from the ID of the input
-                     // console.log(itemId);
-                      sendData(itemId);  // Call the sendData function
-                  }
-              });
-
 
 </script>
 
