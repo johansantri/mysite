@@ -190,7 +190,7 @@ def partner_create_view(request):
             form = form.save(commit=False)
             form.author_id = request.user.id
             form.save()  # Save the course with the selected partner
-            return redirect('/course')  # Redirect to a course list page or success page
+            return redirect('/partner')  # Redirect to a course list page or success page
     else:
         form = PartnerForm()  # Pass the logged-in user to the form
     #print(request.POST)

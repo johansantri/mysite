@@ -4,6 +4,10 @@ from django.core.cache import cache
 from .models import Course, Partner, Section
 
 from django.contrib.auth.models import User
+import logging
+
+# Initialize the logger
+logger = logging.getLogger(__name__)
 
 #add section
 class SectionForm(forms.ModelForm):
@@ -76,18 +80,31 @@ class PartnerForm(forms.ModelForm):
 
         # Cache user queryset
         user_cache_key = 'user_queryset_active'
-        user_queryset = cache.get(user_cache_key)
-        
-        if not user_queryset:
+        user_queryset_ids = cache.get(user_cache_key)
+
+        if user_queryset_ids is None:
+            # Log the cache miss for debugging purposes
+            logger.debug("Cache miss for user queryset.")
+            
             # Query only active users, limit the number of users
-            user_queryset = User.objects.filter(is_active=True).only('id', 'username')[:10]  # Limit to 500 users
-            cache.set(user_cache_key, user_queryset, timeout=60*60)  # Cache for 1 hour
-        
-        # Set the queryset in the form
-        self.fields['user'].queryset = user_queryset
+            user_queryset = User.objects.filter(is_active=True).only('id', 'username')[:500]
+            
+            # Cache only the user IDs to minimize cache size
+            user_queryset_ids = list(user_queryset.values_list('id', flat=True))  # List of user IDs
+            cache.set(user_cache_key, user_queryset_ids, timeout=60*60)  # Cache for 1 hour
+            
+            # Set the queryset in the form
+            self.fields['user'].queryset = user_queryset
+        else:
+            # If the IDs are in the cache, reconstruct the queryset
+            self.fields['user'].queryset = User.objects.filter(id__in=user_queryset_ids)
+
+
 
     def clean_user(self):
         user_value = self.cleaned_data.get('user')
+        if not user_value:
+            raise forms.ValidationError("This field is required.")
         if Partner.objects.filter(user=user_value).exists():
             raise forms.ValidationError("This user already exists. Please choose another.")
         return user_value
