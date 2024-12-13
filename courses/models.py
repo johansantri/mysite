@@ -21,6 +21,10 @@ class Partner(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.user} - {self.updated_ad}"
+    class Meta:
+        indexes = [
+            models.Index(fields=['user'])
+    ]
     
 class Category(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)  # Add this line to associate partners with users

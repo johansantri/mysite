@@ -246,7 +246,7 @@
                                 <!--batas subsection-->
                                 <div class="faq-grid">
                                   <div class="faq-header">
-                                    <a class="collapsed faq-collapse" data-bs-toggle="collapse" href="#collapseFour-{{i.slug}}">
+                                    <a class="collapsed faq-collapse" data-bs-toggle="collapse" href="#collapseFour-{{obj.id}}">
                                        <i class="fas fa-align-justify"></i> <div class="col-8">
                                         <input  name="" value="{{obj.title}}"  type="text" class="form-control"/>
                                        </div>
@@ -255,12 +255,12 @@
                                       <a href="javascript:void(0);">
                                         <i class="far fa-pen-to-square me-1"></i>
                                       </a>
-                                      <a href="javascript:void(0);" class="me-0">
+                                      <a href="javascript:void(0);" class="me-0 delete-btn-section" data-id="{{ obj.id }}">
                                         <i class="far fa-trash-can"></i>
                                       </a>
                                     </div>
                                   </div>
-                                  <div id="collapseFour-{{i.slug}}" class="collapse" data-bs-parent="#accordion-one">
+                                  <div id="collapseFour-{{obj.id}}" class="collapse" data-bs-parent="#accordion-one">
                                     <div class="faq-body">
                                         <div class="add-article-btns">
 

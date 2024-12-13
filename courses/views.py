@@ -193,6 +193,6 @@ def partner_create_view(request):
             return redirect('/course')  # Redirect to a course list page or success page
     else:
         form = PartnerForm()  # Pass the logged-in user to the form
-
+    #print(request.POST)
     return render(request, 'partner/partner_add.html', {'form': form})
 
