@@ -15,7 +15,7 @@
                 {% csrf_token %}
                 {{form}}
                
-
+                  &nbsp;
                 <div class="tile-footer">
                   <button class="btn btn-primary" type="submit">
                     <i class="bi bi-check-circle-fill me-2"></i>Create Now
@@ -35,4 +35,27 @@
     </div>
   </div>
 </div>
+
+<script>
+  $(document).ready(function() {
+    $('.select2').select2({
+      //placeholder: 'Search for a user',
+      ajax: {
+        url: '{% url "courses:search_users" %}',  // This should be an endpoint that returns users based on a search term
+        dataType: 'json',
+        delay: 250,  // Delay in milliseconds to wait for the user to stop typing
+        data: function (params) {
+          return {
+            q: params.term  // Search term
+          };
+        },
+        processResults: function (data) {
+          return {
+            results: data.users  // Data structure should be { users: [{id, text}, ...] }
+          };
+        }
+      }
+    });
+  });
+</script>
 {% endblock %}

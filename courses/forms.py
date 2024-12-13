@@ -71,7 +71,7 @@ class PartnerForm(forms.ModelForm):
         }),
         "user": forms.Select(attrs={
             "placeholder": "CS201",
-            "class": "form-control"
+            "class": "form-control select2"
         })
     }
     
@@ -87,7 +87,7 @@ class PartnerForm(forms.ModelForm):
             logger.debug("Cache miss for user queryset.")
             
             # Query only active users, limit the number of users
-            user_queryset = User.objects.filter(is_active=True).only('id', 'username')[:500]
+            user_queryset = User.objects.filter(is_active=True).only('id', 'username')[:100]
             
             # Cache only the user IDs to minimize cache size
             user_queryset_ids = list(user_queryset.values_list('id', flat=True))  # List of user IDs

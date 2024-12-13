@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import CourseForm, PartnerForm, SectionForm
 from django.http import JsonResponse
 from .models import Course, Partner, Section
+from django.contrib.auth.models import User
 
 
 #add section
@@ -166,6 +167,30 @@ def partnerView(request):
 
     context = {'count': posts.count(), 'page': page}
     return render(request, 'partner/partner_view.html', context)
+
+def search_users(request):
+    query = request.GET.get('q', '')
+    
+    # If query is empty, return no users or all active users (depending on your use case)
+    if query:
+        users = User.objects.filter(Q(email__icontains=query) & Q(is_active=True)).only('id', 'email')
+    else:
+        users = User.objects.filter(is_active=True).only('id', 'email')
+    
+    # Optional: Implement pagination (if needed)
+    paginator = Paginator(users, 20)  # Show 20 users per page
+    page_number = request.GET.get('page')  # Get the page number from the query params
+    page_obj = paginator.get_page(page_number)
+    
+    # Prepare data for response
+    users_data = [{'id': user.id, 'text': user.email} for user in page_obj]
+    
+    return JsonResponse({
+        'users': users_data,
+        'page': page_obj.number,
+        'total_pages': paginator.num_pages,
+        'total_users': paginator.count,
+    })
 
 def filter_partner_by_query(request, posts):
     """Filter partner based on search query."""
