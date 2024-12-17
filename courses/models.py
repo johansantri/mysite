@@ -41,11 +41,21 @@ class Course(models.Model):
     slug = models.CharField(max_length=250, blank=True)
     org_partner = models.ForeignKey(Partner, on_delete=models.CASCADE,related_name="org_courses")
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="category_courses")
-    level = models.CharField(max_length=10, choices=[('basic', 'Basic'), ('advanced', 'Advanced')], default='basic', null=True, blank=True)
-    status_course = models.CharField(max_length=10, choices=[('draft', 'Draft'), ('published', 'Published')], default='draft', blank=True)
+    level = models.CharField(max_length=10, choices=[('basic', 'Basic'),('middle', 'Middle'), ('advanced', 'Advanced')], default='basic', null=True, blank=True)
+    status_course = models.CharField(max_length=10, choices=[('draft', 'draft'), ('published', 'published'),('curation', 'curation'),('archive', 'archive')], default='draft', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     edited_on = models.DateTimeField(auto_now=True) 
+    image = models.ImageField(upload_to='courses/images/', blank=True, null=True)
+    link_video = models.URLField(blank=True, null=True) 
+    description = models.TextField()
+    sort_description = models.CharField(max_length=150, null=True,blank=True)
+    hour = models.CharField(max_length=2,null=True,blank=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+    language = models.CharField(max_length=10,choices=[('en', 'English'),('id', 'Indonesia'), ('fr', 'French'), ('de', 'German')], default='en')
+    start_date = models.DateField(null=True)
+    end_date = models.DateField(null=True)
+    start_enrol = models.DateField(null=True)
+    end_enrol = models.DateField(null=True)
 
     def __str__(self):
         return f"{self.course_name} ({self.status_course} - {self.org_partner} - {self.author} - {self.course_run})"

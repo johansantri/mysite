@@ -3,12 +3,41 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from .forms import CourseForm, PartnerForm, SectionForm
+from .forms import CourseForm, PartnerForm, SectionForm, ProfilForm
 from django.http import JsonResponse
 from .models import Course, Partner, Section
 from django.contrib.auth.models import User
+from django.template.loader import render_to_string
+from django.views.decorators.cache import cache_page
+from django.urls import reverse
 
 
+
+#coruse profile
+@csrf_exempt  # Be cautious with this decorator; it's better to avoid using it if unnecessary
+def course_profile(request, id):
+    # Get the course based on the user's role
+    if request.user.is_superuser:
+        course = Course.objects.filter(id=id).first()
+    else:
+        course = Course.objects.filter(id=id, author_id=request.user.id).first()
+
+    # If no course is found, redirect to the courses list
+    if not course:
+        return redirect('/courses')
+
+    # Handle POST request to update course data
+    if request.method == 'POST':
+        form = ProfilForm(request.POST,request.FILES, instance=course)
+        if form.is_valid():
+            form.save()  # Save the updated course data
+            
+            #print(reverse('course_profile', kwargs={'id': course.id}))
+            return redirect('courses:course_profile', id=course.id)  # Redirect back to the updated course profile
+    else:
+        form = ProfilForm(instance=course)  # For GET requests, display the form with existing course data
+
+    return render(request, 'courses/course_profile.html', {'course': course, 'form': form})
 #add section
 @csrf_exempt
 def create_section(request):
@@ -59,7 +88,7 @@ def courseView(request):
     search_query = request.GET.get('search', '').strip()
     if search_query:
         courses = courses.filter(course_name__icontains=search_query)
-
+    courses = courses.order_by('-id')  # To order by ascending order
     # Fetch only necessary fields
     courses = courses.values('id', 'course_name', 'course_number')
 
@@ -71,7 +100,7 @@ def courseView(request):
         page_number = 1
 
     # Paginate the courses
-    paginator = Paginator(courses, 5)  # 5 courses per page
+    paginator = Paginator(courses, 10)  # 5 courses per page
     try:
         page_obj = paginator.page(page_number)
     except PageNotAnInteger:
@@ -119,11 +148,11 @@ def course_create_view(request):
                 form = form.save(commit=False)
                 form.author_id = request.user.id
                 form.save()  # Save the course with the selected partner
-                return redirect('/partner')  # Redirect to a course list page or success page
+                return redirect('/courses')  # Redirect to a course list page or success page
         else:
             form = CourseForm(user=request.user)  # Pass the logged-in user to the form
     else :
-        return redirect('/partner')
+        return redirect('/courses')
     return render(request, 'courses/course_add.html', {'form': form})
 
 #studio detail courses
@@ -221,3 +250,68 @@ def partner_create_view(request):
     #print(request.POST)
     return render(request, 'partner/partner_add.html', {'form': form})
 
+
+#contoh ajax
+def course_create(request):
+    data = dict()
+    
+    # Check if it's a POST request
+    if request.method == 'POST':
+        form = CourseForm(request.POST)
+        
+        if form.is_valid():
+            # Save the new course if the form is valid
+            form.save()
+            data['form_is_valid'] = True
+            
+            # Fetch the updated course list after adding a new course
+            courses = Course.objects.all()  # Corrected from Course.all() to Course.objects.all()
+            data['course_list'] = render_to_string('courses/course_list.html', {'courses': courses})
+        else:
+            # Form is not valid, send this info back
+            data['form_is_valid'] = False
+    else:
+        # For GET request, create an empty form
+        form = CourseForm()
+    
+    # Render the course creation form
+    context = {'form': form}
+    data['html_form'] = render_to_string('courses/course_create.html', context, request=request)
+    
+    return JsonResponse(data)
+
+# Delete Book
+def course_delete(request, pk):
+    courses = get_object_or_404(Course, pk=pk)
+    data = dict()
+    if request.method == 'POST':
+        courses.delete()
+        data['form_is_valid'] = True
+        books = Course.objects.all()
+        data['course_list'] = render_to_string('courses/course_list.html', {'courses': courses})
+    return JsonResponse(data)
+
+# View to fetch the list of books (for initial load)
+@cache_page(60 * 15)
+def course_list(request):
+    courses = Course.objects.all()[:100]
+    return render(request, 'courses/course_list.html', {'courses': courses})
+
+def course_update(request, pk):
+    course = get_object_or_404(Course, pk=pk)
+    data = dict()
+    if request.method == 'POST':
+        form = CourseForm(request.POST, instance=course)
+        if form.is_valid():
+            form.save()
+            data['form_is_valid'] = True
+            courses = Course.objects.all()
+            data['course_list'] = render_to_string('courses/course_list.html', {'courses': courses})
+        else:
+            data['form_is_valid'] = False
+    else:
+        form = CourseForm(instance=course)
+
+    context = {'form': form}
+    data['html_form'] = render_to_string('courses/course_update.html', context, request=request)
+    return JsonResponse(data)

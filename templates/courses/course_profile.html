@@ -1,0 +1,204 @@
+{% extends 'home/base.html' %}
+{% block content %}
+
+
+<div class="page-content">
+  <div class="container">
+    <div class="row">
+      {% include "home/sidebar.html" %}
+      <div class="col-xl-9 col-lg-9">
+       
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <div class="container-fluid">
+           
+            
+           
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Content
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="#">Action</a></li>
+                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                  </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Setting
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="{% url "courses:course_profile" course.id %}">Schedule & Details</a></li>
+                    <li><a class="dropdown-item" href="#">Grading</a></li>
+                    <li><a class="dropdown-item" href="#">Course Team</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                  </ul>
+                </li>
+
+             
+               
+              </ul>
+
+
+              
+              
+              <h4 class="d-flex">{{course.course_name}}</h4>
+              
+                
+                                          
+              
+            </div>
+            
+          </div>
+
+          
+        </nav>
+        <hr>  
+       
+        <div class="support-wrap">
+            <div class="tile">
+              
+             
+                {% if course.image %}
+                <img src="{{ course.image.url }}" alt="{{ course.title }}" class="img-fluid" style="border: 1px solid #ddd; border-radius:4px;padding:5px;width:150px;">               
+                
+              {% endif %}
+              <br>
+            <br>
+            
+              <div class="tile-body">
+               <form method="POST"  enctype="multipart/form-data"  >
+                  {% csrf_token %}
+               
+                  <h5 style="text-align: left;">Course Schedule</h5>
+                  <hr>
+                    <div class="row " >
+                        
+                        <div class="col-md-6">
+                        <label>start date</label>
+                        {{form.start_date}}
+                        
+                        </div>
+                        <div class="col-md-6">   
+                        <label>start date</label>
+                        {{form.end_date}}
+                        </div>    
+                    </div>
+                    
+                    <div class="row " >
+                        <div class="col-md-6">
+                        <label>Enrollment start date</label>
+                        {{form.start_enrol}}
+                        </div>
+                        <div class="col-md-6">   
+                        <label>Enrollment end date</label>
+                        {{form.end_enrol}}
+                        </div>    
+                    </div>
+                    <br>
+                    <h5 style="text-align: left;">Course Details</h5>
+                    <hr>
+                    <div class="row g-3">
+                        <div class="col-md">
+                          <div class="form-floating">
+                            {{form.level}}
+                              <label for="level">course level</label>
+                          </div>
+                        </div>
+                        <div class="col-md">
+                          <div class="form-floating">
+                            {{form.language}}
+                            <label for="language">course language</label>
+                          </div>
+                        </div>
+
+                        <div class="col-md">
+                            <div class="form-floating">
+                               {{form.hour}}
+                                <label for="hour">Hours of Effort per Week</label>
+                            </div>
+                          </div>
+                      </div>
+
+                      &nbsp;
+                      <div class="row g-2">
+                        <div class="col-md">
+                          <div class="form-floating">
+                          {{form.link_video}}
+                            <label for="link_video">link video address</label>
+                          </div>
+                        </div>
+                        <div class="col-md">
+                          <div class="form-control">
+                           {{form.image}}
+                         &nbsp;
+                            <label for="image">Image</label>
+                            <!-- Display current image if it exists -->
+                           
+                          </div>
+                        </div>
+                      </div>
+                      &nbsp;
+                        <div class="form-floating">
+                       {{form.sort_description}}
+                        <label for="sort_description">sort description Limit to ~150 characters</label>
+                        </div>
+                        &nbsp;
+                        <div class="mb-3">
+                          <label>overview</label>
+                            {{form.description}}
+                            {{ form.media }}
+                        </div>
+                        
+
+                 
+                 
+                  <div class="tile-footer">
+                    &nbsp;
+                    <br>
+                    <button class="btn btn-primary"  type="submit"><i class="bi bi-check-circle-fill me-2"></i>create now</button>&nbsp;&nbsp;&nbsp;<a class="btn btn-secondary" href="{% url 'courses:course_profile' id=course.id %}"><i class="bi bi-x-circle-fill me-2"></i>Cancel</a>
+                  </div>
+                </form>
+              </div>
+             
+            </div>
+          </div>
+
+
+ 
+
+  </div>
+  </div>
+
+
+    </div>
+  </div>
+
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+  <script>
+      MathJax.Ajax.config.path["mhchem"] = "https://cdnjs.cloudflare.com/ajax/libs/mathjax-mhchem/3.3.2";
+      MathJax.Hub.Config({
+          showMathMenu: false,
+          TeX: {
+              extensions: [ "[mhchem]/mhchem.js" ]
+          },
+          messageStyle: "none",
+          tex2jax: {
+              preview: "none"
+          }
+      });
+  </script>
+  <script>
+    const preview = document.getElementsByClassName('article-body')[0];
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, preview]); // MathJax 2
+</script>
+{% endblock %}

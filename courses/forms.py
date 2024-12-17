@@ -2,7 +2,7 @@
 from django import forms
 from django.core.cache import cache
 from .models import Course, Partner, Section
-
+from django_ckeditor_5.widgets import CKEditor5Widget
 from django.contrib.auth.models import User
 import logging
 
@@ -14,6 +14,30 @@ class SectionForm(forms.ModelForm):
     class Meta:
         model = Section
         fields = ['title','courses','parent']
+
+class ProfilForm(forms.ModelForm):
+    description = forms.CharField(widget=CKEditor5Widget())
+    class Meta:
+        model = Course
+        fields = ['sort_description','description','image','link_video','hour','language','level','start_date','end_date','start_enrol','end_enrol']
+
+        
+        widgets = {
+            
+            'sort_description': forms.TextInput(attrs={'placeholder': 'Enter short description here', 'class': 'form-control'}),
+            #'description': CKEditor5Widget(attrs={'placeholder': 'Enter full description here', 'class': 'django_ckeditor_5'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
+            'link_video': forms.URLInput(attrs={'placeholder': 'Enter video URL here', 'class': 'form-control'}),
+            'hour': forms.NumberInput(attrs={'class': 'form-control'}),
+            'language': forms.Select(attrs={'class': 'form-control'}),
+            'level': forms.Select(choices=[('beginner', 'Beginner'), ('intermediate', 'Intermediate'), ('advanced', 'Advanced')], attrs={'class': 'form-control'}),           
+            'start_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'end_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'start_enrol': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'end_enrol': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+        }
+    def __init__(self, *args, **kwargs):
+        super(ProfilForm, self).__init__(*args, **kwargs)
 
 class CourseForm(forms.ModelForm):
     class Meta:
