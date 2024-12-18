@@ -3,6 +3,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from autoslug import AutoSlugField
 
+
+        
 class Partner(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)  # Add this line to associate partners with users
     name = models.CharField(max_length=250)

@@ -9,6 +9,9 @@ class CourseAdmin(ImportExportModelAdmin):
 
 # Register the model with the admin site using the ImportExportModelAdmin
 admin.site.register(Course, CourseAdmin)
+
+
+
 admin.site.register(models.Section)
 class PartnerAdmin(admin.ModelAdmin):
     autocomplete_fields = ['user','author']  # This will apply autocomplete to the 'user' ForeignKey field
