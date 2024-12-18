@@ -146,7 +146,7 @@
                               <input  name="courses_id" id="courses_id-{{i.id}}" value="{{i.courses_id}}" style="background:rgba(227, 227, 227, 0.41);" type="hidden" class="form-control ada"/>
                              </div>
                              <a href="javascript:void(0);" class="btn delete-btn-section" data-id="{{ i.id }}"><i class="fa fa-trash-can"></i> </a>  
-                             
+                               
                              <a href="javascript:void(0);" class="btn" data-id="{{i.id}}" data-bs-toggle="modal" data-bs-target="#newModal-{{i.id}}"><i class="fa fa-plus"> </i> </a>
                               
                             </div>
@@ -196,10 +196,20 @@
                                   <div class="faq-header">
                                     <a class="collapsed faq-collapse" data-bs-toggle="collapse" href="#collapseFour-{{obj.id}}">
                                        <i class="fas fa-align-justify"></i> <div class="col-8">
-                                        <input  name="" value="{{obj.title}}"  type="text" class="form-control"/>
+                                        <input  name="" value="{{obj.title}}" id="titlefocus"  type="text" class="form-control"/>
                                        </div>
                                     </a>
+                                    <script>
+                                      function myFunction() {
+                                        document.getElementById("titlefocus").focus();
+                                   }
+
+                                 
+                                    </script>
                                     <div class="faq-right">
+                                      <a href="javascript:void(0);" onclick="myFunction()">
+                                        <i class="far fa-plus me-1"></i>
+                                      </a>
                                       <a href="javascript:void(0);">
                                         <i class="far fa-pen-to-square me-1"></i>
                                       </a>
