@@ -1,3 +1,4 @@
+<div class="support-wrap">
 <form method="POST" hx-post="{% url 'edit-profile-save' user.id %}" hx-target=".personal-address" hx-swap="innerHTML">
     {% csrf_token %}
     <div class="row">
@@ -67,3 +68,4 @@
         <button type="submit" class="btn btn-primary">Save Changes</button>
     </div>
 </form>
+</div>
