@@ -6,6 +6,7 @@ app_name = 'courses'
 
 urlpatterns = [
     path('courses/', views.courseView, name='course_view'),
+    path('instructor/', views.instructorView, name='instructor_view'),
     path("studio/<str:id>", views.studio, name= "studio"),
     path("partner/", views.partnerView, name= "partner_view"),
     path('search_users/', views.search_users, name='search_users'),

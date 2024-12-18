@@ -12,7 +12,10 @@ from django.views.decorators.cache import cache_page
 from django.urls import reverse
 
 
-
+#intructor form
+@csrf_exempt
+def instructorView(request):
+    return render(request,'home/become.html')
 #coruse profile
 @csrf_exempt  # Be cautious with this decorator; it's better to avoid using it if unnecessary
 def course_profile(request, id):

@@ -22,6 +22,7 @@
                     <h4><a href="{% url 'profile' user.username %}">{{user.username}}</a></h4>
                     {% endif %}
                     <p>{{user.email}}</p>
+                    <a href="{% url "courses:instructor_view"%}" class="add-course btn-primary">become a instructor</a>
                  
                 </div>
             </div>
