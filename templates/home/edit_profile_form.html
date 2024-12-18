@@ -1,0 +1,69 @@
+<form method="POST" hx-post="{% url 'edit-profile-save' user.id %}" hx-target=".personal-address" hx-swap="innerHTML">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="id_first_name">First Name</label>
+                {{ form.first_name }}
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="id_last_name">Last Name</label>
+                {{ form.last_name }}
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="id_email">Email</label>
+                {{ form.email }}
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="id_phone">Phone</label>
+                {{ form.phone }}
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label for="id_hobby">Hobby</label>
+                {{ form.hobby }}
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label for="id_address">address</label>
+                {{ form.address }}
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label for="id_country">country</label>
+                {{ form.country }}
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label for="id_gender">gender</label>
+                {{ form.gender }}
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label for="id_education">education</label>
+                {{ form.education }}
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="form-group">
+                <label for="id_birth">birth</label>
+                {{ form.birth }}
+            </div>
+        </div>
+    </div>
+    &nbsp;
+    <div style="text-align:right">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </div>
+</form>

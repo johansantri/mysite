@@ -1,6 +1,71 @@
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordResetForm, SetPasswordForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordResetForm, SetPasswordForm,UserChangeForm
 from django.contrib.auth.models import User
 from django.forms import forms
+from django.forms import ModelForm
+
+class Userprofile(UserChangeForm):
+    class Meta:
+        model = User
+        fields = [
+            'first_name', 'last_name', 'email', 
+            'hobby', 'birth', 'address', 'country', 
+            'phone', 'gender', 'education'
+        ]
+    def __init__(self, *args, **kwargs):
+        super(UserChangeForm, self).__init__(*args, **kwargs)
+        self.fields['first_name'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'first',
+            'required': 'True'
+        })
+        self.fields['last_name'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'last',
+            'required': 'True'
+        })
+        self.fields['email'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'email',
+            'required': 'True',
+            'type':'email'
+        })
+        self.fields['hobby'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'hobby',
+            'required': 'True'
+        })
+        self.fields['address'].widget.attrs.update({
+        'class': 'form-control',
+        'placeholder': 'address',
+        'required': 'True'
+        })
+        self.fields['birth'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Birth',
+            'required': 'True',
+            'type': 'date'
+        })
+        self.fields['country'].widget.attrs.update({
+        'class': 'form-control',
+        'placeholder': 'country',
+        'required': 'True'
+        })
+        self.fields['phone'].widget.attrs.update({
+        'class': 'form-control',
+        'placeholder': 'phone',
+        'required': 'True'
+        })
+        self.fields['gender'].widget.attrs.update({
+        'class': 'form-control',
+        'placeholder': 'gender',
+        'required': 'True'
+        })
+        self.fields['education'].widget.attrs.update({
+        'class': 'form-control',
+        'placeholder': 'education',
+        'required': 'True'
+        })
+
 
 
 # uncomment this if you want to change the class/design of the login form
@@ -21,6 +86,7 @@ class UserLoginForm(AuthenticationForm):
             'placeholder': 'Password',
             'required': 'True'
         })
+
 
 
 # Customizing Registration Form from UserCreationForm

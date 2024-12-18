@@ -40,6 +40,8 @@ urlpatterns = [
     path('', views.home, name='home'),
     #path('profile/(?P<username>\w+)/$', views.pro, name='profile'),
     path('profile/<slug:username>/',views.pro, name='profile'), 
+    path('edit-profile/<int:pk>/',views.edit_profile, name='edit-profile'), 
+    path('edit-profile-save/<int:pk>/', views.edit_profile_save, name='edit-profile-save'),
     path('dasbord/',views.dasbord, name='dasbord'),
     
                        

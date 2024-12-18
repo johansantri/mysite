@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -13,8 +13,9 @@ from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth import logout
-from authentication.forms import UserRegistrationForm
+from authentication.forms import UserRegistrationForm, Userprofile
 from .models import Profile
+from django.http import HttpResponse,JsonResponse
 
 
 # Create your views here.
@@ -33,7 +34,45 @@ def pro(request,username):
         return render(request,'home/profile.html')
     return redirect("/login/?next=%s" % request.path)
 
+@login_required
+def edit_profile(request, pk):
+    # Retrieve the user instance based on the primary key
+    user = get_object_or_404(User, pk=pk)
+
+    if request.method == "GET":
+        # Render the form with the user's current data
+        form = Userprofile(instance=user)
+        return render(request, 'home/edit_profile_form.html', {'form': form})
+
+    elif request.method == "POST":
+        # Populate the form with POST data and the user instance
+        form = Userprofile(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'success': True, 'message': 'Profile updated successfully!'})
+        else:
+            # If the form is invalid, re-render the form with errors
+            return render(request, 'home/edit_profile_form.html', {'form': form}, status=400)
     
+@login_required
+def edit_profile_save(request, pk):
+    # Ensure the profile exists, fetching by pk
+    profile = get_object_or_404(User, pk=pk)
+
+    if request.method == "POST":
+        # Create a form instance bound to the profile
+        form = Userprofile(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            # Render the updated profile details
+            return render(request, 'home/profile_detail.html', {'user': profile})
+        else:
+            # Return the form with errors and a 400 status code
+            return render(request, 'home/edit_profile_form.html', {'form': form}, status=400)
+
+    # If the method is not POST, handle it gracefully (e.g., redirect)
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
 def logout_view(request):
     logout(request)
     return redirect('login')
