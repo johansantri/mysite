@@ -214,10 +214,11 @@
 
                                           {% for subobj in obj.children.all %}
                               
-                                <a href="javascript:void(0);" >A.1.1 {{subobj.title}}</a>
+                                <a href="javascript:void(0);"  class="form-control">A.1.1 {{subobj.title}}</a>
                                 <br>
                                 
                                 {% endfor %}
+                                &nbsp;
                                           <a href="javascript:void(0);" class="btn">Add Article</a>
                                           <a href="javascript:void(0);" class="btn me-0">Add Description</a>
                                         </div>
