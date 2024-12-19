@@ -9,7 +9,7 @@ class Userprofile(UserChangeForm):
         fields = [
             'first_name', 'last_name', 'email', 
             'hobby', 'birth', 'address', 'country', 
-            'phone', 'gender', 'education'
+            'phone', 'gender', 'education','university'
         ]
     def __init__(self, *args, **kwargs):
         super(UserChangeForm, self).__init__(*args, **kwargs)
@@ -63,6 +63,11 @@ class Userprofile(UserChangeForm):
         self.fields['education'].widget.attrs.update({
         'class': 'form-control',
         'placeholder': 'education',
+        'required': 'True'
+        })
+        self.fields['university'].widget.attrs.update({
+        'class': 'form-control',
+        'placeholder': 'university',
         'required': 'True'
         })
 
