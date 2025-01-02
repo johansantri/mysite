@@ -25,7 +25,7 @@
                         <h4><a href="{% url 'authentication:profile' user.username %}">{{ user.username }}</a></h4>
 
                         <p>{{ user.email }}</p>
-                        <p  class="add-course btn-primary">partner</p>
+                        <p  class="add-course btn-primary">{{user.university}}</p>
                         {% if not user.university %}
 
                         <a href="{% url 'authentication:profile' user.username %}" class="add-course btn-primary">Update my profile</a>
