@@ -3,7 +3,7 @@ from django.contrib.auth import views as auth_views
 from authentication import views
 from authentication.forms import UserLoginForm, ResetPasswordConfirmForm, ResetPasswordForm
 from . import views
-
+app_name = 'authentication'
 urlpatterns = [
     # login view from auth_views with custom login template
     path('login/', auth_views.LoginView.as_view(template_name='authentication/login.html',
@@ -41,6 +41,7 @@ urlpatterns = [
     #path('profile/(?P<username>\w+)/$', views.pro, name='profile'),
     path('profile/<slug:username>/',views.pro, name='profile'), 
     path('edit-profile/<int:pk>/',views.edit_profile, name='edit-profile'), 
+    path('edit-photo/<int:pk>/',views.edit_photo, name='edit-photo'), 
     path('edit-profile-save/<int:pk>/', views.edit_profile_save, name='edit-profile-save'),
     path('dasbord/',views.dasbord, name='dasbord'),
     

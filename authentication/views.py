@@ -13,7 +13,7 @@ from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth import logout
-from authentication.forms import UserRegistrationForm, Userprofile
+from authentication.forms import UserRegistrationForm, Userprofile, UserPhoto
 from .models import Profile
 from django.http import HttpResponse,JsonResponse
 
@@ -25,6 +25,7 @@ def home(request):
     return render(request,'home/index.html')
 
 def dasbord(request):
+    
     return render(request,'home/dasbord.html')
 
 def pro(request,username):
@@ -46,14 +47,68 @@ def edit_profile(request, pk):
 
     elif request.method == "POST":
         # Populate the form with POST data and the user instance
-        form = Userprofile(request.POST, instance=user)
+        form = Userprofile(request.POST,request.FILES, instance=user)
         if form.is_valid():
+            form = form.save(commit=False)
+            if not request.FILES.get('photo'):
+
+            # If no new photo, keep the existing one
+
+                form.photo = request.user.photo 
             form.save()
             return JsonResponse({'success': True, 'message': 'Profile updated successfully!'})
         else:
             # If the form is invalid, re-render the form with errors
             return render(request, 'home/edit_profile_form.html', {'form': form}, status=400)
     
+
+@login_required
+
+def edit_photo(request, pk):
+
+    # Retrieve the user instance based on the primary key
+
+    user = get_object_or_404(User, pk=pk)
+
+
+    if request.method == "GET":
+
+        # Render the form with the user's current data
+
+        form = UserPhoto(instance=user)
+
+        return render(request, 'home/edit_photo.html', {'form': form})
+
+
+    elif request.method == "POST":
+
+        # Populate the form with POST data and the user instance
+
+        form = UserPhoto(request.POST, request.FILES, instance=user)
+
+        if form.is_valid():
+
+            # Save the form but do not commit to the database yet
+
+            user_profile = form.save(commit=False)
+
+            if not request.FILES.get('photo'):
+
+                # If no new photo, keep the existing one
+
+                user_profile.photo = user.photo  # Use the existing user's photo
+
+            user_profile.save()  # Now save the user profile
+
+            #return JsonResponse({'success': True, 'message': 'Profile updated successfully!'})
+            return redirect('authentication:dasbord')
+
+        else:
+
+            # If the form is invalid, re-render the form with errors
+
+            return render(request, 'home/edit_photo.html', {'form': form}, status=400)
+
 @login_required
 def edit_profile_save(request, pk):
     # Ensure the profile exists, fetching by pk
@@ -61,7 +116,7 @@ def edit_profile_save(request, pk):
 
     if request.method == "POST":
         # Create a form instance bound to the profile
-        form = Userprofile(request.POST, instance=profile)
+        form = Userprofile(request.POST,request.FILES, instance=profile)
         if form.is_valid():
             form.save()
             # Render the updated profile details
@@ -75,7 +130,7 @@ def edit_profile_save(request, pk):
 
 def logout_view(request):
     logout(request)
-    return redirect('login')
+    return redirect('authentication:login')
 def register(request):
     form = UserRegistrationForm()
 

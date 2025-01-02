@@ -1,5 +1,5 @@
 <div class="support-wrap">
-<form method="POST" hx-post="{% url 'edit-profile-save' user.id %}" hx-target=".personal-address" hx-swap="innerHTML">
+<form method="POST" enctype="multipart/form-data" hx-post="{% url 'authentication:edit-profile-save' user.id %}" hx-target=".personal-address" hx-swap="innerHTML">
     {% csrf_token %}
     <div class="row">
         <div class="col-sm-6">
@@ -64,10 +64,12 @@
         </div>
         <div class="col-sm-12">
             <div class="form-group">
-                <label for="id_org">org</label>
+                <label for="id_org">org </label>
                 {{ form.university }}
+                <label for="id_org"> *if you org canot on list, your choice other</label>
             </div>
         </div>
+        
     </div>
     &nbsp;
     <div style="text-align:right">
@@ -75,3 +77,26 @@
     </div>
 </form>
 </div>
+
+<script>
+    $(document).ready(function() {
+      $('.select1').select2({
+        //placeholder: 'Search for a user',
+        ajax: {
+          url: '{% url "courses:search_partner" %}',  // This should be an endpoint that returns users based on a search term
+          dataType: 'json',
+          delay: 250,  // Delay in milliseconds to wait for the user to stop typing
+          data: function (params) {
+            return {
+              q: params.term  // Search term
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: data.partners  // Data structure should be { users: [{id, text}, ...] }
+            };
+          }
+        }
+      });
+    });
+  </script>

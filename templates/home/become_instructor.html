@@ -1,0 +1,139 @@
+
+{% extends 'home/base.html' %}
+  
+
+{% block content %}
+
+
+
+    
+    <!-- Page Content -->
+    <div class="page-content">
+      <div class="container">
+        <div class="row">
+          
+    <!-- sidebar -->
+    {% include "home/sidebar.html" %}
+    <!-- /Sidebar -->
+          
+          <!-- Instructor profile -->
+          <div class="col-xl-9 col-lg-9">	
+
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f8f9fa;
+                }
+                .hero-section {
+                    background-color: #dc3545;
+                    color: white;
+                    padding: 50px 0;
+                    text-align: center;
+                }
+                .features-section, .form-section {
+                    padding: 30px 0;
+                }
+                .feature-card {
+                    text-align: center;
+                    padding: 20px;
+                    border: 1px solid #eaeaea;
+                    border-radius: 8px;
+                }
+            </style>
+
+          <div class="support-wrap">
+                 <!-- /Instructor become -->
+            <!-- Hero Section -->
+<div class="hero-section">
+    <div class="container">
+        <h1>Become an Instructor</h1>
+        <p>Share your knowledge, inspire others, and earn money by teaching your passion.</p>
+        <a href="#form-section" class="btn btn-light btn-lg">Get Started</a>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="features-section">
+    <div class="container">
+        <h2 class="text-center mb-4">Why Teach with Us?</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <h6>Reach a Global Audience</h6>
+                    <p>Share your expertise with millions of learners worldwide.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <h6>Earn Money</h6>
+                    <p>Earn revenue from every student who enrolls in your course.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <h6>Flexible Schedule</h6>
+                    <p>Create courses at your own pace and teach whenever you want.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Application Form Section -->
+<div class="form-section bg-light" id="form-section">
+    <div class="container">
+        <h2 class="text-center mb-4">Apply to Become an Instructor</h2>
+        <form class="row g-3" method="POST">
+            {% csrf_token %}
+            
+            <div class="col-md-12">
+                <label for="bio" class="form-label">about me</label>
+                {{ form.bio }}
+            </div>
+            <div class="col-12">
+                <label for="experience" class="form-label">Teaching Experience</label>
+                {{ form.expertise }}
+            </div>
+           
+            <div class="col-12">
+                <label for="topic" class="form-label">instructor at</label>
+                
+                {{ form.provider }}
+                <label class="form-label">*if your university/org not list, your contact adminstrator</label>
+            </div>
+            <div class="col-12">
+                <label for="topic" class="form-label">url/link matrial open access</label>
+                
+                {{ form.tech }}
+                
+            </div>
+            <div class="col-2">
+                <label for="topic" class="form-label">experience years</label>
+                {{ form.experience_years }}
+            </div>
+            <div class="col-12">
+                <label for="topic" class="form-label">agreement</label>
+                
+                {{ form.agreement }}
+                <label for="topic" class="form-label">*Before submitting you are required to read our electronic agreement, if you agree with this agreement please click checkmark</label>
+            </div>
+            <div class="col-12 text-center">
+                <button type="submit" class="btn btn-primary btn-lg">Submit Application</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+          </div>	
+   
+        </div>
+        </div>
+      </div>
+    </div>	
+    <!-- /Page Content -->
+
+
+    
+
+
+{% endblock content %}

@@ -6,11 +6,11 @@
                 <div class="profile-img">
                     {% if user.photo %}
                     
-                        <a href="instructor-profile.html"><img src="{{ user.photo.url }}"
+                        <a href="{% url 'authentication:edit-photo' user.id%}"><img src="{{ user.photo.url }}"
                             alt="Img"></a>
                             {% elif not user.photo %}
                             
-                            <a href="instructor-profile.html"><img src="{% static "assets/img/user/user1.jpg"%}"
+                            <a href="{% url 'authentication:edit-photo' user.id%}"  ><img src="{% static "assets/img/user/user1.jpg"%}"
                                 alt="Img"></a>
                                 {% endif %}
                             
@@ -19,11 +19,64 @@
             <div class="profile-group">
                 <div class="profile-name text-center">
                     {% if user.is_authenticated %}
-                    <h4><a href="{% url 'profile' user.username %}">{{user.username}}</a></h4>
+
+                    {% if user.is_partner  %}
+                
+                        <h4><a href="{% url 'authentication:profile' user.username %}">{{ user.username }}</a></h4>
+
+                        <p>{{ user.email }}</p>
+                        <p  class="add-course btn-primary">partner</p>
+                        {% if not user.university %}
+
+                        <a href="{% url 'authentication:profile' user.username %}" class="add-course btn-primary">Update my profile</a>
+
+                        {% endif %}
+
+                    {% elif user.is_instructor %}
+                        <h4><a href="{% url 'authentication:profile' user.username %}">{{ user.username }}</a></h4>
+
+                        <p>{{ user.email }}</p>
+                        <p  class="add-course btn-primary">instructor</p>
+                        {% if not user.university %}
+
+                        <a href="{% url 'authentication:profile' user.username %}" class="add-course btn-primary">Update my profile</a>
+
+                        {% endif %}
+
+                    {% elif user.is_superuser %}
+                        <h4><a href="{% url 'authentication:profile' user.username %}">{{ user.username }}</a></h4>
+
+                        <p>{{ user.email }}</p>
+                        <p  class="add-course btn-primary">admin</p>
+                        {% if not user.university %}
+
+                        <a href="{% url 'authentication:profile' user.username %}" class="add-course btn-primary">Update my profile</a>
+
+                        {% endif %}
+                    {% else %}
+                        {% if not user.university %}
+                        
+                        <a href="{% url 'authentication:profile' user.username %}" class="add-course btn-primary">Update my profile</a>
+                        {% else %}
+                        <p>{{ user.email }}</p>
+                        <a href="{% url 'courses:instructor_add' %}" class="add-course btn-primary">Become an instructor</a>
+                        {% endif %}
+
                     {% endif %}
-                    <p>{{user.email}}</p>
-                    <a href="{% url "courses:instructor_view"%}" class="add-course btn-primary">become a instructor</a>
-                 
+                    {% endif %}
+                
+                
+                    <!--message request-->
+                    {% if messages %}
+                    <ul class="messages">
+                    {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}><span class="badge bg-warning text-dark">{{ message }}</span></li>
+                    {% endfor %}
+                    </ul>
+                    {% endif %}
+                    <!--endmessage-->
+
+                    
                 </div>
             </div>
         </div>
@@ -33,10 +86,9 @@
     <div class="settings-widget account-settings">
         <div class="settings-menu">
             <h3>Dashboard</h3>
-            
-            <ul>
+            <ul class="nav-menu">
                 <li class="nav-item active">
-                    <a href="{% url 'dasbord'%}" class="nav-link">
+                    <a href="{% url 'authentication:dasbord' %}" class="nav-link">
                         <i class="bx bxs-tachometer"></i>Dashboard
                     </a>
                 </li>
@@ -45,28 +97,38 @@
                         <i class="bx bxs-user"></i>Learner
                     </a>
                 </li>
+                {% if user.is_authenticated %}
+                
+                    {% if user.is_partner or user.is_superuser %}
+                    <li class="nav-item">
+                        <a href="{% url 'courses:partner_view' %}" class="nav-link">
+                            <i class="bx bxs-graduation"></i>Partner
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="{% url 'courses:instructor_view' %}" class="nav-link">
+                            <i class="bx bxs-user"></i>Instructor
+                        </a>
+                    </li>
+                    {% endif %}
+                {% endif %}
                 <li class="nav-item">
-                    <a href="{% url 'courses:partner_view'%}" class="nav-link">
-                        <i class="bx bxs-graduation"></i>Partner
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'courses:course_view'%}" class="nav-link">
+                    <a href="{% url 'courses:course_view' %}" class="nav-link">
                         <i class="bx bxs-heart"></i>Course
                     </a>
                 </li>
-              
             </ul>
-
+    
             <h3>Account Settings</h3>
-            <ul>
+            <ul class="nav-menu">
                 <li class="nav-item">
-                    <a href="instructor-settings.html" class="nav-link ">
+                    <a href="{% url 'authentication:profile' user.username %}" class="nav-link">
                         <i class="bx bxs-cog"></i>Settings
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{% url 'logout'%}" class="nav-link">
+                    <a href="{% url 'authentication:logout' %}" class="nav-link">
                         <i class="bx bxs-log-out"></i>Logout
                     </a>
                 </li>
@@ -74,5 +136,8 @@
         </div>
     </div>
     
+    
     <!--and navbar dasbord-->
 </div>
+
+

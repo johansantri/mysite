@@ -6,10 +6,15 @@ app_name = 'courses'
 
 urlpatterns = [
     path('courses/', views.courseView, name='course_view'),
-    path('instructor/', views.instructorView, name='instructor_view'),
+    path('instructor-add/', views.become_instructor, name='instructor_add'),
+    path('instructor/', views.instructor_view, name='instructor_view'),
+    path('instructor/<int:instructor_id>/check/', views.instructor_check, name='instructor_check'),
+    path('instructor/<int:instructor_id>/delete/', views.delete_instructor, name='delete_instructor'),
+    path('instructor/<int:id>/', views.instructor_detail, name='instructor_detail'),
     path("studio/<str:id>", views.studio, name= "studio"),
     path("partner/", views.partnerView, name= "partner_view"),
     path('search_users/', views.search_users, name='search_users'),
+    path('search_partner/', views.search_partner, name='search_partner'),
     path("course-add/", views.course_create_view, name= "course_create_view"),
     path("partner-add/", views.partner_create_view, name= "partner_create_view"),
     path('create-section/', views.create_section, name='create_section'),

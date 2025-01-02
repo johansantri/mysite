@@ -1,14 +1,14 @@
 # models.py
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Univer
 from autoslug import AutoSlugField
 
 
         
 class Partner(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Add this line to associate partners with users
-    name = models.CharField(max_length=250)
-    abbreviation = models.CharField(max_length=50, blank=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE,related_name="partner_user")  # Add this line to associate partners with users
+    name = models.ForeignKey(Univer, on_delete=models.CASCADE,related_name="partner_univ")
+    
     phone = models.CharField(max_length=50,null=True, blank=True)
     address = models.TextField(max_length=50,null=True, blank=True)
     description = models.TextField(null=True, blank=True)
@@ -27,6 +27,26 @@ class Partner(models.Model):
         indexes = [
             models.Index(fields=['user'])
     ]
+class Instructor(models.Model):
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Approved', 'Approved'),
+        ('Rejected', 'Rejected'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="instructors")
+    bio = models.TextField()
+    tech = models.CharField(max_length=255)
+    expertise = models.CharField(max_length=255)
+    experience_years = models.PositiveIntegerField()
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
+    agreement = models.BooleanField(default=False, help_text="Check if the user agrees to the terms and conditions")
+    provider =models.ForeignKey(Partner,on_delete=models.CASCADE,related_name='instructors')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user.email} - {self.status} - {self.provider}"
     
 class Category(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)  # Add this line to associate partners with users
@@ -41,7 +61,8 @@ class Course(models.Model):
     course_number = models.CharField(max_length=250, blank=True)
     course_run = models.CharField(max_length=250, blank=True)
     slug = models.CharField(max_length=250, blank=True)
-    org_partner = models.ForeignKey(Partner, on_delete=models.CASCADE,related_name="org_courses")
+    org_partner = models.ForeignKey(Partner, on_delete=models.CASCADE,related_name="courses")
+    instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE,related_name="courses",null=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="category_courses")
     level = models.CharField(max_length=10, choices=[('basic', 'Basic'),('middle', 'Middle'), ('advanced', 'Advanced')], default='basic', null=True, blank=True)
     status_course = models.CharField(max_length=10, choices=[('draft', 'draft'), ('published', 'published'),('curation', 'curation'),('archive', 'archive')], default='draft', blank=True)

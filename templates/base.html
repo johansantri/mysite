@@ -194,21 +194,21 @@
 							</li>
 							{% if request.user.is_authenticated and request.user.is_partner %}
 							<li class="nav-item">
-								<a class="nav-link header-sign" href="{% url 'dasbord'%}">{{user.username}}</a>
+								<a class="nav-link header-sign" href="{% url 'authentication:dasbord'%}">{{user.username}}</a>
 								
 							</li>
 							{% elif request.user.is_authenticated and request.user.is_superuser %}
 							<li class="nav-item">
-								<a class="nav-link header-login" href="{% url 'dasbord'%}">{{user.username}}</a>
+								<a class="nav-link header-login" href="{% url 'authentication:dasbord'%}">{{user.username}}</a>
 								
 							</li>
 							{% elif request.user.is_authenticated %}
 							<li class="nav-item">
-								<a class="nav-link header-sign" href="{% url 'logout'%}">logout</a>
+								<a class="nav-link header-sign" href="{% url 'authentication:logout'%}">logout</a>
 							</li>
 							{% else %}
 							<li class="nav-item">
-								<a class="nav-link header-login" href="{% url 'login'%}">Login</a>
+								<a class="nav-link header-login" href="{% url 'authentication:login'%}">Login</a>
 							</li>
 							{% endif%}
 

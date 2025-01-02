@@ -1,0 +1,64 @@
+{% extends 'home/base.html' %}
+{% block content %}
+<div class="page-content">
+      <div class="container">
+        <div class="row">
+        {% include "home/sidebar.html" %}
+            <div class="col-xl-9 col-lg-9">
+              <h1 class="h2">Instructor</h1>
+              <div class="support-wrap">
+              <table class="table table-striped table-hover">
+                <thead>
+                  <tr>
+                    
+                    <th>Username</th>
+                    <th>university</th>
+                    <th>Status</th>
+                    
+                    <th>Experience</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for instructor in instructors %}
+                    <tr>
+                        <td>{{ instructor.user.email }}</td>
+                        <td>{{ instructor.user.university }}</td>
+                        <td>  {% if instructor.status == 'Pending' %}
+                          <span class="badge bg-warning">{{ instructor.status }}</span> <!-- Yellow for Pending -->
+                      {% elif instructor.status == 'Approved' %}
+                          <span class="badge bg-success">{{ instructor.status }}</span> <!-- Green for Approved -->
+                      {% elif instructor.status == 'Rejected' %}
+                          <span class="badge bg-danger">{{ instructor.status }}</span> <!-- Red for Rejected -->
+                      {% else %}
+                          <span class="badge bg-secondary">{{ instructor.status }}</span> <!-- Default gray -->
+                      {% endif %}</td>
+                        
+                        <td>{{ instructor.experience_years }} years</td>
+                        <td><a href="{% url 'courses:instructor_detail' instructor.id %}" class="btn btn-info btn-sm"><i class="fa fa-info-circle"></i></a> 
+                          <a href="{% url 'courses:instructor_check' instructor.id %}" class="btn btn-success btn-sm"><i class="fa fa-check"></i></a> 
+                        
+                          <form method="POST" action="{% url 'courses:delete_instructor' instructor.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this instructor?');">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+
+            </div>
+           
+            
+            </div>
+
+        </div>
+      </div>  
+
+    </div> 
+
+</div>
+  {% endblock %}

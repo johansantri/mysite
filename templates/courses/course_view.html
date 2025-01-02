@@ -20,13 +20,19 @@
             {% if user.is_partner%}
             <a href="{% url 'courses:course_create_view'%}" class="btn btn-primary">new</a>
             {% endif %}
+            {% if user.is_instructor%}
+            <a href="{% url 'courses:course_create_view'%}" class="btn btn-primary">new</a>
+            {% endif %}
         </div>
         
       <table id="courses-table" class="table table-striped table-hover">
           <thead>
               <tr>
                   <th>Course Name</th>
-                  <th>Course Number</th>
+                  <th>Number</th>
+                  <th>org</th>
+                  <th>status</th>
+                  <th>run</th>
               </tr>
           </thead>
           <tbody>
@@ -74,7 +80,7 @@
                       // Add new rows to the table
                       data.items.forEach(item => {
                           const row = document.createElement('tr');
-                          row.innerHTML = `<td><a href="../studio/${item.id}"> ${item.course_name}</a></td><td>${item.course_number}</td>`;
+                          row.innerHTML = `<td><a href="../studio/${item.id}"> ${item.course_name}</a></td><td>${item.course_number}</td><td>${item.org_partner__name__name}</td><td>${item.status_course}</td><td>${item.course_run}</td>`;
                           tbody.appendChild(row);
                       });
                       document.getElementById('total-courses').textContent = `Total Courses: ${data.count}`;

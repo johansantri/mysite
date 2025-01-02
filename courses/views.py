@@ -3,19 +3,128 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from .forms import CourseForm, PartnerForm, SectionForm, ProfilForm
+from .forms import CourseForm, PartnerForm, SectionForm, ProfilForm,InstructorForm
 from django.http import JsonResponse
-from .models import Course, Partner, Section
-from django.contrib.auth.models import User
+from .models import Course, Partner, Section,Instructor
+from django.contrib.auth.models import User,Univer
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
 from django.urls import reverse
+from django.contrib import messages
+from django.db.models import F
+
+#upprove user
+@login_required
+def instructor_check(request, instructor_id):
+    # Fetch the instructor object
+    instructor = get_object_or_404(Instructor, id=instructor_id)
+    
+    # Check if the user has permission to approve (e.g., the user must be the provider)
+    if request.user.is_partner and instructor.provider.user == request.user:
+        # Update instructor status to "Approved"
+        instructor.status = 'Approved'
+        instructor.save()  # Save the status change
+
+        # Now update the user's `is_partner` field to True
+        user = instructor.user  # Get the related User object
+        
+        # Set is_partner to True
+        user.is_instructor = True
+        user.save()  # Save the user after the update
+
+        # Success message
+        messages.success(request, "Instructor has been approved and user is now a partner.")
+        
+    else:
+        # Error message if the user doesn't have permission
+        messages.error(request, "You do not have permission to approve this instructor.")
+
+    # Redirect to the instructor list or another page after approval
+    return redirect('courses:instructor_view')  # Change this URL to your desired location
+
+
+#instructor detail
+@login_required
+def instructor_detail(request, id):
+    instructor = get_object_or_404(Instructor, id=id)
+    return render(request, 'instructor/instructor_detail.html', {'instructor': instructor})
+
+#view instructor
+@login_required
+
+def instructor_view(request):
+
+    # Check if the user is an admin
+
+    if request.user.is_superuser:  # This checks if the user is an admin
+
+        instructors = Instructor.objects.all()  # Admin sees all instructors
+
+    elif request.user.is_partner:
+
+        # Otherwise, filter based on the user's associated partner or provider
+
+        instructors = Instructor.objects.filter(provider__user=request.user)
+
+    elif request.user.is_instructor:
+
+        messages.error(request, "You do not have permission to view this instructor list.")
+
+        return render(request, 'instructor/instructor_list.html', {'instructors': []})  # Return an empty list or redirect
+
+
+    else:
+
+        # Handle case where the user does not have any of the above roles
+
+        messages.error(request, "You do not have permission to view this instructor list.")
+
+        return render(request, 'instructor/instructor_list.html', {'instructors': []})  # Return an empty list or redirect
+
+
+    return render(request, 'instructor/instructor_list.html', {'instructors': instructors})
+
+#delete instructor
+@login_required
+def delete_instructor(request, instructor_id):
+    # Fetch the instructor object
+    instructor = get_object_or_404(Instructor, id=instructor_id)
+    
+    # Ensure the user has permission to delete the instructor
+    if request.user.is_partner and instructor.provider.user == request.user:
+        instructor.delete()
+        messages.success(request, "Instructor deleted successfully.")
+    else:
+        messages.error(request, "You do not have permission to delete this instructor.")
+
+    # Redirect to the list of instructors
+    return redirect('courses:instructor_view')
 
 
 #intructor form
-@csrf_exempt
-def instructorView(request):
-    return render(request,'home/become.html')
+@login_required
+def become_instructor(request):
+    try:
+        application = Instructor.objects.get(user=request.user)
+        if application.status == "Pending":
+            
+            messages.info(request, "Your application is under review.")
+        elif application.status == "Approved":
+            messages.success(request, "You are already an instructor!")
+        return redirect('authentication:dasbord')
+    except Instructor.DoesNotExist:
+        if request.method == "POST":
+            form = InstructorForm(request.POST)
+            if form.is_valid():
+                application = form.save(commit=False)
+                application.user = request.user
+                application.save()
+                messages.success(request, "Your application has been submitted!")
+                return redirect('authentication:dasbord')
+        else:
+            form = InstructorForm()
+
+    return render(request, 'home/become_instructor.html', {'form': form})
 #coruse profile
 @csrf_exempt  # Be cautious with this decorator; it's better to avoid using it if unnecessary
 def course_profile(request, id):
@@ -78,23 +187,40 @@ def courseView(request):
     # Check if the user is authenticated
     if not request.user.is_authenticated:
         return redirect('/')
+    user = request.user
 
-    # Determine which courses to display
-    if request.user.is_superuser:
+    if user.is_superuser:
+
+        # Superadmin: Show all courses
+
         courses = Course.objects.all()
-    #partner
-    elif hasattr(request.user, 'is_partner') and request.user.is_partner:
-        courses = Course.objects.filter(author_id=request.user.id)
+
+    elif user.is_partner:
+
+        # Partner: Show only their own courses
+
+        courses = Course.objects.filter(org_partner__user=user)  # Use org_partner to filter
+
+    elif user.is_instructor:
+
+        # Instructor: Show only their own courses
+
+        courses = Course.objects.filter(instructor__user=user)  # Assuming instructor is related to user
+
     else:
-        courses = Course.objects.none()  # Return an empty QuerySet for unauthorized users
+
+        # Optionally handle other user types or set courses to none
+
+        courses = Course.objects.none()
 
     search_query = request.GET.get('search', '').strip()
     if search_query:
         courses = courses.filter(course_name__icontains=search_query)
     courses = courses.order_by('-id')  # To order by ascending order
     # Fetch only necessary fields
-    courses = courses.values('id', 'course_name', 'course_number')
-
+    #courses = courses.values('id', 'course_name', 'course_number','course_run','org_partner__name','status_course')
+    courses = courses.annotate(org_partner_name=F('org_partner__name')).values('id', 'course_name', 'course_number', 'course_run', 'org_partner__name__name', 'status_course')
+    #print(courses)
     # Get the page number from the request
     page_number = request.GET.get('page', 1)
     try:
@@ -143,19 +269,70 @@ def paginate_courses(request, posts):
     page_number = request.GET.get('page')
     return paginator.get_page(page_number)
 #create course
+@login_required
+
 def course_create_view(request):
-    if request.user.is_partner or request.user.is_superuser:
+
+    if request.user.is_partner or request.user.is_superuser or request.user.is_instructor:
+
         if request.method == 'POST':
+
             form = CourseForm(request.POST, user=request.user)  # Pass the logged-in user to the form
+
             if form.is_valid():
-                form = form.save(commit=False)
-                form.author_id = request.user.id
-                form.save()  # Save the course with the selected partner
+
+                course = form.save(commit=False)  # Create a Course instance but don't save to the database yet
+
+
+                # Set the author to the logged-in user
+
+                course.author = request.user
+                
+
+                  # If the user is a partner or superuser, set the org_partner
+
+                if  request.user.is_superuser:
+
+                    partner = form.cleaned_data['org_partner']  # Get the selected partner from the form
+
+                    course.org_partner = partner  # Set the partner for the course
+
+                # If the user is a partner or superuser, set the org_partner
+
+                if request.user.is_partner :
+
+                    partner = form.cleaned_data['org_partner']  # Get the selected partner from the form
+
+                    course.org_partner = partner  # Set the partner for the course
+
+
+                # If the user is an instructor, set the instructor
+
+                if request.user.is_instructor:
+
+                     instructor = Instructor.objects.get(user=request.user)  # Assuming a one-to-one relationship
+
+                     course.instructor = instructor 
+
+                # Save the course instance to the database
+
+                course.save()
+
                 return redirect('/courses')  # Redirect to a course list page or success page
+
+            else:
+
+                print(form.errors)  # Print form errors to the console for debugging
+
         else:
+
             form = CourseForm(user=request.user)  # Pass the logged-in user to the form
-    else :
+
+    else:
+
         return redirect('/courses')
+
+
     return render(request, 'courses/course_add.html', {'form': form})
 
 #studio detail courses
@@ -223,6 +400,30 @@ def search_users(request):
         'total_pages': paginator.num_pages,
         'total_users': paginator.count,
     })
+def search_partner(request):
+    query = request.GET.get('q', '')
+    
+    # If query is empty, return no users or all active users (depending on your use case)
+    if query:
+        partners = Univer.objects.filter(Q(name__icontains=query)).only('id', 'name')
+    else:
+        partners = Univer.objects.filter(Q(name__icontains=query)).only('id', 'name')
+
+    # Optional: Implement pagination (if needed)
+    paginator = Paginator(partners, 20)  # Show 20 users per page
+    page_number = request.GET.get('page')  # Get the page number from the query params
+    page_obj = paginator.get_page(page_number)
+
+    # Prepare data for response
+    partners_data = [{'id': univer.id, 'text': univer.name} for univer in page_obj]
+
+    return JsonResponse({
+        'partners': partners_data,
+        'page': page_obj.number,
+        'total_pages': paginator.num_pages,
+        'total_partners': paginator.count,
+    })
+
 
 def filter_partner_by_query(request, posts):
     """Filter partner based on search query."""
@@ -247,6 +448,12 @@ def partner_create_view(request):
             form = form.save(commit=False)
             form.author_id = request.user.id
             form.save()  # Save the course with the selected partner
+                  # Now update the user's `is_partner` field to True
+            user = form.user  # Get the related User object
+
+            # Set is_partner to True
+            user.is_partner = True
+            user.save()  # Save the user after the update
             return redirect('/partner')  # Redirect to a course list page or success page
     else:
         form = PartnerForm()  # Pass the logged-in user to the form

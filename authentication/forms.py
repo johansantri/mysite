@@ -9,7 +9,7 @@ class Userprofile(UserChangeForm):
         fields = [
             'first_name', 'last_name', 'email', 
             'hobby', 'birth', 'address', 'country', 
-            'phone', 'gender', 'education','university'
+            'phone', 'gender', 'education','university','photo'
         ]
     def __init__(self, *args, **kwargs):
         super(UserChangeForm, self).__init__(*args, **kwargs)
@@ -41,7 +41,7 @@ class Userprofile(UserChangeForm):
         })
         self.fields['birth'].widget.attrs.update({
             'class': 'form-control',
-            'placeholder': 'Birth',
+            'placeholder': 'tai',
             'required': 'True',
             'type': 'date'
         })
@@ -66,11 +66,34 @@ class Userprofile(UserChangeForm):
         'required': 'True'
         })
         self.fields['university'].widget.attrs.update({
-        'class': 'form-control',
+        'class': 'form-control select1',
         'placeholder': 'university',
         'required': 'True'
         })
+       
+class UserPhoto(UserChangeForm):
 
+    class Meta:
+
+        model = User
+
+        fields = ['photo']
+
+
+    def __init__(self, *args, **kwargs):
+
+        super(UserPhoto, self).__init__(*args, **kwargs)  # Correct superclass call
+
+        self.fields['photo'].widget.attrs.update({
+
+            'class': 'form-control',
+
+            'placeholder': 'Upload your photo',  # More relevant placeholder
+
+            'required': True  # Set required as a boolean
+
+        })
+       
 
 
 # uncomment this if you want to change the class/design of the login form

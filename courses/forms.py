@@ -1,10 +1,11 @@
 # forms.py
 from django import forms
 from django.core.cache import cache
-from .models import Course, Partner, Section
+from .models import Course, Partner, Section,Instructor
 from django_ckeditor_5.widgets import CKEditor5Widget
 from django.contrib.auth.models import User
 import logging
+from django.utils.text import slugify
 
 # Initialize the logger
 logger = logging.getLogger(__name__)
@@ -71,27 +72,59 @@ class CourseForm(forms.ModelForm):
                 "class": "form-control js-example-basic-single"
             })
         }
+    
     def __init__(self, *args, **kwargs):
+
         user = kwargs.pop('user', None)  # Get the logged-in user from the view
+
         super().__init__(*args, **kwargs)
+
+
         if user:
-            # Filter org_partner to show only partners associated with the logged-in user
-            self.fields['org_partner'].queryset = Partner.objects.filter(user=user)
+
+            if user.is_superuser:
+
+                # Admin: Show all partners in the dropdown
+
+                self.fields['org_partner'].queryset = Partner.objects.all()
+              
+            elif user.is_partner:
+
+                # Partner: Show only their own partner
+
+                self.fields['org_partner'].queryset = Partner.objects.filter(user=user)
+                
+            elif user.is_instructor:
+
+                # Instructor: Show only the partner they are associated with
+
+                instructor = user.instructors.first()  # Get the first instructor instance
+
+                if instructor:
+
+                    self.fields['org_partner'].queryset = Partner.objects.filter(id=instructor.provider.id)
+                    
+                else:
+
+                    self.fields['org_partner'].queryset = Partner.objects.none()  # No options if no instructor found
+
+            else:
+
+                # Optionally handle other user types or set a default queryset
+
+                self.fields['org_partner'].queryset = Partner.objects.none()  # No options for other users
+                
+
 
 class PartnerForm(forms.ModelForm):
     class Meta:
         model = Partner
-        fields = ['name', 'abbreviation', 'user']
+        fields = ['name', 'user']
 
         widgets = {
-        "name": forms.TextInput(attrs={
+        "name": forms.Select(attrs={
             "placeholder": "Full Stack Development",
-            "class": "form-control",
-            "oninput": "listingslug(value)"
-        }),
-        "abbreviation": forms.TextInput(attrs={
-            "class": "form-control",
-            "maxlength": "10"
+            "class": "form-control select1"
         }),
         "user": forms.Select(attrs={
             "placeholder": "CS201",
@@ -132,3 +165,22 @@ class PartnerForm(forms.ModelForm):
         if Partner.objects.filter(user=user_value).exists():
             raise forms.ValidationError("This user already exists. Please choose another.")
         return user_value
+#instructor
+class InstructorForm(forms.ModelForm):
+    class Meta:
+        model = Instructor
+        fields = ['bio', 'expertise', 'experience_years','provider','agreement','tech']
+        widgets = {
+            'bio': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'expertise': forms.Textarea(attrs={'class': 'form-control','row':4}),
+            'experience_years': forms.NumberInput(attrs={'class': 'form-control'}),
+            'provider': forms.Select(attrs={'class': 'form-control','required':'True'}),
+            'tech': forms.URLInput(attrs={'class': 'form-control','required':'True'}),
+            'agreement': forms.CheckboxInput(attrs={'class': 'form-check-input','required':'True'}),
+
+        }
+    def clean_experience_years(self):
+        experience = self.cleaned_data.get('experience_years')
+        if experience is not None and experience < 0:
+            raise forms.ValidationError("Experience years cannot be negative.")
+        return experience

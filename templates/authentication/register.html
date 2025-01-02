@@ -103,7 +103,7 @@
 							<div class="img-logo">
 								<img src="{% static "assets/img/logo.svg"%}" class="img-fluid" alt="Logo">
 								<div class="back-home">
-									<a href="{% url 'home' %}">Back to Home</a>
+									<a href="{% url 'authentication:home' %}">Back to Home</a>
 								</div>
 							</div>
 							<h1>Register into Your Account</h1>
@@ -127,7 +127,7 @@
 										In using Facebook</a></li>
 							</ul>
 						</div>
-						<p class="mb-0">login Now ? <a href="{% url 'login' %}">Login</a></p><p>Forgot Password?: <a href="{% url 'password_reset'%}">password_reset</a></p>
+						<p class="mb-0">login Now ? <a href="{% url 'authentication:login' %}">Login</a></p><p>Forgot Password?: <a href="{% url 'authentication:password_reset'%}">password_reset</a></p>
 					</div>
 				</div>
 				<!-- /Login -->
