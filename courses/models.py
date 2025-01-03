@@ -46,7 +46,7 @@ class Instructor(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.user.email} - {self.status} - {self.provider}"
+        return f"{self.user.email} "
     
 class Category(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)  # Add this line to associate partners with users

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from . import models 
-from .models import Partner,Course
+from .models import Partner,Course, Instructor
 from import_export.admin import ImportExportModelAdmin
 
 class CourseAdmin(ImportExportModelAdmin):
@@ -18,4 +18,5 @@ class PartnerAdmin(admin.ModelAdmin):
     search_fields = ['name', 'abbreviation', 'user__username']
 admin.site.register(Partner, PartnerAdmin)
 admin.site.register(models.Category)
+admin.site.register(models.Instructor)
 # Register your models here.

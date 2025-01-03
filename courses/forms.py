@@ -239,3 +239,20 @@ class InstructorForm(forms.ModelForm):
         if experience is not None and experience < 0:
             raise forms.ValidationError("Experience years cannot be negative.")
         return experience
+    
+#instructor add coruse
+class InstructorAddCoruseForm(forms.ModelForm):
+
+    class Meta:
+
+        model = Course
+
+        fields = ['instructor']
+
+        widgets = {
+
+            'instructor': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Enter instructor name'}),
+
+        }
+
+    

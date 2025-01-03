@@ -3,7 +3,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from .forms import CourseForm, PartnerForm, SectionForm, ProfilForm,InstructorForm
+from .forms import CourseForm, PartnerForm, SectionForm, ProfilForm,InstructorForm,InstructorAddCoruseForm
 from django.http import JsonResponse
 from .models import Course, Partner, Section,Instructor
 from django.contrib.auth.models import User,Univer
@@ -125,22 +125,63 @@ def become_instructor(request):
             form = InstructorForm()
 
     return render(request, 'home/become_instructor.html', {'form': form})
+
+#coruse profile
+@csrf_exempt  # Be cautious with this decorator; it's better to avoid using it if unnecessary
+def course_team(request, id):
+    user = request.user
+    course = None
+    # Determine the course based on the user's role
+    if request.user.is_superuser:
+        course = get_object_or_404(Course, id=id)
+    elif user.is_partner:
+        #course = Course.objects.filter(id=id, org_partner_id=request.user.id).first()
+        course = get_object_or_404(Course, id=id, org_partner__user_id=user.id)
+        #print(course)
+    elif user.is_instructor:
+        course = get_object_or_404(Course, id=id, instructor__user_id=user.id)
+    # If no course is found, redirect to the courses list page
+        #print(course)
+    if not course:
+        return redirect('/courses')
+
+
+    # Handle POST request to update course data
+
+    if request.method == 'POST':
+
+        form = InstructorAddCoruseForm(request.POST, instance=course)
+
+        if form.is_valid():
+
+            form.save()  # Save the updated course data
+
+            return redirect('courses:course_team', id=course.id)  # Redirect back to the updated course profile
+
+    else:
+
+        form = InstructorAddCoruseForm(instance=course)  # Pass org_partner for filtering
+
+    return render(request, 'courses/course_team.html', {'course': course, 'form': form})
+
+
 #coruse profile
 @csrf_exempt  # Be cautious with this decorator; it's better to avoid using it if unnecessary
 def course_profile(request, id):
     # Get the course based on the user's role
     user = request.user
+    course = None
+    # Determine the course based on the user's role
     if request.user.is_superuser:
-
-        course = Course.objects.filter(id=id).first()
-
+        course = get_object_or_404(Course, id=id)
     elif user.is_partner:
-        course = Course.objects.filter(id=id, org_partner_id=request.user.id).first()
+        #course = Course.objects.filter(id=id, org_partner_id=request.user.id).first()
+        course = get_object_or_404(Course, id=id, org_partner__user_id=user.id)
+        print(course)
     elif user.is_instructor:
-    
-        course = Course.objects.filter(id=id, author_id=request.user.id).first()
-
-    # If no course is found, redirect to the courses list
+        course = get_object_or_404(Course, id=id, instructor__user_id=user.id)
+    # If no course is found, redirect to the courses list page
+        print(course)
     if not course:
         return redirect('/courses')
 
@@ -345,15 +386,18 @@ def course_create_view(request):
 def studio(request, id):
  
     user = request.user
+    course = None
     # Determine the course based on the user's role
     if request.user.is_superuser:
-        course = Course.objects.filter(id=id).first()
+        course = get_object_or_404(Course, id=id)
     elif user.is_partner:
-        course = Course.objects.filter(id=id, org_partner_id=request.user.id).first()
-
+        #course = Course.objects.filter(id=id, org_partner_id=request.user.id).first()
+        course = get_object_or_404(Course, id=id, org_partner__user_id=user.id)
+        #print(course)
     elif user.is_instructor:
-        course = Course.objects.filter(id=id, author_id=request.user.id).first()
+        course = get_object_or_404(Course, id=id, instructor__user_id=user.id)
     # If no course is found, redirect to the courses list page
+        #print(course)
     if not course:
         return redirect('/courses')
 
