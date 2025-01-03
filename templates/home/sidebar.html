@@ -4,15 +4,17 @@
         <div class="settings-menu">
             <div class="profile-bg">
                 <div class="profile-img">
-                    {% if user.photo %}
-                    
-                        <a href="{% url 'authentication:edit-photo' user.id%}"><img src="{{ user.photo.url }}"
-                            alt="Img"></a>
-                            {% elif not user.photo %}
-                            
-                            <a href="{% url 'authentication:edit-photo' user.id%}"  ><img src="{% static "assets/img/user/user1.jpg"%}"
+                    {% if user.is_authenticated %}
+                        {% if user.photo %}
+                        
+                            <a href="{% url 'authentication:edit-photo' user.id%}"><img src="{{ user.photo.url }}"
                                 alt="Img"></a>
-                                {% endif %}
+                        {% elif not user.photo %}
+                                
+                                <a href="{% url 'authentication:edit-photo' user.id%}"  ><img src="{% static "assets/img/user/user1.jpg"%}"
+                                    alt="Img"></a>
+                        {% endif %}
+                    {% endif %}
                             
                 </div>
             </div>
@@ -122,6 +124,7 @@
     
             <h3>Account Settings</h3>
             <ul class="nav-menu">
+                {% if user.is_authenticated %}
                 <li class="nav-item">
                     <a href="{% url 'authentication:profile' user.username %}" class="nav-link">
                         <i class="bx bxs-cog"></i>Settings
@@ -132,6 +135,7 @@
                         <i class="bx bxs-log-out"></i>Logout
                     </a>
                 </li>
+                {% endif %}
             </ul>
         </div>
     </div>

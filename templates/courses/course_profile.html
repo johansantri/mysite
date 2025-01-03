@@ -36,7 +36,7 @@
                         
                         </div>
                         <div class="col-md-6">   
-                        <label>start date</label>
+                        <label>end date</label>
                         {{form.end_date}}
                         </div>    
                     </div>
@@ -77,14 +77,14 @@
                       </div>
 
                       &nbsp;
-                      <div class="row g-2">
-                        <div class="col-md">
+                     
+                        
                           <div class="form-floating">
                           {{form.link_video}}
                             <label for="link_video">link video address</label>
                           </div>
-                        </div>
-                        <div class="col-md">
+                       
+                        <br>
                           <div class="form-control">
                            {{form.image}}
                          &nbsp;
@@ -92,8 +92,8 @@
                             <!-- Display current image if it exists -->
                            
                           </div>
-                        </div>
-                      </div>
+                      
+                     
                       &nbsp;
                         <div class="form-floating">
                        {{form.sort_description}}
@@ -130,22 +130,5 @@
     </div>
   </div>
 
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-  <script>
-      MathJax.Ajax.config.path["mhchem"] = "https://cdnjs.cloudflare.com/ajax/libs/mathjax-mhchem/3.3.2";
-      MathJax.Hub.Config({
-          showMathMenu: false,
-          TeX: {
-              extensions: [ "[mhchem]/mhchem.js" ]
-          },
-          messageStyle: "none",
-          tex2jax: {
-              preview: "none"
-          }
-      });
-  </script>
-  <script>
-    const preview = document.getElementsByClassName('article-body')[0];
-    MathJax.Hub.Queue(["Typeset", MathJax.Hub, preview]); // MathJax 2
-</script>
+
 {% endblock %}

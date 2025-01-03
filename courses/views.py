@@ -33,7 +33,7 @@ def instructor_check(request, instructor_id):
         user.save()  # Save the user after the update
 
         # Success message
-        messages.success(request, "Instructor has been approved and user is now a partner.")
+        messages.success(request, "Instructor has been approved.")
         
     else:
         # Error message if the user doesn't have permission
@@ -338,13 +338,15 @@ def course_create_view(request):
 #studio detail courses
 def studio(request, id):
  
-
+    user = request.user
     # Determine the course based on the user's role
     if request.user.is_superuser:
         course = Course.objects.filter(id=id).first()
-    else:
-        course = Course.objects.filter(id=id, author_id=request.user.id).first()
+    elif user.is_partner:
+        course = Course.objects.filter(id=id, org_partner_id=request.user.id).first()
 
+    elif user.is_instructor:
+        course = Course.objects.filter(id=id, author_id=request.user.id).first()
     # If no course is found, redirect to the courses list page
     if not course:
         return redirect('/courses')

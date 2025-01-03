@@ -43,7 +43,7 @@ class ProfilForm(forms.ModelForm):
 class CourseForm(forms.ModelForm):
     class Meta:
         model = Course
-        fields = ['course_name', 'course_number', 'course_run', 'slug', 'category', 'level', 'status_course', 'org_partner']
+        fields = ['course_name', 'course_number', 'course_run', 'slug', 'category', 'level',  'org_partner']
 
         
         widgets = {
@@ -69,6 +69,9 @@ class CourseForm(forms.ModelForm):
                 "id": "id_org_partner"
             }),
             "category": forms.Select(attrs={
+                "class": "form-control js-example-basic-single"
+            }),
+            "level": forms.Select(attrs={
                 "class": "form-control js-example-basic-single"
             })
         }
