@@ -34,70 +34,58 @@
             <p>Email: {{user.email}} | Phone: {{user.phone}} | Website: www.johndoe.com</p>
         </div>
     
-        <!-- About Section -->
-        <div class="resume-section">
-            <h3>About Me</h3>
-            <p>I am a passionate web developer with 5+ years of experience designing and developing user-friendly websites and applications. I am skilled in front-end and back-end development, and I love bringing creative ideas to life.</p>
+    <!-- About Section -->
+    <div class="resume-section">
+        <h3>About Me</h3>
+        {% if instructor %}
+        <p>{{instructor.bio }}.</p>
+        {% endif %}
+    </div>
+
+    <!-- Experience Section -->
+    <div class="resume-section">
+        <h3>Experience</h3>
+        <div>
+            <h6>{{user.hobby}}</h6>
+            <p><strong>{{ instructor.experience_years }}.</strong> | Experience</p>
+            <ul>
+                {% if instructor %}
+                <li>{{ instructor.expertise }}</li>
+                {% endif %}
+               
+            </ul>
         </div>
-    
-        <!-- Experience Section -->
-        <div class="resume-section">
-            <h3>Experience</h3>
-            <div>
-                <h6>Senior Web Developer</h6>
-                <p><strong>Tech Solutions Inc.</strong> | Jan 2020 - Present</p>
-                <ul>
-                    <li>Developed and maintained websites and applications using HTML, CSS, JavaScript, and PHP.</li>
-                    <li>Collaborated with designers and project managers to deliver high-quality products.</li>
-                    <li>Optimized websites for speed and scalability.</li>
-                </ul>
-            </div>
-            <div>
-                <h6>Web Developer</h6>
-                <p><strong>Creative Web Agency</strong> | May 2016 - Dec 2019</p>
-                <ul>
-                    <li>Designed responsive and engaging websites for clients in various industries.</li>
-                    <li>Integrated third-party APIs to enhance website functionality.</li>
-                    <li>Provided ongoing support and maintenance for client websites.</li>
-                </ul>
-            </div>
-        </div>
-    
-        <!-- Education Section -->
-        <div class="resume-section">
-            <h3>Education</h3>
-            <div>
-                <h6>{{user.education}}</h6>
-                <p><strong>{{user.university}}</strong> | 2012 - 2016</p>
-                <p>Graduated with honors, specializing in web development and software engineering.</p>
-            </div>
-        </div>
-    
-        <!-- Skills Section -->
-        <div class="resume-section">
-            <h3>Skills</h3>
-            <div class="row">
-                <div class="col-sm-6">
-                    <p class="skill-item">HTML, CSS, JavaScript</p>
-                    <p class="skill-item">React, Angular, Vue.js</p>
-                    <p class="skill-item">Node.js, Express.js</p>
-                </div>
-                <div class="col-sm-6">
-                    <p class="skill-item">Python, Django</p>
-                    <p class="skill-item">Database Management (MySQL, MongoDB)</p>
-                    <p class="skill-item">Version Control (Git, GitHub)</p>
-                </div>
-            </div>
-        </div>
-    
-        <!-- Contact Section -->
-        <div class="resume-section">
-            <h3>Contact</h3>
-            <p><strong>Email:</strong> {{user.email}}</p>
-            <p><strong>Phone:</strong> {{user.phone}}</p>
-            <p><strong>Website:</strong> <a href="https://www.johndoe.com">www.johndoe.com</a></p>
-            <p><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/johndoe">linkedin.com/in/johndoe</a></p>
+     
+    </div>
+
+    <!-- Education Section -->
+    <div class="resume-section">
+        <h3>Education</h3>
+        <div>
+            
+            <p><strong>{{user.education}}</strong> | {{user.university}}</p>
+            
         </div>
     </div>
 
+    <!-- Skills Section -->
+    <div class="resume-section">
+        <h3>Skills</h3>
+        <div class="row">
+            <div class="col-sm-6">
+                <p class="skill-item">{{ instructor.tech }}</p>
+                
+            </div>
+           
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <div class="resume-section">
+        <h3>Contact</h3>
+        <p><strong>Email:</strong> {{user.email}}</p>
+        <p><strong>Phone:</strong> {{user.phone}}</p>
+        
+        <p><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/johndoe">linkedin.com/in/johndoe</a></p>
+    </div>
         
