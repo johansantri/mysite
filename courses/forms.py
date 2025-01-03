@@ -6,6 +6,9 @@ from django_ckeditor_5.widgets import CKEditor5Widget
 from django.contrib.auth.models import User
 import logging
 from django.utils.text import slugify
+from django.core.files.base import ContentFile
+from PIL import Image as PILImage
+import io
 
 # Initialize the logger
 logger = logging.getLogger(__name__)
@@ -38,7 +41,56 @@ class ProfilForm(forms.ModelForm):
             'end_enrol': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
         }
     def __init__(self, *args, **kwargs):
+
         super(ProfilForm, self).__init__(*args, **kwargs)
+
+
+    def save(self, commit=True):
+
+        course = super(ProfilForm, self).save(commit=False)
+
+
+        # If the image field has changed, delete the old image
+
+        if self.cleaned_data.get('image') and course.pk:
+
+            old_course = Course.objects.get(pk=course.pk)
+
+            if old_course.image != self.cleaned_data['image']:
+
+                old_course.delete_old_image()
+
+
+        # Convert the uploaded image to WebP format
+
+        if self.cleaned_data.get('image'):
+
+            image_file = self.cleaned_data['image']
+
+            image = PILImage.open(image_file)
+
+
+            # Create a BytesIO object to hold the WebP image
+
+            webp_image_io = io.BytesIO()
+
+            image.save(webp_image_io, format='WEBP')
+
+            webp_image_io.seek(0)
+
+
+            # Create a new ContentFile to save the WebP image
+
+            webp_image_file = ContentFile(webp_image_io.read(), name=image_file.name.rsplit('.', 1)[0] + '.webp')
+
+            course.image.save(webp_image_file.name, webp_image_file, save=False)
+
+
+        if commit:
+
+            course.save()
+
+        return course
 
 class CourseForm(forms.ModelForm):
     class Meta:

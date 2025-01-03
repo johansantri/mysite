@@ -129,9 +129,15 @@ def become_instructor(request):
 @csrf_exempt  # Be cautious with this decorator; it's better to avoid using it if unnecessary
 def course_profile(request, id):
     # Get the course based on the user's role
+    user = request.user
     if request.user.is_superuser:
+
         course = Course.objects.filter(id=id).first()
-    else:
+
+    elif user.is_partner:
+        course = Course.objects.filter(id=id, org_partner_id=request.user.id).first()
+    elif user.is_instructor:
+    
         course = Course.objects.filter(id=id, author_id=request.user.id).first()
 
     # If no course is found, redirect to the courses list

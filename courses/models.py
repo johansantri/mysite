@@ -2,7 +2,7 @@
 from django.db import models
 from django.contrib.auth.models import User, Univer
 from autoslug import AutoSlugField
-
+import os
 
         
 class Partner(models.Model):
@@ -82,7 +82,15 @@ class Course(models.Model):
 
     def __str__(self):
         return f"{self.course_name} ({self.status_course} - {self.org_partner} - {self.author} - {self.course_run})"
-    
+    def delete_old_image(self):
+
+        """Delete the old image file from the filesystem."""
+
+        if self.image:
+
+            if os.path.isfile(self.image.path):
+
+                os.remove(self.image.path)
 
 class Section(models.Model):
     parent = models.ForeignKey('self', related_name='children', on_delete=models.CASCADE, blank = True, null=True)
