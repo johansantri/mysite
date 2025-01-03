@@ -1,75 +1,55 @@
+# forms.py
+import re
+from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordResetForm, SetPasswordForm,UserChangeForm
 from django.contrib.auth.models import User
-from django.forms import forms
 from django.forms import ModelForm
 
-class Userprofile(UserChangeForm):
+class Userprofile(forms.ModelForm):
+    
     class Meta:
         model = User
         fields = [
-            'first_name', 'last_name', 'email', 
-            'hobby', 'birth', 'address', 'country', 
-            'phone', 'gender', 'education','university','photo'
+        'first_name', 'last_name', 'email', 
+        'hobby', 'birth', 'address', 'country', 
+        'phone', 'gender', 'education','university','photo'
         ]
+
+        
+        widgets = {
+            
+            'first_name': forms.TextInput(attrs={'class': 'form-control', 'type': 'text'}),  
+            'last_name': forms.TextInput(attrs={'class': 'form-control', 'type': 'text'}), 
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'type': 'email'}),   
+            'hobby': forms.TextInput(attrs={'class': 'form-control', 'type': 'text'}),     
+            'birth': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'address': forms.Textarea(attrs={'class': 'form-control', 'type': 'text','rows':4}),
+            'country': forms.TextInput(attrs={'class': 'form-control', 'type': 'text'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control', 'type': 'text'}), 
+            'gender': forms.Select(attrs={'class': 'form-control', 'type': 'text'}), 
+            'education': forms.Select(attrs={'class': 'form-control', 'type': 'text'}), 
+            'university': forms.Select(attrs={'class': 'form-control', 'type': 'text'}),
+            
+            
+        }
+        def clean_phone(self):
+
+            phone = self.cleaned_data.get('phone')
+
+            if phone:
+
+                # Example regex for validating phone numbers (adjust as needed)
+
+                if not re.match(r'^\+?1?\d{9,15}$', phone):
+
+                    raise forms.ValidationError("Invalid phone number format. Please enter a valid phone number.")
+
+            return phone
+        
     def __init__(self, *args, **kwargs):
-        super(UserChangeForm, self).__init__(*args, **kwargs)
-        self.fields['first_name'].widget.attrs.update({
-            'class': 'form-control',
-            'placeholder': 'first',
-            'required': 'True'
-        })
-        self.fields['last_name'].widget.attrs.update({
-            'class': 'form-control',
-            'placeholder': 'last',
-            'required': 'True'
-        })
-        self.fields['email'].widget.attrs.update({
-            'class': 'form-control',
-            'placeholder': 'email',
-            'required': 'True',
-            'type':'email'
-        })
-        self.fields['hobby'].widget.attrs.update({
-            'class': 'form-control',
-            'placeholder': 'hobby',
-            'required': 'True'
-        })
-        self.fields['address'].widget.attrs.update({
-        'class': 'form-control',
-        'placeholder': 'address',
-        'required': 'True'
-        })
-        self.fields['birth'].widget.attrs.update({
-            'class': 'form-control',
-            'placeholder': 'tai',
-            'required': 'True',
-            'type': 'date'
-        })
-        self.fields['country'].widget.attrs.update({
-        'class': 'form-control',
-        'placeholder': 'country',
-        'required': 'True'
-        })
-        self.fields['phone'].widget.attrs.update({
-        'class': 'form-control',
-        'placeholder': 'phone',
-        'required': 'True'
-        })
-        self.fields['gender'].widget.attrs.update({
-        'class': 'form-control',
-        'placeholder': 'gender',
-        'required': 'True'
-        })
-        self.fields['education'].widget.attrs.update({
-        'class': 'form-control',
-        'placeholder': 'education',
-        'required': 'True'
-        })
-        self.fields['university'].widget.attrs.update({
-        'class': 'form-control select1',
-        'placeholder': 'university',
-        'required': 'True'
-        })
+        super(Userprofile, self).__init__(*args, **kwargs)
+
+
        
 class UserPhoto(UserChangeForm):
 
