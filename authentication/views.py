@@ -15,6 +15,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth import logout
 from authentication.forms import UserRegistrationForm, Userprofile, UserPhoto
 from .models import Profile
+from courses.models import Instructor
 from django.http import HttpResponse,JsonResponse
 
 
@@ -31,8 +32,15 @@ def dasbord(request):
 def pro(request,username):
     if request.user.is_authenticated:
         username=User.objects.get(username=username)
+        instructor = Instructor.objects.filter(user=username).first()
 
-        return render(request,'home/profile.html')
+        return render(request,'home/profile.html',{
+
+            'user': username,
+
+            'instructor': instructor,  # This will be None if the user is not an instructor
+
+        })
     return redirect("/login/?next=%s" % request.path)
 
 @login_required
