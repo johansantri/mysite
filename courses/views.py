@@ -3,9 +3,9 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from .forms import CourseForm, PartnerForm, SectionForm, ProfilForm,InstructorForm,InstructorAddCoruseForm
+from .forms import CourseForm, PartnerForm, SectionForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm
 from django.http import JsonResponse
-from .models import Course, Partner, Section,Instructor
+from .models import Course, Partner, Section,Instructor,TeamMember
 from django.contrib.auth.models import User,Univer
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
@@ -126,44 +126,92 @@ def become_instructor(request):
 
     return render(request, 'home/become_instructor.html', {'form': form})
 
-#coruse profile
-@csrf_exempt  # Be cautious with this decorator; it's better to avoid using it if unnecessary
+
+@login_required
+
 def course_team(request, id):
+
     user = request.user
-    course = None
-    # Determine the course based on the user's role
-    if request.user.is_superuser:
-        course = get_object_or_404(Course, id=id)
-    elif user.is_partner:
-        #course = Course.objects.filter(id=id, org_partner_id=request.user.id).first()
-        course = get_object_or_404(Course, id=id, org_partner__user_id=user.id)
-        #print(course)
-    elif user.is_instructor:
-        course = get_object_or_404(Course, id=id, instructor__user_id=user.id)
-    # If no course is found, redirect to the courses list page
-        #print(course)
-    if not course:
-        return redirect('/courses')
+
+    # Retrieve the course based on the provided ID
+
+    course = get_object_or_404(Course, id=id)
 
 
-    # Handle POST request to update course data
+    # Check if the user is either the instructor or an organization partner
+
+    is_instructor = course.instructor is not None and course.instructor.user == user
+
+    is_partner = course.org_partner is not None and course.org_partner.user == user
+    is_superuser = user.is_superuser
+
+    if not (is_instructor or is_partner or is_superuser):
+
+        return redirect('/courses')  # Redirect if the user is not authorized
+
 
     if request.method == 'POST':
 
-        form = InstructorAddCoruseForm(request.POST, instance=course)
+        form = TeamMemberForm(request.POST)
 
         if form.is_valid():
 
-            form.save()  # Save the updated course data
+            email = form.cleaned_data['email']  # Get the email from the form
 
-            return redirect('courses:course_team', id=course.id)  # Redirect back to the updated course profile
+            try:
+
+                user_instance = User.objects.get(email=email)  # Retrieve the User instance
+
+                team_member = TeamMember(course=course, user=user_instance)
+
+                team_member.save()  # Save the new team member
+
+                return redirect('courses:course_team', id=course.id)
+
+            except User.DoesNotExist:
+
+                form.add_error('email', "No user found with this email.")  # Add an error if user not found
 
     else:
 
-        form = InstructorAddCoruseForm(instance=course)  # Pass org_partner for filtering
+        form = TeamMemberForm()
 
-    return render(request, 'courses/course_team.html', {'course': course, 'form': form})
 
+    team_members = course.team_members.all()
+
+
+    return render(request, 'courses/course_team.html', {
+
+        'course': course,
+
+        'form': form,
+
+        'team_members': team_members,
+
+    })
+#remove team
+@login_required
+
+def remove_team_member(request, member_id):
+
+    team_member = get_object_or_404(TeamMember, id=member_id)
+
+    course_id = team_member.course.id
+
+
+    # Check if the user is the instructor or the organization partner
+
+    is_instructor = getattr(team_member.course.instructor, 'user', None) == request.user
+
+    is_partner = getattr(team_member.course.org_partner, 'user', None) == request.user
+    is_superuser = request.user.is_superuser
+    
+    if is_instructor or is_partner or is_superuser:
+
+        team_member.delete()  # Remove the team member
+
+
+    return redirect('courses:course_team', id=course_id)  # Redir
 
 #coruse profile
 @csrf_exempt  # Be cautious with this decorator; it's better to avoid using it if unnecessary

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from . import models 
-from .models import Partner,Course, Instructor
+from .models import Partner,Course, Instructor,TeamMember
 from import_export.admin import ImportExportModelAdmin
 
 class CourseAdmin(ImportExportModelAdmin):
@@ -19,4 +19,5 @@ class PartnerAdmin(admin.ModelAdmin):
 admin.site.register(Partner, PartnerAdmin)
 admin.site.register(models.Category)
 admin.site.register(models.Instructor)
+admin.site.register(models.TeamMember)
 # Register your models here.

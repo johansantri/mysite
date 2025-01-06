@@ -92,6 +92,24 @@ class Course(models.Model):
 
                 os.remove(self.image.path)
 
+class TeamMember(models.Model):
+
+    course = models.ForeignKey(Course, related_name='team_members', on_delete=models.CASCADE)
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Change name to user
+
+   
+
+
+    def __str__(self):
+
+        return f"{self.user.username}"
+
+
+    def __str__(self):
+
+        return f"{self.course} - {self.user}"
+
 class Section(models.Model):
     parent = models.ForeignKey('self', related_name='children', on_delete=models.CASCADE, blank = True, null=True)
     title = models.CharField(max_length=100) 

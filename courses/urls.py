@@ -22,6 +22,7 @@ urlpatterns = [
     path('update-section/<int:pk>/', views.update_section, name='update_section'),
     path('course-profile/<int:id>/', views.course_profile, name='course_profile'),
     path('course-team/<int:id>/', views.course_team, name='course_team'),
+    path('team-member/remove/<int:member_id>/', views.remove_team_member, name='remove_team_member'),
     
     
    

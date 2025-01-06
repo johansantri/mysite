@@ -34,8 +34,8 @@
                     <div class="row " >
                         
                         <div class="col-md-12">
-                        <label>email</label>
-                        {{form.instructor}}
+                        
+                        {{form.as_p}}
                         
                         </div>
                          
@@ -49,10 +49,26 @@
                   <div class="tile-footer">
                     &nbsp;
                     <br>
-                    <button class="btn btn-primary"  type="submit">save <i class="fa fa-save"></i></button>&nbsp;&nbsp;&nbsp;<a class="btn btn-secondary" href="{% url 'courses:course_profile' id=course.id %}">Cancel <i class="fa fa-close"></i></a>
+                    <button class="btn btn-success btn-sm"  type="submit">save <i class="fa fa-save"></i></button>&nbsp;&nbsp;&nbsp;<a class="btn btn-secondary btn-sm" href="{% url 'courses:course_profile' id=course.id %}">cancel <i class="fa fa-close"></i></a>
                   </div>
                 </form>
               </div>
+              <br>
+              <h5 style="text-align: left;">Existing Team Members</h5>
+
+<ul>
+
+    {% for member in team_members %}
+
+        <li> 
+
+            <a href="{% url 'courses:remove_team_member' member.id %}" class="btn btn-danger btn-sm" >{{ member.user.email }}   &nbsp; <i class="fa fa-trash"></i></a>
+
+        </li>
+        <hr>
+    {% endfor %}
+
+</ul>
              
             </div>
           </div>

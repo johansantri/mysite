@@ -1,7 +1,7 @@
 # forms.py
 from django import forms
 from django.core.cache import cache
-from .models import Course, Partner, Section,Instructor
+from .models import Course, Partner, Section,Instructor,TeamMember
 from django_ckeditor_5.widgets import CKEditor5Widget
 from django.contrib.auth.models import User
 import logging
@@ -255,4 +255,45 @@ class InstructorAddCoruseForm(forms.ModelForm):
 
         }
 
-    
+
+
+class TeamMemberForm(forms.ModelForm):
+
+    email = forms.EmailField(required=True)  # Add an email field
+
+
+    class Meta:
+
+        model = TeamMember
+
+        fields = ['email']  # Include only the email field
+        widgets = {
+
+            'email': forms.TextInput(attrs={
+
+                'class': 'form-control',  # Bootstrap class for styling
+
+                'placeholder': 'Enter instructor email',  # Placeholder text
+
+                'required': 'required'  # Make the field required
+
+            }),
+
+        }
+
+    def __init__(self, *args, **kwargs):
+
+        super(TeamMemberForm, self).__init__(*args, **kwargs)
+
+        self.fields['email'].queryset = User.objects.all()  # Limit user choices if needed
+
+
+    def clean_email(self):
+
+        email = self.cleaned_data.get('email')
+
+        if not User.objects.filter(email=email).exists():
+
+            raise forms.ValidationError("No user found with this email.")
+
+        return email
