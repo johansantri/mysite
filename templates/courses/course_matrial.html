@@ -1,6 +1,8 @@
 {% extends 'home/base.html' %}
 {% block content %}
-
+{% block header %}
+    {{ form.media }}
+{% endblock %}
 
 <div class="page-content">
   <div class="container">
@@ -29,13 +31,13 @@
                <form method="POST"  enctype="multipart/form-data"  >
                   {% csrf_token %}
                
-                  <h5 style="text-align: left;">Course Team</h5>
+                  <h5 style="text-align: left;">Course Matrial</h5>
                   <hr>
                     <div class="row " >
                         
                         <div class="col-md-12">
                         
-                        {{form}}
+                        {{form.as_p}}
                         
                         </div>
                          

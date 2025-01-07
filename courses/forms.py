@@ -1,7 +1,7 @@
 # forms.py
 from django import forms
 from django.core.cache import cache
-from .models import Course, Partner, Section,Instructor,TeamMember
+from .models import Course, Partner, Section,Instructor,TeamMember, Material
 from django_ckeditor_5.widgets import CKEditor5Widget
 from django.contrib.auth.models import User
 import logging
@@ -18,6 +18,19 @@ class SectionForm(forms.ModelForm):
     class Meta:
         model = Section
         fields = ['title','courses','parent']
+
+class MatrialForm(forms.ModelForm):
+    description = forms.CharField(widget=CKEditor5Widget())
+    class Meta:
+        model = Material
+        fields = ['title','description']
+        widgets = {
+            
+            'title': forms.TextInput(attrs={'placeholder': 'Enter short title here', 'class': 'form-control'}),
+            #'description': CKEditor5Widget(attrs={'placeholder': 'Enter full description here', 'class': 'django_ckeditor_5'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
+            
+        }
 
 class ProfilForm(forms.ModelForm):
     description = forms.CharField(widget=CKEditor5Widget())

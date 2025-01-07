@@ -1,6 +1,6 @@
 from django.contrib import admin
 from . import models 
-from .models import Partner,Course, Instructor,TeamMember
+from .models import Partner,Course, Instructor,TeamMember,Material
 from import_export.admin import ImportExportModelAdmin
 
 class CourseAdmin(ImportExportModelAdmin):
@@ -21,3 +21,12 @@ admin.site.register(models.Category)
 admin.site.register(models.Instructor)
 admin.site.register(models.TeamMember)
 # Register your models here.
+
+
+@admin.register(Material)
+
+class MaterialAdmin(admin.ModelAdmin):
+
+    list_display = ('title', 'section', 'created_at')
+
+    list_filter = ('section',)

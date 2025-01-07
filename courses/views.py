@@ -3,7 +3,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from .forms import CourseForm, PartnerForm, SectionForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm
+from .forms import CourseForm, PartnerForm, SectionForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm
 from django.http import JsonResponse
 from .models import Course, Partner, Section,Instructor,TeamMember
 from django.contrib.auth.models import User,Univer
@@ -277,6 +277,43 @@ def update_section(request, pk):
             # Log or return specific form errors for debugging
             return JsonResponse({'status': 'error', 'message': 'Form is not valid', 'errors': form.errors})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+#add matrial course
+@login_required
+@csrf_exempt
+def add_matrial(request,idcourse, idsection):
+    course = get_object_or_404(Course, id=idcourse)
+
+    section = get_object_or_404(Section, id=idsection)
+
+
+    if request.method == 'POST':
+
+        form = MatrialForm(request.POST, request.FILES)  # Include request.FILES for file uploads
+
+        if form.is_valid():
+
+            material = form.save(commit=False)
+
+            material.section = section  # Associate the material with the section
+
+            material.courses = course  # Associate the material with the course
+
+            material.save()
+
+            return JsonResponse({'status': 'success', 'message': 'Material added successfully!'})
+
+        else:
+
+            return JsonResponse({'status': 'error', 'errors': form.errors})
+
+
+    # If GET request, render the form
+
+    form = MatrialForm()
+
+    return render(request, 'courses/course_matrial.html', {'form': form, 'course': course, 'section': section})
+
 
 def courseView(request):
     # Check if the user is authenticated
