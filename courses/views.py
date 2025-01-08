@@ -5,13 +5,23 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from .forms import CourseForm, PartnerForm, SectionForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm
 from django.http import JsonResponse
-from .models import Course, Partner, Section,Instructor,TeamMember
+from .models import Course, Partner, Section,Instructor,TeamMember,Material
 from django.contrib.auth.models import User,Univer
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
 from django.urls import reverse
 from django.contrib import messages
 from django.db.models import F
+
+
+
+
+#add quiz
+@login_required
+
+def add_quiz (request):
+    return redirect('/')
+
 
 #upprove user
 @login_required
@@ -289,7 +299,7 @@ def add_matrial(request,idcourse, idsection):
 
     if request.method == 'POST':
 
-        form = MatrialForm(request.POST, request.FILES)  # Include request.FILES for file uploads
+        form = MatrialForm(request.POST)  # Include request.FILES for file uploads
 
         if form.is_valid():
 
@@ -300,12 +310,12 @@ def add_matrial(request,idcourse, idsection):
             material.courses = course  # Associate the material with the course
 
             material.save()
-
-            return JsonResponse({'status': 'success', 'message': 'Material added successfully!'})
+            messages.success(request, "sucess add matrial course.")
+            return redirect('courses:studio',id=course.id)
 
         else:
-
-            return JsonResponse({'status': 'error', 'errors': form.errors})
+            messages.error(request, "canot add matrial.")
+            #return JsonResponse({'status': 'error', 'errors': form.errors})
 
 
     # If GET request, render the form
@@ -314,6 +324,74 @@ def add_matrial(request,idcourse, idsection):
 
     return render(request, 'courses/course_matrial.html', {'form': form, 'course': course, 'section': section})
 
+#edit matrial
+@login_required
+
+@csrf_exempt
+
+def edit_matrial(request, idcourse,idmaterial):
+
+    course = get_object_or_404(Course, id=idcourse)
+
+    material = get_object_or_404(Material, id=idmaterial)  # Use Material model to get the material
+
+    print(f"Editing Material ID: {idmaterial}, Course ID: {idcourse}")  # Debugging line
+    section = material.section  # Get the associated section
+
+
+    if request.method == 'POST':
+
+        form = MatrialForm(request.POST, request.FILES, instance=material)  # Populate the form with the existing material
+
+        if form.is_valid():
+
+            form.save()  # Save the updated material
+
+            messages.success(request, "Successfully updated material.")
+
+            return redirect('courses:studio', id=course.id)  # Redirect to the course studio page
+
+        else:
+
+            messages.error(request, "Cannot update material.")
+
+    else:
+
+        form = MatrialForm(instance=material)  # Populate the form with the existing material
+
+
+    return render(request, 'courses/edit_matrial_course.html', {
+
+        'form': form,
+
+        'course': course,
+
+        'section': section,
+
+        'material': material
+
+    })
+
+#delete matrial course
+@login_required
+
+@csrf_exempt
+
+def delete_matrial(request, pk):
+
+    # Ensure the request is a POST request
+
+    if request.method == 'POST':
+
+        item = get_object_or_404(Material, id=pk)
+
+        item.delete()
+
+        return JsonResponse({'status': 'success', 'message': 'Material deleted!'})
+
+    else:
+
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
 
 def courseView(request):
     # Check if the user is authenticated
@@ -487,8 +565,8 @@ def studio(request, id):
         return redirect('/courses')
 
     # Fetch sections related to the specific course
-    section = Section.objects.filter(parent=None, courses_id=course.id)
-
+    #section = Section.objects.filter(parent=None, courses_id=course.id)
+    section = Section.objects.filter(parent=None, courses=course).prefetch_related('materials')
     # Render the page with the course and sections data
     return render(request, 'courses/course_detail.html', {'course': course, 'section': section})
 

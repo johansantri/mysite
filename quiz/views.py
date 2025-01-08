@@ -3,20 +3,38 @@ from django.shortcuts import render,redirect
 from .models import Question, Choice, Score
 from django.http import JsonResponse
 from .models import AttemptedQuestion
+from datetime import datetime, timedelta
 SUBMISSION_LIMIT = 1
+QUIZ_TIME_LIMIT = timedelta(minutes=1)
 
 def quiz_view(request):
+    if request.user.is_authenticated:
+        user_identifier = request.user.username
+    else:
+        user_identifier = f"Anonymous-{request.session.session_key}"
+
+    # Check if the user has already submitted
+    if Score.objects.filter(user=user_identifier, submitted=True).exists():
+        return render(request, 'quiz/limit_reached.html', {
+            'message': "You have already submitted the quiz.",
+        })
+
+    # Initialize session data for new users
     if 'question_ids' not in request.session or not request.session['question_ids']:
-        # Shuffle and store question IDs in the session
         questions = list(Question.objects.values_list('id', flat=True))
         random.shuffle(questions)
         request.session['question_ids'] = questions
+        request.session['quiz_start_time'] = datetime.now().isoformat()
 
-    # Retrieve the next 5 questions from the shuffled list
     question_ids = request.session['question_ids']
-    questions = Question.objects.filter(id__in=question_ids[:5])  # Limit to 5 questions
+    questions = Question.objects.filter(id__in=question_ids[:5])
 
-    return render(request, 'quiz/quiz.html', {'questions': questions})
+    return render(request, 'quiz/quiz.html', {
+        'questions': questions,
+        'time_limit': QUIZ_TIME_LIMIT.total_seconds(),
+    })
+
+
 
 
 
@@ -109,50 +127,85 @@ def calculate_grade(score, total_questions):
 
 
 def quiz_result(request):
-    # Determine the user identifier (username for authenticated users, session ID for anonymous users)
-    if request.user.is_authenticated:
-        user = request.user.username
-    else:
-        user = f"Anonymous-{request.session.session_key}"
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            user_identifier = request.user.username
+        else:
+            user_identifier = f"Anonymous-{request.session.session_key}"
 
-    # Count previous submissions for this user
-    user_submissions = Score.objects.filter(user=user).count()
+        # Check if the user has already submitted
+        if Score.objects.filter(user=user_identifier, submitted=True).exists():
+            return render(request, 'quiz/limit_reached.html', {
+                'message': "You have already submitted the quiz.",
+            })
 
-    # Check if the submission limit has been reached
-    if user_submissions >= SUBMISSION_LIMIT:
-        return render(request, 'quiz/limit_reached.html', {
-            'message': f"You have reached the maximum number of quiz attempts ({SUBMISSION_LIMIT}).",
-            'submission_limit': SUBMISSION_LIMIT,
-        })
-    score = request.session.get('score', 0)
-    answered_questions = request.session.get('answered_questions', [])
-    total_questions = len(answered_questions)
+        # Check if the time limit has been exceeded
+        start_time = request.session.get('quiz_start_time')
+        if not start_time:
+            return render(request, 'quiz/error.html', {
+                'message': 'Quiz start time not found.'
+            })
 
-    # Calculate the grade only for answered questions
-    grade = calculate_grade(score, total_questions)
+        start_time = datetime.fromisoformat(start_time)
+        time_taken = datetime.now() - start_time
 
-    # Save the score and grade to the database
-    try:
+        if time_taken > QUIZ_TIME_LIMIT:
+            Score.objects.create(
+                user=user_identifier,
+                score=0,
+                total_questions=0,
+                grade="F",
+                submitted=True
+            )
+            return render(request, 'quiz/limit_reached.html', {
+                'message': "Time limit exceeded! You cannot submit the quiz.",
+            })
+
+        # Process the quiz answers
+        score = 0
+        answered_questions = []
+        total_questions = 0
+
+        for key, value in request.POST.items():
+            if key.startswith('question_'):
+                question_id = key.split('_')[1]
+                try:
+                    question = Question.objects.get(id=question_id)
+                    selected_choice = question.choices.get(id=value)
+                    is_correct = selected_choice.is_correct
+
+                    AttemptedQuestion.objects.create(
+                        user=user_identifier,
+                        question=question,
+                        selected_choice=selected_choice,
+                        is_correct=is_correct
+                    )
+
+                    total_questions += 1
+                    answered_questions.append(int(question_id))
+                    if is_correct:
+                        score += 1
+                except (Question.DoesNotExist, Choice.DoesNotExist, ValueError):
+                    continue
+
+        grade = calculate_grade(score, total_questions)
+
         Score.objects.create(
-            user=request.user.username if request.user.is_authenticated else f"Anonymous-{random.randint(1000, 9999)}",
+            user=user_identifier,
             score=score,
             total_questions=total_questions,
             grade=grade,
+            submitted=True
         )
-    except Exception as e:
-        # Handle any unexpected errors during score saving
-        print(f"Error saving score: {e}")
 
-    # Clear session data
-    request.session.pop('score', None)
-    request.session.pop('answered_questions', None)
-    request.session.pop('question_ids', None)
+        request.session['has_submitted'] = True
+        return render(request, 'quiz/result.html', {
+            'score': score,
+            'total_questions': total_questions,
+            'grade': grade,
+        })
 
-    return render(request, 'quiz/result.html', {
-        'score': score,
-        'total_questions': total_questions,
-        'grade': grade,
-    })
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 def question_history(request):
     if request.user.is_authenticated:

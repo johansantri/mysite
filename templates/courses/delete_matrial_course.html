@@ -1,0 +1,52 @@
+{% extends 'home/base.html' %}
+{% block content %}
+{% block header %}
+    {{ form.media }}
+{% endblock %}
+
+<div class="page-content">
+  <div class="container">
+    <div class="row">
+      {% include "home/sidebar.html" %}
+      <div class="col-xl-9 col-lg-9">
+       
+        {% include "courses/course_set.html"%}
+        <hr>  
+       
+        <div class="support-wrap">
+            <div class="tile">
+              
+             
+                   
+            
+              <div class="tile-body">
+                <form method="POST">
+
+                    {% csrf_token %}
+            
+                    <button type="submit">Yes, delete it</button>
+            
+                </form>
+            
+                <a href="{% url 'courses:studio' id=course.id %}">Cancel</a>
+              </div>
+              <br>
+             
+
+
+             
+            </div>
+          </div>
+
+
+ 
+
+  </div>
+  </div>
+
+
+    </div>
+  </div>
+
+
+{% endblock %}

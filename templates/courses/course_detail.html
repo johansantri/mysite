@@ -178,13 +178,31 @@
                                         </div>
                                       </div>
                                       <div id="collapseFour-{{obj.id}}" class="collapse" data-bs-parent="#accordion-one">
+                                        <br>
+                                            {% for material in obj.materials.all %}
+
+                                          <li>
+
+                                            <a href="{% url "courses:edit_matrial" course.id material.id %}"> {{ material.title }}</a>
+                                            <a href="javascript:void(0);" class="btn delete-btn-matrial" data-id="{{ material.id }}"> <i class="fa fa-trash-can"></i> </a>
+                                            
+                                            
+                                         
+
+                                          </li>
+
+                                          {% empty %}
+
+                                          <li>No materials/quiz available for this section.</li>
+
+                                          {% endfor %}
+                                          <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                                       
                                         <div class="faq-body">
                                             <div class="add-article-btns">
-                                              <a href="{% url "courses:add-matrial" course.id obj.id %}" class="btn" >Add Articlex</a>
-                                              <a href="javascript:void(0);" class="btn me-0">Add Descriptionx</a>
-                                              <a href="javascript:void(0);" class="btn me-0">Add Descriptionx</a>
-                                              <a href="javascript:void(0);" class="btn me-0">Add Descriptionx</a>
-                                              <a href="javascript:void(0);" class="btn me-0">Add Descriptionx</a>
+                                              <a href="{% url "courses:add-matrial" course.id obj.id %}" class="btn" >Add Matrial</a>
+                                              <a href="{% url "courses:add-quiz" course.id obj.id %}" class="btn me-0">Add Quiz</a>
+                                              
                                             </div>
                                         </div>
                                       </div>
@@ -277,6 +295,10 @@
     </div>
   </div>
 
+
+
+
+  <!--end delete matrial-->
 
 <!--script sub section-->
 <script>
@@ -469,6 +491,27 @@ if (event.keyCode === 13) {  // Enter key code
                 data: {
                   'csrfmiddlewaretoken': csrfToken
               },
+                success: function(response) {
+                    if (response.status == 'success') {
+                    //   $('#item-' + itemId).remove();
+                        location.reload();
+                    }
+                }
+            });
+          });
+
+
+          $('.delete-btn-matrial').click(function() {
+            var pk = $(this).data('id');
+            var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
+            //console.log(csrf_token)
+            $.ajax({
+                url: `/delete-matrial/${pk}`,
+                method: 'POST',
+                data: {
+                  'csrfmiddlewaretoken': csrfToken
+              },
+              
                 success: function(response) {
                     if (response.status == 'success') {
                     //   $('#item-' + itemId).remove();

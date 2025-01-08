@@ -1,4 +1,7 @@
 from django.db import models
+from courses.models import Course,Section,Material
+from django.contrib.auth.models import User, Univer
+
 
 class Question(models.Model):
     text = models.CharField(max_length=255)
@@ -14,14 +17,16 @@ class Choice(models.Model):
     def __str__(self):
         return self.text
 class Score(models.Model):
-    user = models.CharField(max_length=255, blank=True, null=True)  # Optional user identifier
+    user = models.CharField(max_length=255)  # Username or session key
     score = models.IntegerField()
     total_questions = models.IntegerField()
-    grade = models.CharField(max_length=2)  # Add grade field (e.g., "A", "B", etc.)
+    grade = models.CharField(max_length=2, blank=True)
+    time_taken = models.DurationField(null=True, blank=True)  # Store quiz duration
     date = models.DateTimeField(auto_now_add=True)
+    submitted = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.user or 'Anonymous'} - {self.score}/{self.total_questions} ({self.grade}) on {self.date.strftime('%Y-%m-%d')}"
+        return f"{self.user} - {self.score}/{self.total_questions} ({self.grade})"
     
 class AttemptedQuestion(models.Model):
     user = models.CharField(max_length=255)  # Username or anonymous identifier
