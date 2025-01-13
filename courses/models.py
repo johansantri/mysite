@@ -4,7 +4,7 @@ from django.contrib.auth.models import User, Univer
 from autoslug import AutoSlugField
 from django.utils.text import slugify
 import os
-
+from datetime import timedelta
         
 class Partner(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,related_name="partner_user")  # Add this line to associate partners with users
@@ -56,6 +56,8 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+
+
 class Course(models.Model):
     course_name = models.CharField(max_length=250)
     #slug = AutoSlugField(populate_from='title', unique=True, null=False, editable=False)
@@ -80,6 +82,10 @@ class Course(models.Model):
     end_date = models.DateField(null=True)
     start_enrol = models.DateField(null=True)
     end_enrol = models.DateField(null=True)
+
+
+ 
+
 
     def __str__(self):
         return f"{self.course_name} ({self.status_course} - {self.org_partner} - {self.author} - {self.course_run})"
@@ -158,3 +164,45 @@ class Material(models.Model):
         verbose_name_plural = "materials"
 
 
+
+class Question(models.Model):
+    text = models.TextField(blank=True, null=True)
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='questions')
+
+    def __str__(self):
+        return self.text
+
+
+class Choice(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='choices')
+    text = models.TextField(blank=True, null=True)
+    is_correct = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.text
+    
+class Score(models.Model):
+    user = models.CharField(max_length=255)  # Username or session key
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='scores')  # Relate scores to a course
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='scores', null=True, blank=True)  # Optional relation to a section
+    score = models.IntegerField()
+    total_questions = models.IntegerField()
+    grade = models.CharField(max_length=2, blank=True)
+    time_taken = models.DurationField(null=True, blank=True)  # Store quiz duration
+    date = models.DateTimeField(auto_now_add=True)
+    submitted = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.user} - {self.course} - {self.score}/{self.total_questions} ({self.grade})"
+    
+class AttemptedQuestion(models.Model):
+    user = models.CharField(max_length=255)  # Username or anonymous identifier
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='attempted_questions')  # Relate to a course
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='attempted_questions', null=True, blank=True)  # Optional relation to a section
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='attempts')  # Relate to a question
+    selected_choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
+    is_correct = models.BooleanField()
+    date_attempted = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user} - {self.course} - {self.question.text} - {'Correct' if self.is_correct else 'Incorrect'}"

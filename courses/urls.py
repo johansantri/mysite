@@ -20,6 +20,7 @@ urlpatterns = [
     path('create-section/', views.create_section, name='create_section'),
     path('add-matrial/<int:idcourse>/<int:idsection>/',views.add_matrial,name="add-matrial"),
     path('add-quiz/<int:idcourse>/<int:idsection>/',views.add_quiz,name="add-quiz"),
+    path('questions/create/<int:idcourse>/<int:idsection>/', views.create_question_view, name='create-question'),
     path('edit-matrial/<int:idcourse>/<int:idmaterial>', views.edit_matrial, name='edit_matrial'),
     path('delete-matrial/<int:pk>', views.delete_matrial, name='delete_matrial'),
     path('delete-section/<int:pk>/', views.delete_section, name='delete_section'),
@@ -27,6 +28,7 @@ urlpatterns = [
     path('course-profile/<int:id>/', views.course_profile, name='course_profile'),
     path('course-team/<int:id>/', views.course_team, name='course_team'),
     path('team-member/remove/<int:member_id>/', views.remove_team_member, name='remove_team_member'),
+    
     
     
    

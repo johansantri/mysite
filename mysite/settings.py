@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'home',
     'import_export',
     'courses',
-    'quiz',
     'django_ckeditor_5',
     
 ]
@@ -190,7 +189,11 @@ CKEDITOR_5_CONFIGS = {
             "bulletedList",
             "numberedList",
             "blockQuote",
+            'imageUpload',
+            
         ],
+    
+    "height": "50px",
     },
     "comment": {
         "language": {"ui": "en", "content": "ar"},

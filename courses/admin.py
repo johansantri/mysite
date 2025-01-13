@@ -1,6 +1,6 @@
 from django.contrib import admin
 from . import models 
-from .models import Partner,Course, Instructor,TeamMember,Material
+from .models import Partner, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion
 from import_export.admin import ImportExportModelAdmin
 
 class CourseAdmin(ImportExportModelAdmin):
@@ -30,3 +30,18 @@ class MaterialAdmin(admin.ModelAdmin):
     list_display = ('title', 'section', 'created_at')
 
     list_filter = ('section',)
+
+
+class ChoiceInline(admin.TabularInline):
+    model = Choice
+    extra = 4
+
+class QuestionAdmin(admin.ModelAdmin):
+    inlines = [ChoiceInline]
+
+admin.site.register(Question, QuestionAdmin)
+admin.site.register(Score)
+admin.site.register(AttemptedQuestion)
+class ScoreAdmin(admin.ModelAdmin):
+    list_display = ('user', 'score', 'total_questions', 'grade', 'date')
+    list_filter = ('grade', 'date')

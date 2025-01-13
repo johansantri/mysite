@@ -3,9 +3,9 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from .forms import CourseForm, PartnerForm, SectionForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm
+from .forms import CourseForm, PartnerForm, SectionForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet
 from django.http import JsonResponse
-from .models import Course, Partner, Section,Instructor,TeamMember,Material
+from .models import Course, Partner, Section,Instructor,TeamMember,Material,Question
 from django.contrib.auth.models import User,Univer
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
@@ -13,14 +13,76 @@ from django.urls import reverse
 from django.contrib import messages
 from django.db.models import F
 
+#create question
+@login_required
+def create_question_view(request, idcourse, idsection):
+    course = get_object_or_404(Course, id=idcourse)
+    section = get_object_or_404(Section, id=idsection)
 
+    question_form = QuestionForm(request.POST or None)
+    choice_formset = ChoiceFormSet(request.POST or None, instance=Question())
 
+    if request.method == 'POST':
+        if question_form.is_valid() and choice_formset.is_valid():
+            # Save the question and link it to the section
+            question = question_form.save(commit=False)
+            question.section = section
+            question.save()
 
+            # Save the related choices
+            choice_formset.instance = question
+            choice_formset.save()
+
+            messages.success(request, "Question and choices created successfully!")
+
+            # Check for "save and add another" button
+            if 'save_and_add_another' in request.POST:
+                return redirect('courses:create-question', idcourse=course.id, idsection=section.id)
+
+            # Redirect to a success page (or list view)
+            return redirect('courses:studio',id=course.id)
+
+    return render(request, 'courses/create_question.html', {
+        'course': course,
+        'section': section,
+        'question_form': question_form,
+        'choice_formset': choice_formset,
+    })
 #add quiz
 @login_required
 
-def add_quiz (request):
-    return redirect('/')
+def add_quiz (request,idcourse, idsection):
+    course = get_object_or_404(Course, id=idcourse)
+
+    section = get_object_or_404(Section, id=idsection)
+
+
+    if request.method == 'POST':
+
+        form = MatrialForm(request.POST)  # Include request.FILES for file uploads
+
+        if form.is_valid():
+
+            material = form.save(commit=False)
+
+            material.section = section  # Associate the material with the section
+
+            material.courses = course  # Associate the material with the course
+
+            material.save()
+            messages.success(request, "sucess add matrial course.")
+            return redirect('courses:studio',id=course.id)
+
+        else:
+            messages.error(request, "canot add matrial.")
+            #return JsonResponse({'status': 'error', 'errors': form.errors})
+
+
+    # If GET request, render the form
+
+    form = MatrialForm()
+
+    return render(request, 'courses/course_matrial.html', {'form': form, 'course': course, 'section': section})
 
 
 #upprove user

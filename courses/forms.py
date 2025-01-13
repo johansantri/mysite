@@ -1,7 +1,8 @@
 # forms.py
 from django import forms
+from django.forms import inlineformset_factory
 from django.core.cache import cache
-from .models import Course, Partner, Section,Instructor,TeamMember, Material
+from .models import Course, Partner, Section,Instructor,TeamMember, Material,Question, Choice
 from django_ckeditor_5.widgets import CKEditor5Widget
 from django.contrib.auth.models import User
 import logging
@@ -13,6 +14,28 @@ import io
 # Initialize the logger
 logger = logging.getLogger(__name__)
 
+class QuestionForm(forms.ModelForm):
+    text = forms.CharField(widget=CKEditor5Widget("default"))
+    class Meta:
+        model = Question
+        fields = ['text']  # Include fields visible in the form
+
+    
+       
+class ChoiceForm(forms.ModelForm):
+    text = forms.CharField(widget=CKEditor5Widget("default"))
+    class Meta:
+        model = Choice
+        fields = ['text', 'is_correct']
+       
+ChoiceFormSet = inlineformset_factory(
+    Question,
+    Choice,
+    form=ChoiceForm,  # Use the custom ChoiceForm
+    fields=['text', 'is_correct'],
+    extra=4,  # Number of extra empty forms
+    can_delete=True  # Enable deleting choices
+)
 #add section
 class SectionForm(forms.ModelForm):
     class Meta:

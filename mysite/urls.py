@@ -23,7 +23,6 @@ urlpatterns = [
     path('', include('authentication.urls')),
 
     path('', include('courses.urls', namespace='courses')),
-    path('', include('quiz.urls')),
     path('admin/', admin.site.urls),
 
     
