@@ -13,6 +13,37 @@ from django.urls import reverse
 from django.contrib import messages
 from django.db.models import F
 
+
+#edit question
+@login_required
+def edit_question(request, idcourse,idquestion):
+
+# Get the course and material (question)
+    course = get_object_or_404(Course, id=idcourse)
+   # material = get_object_or_404(Material, id=idquestion)  # Use Material model to get the material
+    question = get_object_or_404(Question, id=idquestion)
+    
+    # Get the associated section
+   # section = material.section
+
+    # Initialize forms
+    form = QuestionForm(request.POST or None, instance=question)
+    choice_formset = ChoiceFormSet(request.POST or None, instance=question)
+
+    if request.method == 'POST':
+        if form.is_valid() and choice_formset.is_valid():
+            form.save()  # Save the question
+            choice_formset.save()  # Save the choices (add, update, delete)
+            messages.success(request, "Question updated successfully!")
+            return redirect('course-detail', idcourse=course.id)
+
+    return render(request, 'courses/edit_question.html', {
+        'form': form,
+        'choice_formset': choice_formset,
+        'course': course,
+        #'section': section,
+        #'material': material
+    })
 #create question
 @login_required
 def create_question_view(request, idcourse, idsection):
@@ -628,7 +659,12 @@ def studio(request, id):
 
     # Fetch sections related to the specific course
     #section = Section.objects.filter(parent=None, courses_id=course.id)
-    section = Section.objects.filter(parent=None, courses=course).prefetch_related('materials')
+    #section = Section.objects.filter(parent=None, courses=course).prefetch_related('materials')
+    #section = Section.objects.filter(parent=None, courses=course).prefetch_related('questions')
+    section = Section.objects.filter(
+    parent=None, courses=course
+).prefetch_related('materials', 'questions')  # Add all necessary relationships
+
     # Render the page with the course and sections data
     return render(request, 'courses/course_detail.html', {'course': course, 'section': section})
 

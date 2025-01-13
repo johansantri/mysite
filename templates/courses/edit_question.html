@@ -1,0 +1,130 @@
+{% extends 'home/base.html' %}
+{% block content %}
+{% block header %}
+    {{ question_form.media }}
+{% endblock %}
+
+<div class="page-content">
+  <div class="container">
+    <div class="row">
+      {% include "home/sidebar.html" %}
+      <div class="col-xl-9 col-lg-9">
+       
+        {% include "courses/course_set.html"%}
+        <hr>  
+       
+        <div class="support-wrap">
+            <div class="tile">
+              
+              
+
+                <form method="post">
+                    {% csrf_token %}
+                   
+                    <div>
+                        <label for="text">Question Text:</label>
+                        {{ question_form.text }}
+                        
+                    </div>
+                    
+                
+                    &nbsp;
+                    {{ choice_formset.management_form }}
+                    <table class="table table-hover" id="choice-formset">
+                        <thead class="table-light">
+                            <th>Choice Text</th>
+                            <th>Is Correct</th>
+                            <th>Delete?</th>
+                        </thead>
+                        <tbody>
+                            {% for form in choice_formset %}
+                            <tr class="choice-form">
+                                <td>{{ form.text }}</td>
+                                <td>{{ form.is_correct }}</td>
+                                <td>{{ form.DELETE }}</td> <!-- DELETE checkbox -->
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                      </table>
+                      
+                    
+                
+                    <button type="button" id="add-choice" class="btn btn-info btn-sm">Add another Choice</button>
+                    <br><br>
+                    <button type="submit" name="save" class="btn btn-success btn-sm">Save</button>
+                    <button type="submit" name="save_and_add_another" class="btn btn-primary btn-sm">Save and Add Another</button>
+                </form>
+                
+                
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        const formsetTable = document.getElementById("choice-formset");
+                        const addChoiceButton = document.getElementById("add-choice");
+                        const totalFormsInput = document.querySelector("#id_choices-TOTAL_FORMS");
+                
+                        addChoiceButton.addEventListener("click", function () {
+                            const formCount = parseInt(totalFormsInput.value, 10); // Current total forms
+                            const newFormIndex = formCount;
+                
+                            // Clone the last form
+                            const lastForm = formsetTable.querySelector("tr.choice-form:last-child");
+                            const newForm = lastForm.cloneNode(true);
+                
+                            // Update form inputs
+                            const regex = new RegExp(`-\\d+-`, "g");
+                            newForm.innerHTML = newForm.innerHTML.replace(regex, `-${newFormIndex}-`);
+                
+                            // Clear input values in the cloned form
+                            Array.from(newForm.querySelectorAll("input")).forEach((input) => {
+                                if (input.type === "text") input.value = "";
+                                if (input.type === "checkbox") input.checked = false;
+                
+                                // Ensure DELETE checkbox has a proper name attribute
+                                if (input.name.includes("DELETE")) {
+                                    input.name = input.name.replace(regex, `-${newFormIndex}-`);
+                                }
+                            });
+                
+                            // Append the new form to the table
+                            formsetTable.querySelector("tbody").appendChild(newForm);
+                
+                            // Increment the TOTAL_FORMS counter
+                            totalFormsInput.value = newFormIndex + 1;
+                        });
+                
+                        // Handle Delete Checkbox Visibility for Newly Added Rows
+                        formsetTable.addEventListener("click", function (event) {
+                            if (event.target.type === "checkbox" && event.target.name.includes("DELETE")) {
+                                const row = event.target.closest("tr.choice-form");
+                                if (event.target.checked) {
+                                    // Hide the row if DELETE is checked
+                                    row.style.display = "none";
+                                } else {
+                                    // Show the row if DELETE is unchecked
+                                    row.style.display = "";
+                                }
+                            }
+                        });
+                    });
+                </script>
+
+                
+                
+            
+            </div>
+                
+        
+             
+
+
+ 
+
+  </div>
+  </div>
+
+
+    </div>
+  </div>
+
+
+{% endblock %}

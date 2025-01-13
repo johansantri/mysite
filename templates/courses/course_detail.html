@@ -196,6 +196,15 @@
                                           <li>No materials/quiz available for this section.</li>
 
                                           {% endfor %}
+
+
+                                          {% for question in obj.questions.all %}
+                                         
+                                          <a href="{% url "courses:edit_question" course.id question.id %}">  {{ question.text | safe }}</a>
+                                          {% empty %}
+
+                                          <li>No materials/quiz available for this section.</li>
+                                          {% endfor%}
                                           <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
                                        
                                         <div class="faq-body">

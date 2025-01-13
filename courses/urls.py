@@ -22,6 +22,7 @@ urlpatterns = [
     path('add-quiz/<int:idcourse>/<int:idsection>/',views.add_quiz,name="add-quiz"),
     path('questions/create/<int:idcourse>/<int:idsection>/', views.create_question_view, name='create-question'),
     path('edit-matrial/<int:idcourse>/<int:idmaterial>', views.edit_matrial, name='edit_matrial'),
+    path('questions/edit/<int:idcourse>/<int:idquestion>', views.edit_question, name='edit_question'),
     path('delete-matrial/<int:pk>', views.delete_matrial, name='delete_matrial'),
     path('delete-section/<int:pk>/', views.delete_section, name='delete_section'),
     path('update-section/<int:pk>/', views.update_section, name='update_section'),
