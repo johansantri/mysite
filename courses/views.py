@@ -16,33 +16,33 @@ from django.db.models import F
 
 #edit question
 @login_required
-def edit_question(request, idcourse,idquestion):
-
-# Get the course and material (question)
+def edit_question(request, idcourse, idquestion, idsection):
     course = get_object_or_404(Course, id=idcourse)
-   # material = get_object_or_404(Material, id=idquestion)  # Use Material model to get the material
     question = get_object_or_404(Question, id=idquestion)
-    
-    # Get the associated section
-   # section = material.section
+    section = get_object_or_404(Section, id=idsection)
 
-    # Initialize forms
     form = QuestionForm(request.POST or None, instance=question)
     choice_formset = ChoiceFormSet(request.POST or None, instance=question)
 
     if request.method == 'POST':
         if form.is_valid() and choice_formset.is_valid():
-            form.save()  # Save the question
-            choice_formset.save()  # Save the choices (add, update, delete)
+            question = form.save(commit=False)
+            question.section = section
+            question.save()
+            choice_formset.save()
             messages.success(request, "Question updated successfully!")
-            return redirect('course-detail', idcourse=course.id)
+            return redirect('courses:studio',id=course.id)
+        else:
+            print("Form errors:", form.errors)
+            print("Formset errors:", choice_formset.errors)
+            print("POST data:", request.POST)
+            messages.error(request, "There was an error updating the question. Please check your inputs.")
 
     return render(request, 'courses/edit_question.html', {
         'form': form,
         'choice_formset': choice_formset,
         'course': course,
-        #'section': section,
-        #'material': material
+        'section': section,
     })
 #create question
 @login_required

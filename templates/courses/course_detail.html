@@ -200,7 +200,7 @@
 
                                           {% for question in obj.questions.all %}
                                          
-                                          <a href="{% url "courses:edit_question" course.id question.id %}">  {{ question.text | safe }}</a>
+                                          <a href="{% url "courses:edit_question" course.id question.id obj.id %}">  {{ question.text | safe }}</a>
                                           {% empty %}
 
                                           <li>No materials/quiz available for this section.</li>

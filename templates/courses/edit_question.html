@@ -23,7 +23,9 @@
                    
                     <div>
                         <label for="text">Question Text:</label>
-                        {{ question_form.text }}
+                        {{form.id }}
+                        {{form.text}}
+                        {{form.media }}
                         
                     </div>
                     
@@ -39,6 +41,7 @@
                         <tbody>
                             {% for form in choice_formset %}
                             <tr class="choice-form">
+                                {{ form.id }} 
                                 <td>{{ form.text }}</td>
                                 <td>{{ form.is_correct }}</td>
                                 <td>{{ form.DELETE }}</td> <!-- DELETE checkbox -->
