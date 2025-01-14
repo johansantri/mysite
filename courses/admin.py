@@ -1,6 +1,6 @@
 from django.contrib import admin
 from . import models 
-from .models import Partner, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion
+from .models import Partner, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
 from import_export.admin import ImportExportModelAdmin
 
 class CourseAdmin(ImportExportModelAdmin):
@@ -41,6 +41,7 @@ class QuestionAdmin(admin.ModelAdmin):
 
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Score)
+admin.site.register(Assessment)
 admin.site.register(AttemptedQuestion)
 class ScoreAdmin(admin.ModelAdmin):
     list_display = ('user', 'score', 'total_questions', 'grade', 'date')

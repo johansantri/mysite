@@ -165,9 +165,29 @@ class Material(models.Model):
 
 
 
+class Assessment(models.Model):
+    name = models.CharField(max_length=255)
+    section =models.ForeignKey(Section,related_name="assesments",on_delete=models.CASCADE)
+    description = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Question(models.Model):
-    text = models.TextField(blank=True, null=True)
-    section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name='questions')
+    assessment = models.ForeignKey(Assessment, related_name="questions", on_delete=models.CASCADE)
+    text = models.CharField(blank=True, null=True,max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.text
+
+
+class Choice(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='choices')
+    text = models.CharField(blank=True, null=True, max_length=200)
+    is_correct = models.BooleanField(default=False)
 
     def __str__(self):
         return self.text

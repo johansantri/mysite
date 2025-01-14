@@ -3,15 +3,42 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from .forms import CourseForm, PartnerForm, SectionForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet
+from .forms import CourseForm, PartnerForm, SectionForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from django.http import JsonResponse
-from .models import Course, Partner, Section,Instructor,TeamMember,Material,Question
+from .models import Course, Partner, Section,Instructor,TeamMember,Material,Question,Assessment
 from django.contrib.auth.models import User,Univer
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
 from django.urls import reverse
 from django.contrib import messages
 from django.db.models import F
+
+
+
+
+#creat assesment
+@login_required
+@csrf_exempt
+def create_assessment(request, idcourse, idsection):
+    course = get_object_or_404(Course, id=idcourse)
+    section = get_object_or_404(Section, id=idsection)
+    
+    
+    if request.method == 'POST':
+        form = AssessmentForm(request.POST)
+        if form.is_valid():
+            # Create the assessment instance but don't save it yet
+            assessment = form.save(commit=False)
+            # Set the section field
+            assessment.section = section
+            # Save the assessment
+            assessment.save()
+            messages.success(request, "Assessment created successfully!")
+            return redirect('courses:studio',id=course.id)
+    else:
+        form = AssessmentForm()
+    
+    return render(request, 'courses/course_assessement.html', {'form': form, 'course': course, 'section': section})
 
 
 #edit question
@@ -46,9 +73,10 @@ def edit_question(request, idcourse, idquestion, idsection):
     })
 #create question
 @login_required
-def create_question_view(request, idcourse, idsection):
+def create_question_view(request, idcourse,idsection, idassessment):
     course = get_object_or_404(Course, id=idcourse)
     section = get_object_or_404(Section, id=idsection)
+    assessment = get_object_or_404(Assessment, id=idassessment)
 
     question_form = QuestionForm(request.POST or None)
     choice_formset = ChoiceFormSet(request.POST or None, instance=Question())
@@ -57,7 +85,7 @@ def create_question_view(request, idcourse, idsection):
         if question_form.is_valid() and choice_formset.is_valid():
             # Save the question and link it to the section
             question = question_form.save(commit=False)
-            question.section = section
+            question.assessment = assessment
             question.save()
 
             # Save the related choices
@@ -68,10 +96,10 @@ def create_question_view(request, idcourse, idsection):
 
             # Check for "save and add another" button
             if 'save_and_add_another' in request.POST:
-                return redirect('courses:create-question', idcourse=course.id, idsection=section.id)
+                return redirect('courses:create-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
 
             # Redirect to a success page (or list view)
-            return redirect('courses:studio',id=course.id)
+            return redirect('courses:view-question',idcourse=course.id, idsection=section.id, idassessment=assessment.id)
 
     return render(request, 'courses/create_question.html', {
         'course': course,
@@ -79,6 +107,27 @@ def create_question_view(request, idcourse, idsection):
         'question_form': question_form,
         'choice_formset': choice_formset,
     })
+
+
+#create question
+@login_required
+def question_view(request, idcourse,idsection, idassessment):
+    course = get_object_or_404(Course, id=idcourse)
+    section = get_object_or_404(Section, id=idsection)
+    assessment = get_object_or_404(Assessment, id=idassessment)
+
+   
+    assessment = get_object_or_404(Assessment.objects.prefetch_related('questions__choices'), id=idassessment)
+   
+
+    return render(request, 'courses/view_question.html', {
+        'course': course,
+        'section': section,
+        'assessment': assessment,
+        
+    })
+
+
 #add quiz
 @login_required
 
@@ -663,7 +712,7 @@ def studio(request, id):
     #section = Section.objects.filter(parent=None, courses=course).prefetch_related('questions')
     section = Section.objects.filter(
     parent=None, courses=course
-).prefetch_related('materials', 'questions')  # Add all necessary relationships
+).prefetch_related('materials', 'assesments')  # Add all necessary relationships
 
     # Render the page with the course and sections data
     return render(request, 'courses/course_detail.html', {'course': course, 'section': section})

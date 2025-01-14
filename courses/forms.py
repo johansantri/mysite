@@ -2,7 +2,7 @@
 from django import forms
 from django.forms import inlineformset_factory
 from django.core.cache import cache
-from .models import Course, Partner, Section,Instructor,TeamMember, Material,Question, Choice
+from .models import Course, Partner, Section,Instructor,TeamMember, Material,Question, Choice,Assessment
 from django_ckeditor_5.widgets import CKEditor5Widget
 from django.contrib.auth.models import User
 import logging
@@ -13,6 +13,18 @@ import io
 
 # Initialize the logger
 logger = logging.getLogger(__name__)
+
+class AssessmentForm(forms.ModelForm):
+    class Meta:
+        model = Assessment
+        fields = ['name']
+        widgets = {
+        
+        'name': forms.TextInput(attrs={'placeholder': 'Enter name assesment hare', 'class': 'form-control'}),
+      
+
+        }
+
 
 class QuestionForm(forms.ModelForm):
     text = forms.CharField(widget=CKEditor5Widget("default"))
@@ -33,7 +45,7 @@ ChoiceFormSet = inlineformset_factory(
     Choice,
     form=ChoiceForm,  # Use the custom ChoiceForm
     fields=['text', 'is_correct'],
-    extra=4,  # Number of extra empty forms
+    extra=1,  # Number of extra empty forms
     can_delete=True  # Enable deleting choices
 )
 #add section

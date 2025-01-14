@@ -180,17 +180,13 @@
                                       <div id="collapseFour-{{obj.id}}" class="collapse" data-bs-parent="#accordion-one">
                                         <br>
                                             {% for material in obj.materials.all %}
-
-                                          <li>
+                                            <div class="border rounded p-3 mb-2">
+                                         
 
                                             <a href="{% url "courses:edit_matrial" course.id material.id %}"> {{ material.title }}</a>
                                             <a href="javascript:void(0);" class="btn delete-btn-matrial" data-id="{{ material.id }}"> <i class="fa fa-trash-can"></i> </a>
-                                            
-                                            
-                                         
-
-                                          </li>
-
+                                      
+                                        </div>
                                           {% empty %}
 
                                           <li>No materials/quiz available for this section.</li>
@@ -198,9 +194,10 @@
                                           {% endfor %}
 
 
-                                          {% for question in obj.questions.all %}
-                                         
-                                          <a href="{% url "courses:edit_question" course.id question.id obj.id %}">  {{ question.text | safe }}</a>
+                                          {% for assesment in obj.assesments.all %}
+                                          <div class="border rounded p-3 mb-2">
+                                          <a href="{% url "courses:view-question" course.id obj.id assesment.id %}">  {{ assesment.name | safe }}</a>
+                                        </div>
                                           {% empty %}
 
                                           <li>No materials/quiz available for this section.</li>
@@ -209,9 +206,12 @@
                                        
                                         <div class="faq-body">
                                             <div class="add-article-btns">
-                                              <a href="{% url "courses:add-matrial" course.id obj.id %}" class="btn" >Add Matrial</a>
-                                              <a href="{% url "courses:create-question" course.id obj.id %}" class="btn me-0">Add Quiz</a>
                                               
+                                              <div class="widget-btn">
+                                                
+                                                <a href="{% url "courses:add-matrial" course.id obj.id %}" class="btn" >Add Matrial &nbsp; <i class="fa fa-paste"></i></a>
+                                                <a href="{% url "courses:create-assessment" course.id obj.id %}" class="btn me-0">Add Assesment &nbsp; <i class="fa fa-list-ul"></i></a>
+                                              </div>
                                             </div>
                                         </div>
                                       </div>
@@ -598,7 +598,6 @@ if (event.keyCode === 13) {  // Enter key code
               
 
 </script>
-
 
 
 {% endblock %}
