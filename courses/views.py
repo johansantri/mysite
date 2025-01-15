@@ -20,10 +20,23 @@ from django import forms
 @login_required
 @csrf_exempt
 def create_assessment(request, idcourse, idsection):
-    course = get_object_or_404(Course, id=idcourse)
-    section = get_object_or_404(Section, id=idsection)
-    
-    
+    # Determine the course based on the user's role
+    if request.user.is_superuser:
+        course = get_object_or_404(Course, id=idcourse)
+    elif request.user.is_partner:
+        # Ensure the course is associated with the partner
+        course = get_object_or_404(Course, id=idcourse, org_partner__user_id=request.user.id)
+    elif request.user.is_instructor:
+        # Ensure the course is associated with the instructor
+        course = get_object_or_404(Course, id=idcourse, instructor__user_id=request.user.id)
+    else:
+        # Unauthorized access
+        messages.error(request, "You do not have permission to create assessments for this course.")
+        return redirect('courses:home')  # Redirect to a safe page
+
+    # Ensure the section belongs to the course
+    section = get_object_or_404(Section, id=idsection, courses=course)
+
     if request.method == 'POST':
         form = AssessmentForm(request.POST)
         if form.is_valid():
@@ -37,22 +50,38 @@ def create_assessment(request, idcourse, idsection):
             return redirect('courses:view-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
     else:
         form = AssessmentForm()
-    
+
     return render(request, 'courses/course_assessement.html', {'form': form, 'course': course, 'section': section})
+
 
 #edit assesment
 @login_required
 @csrf_exempt
 def edit_assessment(request, idcourse, idsection, idassessment):
-    course = get_object_or_404(Course, id=idcourse)
-    section = get_object_or_404(Section, id=idsection)
-    assessment = get_object_or_404(Assessment, id=idassessment)
+    # Determine the course based on the user's role
+    if request.user.is_superuser:
+        course = get_object_or_404(Course, id=idcourse)
+    elif request.user.is_partner:
+        # Ensure the course is associated with the partner
+        course = get_object_or_404(Course, id=idcourse, org_partner__user_id=request.user.id)
+    elif request.user.is_instructor:
+        # Ensure the course is associated with the instructor
+        course = get_object_or_404(Course, id=idcourse, instructor__user_id=request.user.id)
+    else:
+        # Unauthorized access
+        messages.error(request, "You do not have permission to edit assessments for this course.")
+        return redirect('courses:home')  # Redirect to a safe page
+
+    # Ensure the section belongs to the course
+    section = get_object_or_404(Section, id=idsection, courses=course)
+
+    # Fetch the assessment
+    assessment = get_object_or_404(Assessment, id=idassessment, section=section)
 
     if request.method == 'POST':
         form = AssessmentForm(request.POST, instance=assessment)
         if form.is_valid():
-            # Save the form data to the assessment instance
-           
+            # Save the updated assessment
             form.save()
             messages.success(request, "Assessment updated successfully!")
             return redirect('courses:view-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
@@ -64,16 +93,33 @@ def edit_assessment(request, idcourse, idsection, idassessment):
         'form': form,
         'course': course,
         'section': section,
-        'assessment': assessment
+        'assessment': assessment,
     })
 
 
+#delete assesment
 @login_required
 @csrf_exempt
 def delete_assessment(request, idcourse, idsection, idassessment):
-    course = get_object_or_404(Course, id=idcourse)
-    section = get_object_or_404(Section, id=idsection)
-    assessment = get_object_or_404(Assessment, id=idassessment)
+    # Determine the course based on the user's role
+    if request.user.is_superuser:
+        course = get_object_or_404(Course, id=idcourse)
+    elif request.user.is_partner:
+        # Ensure the course is associated with the partner
+        course = get_object_or_404(Course, id=idcourse, org_partner__user_id=request.user.id)
+    elif request.user.is_instructor:
+        # Ensure the course is associated with the instructor
+        course = get_object_or_404(Course, id=idcourse, instructor__user_id=request.user.id)
+    else:
+        # Unauthorized access
+        messages.error(request, "You do not have permission to delete assessments for this course.")
+        return redirect('courses:home')  # Redirect to a safe page
+
+    # Ensure the section belongs to the course
+    section = get_object_or_404(Section, id=idsection, courses=course)
+
+    # Fetch the assessment
+    assessment = get_object_or_404(Assessment, id=idassessment, section=section)
 
     if request.method == 'POST':
         # Perform the deletion
@@ -85,16 +131,36 @@ def delete_assessment(request, idcourse, idsection, idassessment):
     return render(request, 'courses/confirm_delete_assessment.html', {
         'course': course,
         'section': section,
-        'assessment': assessment
+        'assessment': assessment,
     })
+
 
 #edit question
 @login_required
+@csrf_exempt
 def edit_question(request, idcourse, idquestion, idsection, idassessment):
-    course = get_object_or_404(Course, id=idcourse)
-    question = get_object_or_404(Question, id=idquestion)
-    section = get_object_or_404(Section, id=idsection)
-    assessment = get_object_or_404(Assessment, id=idassessment)
+    # Determine the course based on the user's role
+    if request.user.is_superuser:
+        course = get_object_or_404(Course, id=idcourse)
+    elif request.user.is_partner:
+        # Ensure the course is associated with the partner
+        course = get_object_or_404(Course, id=idcourse, org_partner__user_id=request.user.id)
+    elif request.user.is_instructor:
+        # Ensure the course is associated with the instructor
+        course = get_object_or_404(Course, id=idcourse, instructor__user_id=request.user.id)
+    else:
+        # Unauthorized access
+        messages.error(request, "You do not have permission to edit questions for this course.")
+        return redirect('courses:home')  # Redirect to a safe page
+
+    # Ensure the section belongs to the course
+    section = get_object_or_404(Section, id=idsection, courses=course)
+
+    # Ensure the assessment belongs to the section
+    assessment = get_object_or_404(Assessment, id=idassessment, section=section)
+
+    # Ensure the question belongs to the assessment
+    question = get_object_or_404(Question, id=idquestion, assessment=assessment)
 
     # Pass the assessment to the forms
     form = QuestionForm(request.POST or None, instance=question, assessment=assessment)
@@ -118,10 +184,10 @@ def edit_question(request, idcourse, idquestion, idsection, idassessment):
             choice_formset.save()
 
             messages.success(request, "Question and choices updated successfully!")
-              # Check if 'save and add another' button was clicked
+
+            # Check if 'save and add another' button was clicked
             if 'save_and_add_another' in request.POST:
                 return redirect('courses:create_question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
-                #return redirect('courses:create_question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
 
             return redirect('courses:view-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
         else:
@@ -137,20 +203,40 @@ def edit_question(request, idcourse, idquestion, idsection, idassessment):
         'assessment': assessment,
     })
 
+
 @login_required
+@csrf_exempt
 def create_question_view(request, idcourse, idsection, idassessment):
-    course = get_object_or_404(Course, id=idcourse)
-    section = get_object_or_404(Section, id=idsection)
-    assessment = get_object_or_404(Assessment, id=idassessment)
+    # Determine the course based on the user's role
+    if request.user.is_superuser:
+        course = get_object_or_404(Course, id=idcourse)
+    elif request.user.is_partner:
+        # Ensure the course is associated with the partner
+        course = get_object_or_404(Course, id=idcourse, org_partner__user_id=request.user.id)
+    elif request.user.is_instructor:
+        # Ensure the course is associated with the instructor
+        course = get_object_or_404(Course, id=idcourse, instructor__user_id=request.user.id)
+    else:
+        # Unauthorized access
+        messages.error(request, "You do not have permission to create questions for this course.")
+        return redirect('courses:home')  # Redirect to a safe page
+
+    # Ensure the section belongs to the course
+    section = get_object_or_404(Section, id=idsection, courses=course)
+
+    # Ensure the assessment belongs to the section
+    assessment = get_object_or_404(Assessment, id=idassessment, section=section)
 
     # Initialize forms
     question_form = QuestionForm(request.POST or None, assessment=assessment)
     choice_formset = ChoiceFormSet(request.POST or None, instance=Question())
-       # Pass assessment to each form in the formset
+
+    # Pass assessment to each form in the formset
     for choice_form in choice_formset.forms:
         choice_form.fields['text'].widget = (
             CKEditor5Widget("extends") if assessment.flag else forms.TextInput(attrs={'class': 'form-control'})
         )
+
     if request.method == 'POST':
         if question_form.is_valid() and choice_formset.is_valid():
             # Save question instance
@@ -168,7 +254,6 @@ def create_question_view(request, idcourse, idsection, idassessment):
             # Check if 'save and add another' button was clicked
             if 'save_and_add_another' in request.POST:
                 return redirect('courses:create_question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
-                #return redirect('courses:create_question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
 
             # Redirect to a view or list of questions
             return redirect('courses:view-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
@@ -179,29 +264,47 @@ def create_question_view(request, idcourse, idsection, idassessment):
     return render(request, 'courses/create_question.html', {
         'course': course,
         'section': section,
-        'assessment':assessment,
+        'assessment': assessment,
         'question_form': question_form,
         'choice_formset': choice_formset,
     })
 
 
+
 #create question
 @login_required
-def question_view(request, idcourse,idsection, idassessment):
-    course = get_object_or_404(Course, id=idcourse)
-    section = get_object_or_404(Section, id=idsection)
-    assessment = get_object_or_404(Assessment, id=idassessment)
+@csrf_exempt
+def question_view(request, idcourse, idsection, idassessment):
+    # Determine the course based on the user's role
+    if request.user.is_superuser:
+        course = get_object_or_404(Course, id=idcourse)
+    elif request.user.is_partner:
+        # Ensure the course is associated with the partner
+        course = get_object_or_404(Course, id=idcourse, org_partner__user_id=request.user.id)
+    elif request.user.is_instructor:
+        # Ensure the course is associated with the instructor
+        course = get_object_or_404(Course, id=idcourse, instructor__user_id=request.user.id)
+    else:
+        # Unauthorized access
+        messages.error(request, "You do not have permission to view questions for this course.")
+        return redirect('courses:home')  # Redirect to a safe page
 
-   
-    assessment = get_object_or_404(Assessment.objects.prefetch_related('questions__choices'), id=idassessment)
-   
+    # Ensure the section belongs to the course
+    section = get_object_or_404(Section, id=idsection, courses=course)
+
+    # Ensure the assessment belongs to the section
+    assessment = get_object_or_404(
+        Assessment.objects.prefetch_related('questions__choices'),
+        id=idassessment,
+        section=section
+    )
 
     return render(request, 'courses/view_question.html', {
         'course': course,
         'section': section,
         'assessment': assessment,
-        
     })
+
 
 
 #add quiz
@@ -442,6 +545,7 @@ def remove_team_member(request, member_id):
     return redirect('courses:course_team', id=course_id)  # Redir
 
 #coruse profile
+@login_required
 @csrf_exempt  # Be cautious with this decorator; it's better to avoid using it if unnecessary
 def course_profile(request, id):
     # Get the course based on the user's role
@@ -474,6 +578,7 @@ def course_profile(request, id):
 
     return render(request, 'courses/course_profile.html', {'course': course, 'form': form})
 #add section
+@login_required
 @csrf_exempt
 def create_section(request):
     if request.method == "POST":
@@ -486,6 +591,7 @@ def create_section(request):
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
 # Delete section
+@login_required
 @csrf_exempt
 def delete_section(request, pk):
     item = get_object_or_404(Section, pk=pk)
@@ -493,6 +599,7 @@ def delete_section(request, pk):
     return JsonResponse({'status': 'success', 'message': 'section deleted!'})
 
 # Update Section
+@login_required
 @csrf_exempt
 def update_section(request, pk):
     item = get_object_or_404(Section, pk=pk)
@@ -506,111 +613,140 @@ def update_section(request, pk):
             return JsonResponse({'status': 'error', 'message': 'Form is not valid', 'errors': form.errors})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
-#add matrial course
 @login_required
 @csrf_exempt
-def add_matrial(request,idcourse, idsection):
-    course = get_object_or_404(Course, id=idcourse)
+def add_matrial(request, idcourse, idsection):
+    # Determine the course based on the user's role
+    if request.user.is_superuser:
+        course = get_object_or_404(Course, id=idcourse)
+    elif request.user.is_partner:
+        # Ensure the course is associated with the partner
+        course = get_object_or_404(Course, id=idcourse, org_partner__user_id=request.user.id)
+    elif request.user.is_instructor:
+        # Ensure the course is associated with the instructor
+        course = get_object_or_404(Course, id=idcourse, instructor__user_id=request.user.id)
+    else:
+        messages.error(request, "You do not have permission to add materials to this course.")
+        return redirect('courses:home')  # Redirect to a safe page for unauthorized users
 
-    section = get_object_or_404(Section, id=idsection)
-
+    # Fetch the section (update the field name to 'courses')
+    section = get_object_or_404(Section, id=idsection, courses=course)
 
     if request.method == 'POST':
-
-        form = MatrialForm(request.POST)  # Include request.FILES for file uploads
+        # Handle form submission
+        form = MatrialForm(request.POST, request.FILES)  # Include file uploads
 
         if form.is_valid():
-
+            # Save the material and associate it with the course and section
             material = form.save(commit=False)
-
-            material.section = section  # Associate the material with the section
-
-            material.courses = course  # Associate the material with the course
-
+            material.section = section
+            material.courses = course
             material.save()
-            messages.success(request, "sucess add matrial course.")
-            return redirect('courses:studio',id=course.id)
 
+            messages.success(request, "Material successfully added to the course.")
+            return redirect('courses:studio', id=course.id)
         else:
-            messages.error(request, "canot add matrial.")
-            #return JsonResponse({'status': 'error', 'errors': form.errors})
+            # Provide error feedback
+            messages.error(request, "Failed to add material. Please check the form for errors.")
+            print(form.errors)  # Debugging (optional)
 
+    else:
+        # Initialize an empty form for GET requests
+        form = MatrialForm()
 
-    # If GET request, render the form
+    # Render the form template
+    return render(request, 'courses/course_matrial.html', {
+        'form': form,
+        'course': course,
+        'section': section,
+    })
 
-    form = MatrialForm()
-
-    return render(request, 'courses/course_matrial.html', {'form': form, 'course': course, 'section': section})
 
 #edit matrial
 @login_required
-
 @csrf_exempt
+def edit_matrial(request, idcourse, idmaterial):
+    # Determine the course based on the user's role
+    if request.user.is_superuser:
+        course = get_object_or_404(Course, id=idcourse)
+    elif request.user.is_partner:
+        # Ensure the course is associated with the partner
+        course = get_object_or_404(Course, id=idcourse, org_partner__user_id=request.user.id)
+    elif request.user.is_instructor:
+        # Ensure the course is associated with the instructor
+        course = get_object_or_404(Course, id=idcourse, instructor__user_id=request.user.id)
+    else:
+        # Unauthorized access
+        messages.error(request, "You do not have permission to edit materials in this course.")
+        return redirect('courses:home')  # Redirect to a safe page
 
-def edit_matrial(request, idcourse,idmaterial):
+    # Fetch the material (updated query)
+    material = get_object_or_404(Material, id=idmaterial, section__course=course)
 
-    course = get_object_or_404(Course, id=idcourse)
-
-    material = get_object_or_404(Material, id=idmaterial)  # Use Material model to get the material
-
-    print(f"Editing Material ID: {idmaterial}, Course ID: {idcourse}")  # Debugging line
-    section = material.section  # Get the associated section
-
+    # Get the associated section
+    section = material.section
 
     if request.method == 'POST':
-
-        form = MatrialForm(request.POST, request.FILES, instance=material)  # Populate the form with the existing material
+        # Populate the form with the existing material and handle file uploads
+        form = MatrialForm(request.POST, request.FILES, instance=material)
 
         if form.is_valid():
-
             form.save()  # Save the updated material
-
             messages.success(request, "Successfully updated material.")
-
             return redirect('courses:studio', id=course.id)  # Redirect to the course studio page
-
         else:
-
-            messages.error(request, "Cannot update material.")
+            messages.error(request, "Failed to update material. Please check the form for errors.")
+            print(form.errors)  # Debugging (optional)
 
     else:
+        # Populate the form with the existing material for GET requests
+        form = MatrialForm(instance=material)
 
-        form = MatrialForm(instance=material)  # Populate the form with the existing material
-
-
+    # Render the template with the form and context
     return render(request, 'courses/edit_matrial_course.html', {
-
         'form': form,
-
         'course': course,
-
         'section': section,
-
-        'material': material
-
+        'material': material,
     })
+
 
 #delete matrial course
 @login_required
-
 @csrf_exempt
-
 def delete_matrial(request, pk):
-
     # Ensure the request is a POST request
-
     if request.method == 'POST':
+        # Fetch the material and its section
+        material = get_object_or_404(Material, id=pk)
+        section = material.section
+        course = section.courses  # Use 'courses' if that's the correct field name
 
-        item = get_object_or_404(Material, id=pk)
+        # Check user roles
+        if request.user.is_superuser:
+            # Superuser can delete any material
+            pass
+        elif request.user.is_partner:
+            # Partner can delete material only for their associated courses
+            if course.org_partner.user_id != request.user.id:
+                return JsonResponse({'status': 'error', 'message': 'Permission denied.'})
+        elif request.user.is_instructor:
+            # Instructor can delete material only for their own courses
+            if course.instructor.user_id != request.user.id:
+                return JsonResponse({'status': 'error', 'message': 'Permission denied.'})
+        else:
+            # Unauthorized user
+            return JsonResponse({'status': 'error', 'message': 'Permission denied.'})
 
-        item.delete()
-
+        # Delete the material if the role check passes
+        material.delete()
         return JsonResponse({'status': 'success', 'message': 'Material deleted!'})
-
     else:
-
         return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
 
+
+    
+@login_required
 def courseView(request):
     # Check if the user is authenticated
     if not request.user.is_authenticated:
@@ -945,6 +1081,7 @@ def course_list(request):
     courses = Course.objects.all()[:100]
     return render(request, 'courses/course_list.html', {'courses': courses})
 
+@login_required
 def course_update(request, pk):
     course = get_object_or_404(Course, pk=pk)
     data = dict()
