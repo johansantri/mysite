@@ -184,12 +184,12 @@
                                          
 
                                             <a href="{% url "courses:edit_matrial" course.id material.id %}"> {{ material.title }}</a>
-                                            <a href="javascript:void(0);" class="btn delete-btn-matrial" data-id="{{ material.id }}"> <i class="fa fa-trash-can"></i> </a>
+                                            <a href="javascript:void(0);" class="btn delete-btn-matrial btn-sm" data-id="{{ material.id }}"> <i class="fa fa-trash-can"></i> </a>
                                       
                                         </div>
                                           {% empty %}
 
-                                          <li>No materials/quiz available for this section.</li>
+                                          <li>No materials available for this section.</li>
 
                                           {% endfor %}
 
@@ -197,10 +197,11 @@
                                           {% for assesment in obj.assesments.all %}
                                           <div class="border rounded p-3 mb-2">
                                           <a href="{% url "courses:view-question" course.id obj.id assesment.id %}">  {{ assesment.name | safe }}</a>
+                                          <a href="{% url "courses:delete_assessment" course.id obj.id assesment.id %}" class="btn delete-btn-matrial btn-sm" > <i class="fa fa-trash-can"></i> </a>
                                         </div>
                                           {% empty %}
 
-                                          <li>No materials/quiz available for this section.</li>
+                                          <li>No quiz available for this section.</li>
                                           {% endfor%}
                                           <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
                                        
