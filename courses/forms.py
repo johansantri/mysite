@@ -17,36 +17,62 @@ logger = logging.getLogger(__name__)
 class AssessmentForm(forms.ModelForm):
     class Meta:
         model = Assessment
-        fields = ['name']
+        fields = ['name','flag']
         widgets = {
-        
-        'name': forms.TextInput(attrs={'placeholder': 'Enter name assesment hare', 'class': 'form-control'}),
-      
-
+            'name': forms.TextInput(attrs={
+                'placeholder': 'Enter name assessment here',
+                'class': 'form-control'
+            }),
+        }
+        labels = {
+            'flag': 'Enable editor visual',  # Custom label for the flag field
         }
 
 
 class QuestionForm(forms.ModelForm):
-    text = forms.CharField(widget=CKEditor5Widget("default"))
+    text = forms.CharField(required=False)  # Default field is optional
+
     class Meta:
         model = Question
-        fields = ['text']  # Include fields visible in the form
+        fields = ['text']
 
+    def __init__(self, *args, **kwargs):
+        # Extract the assessment object from kwargs
+        assessment = kwargs.pop('assessment', None)
+        super().__init__(*args, **kwargs)
+
+        # Conditionally set widget based on the assessment flag
+        if assessment and assessment.flag:
+            self.fields['text'].widget = CKEditor5Widget("default")  # CKEditor widget
+        else:
+            self.fields['text'].widget = forms.TextInput(attrs={'class': 'form-control'})  # Plain text widget
     
        
 class ChoiceForm(forms.ModelForm):
-    text = forms.CharField(widget=CKEditor5Widget("default"))
+    text = forms.CharField(required=False)  # Default field is optional
+
     class Meta:
         model = Choice
         fields = ['text', 'is_correct']
+
+    def __init__(self, *args, **kwargs):
+        # Extract the assessment object from kwargs
+        assessment = kwargs.pop('assessment', None)
+        super().__init__(*args, **kwargs)
+
+        # Conditionally set widget based on the assessment flag
+        if assessment and assessment.flag:
+            self.fields['text'].widget = CKEditor5Widget("default")  # CKEditor widget
+        else:
+            self.fields['text'].widget = forms.TextInput(attrs={'class': 'form-control'})  # Plain text widget
        
 ChoiceFormSet = inlineformset_factory(
     Question,
     Choice,
-    form=ChoiceForm,  # Use the custom ChoiceForm
+    form=ChoiceForm,
     fields=['text', 'is_correct'],
-    extra=1,  # Number of extra empty forms
-    can_delete=True  # Enable deleting choices
+    extra=1,
+    can_delete=True
 )
 #add section
 class SectionForm(forms.ModelForm):

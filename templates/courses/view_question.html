@@ -8,7 +8,7 @@
             {% include "courses/course_set.html"%}
            
         <hr>
-            <h6>Questions for Assessment: {{ assessment.name }}</h6>
+            <h6>Questions for Assessment: <a href="{% url "courses:edit_assessment"  course.id section.id assessment.id %}">{{ assessment.name }} </a> </h6>
            
             <a href="{% url "courses:create_question" course.id section.id assessment.id %}" class="btn btn-success">add question </a>
          

@@ -167,8 +167,9 @@ class Material(models.Model):
 
 class Assessment(models.Model):
     name = models.CharField(max_length=255)
-    section =models.ForeignKey(Section,related_name="assesments",on_delete=models.CASCADE)
+    section = models.ForeignKey(Section,related_name="assesments",on_delete=models.CASCADE)
     description = models.TextField(blank=True, null=True)
+    flag = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -193,13 +194,7 @@ class Choice(models.Model):
         return self.text
 
 
-class Choice(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='choices')
-    text = models.TextField(blank=True, null=True)
-    is_correct = models.BooleanField(default=False)
 
-    def __str__(self):
-        return self.text
     
 class Score(models.Model):
     user = models.CharField(max_length=255)  # Username or session key

@@ -13,8 +13,8 @@ from django.urls import reverse
 from django.contrib import messages
 from django.db.models import F
 
-
-
+from django_ckeditor_5.widgets import CKEditor5Widget
+from django import forms
 
 #creat assesment
 @login_required
@@ -40,29 +40,67 @@ def create_assessment(request, idcourse, idsection):
     
     return render(request, 'courses/course_assessement.html', {'form': form, 'course': course, 'section': section})
 
+#edit assesment
+@login_required
+@csrf_exempt
+def edit_assessment(request, idcourse, idsection, idassessment):
+    course = get_object_or_404(Course, id=idcourse)
+    section = get_object_or_404(Section, id=idsection)
+    assessment = get_object_or_404(Assessment, id=idassessment)
+
+    if request.method == 'POST':
+        form = AssessmentForm(request.POST, instance=assessment)
+        if form.is_valid():
+            # Save the form data to the assessment instance
+           
+            form.save()
+            messages.success(request, "Assessment updated successfully!")
+            return redirect('courses:studio', id=course.id)
+    else:
+        # Populate the form with the existing assessment data
+        form = AssessmentForm(instance=assessment)
+
+    return render(request, 'courses/course_assessement_edit.html', {
+        'form': form,
+        'course': course,
+        'section': section,
+        'assessment': assessment
+    })
 
 #edit question
 @login_required
-def edit_question(request, idcourse, idquestion, idsection,idassessment):
+def edit_question(request, idcourse, idquestion, idsection, idassessment):
     course = get_object_or_404(Course, id=idcourse)
     question = get_object_or_404(Question, id=idquestion)
     section = get_object_or_404(Section, id=idsection)
     assessment = get_object_or_404(Assessment, id=idassessment)
-    form = QuestionForm(request.POST or None, instance=question)
+
+    # Pass the assessment to the forms
+    form = QuestionForm(request.POST or None, instance=question, assessment=assessment)
     choice_formset = ChoiceFormSet(request.POST or None, instance=question)
+
+    # Pass assessment to each form in the formset
+    for choice_form in choice_formset.forms:
+        choice_form.fields['text'].widget = (
+            CKEditor5Widget("default") if assessment.flag else forms.TextInput(attrs={'class': 'form-control'})
+        )
 
     if request.method == 'POST':
         if form.is_valid() and choice_formset.is_valid():
+            # Save the question form
             question = form.save(commit=False)
             question.section = section
             question.save()
+
+            # Save the formset
+            choice_formset.instance = question
             choice_formset.save()
-            messages.success(request, "Question updated successfully!")
-            return redirect('courses:view-question',idcourse=course.id, idsection=section.id, idassessment=assessment.id)
+
+            messages.success(request, "Question and choices updated successfully!")
+            return redirect('courses:view-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
         else:
             print("Form errors:", form.errors)
-            print("Formset errors:", choice_formset.errors)
-            print("POST data:", request.POST)
+            print("Formset errors:", [choice_form.errors for choice_form in choice_formset.forms])
             messages.error(request, "There was an error updating the question. Please check your inputs.")
 
     return render(request, 'courses/edit_question.html', {
@@ -70,22 +108,31 @@ def edit_question(request, idcourse, idquestion, idsection,idassessment):
         'choice_formset': choice_formset,
         'course': course,
         'section': section,
+        'assessment': assessment,
     })
+
 #create question
 @login_required
-def create_question_view(request, idcourse,idsection, idassessment):
+def create_question_view(request, idcourse, idsection, idassessment):
     course = get_object_or_404(Course, id=idcourse)
     section = get_object_or_404(Section, id=idsection)
     assessment = get_object_or_404(Assessment, id=idassessment)
 
-    question_form = QuestionForm(request.POST or None)
+    # Pass the assessment object to the form
+    question_form = QuestionForm(request.POST or None, assessment=assessment)
     choice_formset = ChoiceFormSet(request.POST or None, instance=Question())
+
+    # Pass the assessment object to each form in the formset
+    for choice_form in choice_formset.forms:
+        choice_form.fields['text'].widget = (
+            CKEditor5Widget("default") if assessment.flag else forms.TextInput(attrs={'class': 'form-control'})
+        )
 
     if request.method == 'POST':
         if question_form.is_valid() and choice_formset.is_valid():
             # Save the question and link it to the section
             question = question_form.save(commit=False)
-            question.assessment = assessment
+            question.section = section
             question.save()
 
             # Save the related choices
@@ -99,7 +146,7 @@ def create_question_view(request, idcourse,idsection, idassessment):
                 return redirect('courses:create-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
 
             # Redirect to a success page (or list view)
-            return redirect('courses:view-question',idcourse=course.id, idsection=section.id, idassessment=assessment.id)
+            return redirect('courses:view-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
 
     return render(request, 'courses/create_question.html', {
         'course': course,
