@@ -103,7 +103,7 @@ def edit_question(request, idcourse, idquestion, idsection, idassessment):
     # Pass assessment to each form in the formset
     for choice_form in choice_formset.forms:
         choice_form.fields['text'].widget = (
-            CKEditor5Widget("default") if assessment.flag else forms.TextInput(attrs={'class': 'form-control'})
+            CKEditor5Widget("extends") if assessment.flag else forms.TextInput(attrs={'class': 'form-control'})
         )
 
     if request.method == 'POST':
@@ -149,7 +149,7 @@ def create_question_view(request, idcourse, idsection, idassessment):
        # Pass assessment to each form in the formset
     for choice_form in choice_formset.forms:
         choice_form.fields['text'].widget = (
-            CKEditor5Widget("default") if assessment.flag else forms.TextInput(attrs={'class': 'form-control'})
+            CKEditor5Widget("extends") if assessment.flag else forms.TextInput(attrs={'class': 'form-control'})
         )
     if request.method == 'POST':
         if question_form.is_valid() and choice_formset.is_valid():

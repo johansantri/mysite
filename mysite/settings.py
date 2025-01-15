@@ -190,6 +190,7 @@ CKEDITOR_5_CONFIGS = {
             "numberedList",
             "blockQuote",
             'imageUpload',
+            'insertTable',
             
         ],
     

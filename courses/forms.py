@@ -43,7 +43,7 @@ class QuestionForm(forms.ModelForm):
 
         # Conditionally set widget based on the assessment flag
         if assessment and assessment.flag:
-            self.fields['text'].widget = CKEditor5Widget("default")  # CKEditor widget
+            self.fields['text'].widget = CKEditor5Widget("extends")  # CKEditor widget
         else:
             self.fields['text'].widget = forms.TextInput(attrs={'class': 'form-control'})  # Plain text widget
     
@@ -62,7 +62,7 @@ class ChoiceForm(forms.ModelForm):
 
         # Conditionally set widget based on the assessment flag
         if assessment and assessment.flag:
-            self.fields['text'].widget = CKEditor5Widget("default")  # CKEditor widget
+            self.fields['text'].widget = CKEditor5Widget("extends")  # CKEditor widget
         else:
             self.fields['text'].widget = forms.TextInput(attrs={'class': 'form-control'})  # Plain text widget
        
