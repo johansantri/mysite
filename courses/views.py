@@ -34,7 +34,7 @@ def create_assessment(request, idcourse, idsection):
             # Save the assessment
             assessment.save()
             messages.success(request, "Assessment created successfully!")
-            return redirect('courses:studio',id=course.id)
+            return redirect('courses:view-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
     else:
         form = AssessmentForm()
     
@@ -55,13 +55,34 @@ def edit_assessment(request, idcourse, idsection, idassessment):
            
             form.save()
             messages.success(request, "Assessment updated successfully!")
-            return redirect('courses:studio', id=course.id)
+            return redirect('courses:view-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
     else:
         # Populate the form with the existing assessment data
         form = AssessmentForm(instance=assessment)
 
     return render(request, 'courses/course_assessement_edit.html', {
         'form': form,
+        'course': course,
+        'section': section,
+        'assessment': assessment
+    })
+
+
+@login_required
+@csrf_exempt
+def delete_assessment(request, idcourse, idsection, idassessment):
+    course = get_object_or_404(Course, id=idcourse)
+    section = get_object_or_404(Section, id=idsection)
+    assessment = get_object_or_404(Assessment, id=idassessment)
+
+    if request.method == 'POST':
+        # Perform the deletion
+        assessment.delete()
+        messages.success(request, "Assessment deleted successfully!")
+        return redirect('courses:studio', id=course.id)
+
+    # Render confirmation page for GET requests
+    return render(request, 'courses/confirm_delete_assessment.html', {
         'course': course,
         'section': section,
         'assessment': assessment
