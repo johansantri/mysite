@@ -30,7 +30,7 @@ class AssessmentForm(forms.ModelForm):
 
 
 class QuestionForm(forms.ModelForm):
-    text = forms.CharField(required=False)  # Default field is optional
+    text = forms.CharField(required=True)  # Default field is optional
 
     class Meta:
         model = Question
@@ -49,7 +49,7 @@ class QuestionForm(forms.ModelForm):
     
        
 class ChoiceForm(forms.ModelForm):
-    text = forms.CharField(required=False)  # Default field is optional
+    text = forms.CharField(required=True)  # Default field is optional
 
     class Meta:
         model = Choice

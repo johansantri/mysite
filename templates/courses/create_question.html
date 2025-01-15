@@ -51,7 +51,7 @@
                     <br><br>
                     <button type="submit" name="save" class="btn btn-success btn-sm">Save</button>
                     <button type="submit" name="save_and_add_another" class="btn btn-primary btn-sm">Save and Add Another</button>
-                    <a class="btn btn-danger btn-sm" href="{% url 'courses:studio' id=course.id %}">Cancel <i class="fa fa-close"></i></a>
+                    <a class="btn btn-danger btn-sm" href="{% url "courses:view-question" course.id section.id assessment.id %}">Cancel <i class="fa fa-close"></i></a>
                 </form>
                 
                 

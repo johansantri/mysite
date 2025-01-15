@@ -97,6 +97,11 @@ def edit_question(request, idcourse, idquestion, idsection, idassessment):
             choice_formset.save()
 
             messages.success(request, "Question and choices updated successfully!")
+              # Check if 'save and add another' button was clicked
+            if 'save_and_add_another' in request.POST:
+                return redirect('courses:create_question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
+                #return redirect('courses:create_question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
+
             return redirect('courses:view-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
         else:
             print("Form errors:", form.errors)
@@ -111,46 +116,45 @@ def edit_question(request, idcourse, idquestion, idsection, idassessment):
         'assessment': assessment,
     })
 
-#create question
 @login_required
 def create_question_view(request, idcourse, idsection, idassessment):
     course = get_object_or_404(Course, id=idcourse)
     section = get_object_or_404(Section, id=idsection)
     assessment = get_object_or_404(Assessment, id=idassessment)
 
-    # Pass the assessment object to the form
+    # Initialize forms
     question_form = QuestionForm(request.POST or None, assessment=assessment)
     choice_formset = ChoiceFormSet(request.POST or None, instance=Question())
 
-    # Pass the assessment object to each form in the formset
-    for choice_form in choice_formset.forms:
-        choice_form.fields['text'].widget = (
-            CKEditor5Widget("default") if assessment.flag else forms.TextInput(attrs={'class': 'form-control'})
-        )
-
     if request.method == 'POST':
         if question_form.is_valid() and choice_formset.is_valid():
-            # Save the question and link it to the section
+            # Save question instance
             question = question_form.save(commit=False)
             question.section = section
+            question.assessment = assessment
             question.save()
 
-            # Save the related choices
+            # Link and save choices
             choice_formset.instance = question
             choice_formset.save()
 
             messages.success(request, "Question and choices created successfully!")
 
-            # Check for "save and add another" button
+            # Check if 'save and add another' button was clicked
             if 'save_and_add_another' in request.POST:
-                return redirect('courses:create-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
+                return redirect('courses:create_question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
+                #return redirect('courses:create_question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
 
-            # Redirect to a success page (or list view)
+            # Redirect to a view or list of questions
             return redirect('courses:view-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
+        else:
+            messages.error(request, "There was an error saving the question. Please correct the errors below.")
 
+    # For GET requests or if forms are invalid
     return render(request, 'courses/create_question.html', {
         'course': course,
         'section': section,
+        'assessment':assessment,
         'question_form': question_form,
         'choice_formset': choice_formset,
     })
