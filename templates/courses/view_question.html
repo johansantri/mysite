@@ -10,7 +10,7 @@
         <hr>
             <h6>Questions for Assessment: {{ assessment.name }}</h6>
            
-            <a href="#" class="btn btn-success">add question</a>
+            <a href="{% url "courses:create_question" course.id section.id assessment.id %}" class="btn btn-success">add question </a>
          
             <table class="table table-striped table-hover">
                 <thead>
@@ -28,7 +28,7 @@
                
                   <tr>
                     <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ question.text | safe}}</td>
+                    <td><a href="{% url "courses:edit_question" course.id question.id section.id assessment.id %}">{{ question.text | safe}}</a></td>
                    
                    
                   </tr>

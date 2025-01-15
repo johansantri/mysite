@@ -43,11 +43,11 @@ def create_assessment(request, idcourse, idsection):
 
 #edit question
 @login_required
-def edit_question(request, idcourse, idquestion, idsection):
+def edit_question(request, idcourse, idquestion, idsection,idassessment):
     course = get_object_or_404(Course, id=idcourse)
     question = get_object_or_404(Question, id=idquestion)
     section = get_object_or_404(Section, id=idsection)
-
+    assessment = get_object_or_404(Assessment, id=idassessment)
     form = QuestionForm(request.POST or None, instance=question)
     choice_formset = ChoiceFormSet(request.POST or None, instance=question)
 
@@ -58,7 +58,7 @@ def edit_question(request, idcourse, idquestion, idsection):
             question.save()
             choice_formset.save()
             messages.success(request, "Question updated successfully!")
-            return redirect('courses:studio',id=course.id)
+            return redirect('courses:view-question',idcourse=course.id, idsection=section.id, idassessment=assessment.id)
         else:
             print("Form errors:", form.errors)
             print("Formset errors:", choice_formset.errors)

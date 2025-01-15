@@ -24,7 +24,7 @@ urlpatterns = [
     path('add-quiz/<int:idcourse>/<int:idsection>/',views.add_quiz,name="add-quiz"),
     path('questions/create/<int:idcourse>/<int:idsection>/<int:idassessment>/', views.create_question_view, name='create_question'),
     path('edit-matrial/<int:idcourse>/<int:idmaterial>', views.edit_matrial, name='edit_matrial'),
-    path('questions/edit/<int:idcourse>/<int:idquestion>/<int:idsection>', views.edit_question, name='edit_question'),
+    path('questions/edit/<int:idcourse>/<int:idquestion>/<int:idsection>/<int:idassessment>', views.edit_question, name='edit_question'),
     path(
         'questions/view/<int:idcourse>/<int:idsection>/<int:idassessment>/',
         views.question_view,
