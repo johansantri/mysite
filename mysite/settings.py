@@ -370,4 +370,4 @@ CKEDITOR_5_CONFIGS = {
 
 #CKEDITOR_5_CUSTOM_CSS = "custom.css"
 CSRF_COOKIE_NAME = "new_csrf_cookie_name"
-CKEDITOR_5_FILE_UPLOAD_PERMISSION = "staff"
+CKEDITOR_5_FILE_UPLOAD_PERMISSION = "staff","superuser","is_partner","is_instructor"

@@ -16,7 +16,7 @@ from django.db.models import F
 from django_ckeditor_5.widgets import CKEditor5Widget
 from django import forms
 
-#creat assesment
+#creat assesment type name
 @login_required
 @csrf_exempt
 def create_assessment(request, idcourse, idsection):
@@ -54,7 +54,7 @@ def create_assessment(request, idcourse, idsection):
     return render(request, 'courses/course_assessement.html', {'form': form, 'course': course, 'section': section})
 
 
-#edit assesment
+#edit assesment type name
 @login_required
 @csrf_exempt
 def edit_assessment(request, idcourse, idsection, idassessment):
@@ -97,7 +97,7 @@ def edit_assessment(request, idcourse, idsection, idassessment):
     })
 
 
-#delete assesment
+#delete assesment type name
 @login_required
 @csrf_exempt
 def delete_assessment(request, idcourse, idsection, idassessment):
@@ -135,7 +135,7 @@ def delete_assessment(request, idcourse, idsection, idassessment):
     })
 
 
-#edit question
+#edit question and choice
 @login_required
 @csrf_exempt
 def edit_question(request, idcourse, idquestion, idsection, idassessment):
@@ -203,7 +203,7 @@ def edit_question(request, idcourse, idquestion, idsection, idassessment):
         'assessment': assessment,
     })
 
-
+#create question and choice
 @login_required
 @csrf_exempt
 def create_question_view(request, idcourse, idsection, idassessment):
@@ -271,7 +271,7 @@ def create_question_view(request, idcourse, idsection, idassessment):
 
 
 
-#create question
+#view question
 @login_required
 @csrf_exempt
 def question_view(request, idcourse, idsection, idassessment):
@@ -307,44 +307,9 @@ def question_view(request, idcourse, idsection, idassessment):
 
 
 
-#add quiz
-@login_required
-
-def add_quiz (request,idcourse, idsection):
-    course = get_object_or_404(Course, id=idcourse)
-
-    section = get_object_or_404(Section, id=idsection)
 
 
-    if request.method == 'POST':
-
-        form = MatrialForm(request.POST)  # Include request.FILES for file uploads
-
-        if form.is_valid():
-
-            material = form.save(commit=False)
-
-            material.section = section  # Associate the material with the section
-
-            material.courses = course  # Associate the material with the course
-
-            material.save()
-            messages.success(request, "sucess add matrial course.")
-            return redirect('courses:studio',id=course.id)
-
-        else:
-            messages.error(request, "canot add matrial.")
-            #return JsonResponse({'status': 'error', 'errors': form.errors})
-
-
-    # If GET request, render the form
-
-    form = MatrialForm()
-
-    return render(request, 'courses/course_matrial.html', {'form': form, 'course': course, 'section': section})
-
-
-#upprove user
+#upprove user request
 @login_required
 def instructor_check(request, instructor_id):
     # Fetch the instructor object
@@ -432,7 +397,7 @@ def delete_instructor(request, instructor_id):
     return redirect('courses:instructor_view')
 
 
-#intructor form
+#intructor form for new request
 @login_required
 def become_instructor(request):
     try:
@@ -457,7 +422,7 @@ def become_instructor(request):
 
     return render(request, 'home/become_instructor.html', {'form': form})
 
-
+#add course team
 @login_required
 
 def course_team(request, id):
@@ -544,7 +509,7 @@ def remove_team_member(request, member_id):
 
     return redirect('courses:course_team', id=course_id)  # Redir
 
-#coruse profile
+#course profile
 @login_required
 @csrf_exempt  # Be cautious with this decorator; it's better to avoid using it if unnecessary
 def course_profile(request, id):
@@ -577,42 +542,108 @@ def course_profile(request, id):
         form = ProfilForm(instance=course)  # For GET requests, display the form with existing course data
 
     return render(request, 'courses/course_profile.html', {'course': course, 'form': form})
+
+
 #add section
 @login_required
 @csrf_exempt
-def create_section(request):
+def create_section(request, idcourse):
     if request.method == "POST":
+        # Check user permissions
+        if request.user.is_superuser:
+            course = get_object_or_404(Course, id=idcourse)
+        elif request.user.is_partner:
+            course = get_object_or_404(Course, id=idcourse, org_partner__user_id=request.user.id)
+        elif request.user.is_instructor:
+            course = get_object_or_404(Course, id=idcourse, instructor__user_id=request.user.id)
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Permission denied.'})
+
         form = SectionForm(request.POST)
         if form.is_valid():
-            form.save()
-            return JsonResponse({'status': 'success', 'message': 'Section created!'})
+            section = form.save(commit=False)
+            section.courses = course
+            section.save()
+            return JsonResponse({'status': 'success', 'message': 'Section created successfully!'})
         else:
-            return JsonResponse({'status': 'error', 'message': 'Form is not valid'})
-    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+            return JsonResponse({'status': 'error', 'message': 'Form is not valid', 'errors': form.errors})
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
+
+
 
 # Delete section
 @login_required
 @csrf_exempt
 def delete_section(request, pk):
-    item = get_object_or_404(Section, pk=pk)
-    item.delete()
-    return JsonResponse({'status': 'success', 'message': 'section deleted!'})
+    # Fetch the section
+    section = get_object_or_404(Section, pk=pk)
+    course = section.courses  # Use the correct relationship field name
+
+    # Check user roles
+    if request.user.is_superuser:
+        # Superusers can delete any section
+        pass
+    elif request.user.is_partner:
+        # Partners can delete sections only for their associated courses
+        if course.org_partner.user_id != request.user.id:
+            return JsonResponse({'status': 'error', 'message': 'Permission denied.'})
+    elif request.user.is_instructor:
+        # Instructors can delete sections only for their own courses
+        if course.instructor.user_id != request.user.id:
+            return JsonResponse({'status': 'error', 'message': 'Permission denied.'})
+    else:
+        # Unauthorized user
+        return JsonResponse({'status': 'error', 'message': 'Permission denied.'})
+
+    # If role check passes, delete the section
+    if request.method == 'POST':
+        section.delete()
+        return JsonResponse({'status': 'success', 'message': 'Section deleted!'})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
+
 
 # Update Section
+# Update Section with Role-Based Access
 @login_required
 @csrf_exempt
 def update_section(request, pk):
-    item = get_object_or_404(Section, pk=pk)
-    if request.method == "POST":
-        form = SectionForm(request.POST, instance=item)
-        if form.is_valid():
-            form.save()
-            return JsonResponse({'status': 'success', 'message': 'Item updated!'})
-        else:
-            # Log or return specific form errors for debugging
-            return JsonResponse({'status': 'error', 'message': 'Form is not valid', 'errors': form.errors})
-    return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+    # Fetch the section
+    section = get_object_or_404(Section, pk=pk)
+    course = section.courses  # Use the correct relationship field name
 
+    # Check user roles
+    if request.user.is_superuser:
+        # Superusers can update any section
+        pass
+    elif request.user.is_partner:
+        # Partners can update sections only for their associated courses
+        if course.org_partner.user_id != request.user.id:
+            return JsonResponse({'status': 'error', 'message': 'Permission denied.'})
+    elif request.user.is_instructor:
+        # Instructors can update sections only for their own courses
+        if course.instructor.user_id != request.user.id:
+            return JsonResponse({'status': 'error', 'message': 'Permission denied.'})
+    else:
+        # Unauthorized user
+        return JsonResponse({'status': 'error', 'message': 'Permission denied.'})
+
+    if request.method == "POST":
+        # Handle form submission
+        form = SectionForm(request.POST, instance=section)
+        if form.is_valid():
+            # Save the updated section
+            form.save()
+            return JsonResponse({'status': 'success', 'message': 'Section updated successfully!'})
+        else:
+            # Return specific form errors for debugging
+            return JsonResponse({'status': 'error', 'message': 'Form is not valid', 'errors': form.errors})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
+
+
+
+#add matrial course
 @login_required
 @csrf_exempt
 def add_matrial(request, idcourse, idsection):
@@ -634,7 +665,7 @@ def add_matrial(request, idcourse, idsection):
 
     if request.method == 'POST':
         # Handle form submission
-        form = MatrialForm(request.POST)  # Include file uploads
+        form = MatrialForm(request.POST, request.FILES, instance=material)  # Include file uploads
 
         if form.is_valid():
             # Save the material and associate it with the course and section
@@ -662,7 +693,7 @@ def add_matrial(request, idcourse, idsection):
     })
 
 
-#edit matrial
+#edit matrial course
 @login_required
 @csrf_exempt
 def edit_matrial(request, idcourse, idmaterial):
@@ -752,7 +783,7 @@ def delete_matrial(request, pk):
 
 
 
-    
+#course view 
 @login_required
 def courseView(request):
     # Check if the user is authenticated
@@ -839,6 +870,8 @@ def paginate_courses(request, posts):
     paginator = Paginator(posts, 5)
     page_number = request.GET.get('page')
     return paginator.get_page(page_number)
+
+
 #create course
 @login_required
 
@@ -958,6 +991,8 @@ def partnerView(request):
     context = {'count': posts.count(), 'page': page}
     return render(request, 'partner/partner_view.html', context)
 
+
+#search user
 def search_users(request):
     query = request.GET.get('q', '')
     
@@ -981,6 +1016,7 @@ def search_users(request):
         'total_pages': paginator.num_pages,
         'total_users': paginator.count,
     })
+#search partner
 def search_partner(request):
     query = request.GET.get('q', '')
     
@@ -1005,7 +1041,7 @@ def search_partner(request):
         'total_partners': paginator.count,
     })
 
-
+#filter partner
 def filter_partner_by_query(request, posts):
     """Filter partner based on search query."""
     query = request.GET.get('q')
@@ -1088,22 +1124,3 @@ def course_list(request):
     courses = Course.objects.all()[:100]
     return render(request, 'courses/course_list.html', {'courses': courses})
 
-@login_required
-def course_update(request, pk):
-    course = get_object_or_404(Course, pk=pk)
-    data = dict()
-    if request.method == 'POST':
-        form = CourseForm(request.POST, instance=course)
-        if form.is_valid():
-            form.save()
-            data['form_is_valid'] = True
-            courses = Course.objects.all()
-            data['course_list'] = render_to_string('courses/course_list.html', {'courses': courses})
-        else:
-            data['form_is_valid'] = False
-    else:
-        form = CourseForm(instance=course)
-
-    context = {'form': form}
-    data['html_form'] = render_to_string('courses/course_update.html', context, request=request)
-    return JsonResponse(data)

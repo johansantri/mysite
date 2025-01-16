@@ -329,7 +329,7 @@ function createSub(id) {
 
   // AJAX request to save the new subsection
   $.ajax({
-      url: '{% url "courses:create_section" %}',  // Replace with the correct endpoint for saving the subsection
+      url: '{% url "courses:create_section" idcourse=course.id %}',  // Replace with the correct endpoint for saving the subsection
       method: 'POST',
       data: {
           'csrfmiddlewaretoken': csrfToken,
@@ -451,7 +451,7 @@ if (event.keyCode === 13) {  // Enter key code
         }
         //ajax
         $.ajax({
-            url: '{% url "courses:create_section" %}',
+            url: '{% url "courses:create_section" idcourse=course.id %}',
             method: 'POST',
             data: {
               'csrfmiddlewaretoken': csrfToken,
