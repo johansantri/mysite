@@ -666,30 +666,34 @@ def add_matrial(request, idcourse, idsection):
 @login_required
 @csrf_exempt
 def edit_matrial(request, idcourse, idmaterial):
-    # Determine the course based on the user's role
+    # Check the role of the user and determine access permissions
+    
+    # Superuser can access and edit any material
     if request.user.is_superuser:
+        # Superuser can access any material, get the associated course via section
+        material = get_object_or_404(Material, id=idmaterial)
         course = get_object_or_404(Course, id=idcourse)
+    
+    # Partner can only access materials related to their course
     elif request.user.is_partner:
-        # Ensure the course is associated with the partner
         course = get_object_or_404(Course, id=idcourse, org_partner__user_id=request.user.id)
+        # Ensure the material belongs to the course's section
+        material = get_object_or_404(Material, id=idmaterial, section__courses=course)
+    
+    # Instructor can only access and edit materials related to their courses
     elif request.user.is_instructor:
-        # Ensure the course is associated with the instructor
         course = get_object_or_404(Course, id=idcourse, instructor__user_id=request.user.id)
+        # Ensure the material belongs to the course's section
+        material = get_object_or_404(Material, id=idmaterial, section__courses=course)
+    
     else:
-        # Unauthorized access
+        # Unauthorized access for users who are not superuser, partner, or instructor
         messages.error(request, "You do not have permission to edit materials in this course.")
-        return redirect('courses:home')  # Redirect to a safe page
+        return redirect('courses:home')
 
-    # Fetch the material (updated query)
-    material = get_object_or_404(Material, id=idmaterial, section__course=course)
-
-    # Get the associated section
-    section = material.section
-
+    # Handle POST request to update the material
     if request.method == 'POST':
-        # Populate the form with the existing material and handle file uploads
         form = MatrialForm(request.POST, request.FILES, instance=material)
-
         if form.is_valid():
             form.save()  # Save the updated material
             messages.success(request, "Successfully updated material.")
@@ -697,18 +701,19 @@ def edit_matrial(request, idcourse, idmaterial):
         else:
             messages.error(request, "Failed to update material. Please check the form for errors.")
             print(form.errors)  # Debugging (optional)
-
     else:
-        # Populate the form with the existing material for GET requests
+        # For GET requests, populate the form with existing material
         form = MatrialForm(instance=material)
 
     # Render the template with the form and context
     return render(request, 'courses/edit_matrial_course.html', {
         'form': form,
         'course': course,
-        'section': section,
         'material': material,
     })
+
+
+
 
 
 #delete matrial course

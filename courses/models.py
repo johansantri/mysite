@@ -119,7 +119,7 @@ class Section(models.Model):
     title = models.CharField(max_length=100) 
     slug = AutoSlugField(populate_from='title', unique=True, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    courses=models.ForeignKey(Course,on_delete=models.CASCADE,related_name='course_id')
+    courses=models.ForeignKey(Course,on_delete=models.CASCADE,related_name='sections')
 
     def __str__(self):
         return self.title
