@@ -634,7 +634,7 @@ def add_matrial(request, idcourse, idsection):
 
     if request.method == 'POST':
         # Handle form submission
-        form = MatrialForm(request.POST, request.FILES)  # Include file uploads
+        form = MatrialForm(request.POST)  # Include file uploads
 
         if form.is_valid():
             # Save the material and associate it with the course and section
@@ -725,7 +725,7 @@ def delete_matrial(request, pk):
         # Fetch the material and its section
         material = get_object_or_404(Material, id=pk)
         section = material.section
-        course = section.courses  # Use 'courses' if that's the correct field name
+        course = section.courses  # Adjust this if the field name is different
 
         # Check user roles
         if request.user.is_superuser:
@@ -733,21 +733,23 @@ def delete_matrial(request, pk):
             pass
         elif request.user.is_partner:
             # Partner can delete material only for their associated courses
-            if course.org_partner.user_id != request.user.id:
-                return JsonResponse({'status': 'error', 'message': 'Permission denied.'})
+            if not course.org_partner or course.org_partner.user_id != request.user.id:
+                return JsonResponse({'status': 'error', 'message': 'Permission denied. You do not own this course.'})
         elif request.user.is_instructor:
             # Instructor can delete material only for their own courses
-            if course.instructor.user_id != request.user.id:
-                return JsonResponse({'status': 'error', 'message': 'Permission denied.'})
+            if not course.instructor or course.instructor.user_id != request.user.id:
+                return JsonResponse({'status': 'error', 'message': 'Permission denied. This is not your course.'})
         else:
             # Unauthorized user
             return JsonResponse({'status': 'error', 'message': 'Permission denied.'})
 
         # Delete the material if the role check passes
         material.delete()
-        return JsonResponse({'status': 'success', 'message': 'Material deleted!'})
+        return JsonResponse({'status': 'success', 'message': 'Material deleted successfully!'})
     else:
-        return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
+        # Handle invalid request methods
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method. Only POST requests are allowed.'})
+
 
 
     
