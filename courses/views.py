@@ -665,7 +665,7 @@ def add_matrial(request, idcourse, idsection):
 
     if request.method == 'POST':
         # Handle form submission
-        form = MatrialForm(request.POST, request.FILES, instance=material)  # Include file uploads
+        form = MatrialForm(request.POST)  # Include file uploads
 
         if form.is_valid():
             # Save the material and associate it with the course and section
