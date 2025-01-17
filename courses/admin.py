@@ -1,6 +1,6 @@
 from django.contrib import admin
 from . import models 
-from .models import Partner, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
+from .models import Partner,GradeRange, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
 from import_export.admin import ImportExportModelAdmin
 
 class CourseAdmin(ImportExportModelAdmin):
@@ -20,6 +20,7 @@ admin.site.register(Partner, PartnerAdmin)
 admin.site.register(models.Category)
 admin.site.register(models.Instructor)
 admin.site.register(models.TeamMember)
+admin.site.register(GradeRange)
 # Register your models here.
 
 

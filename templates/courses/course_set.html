@@ -27,7 +27,7 @@
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
               <li><a class="dropdown-item" href="{% url "courses:course_profile" course.id %}">Schedule & Details</a></li>
-              <li><a class="dropdown-item" href="#">Grading</a></li>
+              <li><a class="dropdown-item" href="{% url 'courses:course_grade' course.id %}">Grading</a></li>
               <li><a class="dropdown-item" href="{% url "courses:course_team" course.id %}">Course Team</a></li>
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" href="#">Something else here</a></li>

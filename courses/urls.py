@@ -23,7 +23,7 @@ urlpatterns = [
     path('create-assessment/<int:idcourse>/<int:idsection>/', views.create_assessment, name='create-assessment'),
     path('edit-assessment/<int:idcourse>/<int:idsection>/<int:idassessment>/', views.edit_assessment, name='edit_assessment'),
     path('delete-assessment/<int:idcourse>/<int:idsection>/<int:idassessment>/', views.delete_assessment, name='delete_assessment'),
-    
+    path('add-grade-range/', views.add_grade_range, name='add_grade_range'),
     
     
     path('questions/create/<int:idcourse>/<int:idsection>/<int:idassessment>/', views.create_question_view, name='create_question'),
@@ -38,6 +38,8 @@ urlpatterns = [
     path('delete-section/<int:pk>/', views.delete_section, name='delete_section'),
     path('update-section/<int:pk>/', views.update_section, name='update_section'),
     path('course-profile/<int:id>/', views.course_profile, name='course_profile'),
+    path('course-grade/<int:id>/', views.course_grade, name='course_grade'),
+    path("update-grade-range/<int:id>/", views.update_grade_range, name="update_grade_range"),
     path('course-team/<int:id>/', views.course_team, name='course_team'),
     path('team-member/remove/<int:member_id>/', views.remove_team_member, name='remove_team_member'),
     

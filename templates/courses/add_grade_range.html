@@ -1,0 +1,24 @@
+<form id="gradeRangeForm" method="POST" action="{% url 'courses:add_grade_range' %}">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="gradeName" class="form-label">Grade Name</label>
+        <input type="text" class="form-control" id="gradeName" name="name" required>
+    </div>
+    <div class="mb-3">
+        <label for="minGrade" class="form-label">Minimum Grade</label>
+        <input type="number" step="0.01" class="form-control" id="minGrade" name="min_grade" required>
+    </div>
+    <div class="mb-3">
+        <label for="maxGrade" class="form-label">Maximum Grade</label>
+        <input type="number" step="0.01" class="form-control" id="maxGrade" name="max_grade" required>
+    </div>
+    <div class="mb-3">
+        <label for="course" class="form-label">Course</label>
+        <select class="form-select" id="course" name="course" required>
+            {% for course in courses %}
+                <option value="{{ course.id }}">{{ course.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>

@@ -5,7 +5,8 @@ from autoslug import AutoSlugField
 from django.utils.text import slugify
 import os
 from datetime import timedelta
-        
+from django.core.exceptions import ValidationError
+
 class Partner(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,related_name="partner_user")  # Add this line to associate partners with users
     name = models.ForeignKey(Univer, on_delete=models.CASCADE,related_name="partner_univ")
@@ -163,14 +164,26 @@ class Material(models.Model):
 
         verbose_name_plural = "materials"
 
+class GradeRange(models.Model):
+    name = models.CharField(max_length=255)  # Name of the grade range (e.g., "A", "B+")
+    min_grade = models.DecimalField(max_digits=5, decimal_places=2)  # Minimum grade for the range
+    max_grade = models.DecimalField(max_digits=5, decimal_places=2)  # Maximum grade for the range
+    course = models.ForeignKey(Course, related_name='grade_ranges', on_delete=models.CASCADE)  # Link grade range to course
+    created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"{self.name} ({self.min_grade} - {self.max_grade})"
 
 class Assessment(models.Model):
     name = models.CharField(max_length=255)
-    section = models.ForeignKey(Section,related_name="assesments",on_delete=models.CASCADE)
+    section = models.ForeignKey(Section, related_name="assessments", on_delete=models.CASCADE)
+    weight = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     description = models.TextField(blank=True, null=True)
     flag = models.BooleanField(default=False)
+    grade_range = models.ForeignKey(GradeRange, related_name="assessments", on_delete=models.SET_NULL, null=True, blank=True)  # Link to grade range
     created_at = models.DateTimeField(auto_now_add=True)
+
+    
 
     def __str__(self):
         return self.name

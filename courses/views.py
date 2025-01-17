@@ -3,18 +3,97 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from .forms import CourseForm, PartnerForm, SectionForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
+from .forms import CourseForm, PartnerForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from django.http import JsonResponse
-from .models import Course, Partner, Section,Instructor,TeamMember,Material,Question,Assessment
+from .models import Course, Partner,GradeRange, Section,Instructor,TeamMember,Material,Question,Assessment
 from django.contrib.auth.models import User,Univer
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
 from django.urls import reverse
 from django.contrib import messages
 from django.db.models import F
-
+from django.http import HttpResponseForbidden
 from django_ckeditor_5.widgets import CKEditor5Widget
 from django import forms
+from django.http import JsonResponse
+from decimal import Decimal
+
+def add_grade_range(request):
+    if request.method == 'POST':
+        form = GradeRangeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('grade_range_list')  # Redirect to a list page or success page
+    else:
+        form = GradeRangeForm()
+    return render(request, 'courses/add_grade_range.html', {'form': form})
+
+#create grade
+@login_required
+def course_grade(request, id):
+    course = get_object_or_404(Course, id=id)
+
+   # Ensure grade ranges exist; create defaults if necessary
+    grade_fail, created_fail = course.grade_ranges.get_or_create(
+        name="Fail",
+        defaults={"min_grade": 0, "max_grade": 59},
+    )
+    grade_pass, created_pass = course.grade_ranges.get_or_create(
+        name="Pass",
+        defaults={"min_grade": 60, "max_grade": 100},
+    )
+
+    # Compute widths for display
+    total_grade_range = 100
+    fail_width = (grade_fail.max_grade / total_grade_range) * 100
+    pass_width = 100 - fail_width
+
+    # Compute grade ranges
+    fail_range_max = int(grade_fail.max_grade)
+    pass_range_min = fail_range_max + 1
+
+    return render(request, 'courses/course_grade.html', {
+        'course': course,
+        "fail_width": fail_width,
+        "pass_width": pass_width,
+        "fail_range_max": fail_range_max,
+        "pass_range_min": pass_range_min,
+    })
+
+
+@login_required
+def update_grade_range(request, id):
+    if request.method == "POST":
+        try:
+            # Fetch course
+            course = get_object_or_404(Course, id=id)
+
+            # Get Fail and Pass widths from the AJAX request
+            fail_width = Decimal(request.POST.get("fail_width", 50))  # Example: 40.0
+            pass_width = Decimal(request.POST.get("pass_width", 50))  # Example: 60.0
+
+            # Get Fail and Pass grade ranges
+            grade_fail = course.grade_ranges.filter(name="Fail").first()
+            grade_pass = course.grade_ranges.filter(name="Pass").first()
+
+            if not grade_fail or not grade_pass:
+                return JsonResponse({"success": False, "message": "Fail or Pass grade range not found!"})
+
+            # Dynamically calculate and update ranges
+            grade_fail.max_grade = int((fail_width / 100) * 100)  # Fail max_grade = % of total grade
+            grade_pass.min_grade = grade_fail.max_grade + 1  # Pass starts right after Fail's max_grade
+            grade_pass.max_grade = 100  # Pass always ends at 100
+
+            # Save updates
+            grade_fail.save()
+            grade_pass.save()
+
+            return JsonResponse({"success": True, "message": "Grade ranges updated dynamically!"})
+
+        except Exception as e:
+            return JsonResponse({"success": False, "message": str(e)})
+    return JsonResponse({"success": False, "message": "Invalid request"})
+
 
 #creat assesment type name
 @login_required
@@ -964,7 +1043,7 @@ def studio(request, id):
     #section = Section.objects.filter(parent=None, courses=course).prefetch_related('questions')
     section = Section.objects.filter(
     parent=None, courses=course
-).prefetch_related('materials', 'assesments')  # Add all necessary relationships
+).prefetch_related('materials', 'assessments')  # Add all necessary relationships
 
     # Render the page with the course and sections data
     return render(request, 'courses/course_detail.html', {'course': course, 'section': section})

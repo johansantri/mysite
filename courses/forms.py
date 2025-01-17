@@ -2,7 +2,7 @@
 from django import forms
 from django.forms import inlineformset_factory
 from django.core.cache import cache
-from .models import Course, Partner, Section,Instructor,TeamMember, Material,Question, Choice,Assessment
+from .models import Course, Partner, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment
 from django_ckeditor_5.widgets import CKEditor5Widget
 from django.contrib.auth.models import User
 import logging
@@ -14,20 +14,74 @@ import io
 # Initialize the logger
 logger = logging.getLogger(__name__)
 
+
+class GradeRangeForm(forms.ModelForm):
+    class Meta:
+        model = GradeRange
+        fields = ['name', 'min_grade', 'max_grade']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'placeholder': 'Enter name of assessment here',
+                'class': 'form-control'
+            }),
+            'min_grade': forms.NumberInput(attrs={
+                'placeholder': '0',
+                'class': 'form-control',
+                'type': 'number',
+                'min': '0',  # Optional: Add minimum value
+                'max': '100',  # Optional: Add maximum value
+            }),
+            'max_grade': forms.NumberInput(attrs={
+                'placeholder': '0',
+                'class': 'form-control',
+                'type': 'number',
+                'min': '0',  # Optional: Add minimum value
+                'max': '100',  # Optional: Add maximum value
+            }),
+        }
+
 class AssessmentForm(forms.ModelForm):
     class Meta:
         model = Assessment
-        fields = ['name','flag']
+        fields = ['name', 'weight', 'flag']
         widgets = {
             'name': forms.TextInput(attrs={
-                'placeholder': 'Enter name assessment here',
+                'placeholder': 'Enter name of assessment here',
                 'class': 'form-control'
+            }),
+            'weight': forms.NumberInput(attrs={
+                'placeholder': '0',
+                'class': 'form-control',
+                'type': 'number',
+                'min': '0',  # Optional: Add minimum value
+                'max': '100',  # Optional: Add maximum value
             }),
         }
         labels = {
             'flag': 'Enable editor visual',  # Custom label for the flag field
         }
+        help_texts = {
+            'weight': 'Enter the weight of the assessment (a percentage, 0-100).'
+        }
 
+    def clean_weight(self):
+        weight = self.cleaned_data.get('weight')
+        
+        if weight < 0 or weight > 100:
+            raise forms.ValidationError("Weight must be between 0 and 100.")
+        
+        # Additional validation logic can be added if needed (e.g., checking if total weight exceeds 100)
+        
+        return weight
+
+    def clean(self):
+        cleaned_data = super().clean()
+        weight = cleaned_data.get('weight')
+        
+        # You could also add custom validation across all assessments in the course
+        # For example, check if total weight exceeds 100%
+        
+        return cleaned_data
 
 class QuestionForm(forms.ModelForm):
     text = forms.CharField(required=True)  # Default field is optional
