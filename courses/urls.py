@@ -23,7 +23,7 @@ urlpatterns = [
     path('create-assessment/<int:idcourse>/<int:idsection>/', views.create_assessment, name='create-assessment'),
     path('edit-assessment/<int:idcourse>/<int:idsection>/<int:idassessment>/', views.edit_assessment, name='edit_assessment'),
     path('delete-assessment/<int:idcourse>/<int:idsection>/<int:idassessment>/', views.delete_assessment, name='delete_assessment'),
-    path('add-grade-range/', views.add_grade_range, name='add_grade_range'),
+   
     
     
     path('questions/create/<int:idcourse>/<int:idsection>/<int:idassessment>/', views.create_question_view, name='create_question'),

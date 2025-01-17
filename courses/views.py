@@ -18,15 +18,7 @@ from django import forms
 from django.http import JsonResponse
 from decimal import Decimal
 
-def add_grade_range(request):
-    if request.method == 'POST':
-        form = GradeRangeForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('grade_range_list')  # Redirect to a list page or success page
-    else:
-        form = GradeRangeForm()
-    return render(request, 'courses/add_grade_range.html', {'form': form})
+
 
 #create grade
 @login_required
@@ -63,6 +55,23 @@ def course_grade(request, id):
 
 @login_required
 def update_grade_range(request, id):
+    section = get_object_or_404(Section, id=id)
+    course = section.courses
+    # Check user roles
+    if request.user.is_superuser:
+        # Superusers can delete any section
+        pass
+    elif request.user.is_partner:
+        # Partners can delete sections only for their associated courses
+        if course.org_partner.user_id != request.user.id:
+            return JsonResponse({'status': 'error', 'message': 'Permission denied.'})
+    elif request.user.is_instructor:
+        # Instructors can delete sections only for their own courses
+        if course.instructor.user_id != request.user.id:
+            return JsonResponse({'status': 'error', 'message': 'Permission denied.'})
+
+
+
     if request.method == "POST":
         try:
             # Fetch course
