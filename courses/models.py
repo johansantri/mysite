@@ -24,7 +24,7 @@ class Partner(models.Model):
     updated_ad = models.DateTimeField(auto_now=True) 
 
     def __str__(self):
-        return f"{self.name} - {self.user} "
+        return f"{self.name}"
     class Meta:
         indexes = [
             models.Index(fields=['user'])
