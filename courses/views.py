@@ -1170,7 +1170,7 @@ def studio(request, id):
 
 def partnerView(request):
     if not request.user.is_authenticated:
-        return redirect('/')
+        return redirect("/login/?next=%s" % request.path)
 
     posts = Partner.objects.all() if request.user.is_superuser else Partner.objects.filter(user_id=request.user.id)
     
