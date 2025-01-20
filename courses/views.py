@@ -21,8 +21,31 @@ from decimal import Decimal
 
 
 #create grade
-@login_required
+#@login_required
 def course_grade(request, id):
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+    
+
+    user = request.user
+    course = None
+
+  
+    # Determine the course based on the user's role
+    if request.user.is_superuser:
+        course = get_object_or_404(Course, id=id)
+    elif user.is_partner:
+        #course = Course.objects.filter(id=id, org_partner_id=request.user.id).first()
+        course = get_object_or_404(Course, id=id, org_partner__user_id=user.id)
+        #print(course)
+    elif user.is_instructor:
+        course = get_object_or_404(Course, id=id, instructor__user_id=user.id)
+    # If no course is found, redirect to the courses list page
+        #print(course)
+    if not course:
+        return redirect('/courses')
+    
     course = get_object_or_404(Course, id=id)
 
    # Ensure grade ranges exist; create defaults if necessary
@@ -53,8 +76,12 @@ def course_grade(request, id):
     })
 
 
-@login_required
+#@login_required
 def update_grade_range(request, id):
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+    
     section = get_object_or_404(Section, id=id)
     course = section.courses
     # Check user roles
@@ -105,9 +132,12 @@ def update_grade_range(request, id):
 
 
 #creat assesment type name
-@login_required
+#@login_required
 @csrf_exempt
 def create_assessment(request, idcourse, idsection):
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     # Determine the course based on the user's role
     if request.user.is_superuser:
         course = get_object_or_404(Course, id=idcourse)
@@ -143,9 +173,12 @@ def create_assessment(request, idcourse, idsection):
 
 
 #edit assesment type name
-@login_required
+#@login_required
 @csrf_exempt
 def edit_assessment(request, idcourse, idsection, idassessment):
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     # Determine the course based on the user's role
     if request.user.is_superuser:
         course = get_object_or_404(Course, id=idcourse)
@@ -186,9 +219,12 @@ def edit_assessment(request, idcourse, idsection, idassessment):
 
 
 #delete assesment type name
-@login_required
+#@login_required
 @csrf_exempt
 def delete_assessment(request, idcourse, idsection, idassessment):
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     # Determine the course based on the user's role
     if request.user.is_superuser:
         course = get_object_or_404(Course, id=idcourse)
@@ -224,9 +260,12 @@ def delete_assessment(request, idcourse, idsection, idassessment):
 
 
 #edit question and choice
-@login_required
+#@login_required
 @csrf_exempt
 def edit_question(request, idcourse, idquestion, idsection, idassessment):
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     # Determine the course based on the user's role
     if request.user.is_superuser:
         course = get_object_or_404(Course, id=idcourse)
@@ -292,9 +331,13 @@ def edit_question(request, idcourse, idquestion, idsection, idassessment):
     })
 
 #create question and choice
-@login_required
+#@login_required
 @csrf_exempt
 def create_question_view(request, idcourse, idsection, idassessment):
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+    
     # Determine the course based on the user's role
     if request.user.is_superuser:
         course = get_object_or_404(Course, id=idcourse)
@@ -360,9 +403,13 @@ def create_question_view(request, idcourse, idsection, idassessment):
 
 
 #view question
-@login_required
+#@login_required
 @csrf_exempt
 def question_view(request, idcourse, idsection, idassessment):
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+    
     # Determine the course based on the user's role
     if request.user.is_superuser:
         course = get_object_or_404(Course, id=idcourse)
@@ -398,8 +445,11 @@ def question_view(request, idcourse, idsection, idassessment):
 
 
 #upprove user request
-@login_required
+#@login_required
 def instructor_check(request, instructor_id):
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     # Fetch the instructor object
     instructor = get_object_or_404(Instructor, id=instructor_id)
     
@@ -428,16 +478,22 @@ def instructor_check(request, instructor_id):
 
 
 #instructor detail
-@login_required
+#@login_required
 def instructor_detail(request, id):
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+    
     instructor = get_object_or_404(Instructor, id=id)
     return render(request, 'instructor/instructor_detail.html', {'instructor': instructor})
 
 #view instructor
-@login_required
+#@login_required
 
 def instructor_view(request):
-
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     # Check if the user is an admin
 
     if request.user.is_superuser:  # This checks if the user is an admin
@@ -469,8 +525,12 @@ def instructor_view(request):
     return render(request, 'instructor/instructor_list.html', {'instructors': instructors})
 
 #delete instructor
-@login_required
+#@login_required
 def delete_instructor(request, instructor_id):
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+   
     # Fetch the instructor object
     instructor = get_object_or_404(Instructor, id=instructor_id)
     
@@ -486,8 +546,12 @@ def delete_instructor(request, instructor_id):
 
 
 #intructor form for new request
-@login_required
+#@login_required
 def become_instructor(request):
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+    # Check if the user is already an instructor
     try:
         application = Instructor.objects.get(user=request.user)
         if application.status == "Pending":
@@ -511,10 +575,13 @@ def become_instructor(request):
     return render(request, 'home/become_instructor.html', {'form': form})
 
 #add course team
-@login_required
+#@login_required
 
 def course_team(request, id):
-
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+    # Fetch the course object
     user = request.user
 
     # Retrieve the course based on the provided ID
@@ -574,10 +641,13 @@ def course_team(request, id):
 
     })
 #remove team
-@login_required
+#@login_required
 
 def remove_team_member(request, member_id):
-
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+    # Check if the user is authorized to access the course
     team_member = get_object_or_404(TeamMember, id=member_id)
 
     course_id = team_member.course.id
@@ -598,9 +668,12 @@ def remove_team_member(request, member_id):
     return redirect('courses:course_team', id=course_id)  # Redir
 
 #course profile
-@login_required
+#@login_required
 @csrf_exempt  # Be cautious with this decorator; it's better to avoid using it if unnecessary
 def course_profile(request, id):
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     # Get the course based on the user's role
     user = request.user
     course = None
@@ -633,9 +706,13 @@ def course_profile(request, id):
 
 
 #add section
-@login_required
+#@login_required
 @csrf_exempt
 def create_section(request, idcourse):
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+    # Get the course based on the user's role
     if request.method == "POST":
         # Check user permissions
         if request.user.is_superuser:
@@ -661,9 +738,12 @@ def create_section(request, idcourse):
 
 
 # Delete section
-@login_required
+#@login_required
 @csrf_exempt
 def delete_section(request, pk):
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     # Fetch the section
     section = get_object_or_404(Section, pk=pk)
     course = section.courses  # Use the correct relationship field name
@@ -694,9 +774,12 @@ def delete_section(request, pk):
 
 # Update Section
 # Update Section with Role-Based Access
-@login_required
+#@login_required
 @csrf_exempt
 def update_section(request, pk):
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     # Fetch the section
     section = get_object_or_404(Section, pk=pk)
     course = section.courses  # Use the correct relationship field name
@@ -732,9 +815,12 @@ def update_section(request, pk):
 
 
 #add matrial course
-@login_required
+#@login_required
 @csrf_exempt
 def add_matrial(request, idcourse, idsection):
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     # Determine the course based on the user's role
     if request.user.is_superuser:
         course = get_object_or_404(Course, id=idcourse)
@@ -782,11 +868,13 @@ def add_matrial(request, idcourse, idsection):
 
 
 #edit matrial course
-@login_required
+#@login_required
 @csrf_exempt
 def edit_matrial(request, idcourse, idmaterial):
     # Check the role of the user and determine access permissions
-    
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     # Superuser can access and edit any material
     if request.user.is_superuser:
         # Superuser can access any material, get the associated course via section
@@ -836,9 +924,12 @@ def edit_matrial(request, idcourse, idmaterial):
 
 
 #delete matrial course
-@login_required
+#@login_required
 @csrf_exempt
 def delete_matrial(request, pk):
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     # Ensure the request is a POST request
     if request.method == 'POST':
         # Fetch the material and its section
@@ -872,11 +963,11 @@ def delete_matrial(request, pk):
 
 
 #course view 
-@login_required
+#@login_required
 def courseView(request):
     # Check if the user is authenticated
     if not request.user.is_authenticated:
-        return redirect('/')
+        return redirect("/login/?next=%s" % request.path)
     user = request.user
 
     if user.is_superuser:
@@ -961,10 +1052,12 @@ def paginate_courses(request, posts):
 
 
 #create course
-@login_required
+#@login_required
 
 def course_create_view(request):
-
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     if request.user.is_partner or request.user.is_superuser or request.user.is_instructor:
 
         if request.method == 'POST':
@@ -1023,15 +1116,21 @@ def course_create_view(request):
     else:
 
         return redirect('/courses')
+    
 
 
     return render(request, 'courses/course_add.html', {'form': form})
 
 #studio detail courses
+
 def studio(request, id):
- 
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     user = request.user
     course = None
+
+  
     # Determine the course based on the user's role
     if request.user.is_superuser:
         course = get_object_or_404(Course, id=id)
