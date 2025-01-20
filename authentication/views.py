@@ -17,9 +17,103 @@ from authentication.forms import UserRegistrationForm, Userprofile, UserPhoto
 from .models import Profile
 from courses.models import Instructor
 from django.http import HttpResponse,JsonResponse
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import HttpResponseForbidden
+from django.core.cache import cache
+from django.db.models import Q
 
 # Create your views here.
+
+#detailuser
+def user_detail(request, user_id):
+    # Check if the user is a superuser
+    if not request.user.is_superuser:
+        return HttpResponseForbidden("You do not have permission to access this page.")
+    
+    # Fetch the user object by id
+    user = get_object_or_404(User, id=user_id)
+    
+
+    # Prepare the context with the user's details
+    context = {
+        'user': user
+    }
+
+    # Render the user detail template
+    return render(request, 'authentication/user_detail.html', context)
+
+
+
+#all user
+def all_user(request):
+    # Check if the user is a superuser
+    if not request.user.is_superuser:
+        return HttpResponseForbidden("You do not have permission to access this page.")
+    
+    # Get filters from GET request
+    search_query = request.GET.get('search', '').strip()
+    status_filter = request.GET.get('status', '').strip()  # For active/inactive or custom status
+    date_from = request.GET.get('date_from', '').strip()
+    date_to = request.GET.get('date_to', '').strip()
+    
+    page_number = request.GET.get('page', 1)
+    cache_key = f"users_list_{search_query}_{status_filter}_{date_from}_{date_to}_{page_number}"
+
+    # Try to get the cached data
+    cached_data = cache.get(cache_key)
+    if cached_data:
+        return cached_data
+
+    # Fetch all users
+    users = User.objects.all().order_by('-date_joined')
+
+    # Search functionality
+    if search_query:
+        # Use Q objects to filter across multiple fields
+        users = users.filter(
+            Q(username__icontains=search_query) | 
+            Q(email__icontains=search_query) |
+            Q(first_name__icontains=search_query)
+        )
+
+    # Status filter
+    if status_filter:
+        if status_filter == 'active':
+            users = users.filter(is_active=True)
+        elif status_filter == 'inactive':
+            users = users.filter(is_active=False)
+        # Add more custom status filters if needed
+
+    # Date filters (if provided)
+    if date_from:
+        users = users.filter(date_joined__gte=date_from)  # Filter users joined after 'date_from'
+    if date_to:
+        users = users.filter(date_joined__lte=date_to)  # Filter users joined before 'date_to'
+
+    # Get the total count of users (before pagination and filtering)
+    total_user_count = users.count()
+
+    # Paginate the results
+    paginator = Paginator(users, 10)  # Show 10 users per page
+    page_obj = paginator.get_page(page_number)
+
+    # Render the template with user data and the total count
+    context = {
+        'users': page_obj,
+        'search_query': search_query,
+        'total_user_count': total_user_count,  # Add count to context
+        'status_filter': status_filter,
+        'date_from': date_from,
+        'date_to': date_to,
+    }
+
+    # Cache the response for 15 minutes
+    response = render(request, 'authentication/all_user.html', context)
+    cache.set(cache_key, response, timeout=60 * 15)  # Cache for 15 minutes
+
+    return response
+
+
 
 
 def home(request):

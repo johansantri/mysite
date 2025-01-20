@@ -95,11 +95,13 @@
                         <i class="bx bxs-tachometer"></i>Dashboard
                     </a>
                 </li>
+                {% if user.is_authenticated %}
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="{% url 'authentication:all-user' %}" class="nav-link">
                         <i class="bx bxs-user"></i>Learner
                     </a>
                 </li>
+                {% endif %}
                 {% if user.is_authenticated %}
                 
                     {% if user.is_partner or user.is_superuser %}

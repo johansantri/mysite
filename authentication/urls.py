@@ -44,6 +44,8 @@ urlpatterns = [
     path('edit-photo/<int:pk>/',views.edit_photo, name='edit-photo'), 
     path('edit-profile-save/<int:pk>/', views.edit_profile_save, name='edit-profile-save'),
     path('dasbord/',views.dasbord, name='dasbord'),
+    path('all-user/',views.all_user,name='all-user'),
+    path('user/<int:user_id>/', views.user_detail, name='user_detail'),  # Add this line
     
                        
 

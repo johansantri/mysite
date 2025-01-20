@@ -1,0 +1,131 @@
+{% extends 'home/base.html' %}
+{% block content %}
+<div class="page-content">
+    <div class="container">
+        <div class="row">
+            {% include "home/sidebar.html" %}
+            <div class="col-xl-9 col-lg-9">
+                <h1 class="h2 mb-4">User Detail: {{ user.username }}</h1>
+
+                <!-- User Profile Card -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h4>{{ user.get_full_name }}</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <!-- Profile Photo -->
+                                {% if user.photo %}
+                                <img src="{{ user.photo.url }}" alt="{{ user.username }}" class="img-fluid rounded-circle">
+                                {% else %}
+                                <img src="https://via.placeholder.com/150" alt="{{ user.username }}" class="img-fluid rounded-circle">
+                                {% endif %}
+                            </div>
+                            <div class="col-md-8">
+                                <h5>Personal Information</h5>
+                                <ul class="list-unstyled">
+                                    <li><strong>Username:</strong> {{ user.username }}</li>
+                                    <li><strong>Email:</strong> {{ user.email }}</li>
+                                    <li><strong>First Name:</strong> {{ user.first_name }}</li>
+                                    <li><strong>Last Name:</strong> {{ user.last_name }}</li>
+                                    <li><strong>Gender:</strong> {{ user.get_gender_display }}</li>
+                                    <li><strong>Date of Birth:</strong> {{ user.birth }}</li>
+                                    <li><strong>Address:</strong> {{ user.address }}</li>
+                                    <li><strong>Country:</strong> {{ user.country }}</li>
+                                    <li><strong>Phone:</strong> {{ user.phone }}</li>
+                                    <li><strong>Education:</strong> {{ user.get_education_display }}</li>
+                                    <li><strong>University:</strong> {{ user.university }}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Author's Courses -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-warning text-white">
+                        <h5>Courses by {{ user.get_full_name }}</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if user.courses.all %}
+                        <ul class="list-unstyled">
+                            {% for course in user.courses.all %}
+                                <li><strong>Course Name:</strong> <a href="{{ course.get_absolute_url }}">{{ course.course_name }}</a></li>
+                                <li><strong>Status:</strong> {{ course.status_course }}</li>
+                                <li><strong>Start Date:</strong> {{ course.start_date }}</li>
+                                <li><strong>End Date:</strong> {{ course.end_date }}</li>
+                                <hr>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                            <p>No courses available for this user.</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Social Media Links -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-secondary text-white">
+                        <h5>Social Media Links</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li><strong>TikTok:</strong> <a href="{{ user.tiktok }}" target="_blank">{{ user.tiktok|default:'Not Provided' }}</a></li>
+                            <li><strong>Facebook:</strong> <a href="{{ user.facebook }}" target="_blank">{{ user.facebook|default:'Not Provided' }}</a></li>
+                            <li><strong>Instagram:</strong> <a href="{{ user.instagram }}" target="_blank">{{ user.instagram|default:'Not Provided' }}</a></li>
+                            <li><strong>LinkedIn:</strong> <a href="{{ user.linkedin }}" target="_blank">{{ user.linkedin|default:'Not Provided' }}</a></li>
+                            <li><strong>Twitter:</strong> <a href="{{ user.twitter }}" target="_blank">{{ user.twitter|default:'Not Provided' }}</a></li>
+                            <li><strong>YouTube:</strong> <a href="{{ user.youtube }}" target="_blank">{{ user.youtube|default:'Not Provided' }}</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- User Status -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-info text-white">
+                        <h5>Status</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li><strong>Active:</strong> 
+                                {% if user.is_active %}
+                                    <span class="badge bg-success">Yes</span>
+                                {% else %}
+                                    <span class="badge bg-danger">No</span>
+                                {% endif %}
+                            </li>
+                            <li><strong>Staff:</strong> 
+                                {% if user.is_staff %}
+                                    <span class="badge bg-success">Yes</span>
+                                {% else %}
+                                    <span class="badge bg-danger">No</span>
+                                {% endif %}
+                            </li>
+                            <li><strong>Instructor:</strong> 
+                                {% if user.is_instructor %}
+                                    <span class="badge bg-success">Yes</span>
+                                {% else %}
+                                    <span class="badge bg-danger">No</span>
+                                {% endif %}
+                            </li>
+                            <li><strong>Partner:</strong> 
+                                {% if user.is_partner %}
+                                    <span class="badge bg-success">Yes</span>
+                                {% else %}
+                                    <span class="badge bg-danger">No</span>
+                                {% endif %}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Return Button -->
+                <a href="{% url 'authentication:all-user' %}" class="btn btn-secondary mt-3">
+                    <i class="fa fa-arrow-left"></i> Back to Users List
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
