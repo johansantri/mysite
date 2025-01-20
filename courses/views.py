@@ -1,9 +1,11 @@
+import os
+from django.core.cache import cache
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from .forms import CourseForm, PartnerForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
+from .forms import CourseForm, PartnerForm,PartnerFormUpdate, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from django.http import JsonResponse
 from .models import Course, Partner,GradeRange, Section,Instructor,TeamMember,Material,Question,Assessment
 from django.contrib.auth.models import User,Univer
@@ -1160,25 +1162,110 @@ def studio(request, id):
 
 
 
+#update_partner
+
+def update_partner(request, partner_id):
+    partner = get_object_or_404(Partner, id=partner_id)
+
+    # Check if the user is the owner of the partner or a superuser
+    if not request.user.is_authenticated or (request.user != partner.user and not request.user.is_superuser):
+        return redirect("/login/?next=%s" % request.path)  # Redirect to login or unauthorized page
+
+    if request.method == 'POST':
+        form = PartnerFormUpdate(request.POST, request.FILES, instance=partner)
+
+        if form.is_valid():
+
+            # Check if a new logo is uploaded and delete the old logo
+
+            if 'logo' in request.FILES and request.FILES['logo']:
+
+                old_logo = partner.logo  # Get the old logo
+
+                if old_logo:
+
+                    # Delete the old logo from the file system
+
+                    try:
+
+                        old_logo_path = old_logo.path
+
+                        if os.path.isfile(old_logo_path):
+
+                            os.remove(old_logo_path)  # Delete old logo file
+
+                            print(f"Deleted old logo: {old_logo_path}")
+
+                    except Exception as e:
+
+                        print(f"Error deleting old logo: {e}")
 
 
+            # Save the form with the updated logo
+
+            form.save()
+
+            print("Form saved successfully.")
 
 
+            # Redirect to partner details page after update
+            return redirect('courses:partner_detail', partner_id=partner.id)
 
+    else:
+        form = PartnerFormUpdate(instance=partner)
 
-#add partner
+    return render(request, 'partner/update_partner.html', {'form': form, 'partner': partner})
+
+#partner view
+#@cache_page(60 * 5)
 
 def partnerView(request):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
 
-    posts = Partner.objects.all() if request.user.is_superuser else Partner.objects.filter(user_id=request.user.id)
-    
-    posts = filter_partner_by_query(request, posts)
-    page = paginate_partner(request, posts)
+    # Get the search query from the GET request
+    query = request.GET.get('q', '')
 
-    context = {'count': posts.count(), 'page': page}
+    # Superusers see all partners, others see only their own
+    posts = Partner.objects.all() if request.user.is_superuser else Partner.objects.filter(user_id=request.user.id)
+
+    # Apply the search filter if the query is provided
+    if query:
+        posts = posts.filter(
+            Q(name__name__icontains=query) |  # Filter by the 'name' field inside the related Univer model
+            Q(user__email__icontains=query) |  # Filter by email of the related User model
+            Q(phone__icontains=query)  # Filter by phone number
+        )
+
+    # Pagination: Ensure to paginate before fetching data
+    paginator = Paginator(posts, 10)  # Show 10 posts per page
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
+
+    # Context to send to template
+    context = {
+        'count': posts.count(),  # Total number of partners
+        'page': page,  # Current page object for pagination
+        'query': query  # Pass the query to the template for display in search input
+    }
+
     return render(request, 'partner/partner_view.html', context)
+
+
+#detail_partner
+def partner_detail(request, partner_id):
+    # Retrieve the partner using the provided partner_id
+    partner = get_object_or_404(Partner, id=partner_id)
+
+    # Create context dictionary to pass to the template
+    context = {
+        'partner': partner,
+    }
+
+    # Render the partner_detail template with the partner data
+    return render(request, 'partner/partner_detail.html', context)
+
+
 
 
 #search user
@@ -1211,7 +1298,9 @@ def search_partner(request):
     
     # If query is empty, return no users or all active users (depending on your use case)
     if query:
-        partners = Univer.objects.filter(Q(name__icontains=query)).only('id', 'name')
+        partners = Univer.objects.filter(
+        Q(name__icontains=query) | Q(email__icontains=query)
+    ).only('id', 'name', 'email')
     else:
         partners = Univer.objects.filter(Q(name__icontains=query)).only('id', 'name')
 
@@ -1230,19 +1319,8 @@ def search_partner(request):
         'total_partners': paginator.count,
     })
 
-#filter partner
-def filter_partner_by_query(request, posts):
-    """Filter partner based on search query."""
-    query = request.GET.get('q')
-    if query is not None and query !='':
-        posts = posts.filter(Q(name__icontains=query) | Q(abbreviation__icontains=query)).distinct()
-    return posts
 
-def paginate_partner(request, posts):
-    """Paginate the course list."""
-    paginator = Paginator(posts, 5)
-    page_number = request.GET.get('page')
-    return paginator.get_page(page_number)
+
 
 def partner_create_view(request):
     if not request.user.is_superuser:

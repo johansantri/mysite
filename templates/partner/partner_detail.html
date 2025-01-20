@@ -1,0 +1,86 @@
+{% extends 'home/base.html' %}
+
+{% block content %}
+<style>
+    .partner-logo {
+        max-width: 300px;
+        margin-top: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .partner-info p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 15px;
+    }
+
+    .partner-info strong {
+        color: #007bff;
+    }
+
+    .card-body {
+        background-color: #f9f9f9;
+    }
+
+    .back-button {
+        margin-top: 30px;
+        text-align: center;
+    }
+
+    .partner-card-header {
+        background-color: #007bff;
+        color: white;
+        padding: 15px;
+        border-radius: 5px 5px 0 0;
+    }
+
+    .partner-card-body {
+        padding: 20px;
+    }
+</style>
+
+<div class="page-content">
+    <div class="container">
+        <div class="row">
+            {% include "home/sidebar.html" %}
+            <div class="col-xl-9 col-lg-9">
+                <!-- Partner Information Card -->
+                <div class="card shadow-sm mb-4">
+                    <div class="partner-card-header">
+                        <h3 class="card-title mb-0">{{ partner.name }}</h3>
+                    </div>
+                    <div class="card-body partner-card-body">
+                        <div class="row partner-info">
+                            <div class="col-md-6">
+                                <p><strong>Email:</strong> {{ partner.user.email }}</p>
+                                <p><strong>Phone:</strong> {{ partner.phone }}</p>
+                                <p><strong>Address:</strong> {{ partner.address }}</p>
+                                <p><strong>Description:</strong> {{ partner.description }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Tax:</strong> {{ partner.tax }}</p>
+                                <p><strong>Account Holder Name:</strong> {{ partner.account_holder_name }}</p>
+                                <p><strong>Balance:</strong> ${{ partner.balance }}</p>
+                                <p><strong>Join Date:</strong> {{ partner.created_ad|date:"F j, Y" }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Partner's Logo Display -->
+                {% if partner.logo %}
+                    <div class="text-center partner-logo mt-4">
+                        <img src="{{ partner.logo.url }}" alt="Partner Logo" class="img-fluid rounded" />
+                    </div>
+                {% endif %}
+
+                <!-- Back to Partners List Button -->
+                <div class="back-button">
+                    <a href="{% url 'courses:partner_view' %}" class="btn btn-outline-primary">Back to Partners List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,101 +1,93 @@
 {% extends 'home/base.html' %}
 {% block content %}
 <div class="page-content">
-      <div class="container">
+    <div class="container">
         <div class="row">
-        {% include "home/sidebar.html" %}
+            {% include "home/sidebar.html" %}
             <div class="col-xl-9 col-lg-9">
-              <h1 class="h2">Partner</h1>
-              {% if messages %}
-              <ul class="messages">
-              {% for message in messages %}
-              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}><span class="badge bg-warning text-dark">{{ message }}</span></li>
-              {% endfor %}
-              </ul>
-              {% endif %}
+                <h1 class="h2">Partners</h1>
 
-              {%  if request.user.is_superuser %}
-              <div class="btn-toolbar mb-2 mb-md-0">
-
-              <div class="btn-group me-2">
-              <a type="button" href="{% url "courses:partner_create_view"%}" class="btn btn-outline-success">Add Partner</a>
-              <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
-              </div>
-              <form class="d-flex" action="/partner" hx-get="/" hx-target="#content-div" hx-push-url="true"  >
-                <input class="form-control mr-0" type="search" value="{{request.GET.q}}"  name="q" placeholder="Search Partner" aria-label="Search">
-              </form>
-
-
-
-              </div>
-              {% else %}
-             
-              {% endif %}
-              <table class="table table-striped table-hover">
-                <thead>
-                  <tr>
-                    
-                    <th>name</th>
-                    <th>email</th>
-                    <th>phone</th>
-                   
-                    <th>join</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for part in page %}
-                  <tr>
-                    
-                    <td><a href="">{{part.name}}</a></td>
-                    <td>{{part.user}}</td>
-                    <td>{{part.phone}}</td>
-                  
-                    <td>{{part.created_ad}}</td>
-                  </tr>
-                 {% endfor %}
-                </tbody>
-              </table>
-
-              <p>total {{ count }} ||  page {{page.number }}/ {{page.paginator.num_pages}}</p>
-          
-            <div class="row">
-              <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                   
-                  <li class="page-item">
-                    {% if page.has_previous %}
-                    <a class="page-link" href="?page={{page.previous_page_number}} {% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Previous</a>
-                    {% endif %}
-                </li>
-                {% for num_page in page.paginator.page_range %}
-                
-                {% if page.number == num_page %}
-                  <li class="page-item"><a class="page-link" href="?page={{page.number}} {% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">{{page.number}}</a></li>
-                 
-                  {% endif %}
-                 
-            
-                  
-            
-            
-            
-                  {% endfor %}
-                  <li class="page-item">
-                    {% if page.has_next %}
-                    <a class="page-link" href="?page={{page.next_page_number}} {% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Next</a>
-                    {% endif %}
-                </li>
+                <!-- Display Messages -->
+                {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                        <span class="badge bg-warning text-dark">{{ message }}</span>
+                    </li>
+                    {% endfor %}
                 </ul>
-              </nav>
-            
-            </div>
-            
-            </div>
+                {% endif %}
 
+                <!-- Superuser Actions -->
+                {% if request.user.is_superuser %}
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <a href="{% url 'courses:partner_create_view' %}" class="btn btn-outline-success">Add Partner</a>
+                        <button class="btn btn-outline-secondary">Export</button>
+                    </div>
+                    <form class="d-flex" method="GET" action="">
+                      <input 
+                          class="form-control" 
+                          type="search" 
+                          name="q" 
+                          value="{{ request.GET.q }}" 
+                          placeholder="Search Partner" 
+                          aria-label="Search">
+                      <button class="btn btn-outline-success" type="submit">Search</button>
+                  </form>
+                </div>
+                {% endif %}
+
+                <!-- Partners Table -->
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Join Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for partner in page %}
+                        <tr>
+                            <td><a href="{% url 'courses:partner_detail' partner.id %}">{{ partner.name }}</a></td>
+                            <td>{{ partner.user.email }}</td>
+                            <td>{{ partner.phone }}</td>
+                            <td>{{ partner.created_ad }}</td>
+                            <td><a href="{% url 'courses:update_partner' partner.id %}">update</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <p>Total: {{ count }} | Page {{ page.number }} of {{ page.paginator.num_pages }}</p>
+
+                <!-- Pagination -->
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        {% if page.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Previous</a>
+                        </li>
+                        {% endif %}
+
+                        {% for num in page.paginator.page_range %}
+                        <li class="page-item {% if page.number == num %}active{% endif %}">
+                            <a class="page-link" href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">{{ num }}</a>
+                        </li>
+                        {% endfor %}
+
+                        {% if page.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Next</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
         </div>
-      </div>  
-
-
-
+    </div>
 </div>
-  {% endblock %}
+{% endblock %}

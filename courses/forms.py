@@ -302,7 +302,7 @@ class CourseForm(forms.ModelForm):
 class PartnerForm(forms.ModelForm):
     class Meta:
         model = Partner
-        fields = ['name', 'user']
+        fields = ['name','user','phone', 'address', 'description', 'tax', 'account_holder_name', 'balance', 'logo']
 
         widgets = {
         "name": forms.Select(attrs={
@@ -312,6 +312,34 @@ class PartnerForm(forms.ModelForm):
         "user": forms.Select(attrs={
             "placeholder": "CS201",
             "class": "form-control select2"
+        }),
+         "phone": forms.TextInput(attrs={
+            "placeholder": "Phone Number",
+            "class": "form-control"
+        }),
+        "address": forms.Textarea(attrs={
+            "placeholder": "Address",
+            "class": "form-control"
+        }),
+        "description": forms.Textarea(attrs={
+            "placeholder": "Description",
+            "class": "form-control"
+        }),
+        "tax": forms.NumberInput(attrs={
+            "placeholder": "Tax Number",
+            "class": "form-control"
+        }),
+        "account_holder_name": forms.TextInput(attrs={
+            "placeholder": "Account Holder Name",
+            "class": "form-control"
+        }),
+        "balance": forms.NumberInput(attrs={
+            "placeholder": "Balance",
+            "class": "form-control"
+        }),
+        "logo": forms.ClearableFileInput(attrs={
+            'class': 'form-control',  # Add Bootstrap styling
+            'accept': 'image/*',  # Allow only image files to be uploaded
         })
     }
     
@@ -348,6 +376,55 @@ class PartnerForm(forms.ModelForm):
         if Partner.objects.filter(user=user_value).exists():
             raise forms.ValidationError("This user already exists. Please choose another.")
         return user_value
+    
+
+
+
+class PartnerFormUpdate(forms.ModelForm):
+    class Meta:
+        model = Partner
+        fields = ['name','user','phone', 'address', 'description', 'tax', 'account_holder_name', 'balance', 'logo']
+
+        widgets = {
+        "name": forms.Select(attrs={
+            "placeholder": "Full Stack Development",
+            "class": "form-control select1"
+        }),
+        "user": forms.Select(attrs={
+            "placeholder": "CS201",
+            "class": "form-control select2"
+        }),
+         "phone": forms.TextInput(attrs={
+            "placeholder": "Phone Number",
+            "class": "form-control"
+        }),
+        "address": forms.Textarea(attrs={
+            "placeholder": "Address",
+            "class": "form-control"
+        }),
+        "description": forms.Textarea(attrs={
+            "placeholder": "Description",
+            "class": "form-control"
+        }),
+        "tax": forms.NumberInput(attrs={
+            "placeholder": "Tax Number",
+            "class": "form-control"
+        }),
+        "account_holder_name": forms.TextInput(attrs={
+            "placeholder": "Account Holder Name",
+            "class": "form-control"
+        }),
+        "balance": forms.NumberInput(attrs={
+            "placeholder": "Balance",
+            "class": "form-control"
+        }),
+        "logo": forms.ClearableFileInput(attrs={
+            'class': 'form-control',  # Add Bootstrap styling
+            'accept': 'image/*',  # Allow only image files to be uploaded
+        })
+    }
+    
+    
 #instructor
 class InstructorForm(forms.ModelForm):
     class Meta:
