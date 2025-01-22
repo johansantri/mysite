@@ -7,56 +7,58 @@
             <div class="col-xl-9 col-lg-9">
                 <h1 class="h2">User Area</h1>
 
-                {% if request.user.is_superuser %}
+                {% if request.user.is_superuser or request.user.is_partner %}
+                <!-- Toolbar and Search/Filter for Superuser or Partner -->
                 <div class="btn-toolbar mb-2 mb-md-0">
+                    {% if request.user.is_superuser %}
                     <div class="btn-group me-2">
                         <a type="button" href="#" class="btn btn-outline-success">Add Learner</a>
                         <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
                     </div>
+                    {% endif %}
 
-                    <!-- Search Form -->
+                    <!-- Search and Filter Form -->
                     <form class="d-flex" method="get">
                         <input class="form-control mr-0" type="search" value="{{ request.GET.search }}" name="search" placeholder="Search Learner" aria-label="Search">
                         <select name="status" class="form-control">
                             <option value="">-- Select Status --</option>
                             <option value="active" {% if request.GET.status == 'active' %}selected{% endif %}>Active</option>
                             <option value="inactive" {% if request.GET.status == 'inactive' %}selected{% endif %}>Inactive</option>
-                            <!-- Add other status options as needed -->
                         </select>
                         <input type="date" class="form-control" name="date_from" value="{{ request.GET.date_from }}" placeholder="Date From">
                         <input type="date" class="form-control" name="date_to" value="{{ request.GET.date_to }}" placeholder="Date To">
                         <button class="btn btn-primary" type="submit">Filter</button>
                     </form>
                 </div>
+                {% endif %}
 
-                <p>
-                    {% if search_query %}
-                        Search Results for "{{ search_query }}" &nbsp; <a href="?search=">Back</a>
-                    {% endif %}
-                </p>
-
+                <!-- User Table -->
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th scope="col">Username</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Org</th>
-                            <th scope="col">Joined & Last Login</th>
-                            <th scope="col">Admin</th>
-                            <th scope="col">Staff</th>
-                            <th scope="col">Partner</th>
-                            <th scope="col">Instructor</th>
-                            <th scope="col">Status</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Org</th>
+                            <th>Joined & Last Login</th>
+                            {% if request.user.is_superuser %}
+                            <th>Admin</th>
+                            <th>Staff</th>
+                            <th>Partner</th>
+                            <th>Instructor</th>
+                            <th>Status</th>
+                            {% elif request.user.is_partner %}
+                            <th>Status</th>
+                            {% endif %}
                         </tr>
                     </thead>
-
                     <tbody>
                         {% for user in users %}
                         <tr>
-                            <td><a href="{% url 'authentication:user_detail' user.id %}" target="_blank">{{ user.username }}</a></td>
+                            <td>{{ user.username }}</td>
                             <td>{{ user.email }}</td>
                             <td>{{ user.university }}</td>
                             <td>{{ user.date_joined }} and <span class="badge bg-success">{{ user.last_login }}</span></td>
+                            {% if request.user.is_superuser %}
                             <td>
                                 {% if user.is_superuser %}
                                     <span class="badge bg-success"><i class="fa fa-check" aria-hidden="true"></i></span>
@@ -92,13 +94,23 @@
                                     <span class="badge bg-warning text-dark">Inactive</span>
                                 {% endif %}
                             </td>
+                            {% elif request.user.is_partner %}
+                            <td>
+                                {% if user.is_active %}
+                                    <span class="badge bg-primary">Active</span>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark">Inactive</span>
+                                {% endif %}
+                            </td>
+                            {% endif %}
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
 
+                <!-- Pagination -->
+                {% if request.user.is_superuser or request.user.is_partner %}
                 <p>Total: {{ total_user_count }} || Page {{ users.number }} of {{ users.paginator.num_pages }}</p>
-
                 <div class="row">
                     <nav aria-label="Page navigation example">
                         <div>
@@ -116,9 +128,6 @@
                         </div>
                     </nav>
                 </div>
-
-                {% else %}
-                <p>You do not have permission to view this page.</p>
                 {% endif %}
             </div>
         </div>
