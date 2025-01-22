@@ -44,32 +44,34 @@ def user_detail(request, user_id):
 
 
 
-#all user
 def all_user(request):
-    # Check if the user is a superuser
-    if not request.user.is_superuser:
-        return HttpResponseForbidden("You do not have permission to access this page.")
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     
+    # Role-based filtering
+    if request.user.is_superuser:
+        # Superuser can access all users
+        users = User.objects.all().order_by('-date_joined')
+    elif request.user.is_partner:
+        # Partner can only access users related to their university
+        if request.user.university:
+            users = User.objects.filter(university=request.user.university).order_by('-date_joined')
+        else:
+            # If the partner has no associated university, deny access
+            return HttpResponseForbidden("You are not associated with any university.")
+    else:
+        # If not superuser or partner, show only self data
+        users = User.objects.filter(id=request.user.id).order_by('-date_joined')
+
     # Get filters from GET request
     search_query = request.GET.get('search', '').strip()
-    status_filter = request.GET.get('status', '').strip()  # For active/inactive or custom status
+    status_filter = request.GET.get('status', '').strip()
     date_from = request.GET.get('date_from', '').strip()
     date_to = request.GET.get('date_to', '').strip()
-    
     page_number = request.GET.get('page', 1)
-    cache_key = f"users_list_{search_query}_{status_filter}_{date_from}_{date_to}_{page_number}"
-
-    # Try to get the cached data
-    cached_data = cache.get(cache_key)
-    if cached_data:
-        return cached_data
-
-    # Fetch all users
-    users = User.objects.all().order_by('-date_joined')
 
     # Search functionality
     if search_query:
-        # Use Q objects to filter across multiple fields
         users = users.filter(
             Q(username__icontains=search_query) | 
             Q(email__icontains=search_query) |
@@ -82,13 +84,12 @@ def all_user(request):
             users = users.filter(is_active=True)
         elif status_filter == 'inactive':
             users = users.filter(is_active=False)
-        # Add more custom status filters if needed
 
-    # Date filters (if provided)
+    # Date filters
     if date_from:
-        users = users.filter(date_joined__gte=date_from)  # Filter users joined after 'date_from'
+        users = users.filter(date_joined__gte=date_from)
     if date_to:
-        users = users.filter(date_joined__lte=date_to)  # Filter users joined before 'date_to'
+        users = users.filter(date_joined__lte=date_to)
 
     # Get the total count of users (before pagination and filtering)
     total_user_count = users.count()
@@ -101,18 +102,13 @@ def all_user(request):
     context = {
         'users': page_obj,
         'search_query': search_query,
-        'total_user_count': total_user_count,  # Add count to context
+        'total_user_count': total_user_count,
         'status_filter': status_filter,
         'date_from': date_from,
         'date_to': date_to,
     }
 
-    # Cache the response for 15 minutes
-    response = render(request, 'authentication/all_user.html', context)
-    cache.set(cache_key, response, timeout=60 * 15)  # Cache for 15 minutes
-
-    return response
-
+    return render(request, 'authentication/all_user.html', context)
 
 
 
