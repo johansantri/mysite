@@ -40,6 +40,7 @@
                         <tr>
                             <th scope="col">Username</th>
                             <th scope="col">Email</th>
+                            <th scope="col">Org</th>
                             <th scope="col">Joined & Last Login</th>
                             <th scope="col">Admin</th>
                             <th scope="col">Staff</th>
@@ -54,6 +55,7 @@
                         <tr>
                             <td><a href="{% url 'authentication:user_detail' user.id %}" target="_blank">{{ user.username }}</a></td>
                             <td>{{ user.email }}</td>
+                            <td>{{ user.university }}</td>
                             <td>{{ user.date_joined }} and <span class="badge bg-success">{{ user.last_login }}</span></td>
                             <td>
                                 {% if user.is_superuser %}
