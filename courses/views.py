@@ -1003,7 +1003,19 @@ def courseView(request):
     courses = courses.order_by('-id')  # To order by ascending order
     # Fetch only necessary fields
     #courses = courses.values('id', 'course_name', 'course_number','course_run','org_partner__name','status_course')
-    courses = courses.annotate(org_partner_name=F('org_partner__name')).values('id', 'course_name', 'course_number', 'course_run', 'org_partner__name__name', 'status_course')
+    #courses = courses.annotate(org_partner_name=F('org_partner__name')).values('id', 'course_name', 'course_number', 'course_run', 'org_partner__name__name', 'status_course')
+    courses = courses.annotate(
+        org_partner_name=F('org_partner__name__name'),  # Resolve partner's name
+        instructor_email=F('instructor__user__email')  # Annotate instructor email
+    ).values(
+        'id',
+        'course_name',
+        'course_number',
+        'instructor_email',  # Use the annotation name
+        'org_partner_name',  # Use the partner name annotation
+        'status_course',
+        'course_run'
+    ).order_by('-id')
     #print(courses)
     # Get the page number from the request
     page_number = request.GET.get('page', 1)
