@@ -5,42 +5,140 @@
         <div class="row">
             {% include "home/sidebar.html" %}
             <div class="col-xl-9 col-lg-9">
-                <h1 class="h2 mb-4">User Detail: {{ user.username }}</h1>
+              
+                    <style>
+                        /* Profile photo styling */
+                        .profile-photo {
+                            max-width: 150px;
+                            max-height: 150px;
+                            object-fit: cover;
+                            border: 3px solid #ddd;
+                            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+                        }
 
-                <!-- User Profile Card -->
-                <div class="card shadow-sm mb-4">
+                        /* Styled table */
+                        .styled-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin: 15px 0;
+                            font-size: 16px;
+                            font-family: Arial, sans-serif;
+                            background-color: #ffffff;
+                            border: 1px solid #ddd;
+                        }
+
+                        .styled-table th, .styled-table td {
+                            text-align: left;
+                            padding: 10px;
+                            border-bottom: 1px solid #ddd;
+                        }
+
+                        .styled-table th {
+                            background-color: #f2f2f2;
+                            font-weight: bold;
+                            color: #333;
+                        }
+
+                        .styled-table tr:nth-child(even) {
+                            background-color: #f9f9f9;
+                        }
+
+                        .styled-table tr:hover {
+                            background-color: #f1f1f1;
+                        }
+
+                        .styled-table tr:last-child td {
+                            border-bottom: none;
+                        }
+
+                        /* Responsive styling for smaller screens */
+                        @media (max-width: 768px) {
+                            .profile-photo {
+                                max-width: 100px;
+                                max-height: 100px;
+                            }
+                            .styled-table {
+                                font-size: 14px;
+                            }
+                        }
+                        /* Social Media Links Section */
+
+
+                        
+                    .social-media-links {
+                        margin: 0;
+                        padding: 0;
+                        list-style: none;
+                    }
+
+                    .social-media-links li {
+                        margin-bottom: 10px;
+                    }
+
+                    .social-media-links strong {
+                        color: #555; /* Slightly dark text for labels */
+                        font-weight: bold;
+                        margin-right: 5px;
+                    }
+
+                    .social-media-links a {
+                        text-decoration: none;
+                        color: #007bff; /* Bootstrap's primary link color */
+                        transition: color 0.3s ease;
+                    }
+
+                    .social-media-links a:hover {
+                        color: #0056b3; /* Darker blue on hover */
+                    }
+
+                    .social-media-links i {
+                        margin-right: 8px; /* Space between icon and text */
+                        font-size: 18px;
+                        color: #555; /* Icon color */
+                        transition: color 0.3s ease;
+                    }
+
+                    .social-media-links a:hover i {
+                        color: #007bff; /* Icon color on hover */
+                    }
+
+
+                    </style>
+                                <!-- User Profile Card -->
+                    <div class="card shadow-sm mb-4">
                     <div class="card-header bg-primary text-white">
                         <h4>{{ user.get_full_name }}</h4>
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-4 text-center">
                                 <!-- Profile Photo -->
                                 {% if user.photo %}
-                                <img src="{{ user.photo.url }}" alt="{{ user.username }}" class="img-fluid ">
+                                <img src="{{ user.photo.url }}" alt="{{ user.username }}" class="img-fluid  profile-photo">
                                 {% else %}
-                                <img src="https://via.placeholder.com/150" alt="{{ user.username }}" class="img-fluid rounded-circle">
+                                <img src="https://via.placeholder.com/150" alt="{{ user.username }}" class="img-fluid rounded-circle profile-photo">
                                 {% endif %}
                             </div>
                             <div class="col-md-8">
-                                <h5>Personal Information</h5>
-                                <ul class="list-unstyled">
-                                    <li><strong>Username:</strong> {{ user.username }}</li>
-                                    <li><strong>Email:</strong> {{ user.email }}</li>
-                                    <li><strong>First Name:</strong> {{ user.first_name }}</li>
-                                    <li><strong>Last Name:</strong> {{ user.last_name }}</li>
-                                    <li><strong>Gender:</strong> {{ user.get_gender_display }}</li>
-                                    <li><strong>Date of Birth:</strong> {{ user.birth }}</li>
-                                    <li><strong>Address:</strong> {{ user.address }}</li>
-                                    <li><strong>Country:</strong> {{ user.country }}</li>
-                                    <li><strong>Phone:</strong> {{ user.phone }}</li>
-                                    <li><strong>Education:</strong> {{ user.get_education_display }}</li>
-                                    <li><strong>University:</strong> {{ user.university }}</li>
-                                </ul>
+                                <h5 class="mb-3">Personal Information</h5>
+                                <table class="styled-table">
+                                    <tr><th>Username</th><td>{{ user.username }}</td></tr>
+                                    <tr><th>Email</th><td>{{ user.email }}</td></tr>
+                                    <tr><th>First Name</th><td>{{ user.first_name }}</td></tr>
+                                    <tr><th>Last Name</th><td>{{ user.last_name }}</td></tr>
+                                    <tr><th>Gender</th><td>{{ user.get_gender_display }}</td></tr>
+                                    <tr><th>Date of Birth</th><td>{{ user.birth }}</td></tr>
+                                    <tr><th>Address</th><td>{{ user.address }}</td></tr>
+                                    <tr><th>Country</th><td>{{ user.country }}</td></tr>
+                                    <tr><th>Phone</th><td>{{ user.phone }}</td></tr>
+                                    <tr><th>Education</th><td>{{ user.get_education_display }}</td></tr>
+                                    <tr><th>University</th><td>{{ user.university }}</td></tr>
+                                </table>
                             </div>
                         </div>
                     </div>
-                </div>
+                    </div>
+
 
                 <!-- Author's Courses -->
                 <div class="card shadow-sm mb-4">
@@ -64,61 +162,54 @@
                     </div>
                 </div>
 
-                <!-- Social Media Links -->
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-secondary text-white">
-                        <h5>Social Media Links</h5>
-                    </div>
-                    <div class="card-body">
-                        <ul class="list-unstyled">
-                            <li><strong>TikTok:</strong> <a href="{{ user.tiktok }}" target="_blank">{{ user.tiktok|default:'Not Provided' }}</a></li>
-                            <li><strong>Facebook:</strong> <a href="{{ user.facebook }}" target="_blank">{{ user.facebook|default:'Not Provided' }}</a></li>
-                            <li><strong>Instagram:</strong> <a href="{{ user.instagram }}" target="_blank">{{ user.instagram|default:'Not Provided' }}</a></li>
-                            <li><strong>LinkedIn:</strong> <a href="{{ user.linkedin }}" target="_blank">{{ user.linkedin|default:'Not Provided' }}</a></li>
-                            <li><strong>Twitter:</strong> <a href="{{ user.twitter }}" target="_blank">{{ user.twitter|default:'Not Provided' }}</a></li>
-                            <li><strong>YouTube:</strong> <a href="{{ user.youtube }}" target="_blank">{{ user.youtube|default:'Not Provided' }}</a></li>
-                        </ul>
-                    </div>
+            <!-- Social Media Links -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5>Social Media Links</h5>
                 </div>
+                <div class="card-body">
+                    <ul class="list-unstyled social-media-links">
+                        <li>
+                            <strong>TikTok:</strong>
+                            <a href="{{ user.tiktok }}" target="_blank">
+                                <i class="fab fa-tiktok"></i> {{ user.tiktok|default:'Not Provided' }}
+                            </a>
+                        </li>
+                        <li>
+                            <strong>Facebook:</strong>
+                            <a href="{{ user.facebook }}" target="_blank">
+                                <i class="fab fa-facebook-f"></i> {{ user.facebook|default:'Not Provided' }}
+                            </a>
+                        </li>
+                        <li>
+                            <strong>Instagram:</strong>
+                            <a href="{{ user.instagram }}" target="_blank">
+                                <i class="fab fa-instagram"></i> {{ user.instagram|default:'Not Provided' }}
+                            </a>
+                        </li>
+                        <li>
+                            <strong>LinkedIn:</strong>
+                            <a href="{{ user.linkedin }}" target="_blank">
+                                <i class="fab fa-linkedin-in"></i> {{ user.linkedin|default:'Not Provided' }}
+                            </a>
+                        </li>
+                        <li>
+                            <strong>Twitter:</strong>
+                            <a href="{{ user.twitter }}" target="_blank">
+                                <i class="fab fa-twitter"></i> {{ user.twitter|default:'Not Provided' }}
+                            </a>
+                        </li>
+                        <li>
+                            <strong>YouTube:</strong>
+                            <a href="{{ user.youtube }}" target="_blank">
+                                <i class="fab fa-youtube"></i> {{ user.youtube|default:'Not Provided' }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
 
-                <!-- User Status -->
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-info text-white">
-                        <h5>Status</h5>
-                    </div>
-                    <div class="card-body">
-                        <ul class="list-unstyled">
-                            <li><strong>Active:</strong> 
-                                {% if user.is_active %}
-                                    <span class="badge bg-success">Yes</span>
-                                {% else %}
-                                    <span class="badge bg-danger">No</span>
-                                {% endif %}
-                            </li>
-                            <li><strong>Staff:</strong> 
-                                {% if user.is_staff %}
-                                    <span class="badge bg-success">Yes</span>
-                                {% else %}
-                                    <span class="badge bg-danger">No</span>
-                                {% endif %}
-                            </li>
-                            <li><strong>Instructor:</strong> 
-                                {% if user.is_instructor %}
-                                    <span class="badge bg-success">Yes</span>
-                                {% else %}
-                                    <span class="badge bg-danger">No</span>
-                                {% endif %}
-                            </li>
-                            <li><strong>Partner:</strong> 
-                                {% if user.is_partner %}
-                                    <span class="badge bg-success">Yes</span>
-                                {% else %}
-                                    <span class="badge bg-danger">No</span>
-                                {% endif %}
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+
 
                 <!-- Return Button -->
                 <a href="{% url 'authentication:all-user' %}" class="btn btn-secondary mt-3">
