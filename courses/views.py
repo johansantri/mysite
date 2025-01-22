@@ -86,8 +86,7 @@ def update_grade_range(request, id):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
     
-    section = get_object_or_404(Section, id=id)
-    course = section.courses
+   
     # Check user roles
     if request.user.is_superuser:
         # Superusers can delete any section
