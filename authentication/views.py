@@ -27,8 +27,8 @@ from django.db.models import Q
 #detailuser
 def user_detail(request, user_id):
     # Check if the user is a superuser
-    if not request.user.is_superuser:
-        return HttpResponseForbidden("You do not have permission to access this page.")
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     
     # Fetch the user object by id
     user = get_object_or_404(User, id=user_id)
@@ -53,9 +53,12 @@ def all_user(request):
         # Superuser can access all users
         users = User.objects.all().order_by('-date_joined')
     elif request.user.is_partner:
-        # Partner can only access users related to their university
+        # Partner can only access users related to their university, excluding superusers
         if request.user.university:
-            users = User.objects.filter(university=request.user.university).order_by('-date_joined')
+            users = User.objects.filter(
+                university=request.user.university, 
+                is_superuser=False
+            ).order_by('-date_joined')
         else:
             # If the partner has no associated university, deny access
             return HttpResponseForbidden("You are not associated with any university.")
@@ -109,7 +112,6 @@ def all_user(request):
     }
 
     return render(request, 'authentication/all_user.html', context)
-
 
 
 def home(request):
