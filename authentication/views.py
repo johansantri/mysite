@@ -26,13 +26,31 @@ from django.db.models import Q
 
 #detailuser
 def user_detail(request, user_id):
-    # Check if the user is a superuser
+    # Check if the user is authenticated
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
     
-    # Fetch the user object by id
-    user = get_object_or_404(User, id=user_id)
-    
+    try:
+        if request.user.is_superuser:
+            # Superuser can view details of any user
+            user = get_object_or_404(User, id=user_id)
+        elif request.user.is_partner:
+            # Partner can view users related to their university, excluding superusers
+            if request.user.university:
+                user = get_object_or_404(
+                    User,
+                    id=user_id,
+                    university=request.user.university,
+                    is_superuser=False
+                )
+            else:
+                # Deny access if the partner is not associated with a university
+                return HttpResponseForbidden("You are not associated with any university.")
+        else:
+            # Other users can only view their own details
+            user = get_object_or_404(User, id=request.user.id)
+    except User.DoesNotExist:
+        return HttpResponseForbidden("You do not have permission to view this user's details.")
 
     # Prepare the context with the user's details
     context = {
