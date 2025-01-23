@@ -5,7 +5,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from .forms import CourseForm, PartnerForm,PartnerFormUpdate, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
+from .forms import CourseForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from django.http import JsonResponse
 from .models import Course, Partner,GradeRange, Section,Instructor,TeamMember,Material,Question,Assessment
 from django.contrib.auth.models import User,Univer
@@ -22,7 +22,38 @@ from decimal import Decimal
 
 
 
+def course_instructor(request,id):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+    user = request.user
+    course = None
+    # Determine the course based on the user's role
+    if request.user.is_superuser:
+        course = get_object_or_404(Course, id=id)
+    elif user.is_partner:
+        #course = Course.objects.filter(id=id, org_partner_id=request.user.id).first()
+        course = get_object_or_404(Course, id=id, org_partner__user_id=user.id)
+        print(course)
+    elif user.is_instructor:
+        course = get_object_or_404(Course, id=id, instructor__user_id=user.id)
+    # If no course is found, redirect to the courses list page
+        print(course)
+    if not course:
+        return redirect('/courses')
+    
 
+    course = get_object_or_404(Course, id=id)
+
+    if request.method == 'POST':
+        form = CourseInstructorForm(request.POST, instance=course, request=request)
+        if form.is_valid():
+            form.save()
+            return redirect('courses:course_profile', id=course.id)
+    else:
+        form = CourseInstructorForm(instance=course, request=request)  # For GET requests, display the form with existing course data
+
+    
+    return render(request,'instructor/course_instructor.html',{'course': course, 'form': form})
 
 #create grade
 #@login_required
@@ -86,16 +117,21 @@ def update_grade_range(request, id):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
     
-   
-    # Check user roles
+    user = request.user
+    course = None
+
+     # Determine the course based on the user's role
     if request.user.is_superuser:
-        # Superusers can delete any section
-        pass
-    elif request.user.is_partner:
-        # Partners can delete sections only for their associated courses
-        if course.org_partner.user_id != request.user.id:
-            return JsonResponse({'status': 'error', 'message': 'Permission denied.'})
-    elif request.user.is_instructor:
+        course = get_object_or_404(Course, id=id)
+    elif user.is_partner:
+        #course = Course.objects.filter(id=id, org_partner_id=request.user.id).first()
+        course = get_object_or_404(Course, id=id, org_partner__user_id=user.id)
+        #print(course)
+    elif user.is_instructor:
+        course = get_object_or_404(Course, id=id, instructor__user_id=user.id)
+    # If no course is found, redirect to the courses list page
+        #print(course)
+    if not course:
         # Instructors can delete sections only for their own courses
         if course.instructor.user_id != request.user.id:
             return JsonResponse({'status': 'error', 'message': 'Permission denied.'})

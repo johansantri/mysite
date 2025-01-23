@@ -13,8 +13,34 @@ import io
 
 # Initialize the logger
 logger = logging.getLogger(__name__)
+class CourseInstructorForm(forms.ModelForm):
+    instructor = forms.ModelChoiceField(
+        queryset=Instructor.objects.none(),  # Start with an empty queryset
+        required=True,
+        widget=forms.Select(attrs={
+            'class': 'form-control',
+        })
+    )
 
+    class Meta:
+        model = Course
+        fields = ['instructor']  # Include only the instructor field
 
+    def __init__(self, *args, **kwargs):
+        request = kwargs.pop('request', None)
+        super(CourseInstructorForm, self).__init__(*args, **kwargs)
+
+        if request and request.user.is_authenticated:
+            if request.user.is_superuser:
+                # Superusers can see all instructors
+                self.fields['instructor'].queryset = Instructor.objects.all()
+            elif request.user.is_partner:
+                # Partners can see only instructors related to their partner account
+                self.fields['instructor'].queryset = Instructor.objects.filter(provider__user=request.user)
+            elif request.user.is_instructor:
+                # Instructors cannot modify this field, or it could be restricted differently
+                self.fields['instructor'].queryset = Instructor.objects.none()
+            
 class GradeRangeForm(forms.ModelForm):
     class Meta:
         model = GradeRange

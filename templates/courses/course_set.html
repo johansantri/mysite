@@ -26,9 +26,12 @@
               Setting
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href="{% url "courses:course_profile" course.id %}">Schedule & Details</a></li>
+              <li><a class="dropdown-item" href="{% url "courses:course_profile" course.id %}">Schedule</a></li>
               <li><a class="dropdown-item" href="{% url 'courses:course_grade' course.id %}">Grading</a></li>
-              <li><a class="dropdown-item" href="{% url "courses:course_team" course.id %}">Course Team</a></li>
+              <li><a class="dropdown-item" href="{% url "courses:course_team" course.id %}">Team</a></li>
+              {% if request.user.is_superuser or request.user.is_partner %}
+              <li><a class="dropdown-item" href="{% url "courses:course_instructor" course.id %}">Instructor</a></li>
+             {% endif %}
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" href="#">Something else here</a></li>
             </ul>
