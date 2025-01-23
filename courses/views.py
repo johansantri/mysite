@@ -20,8 +20,27 @@ from django import forms
 from django.http import JsonResponse
 from decimal import Decimal
 
+def draft_lms(request, id):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)  # Redirect to login if not authenticated
 
+    user = request.user
+    course = None
 
+    # Determine the course based on the user's role
+    if request.user.is_superuser:
+        course = get_object_or_404(Course, id=id)
+    elif user.is_partner:
+        course = get_object_or_404(Course, id=id, org_partner__user_id=user.id)
+    elif user.is_instructor:
+        course = get_object_or_404(Course, id=id, instructor__user_id=user.id)
+
+    # If no course is found, redirect to the homepage
+    if not course:
+        return redirect('/')  # Redirect to the homepage if the course is not found
+
+    # If the course is found, render the course page
+    return render(request, 'courses/course_draft_view.html', {'course': course})
 def course_instructor(request,id):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)

@@ -45,7 +45,7 @@ urlpatterns = [
     path('course-team/<int:id>/', views.course_team, name='course_team'),
     path('course-instructor/<int:id>/', views.course_instructor, name='course_instructor'),
     path('team-member/remove/<int:member_id>/', views.remove_team_member, name='remove_team_member'),
-    
+    path('draft-lms/<int:id>/', views.draft_lms, name='draft-lms'),
     
     
    
