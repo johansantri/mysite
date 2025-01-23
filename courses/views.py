@@ -35,7 +35,8 @@ def course_instructor(request,id):
         course = get_object_or_404(Course, id=id, org_partner__user_id=user.id)
         print(course)
     elif user.is_instructor:
-        course = get_object_or_404(Course, id=id, instructor__user_id=user.id)
+        messages.error(request, "You have do not have permission.")
+        #course = get_object_or_404(Course, id=id, instructor__user_id=user.id)
     # If no course is found, redirect to the courses list page
         print(course)
     if not course:
@@ -48,13 +49,13 @@ def course_instructor(request,id):
         form = CourseInstructorForm(request.POST, instance=course, request=request)
         if form.is_valid():
             form.save()
-            return redirect('courses:course_profile', id=course.id)
+            messages.success(request, "You have add instructor to this course.")
+            return redirect('courses:course_instructor', id=course.id)
     else:
         form = CourseInstructorForm(instance=course, request=request)  # For GET requests, display the form with existing course data
 
     
     return render(request,'instructor/course_instructor.html',{'course': course, 'form': form})
-
 #create grade
 #@login_required
 def course_grade(request, id):

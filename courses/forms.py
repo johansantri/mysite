@@ -40,7 +40,7 @@ class CourseInstructorForm(forms.ModelForm):
             elif request.user.is_instructor:
                 # Instructors cannot modify this field, or it could be restricted differently
                 self.fields['instructor'].queryset = Instructor.objects.none()
-            
+
 class GradeRangeForm(forms.ModelForm):
     class Meta:
         model = GradeRange
