@@ -14,6 +14,7 @@
             {% csrf_token %}
             
             {{ form.as_p }}
+            {{form.media}}
           
             <div class="tile-footer">
               <button class="btn btn-warning"  type="submit"><i class="bi bi-check-circle-fill me-2"></i>update</button>&nbsp;&nbsp;&nbsp;<a class="btn btn-secondary" href="{% url 'courses:partner_view'%}"><i class="bi bi-x-circle-fill me-2"></i>Cancel</a>

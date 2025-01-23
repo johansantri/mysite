@@ -12,7 +12,7 @@ class Partner(models.Model):
     name = models.ForeignKey(Univer, on_delete=models.CASCADE,related_name="partner_univ")
     
     phone = models.CharField(max_length=50,null=True, blank=True)
-    address = models.TextField(max_length=50,null=True, blank=True)
+    address = models.TextField(max_length=200,null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     tax = models.CharField(max_length=50,null=True, blank=True)
     account_number = models.CharField(max_length=20, null=True, blank=True)  # Account number as a string

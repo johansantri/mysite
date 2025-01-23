@@ -425,10 +425,11 @@ class PartnerFormUpdate(forms.ModelForm):
             }),
             "address": forms.Textarea(attrs={
                 "placeholder": "Address",
-                "class": "form-control"
+                "class": "form-control",
+                "rows": 2
             }),
-            "description": forms.Textarea(attrs={
-                "placeholder": "Description",
+             "description": CKEditor5Widget(),  # Use CKEditor widget
+             "tax": forms.NumberInput(attrs={
                 "class": "form-control"
             }),
             "tax": forms.NumberInput(attrs={
