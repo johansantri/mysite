@@ -1232,57 +1232,25 @@ def studio(request, id):
 #update_partner
 
 def update_partner(request, partner_id):
-    partner = get_object_or_404(Partner, id=partner_id)
+    # Ambil partner dan pastikan user memiliki otoritas
+    partner = get_object_or_404(Partner, pk=partner_id)
 
-    # Check if the user is the owner of the partner or a superuser
+    # Cek apakah user adalah pemilik atau superuser
     if not request.user.is_authenticated or (request.user != partner.user and not request.user.is_superuser):
-        return redirect("/login/?next=%s" % request.path)  # Redirect to login or unauthorized page
+        return redirect("/login/?next=%s" % request.path)  # Redirect ke halaman login
 
-    if request.method == 'POST':
-        form = PartnerFormUpdate(request.POST, request.FILES, instance=partner)
-
+    if request.method == "POST":
+        # Pass user sebagai argumen ke form
+        form = PartnerFormUpdate(request.POST, instance=partner, user=request.user)
         if form.is_valid():
-
-            # Check if a new logo is uploaded and delete the old logo
-
-            if 'logo' in request.FILES and request.FILES['logo']:
-
-                old_logo = partner.logo  # Get the old logo
-
-                if old_logo:
-
-                    # Delete the old logo from the file system
-
-                    try:
-
-                        old_logo_path = old_logo.path
-
-                        if os.path.isfile(old_logo_path):
-
-                            os.remove(old_logo_path)  # Delete old logo file
-
-                            print(f"Deleted old logo: {old_logo_path}")
-
-                    except Exception as e:
-
-                        print(f"Error deleting old logo: {e}")
-
-
-            # Save the form with the updated logo
-
             form.save()
-
-            print("Form saved successfully.")
-
-
-            # Redirect to partner details page after update
+            # Redirect ke halaman detail partner setelah berhasil update
             return redirect('courses:partner_detail', partner_id=partner.id)
-
     else:
-        form = PartnerFormUpdate(instance=partner)
+        # Pass user sebagai argumen ke form
+        form = PartnerFormUpdate(instance=partner, user=request.user)
 
     return render(request, 'partner/update_partner.html', {'form': form, 'partner': partner})
-
 #partner view
 #@cache_page(60 * 5)
 

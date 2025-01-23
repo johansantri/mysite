@@ -4,7 +4,7 @@ from django.forms import inlineformset_factory
 from django.core.cache import cache
 from .models import Course, Partner, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment
 from django_ckeditor_5.widgets import CKEditor5Widget
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User,Univer
 import logging
 from django.utils.text import slugify
 from django.core.files.base import ContentFile
@@ -405,52 +405,67 @@ class PartnerForm(forms.ModelForm):
     
 
 
-
 class PartnerFormUpdate(forms.ModelForm):
     class Meta:
         model = Partner
-        fields = ['name','user','phone', 'address', 'description', 'tax', 'account_holder_name', 'balance', 'logo']
+        fields = ['name', 'user', 'phone', 'address', 'description', 'tax', 'account_holder_name', 'balance', 'logo']
 
         widgets = {
-        "name": forms.Select(attrs={
-            "placeholder": "Full Stack Development",
-            "class": "form-control select1"
-        }),
-        "user": forms.Select(attrs={
-            "placeholder": "CS201",
-            "class": "form-control select2"
-        }),
-         "phone": forms.TextInput(attrs={
-            "placeholder": "Phone Number",
-            "class": "form-control"
-        }),
-        "address": forms.Textarea(attrs={
-            "placeholder": "Address",
-            "class": "form-control"
-        }),
-        "description": forms.Textarea(attrs={
-            "placeholder": "Description",
-            "class": "form-control"
-        }),
-        "tax": forms.NumberInput(attrs={
-            "placeholder": "Tax Number",
-            "class": "form-control"
-        }),
-        "account_holder_name": forms.TextInput(attrs={
-            "placeholder": "Account Holder Name",
-            "class": "form-control"
-        }),
-        "balance": forms.NumberInput(attrs={
-            "placeholder": "Balance",
-            "class": "form-control"
-        }),
-        "logo": forms.ClearableFileInput(attrs={
-            'class': 'form-control',  # Add Bootstrap styling
-            'accept': 'image/*',  # Allow only image files to be uploaded
-        })
-    }
-    
-    
+            "name": forms.Select(attrs={
+                "placeholder": "Full Stack Development",
+                "class": "form-control select1"
+            }),
+            "user": forms.Select(attrs={
+                "placeholder": "CS201",
+                "class": "form-control select2"
+            }),
+            "phone": forms.TextInput(attrs={
+                "placeholder": "Phone Number",
+                "class": "form-control"
+            }),
+            "address": forms.Textarea(attrs={
+                "placeholder": "Address",
+                "class": "form-control"
+            }),
+            "description": forms.Textarea(attrs={
+                "placeholder": "Description",
+                "class": "form-control"
+            }),
+            "tax": forms.NumberInput(attrs={
+                "placeholder": "Tax Number",
+                "class": "form-control"
+            }),
+            "account_holder_name": forms.TextInput(attrs={
+                "placeholder": "Account Holder Name",
+                "class": "form-control"
+            }),
+            "balance": forms.NumberInput(attrs={
+                "placeholder": "Balance",
+                "class": "form-control"
+            }),
+            "logo": forms.ClearableFileInput(attrs={
+                'class': 'form-control',
+                'accept': 'image/*',  # Allow only image files
+            })
+        }
+
+   
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)  # Ambil user dari kwargs
+        super().__init__(*args, **kwargs)  # Panggil constructor parent
+
+        if user:
+            if user.is_superuser:
+                # Superuser bisa mengedit semua field
+                self.fields['user'].queryset = User.objects.all()
+                self.fields['name'].queryset = Univer.objects.all()
+            elif hasattr(user, 'partner_user'):  # Cek apakah user adalah partner
+               
+                self.fields['user'].queryset = User.objects.filter(id=user.id)
+
+                # Filter field `name` untuk hanya menampilkan univer terkait dengan user tertentu
+                self.fields['name'].queryset = Univer.objects.filter(partner_univ__user=user)
+   
 #instructor
 class InstructorForm(forms.ModelForm):
     class Meta:
