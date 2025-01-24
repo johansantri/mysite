@@ -1,4 +1,8 @@
 import os
+from io import BytesIO
+from PIL import Image
+from django.conf import settings
+from django.core.files.base import ContentFile
 from django.core.cache import cache
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -1231,6 +1235,24 @@ def studio(request, id):
 
 #update_partner
 
+def convert_image_to_webp(uploaded_image):
+    """
+    Konversi gambar yang diunggah ke format WebP dan kembalikan ContentFile
+    """
+    img = Image.open(uploaded_image)
+
+    # Pastikan gambar berada dalam mode RGB
+    img = img.convert('RGB')
+
+    # Simpan gambar ke buffer dalam format WebP
+    buffer = BytesIO()
+    img.save(buffer, format='WEBP', quality=85)  # Adjust kualitas sesuai kebutuhan
+    buffer.seek(0)
+
+    # Kembalikan file dalam format ContentFile
+    return ContentFile(buffer.read(), name='logo.webp')
+
+
 def update_partner(request, partner_id):
     # Ambil partner dan pastikan user memiliki otoritas
     partner = get_object_or_404(Partner, pk=partner_id)
@@ -1244,8 +1266,16 @@ def update_partner(request, partner_id):
     if request.method == "POST":
         form = PartnerFormUpdate(request.POST, request.FILES, instance=partner, user=request.user)
         if form.is_valid():
-            # Simpan perubahan ke partner
-            form.save()
+            partner_instance = form.save(commit=False)
+
+            # Jika ada logo baru yang diunggah, konversi ke WebP
+            if 'logo' in request.FILES:
+                uploaded_logo = request.FILES['logo']
+                converted_logo = convert_image_to_webp(uploaded_logo)
+                partner_instance.logo = converted_logo
+
+            # Simpan perubahan ke instance Partner
+            partner_instance.save()
 
             # Hapus logo lama jika ada dan sudah diganti
             if old_logo and old_logo != partner.logo.path:
@@ -1257,7 +1287,6 @@ def update_partner(request, partner_id):
         form = PartnerFormUpdate(instance=partner, user=request.user)
 
     return render(request, 'partner/update_partner.html', {'form': form, 'partner': partner})
-
 #partner view
 #@cache_page(60 * 5)
 

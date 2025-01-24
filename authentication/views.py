@@ -1,9 +1,11 @@
 from django.shortcuts import render, get_object_or_404
-
+import os
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-
+from PIL import Image
+from io import BytesIO
+from django.core.files.base import ContentFile
 # import this for sending email to user
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
@@ -180,51 +182,56 @@ def edit_profile(request, pk):
             return render(request, 'home/edit_profile_form.html', {'form': form}, status=400)
     
 
-@login_required
+#convert image before update
+def process_image_to_webp(uploaded_photo):
+    # Open the image using Pillow
+    img = Image.open(uploaded_photo)
 
+    # Convert the image to RGB mode (if not already in RGB)
+    img = img.convert('RGB')
+
+    # Resize the image to 50% of its original size
+    width, height = img.size
+    new_size = (width // 2, height // 2)
+    img = img.resize(new_size, Image.Resampling.LANCZOS)  # Use LANCZOS for high-quality resizing
+
+    # Save the image to a BytesIO buffer in WebP format
+    buffer = BytesIO()
+    img.save(buffer, format='WEBP', quality=85)  # Adjust quality as needed
+    buffer.seek(0)
+
+    # Return the processed image as a ContentFile
+    return ContentFile(buffer.read(), name='photo.webp')
+
+#update image
 def edit_photo(request, pk):
-
-    # Retrieve the user instance based on the primary key
-
     user = get_object_or_404(User, pk=pk)
 
-
     if request.method == "GET":
-
-        # Render the form with the user's current data
-
         form = UserPhoto(instance=user)
-
         return render(request, 'home/edit_photo.html', {'form': form})
 
-
     elif request.method == "POST":
-
-        # Populate the form with POST data and the user instance
-
+        old_photo_path = user.photo.path if user.photo else None
         form = UserPhoto(request.POST, request.FILES, instance=user)
 
         if form.is_valid():
-
-            # Save the form but do not commit to the database yet
-
             user_profile = form.save(commit=False)
 
-            if not request.FILES.get('photo'):
+            if 'photo' in request.FILES:
+                # Process the uploaded photo
+                uploaded_photo = request.FILES['photo']
+                processed_photo = process_image_to_webp(uploaded_photo)
+                user_profile.photo = processed_photo
 
-                # If no new photo, keep the existing one
+            user_profile.save()
 
-                user_profile.photo = user.photo  # Use the existing user's photo
+            if old_photo_path and os.path.exists(old_photo_path):
+                os.remove(old_photo_path)
 
-            user_profile.save()  # Now save the user profile
-
-            #return JsonResponse({'success': True, 'message': 'Profile updated successfully!'})
             return redirect('authentication:dasbord')
 
         else:
-
-            # If the form is invalid, re-render the form with errors
-
             return render(request, 'home/edit_photo.html', {'form': form}, status=400)
 
 @login_required
