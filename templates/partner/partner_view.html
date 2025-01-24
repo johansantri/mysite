@@ -56,7 +56,7 @@
                             <td>{{ partner.user.email }}</td>
                             <td>{{ partner.phone }}</td>
                             <td>{{ partner.created_ad }}</td>
-                            <td><a href="{% url 'courses:update_partner' partner.id %}">update</a></td>
+                            <td><a href="{% url 'courses:update_partner' partner.id %}"><span class="btn btn-sm btn-warning">update</span></a></td>
                         </tr>
                         {% endfor %}
                     </tbody>
