@@ -731,7 +731,6 @@ def remove_team_member(request, member_id):
     return redirect('courses:course_team', id=course_id)  # Redir
 
 #course profile
-#@login_required
 @csrf_exempt  # Be cautious with this decorator; it's better to avoid using it if unnecessary
 def course_profile(request, id):
     # Check if the user is authenticated
@@ -766,6 +765,8 @@ def course_profile(request, id):
         form = ProfilForm(instance=course)  # For GET requests, display the form with existing course data
 
     return render(request, 'courses/course_profile.html', {'course': course, 'form': form})
+
+
 
 
 #add section

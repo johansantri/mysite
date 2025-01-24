@@ -407,8 +407,12 @@
                                                         <div class="play-icon">
                                                             <i class="fa-solid fa-play"></i>
                                                         </div>
-                                                        <img class="" src="{{ course.image.url }}" alt="Img">
-                                                    </a>
+														{% if course.image %}
+														<img class="img-fluid rounded" src="{{ course.image.url }}" alt="{{ course.name }} Image">
+													{% else %}
+														<img class="img-fluid rounded" src="{% static 'assets/img/user/logo.5272a797c07c.png' %}" alt="Default Image">
+													{% endif %}
+													</a>
                                                 {% else %}
                                                     <!-- Fallback content if no video URL exists -->
                                                     <a href="https://www.youtube.com/watch?v=nc6m9WM3Gyw&t=1s" class="video-thumbnail" data-fancybox="video-gallery">

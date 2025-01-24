@@ -90,7 +90,7 @@ class Course(models.Model):
     status_course = models.CharField(max_length=10, choices=[('draft', 'draft'), ('published', 'published'),('curation', 'curation'),('archive', 'archive')], default='draft', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     edited_on = models.DateTimeField(auto_now=True) 
-    image = models.ImageField(upload_to='courses/images/', blank=True, null=True)
+    image = models.ImageField(upload_to='courses/', blank=True, null=True)
     link_video = models.URLField(blank=True, null=True) 
     description = models.TextField()
     sort_description = models.CharField(max_length=150, null=True,blank=True)
@@ -102,21 +102,20 @@ class Course(models.Model):
     start_enrol = models.DateField(null=True)
     end_enrol = models.DateField(null=True)
 
-
- 
-
-
-    def __str__(self):
-        return f"{self.course_name} ({self.status_course} - {self.org_partner} - {self.author} - {self.course_run})"
     def delete_old_image(self):
+        """
+        Hapus gambar lama jika sudah diganti.
+        """
+        if self.pk:  # Pastikan instance ada di database
+            old_image = Course.objects.filter(pk=self.pk).values_list('image', flat=True).first()
+            if old_image and old_image != self.image.name:
+                old_image_path = os.path.join(settings.MEDIA_ROOT, old_image)
+                if os.path.exists(old_image_path):
+                    os.remove(old_image_path)
 
-        """Delete the old image file from the filesystem."""
-
-        if self.image:
-
-            if os.path.isfile(self.image.path):
-
-                os.remove(self.image.path)
+    def save(self, *args, **kwargs):
+        self.delete_old_image()  # Hapus gambar lama sebelum menyimpan data baru
+        super().save(*args, **kwargs)
 
 class TeamMember(models.Model):
 
