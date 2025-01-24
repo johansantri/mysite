@@ -2,41 +2,87 @@
 
 {% block content %}
 <style>
-    .partner-logo {
-        max-width: 300px;
-        margin-top: 20px;
+    .partner-card {
+        display: flex;
+        flex-wrap: wrap;
+        border: 1px solid #ddd;
         border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .partner-info p {
-        font-size: 1.1rem;
-        line-height: 1.6;
-        margin-bottom: 15px;
-    }
-
-    .partner-info strong {
-        color: #007bff;
-    }
-
-    .card-body {
-        background-color: #f9f9f9;
-    }
-
-    .back-button {
-        margin-top: 30px;
-        text-align: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
     }
 
     .partner-card-header {
-        background-color: #007bff;
-        color: white;
+        background-color: #343a40;
+        color: #fff;
         padding: 15px;
-        border-radius: 5px 5px 0 0;
+        font-size: 1.5rem;
+        font-weight: bold;
+        text-align: center;
+        text-transform: uppercase;
+        width: 100%;
     }
 
     .partner-card-body {
+        display: flex;
+        flex-wrap: wrap;
+        background-color: #fdfdfd;
+    }
+
+    .partner-details {
+        flex: 1 1 60%;
         padding: 20px;
+    }
+
+    .partner-logo {
+        flex: 1 1 40%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f8f9fa;
+        padding: 20px;
+    }
+
+    .partner-logo img {
+        max-width: 150px;
+        border-radius: 8px;
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        transition: transform 0.3s ease;
+    }
+
+    .partner-logo img:hover {
+        transform: scale(1.05);
+    }
+
+    .partner-info p {
+        font-size: 1.2rem;
+        line-height: 1.8;
+        margin-bottom: 10px;
+        color: #555;
+    }
+
+    .partner-info strong {
+        color: #333;
+    }
+
+    .back-button a {
+        display: inline-block;
+        margin-top: 30px;
+        font-weight: bold;
+        color: #fff;
+        background-color: #343a40;
+        border: none;
+        padding: 10px 25px;
+        border-radius: 50px;
+        text-transform: uppercase;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        text-align: center;
+    }
+
+    .back-button a:hover {
+        background-color: #212529;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.25);
     }
 </style>
 
@@ -46,38 +92,38 @@
             {% include "home/sidebar.html" %}
             <div class="col-xl-9 col-lg-9">
                 <!-- Partner Information Card -->
-                <div class="card shadow-sm mb-4">
+                <div class="partner-card">
                     <div class="partner-card-header">
-                        <h3 class="card-title mb-0">{{ partner.name }}</h3>
+                        {{ partner.name }}
                     </div>
-                    <div class="card-body partner-card-body">
-                        <div class="row partner-info">
-                            <div class="col-md-6">
+                    <div class="partner-card-body">
+                        <!-- Partner Details Section -->
+                        <div class="partner-details">
+                            <div class="partner-info">
+                                <p><strong>Account Holder:</strong> {{ partner.account_holder_name }}</p>
                                 <p><strong>Email:</strong> {{ partner.user.email }}</p>
                                 <p><strong>Phone:</strong> {{ partner.phone }}</p>
                                 <p><strong>Address:</strong> {{ partner.address }}</p>
                                 <p><strong>Description:</strong> {{ partner.description }}</p>
-                            </div>
-                            <div class="col-md-6">
-                                <p><strong>Tax:</strong> {{ partner.tax }}</p>
-                                <p><strong>Account Holder Name:</strong> {{ partner.account_holder_name }}</p>
+                              
+                               
                                 <p><strong>Balance:</strong> ${{ partner.balance }}</p>
                                 <p><strong>Join Date:</strong> {{ partner.created_ad|date:"F j, Y" }}</p>
                             </div>
                         </div>
+
+                        <!-- Partner Logo Section -->
+                        <div class="partner-logo">
+                            {% if partner.logo %}
+                                <img src="{{ partner.logo.url }}" alt="{{ partner.name }} Logo" class="img-fluid" />
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
 
-                <!-- Partner's Logo Display -->
-                {% if partner.logo %}
-                    <div class="text-center partner-logo mt-4">
-                        <img src="{{ partner.logo.url }}" alt="Partner Logo" class="img-fluid rounded" />
-                    </div>
-                {% endif %}
-
                 <!-- Back to Partners List Button -->
-                <div class="back-button">
-                    <a href="{% url 'courses:partner_view' %}" class="btn btn-outline-primary">Back to Partners List</a>
+                <div class="text-center back-button">
+                    <a href="{% url 'courses:partner_view' %}">Back to Partners List</a>
                 </div>
             </div>
         </div>
