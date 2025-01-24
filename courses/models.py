@@ -6,6 +6,9 @@ from django.utils.text import slugify
 import os
 from datetime import timedelta
 from django.core.exceptions import ValidationError
+from django.conf import settings
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 class Partner(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,related_name="partner_user")  # Add this line to associate partners with users
@@ -29,6 +32,21 @@ class Partner(models.Model):
         indexes = [
             models.Index(fields=['user'])
     ]
+        
+
+    def delete_old_logo(self):
+        if self.pk:  # Hanya jika instance sudah ada di database
+            old_logo = Partner.objects.filter(pk=self.pk).values_list('logo', flat=True).first()
+            if old_logo and old_logo != self.logo.name:
+                old_logo_path = os.path.join(settings.MEDIA_ROOT, old_logo)
+                if os.path.exists(old_logo_path):
+                    os.remove(old_logo_path)
+
+    def save(self, *args, **kwargs):
+        self.delete_old_logo()  # Hapus logo lama sebelum menyimpan
+        super().save(*args, **kwargs)
+
+
 class Instructor(models.Model):
     STATUS_CHOICES = [
         ('Pending', 'Pending'),

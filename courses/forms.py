@@ -428,10 +428,7 @@ class PartnerFormUpdate(forms.ModelForm):
                 "class": "form-control",
                 "rows": 2
             }),
-             "description": CKEditor5Widget(),  # Use CKEditor widget
-             "tax": forms.NumberInput(attrs={
-                "class": "form-control"
-            }),
+            "description": CKEditor5Widget(),  # Use CKEditor widget
             "tax": forms.NumberInput(attrs={
                 "placeholder": "Tax Number",
                 "class": "form-control"
@@ -450,7 +447,6 @@ class PartnerFormUpdate(forms.ModelForm):
             })
         }
 
-   
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)  # Ambil user dari kwargs
         super().__init__(*args, **kwargs)  # Panggil constructor parent
@@ -461,12 +457,20 @@ class PartnerFormUpdate(forms.ModelForm):
                 self.fields['user'].queryset = User.objects.all()
                 self.fields['name'].queryset = Univer.objects.all()
             elif hasattr(user, 'partner_user'):  # Cek apakah user adalah partner
-               
                 self.fields['user'].queryset = User.objects.filter(id=user.id)
 
                 # Filter field `name` untuk hanya menampilkan univer terkait dengan user tertentu
                 self.fields['name'].queryset = Univer.objects.filter(partner_univ__user=user)
-   
+
+                # Hapus field `tax` dan `balance` agar tidak bisa diakses oleh partner
+                self.fields.pop('tax')
+                self.fields.pop('balance')
+
+        # Alternatif: Anda juga bisa membuat field read-only
+        for field_name in ['tax', 'balance']:
+            if field_name in self.fields:
+                self.fields[field_name].widget.attrs['readonly'] = True
+
 #instructor
 class InstructorForm(forms.ModelForm):
     class Meta:

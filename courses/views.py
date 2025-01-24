@@ -1235,22 +1235,29 @@ def update_partner(request, partner_id):
     # Ambil partner dan pastikan user memiliki otoritas
     partner = get_object_or_404(Partner, pk=partner_id)
 
-    # Cek apakah user adalah pemilik atau superuser
+    # Cek otoritas user
     if not request.user.is_authenticated or (request.user != partner.user and not request.user.is_superuser):
-        return redirect("/login/?next=%s" % request.path)  # Redirect ke halaman login
+        return redirect("/login/?next=%s" % request.path)
+
+    old_logo = partner.logo.path if partner.logo else None  # Simpan path logo lama
 
     if request.method == "POST":
-        # Pass user sebagai argumen ke form
-        form = PartnerFormUpdate(request.POST, instance=partner, user=request.user)
+        form = PartnerFormUpdate(request.POST, request.FILES, instance=partner, user=request.user)
         if form.is_valid():
+            # Simpan perubahan ke partner
             form.save()
-            # Redirect ke halaman detail partner setelah berhasil update
+
+            # Hapus logo lama jika ada dan sudah diganti
+            if old_logo and old_logo != partner.logo.path:
+                if os.path.exists(old_logo):
+                    os.remove(old_logo)
+
             return redirect('courses:partner_detail', partner_id=partner.id)
     else:
-        # Pass user sebagai argumen ke form
         form = PartnerFormUpdate(instance=partner, user=request.user)
 
     return render(request, 'partner/update_partner.html', {'form': form, 'partner': partner})
+
 #partner view
 #@cache_page(60 * 5)
 
