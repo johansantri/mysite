@@ -83,22 +83,37 @@ py -m pip install -r requirements.txt
 py -m pip freeze
 ```
 ### 9. Salin data dari models.py:
+
+*****
+Sebelum menjalankan aplikasi, salin data dari models.py ke direktori Anda, misalnya ke path **mysite\.venv\lib\site-packages\django\contrib\auth.**
+Pastikan untuk menyalin seluruh isi **models.py.**
+*****
+### 10. Jalankan makemigrations:
 ```shell
-py -m pip install -r requirements.txt
+python manage.py makemigrations
 ```
-### 10. Install dependencies dari requirements.txt:
+
+Catatan:
+Pastikan Anda sudah menginstal **Python** sebelum menjalankan perintah ini.
+
+### 11. Jalankan migrasi database:
 ```shell
-py -m pip install -r requirements.txt
+python manage.py migrate
 ```
-### 11. Install dependencies dari requirements.txt:
+### 12. Jalankan server:
 ```shell
-py -m pip install -r requirements.txt
+python manage.py runserver
 ```
-### 12. Install dependencies dari requirements.txt:
+### 13. Untuk membuat superuser:
 ```shell
-py -m pip install -r requirements.txt
+python manage.py createsuperuser
 ```
-### 13. Install dependencies dari requirements.txt:
-```shell
-py -m pip install -r requirements.txt
-```
+****
+Langkah-langkah untuk membuat superuser:
+
+Masukkan email Anda, contoh: admin@admin.com
+Masukkan username Anda, contoh: admin
+Masukkan password Anda, contoh: admin
+Ulangi password Anda
+Pilih yes untuk melanjutkan
+****
