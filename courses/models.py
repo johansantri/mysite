@@ -1,6 +1,6 @@
 # models.py
 from django.db import models
-from django.contrib.auth.models import User, Univer
+from django.contrib.auth.models import User
 from autoslug import AutoSlugField
 from django.utils.text import slugify
 import os
@@ -10,9 +10,25 @@ from django.conf import settings
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 
+class Universiti(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="universiti")
+    name = models.CharField(max_length=200, blank=True, null=True)
+    slug = models.SlugField(unique=True)
+    location = models.CharField(max_length=100, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+
+
 class Partner(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,related_name="partner_user")  # Add this line to associate partners with users
-    name = models.ForeignKey(Univer, on_delete=models.CASCADE,related_name="partner_univ")
+    name = models.ForeignKey(Universiti, on_delete=models.CASCADE,related_name="partner_univ")
     
     phone = models.CharField(max_length=50,null=True, blank=True)
     address = models.TextField(max_length=200,null=True, blank=True)

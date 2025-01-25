@@ -11,8 +11,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from .forms import CourseForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from django.http import JsonResponse
-from .models import Course, Partner,GradeRange, Section,Instructor,TeamMember,Material,Question,Assessment
-from django.contrib.auth.models import User,Univer
+from .models import Course,Universiti, Partner,GradeRange, Section,Instructor,TeamMember,Material,Question,Assessment
+from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
 from django.urls import reverse
@@ -1370,11 +1370,11 @@ def search_partner(request):
     
     # If query is empty, return no users or all active users (depending on your use case)
     if query:
-        partners = Univer.objects.filter(
+        partners = Universiti.objects.filter(
         Q(name__icontains=query) | Q(email__icontains=query)
     ).only('id', 'name', 'email')
     else:
-        partners = Univer.objects.filter(Q(name__icontains=query)).only('id', 'name')
+        partners = Universiti.objects.filter(Q(name__icontains=query)).only('id', 'name')
 
     # Optional: Implement pagination (if needed)
     paginator = Paginator(partners, 20)  # Show 20 users per page

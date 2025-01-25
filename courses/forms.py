@@ -2,9 +2,9 @@
 from django import forms
 from django.forms import inlineformset_factory
 from django.core.cache import cache
-from .models import Course, Partner, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment
+from .models import Course, Partner,Universiti, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment
 from django_ckeditor_5.widgets import CKEditor5Widget
-from django.contrib.auth.models import User,Univer
+from django.contrib.auth.models import User
 import logging
 from django.utils.text import slugify
 from django.core.files.base import ContentFile
@@ -455,12 +455,12 @@ class PartnerFormUpdate(forms.ModelForm):
             if user.is_superuser:
                 # Superuser bisa mengedit semua field
                 self.fields['user'].queryset = User.objects.all()
-                self.fields['name'].queryset = Univer.objects.all()
+                self.fields['name'].queryset = Universiti.objects.all()
             elif hasattr(user, 'partner_user'):  # Cek apakah user adalah partner
                 self.fields['user'].queryset = User.objects.filter(id=user.id)
 
                 # Filter field `name` untuk hanya menampilkan univer terkait dengan user tertentu
-                self.fields['name'].queryset = Univer.objects.filter(partner_univ__user=user)
+                self.fields['name'].queryset = Universiti.objects.filter(partner_univ__user=user)
 
                 # Hapus field `tax` dan `balance` agar tidak bisa diakses oleh partner
                 self.fields.pop('tax')

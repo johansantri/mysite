@@ -12,7 +12,7 @@ class Userprofile(forms.ModelForm):
         fields = [
         'first_name', 'last_name', 'email', 
         'hobby', 'birth', 'address', 'country', 
-        'phone', 'gender', 'education','university','photo'
+        'phone', 'gender', 'education','photo'
         ]
 
         
@@ -28,7 +28,7 @@ class Userprofile(forms.ModelForm):
             'phone': forms.TextInput(attrs={'class': 'form-control', 'type': 'text'}), 
             'gender': forms.Select(attrs={'class': 'form-control', 'type': 'text'}), 
             'education': forms.Select(attrs={'class': 'form-control', 'type': 'text'}), 
-            'university': forms.Select(attrs={'class': 'form-control', 'type': 'text'}),
+           # 'university': forms.Select(attrs={'class': 'form-control', 'type': 'text'}),
             
             
         }
