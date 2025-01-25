@@ -35,31 +35,24 @@ Perhatikan Panduan dibawah ini untuk memulai aplikasi
 
 
 ***************
-1. a
-   ```shell
+# Testing Website
+Proyek eksplorasi Python menggunakan framework Django.
 
-2. b
-   ```shell
-3. c
-   ```shell
-4. d
-   ```shell
-5. e
-   ```shell
-6. f
-   ```shell
-7. g
-   ```shell
-8. h
-   ```shell
-9. i
-   ```shell
-10. j
-   ```shell
-11. k
-   ```shell
-12. l
-   ```shell
-13. m
-   ```shell
+## Akses Role
+- Superuser
+- Staf
+- Partner
+- Instructor
+- Learner
+- Dan lainnya
+
+## Instalasi
+
+Pastikan Anda telah menginstal **Python** dan **pip** di sistem Anda sebelum memulai.
+
+### 1. Clone repositori ini:
+```shell
+git clone https://github.com/johansantri/mysite.git
+
 ***************
+
