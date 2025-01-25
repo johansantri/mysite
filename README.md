@@ -60,13 +60,16 @@ isi models.py seluruhnya dicopy
 ***
 catatan untuk menjalankan ini pastikan anda sudah menginstall pyhton
 ***
+
 10. Jalankan migrasi database:
    ```shell
    python manage.py migrate
 
+
 11. Jalankan server:
    ```shell
    python manage.py runserver
+
 
 12. Untuk membuat superadmin
    ```shell
