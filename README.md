@@ -54,5 +54,8 @@ Pastikan Anda telah menginstal **Python** dan **pip** di sistem Anda sebelum mem
 ```shell
 git clone https://github.com/johansantri/mysite.git
 
-***************
+### 2. Pindah ke direktori proyek::
+```shell
+cd mysite
+
 
