@@ -117,3 +117,8 @@ Masukkan password Anda, contoh: admin
 Ulangi password Anda
 Pilih yes untuk melanjutkan
 ****
+### 14. Jalankan Server:
+```shell
+python manage.py runserver
+```
+Akses url **http://127.0.0.1:8000/**
