@@ -57,8 +57,9 @@ isi models.py seluruhnya dicopy
    ```shell
    python manage.py makemigrations
 
+***
 catatan untuk menjalankan ini pastikan anda sudah menginstall pyhton
-
+***
 10. Jalankan migrasi database:
    ```shell
    python manage.py migrate
@@ -71,11 +72,13 @@ catatan untuk menjalankan ini pastikan anda sudah menginstall pyhton
    ```shell
    python manage.py createsuperuser
 
+*****
 masukan email anda contoh admin@admin.com
 masukan username anda contoh admin
 masukan password anda contoh admin
 ulangi password contoh admin
 lalu pilih yes
+*****
 
 13. Jalankan kembali dengan perintah
    ```shell
