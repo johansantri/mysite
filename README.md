@@ -57,9 +57,9 @@ isi models.py seluruhnya dicopy
    ```shell
    python manage.py makemigrations
 
-***
+*****
 catatan untuk menjalankan ini pastikan anda sudah menginstall pyhton
-***
+*****
 
 10. Jalankan migrasi database:
    ```shell
