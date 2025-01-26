@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 import os
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Universiti
 from PIL import Image
 from io import BytesIO
 from django.core.files.base import ContentFile

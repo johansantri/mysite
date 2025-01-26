@@ -2,7 +2,7 @@
 import re
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordResetForm, SetPasswordForm,UserChangeForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Universiti
 from django.forms import ModelForm
 
 class Userprofile(forms.ModelForm):
@@ -12,7 +12,7 @@ class Userprofile(forms.ModelForm):
         fields = [
         'first_name', 'last_name', 'email', 
         'hobby', 'birth', 'address', 'country', 
-        'phone', 'gender', 'education','photo'
+        'phone', 'gender', 'education','university','photo'
         ]
 
         
@@ -28,7 +28,7 @@ class Userprofile(forms.ModelForm):
             'phone': forms.TextInput(attrs={'class': 'form-control', 'type': 'text'}), 
             'gender': forms.Select(attrs={'class': 'form-control', 'type': 'text'}), 
             'education': forms.Select(attrs={'class': 'form-control', 'type': 'text'}), 
-           # 'university': forms.Select(attrs={'class': 'form-control', 'type': 'text'}),
+            'university': forms.Select(attrs={'class': 'form-control', 'type': 'text'}),
             
             
         }

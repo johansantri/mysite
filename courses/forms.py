@@ -2,9 +2,9 @@
 from django import forms
 from django.forms import inlineformset_factory
 from django.core.cache import cache
-from .models import Course, Partner,Universiti, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment
+from .models import Course, Partner, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment
 from django_ckeditor_5.widgets import CKEditor5Widget
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Universiti
 import logging
 from django.utils.text import slugify
 from django.core.files.base import ContentFile
