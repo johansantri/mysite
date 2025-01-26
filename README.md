@@ -86,7 +86,7 @@ py -m pip freeze
 ### 9. Salin data dari models.py:
 
 *****
-Sebelum menjalankan aplikasi, salin data dari models.py  **[mysite\.venv\lib\site-packages\django\contrib\auth.](https://github.com/johansantri/mysite/blob/main/.venv/lib/python3.12/site-packages/django/contrib/auth/models.py)** ke path anda atau path sama seperti anda salin
+Sebelum menjalankan aplikasi, salin data dari models.py  **mysite\.venv\lib\site-packages\django\contrib\auth.** ke path anda atau path sama seperti anda salin
 Pastikan untuk menyalin seluruh isi **models.py.**
 ```shell
 from collections.abc import Iterable
@@ -698,6 +698,9 @@ python manage.py makemigrations
 
 Catatan:
 Pastikan Anda sudah menginstal **Python** sebelum menjalankan perintah ini.
+dan anda sudah menghapus semua isi dari folder migrations [course, auth, authentication]
+**mysite\authentication\migrations**
+contoh 001_ sd angka terbesar
 
 ### 11. Jalankan migrasi database:
 ```shell
