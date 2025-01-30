@@ -107,6 +107,11 @@ class Course(models.Model):
     start_enrol = models.DateField(null=True)
     end_enrol = models.DateField(null=True)
 
+
+    def __str__(self):
+
+        return f"{self.course_name}"
+    
     def delete_old_image(self):
         """
         Hapus gambar lama jika sudah diganti.
