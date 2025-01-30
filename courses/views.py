@@ -893,7 +893,7 @@ def add_matrial(request, idcourse, idsection):
         course = get_object_or_404(Course, id=idcourse, org_partner__user_id=request.user.id)
     elif request.user.is_instructor:
         # Ensure the course is associated with the instructor
-        course = get_object_or_404(Course, id=idcourse, instructor__user_id=request.user.id)
+        course = get_object_or_404(Course, id=idcourse, instructor__user_id=request.user.id,instructor__status='Approved')
     else:
         messages.error(request, "You do not have permission to add materials to this course.")
         return redirect('courses:home')  # Redirect to a safe page for unauthorized users
@@ -1050,7 +1050,8 @@ def courseView(request):
 
         # Instructor: Show only their own courses
 
-        courses = Course.objects.filter(instructor__user=user)  # Assuming instructor is related to user
+        courses = Course.objects.filter(instructor__user=user, instructor__status='Approved')  # Assuming instructor is related to user
+       # print(courses)
 
     else:
 
@@ -1077,6 +1078,8 @@ def courseView(request):
         'status_course',
         'course_run'
     ).order_by('-id')
+
+    print(courses)
     #print(courses)
     # Get the page number from the request
     page_number = request.GET.get('page', 1)
@@ -1382,7 +1385,7 @@ def search_partner(request):
     page_obj = paginator.get_page(page_number)
 
     # Prepare data for response
-    partners_data = [{'id': univer.id, 'text': univer.name} for univer in page_obj]
+    partners_data = [{'id': universiti.id, 'text': universiti.name} for universiti in page_obj]
 
     return JsonResponse({
         'partners': partners_data,
