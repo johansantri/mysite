@@ -23,6 +23,7 @@ from django_ckeditor_5.widgets import CKEditor5Widget
 from django import forms
 from django.http import JsonResponse
 from decimal import Decimal
+from django.db.models import Sum
 
 def draft_lms(request, id):
     if not request.user.is_authenticated:
@@ -201,6 +202,7 @@ def create_assessment(request, idcourse, idsection):
     # Check if the user is authenticated
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
+
     # Determine the course based on the user's role
     if request.user.is_superuser:
         course = get_object_or_404(Course, id=idcourse)
@@ -221,6 +223,14 @@ def create_assessment(request, idcourse, idsection):
     if request.method == 'POST':
         form = AssessmentForm(request.POST)
         if form.is_valid():
+            # Convert new_weight to Decimal
+            new_weight = Decimal(form.cleaned_data['weight'])
+            total_weight = Assessment.objects.filter(section=section).aggregate(Sum('weight'))['weight__sum'] or Decimal('0')
+
+            if total_weight + new_weight > Decimal('100'):
+                messages.error(request, "Total bobot untuk penilaian dalam section ini tidak boleh melebihi 100")
+                return render(request, 'courses/course_assessement.html', {'form': form, 'course': course, 'section': section})
+
             # Create the assessment instance but don't save it yet
             assessment = form.save(commit=False)
             # Set the section field
@@ -233,8 +243,6 @@ def create_assessment(request, idcourse, idsection):
         form = AssessmentForm()
 
     return render(request, 'courses/course_assessement.html', {'form': form, 'course': course, 'section': section})
-
-
 #edit assesment type name
 #@login_required
 @csrf_exempt
@@ -242,14 +250,13 @@ def edit_assessment(request, idcourse, idsection, idassessment):
     # Check if the user is authenticated
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
+
     # Determine the course based on the user's role
     if request.user.is_superuser:
         course = get_object_or_404(Course, id=idcourse)
     elif request.user.is_partner:
-        # Ensure the course is associated with the partner
         course = get_object_or_404(Course, id=idcourse, org_partner__user_id=request.user.id)
     elif request.user.is_instructor:
-        # Ensure the course is associated with the instructor
         course = get_object_or_404(Course, id=idcourse, instructor__user_id=request.user.id)
     else:
         # Unauthorized access
@@ -259,18 +266,33 @@ def edit_assessment(request, idcourse, idsection, idassessment):
     # Ensure the section belongs to the course
     section = get_object_or_404(Section, id=idsection, courses=course)
 
-    # Fetch the assessment
+    # Fetch the assessment based on its ID
     assessment = get_object_or_404(Assessment, id=idassessment, section=section)
 
     if request.method == 'POST':
-        form = AssessmentForm(request.POST, instance=assessment)
+        form = AssessmentForm(request.POST, instance=assessment)  # Populate the form with current assessment data
         if form.is_valid():
-            # Save the updated assessment
-            form.save()
+            # Save without committing
+            assessment = form.save(commit=False)
+
+            # Check total weight
+            total_weight = Assessment.objects.filter(section=section).exclude(id=idassessment).aggregate(Sum('weight'))['weight__sum'] or Decimal('0')
+            if total_weight + Decimal(form.cleaned_data['weight']) > Decimal('100'):
+                messages.error(request, "Total bobot untuk penilaian dalam section ini tidak boleh melebihi 100")
+                return render(request, 'courses/course_assessement_edit.html', {
+                    'form': form,
+                    'course': course,
+                    'section': section,
+                    'assessment': assessment,
+                })
+
+            # Now save the assessment
+            assessment.save()
             messages.success(request, "Assessment updated successfully!")
             return redirect('courses:view-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
+
     else:
-        # Populate the form with the existing assessment data
+        # Create an empty form or pre-populated form with existing data
         form = AssessmentForm(instance=assessment)
 
     return render(request, 'courses/course_assessement_edit.html', {
@@ -279,7 +301,6 @@ def edit_assessment(request, idcourse, idsection, idassessment):
         'section': section,
         'assessment': assessment,
     })
-
 
 #delete assesment type name
 #@login_required

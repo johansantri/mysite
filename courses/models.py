@@ -9,7 +9,7 @@ from django.core.exceptions import ValidationError
 from django.conf import settings
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
-
+from django.db.models import Sum
 
 
 
@@ -192,28 +192,36 @@ class Material(models.Model):
         verbose_name_plural = "materials"
 
 class GradeRange(models.Model):
-    name = models.CharField(max_length=255)  # Name of the grade range (e.g., "A", "B+")
-    min_grade = models.DecimalField(max_digits=5, decimal_places=2)  # Minimum grade for the range
-    max_grade = models.DecimalField(max_digits=5, decimal_places=2)  # Maximum grade for the range
-    course = models.ForeignKey(Course, related_name='grade_ranges', on_delete=models.CASCADE)  # Link grade range to course
+    name = models.CharField(max_length=255)  # Nama rentang nilai (misalnya "A", "B+")
+    min_grade = models.DecimalField(max_digits=5, decimal_places=2)  # Nilai minimum untuk rentang
+    max_grade = models.DecimalField(max_digits=5, decimal_places=2)  # Nilai maksimum untuk rentang
+    course = models.ForeignKey(Course, related_name='grade_ranges', on_delete=models.CASCADE)  # Menghubungkan rentang nilai dengan mata pelajaran
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.name} ({self.min_grade} - {self.max_grade})"
+    
+    # Validasi untuk memastikan min_grade selalu kurang dari atau sama dengan max_grade
+    def save(self, *args, **kwargs):
+        if self.min_grade > self.max_grade:
+            raise ValueError("min_grade tidak bisa lebih besar dari max_grade")
+        super().save(*args, **kwargs)
 
 class Assessment(models.Model):
     name = models.CharField(max_length=255)
     section = models.ForeignKey(Section, related_name="assessments", on_delete=models.CASCADE)
-    weight = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    weight = models.DecimalField(max_digits=5, decimal_places=2, default=0)  # Bobot untuk penilaian ini
     description = models.TextField(blank=True, null=True)
     flag = models.BooleanField(default=False)
-    grade_range = models.ForeignKey(GradeRange, related_name="assessments", on_delete=models.SET_NULL, null=True, blank=True)  # Link to grade range
+    grade_range = models.ForeignKey(GradeRange, related_name="assessments", on_delete=models.SET_NULL, null=True, blank=True)  # Menghubungkan dengan rentang nilai
     created_at = models.DateTimeField(auto_now_add=True)
 
-    
-
-    def __str__(self):
-        return self.name
+    def save(self, *args, **kwargs):
+        # Hapus validasi bobot dari sini jika sudah dilakukan di views
+        # if self.weight > 100:  # Removed because validation is in views
+        #     raise ValueError("Total bobot untuk penilaian dalam section ini tidak boleh melebihi 100")
+        
+        super().save(*args, **kwargs)
 
 
 class Question(models.Model):
