@@ -59,7 +59,7 @@ git clone https://github.com/johansantri/mysite.git
 cd mysite
 ```
 ### 3. Buat virtual environment:
-anda bisa melihat refrensi berikut <https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/> jenis OS
+anda bisa melihat refrensi berikut <https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/> jenis OS dalam menggunakan virtual environment ini menggunakan windows
 ```shell
 py -m venv .venv
 ```
