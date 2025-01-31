@@ -17,13 +17,14 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth import logout
 from authentication.forms import UserRegistrationForm, Userprofile, UserPhoto
 from .models import Profile
-from courses.models import Instructor
+from courses.models import Instructor, Course
 from django.http import HttpResponse,JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseForbidden
 from django.core.cache import cache
 from django.db.models import Q
-
+from django.db.models import Count
+from django.utils import timezone
 # Create your views here.
 
 #detailuser
@@ -134,8 +135,25 @@ def all_user(request):
     return render(request, 'authentication/all_user.html', context)
 
 
+def popular_courses():
+    # Get the current date and time
+    now = timezone.now().date()
+
+    # Use related_name 'enrollments' to count related enrollments
+    # Filter courses that are published and have an end_date in the future
+    courses = Course.objects.filter(
+        status_course='published',  # Filter courses that are published
+        end_date__gte=now           # Filter courses whose end date is today or in the future
+    ).annotate(
+        num_enrollments=Count('enrollments')  # Count the enrollments
+    ).order_by('-num_enrollments')[:6]  # Limit to the top 6 most popular courses
+
+    return courses
+
 def home(request):
-    return render(request,'home/index.html')
+
+    courses = popular_courses()
+    return render(request,'home/index.html',{'courses': courses})
 
 def dasbord(request):
     

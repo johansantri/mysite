@@ -55,6 +55,22 @@ def draft_lms(request, id):
 
     # If the course is found, render the course page
     return render(request, 'courses/course_draft_view.html', {'course': course})
+
+def course_lms_detail(request, id):
+   
+    course = None
+
+  
+    course = get_object_or_404(Course, id=id)
+   
+
+    # If no course is found, redirect to the homepage
+    if not course:
+        return redirect('/')  # Redirect to the homepage if the course is not found
+
+    # If the course is found, render the course page
+    return render(request, 'home/course_detail.html', {'course': course})
+
 def course_instructor(request,id):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
