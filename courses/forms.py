@@ -249,7 +249,7 @@ class ProfilForm(forms.ModelForm):
 class CourseForm(forms.ModelForm):
     class Meta:
         model = Course
-        fields = ['course_name', 'course_number', 'course_run', 'slug', 'category', 'level',  'org_partner']
+        fields = ['course_name', 'course_number', 'course_run', 'slug', 'category', 'level',  'org_partner','slug']
 
         
         widgets = {
@@ -258,9 +258,10 @@ class CourseForm(forms.ModelForm):
                 "class": "form-control",
                 "oninput": "listingslug(value)"
             }),
+           
             "slug": forms.HiddenInput(attrs={
                 "class": "form-control",
-                "maxlength": "10"
+                "maxlength": "200"
             }),
             "course_number": forms.TextInput(attrs={
                 "placeholder": "CS201",
