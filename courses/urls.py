@@ -12,6 +12,7 @@ urlpatterns = [
     path('instructor/<int:instructor_id>/check/', views.instructor_check, name='instructor_check'),
     path('instructor/<int:instructor_id>/delete/', views.delete_instructor, name='delete_instructor'),
     path('instructor/<int:id>/', views.instructor_detail, name='instructor_detail'),
+    path('instructor-profile/<slug:username>/', views.instructor_profile, name='instructor_profile'),
     path("studio/<str:id>", views.studio, name= "studio"),
     path("partner/", views.partnerView, name= "partner_view"),
     path('partner/<int:partner_id>/', views.partner_detail, name='partner_detail'),

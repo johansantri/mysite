@@ -26,7 +26,11 @@ from decimal import Decimal
 from django.db.models import Sum
 
 
-
+#instrcutor profile
+def instructor_profile(request, username):
+    # Assuming you have an Instructor model with a unique username field
+    instructor = get_object_or_404(Instructor, user__username=username)
+    return render(request, 'home/instructor_profile.html', {'instructor': instructor})
 
 #ernroll
 def enroll_course(request, course_id):

@@ -1,0 +1,113 @@
+
+{% extends 'home/base.html' %}
+  
+
+{% block content %}
+
+
+
+    
+    <!-- Page Content -->
+    <div class="page-content">
+      <div class="container">
+        <div class="row">
+          
+    <!-- sidebar -->
+    {% include "home/sidebar.html" %}
+    <!-- /Sidebar -->
+          
+          <!-- Instructor profile -->
+          <div class="col-xl-9 col-lg-9">	
+
+            <style>
+              body {
+                  font-family: Arial, sans-serif;
+                  background-color: #f8f9fa;
+                  margin: 20px;
+              }
+              .resume-header {
+                  background-color: #eff1f4;
+                  color: white;
+                  padding: 20px;
+                  border-radius: 5px;
+              }
+              .resume-section {
+                  margin-bottom: 30px;
+              }
+              .resume-section h3 {
+                  border-bottom: 2px solid #eff1f4;
+                  padding-bottom: 5px;
+              }
+              .skill-item {
+                  margin-bottom: 5px;
+              }
+          </style>
+
+          <div class="support-wrap">
+          <div class="container personal-address">
+            <!-- Header Section -->
+            <div class="resume-header text-center " >
+                <h1>{{instructor.user.first_name}} {{instructor.user.last_name}}</h1>
+                <p>{{instructor.user.hobby}}</p>
+                <p>Email: {{instructor.user.email}} | Phone: {{instructor.user.phone}} | Status: {{ instructor.status }}</p>
+            </div>
+        
+             <!-- About Section -->
+             <div class="resume-section">
+                <h3>About Me</h3>
+                {% if instructor %}
+                <p>{{instructor.bio }}.</p>
+                {% endif %}
+            </div>
+        
+            <!-- Experience Section -->
+            <div class="resume-section">
+                <h3>Experience</h3>
+                <div>
+                    <h6>{{user.hobby}}</h6>
+                    <p><strong>{{ instructor.experience_years }}.</strong> | Experience</p>
+                    <ul>
+                        {% if instructor %}
+                        <li>{{ instructor.expertise }}</li>
+                        {% endif %}
+                       
+                    </ul>
+                </div>
+             
+            </div>
+
+        
+
+        
+
+        
+          
+        </div>
+
+               
+           
+                </div>
+          </div>	
+          <!-- /Instructor profile -->
+          
+        </div>
+      </div>
+    </div>	
+    <!-- /Page Content -->
+
+
+    
+
+<!-- Your scripts -->
+<script>
+  // Example getAuthToken definition
+  function getAuthToken() {
+      return localStorage.getItem('authToken') || 'default-token';
+  }
+
+  // Configure HTMX to include the Authorization header
+  document.addEventListener("htmx:configRequest", (event) => {
+      event.detail.headers['Authorization'] = `Bearer ${getAuthToken()}`;
+  });
+</script>
+{% endblock content %}

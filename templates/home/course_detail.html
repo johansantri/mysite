@@ -23,8 +23,9 @@
                                         {% endif %}
                                     </div>
 									<div class="instructor-detail me-3">
-										<h5><a href="instructor-profile.html">{{course.instructor.user.first_name }} {{ course.instructor.user.last_name }} </a></h5>
+										<h5><a href="{% url 'courses:instructor_profile' course.instructor.user.username %}">{{course.instructor.user.first_name }} {{ course.instructor.user.last_name }} </a></h5>
 										<p>{{course.instructor.user.hobby}}</p>
+										
 									</div>									
 									<div class="rating mb-0">							
 										<i class="fas fa-star filled"></i>
@@ -279,11 +280,11 @@
 											<div class="abt-instructor-img">
 												
                                                 {% if course.instructor.user.photo %}
-                                                <a href="instructor-profile.html">
+                                                <a href="{% url 'courses:instructor_profile' course.instructor.user.username %}">
                                                 <img src="{{ course.instructor.user.photo.url }}" alt="img" class="img-fluid">
                                                 </a>
                                                 {% else %}
-                                                <a href="instructor-profile.html">
+                                                <a href="{% url 'courses:instructor_profile' course.instructor.user.username %}">
                                                 <img src="{% static 'assets/img/user/user1.jpg' %}" alt="img" class="img-fluid">
                                                 </a>
                                                 {% endif %}
@@ -291,7 +292,7 @@
                                             
                                             </div>
 											<div class="instructor-detail">
-												<h5><a href="instructor-profile.html">{{course.instructor.user.first_name}} {{course.instructor.user.last_name}}</a></h5>
+												<h5><a href="{% url 'courses:instructor_profile' course.instructor.user.username %}">{{course.instructor.user.first_name}} {{course.instructor.user.last_name}}</a></h5>
 												<p>{{course.instructor.user.hobby}}</p>
 											</div>
 										</div>

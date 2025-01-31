@@ -156,7 +156,7 @@ def popular_courses(request):
     # Convert queryset to list of dictionaries
     courses_list = list(courses.values(
         'id', 'course_name', 'slug', 'image',
-        'instructor__user__first_name', 'instructor__user__photo'
+        'instructor__user__first_name','instructor__user__last_name', 'instructor__user__photo'
     ))
 
     # Update image URLs to be full URLs
