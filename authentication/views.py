@@ -136,12 +136,12 @@ def all_user(request):
 
     return render(request, 'authentication/all_user.html', context)
 
-@csrf_protect
+@csrf_protect  # Keep this if you're doing a POST request or if you need it for security
 def popular_courses(request):
-    # Get the current date and time
+    # Get the current date
     now = timezone.now().date()
 
-    # Filter courses that are published and have an end_date in the future
+    # Get popular courses
     courses = Course.objects.filter(
         status_course='published',
         end_date__gte=now
@@ -149,20 +149,24 @@ def popular_courses(request):
         num_enrollments=Count('enrollments')
     ).order_by('-num_enrollments')[:6]
 
-    # Convert queryset to a list of dictionaries
+    # Check if there are no courses
+    if not courses.exists():
+        return JsonResponse({'error': 'No popular courses found.'}, status=404)
+
+    # Convert queryset to list of dictionaries
     courses_list = list(courses.values(
-        'id', 'course_name', 'slug', 'image', 
-        'instructor__user__first_name', 'instructor__user__photo'  # Include profile image
+        'id', 'course_name', 'slug', 'image',
+        'instructor__user__first_name', 'instructor__user__photo'
     ))
 
-     # Update image URLs to be full URLs
+    # Update image URLs to be full URLs
     for course in courses_list:
         if course['image']:
             course['image'] = settings.MEDIA_URL + course['image']
         if course['instructor__user__photo']:
             course['instructor__user__photo'] = settings.MEDIA_URL + course['instructor__user__photo']
     
-    # Return the list as a JSON response
+    # Return JSON response
     return JsonResponse({'courses': courses_list})
 
 def home(request):

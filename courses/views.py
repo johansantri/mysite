@@ -56,12 +56,12 @@ def draft_lms(request, id):
     # If the course is found, render the course page
     return render(request, 'courses/course_draft_view.html', {'course': course})
 
-def course_lms_detail(request, id):
+def course_lms_detail(request, slug):
    
     course = None
 
   
-    course = get_object_or_404(Course, id=id)
+    course = get_object_or_404(Course, slug=slug)
    
 
     # If no course is found, redirect to the homepage
