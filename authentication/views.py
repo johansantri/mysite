@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 import os
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Universiti
@@ -25,6 +26,7 @@ from django.core.cache import cache
 from django.db.models import Q
 from django.db.models import Count
 from django.utils import timezone
+from django.views.decorators.csrf import csrf_protect
 # Create your views here.
 
 #detailuser
@@ -134,26 +136,41 @@ def all_user(request):
 
     return render(request, 'authentication/all_user.html', context)
 
-
-def popular_courses():
+@csrf_protect
+def popular_courses(request):
     # Get the current date and time
     now = timezone.now().date()
 
-    # Use related_name 'enrollments' to count related enrollments
     # Filter courses that are published and have an end_date in the future
     courses = Course.objects.filter(
-        status_course='published',  # Filter courses that are published
-        end_date__gte=now           # Filter courses whose end date is today or in the future
+        status_course='published',
+        end_date__gte=now
     ).annotate(
-        num_enrollments=Count('enrollments')  # Count the enrollments
-    ).order_by('-num_enrollments')[:6]  # Limit to the top 6 most popular courses
+        num_enrollments=Count('enrollments')
+    ).order_by('-num_enrollments')[:6]
 
-    return courses
+    # Convert queryset to a list of dictionaries
+    courses_list = list(courses.values(
+        'id', 'course_name', 'slug', 'image', 
+        'instructor__user__first_name', 'instructor__user__photo'  # Include profile image
+    ))
+
+     # Update image URLs to be full URLs
+    for course in courses_list:
+        if course['image']:
+            course['image'] = settings.MEDIA_URL + course['image']
+        if course['instructor__user__photo']:
+            course['instructor__user__photo'] = settings.MEDIA_URL + course['instructor__user__photo']
+    
+    # Return the list as a JSON response
+    return JsonResponse({'courses': courses_list})
 
 def home(request):
+    # Check if the request is an AJAX request by checking the header
+    
 
-    courses = popular_courses()
-    return render(request,'home/index.html',{'courses': courses})
+    # If it's not an AJAX request, render the normal HTML page
+    return render(request, 'home/index.html')
 
 def dasbord(request):
     

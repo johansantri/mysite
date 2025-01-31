@@ -583,73 +583,9 @@
 						bibendum gravida maecenas augue elementum et neque. Suspendisse imperdiet.</p>
 				</div>
 				<div class="course-feature">
-					<div class="row">
-						{% for course in courses %}
-						<div class="col-lg-4 col-md-6 d-flex">
-							<div class="course-box d-flex aos" data-aos="fade-up">
-								<div class="product">
-									<div class="product-img">
-										<a href="{% url "courses:course_lms_detail" course.id %}">
-											<img class="img-fluid" alt="Img" src="{{ course.image.url }}">
-										</a>
-										<div class="price">
-											<h3>$300 <span>$99.00</span></h3>
-										</div>
-									</div>
-									<div class="product-content">
-										<div class="course-group d-flex">
-											<div class="course-group-img d-flex">
-												{% if course.instructor.user.photo %}
-                                                <a href="{% url "courses:course_lms_detail" course.id %}">
-                                                <img src="{{ course.instructor.user.photo.url }}" alt="img" class="img-fluid">
-                                                </a>
-                                                {% else %}
-                                                <a href="instructor-profile.html">
-                                                <img src="{% static 'assets/img/user/user1.jpg' %}" alt="img" class="img-fluid">
-                                                </a>
-                                                {% endif %}
-												<div class="course-name">
-													<h4><a href="instructor-profile.html">{{course.instructor.user.first_name}} {{course.instructor.user.last_name}}</a></h4>
-													<p>Instructor</p>
-												</div>
-											</div>
-											<div class="course-share d-flex align-items-center justify-content-center">
-												<a href="#"><i class="fa-regular fa-heart"></i></a>
-											</div>
-										</div>
-										<h3 class="title instructor-text"><a href="{% url "courses:course_lms_detail" course.id %}">{{ course.course_name }}</a></h3>
-										<div class="course-info d-flex align-items-center">
-											<div class="rating-img d-flex align-items-center">
-												<img src="{% static "assets/img/icon/icon-01.svg"%}" alt="Img">
-												<p>12+ Lesson</p>
-											</div>
-											<div class="course-view d-flex align-items-center">
-												<img src="{% static "assets/img/icon/icon-02.svg"%}" alt="Img">
-												<p>9hr 30min</p>
-											</div>
-										</div>
-										<div class="d-flex align-items-center justify-content-between">
-											<div class="rating m-0">
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star filled"></i>
-												<i class="fas fa-star"></i>
-												<span class="d-inline-block average-rating"><span>4.0</span> (15)</span>
-											</div>
-											<div class="all-btn all-category d-flex align-items-center">
-												<a href="checkout.html" class="btn btn-primary">BUY NOW</a>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						{% endfor %}
-
-						
-						
-						
+					<!--add data json populer course-->
+					<div class="row" id="courses-list">
+					
 						
 					</div>
 				</div>
@@ -2022,6 +1958,89 @@
 
 	<!-- Custom JS -->
 	<script src="{% static "assets/js/script.js"%}"></script>
+
+	<script>
+		$(document).ready(function(){
+			// Get CSRF token from the cookies (if you need to include it for any post requests)
+			//var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+			
+			// Send an AJAX request to get popular courses
+			$.ajax({
+				url: '/popular_courses/',  // URL for the popular_courses view
+				type: 'GET',  // Use GET for fetching the data
+				dataType: 'json',  // Expect a JSON response
+			
+				success: function(response) {
+					var courses = response.courses;
+					
+					// Loop through each course in the response
+					courses.forEach(function(course) {
+						var courseUrl = '/course-detail/' + course.id + '/'; 
+						// Append course info dynamically to the courses list
+						$('#courses-list').append(`
+							<div class="col-lg-4 col-md-6 d-flex">
+								<div class="course-box d-flex aos" data-aos="fade-up">
+									<div class="product">
+										<div class="product-img">
+											<a href="${courseUrl}">
+												<img class="img-fluid" alt="Img" src="${course.image}">
+											</a>
+											<div class="price">
+												<h3>$300 <span>$99.00</span></h3>
+											</div>
+										</div>
+										<div class="product-content">
+											<div class="course-group d-flex">
+												<div class="course-group-img d-flex">
+													<a href="instructor-profile.html">
+														<img src="${course.instructor__user__photo}" alt="img" class="img-fluid">
+													</a>
+													<div class="course-name">
+														<h4><a href="instructor-profile.html">${course.instructor__user__first_name}</a></h4>
+														<p>Instructor</p>
+													</div>
+												</div>
+												<div class="course-share d-flex align-items-center justify-content-center">
+													<a href="#"><i class="fa-regular fa-heart"></i></a>
+												</div>
+											</div>
+											<h3 class="title instructor-text"><a href="#">${course.course_name}</a></h3>
+											<div class="course-info d-flex align-items-center">
+												<div class="rating-img d-flex align-items-center">
+													<img src="{% static "assets/img/icon/icon-01.svg"%}" alt="Img">
+													<p>12+ Lessons</p>
+												</div>
+												<div class="course-view d-flex align-items-center">
+													<img src="{% static "assets/img/icon/icon-02.svg"%}" alt="Img">
+													<p>9hr 30min</p>
+												</div>
+											</div>
+											<div class="d-flex align-items-center justify-content-between">
+												<div class="rating m-0">
+													<i class="fas fa-star filled"></i>
+													<i class="fas fa-star filled"></i>
+													<i class="fas fa-star filled"></i>
+													<i class="fas fa-star filled"></i>
+													<i class="fas fa-star"></i>
+													<span class="d-inline-block average-rating"><span>4.0</span> (15)</span>
+												</div>
+												<div class="all-btn all-category d-flex align-items-center">
+													<a href="checkout.html" class="btn btn-primary">BUY NOW</a>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						`);
+					});
+				},
+				error: function(xhr, status, error) {
+					console.log("Error: " + error);
+				}
+			});
+		});
+		</script>
 
 </body>
 
