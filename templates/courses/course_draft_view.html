@@ -435,7 +435,10 @@
                                                         <a href="javascript:void(0);" class="btn btn-wish w-100"><i class="feather-share-2"></i> Share</a>
                                                     </div>
                                                 </div>
-                                                <a href="checkout.html" class="btn btn-enroll w-100">Enroll Now</a>
+                                                
+												<form id="enrollForm">
+													<button type="button" onclick="enrollCourse()" class="btn btn-enroll w-100">Enroll Now</button>
+												</form>
                                             </div>
                                         </div>
                                     </div>
@@ -500,5 +503,14 @@
 			</section>
 			<!-- /Pricing Plan -->
 
-
+			<script>
+				function enrollCourse() {
+					fetch("{% url 'courses:enroll_course' course.id %}", {
+						method: "GET",
+						headers: { "X-Requested-With": "XMLHttpRequest" }
+					})
+					.then(response => response.json())
+					.then(data => alert(data.message));
+				}
+				</script>
 {% endblock %}

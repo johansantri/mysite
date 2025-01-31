@@ -10,7 +10,7 @@ from django.conf import settings
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.db.models import Sum
-
+from datetime import date
 
 
 
@@ -127,6 +127,35 @@ class Course(models.Model):
         self.delete_old_image()  # Hapus gambar lama sebelum menyimpan data baru
         super().save(*args, **kwargs)
 
+    def is_enrollment_open(self):
+        """ Cek apakah periode enrollment masih terbuka """
+        today = date.today()
+        return self.start_enrol <= today <= self.end_enrol if self.start_enrol and self.end_enrol else False
+
+    def enroll_user(self, user):
+        """ Mendaftarkan user ke dalam course jika pendaftaran masih terbuka """
+        if not self.is_enrollment_open():
+            return {"status": "error", "message": "Enrollment is closed for this course."}
+
+        enrollment, created = Enrollment.objects.get_or_create(user=user, course=self)
+        if created:
+            return {"status": "success", "message": "Successfully enrolled in the course."}
+        else:
+            return {"status": "info", "message": "You are already enrolled in this course."}
+
+
+
+class Enrollment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='enrollments')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='enrollments')
+    enrolled_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} enrolled in {self.course.course_name}"
+    
+    class Meta:
+        unique_together = ('user', 'course')  # User hanya bisa mendaftar 1x ke tiap course
+
 class TeamMember(models.Model):
 
     course = models.ForeignKey(Course, related_name='team_members', on_delete=models.CASCADE)
@@ -216,6 +245,8 @@ class Assessment(models.Model):
     grade_range = models.ForeignKey(GradeRange, related_name="assessments", on_delete=models.SET_NULL, null=True, blank=True)  # Menghubungkan dengan rentang nilai
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"{self.name} "
     def save(self, *args, **kwargs):
         # Hapus validasi bobot dari sini jika sudah dilakukan di views
         # if self.weight > 100:  # Removed because validation is in views

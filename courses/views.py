@@ -25,6 +25,15 @@ from django.http import JsonResponse
 from decimal import Decimal
 from django.db.models import Sum
 
+
+
+
+#ernroll
+def enroll_course(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+    result = course.enroll_user(request.user)
+    return JsonResponse(result)
+
 def draft_lms(request, id):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)  # Redirect to login if not authenticated
