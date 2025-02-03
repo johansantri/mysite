@@ -65,39 +65,69 @@
           <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mt-4" id="courseList">
             {% for course in page_obj %}
               <div class="col course-item">
-                <div class="card">
-                  <img src="{{ course.image.url }}" class="card-img-top" alt="{{ course.course_name }}">
-                  <div class="card-body">
-                    <h5 class="card-title">{{ course.course_name }}</h5>
-                    <p>End Date: {{ course.end_date }}</p>
-                    <p>Status: {% if course.status_course %} Published {% else %} Unpublished {% endif %}</p>
-                  </div>
-                </div>
+                <a href="{% url 'courses:course_lms_detail' course.slug %}" class="text-decoration-none">
+                    <div class="card">
+                    <img src="{{ course.image.url }}" class="card-img-top" alt="{{ course.course_name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ course.course_name }}</h5>
+                        <p>End Date: {{ course.end_date }}</p>
+                        <p>Status: {% if course.status_course %} Published {% else %} Unpublished {% endif %}</p>
+                    </div>
+                    </div>
+                </a>
               </div>
             {% empty %}
               <p>No courses available.</p>
             {% endfor %}
           </div>
 
-          <!-- Pagination Controls -->
+         <style>
+            .pagination .page-item {
+                margin: 0 5px;
+            }
+            
+            .pagination .page-link {
+                color: #007bff;
+                border-radius: 20px;
+            }
+            
+            .pagination .page-link:hover {
+                background-color: #f8f9fa;
+                color: #0056b3;
+            }
+            
+            .pagination .disabled .page-link {
+                color: #6c757d;
+            }
+            
+         </style>
         <!-- Pagination controls -->
-            <div class="pagination">
-                <span class="step-links">
-                    {% if page_obj.has_previous %}
-                        <a href="?page=1{% if search_term %}&search={{ search_term }}{% endif %}">&laquo; first</a>
-                        <a href="?page={{ page_obj.previous_page_number }}{% if search_term %}&search={{ search_term }}{% endif %}">previous</a>
-                    {% endif %}
-                    
-                    <span class="current">
-                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                    </span>
-                    
-                    {% if page_obj.has_next %}
-                        <a href="?page={{ page_obj.next_page_number }}{% if search_term %}&search={{ search_term }}{% endif %}">next</a>
-                        <a href="?page={{ page_obj.paginator.num_pages }}{% if search_term %}&search={{ search_term }}{% endif %}">last &raquo;</a>
-                    {% endif %}
-                </span>
-            </div>
+        <div class="pagination justify-content-center mt-4">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1{% if search_term %}&search={{ search_term }}{% endif %}">&laquo; First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_term %}&search={{ search_term }}{% endif %}">Previous</a>
+                    </li>
+                {% endif %}
+        
+                <li class="page-item disabled">
+                    <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                </li>
+        
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_term %}&search={{ search_term }}{% endif %}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_term %}&search={{ search_term }}{% endif %}">Last &raquo;</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+        
         </div>
       </div>
 
