@@ -27,11 +27,54 @@ from django.db.models import Sum
 from datetime import datetime
 from django.db.models import Count
 
+
+
 #instrcutor profile
 def instructor_profile(request, username):
-    # Assuming you have an Instructor model with a unique username field
+    # Fetch the instructor object
     instructor = get_object_or_404(Instructor, user__username=username)
-    return render(request, 'home/instructor_profile.html', {'instructor': instructor})
+    partner_slug = instructor.provider.slug
+    # Get the search term from the GET request (if any)
+    search_term = request.GET.get('search', '')
+    
+    # Filter courses based on the search term, published status, and end_date
+    courses = instructor.courses.filter(
+        Q(course_name__icontains=search_term) &  # Search by course name
+        Q(status_course='published') &           # Only show published courses
+        Q(end_date__gte=datetime.now())  # Only courses that haven't ended yet
+    ).order_by('start_date')  # Optional: Order by start date or any other field
+    
+    # Get the count of filtered courses
+    courses_count = courses.count()
+
+    # Implement pagination: Show 6 courses per page
+    paginator = Paginator(courses, 6)
+    
+    # Get the current page number from GET params (default to 1 if invalid)
+    page_number = request.GET.get('page', 1)  # Default to page 1 if not specified
+    
+    # Ensure the page number is a positive integer
+    try:
+        page_number = int(page_number)
+        if page_number < 1:
+            page_number = 1  # If the page number is less than 1, set it to 1
+    except ValueError:
+        page_number = 1  # If the page number is not a valid integer, set it to 1
+    
+    # Get the page object
+    try:
+        page_obj = paginator.get_page(page_number)
+    except EmptyPage:
+        page_obj = paginator.get_page(1)  # If page number is out of range, show first page
+    
+    # Pass the instructor, courses, paginated courses, and courses count to the template
+    return render(request, 'home/instructor_profile.html', {
+        'instructor': instructor,
+        'page_obj': page_obj,
+        'courses_count': courses_count,  # Pass the count to the template
+        'search_term': search_term,
+        'partner_slug': partner_slug
+    })
 
 #ernroll
 def enroll_course(request, course_id):
