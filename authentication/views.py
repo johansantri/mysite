@@ -156,7 +156,13 @@ def popular_courses(request):
     # Convert queryset to list of dictionaries
     courses_list = list(courses.values(
         'id', 'course_name', 'slug', 'image',
-        'instructor__user__first_name','instructor__user__last_name', 'instructor__user__photo'
+        'instructor__user__first_name',
+        'instructor__user__last_name', 
+        'instructor__user__photo',
+        'instructor__user__username',
+        'org_partner__name__name',
+        'org_partner__name__slug',
+        'org_partner__logo',
     ))
 
     # Update image URLs to be full URLs
@@ -165,6 +171,8 @@ def popular_courses(request):
             course['image'] = settings.MEDIA_URL + course['image']
         if course['instructor__user__photo']:
             course['instructor__user__photo'] = settings.MEDIA_URL + course['instructor__user__photo']
+        if course['org_partner__logo']:
+            course['org_partner__logo'] = settings.MEDIA_URL + course['org_partner__logo']
     
     # Return JSON response
     return JsonResponse({'courses': courses_list})
