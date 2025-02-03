@@ -1392,7 +1392,7 @@ def partner_detail(request, partner_id):
     return render(request, 'partner/partner_detail.html', context)
 
 
-
+#org partner from lms
 def org_partner(request, slug):
     # Retrieve the partner using the provided slug
     partner = get_object_or_404(Partner, slug=slug)
