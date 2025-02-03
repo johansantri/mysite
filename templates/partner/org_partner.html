@@ -1,0 +1,111 @@
+{% extends 'home/base.html' %}
+
+{% block content %}
+
+<body class="bg-light">
+    <div class="container py-4">
+        <!-- Logo and Description Section -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+            <!-- Adjust the order for mobile and larger screens -->
+            <div class="d-flex align-items-center mb-4 mb-md-0 order-1 order-md-0"> 
+                <img src="https://storage.googleapis.com/a1aa/image/496fTxfu7-tQVG7V0465kxlJoLN8t8UpfYAjquhUUFU.jpg" alt="ICE Institute logo" class="img-fluid" width="100" height="100"/>
+                <div class="ms-4"> <!-- ms-4 for spacing (margin-left) in Bootstrap 5 -->
+                    <h1 class="h3 fw-bold">ICE Institute</h1>
+                    <p class="text-muted mb-1">ICElx</p>
+                    <p class="text-dark">Indonesia Cyber Education Institute or ICE Institute, is a digital marketplace for quality online courses in Indonesia. The main objective of ICE Institute is to facilitate the provision of quality education while ensuring the quality of online learning and distance education services.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-4">
+            <div class="d-flex flex-row flex-wrap justify-content-between align-items-center">
+                <div class="text-center mb-4 mb-md-0">
+                    <p class="text-muted mb-1">Total Learners</p>
+                    <p class="h4 fw-bold">7426</p>
+                </div>
+                <div class="text-center mb-4 mb-md-0">
+                    <p class="text-muted mb-1">Reviews</p>
+                    <p class="h4 fw-bold">0</p>
+                </div>
+                <div class="text-center mb-4 mb-md-0">
+                    <p class="text-muted mb-1">Total Course</p>
+                    <p class="h4 fw-bold">37</p>
+                </div>
+            </div>
+            <div class="d-flex mt-3 mt-md-0">
+                <a href="#" class="text-danger me-2"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="text-danger me-2"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-danger me-2"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#" class="text-danger"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+
+        <!-- Search and Category Section -->
+        <div class="row mt-4">
+            <div class="col-12 col-md-3 mb-4 mb-md-0">
+                <div class="input-group mb-4">
+                    <input type="text" class="form-control" placeholder="Find courses...">
+                    <div class="input-group-append">
+                        <span class="input-group-text"><i class="fas fa-search text-muted"></i></span>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded shadow-sm">
+                    <h2 class="h5 fw-bold mb-4">Categories</h2>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="d-block p-2 bg-light rounded">All</a></li>
+                        <li class="mb-2"><a href="#" class="d-block p-2 rounded">Linguistics</a></li>
+                        <li class="mb-2"><a href="#" class="d-block p-2 rounded">Business and Management</a></li>
+                        <li class="mb-2"><a href="#" class="d-block p-2 rounded">Digital Media</a></li>
+                        <li class="mb-2"><a href="#" class="d-block p-2 rounded">Education</a></li>
+                        <li class="mb-2"><a href="#" class="d-block p-2 rounded">Artificial Intelligence</a></li>
+                        <li class="mb-2"><a href="#" class="d-block p-2 rounded">Virtual Reality</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Courses Section -->
+            <div class="col-12 col-md-9">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="h5 fw-bold">Courses</h2>
+                    <select class="form-select w-auto">
+                        <option>Sort By</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-md-4 mb-4">
+                        <div class="bg-white p-4 rounded shadow-sm">
+                            <img src="https://storage.googleapis.com/a1aa/image/PMpIwQM0bu2cmWVkQAR02VQ89GYpYrga5OTyzDFyXOw.jpg" alt="Course image" class="img-fluid rounded mb-4" width="300" height="200"/>
+                            <h3 class="h6 fw-bold">ICElx</h3>
+                            <p class="text-dark">Asesmen Pembelajaran Daring</p>
+                            <p class="text-success fw-bold">Free</p>
+                            <p class="text-muted">58 Peserta</p>
+                            <p class="text-muted">Self-Paced</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 mb-4">
+                        <div class="bg-white p-4 rounded shadow-sm">
+                            <img src="https://storage.googleapis.com/a1aa/image/PMpIwQM0bu2cmWVkQAR02VQ89GYpYrga5OTyzDFyXOw.jpg" alt="Course image" class="img-fluid rounded mb-4" width="300" height="200"/>
+                            <h3 class="h6 fw-bold">ICElx</h3>
+                            <p class="text-dark">4. Asesment for Online Courses</p>
+                            <p class="text-success fw-bold">IDR 299833.2</p>
+                            <p class="text-muted">2 Peserta</p>
+                            <p class="text-muted">Self-Paced</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 mb-4">
+                        <div class="bg-white p-4 rounded shadow-sm">
+                            <img src="https://storage.googleapis.com/a1aa/image/PMpIwQM0bu2cmWVkQAR02VQ89GYpYrga5OTyzDFyXOw.jpg" alt="Course image" class="img-fluid rounded mb-4" width="300" height="200"/>
+                            <h3 class="h6 fw-bold">ICElx</h3>
+                            <p class="text-dark">Pemilihan Mata Kuliah ICE Institute Semester 2025.1</p>
+                            <p class="text-success fw-bold">Free</p>
+                            <p class="text-muted">181 Peserta</p>
+                            <p class="text-muted">Self-Paced</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

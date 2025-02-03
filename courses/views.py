@@ -1386,9 +1386,22 @@ def partner_detail(request, partner_id):
     context = {
         'partner': partner,
     }
-
+    
     # Render the partner_detail template with the partner data
     return render(request, 'partner/partner_detail.html', context)
+
+#detail_partner
+def org_partner(request, slug):
+    # Retrieve the partner using the provided partner_id
+    partner = get_object_or_404(Partner, slug=slug)
+
+    # Create context dictionary to pass to the template
+    context = {
+        'partner': partner,
+    }
+    print(partner)
+    # Render the partner_detail template with the partner data
+    return render(request, 'partner/org_partner.html', context)
 
 
 

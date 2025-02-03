@@ -18,7 +18,7 @@ from datetime import date
 class Partner(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,related_name="partner_user")  # Add this line to associate partners with users
     name = models.ForeignKey(Universiti, on_delete=models.CASCADE,related_name="partner_univ")
-    
+    slug = AutoSlugField(populate_from='name__slug', unique=True, null=False, editable=False)
     phone = models.CharField(max_length=50,null=True, blank=True)
     address = models.TextField(max_length=200,null=True, blank=True)
     description = models.TextField(null=True, blank=True)
