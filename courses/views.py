@@ -23,6 +23,13 @@ from django_ckeditor_5.widgets import CKEditor5Widget
 from django import forms
 from django.http import JsonResponse
 from decimal import Decimal
+from django.shortcuts import render
+
+def external_course_list(request):
+    """Menampilkan daftar courses dari OpenEdX API ke template."""
+    courses = fetch_openedx_courses()  # Ambil data dari API
+    return render(request, "courses/external_course_list.html", {"courses": courses})
+
 
 def draft_lms(request, id):
     if not request.user.is_authenticated:

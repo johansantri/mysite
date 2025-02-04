@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Kursus dari OpenEdX</title>
+</head>
+<body>
+    <h1>Daftar Kursus dari OpenEdX</h1>
+    <ul>
+        {% for course in courses %}
+            <li>
+                <h3>{{ course.title }}</h3>
+                <p>{{ course.short_description }}</p>
+                {% if course.media and course.media.image.large %}
+                    <img src="{{ course.media.image.large }}" alt="{{ course.title }}" width="200">
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>Tidak ada kursus tersedia.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
