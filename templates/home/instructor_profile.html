@@ -8,7 +8,13 @@
       <div class="col-md-8">
         <h1 class="display-4 fw-bold">{{instructor.user.first_name}} {{instructor.user.last_name}}</h1>
         <p class="lead text-muted">{{instructor.user.hobby}}</p>
-        <a href="{% url 'courses:org_partner' partner_slug %}"><span class="badge bg-primary mt-2">{{instructor.user.university}} <i class="fa fa-check" aria-hidden="true"></i>
+        {% if partner_slug %}
+    <a href="{% url 'courses:org_partner' partner_slug %}">
+        <span class="badge bg-primary mt-2">{{instructor.user.university}}  <i class="fa fa-check" aria-hidden="true"></i></span>
+    </a>
+{% else %}
+    <span class="badge bg-secondary mt-2">No University Available</span>
+{% endif %}
         </span></a>
 
         <!-- Stats Section -->
@@ -133,7 +139,12 @@
 
       <!-- Right Section: Profile Picture and Links -->
       <div class="col-md-4 d-flex flex-column align-items-center mt-4 mt-md-0">
-        <img src="{{instructor.user.photo.url}}" class="rounded-circle mb-3" alt="Instructor's profile picture" width="150" height="150">
+        {% if instructor.user.photo %}
+      <img src="{{ instructor.user.photo.url }}" class="rounded-circle mb-3" alt="Instructor's profile picture" width="150" height="150">
+      {% else %}
+          <img src="https://via.placeholder.com/100" class="rounded-circle mb-3" alt="Instructor's profile picture" width="150" height="150">
+      {% endif %}
+
         
         <div class="d-grid gap-2">
           <a href="{{instructor.user.email}}" class="btn btn-outline-primary">Email</a>

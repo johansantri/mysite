@@ -33,26 +33,33 @@ from django.db.models import Count
 def instructor_profile(request, username):
     # Fetch the instructor object
     instructor = get_object_or_404(Instructor, user__username=username)
-    partner_slug = instructor.provider.slug
+
+    # Ensure that the instructor has a provider (Partner) with a slug in the related Universiti
+    if not instructor.provider or not hasattr(instructor.provider.name, 'slug'):
+        # Handle the case where there is no provider or slug
+        partner_slug = None
+    else:
+        partner_slug = instructor.provider.name.slug  # Access slug from Universiti model
+
     # Get the search term from the GET request (if any)
     search_term = request.GET.get('search', '')
-    
+
     # Filter courses based on the search term, published status, and end_date
     courses = instructor.courses.filter(
         Q(course_name__icontains=search_term) &  # Search by course name
         Q(status_course='published') &           # Only show published courses
         Q(end_date__gte=datetime.now())  # Only courses that haven't ended yet
     ).order_by('start_date')  # Optional: Order by start date or any other field
-    
+
     # Get the count of filtered courses
     courses_count = courses.count()
 
     # Implement pagination: Show 6 courses per page
     paginator = Paginator(courses, 6)
-    
+
     # Get the current page number from GET params (default to 1 if invalid)
     page_number = request.GET.get('page', 1)  # Default to page 1 if not specified
-    
+
     # Ensure the page number is a positive integer
     try:
         page_number = int(page_number)
@@ -60,22 +67,21 @@ def instructor_profile(request, username):
             page_number = 1  # If the page number is less than 1, set it to 1
     except ValueError:
         page_number = 1  # If the page number is not a valid integer, set it to 1
-    
+
     # Get the page object
     try:
         page_obj = paginator.get_page(page_number)
     except EmptyPage:
         page_obj = paginator.get_page(1)  # If page number is out of range, show first page
-    
+
     # Pass the instructor, courses, paginated courses, and courses count to the template
     return render(request, 'home/instructor_profile.html', {
         'instructor': instructor,
         'page_obj': page_obj,
         'courses_count': courses_count,  # Pass the count to the template
         'search_term': search_term,
-        'partner_slug': partner_slug
+        'partner_slug': partner_slug  # Pass partner_slug to the template
     })
-
 #ernroll
 def enroll_course(request, course_id):
     course = get_object_or_404(Course, id=course_id)
@@ -104,27 +110,32 @@ def draft_lms(request, id):
     # If the course is found, render the course page
     return render(request, 'courses/course_draft_view.html', {'course': course})
 
+
 def course_lms_detail(request, slug):
     # Fetch the course by slug
     course = get_object_or_404(Course, slug=slug)
     
-    # Find similar courses based on category and level
+    # Check if the course's status is not 'published'
+    if course.status_course != 'published':
+        return redirect('/')  # Redirect to the homepage or another page of your choice
+
+    # Find similar courses based on category and level, only if the course is published
     similar_courses = Course.objects.filter(
-        category=course.category
+        category=course.category,
+        status_course='published',  # Only published courses
+        end_date__gte=datetime.now()  # Only courses with end_date in the future
     ).exclude(id=course.id)[:5]  # Exclude the current course and limit to 5
 
     # Optionally, add instructor as another similarity criterion
     if course.instructor:
         similar_courses_by_instructor = Course.objects.filter(
-            instructor=course.instructor
+            instructor=course.instructor,
+            status_course='published',  # Only published courses
+            end_date__gte=datetime.now()  # Only courses with end_date in the future
         ).exclude(id=course.id)[:5]
         similar_courses = similar_courses | similar_courses_by_instructor  # Combine queries (union)
-    
-    # If no course is found, redirect to the homepage
-    if not course:
-        return redirect('/')  # Redirect to the homepage if the course is not found
 
-    # If the course is found, render the course page with the similar courses
+    # Render the course page with the similar courses
     return render(request, 'home/course_detail.html', {
         'course': course,
         'similar_courses': similar_courses
@@ -1448,8 +1459,8 @@ def partner_detail(request, partner_id):
 
 #org partner from lms
 def org_partner(request, slug):
-    # Retrieve the partner using the provided slug
-    partner = get_object_or_404(Partner, slug=slug)
+    # Retrieve the partner using the provided slug of the Universiti model
+    partner = get_object_or_404(Partner, name__slug=slug)  # Use name__slug to access the slug in the Universiti model
 
     # Get the search query and category filter from the request
     search_query = request.GET.get('search', '')  # Default to empty string if no search query
@@ -1512,6 +1523,7 @@ def org_partner(request, slug):
 
     # Render the partner_detail template with the partner and related courses data
     return render(request, 'partner/org_partner.html', context)
+
 
 
 #search user

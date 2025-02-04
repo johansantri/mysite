@@ -327,10 +327,11 @@ class CourseForm(forms.ModelForm):
 
 
 class PartnerForm(forms.ModelForm):
+    
     class Meta:
         model = Partner
         fields = ['name','user','phone', 'address', 'description', 'tax', 'account_holder_name', 'balance', 'logo']
-
+       
         widgets = {
         "name": forms.Select(attrs={
             "placeholder": "Full Stack Development",
