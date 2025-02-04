@@ -1,6 +1,6 @@
-###################
+###########
 What is MYSITE
-###################
+###########
 
 MYSITE merupakan pengembangan aplikasi LMS berbasis Python Django.
 
@@ -62,22 +62,24 @@ py -m venv .venv
 ```shell
 .venv\Scripts\activate
 ```
-### 5. Upgrade pip:
-```shell
-py -m pip install --upgrade pip
-```
-### 6. Install requests:
+
+### 5. Install requests:
 ```shell
 py -m pip install requests
 ```
-### 7. Install dependencies dari requirements.txt:
+### 6. Install dependencies dari requirements.txt:
 ```shell
 py -m pip install -r requirements.txt
 ```
-### 8. Freeze requirements (untuk mencatat versi package):
+### 7. Freeze requirements (untuk mencatat versi package):
 ```shell
 py -m pip freeze
 ```
+### 8.Jalankan server
+``` shell
+python manage.py runserver
+```
+jika mengalami kendala, coba ikuti langkah dibawah ini
 ### 9. Salin data dari models.py:
 
 *****
