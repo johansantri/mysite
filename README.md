@@ -2,19 +2,18 @@
 What is MYSITE
 ###################
 
-MYSITE merupakan pengembangan aplikasi LMS berbasis  Python Django .
+MYSITE merupakan pengembangan aplikasi LMS berbasis Python Django.
 
 *******************
 Release Information
 *******************
 
-Repo  ini dirancang untuk bekerja team dalam pembuatan LMS
+Repo ini dirancang untuk bekerja team dalam pembuatan LMS
 <https://github.com/johansantri/mysite>`_ page.
 
 **************************
 Perubahan dan Pengembangan Aplikasi LMS
 **************************
-
 
 *******************
 Kebutuhan Requirements
@@ -22,17 +21,13 @@ Kebutuhan Requirements
 
 Django 5.1.
 
-Aplikasi ini berjalan di python 3 dengan framework Django 5.1.
+Aplikasi ini berjalan di Python 3 dengan framework Django 5.1.
 
 ************
 Installasi
 ************
 
 Perhatikan Panduan dibawah ini untuk memulai aplikasi
-
-
-
-
 
 ***************
 # Testing Website
@@ -59,7 +54,7 @@ git clone https://github.com/johansantri/mysite.git
 cd mysite
 ```
 ### 3. Buat virtual environment:
-anda bisa melihat refrensi berikut <https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/> jenis OS dalam menggunakan virtual environment ini menggunakan windows
+Anda bisa melihat referensi berikut <https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/> jenis OS dalam menggunakan virtual environment ini menggunakan Windows
 ```shell
 py -m venv .venv
 ```
@@ -86,7 +81,7 @@ py -m pip freeze
 ### 9. Salin data dari models.py:
 
 *****
-Sebelum menjalankan aplikasi, salin data dari models.py  **mysite\.venv\lib\site-packages\django\contrib\auth.** ke path anda atau path sama seperti anda salin
+Sebelum menjalankan aplikasi, salin data dari models.py **mysite\.venv\lib\site-packages\django\contrib\auth.** ke path Anda atau path sama seperti Anda salin
 Pastikan untuk menyalin seluruh isi **models.py.**
 ```shell
 from collections.abc import Iterable
@@ -109,7 +104,6 @@ from django_cleanup import cleanup
 from .validators import UnicodeUsernameValidator
 
 class Universiti(models.Model):
-
     name = models.CharField(max_length=200, blank=True, null=True)
     slug = models.SlugField(unique=True)
     location = models.CharField(max_length=100, blank=True, null=True)
@@ -698,7 +692,7 @@ python manage.py makemigrations
 
 Catatan:
 Pastikan Anda sudah menginstal **Python** sebelum menjalankan perintah ini.
-dan anda sudah menghapus semua isi dari folder migrations [course, auth, authentication]
+dan Anda sudah menghapus semua isi dari folder migrations [course, auth, authentication]
 **mysite\authentication\migrations**
 contoh 001_ sd angka terbesar
 

@@ -270,11 +270,42 @@
 								</div>
 							</div>
 							<!-- /Course Content -->
-							
+							<h2>Similar Courses with <strong>{{ course.instructor.user.first_name }}</strong></h2>
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+    {% for similar_course in similar_courses %}
+        <div class="col">
+            <div class="card h-100 shadow-lg border-0 rounded-3">
+                {% if similar_course.image %}
+                    <img src="{{ similar_course.image.url }}" class="card-img-top" alt="{{ similar_course.course_name }}">
+                {% else %}
+                    <img src="https://via.placeholder.com/150" class="card-img-top" alt="No Image Available">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{% url 'courses:course_lms_detail' similar_course.slug %}" class="text-decoration-none text-dark">
+                            {{ similar_course.course_name }}
+                        </a>
+                    </h5>
+                    <p class="card-text text-muted">{{ similar_course.sort_description|truncatewords:20 }}</p>
+                    <!-- Optional: Add a "view details" button -->
+                    <a href="{% url 'courses:course_lms_detail' similar_course.slug %}" class="btn btn-outline-primary btn-sm">View Details</a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="alert alert-warning" role="alert">
+                No similar courses available.
+            </div>
+        </div>
+    {% endfor %}
+</div>
+<br>
 							<!-- Instructor -->
 							<div class="card instructor-sec">
 								<div class="card-body">
-									<h5 class="subs-title">About the instructor</h5>
+									<h5 class="subs-title">About the instructor </h5>
 									<div class="instructor-wrap">
 										<div class="about-instructor">
 											<div class="abt-instructor-img">

@@ -105,19 +105,30 @@ def draft_lms(request, id):
     return render(request, 'courses/course_draft_view.html', {'course': course})
 
 def course_lms_detail(request, slug):
-   
-    course = None
-
-  
+    # Fetch the course by slug
     course = get_object_or_404(Course, slug=slug)
-   
+    
+    # Find similar courses based on category and level
+    similar_courses = Course.objects.filter(
+        category=course.category
+    ).exclude(id=course.id)[:5]  # Exclude the current course and limit to 5
 
+    # Optionally, add instructor as another similarity criterion
+    if course.instructor:
+        similar_courses_by_instructor = Course.objects.filter(
+            instructor=course.instructor
+        ).exclude(id=course.id)[:5]
+        similar_courses = similar_courses | similar_courses_by_instructor  # Combine queries (union)
+    
     # If no course is found, redirect to the homepage
     if not course:
         return redirect('/')  # Redirect to the homepage if the course is not found
 
-    # If the course is found, render the course page
-    return render(request, 'home/course_detail.html', {'course': course})
+    # If the course is found, render the course page with the similar courses
+    return render(request, 'home/course_detail.html', {
+        'course': course,
+        'similar_courses': similar_courses
+    })
 
 def course_instructor(request,id):
     if not request.user.is_authenticated:
