@@ -54,24 +54,22 @@
                         <span class="input-group-text" type="submit"><i class="fas fa-search text-muted"></i></span>
                     </div>
                 </form>
-            
-                {% if categories %}
-                    <div class="bg-white p-4 rounded shadow-sm">
-                        <h2 class="h5 fw-bold mb-4">Categories</h2>
-                        <ul class="list-unstyled">
+                
+                <div class="bg-white p-4 rounded shadow-sm">
+                    <h2 class="h5 fw-bold mb-4">Categories</h2>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <a href="?category=" class="d-block p-2 {% if selected_category == '' %}bg-light{% endif %}">All</a>
+                        </li>
+                        {% for category in categories %}
                             <li class="mb-2">
-                                <a href="?category=" class="d-block p-2 {% if selected_category == '' %}bg-light{% endif %}">All</a>
+                                <a href="?category={{ category.name }}" class="d-block p-2 {% if selected_category == category.name %}bg-light{% endif %}">
+                                    {{ category.name }}
+                                </a>
                             </li>
-                            {% for category in categories %}
-                                <li class="mb-2">
-                                    <a href="?category={{ category.name }}" class="d-block p-2 {% if selected_category == category.name %}bg-light{% endif %}">
-                                        {{ category.name }}
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
             
 
@@ -84,6 +82,7 @@
                             <option value="name" {% if sort_by == 'name' %}selected{% endif %}>Sort by Name</option>
                             <option value="date" {% if sort_by == 'date' %}selected{% endif %}>Sort by Date</option>
                             <option value="learners" {% if sort_by == 'learners' %}selected{% endif %}>Sort by Learners</option>
+                            <option value="status" {% if sort_by == 'status' %}selected{% endif %}>Sort by Status</option>  <!-- Added sorting by status -->
                         </select>
                     </div>
                 
@@ -91,9 +90,10 @@
                     <input type="hidden" name="search" value="{{ search_query }}">
                     <input type="hidden" name="category" value="{{ selected_category }}">
                 </form>
+                
                 <div class="row">
                     <div class="table-responsive">
-                        <table class="table table-bordered">
+                        <table class="table table-hover">
                             <thead>
                                 <tr>
                                     <th>Course Name</th>

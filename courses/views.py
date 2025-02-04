@@ -663,8 +663,58 @@ def instructor_detail(request, id):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
     
+    # Fetch the instructor object by the provided ID
     instructor = get_object_or_404(Instructor, id=id)
-    return render(request, 'instructor/instructor_detail.html', {'instructor': instructor})
+
+    # Ensure that the instructor has a provider (Partner) with a slug in the related Universiti
+    if not instructor.provider or not hasattr(instructor.provider.name, 'slug'):
+        # Handle the case where there is no provider or slug
+        partner_slug = None
+    else:
+        partner_slug = instructor.provider.name.slug  # Access slug from Universiti model
+
+    # Get the search term from the GET request (if any)
+    search_term = request.GET.get('search', '')
+
+    # Filter courses based on the search term
+    courses = instructor.courses.filter(
+        Q(course_name__icontains=search_term)  # Search by course name only
+    ).order_by('start_date')  # Optional: Order by start date or any other field
+
+    # Get the count of filtered courses
+    courses_count = courses.count()
+
+    # Implement pagination: Show 6 courses per page
+    paginator = Paginator(courses, 6)
+
+    # Get the current page number from GET params (default to 1 if invalid)
+    page_number = request.GET.get('page', 1)  # Default to page 1 if not specified
+
+    # Ensure the page number is a positive integer
+    try:
+        page_number = int(page_number)
+        if page_number < 1:
+            page_number = 1  # If the page number is less than 1, set it to 1
+    except ValueError:
+        page_number = 1  # If the page number is not a valid integer, set it to 1
+
+    # Get the page object
+    try:
+        page_obj = paginator.get_page(page_number)
+    except EmptyPage:
+        page_obj = paginator.get_page(1)  # If page number is out of range, show first page
+
+    # Create the context dictionary to pass to the template
+    context = {
+        'instructor': instructor,
+        'page_obj': page_obj,  # Pass the paginated courses to the template
+        'courses_count': courses_count,  # Total number of filtered courses
+        'search_term': search_term,  # Pass the search query to the template
+        'partner_slug': partner_slug,  # Pass the partner slug to the template
+    }
+
+    # Render the instructor_detail template with the context
+    return render(request, 'instructor/instructor_detail.html', context)
 
 #view instructor
 #@login_required
@@ -1446,19 +1496,15 @@ def partnerView(request):
 #detail_partner
 def partner_detail(request, partner_id):
     # Retrieve the partner using the provided partner_id
-    partner = get_object_or_404(Partner, id=partner_id)  # Use id to fetch the partner
+    partner = get_object_or_404(Partner, id=partner_id)
 
     # Get the search query and category filter from the request
-    search_query = request.GET.get('search', '')  # Default to empty string if no search query
-    selected_category = request.GET.get('category', '')  # Category filter
-    sort_by = request.GET.get('sort_by', 'name')  # Default sort by course name
+    search_query = request.GET.get('search', '')
+    selected_category = request.GET.get('category', '')
+    sort_by = request.GET.get('sort_by', 'name')
 
-    # Filter courses related to the partner, with status 'published' and end_date in the future
-    related_courses = Course.objects.filter(
-        org_partner_id=partner.id,
-        status_course='published',
-        end_date__gte=datetime.now()
-    )
+    # Filter courses related to the partner
+    related_courses = Course.objects.filter(org_partner_id=partner.id)
 
     # Apply search filter if provided
     if search_query:
@@ -1472,12 +1518,13 @@ def partner_detail(request, partner_id):
     if sort_by == 'name':
         related_courses = related_courses.order_by('course_name')
     elif sort_by == 'date':
-        related_courses = related_courses.order_by('created_at')  # Assuming 'created_at' is a field
+        related_courses = related_courses.order_by('created_at')
     elif sort_by == 'learners':
-        # Count the number of learners (enrollments) and sort by that
         related_courses = related_courses.annotate(learner_count=Count('enrollments')).order_by('-learner_count')
+    elif sort_by == 'status':
+        related_courses = related_courses.order_by('status_course')
 
-    # Count the total number of related courses after applying filters
+    # Count the total number of related courses
     total_courses = related_courses.count()
 
     # Group courses by category (if category field exists)
@@ -1488,27 +1535,28 @@ def partner_detail(request, partner_id):
             grouped_courses[category_name] = []
         grouped_courses[category_name].append(course)
 
-    # Implement server-side pagination
-    page_number = request.GET.get('page')  # Get the page number from the request
-    paginator = Paginator(related_courses, 10)  # Show 10 courses per page
+    # Fetch categories that have courses linked to this partner
+    categories_with_courses = Category.objects.filter(category_courses__org_partner_id=partner.id).distinct()
 
-    # Get the current page of courses
+    # Pagination setup
+    page_number = request.GET.get('page')
+    paginator = Paginator(related_courses, 10)
     page_obj = paginator.get_page(page_number)
 
-    # Create context dictionary to pass to the template
+    # Context data
     context = {
         'partner': partner,
-        'page_obj': page_obj,  # Pass the paginated courses to the template
-        'total_courses': total_courses,  # Pass the total course count to the template
-        'search_query': search_query,  # Pass the search query to the template
-        'grouped_courses': grouped_courses,  # Pass grouped courses by category
-        'selected_category': selected_category,  # Pass the selected category to the template
-        'categories': Category.objects.all(),  # Pass all categories to the template
-        'sort_by': sort_by  # Pass the sort_by parameter to the template
+        'page_obj': page_obj,
+        'total_courses': total_courses,
+        'search_query': search_query,
+        'grouped_courses': grouped_courses,
+        'selected_category': selected_category,
+        'categories': categories_with_courses,  # Only categories with courses
+        'sort_by': sort_by
     }
 
-    # Render the partner_detail template with the partner data
     return render(request, 'partner/partner_detail.html', context)
+
 
 
 #org partner from lms
