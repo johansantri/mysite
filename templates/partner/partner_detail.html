@@ -1,132 +1,156 @@
 {% extends 'home/base.html' %}
 
 {% block content %}
-<style>
-    .partner-card {
-        display: flex;
-        flex-wrap: wrap;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-    }
-
-    .partner-card-header {
-        background-color: #343a40;
-        color: #fff;
-        padding: 15px;
-        font-size: 1.5rem;
-        font-weight: bold;
-        text-align: center;
-        text-transform: uppercase;
-        width: 100%;
-    }
-
-    .partner-card-body {
-        display: flex;
-        flex-wrap: wrap;
-        background-color: #fdfdfd;
-    }
-
-    .partner-details {
-        flex: 1 1 60%;
-        padding: 20px;
-    }
-
-    .partner-logo {
-        flex: 1 1 40%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: #f8f9fa;
-        padding: 20px;
-    }
-
-    .partner-logo img {
-        max-width: 150px;
-        border-radius: 8px;
-        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
-        transition: transform 0.3s ease;
-    }
-
-    .partner-logo img:hover {
-        transform: scale(1.05);
-    }
-
-    .partner-info p {
-        font-size: 1.2rem;
-        line-height: 1.8;
-        margin-bottom: 10px;
-        color: #555;
-    }
-
-    .partner-info strong {
-        color: #333;
-    }
-
-    .back-button a {
-        display: inline-block;
-        margin-top: 30px;
-        font-weight: bold;
-        color: #fff;
-        background-color: #343a40;
-        border: none;
-        padding: 10px 25px;
-        border-radius: 50px;
-        text-transform: uppercase;
-        transition: background-color 0.3s ease, transform 0.3s ease;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-        text-align: center;
-    }
-
-    .back-button a:hover {
-        background-color: #212529;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.25);
-    }
-</style>
-
-<div class="page-content">
-    <div class="container">
-        <div class="row">
-            {% include "home/sidebar.html" %}
-            <div class="col-xl-9 col-lg-9">
-                <!-- Partner Information Card -->
-                <div class="partner-card">
-                    <div class="partner-card-header">
-                        {{ partner.name }}
-                    </div>
-                    <div class="partner-card-body">
-                        <!-- Partner Details Section -->
-                        <div class="partner-details">
-                            <div class="partner-info">
-                                <p><strong>Account Holder:</strong> {{ partner.account_holder_name }}</p>
-                                <p><strong>Email:</strong> {{ partner.user.email }}</p>
-                                <p><strong>Phone:</strong> {{ partner.phone }}</p>
-                                <p><strong>Address:</strong> {{ partner.address }}</p>
-                                <p><strong>Description:</strong> {{ partner.description }}</p>
-                              
-                               
-                                <p><strong>Balance:</strong> ${{ partner.balance }}</p>
-                                <p><strong>Join Date:</strong> {{ partner.created_ad|date:"F j, Y" }}</p>
-                            </div>
-                        </div>
-
-                        <!-- Partner Logo Section -->
-                        <div class="partner-logo">
-                            {% if partner.logo %}
-                                <img src="{{ partner.logo.url }}" alt="{{ partner.name }} Logo" class="img-fluid" />
-                            {% endif %}
-                        </div>
-                    </div>
+<body class="bg-light">
+    <div class="container py-4">
+        <!-- Logo and Description Section -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+            <div class="d-flex align-items-center mb-4 mb-md-0 order-1 order-md-0">
+                {% if partner.logo %}
+                    <img src="{{ partner.logo.url }}" alt="{{ partner.slug }}" class="img-fluid" width="100" height="100"/>
+                {% else %}
+                    <img src="https://via.placeholder.com/100" alt="No Logo Available" class="img-fluid" width="100" height="100"/>
+                {% endif %}
+                <div class="ms-4">
+                    <h1 class="h3 fw-bold">{{ partner.name }}</h1>
+                    <p>Join: {{ partner.created_ad|date:"F j, Y" }}</p>
+                    <p class="text-dark">{{ partner.description | safe }}</p>
+                    <p class="text-dark">{{ partner.address | safe }} | {{ partner.phone | safe }} | {{ partner.email | safe }} | {{ partner.user.email | safe }}</p>
                 </div>
+            </div>
+        </div>
 
-                <!-- Back to Partners List Button -->
+        <!-- Stats Section -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-4">
+            <div class="d-flex flex-row flex-wrap justify-content-between align-items-center gap-4">
+                <div class="text-center mb-4 mb-md-0">
+                    <p class="text-muted mb-1">Learners</p>
+                    <p class="h4 fw-bold">7426</p>
+                </div>
+                <div class="text-center mb-4 mb-md-0">
+                    <p class="text-muted mb-1">Reviews</p>
+                    <p class="h4 fw-bold">0</p>
+                </div>
+                <div class="text-center mb-4 mb-md-0">
+                    <p class="text-muted mb-1">Course</p>
+                    <p class="h4 fw-bold">{{ total_courses }}</p>
+                </div>
+            </div>
+            
+            <div class="d-flex mt-3 mt-md-0">
+                <a href="#" class="text-danger me-2"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="text-danger me-2"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-danger me-2"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#" class="text-danger"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+
+        <!-- Search and Category Section -->
+        <div class="row mt-4">
+            <div class="col-12 col-md-3 mb-4 mb-md-0">
+                <form method="get" action="{% url 'courses:partner_detail' partner.id %}">
+                    <div class="input-group mb-4">
+                        <input type="text" class="form-control" name="search" placeholder="Find courses..." value="{{ search_query }}">
+                        <span class="input-group-text" type="submit"><i class="fas fa-search text-muted"></i></span>
+                    </div>
+                </form>
+            
+                {% if categories %}
+                    <div class="bg-white p-4 rounded shadow-sm">
+                        <h2 class="h5 fw-bold mb-4">Categories</h2>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <a href="?category=" class="d-block p-2 {% if selected_category == '' %}bg-light{% endif %}">All</a>
+                            </li>
+                            {% for category in categories %}
+                                <li class="mb-2">
+                                    <a href="?category={{ category.name }}" class="d-block p-2 {% if selected_category == category.name %}bg-light{% endif %}">
+                                        {{ category.name }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+            
+
+            <!-- Courses Section -->
+            <div class="col-12 col-md-9">
+                <form method="get" action="{% url 'courses:partner_detail' partner.id %}">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="h5 fw-bold">Courses</h2>
+                        <select class="form-select w-auto" name="sort_by" onchange="this.form.submit()">
+                            <option value="name" {% if sort_by == 'name' %}selected{% endif %}>Sort by Name</option>
+                            <option value="date" {% if sort_by == 'date' %}selected{% endif %}>Sort by Date</option>
+                            <option value="learners" {% if sort_by == 'learners' %}selected{% endif %}>Sort by Learners</option>
+                        </select>
+                    </div>
+                
+                    <!-- Hidden inputs to preserve search and category filter values -->
+                    <input type="hidden" name="search" value="{{ search_query }}">
+                    <input type="hidden" name="category" value="{{ selected_category }}">
+                </form>
+                <div class="row">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Course Name</th>
+                                    <th>Image</th>
+                                    <th>Price</th>
+                                    <th>Participants</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for course in page_obj %}
+                                <tr>
+                                    <td><a href="{% url 'courses:course_lms_detail' course.slug %}" class="text-decoration-none">{{ course.course_name }}</a></td>
+                                    <td>
+                                        <img src="{{ course.image.url }}" alt="Course image" class="img-fluid" width="100" height="60"/>
+                                    </td>
+                                    <td class="text-success fw-bold">Free</td>
+                                    <td class="text-muted">58 Peserta</td>
+                                    <td class="text-muted">Self-Paced</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center">No related courses found.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!--pagination control-->
+                    <div class="pagination justify-content-center mt-4">
+                        {% if page_obj.has_previous %}
+                        <a href="?page=1&category={{ selected_category }}&search={{ search_query }}&sort_by={{ sort_by }}" class="page-link page-item me-2" aria-label="First">
+                            <span aria-hidden="true">&laquo;&laquo; First</span>
+                        </a>
+                        <a href="?page={{ page_obj.previous_page_number }}&category={{ selected_category }}&search={{ search_query }}&sort_by={{ sort_by }}" class="page-link page-item me-2" aria-label="Previous">
+                            <span aria-hidden="true">&laquo; Previous</span>
+                        </a>
+                        {% endif %}
+                        
+                        <span class="page-link page-item disabled">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                        
+                        {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}&category={{ selected_category }}&search={{ search_query }}&sort_by={{ sort_by }}" class="page-link page-item ms-2" aria-label="Next">
+                            <span aria-hidden="true">Next &raquo;</span>
+                        </a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}&category={{ selected_category }}&search={{ search_query }}&sort_by={{ sort_by }}" class="page-link page-item ms-2" aria-label="Last">
+                            <span aria-hidden="true">Last &raquo;&raquo;</span>
+                        </a>
+                        {% endif %}
+                    </div>
+                      <!-- Back to Partners List Button -->
                 <div class="text-center back-button">
                     <a href="{% url 'courses:partner_view' %}">Back to Partners List</a>
+                </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</body>
 {% endblock %}

@@ -1446,13 +1446,67 @@ def partnerView(request):
 #detail_partner
 def partner_detail(request, partner_id):
     # Retrieve the partner using the provided partner_id
-    partner = get_object_or_404(Partner, id=partner_id)
+    partner = get_object_or_404(Partner, id=partner_id)  # Use id to fetch the partner
+
+    # Get the search query and category filter from the request
+    search_query = request.GET.get('search', '')  # Default to empty string if no search query
+    selected_category = request.GET.get('category', '')  # Category filter
+    sort_by = request.GET.get('sort_by', 'name')  # Default sort by course name
+
+    # Filter courses related to the partner, with status 'published' and end_date in the future
+    related_courses = Course.objects.filter(
+        org_partner_id=partner.id,
+        status_course='published',
+        end_date__gte=datetime.now()
+    )
+
+    # Apply search filter if provided
+    if search_query:
+        related_courses = related_courses.filter(course_name__icontains=search_query)
+
+    # Apply category filter if provided
+    if selected_category:
+        related_courses = related_courses.filter(category__name=selected_category)
+
+    # Sort the courses based on the sort_by value
+    if sort_by == 'name':
+        related_courses = related_courses.order_by('course_name')
+    elif sort_by == 'date':
+        related_courses = related_courses.order_by('created_at')  # Assuming 'created_at' is a field
+    elif sort_by == 'learners':
+        # Count the number of learners (enrollments) and sort by that
+        related_courses = related_courses.annotate(learner_count=Count('enrollments')).order_by('-learner_count')
+
+    # Count the total number of related courses after applying filters
+    total_courses = related_courses.count()
+
+    # Group courses by category (if category field exists)
+    grouped_courses = {}
+    for course in related_courses:
+        category_name = course.category.name if course.category else 'Uncategorized'
+        if category_name not in grouped_courses:
+            grouped_courses[category_name] = []
+        grouped_courses[category_name].append(course)
+
+    # Implement server-side pagination
+    page_number = request.GET.get('page')  # Get the page number from the request
+    paginator = Paginator(related_courses, 10)  # Show 10 courses per page
+
+    # Get the current page of courses
+    page_obj = paginator.get_page(page_number)
 
     # Create context dictionary to pass to the template
     context = {
         'partner': partner,
+        'page_obj': page_obj,  # Pass the paginated courses to the template
+        'total_courses': total_courses,  # Pass the total course count to the template
+        'search_query': search_query,  # Pass the search query to the template
+        'grouped_courses': grouped_courses,  # Pass grouped courses by category
+        'selected_category': selected_category,  # Pass the selected category to the template
+        'categories': Category.objects.all(),  # Pass all categories to the template
+        'sort_by': sort_by  # Pass the sort_by parameter to the template
     }
-    
+
     # Render the partner_detail template with the partner data
     return render(request, 'partner/partner_detail.html', context)
 
