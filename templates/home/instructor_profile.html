@@ -146,13 +146,13 @@
       {% endif %}
 
         
-        <div class="d-grid gap-2">
-          <a href="{{instructor.user.email}}" class="btn btn-outline-primary">Email</a>
-          <a href="{{instructor.user.twitter}}" class="btn btn-outline-primary">X</a>
-          <a href="{{instructor.user.linkedin}}" class="btn btn-outline-primary">Linkedin</a>
-          <a href="{{instructor.user.youtube}}" class="btn btn-outline-primary">Youtube</a>
-          <a href="{{instructor.user.instagram}}" class="btn btn-outline-primary">Instagram</a>
-        </div>
+      <div class="d-grid gap-2">
+        <a href="mailto:{{instructor.user.email}}" class="btn btn-outline-primary" target="_blank">Email</a>
+        <a href="{{instructor.user.twitter}}" class="btn btn-outline-primary" target="_blank">X</a>
+        <a href="{{instructor.user.linkedin}}" class="btn btn-outline-primary" target="_blank">Linkedin</a>
+        <a href="{{instructor.user.youtube}}" class="btn btn-outline-primary" target="_blank">Youtube</a>
+        <a href="{{instructor.user.instagram}}" class="btn btn-outline-primary" target="_blank">Instagram</a>
+    </div>
       </div>
     </div>
   </div>

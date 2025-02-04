@@ -56,7 +56,7 @@
 
           <!-- Search Bar -->
           <div class="mb-4">
-            <form method="GET" action="{% url 'courses:instructor_profile' username=instructor.user.username %}">
+            <form method="GET" action="{% url 'courses:instructor_detail' instructor.id %}">
               <div class="row g-2">
                 <!-- Search Input -->
                 <div class="col-12 col-md-10">
@@ -71,24 +71,37 @@
           </div>
           
 
-          <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mt-4" id="courseList">
-            {% for course in page_obj %}
-              <div class="col course-item">
-                <a href="{% url 'courses:course_lms_detail' course.slug %}" class="text-decoration-none">
-                    <div class="card">
-                    <img src="{{ course.image.url }}" class="card-img-top" alt="{{ course.course_name }}">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ course.course_name }}</h5>
-                        <p>End Date: {{ course.end_date }}</p>
-                        <p>Status: {% if course.status_course %} Published {% else %} Unpublished {% endif %}</p>
-                    </div>
-                    </div>
-                </a>
-              </div>
-            {% empty %}
-              <p>No courses available.</p>
-            {% endfor %}
-          </div>
+          <div class="table-responsive mt-4">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Course Name</th>
+                        <th>Image</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course in page_obj %}
+                        <tr>
+                            <td><a href="{% url 'courses:course_lms_detail' course.slug %}">{{ course.course_name }}</a></td>
+                            <td>
+                                <img src="{{ course.image.url }}" alt="{{ course.course_name }}" class="img-fluid" style="max-width: 100px;">
+                            </td>
+                            <td>{{ course.end_date }}</td>
+                            <td>{% if course.status_course == 'published' %} Published {% else %} Unpublished {% endif %}</td>
+                           
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center">No courses available.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
 
          <style>
             .pagination .page-item {
@@ -149,13 +162,14 @@
       {% endif %}
 
         
-        <div class="d-grid gap-2">
-          <a href="{{instructor.user.email}}" class="btn btn-outline-primary">Email</a>
-          <a href="{{instructor.user.twitter}}" class="btn btn-outline-primary">X</a>
-          <a href="{{instructor.user.linkedin}}" class="btn btn-outline-primary">Linkedin</a>
-          <a href="{{instructor.user.youtube}}" class="btn btn-outline-primary">Youtube</a>
-          <a href="{{instructor.user.instagram}}" class="btn btn-outline-primary">Instagram</a>
-        </div>
+      <div class="d-grid gap-2">
+        <a href="mailto:{{instructor.user.email}}" class="btn btn-outline-primary" target="_blank">Email</a>
+        <a href="{{instructor.user.twitter}}" class="btn btn-outline-primary" target="_blank">X</a>
+        <a href="{{instructor.user.linkedin}}" class="btn btn-outline-primary" target="_blank">Linkedin</a>
+        <a href="{{instructor.user.youtube}}" class="btn btn-outline-primary" target="_blank">Youtube</a>
+        <a href="{{instructor.user.instagram}}" class="btn btn-outline-primary" target="_blank">Instagram</a>
+    </div>
+    
       </div>
     </div>
     
