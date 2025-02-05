@@ -36,7 +36,7 @@ from django.views.decorators.csrf import csrf_protect
 #category populer lms
 def popular_categories(request):
     # Get the top 8 categories ordered by the number of courses in them
-    popular_categories = Category.objects.annotate(num_courses=Count('category_courses')).order_by('-num_courses')[:8]
+    popular_categories = Category.objects.annotate(num_courses=Count('category_courses')).order_by('-num_courses')[:6]
 
     # Manually serialize the queryset into a list of dictionaries
     categories_data = [{
