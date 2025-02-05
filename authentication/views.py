@@ -33,20 +33,6 @@ from django.views.decorators.csrf import csrf_protect
 
 
 
-#category populer lms
-def popular_categories(request):
-    # Get the top 8 categories ordered by the number of courses in them
-    popular_categories = Category.objects.annotate(num_courses=Count('category_courses')).order_by('-num_courses')[:6]
-
-    # Manually serialize the queryset into a list of dictionaries
-    categories_data = [{
-        'id': category.id,
-        'name': category.name,
-        'num_courses': category.num_courses
-    } for category in popular_categories]
-
-    # Return the serialized data as JSON
-    return JsonResponse({'popular_categories': categories_data})
 
 
 #course_list lms
@@ -273,11 +259,14 @@ def popular_courses(request):
     return JsonResponse({'courses': courses_list})
 
 def home(request):
-    # Check if the request is an AJAX request by checking the header
+    
+    popular_categories = Category.objects.annotate(num_courses=Count('category_courses')).order_by('-num_courses')[:6]
+
+    
     
 
-    # If it's not an AJAX request, render the normal HTML page
-    return render(request, 'home/index.html')
+    
+    return render(request, 'home/index.html',{'popular_categories':popular_categories})
 
 
 

@@ -366,6 +366,7 @@
 						maecenas augue elementum et neque. Suspendisse imperdiet.</p>
 				</div>
 				<div class="owl-carousel mentoring-course owl-theme aos" data-aos="fade-up">
+					{% for categori in popular_categories %}
 					<div class="feature-box text-center ">
 						<div class="feature-bg">
 							<div class="feature-header">
@@ -373,12 +374,13 @@
 									<img src="{% static "assets/img/categories-icon.png"%}" alt="Img">
 								</div>
 								<div class="feature-cont">
-									<div class="feature-text">Angular Development</div>
+									<div class="feature-text">{{categori.name}}</div>
 								</div>
 							</div>
-							<p>40 Instructors</p>
+							<p>{{categori.num_courses}} Courses</p>
 						</div>
 					</div>
+					{% endfor %}
 					<div class="feature-box text-center ">
 						<div class="feature-bg">
 							<div class="feature-header">
@@ -2045,64 +2047,7 @@
 			});
 		});
 		</script>
-<script>
-	// Home Three Choose favourite Course from top Category
 
-	$(document).ready(function() {
-    // Make the AJAX request to get popular categories
-    $.ajax({
-        url: "{% url 'authentication:popular_categories' %}",  // The URL for the 'popular_categories' view
-        type: "GET",
-        dataType: "json",
-        success: function(response) {
-            const categories = response.popular_categories;  // Get the list of categories from the response
-            const carousel = $('.owl-carousel.home-three-favourite-carousel');  // The Owl Carousel container
-
-            // Clear any existing content in the carousel before appending new categories
-            carousel.empty();
-
-            // Loop through the categories and append them to the carousel
-            categories.forEach(function(category) {
-                carousel.append(
-                    `<div class="item">
-                        <div class="feature-box text-center">
-                            <div class="feature-bg">
-                                <div class="feature-header">
-                                    <div class="feature-icon">
-                                        <img src="{% static 'assets/img/categories-icon.png' %}" alt="Img">
-                                    </div>
-                                    <div class="feature-cont">
-                                        <div class="feature-text">${category.name}</div>
-                                    </div>
-                                </div>
-                                <p>${category.num_courses} Courses</p>
-                            </div>
-                        </div>
-                    </div>`
-                );
-            });
-
-            // Initialize the Owl Carousel
-            carousel.owlCarousel({
-                margin: 24,
-                nav: true,
-                loop: true,
-                responsive: {
-                    0: { items: 1 },
-                    500: { items: 1 },
-                    768: { items: 2 },
-                    1000: { items: 3 },
-                    1300: { items: 4 }
-                }
-            });
-        },
-        error: function(xhr, status, error) {
-            console.error("An error occurred while fetching popular categories:", error);
-        }
-    });
-});
-
-</script>
 </body>
 
 </html>
