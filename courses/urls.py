@@ -51,6 +51,7 @@ urlpatterns = [
     path('course-detail/<slug:slug>/', views.course_lms_detail, name='course_lms_detail'),
     
     
+    
    
    
 ]

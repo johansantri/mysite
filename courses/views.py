@@ -29,6 +29,8 @@ from django.db.models import Count
 
 
 
+
+
 #instrcutor profile
 def instructor_profile(request, username):
     # Fetch the instructor object

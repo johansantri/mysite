@@ -18,7 +18,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth import logout
 from authentication.forms import UserRegistrationForm, Userprofile, UserPhoto
 from .models import Profile
-from courses.models import Instructor, Course, Enrollment
+from courses.models import Instructor, Course, Enrollment, Category
 from django.http import HttpResponse,JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseForbidden
@@ -28,6 +28,78 @@ from django.db.models import Count
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_protect
 # Create your views here.
+
+
+#course_list lms
+
+def course_list(request):
+    # Get all courses
+    courses = Course.objects.all()
+
+    # Search functionality
+    search_query = request.GET.get('search', '')
+    if search_query:
+        courses = courses.filter(course_name__icontains=search_query)
+
+    # Filter by category
+    category_filter = request.GET.getlist('category')  # Get selected categories as a list
+    if category_filter:
+        courses = courses.filter(category__in=category_filter)
+
+    # Pagination setup
+    paginator = Paginator(courses, 9)  # Show 9 courses per page
+    page_number = request.GET.get('page', 1)  # Default to page 1 if no page is provided
+
+    try:
+        page_obj = paginator.get_page(page_number)  # Get the page object for pagination
+    except PageNotAnInteger:
+        # If the page is not an integer, return the first page
+        page_obj = paginator.get_page(1)
+    except EmptyPage:
+        # If the page number is out of range (e.g., 9999), return the last page
+        page_obj = paginator.get_page(paginator.num_pages)
+
+    # Prepare pagination info for the template
+    start_index = page_obj.start_index()
+    end_index = page_obj.end_index()
+
+    # Get all available categories to display in the filter
+    categories = Category.objects.all()
+
+    # Prepare courses data for rendering in template
+    courses_data = []
+    for course in page_obj:
+        course_price = 'FREE' if not course.org_partner.balance or course.org_partner.balance == 0 else course.org_partner.balance
+        courses_data.append({
+            'course_name': course.course_name,
+            'course_slug': course.slug,
+            'course_image': course.image.url if course.image else None,
+            'course_price': course_price,  # Store 'FREE' or the actual balance
+            'instructor': course.instructor.user.get_full_name() if course.instructor else None,
+            'instructor_username': course.instructor.user.username if course.instructor else None,
+            'photo': course.instructor.user.photo.url if course.instructor and course.instructor.user.photo else None,
+            'partner': course.org_partner.name if course.org_partner else None,  # Corrected access to partner name
+            'category': course.category.name if course.category else None,  # Corrected access to category name
+            'universiti': course.org_partner.name.name if course.org_partner and course.org_partner.name else None  # Serialize Universiti's name
+        })
+
+    # Prepare the context for rendering
+    context = {
+        'courses': courses_data,
+        'total_courses': courses.count(),
+        'total_pages': paginator.num_pages,
+        'current_page': page_obj.number,
+        'start_index': start_index,
+        'end_index': end_index,
+        'search_query': search_query,
+        'category_filter': category_filter,
+        'categories': list(categories.values('id', 'name')),  # Ensure categories are serializable
+    }
+
+    # Return as JSON response
+    #return JsonResponse(context)
+    return render(request, 'home/course_list.html', context)
+
 
 #detailuser
 def user_detail(request, user_id):
