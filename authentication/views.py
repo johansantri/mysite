@@ -24,10 +24,29 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseForbidden
 from django.core.cache import cache
 from django.db.models import Q
+from django.core import serializers
 from django.db.models import Count
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_protect
 # Create your views here.
+
+
+
+
+#category populer lms
+def popular_categories(request):
+    # Get the top 8 categories ordered by the number of courses in them
+    popular_categories = Category.objects.annotate(num_courses=Count('category_courses')).order_by('-num_courses')[:8]
+
+    # Manually serialize the queryset into a list of dictionaries
+    categories_data = [{
+        'id': category.id,
+        'name': category.name,
+        'num_courses': category.num_courses
+    } for category in popular_categories]
+
+    # Return the serialized data as JSON
+    return JsonResponse({'popular_categories': categories_data})
 
 
 #course_list lms

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Popular Categories</h1>
+<div class="popular-categories">
+    <ul>
+        {% for category in popular_categories %}
+            <li>
+                <a href="{% url 'category_detail' category.id %}">
+                    {{ category.name }} ({{ category.num_courses }} courses)
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

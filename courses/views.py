@@ -1247,7 +1247,7 @@ def courseView(request):
         'course_run'
     ).order_by('-id')
 
-    print(courses)
+    #print(courses)
     #print(courses)
     # Get the page number from the request
     page_number = request.GET.get('page', 1)

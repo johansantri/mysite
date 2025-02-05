@@ -149,42 +149,7 @@ Version      : 1.0
 	    });
     }
 
-	// Home Three Choose favourite Course from top Category
-
-	if($('.owl-carousel.home-three-favourite-carousel').length > 0 ){
-		var owl = $('.owl-carousel.home-three-favourite-carousel');
-			  owl.owlCarousel({
-			margin: 24,
-			nav : false,
-			nav: true,
-			loop: true,
-			responsive: {
-				  0: {
-					items: 1
-				  },
-				  500:{
-					items:1,
-					
-				},
-				768:{
-					items:1,
-					
-				},
-				900:{
-					items:2,
-					
-				},
-				1000:{
-					items:3,
-					
-				},
-				1300:{
-					items:5,
-					
-				}
-			}
-		});
-	}
+	
 	
 	// Home Three Most Trending Courses
 
