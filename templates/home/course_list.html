@@ -106,36 +106,39 @@
                     {% endfor %}
                 </div>
 
-                <!-- /pagination -->
-                    <div class="row">
-                        <div class="col-md-12">
-                            <ul class="pagination lms-page">
-                                <!-- Previous Button -->
-                                <li class="page-item prev {% if not courses.has_previous %}disabled{% endif %}">
-                                    <a class="page-link" href="?page={{ courses.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}">
-                                        <i class="fas fa-angle-left"></i>
+              <!-- /pagination -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <ul class="pagination lms-page">
+                            <!-- Previous Button -->
+                            <li class="page-item prev {% if not page_obj.has_previous %}disabled{% endif %}">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}">
+                                    <i class="fas fa-angle-left"></i>
+                                </a>
+                            </li>
+
+                            <!-- Page Numbers -->
+                            {% for page_num in page_obj.paginator.page_range %}
+                                <li class="page-item {% if page_obj.number == page_num %}active{% endif %}">
+                                    <a class="page-link" href="?page={{ page_num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}">
+                                        {{ page_num }}
                                     </a>
                                 </li>
+                            {% endfor %}
 
-                                <!-- Page Numbers -->
-                                {% for page_num in courses.paginator.page_range %}
-                                    <li class="page-item {% if courses.number == page_num %}active{% endif %}">
-                                        <a class="page-link" href="?page={{ page_num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}">
-                                            {{ page_num }}
-                                        </a>
-                                    </li>
-                                {% endfor %}
-
-                                <!-- Next Button -->
-                                <li class="page-item next {% if not courses.has_next %}disabled{% endif %}">
-                                    <a class="page-link" href="?page={{ courses.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}">
-                                        <i class="fas fa-angle-right"></i>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+                            <!-- Next Button -->
+                            <li class="page-item next {% if not page_obj.has_next %}disabled{% endif %}">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}">
+                                    <i class="fas fa-angle-right"></i>
+                                </a>
+                            </li>
+                        </ul>
                     </div>
-                    <!-- /pagination -->
+                </div>
+                <!-- /pagination -->
+
+
+
             </div>
             <div class="col-lg-3 theiaStickySidebar">
                 <!-- Category Filter -->

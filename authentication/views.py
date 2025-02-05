@@ -47,9 +47,15 @@ def course_list(request):
         courses = courses.filter(category__in=category_filter)
 
     # Pagination setup
-    paginator = Paginator(courses, 9)  # Show 9 courses per page
+    paginator = Paginator(courses, 6)  # Show 4 courses per page
     page_number = request.GET.get('page', 1)  # Default to page 1 if no page is provided
-
+    
+    # Validate page_number: if it's invalid or empty, default to page 1
+    try:
+        page_number = int(page_number) if int(page_number) >= 1 else 1
+    except ValueError:
+        page_number = 1  # If it's not a valid integer, default to 1
+    
     try:
         page_obj = paginator.get_page(page_number)  # Get the page object for pagination
     except PageNotAnInteger:
@@ -96,8 +102,6 @@ def course_list(request):
         'categories': list(categories.values('id', 'name')),  # Ensure categories are serializable
     }
 
-    # Return as JSON response
-    #return JsonResponse(context)
     return render(request, 'home/course_list.html', context)
 
 
@@ -256,34 +260,38 @@ def home(request):
     # If it's not an AJAX request, render the normal HTML page
     return render(request, 'home/index.html')
 
+
+
+
 def dasbord(request):
     # Initialize variables
-    enrollments = None
-    search_query = request.GET.get('search', '')  # Get search query from the request
-    enrollments_page = request.GET.get('enrollments_page', 1)  # Page number for enrollments
-    
-    # Fetch enrollments for the currently logged-in user
-    enrollments = Enrollment.objects.filter(user=request.user)
+    if request.user.is_authenticated:
+        enrollments = None
+        search_query = request.GET.get('search', '')  # Get search query from the request
+        enrollments_page = request.GET.get('enrollments_page', 1)  # Page number for enrollments
+        
+        # Fetch enrollments for the currently logged-in user
+        enrollments = Enrollment.objects.filter(user=request.user)
 
-    # Search logic for enrollments (by username or course name)
-    if search_query:
-        enrollments = enrollments.filter(
-            user__username__icontains=search_query
-        ) | enrollments.filter(
-            course__course_name__icontains=search_query
-        )  # Search by user username or course name
-    
-    # Pagination for enrollments
-    enrollments_paginator = Paginator(enrollments, 5)  # Show 5 enrollments per page
-    enrollments = enrollments_paginator.get_page(enrollments_page)
+        # Search logic for enrollments (by username or course name)
+        if search_query:
+            enrollments = enrollments.filter(
+                user__username__icontains=search_query
+            ) | enrollments.filter(
+                course__course_name__icontains=search_query
+            )  # Search by user username or course name
+        
+        # Pagination for enrollments
+        enrollments_paginator = Paginator(enrollments, 5)  # Show 5 enrollments per page
+        enrollments = enrollments_paginator.get_page(enrollments_page)
 
-    # Render the dashboard with the appropriate data
-    return render(request, 'home/dasbord.html', {
-        'enrollments': enrollments,
-        'search_query': search_query,  # Pass the search query to the template
-        'enrollments_page': enrollments_page
-    })
-
+        # Render the dashboard with the appropriate data
+        return render(request, 'home/dasbord.html', {
+            'enrollments': enrollments,
+            'search_query': search_query,  # Pass the search query to the template
+            'enrollments_page': enrollments_page
+        })
+    return redirect("/login/?next=%s" % request.path)
 
 
 def pro(request,username):
