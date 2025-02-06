@@ -1,6 +1,6 @@
 from django.contrib import admin
 from . import models 
-from .models import Partner,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
+from .models import Partner,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
 from import_export.admin import ImportExportModelAdmin
 
 class CourseAdmin(ImportExportModelAdmin):
@@ -10,7 +10,12 @@ class CourseAdmin(ImportExportModelAdmin):
 # Register the model with the admin site using the ImportExportModelAdmin
 admin.site.register(Course, CourseAdmin)
 
-
+@admin.register(CalculateAdminPrice)
+class CalculateAdminPriceAdmin(admin.ModelAdmin):
+    list_display = ('name', 'amount', 'created_at')  # Menampilkan kolom utama di list view
+    search_fields = ('name',)  # Memungkinkan pencarian berdasarkan nama
+    list_filter = ('created_at',)  # Filter berdasarkan tanggal dibuat
+    ordering = ('-created_at',)  # Urutkan dari yang terbaru
 
 admin.site.register(models.Section)
 class PartnerAdmin(admin.ModelAdmin):

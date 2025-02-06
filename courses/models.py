@@ -11,7 +11,7 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.db.models import Sum
 from datetime import date
-
+from decimal import Decimal
 
 
 
@@ -22,7 +22,8 @@ class Partner(models.Model):
     phone = models.CharField(max_length=50,null=True, blank=True)
     address = models.TextField(max_length=200,null=True, blank=True)
     description = models.TextField(null=True, blank=True)
-    tax = models.CharField(max_length=50,null=True, blank=True)
+    tax = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Tax (%)", default=0.00)
+    iceiprice = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="share icei (%)", default=0.00)
     account_number = models.CharField(max_length=20, null=True, blank=True)  # Account number as a string
     account_holder_name = models.CharField(max_length=250,null=True, blank=True)
     balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
@@ -150,17 +151,125 @@ class PricingType(models.Model):
 
     def __str__(self):
         return self.name
-
-class CoursePrice(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="prices")
-    price_type = models.ForeignKey(PricingType, on_delete=models.CASCADE, related_name="course_prices")  # Relasi ke PricingType
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    duration_days = models.IntegerField(null=True, blank=True)
-    start_date = models.DateField(null=True, blank=True)  # Jika harga punya periode aktif
-    end_date = models.DateField(null=True, blank=True)
+class CalculateAdminPrice(models.Model):
+    name = models.CharField(max_length=50, unique=True, verbose_name="Pricing Type")  
+    amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Amount (IDR)")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created At")
 
     def __str__(self):
-        return f"{self.course.course_name} - {self.price_type.name}: ${self.amount if self.amount else 'Gratis'}"
+        return f"{self.name} - IDR {self.amount:,.2f}"
+    
+class CoursePrice(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="prices")
+    price_type = models.ForeignKey(PricingType, on_delete=models.CASCADE, related_name="course_prices")
+    partner = models.ForeignKey(Partner, on_delete=models.CASCADE, related_name="course_prices")
+
+    # Harga dari Partner
+    partner_price = models.DecimalField(max_digits=15, decimal_places=2, verbose_name="Partner Price", default=Decimal('0.00'))
+
+    # Diskon dari Partner
+    discount_percent = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('0.00'), verbose_name="Discount (%)")
+    discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), verbose_name="Discount Amount")  
+
+    # Admin Fee / ICE Share
+    ice_share_rate = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('20.00'), verbose_name="ICE Share (%)")  # Nama lebih jelas
+    admin_fee = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), verbose_name="Admin Fee")
+    ice_share_value = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), verbose_name="ICE Share Value")  # Untuk nilai final
+
+    # Pajak & PPN
+    tax = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), verbose_name="Tax (%)")
+    ppn_rate = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('11.00'), verbose_name="PPN Rate (%)")  # Nama lebih jelas
+    ppn = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), verbose_name="PPN")  # Nilai PPN setelah dihitung
+
+    # Perhitungan Harga
+    sub_total = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), verbose_name="Sub Total")  
+    portal_price = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), verbose_name="Portal Price")  
+    normal_price = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), verbose_name="Normal Price")  
+
+    # Biaya Platform & Voucher dari CalculateAdminPrice
+    calculate_admin_price = models.ForeignKey(CalculateAdminPrice, on_delete=models.SET_NULL, null=True, blank=True, related_name="course_prices")
+    platform_fee = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), verbose_name="Platform Fee")  
+    voucher = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), verbose_name="Voucher")
+
+    # Total yang dibayar user
+    user_payment = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), verbose_name="User Payment")  
+    
+    # Pendapatan Partner & ICE
+    partner_earning = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), verbose_name="Partner Earning")  
+    ice_earning = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), verbose_name="ICE Earning")  
+
+    # Timestamp untuk audit
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def calculate_prices(self):
+        """
+        Menghitung semua harga berdasarkan rumus yang diberikan.
+        """
+
+        # ✅ 1. Pastikan `ice_share_rate` dan `ppn_rate` otomatis dari Partner
+        if self.partner:
+            self.ice_share_rate = self.partner.iceiprice  # ✅ Ambil otomatis dari Partner
+            self.ppn_rate = self.partner.tax  # ✅ Ambil otomatis dari Partner
+
+        normal_price = Decimal(self.partner_price)  # Harga awal dari partner
+        discount_percent = Decimal(self.discount_percent) / Decimal('100')
+        ice_share_percent = Decimal(self.ice_share_rate) / Decimal('100')  # Sekarang otomatis dari Partner
+        ppn_percent = Decimal(self.ppn_rate) / Decimal('100')  # Sekarang otomatis dari Partner
+
+        # ✅ 2. Hitung Diskon (Nilai dalam angka)
+        self.discount_amount = normal_price * discount_percent
+
+        # ✅ 3. Hitung Net Price (Harga setelah Diskon)
+        net_price = normal_price - self.discount_amount  
+
+        # ✅ 4. Hitung Admin Fee (ICE Share % dari Net Price)
+        self.admin_fee = net_price * ice_share_percent
+
+        # ✅ 5. Hitung Sub Total
+        self.sub_total = net_price + self.admin_fee
+
+        # ✅ 6. Hitung PPN
+        self.ppn = self.sub_total * ppn_percent
+
+        # ✅ 7. Hitung Portal Price
+        self.portal_price = self.sub_total + self.ppn
+
+        # ✅ 8. Hitung Normal Price (Diperbarui dengan Diskon)
+        self.normal_price = self.portal_price + (normal_price * discount_percent)
+
+        # ✅ 9. Hitung Partner Earning
+        self.partner_earning = self.partner_price - self.discount_amount
+
+        # ✅ 10. Hitung ICE Earning
+        self.ice_earning = self.admin_fee - self.voucher
+
+        # ✅ 11. Ambil `platform_fee` & `voucher` dari `CalculateAdminPrice`
+        platform_fee_entry = CalculateAdminPrice.objects.filter(name__iexact="Platform Fee").first()
+        voucher_entry = CalculateAdminPrice.objects.filter(name__iexact="Voucher").first()
+
+        self.platform_fee = platform_fee_entry.amount if platform_fee_entry else Decimal('0.00')
+        self.voucher = voucher_entry.amount if voucher_entry else Decimal('0.00')
+
+        # ✅ 12. Hitung User Payment
+        self.user_payment = self.portal_price - self.voucher + self.platform_fee
+
+
+
+
+    def save(self, *args, **kwargs):
+        """
+        Pastikan `ice_share_rate` dan `ppn_rate` otomatis dari Partner sebelum menyimpan.
+        """
+        if self.partner:
+            self.ice_share_rate = self.partner.iceiprice  # Ambil ICE Share dari Partner
+            self.ppn_rate = self.partner.tax  # Ambil PPN dari Partner
+
+        self.calculate_prices()  # Pastikan harga dihitung sebelum disimpan
+        super().save(*args, **kwargs)  # Simpan ke database
+
+    def __str__(self):
+        return f"{self.course} - {self.price_type.name} - {self.partner_price}"
+    
 
 
 class Enrollment(models.Model):
