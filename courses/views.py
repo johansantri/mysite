@@ -9,7 +9,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from .forms import CourseForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
+from .forms import CoursePriceForm,CourseForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from django.http import JsonResponse
 from .models import Course, Partner,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
 from django.contrib.auth.models import User, Universiti
@@ -29,7 +29,36 @@ from django.db.models import Count
 
 
 
+#add course price
+def add_course_price(request, id):
+    if not request.user.is_authenticated:
+        return redirect(f"/login/?next={request.path}")
 
+    if request.user.is_superuser:
+        course = get_object_or_404(Course, id=id)
+    elif hasattr(request.user, 'is_partner') and request.user.is_partner:
+        course = get_object_or_404(Course, id=id, org_partner__user_id=request.user.id)
+    else:
+        messages.error(request, "Anda tidak memiliki izin untuk menambahkan harga ke kursus ini.")
+        return redirect('authentication:dasbord')
+
+    if request.method == 'POST':
+        form = CoursePriceForm(request.POST, user=request.user, course=course)
+        
+        if form.is_valid():
+            course_price = form.save(commit=False)
+            course_price.course = course  # Pastikan course terhubung ke harga
+            course_price.save()
+            messages.success(request, "✅ Harga kursus berhasil ditambahkan!")
+            return redirect(reverse('courses:add_course_price', args=[course.id]))
+        else:
+            for error in form.errors.get("__all__", []):
+                messages.error(request, error)  # Tampilkan pesan error dengan jelas
+        
+    else:
+        form = CoursePriceForm(user=request.user, course=course)
+        
+    return render(request, 'courses/course_price_form.html', {'form': form, 'course': course})
 
 #instrcutor profile
 def instructor_profile(request, username):

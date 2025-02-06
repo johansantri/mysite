@@ -2,7 +2,7 @@
 from django import forms
 from django.forms import inlineformset_factory
 from django.core.cache import cache
-from .models import Course, Partner, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment
+from .models import Course, Partner, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment,PricingType, CoursePrice
 from django_ckeditor_5.widgets import CKEditor5Widget
 from django.contrib.auth.models import User, Universiti
 import logging
@@ -10,6 +10,88 @@ from django.utils.text import slugify
 from django.core.files.base import ContentFile
 from PIL import Image as PILImage
 import io
+from datetime import date
+
+#add course price
+class CoursePriceForm(forms.ModelForm):
+    class Meta:
+        model = CoursePrice
+        fields = ['price_type', 'amount']  # Partner hanya bisa isi harga
+        widgets = {
+            'amount': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Masukkan harga...', 'min': '0', 'step': '0.01'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)  # Ambil user dari views
+        self.course = kwargs.pop('course', None)  # Ambil course dari views
+        super().__init__(*args, **kwargs)
+       
+        if self.user:
+            if self.user.is_superuser:
+                self.fields['price_type'].queryset = PricingType.objects.all()
+                self.fields['price_type'] = forms.ModelChoiceField(
+                queryset=PricingType.objects.all(),
+                widget=forms.Select(attrs={'class': 'form-control'}),
+                empty_label="Pilih Jenis Harga"
+                )
+                self.fields['start_date'] = forms.DateField(
+                    widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+                    required=False
+                )
+                self.fields['duration_days'] = forms.IntegerField(
+                    widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Durasi dalam hari', 'min': '1'}),
+                    required=False
+                )
+                self.fields['end_date'] = forms.DateField(
+                    widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+                    required=False
+                )
+               
+            elif hasattr(self.user, 'is_partner') and self.user.is_partner:
+                try:
+                    regular_type = PricingType.objects.get(name="Beli Langsung")
+                    self.fields['price_type'].initial = regular_type
+                    self.fields['price_type'].queryset = PricingType.objects.filter(name="Beli Langsung")
+                    self.fields['price_type'].widget = forms.HiddenInput()
+                    
+                except PricingType.DoesNotExist:
+                    raise forms.ValidationError("Tipe harga 'Beli Langsung' tidak ditemukan! Tambahkan di database.")
+            
+    def clean(self):
+        """Pastikan partner hanya bisa menambahkan satu harga per kursus"""
+        cleaned_data = super().clean()
+
+        if hasattr(self.user, 'is_partner') and self.user.is_partner:
+            # Cek apakah sudah ada harga untuk kursus ini dari partner
+            existing_price = CoursePrice.objects.filter(course=self.course, price_type__name="Beli Langsung").exists()
+            if existing_price:
+                raise forms.ValidationError("❌ Anda hanya dapat menambahkan satu harga untuk kursus ini.")
+
+            # Set tanggal otomatis
+            cleaned_data['start_date'] = date.today()
+            cleaned_data['duration_days'] = None  # Kosongkan durasi karena partner tidak memasukkan
+            if self.course:
+                cleaned_data['end_date'] = self.course.end_date  # Gunakan tanggal akhir kursus
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        """Tetapkan start_date dan end_date otomatis untuk partner"""
+        instance = super().save(commit=False)
+
+        if hasattr(self.user, 'is_partner') and self.user.is_partner:
+            instance.start_date = date.today()
+            instance.duration_days = None  # Kosongkan durasi
+            if self.course:
+                instance.end_date = self.course.end_date  # Gunakan tanggal akhir kursus
+            try:
+                instance.price_type = PricingType.objects.get(name="Beli Langsung")
+            except PricingType.DoesNotExist:
+                raise ValueError("Tipe harga 'Beli Langsung' tidak ditemukan! Tambahkan di database.")
+
+        if commit:
+            instance.save()
+        return instance
 
 # Initialize the logger
 logger = logging.getLogger(__name__)

@@ -143,6 +143,24 @@ class Course(models.Model):
         else:
             return {"status": "info", "message": "You are already enrolled in this course."}
 
+class PricingType(models.Model):
+    name = models.CharField(max_length=50, unique=True)  # Nama pricing type (contoh: 'Regular Price', 'Discount')
+    description = models.TextField(blank=True, null=True)  # Deskripsi opsional
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+class CoursePrice(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="prices")
+    price_type = models.ForeignKey(PricingType, on_delete=models.CASCADE, related_name="course_prices")  # Relasi ke PricingType
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    duration_days = models.IntegerField(null=True, blank=True)
+    start_date = models.DateField(null=True, blank=True)  # Jika harga punya periode aktif
+    end_date = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.course.course_name} - {self.price_type.name}: ${self.amount if self.amount else 'Gratis'}"
 
 
 class Enrollment(models.Model):

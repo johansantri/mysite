@@ -33,7 +33,7 @@
               <li><a class="dropdown-item" href="{% url "courses:course_instructor" course.id %}">Instructor</a></li>
              {% endif %}
               <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="#">Something else here</a></li>
+              <li><a class="dropdown-item" href="{% url "courses:add_course_price" course.id %}">Price</a></li>
             </ul>
           </li>
 
