@@ -111,10 +111,13 @@
                     <div class="col-md-12">
                         <ul class="pagination lms-page">
                             <!-- Previous Button -->
+                            <!-- Previous Button -->
                             <li class="page-item prev {% if not page_obj.has_previous %}disabled{% endif %}">
-                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}">
-                                    <i class="fas fa-angle-left"></i>
-                                </a>
+                                {% if page_obj.has_previous %}
+                                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}">
+                                        <i class="fas fa-angle-left"></i>
+                                    </a>
+                                {% endif %}
                             </li>
 
                             <!-- Page Numbers -->
@@ -128,10 +131,13 @@
 
                             <!-- Next Button -->
                             <li class="page-item next {% if not page_obj.has_next %}disabled{% endif %}">
-                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}">
-                                    <i class="fas fa-angle-right"></i>
-                                </a>
+                                {% if page_obj.has_next %}
+                                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}">
+                                        <i class="fas fa-angle-right"></i>
+                                    </a>
+                                {% endif %}
                             </li>
+
                         </ul>
                     </div>
                 </div>

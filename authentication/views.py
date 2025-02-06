@@ -52,7 +52,7 @@ def course_list(request):
         courses = courses.filter(category__in=category_filter)
 
     # Pagination setup
-    paginator = Paginator(courses, 6)  # Show 4 courses per page
+    paginator = Paginator(courses, 9)  # Show 4 courses per page
     page_number = request.GET.get('page', 1)  # Default to page 1 if no page is provided
     
     # Validate page_number: if it's invalid or empty, default to page 1
@@ -97,6 +97,7 @@ def course_list(request):
     # Prepare the context for rendering
     context = {
         'courses': courses_data,
+        'page_obj': page_obj, 
         'total_courses': courses.count(),
         'total_pages': paginator.num_pages,
         'current_page': page_obj.number,
