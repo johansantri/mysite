@@ -418,7 +418,7 @@ class PartnerForm(forms.ModelForm):
     
     class Meta:
         model = Partner
-        fields = ['name','user','phone', 'address', 'description', 'tax', 'account_holder_name', 'balance', 'logo']
+        fields = ['name','user','phone', 'tax', 'iceiprice', 'logo', 'address', 'description']
        
         widgets = {
         "name": forms.Select(attrs={
@@ -445,14 +445,11 @@ class PartnerForm(forms.ModelForm):
             "placeholder": "Tax Number",
             "class": "form-control"
         }),
-        "account_holder_name": forms.TextInput(attrs={
-            "placeholder": "Account Holder Name",
+        "iceiprice": forms.NumberInput(attrs={
+            "placeholder": "ice price %",
             "class": "form-control"
         }),
-        "balance": forms.NumberInput(attrs={
-            "placeholder": "Balance",
-            "class": "form-control"
-        }),
+        
         "logo": forms.ClearableFileInput(attrs={
             'class': 'form-control',  # Add Bootstrap styling
             'accept': 'image/*',  # Allow only image files to be uploaded
@@ -498,7 +495,7 @@ class PartnerForm(forms.ModelForm):
 class PartnerFormUpdate(forms.ModelForm):
     class Meta:
         model = Partner
-        fields = ['name', 'user', 'phone', 'address', 'description', 'tax', 'account_holder_name', 'balance', 'logo']
+        fields = ['name', 'user', 'phone', 'tax', 'iceiprice', 'logo', 'address', 'description']
 
         widgets = {
             "name": forms.Select(attrs={
@@ -523,14 +520,11 @@ class PartnerFormUpdate(forms.ModelForm):
                 "placeholder": "Tax Number",
                 "class": "form-control"
             }),
-            "account_holder_name": forms.TextInput(attrs={
-                "placeholder": "Account Holder Name",
+            "iceiprice": forms.NumberInput(attrs={
+                "placeholder": "ice share %",
                 "class": "form-control"
             }),
-            "balance": forms.NumberInput(attrs={
-                "placeholder": "Balance",
-                "class": "form-control"
-            }),
+            
             "logo": forms.ClearableFileInput(attrs={
                 'class': 'form-control',
                 'accept': 'image/*',  # Allow only image files
