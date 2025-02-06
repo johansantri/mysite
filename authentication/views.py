@@ -236,7 +236,7 @@ def popular_courses(request):
 
     # Convert queryset to list of dictionaries
     courses_list = list(courses.values(
-        'id', 'course_name', 'slug', 'image',
+        'id', 'course_name', 'slug', 'image','num_enrollments',
         'instructor__user__first_name',
         'instructor__user__last_name', 
         'instructor__user__photo',
@@ -260,7 +260,9 @@ def popular_courses(request):
 
 def home(request):
     
-    popular_categories = Category.objects.annotate(num_courses=Count('category_courses')).order_by('-num_courses')[:6]
+    popular_categories = Category.objects.annotate(
+    num_courses=Count('category_courses', filter=Q(category_courses__status_course='published'))
+    ).order_by('-num_courses')[:6]
 
     
     
