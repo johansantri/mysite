@@ -1,0 +1,106 @@
+{% extends 'home/base.html' %}
+
+{% block content %}
+
+<div class="page-content">
+  <div class="container">
+    <div class="row">
+      {% include "home/sidebar.html" %}
+      <div class="col-xl-9 col-lg-9">
+        <div class="support-wrap">
+        <h2>Re-run of course: {{ course.course_name }}</h2>
+
+        {% if messages %}
+          <div class="alert">
+            {% for message in messages %}
+              <div class="alert-{{ message.tags }}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+          {% if user.is_superuser or user == course.org_partner.user or user == course.instructor.user %}
+          <form method="POST">
+            {% csrf_token %}
+        
+            <!-- Show Form Errors -->
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    <ul>
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        
+            <div class="form-group">
+                <label for="course_name">Course Name</label>
+                {{ form.course_name }}  <!-- This field will be disabled -->
+            </div>
+        
+            <br>
+        
+            <!-- Second Row: 3 fields (course_number, org_partner, category) -->
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="course_number">Course Number</label>
+                        {{ form.course_number }}  <!-- This field will be disabled -->
+                    </div>
+                </div>
+        
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="org_partner">Org Partner</label>
+                        {{ form.org_partner }}  <!-- This field will be disabled -->
+                    </div>
+                </div>
+        
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        {{ form.category }}  <!-- Editable field -->
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Third Row: 2 fields (level, course_run) -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="level">Level</label>
+                        {{ form.level }}  <!-- Editable field -->
+                    </div>
+                </div>
+        
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="course_run">Course Run</label>
+                        {{ form.course_run }}  <!-- Editable field -->
+                    </div>
+                </div>
+            </div>
+        
+            <br>
+            <button type="submit" class="btn btn-primary">Create Re-Run</button>
+        </form>
+                        
+        
+          {% else %}
+            <p>You do not have permission to create a re-run for this course.</p>
+          {% endif %}
+        {% else %}
+          <p>You must be logged in to create a re-run.</p>
+        {% endif %}
+    </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

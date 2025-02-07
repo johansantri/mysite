@@ -34,6 +34,8 @@
                   <th>org</th>
                   <th>status</th>
                   <th>run</th>
+                  <th>Actions</th>
+                  
               </tr>
           </thead>
           <tbody>
@@ -81,7 +83,7 @@
                       // Add new rows to the table
                       data.items.forEach(item => {
                           const row = document.createElement('tr');
-                          row.innerHTML = `<td><a href="../studio/${item.id}"> ${item.course_name}</a></td><td>${item.course_number}</td><td>${item.instructor_email}</td><td>${item.org_partner_name}</td><td>${item.status_course}</td><td>${item.course_run}</td>`;
+                          row.innerHTML = `<td><a href="../studio/${item.id}"> ${item.course_name}</a></td><td>${item.course_number}</td><td>${item.instructor_email}</td><td>${item.org_partner_name}</td><td>${item.status_course}</td><td>${item.course_run}</td><td><a href="../courses/re-runs/${item.id}" class="btn btn-primary btn-sm">View</a></td>`;
                           tbody.appendChild(row);
                       });
                       document.getElementById('total-courses').textContent = `Total Courses: ${data.count}`;

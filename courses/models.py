@@ -12,7 +12,8 @@ from django.dispatch import receiver
 from django.db.models import Sum
 from datetime import date
 from decimal import Decimal
-
+from datetime import timedelta
+from django.utils import timezone
 
 
 class Partner(models.Model):
@@ -143,7 +144,73 @@ class Course(models.Model):
             return {"status": "success", "message": "Successfully enrolled in the course."}
         else:
             return {"status": "info", "message": "You are already enrolled in this course."}
+    
+    def create_rerun(self, course_run_input=None):
+        """ Creates a re-run (new instance) of the current course, allowing user input for course_run and keeping the same course_number """
 
+        today = timezone.now().date()  # Get today's date
+
+        # Check if a re-run exists for this course today
+        existing_rerun = Course.objects.filter(
+            course_name=self.course_name,  # Same course name
+            course_run__startswith="Run",  # Check if the course is a re-run (assuming 'Run' in the name)
+            created_at__date=today  # Check if the re-run was created today
+        ).exists()
+
+        if existing_rerun:
+            raise ValueError(f"A re-run for this course has already been created today.")
+
+        # Allow the user to input `course_run` manually, if provided
+        if course_run_input:
+            new_course_run = course_run_input  # Use the user input for course_run
+        else:
+            # If no manual input, auto-generate course_run based on the last re-run
+            if self.course_run:
+                try:
+                    run_number = int(self.course_run.split()[-1]) + 1  # Increment the last number
+                except ValueError:
+                    run_number = 2  # Default to "Run 2" if parsing fails
+                new_course_run = f"Run {run_number}"
+            else:
+                new_course_run = "Run 2"
+
+        # Keep the same `course_number` as the original course
+        new_course_number = self.course_number  # Reuse the same course_number from the original course
+
+        # Ensure course_number is unique (check if it already exists)
+        while Course.objects.filter(course_number=new_course_number).exists():
+            # If the course_number already exists, increment it
+            new_course_number = f"{new_course_run}-{str(timezone.now().year)}-{str(timezone.now().month).zfill(2)}-{str(timezone.now().day).zfill(2)}"  # Unique identifier
+
+        # Generate a new unique slug
+        new_slug = f"{slugify(self.course_name)}-{new_course_run.lower().replace(' ', '-')}"
+        
+        # Create a new instance for the re-run course
+        new_course = Course.objects.create(
+            course_name=self.course_name,
+            course_run=new_course_run,
+            course_number=new_course_number,  # Keep the same course_number as the original course
+            slug=new_slug,
+            org_partner=self.org_partner,
+            instructor=self.instructor,
+            category=self.category,
+            level=self.level,
+            status_course="draft",  # Start as draft
+            image=self.image,
+            link_video=self.link_video,
+            description=self.description,
+            sort_description=self.sort_description,
+            hour=self.hour,
+            author=self.author,
+            language=self.language,
+            start_date=self.start_date + timedelta(days=30) if self.start_date else None,
+            end_date=self.end_date + timedelta(days=30) if self.end_date else None,
+            start_enrol=self.start_enrol + timedelta(days=30) if self.start_enrol else None,
+            end_enrol=self.end_enrol + timedelta(days=30) if self.end_enrol else None,
+        )
+        
+        return new_course
+    
 class PricingType(models.Model):
     name = models.CharField(max_length=50, unique=True)  # Nama pricing type (contoh: 'Regular Price', 'Discount')
     description = models.TextField(blank=True, null=True)  # Deskripsi opsional

@@ -39,7 +39,7 @@ from django.views.decorators.csrf import csrf_protect
 
 def course_list(request):
     # Get all courses
-    courses = Course.objects.all()
+    courses = Course.objects.filter(status_course='published')
 
     # Search functionality
     search_query = request.GET.get('search', '')

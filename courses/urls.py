@@ -51,7 +51,8 @@ urlpatterns = [
     path('course-detail/<int:id>/<slug:slug>/', views.course_lms_detail, name='course_lms_detail'),
 
     path('add-price/<int:id>/', views.add_course_price, name='add_course_price'),
-    
+
+    path('courses/re-runs/<int:id>/', views.course_reruns, name='course_reruns'),
     
     
    

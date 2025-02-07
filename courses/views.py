@@ -9,7 +9,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from .forms import CoursePriceForm,CourseForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
+from .forms import CoursePriceForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from django.http import JsonResponse
 from .models import Course,CoursePrice,PricingType, Partner,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
 from django.contrib.auth.models import User, Universiti
@@ -27,6 +27,33 @@ from django.db.models import Sum
 from datetime import datetime
 from django.db.models import Count
 
+
+def course_reruns(request, id):
+    """ View for editing a course's re-run, allowing some fields to be editable """
+
+    course = get_object_or_404(Course, id=id)
+
+    # Check if the user has permission to edit this course
+    if not (request.user.is_superuser or request.user == course.org_partner.user or request.user == course.instructor.user):
+        messages.error(request, "You do not have permission to create a re-run for this course.")
+        return redirect('courses:studio', id=course.id)
+
+    if request.method == 'POST':
+        
+        form = CourseRerunForm(request.POST, instance=course)
+        if form.is_valid():
+            form.save()  # Save the updated course data
+            messages.success(request, f"Re-run of course '{course.course_name}' created successfully!")
+            return redirect('courses:studio', id=course.id)
+        else:
+            print(form.errors)
+            # If the form is invalid, display errors
+            messages.error(request, "There was an error with the form. Please correct the errors below.")
+    else:
+        
+        form = CourseRerunForm(instance=course)  # Populate the form with current course data
+
+    return render(request, 'courses/course_reruns.html', {'form': form, 'course': course})
 
 
 #add course price

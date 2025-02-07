@@ -10,7 +10,25 @@
        
         {% include "courses/course_set.html"%}
         <hr>  
-       
+        {% if messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    
+            <script>
+                // Automatically dismiss the alert after 3 seconds
+                setTimeout(function() {
+                    var alert = document.querySelector('.alert');
+                    if (alert) {
+                        alert.classList.remove('show');
+                        alert.classList.add('fade');
+                    }
+                }, 3000); // 3000ms = 3 seconds
+            </script>
+        {% endif %}
                   <!-- Modal section baru-->
                   <div class="modal fade" id="exampleModal-{{course.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
@@ -19,7 +37,7 @@
                           <h5 class="modal-title" id="exampleModalLabel">{{course.course_name}} </h5>
                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        
+            
                           {% csrf_token %}
                         <div class="modal-body">
                           <span id="courses" style="display:none">{{course.id}}</span>
@@ -38,8 +56,7 @@
 
                   <!--and modal section baru-->
 
-
-
+               
         <fieldset class="field-card">
           <div class="add-course-info">
             <div class="add-course-inner-header">

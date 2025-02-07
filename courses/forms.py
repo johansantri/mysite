@@ -2,7 +2,7 @@
 from django import forms
 from django.forms import inlineformset_factory
 from django.core.cache import cache
-from .models import Course, Partner, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment,PricingType, CoursePrice
+from .models import Course, Partner,Category, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment,PricingType, CoursePrice
 from django_ckeditor_5.widgets import CKEditor5Widget
 from django.contrib.auth.models import User, Universiti
 import logging
@@ -12,6 +12,21 @@ from PIL import Image as PILImage
 import io
 from datetime import date
 
+
+#form re-runs
+class CourseRerunForm(forms.ModelForm):
+    class Meta:
+        model = Course
+        fields = ['course_name', 'course_number', 'org_partner', 'category', 'level', 'course_run']
+
+    course_name = forms.CharField(disabled=True, widget=forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 100%'}))
+    course_number = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 100%'}))  # Removed disabled
+    org_partner = forms.ModelChoiceField(queryset=Partner.objects.all(), disabled=True, widget=forms.Select(attrs={'class': 'form-control', 'style': 'width: 100%'}))
+
+    category = forms.ModelChoiceField(queryset=Category.objects.all(), widget=forms.Select(attrs={'class': 'form-control', 'style': 'width: 100%'}))
+    level = forms.ChoiceField(choices=[('basic', 'Basic'), ('middle', 'Middle'), ('advanced', 'Advanced')], widget=forms.Select(attrs={'class': 'form-control', 'style': 'width: 100%'}))
+    course_run = forms.CharField(max_length=250, widget=forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 100%'}))
+    
 #add course price
 class CoursePriceForm(forms.ModelForm):
     class Meta:
