@@ -84,7 +84,7 @@ def course_list(request):
         courses_data.append({
             'course_name': course.course_name,
             'course_id': course.id,
-            'course_enrollments': course.enrollments.count(),
+            'num_enrollments': course.enrollments.count(), 
             'course_slug': course.slug,
             'course_image': course.image.url if course.image else None,
             #'course_price': course_price,  # Store 'FREE' or the actual balance
