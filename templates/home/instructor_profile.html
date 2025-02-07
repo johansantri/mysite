@@ -71,7 +71,7 @@
           <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mt-4" id="courseList">
             {% for course in page_obj %}
               <div class="col course-item">
-                <a href="{% url 'courses:course_lms_detail' course.slug %}" class="text-decoration-none">
+                <a href="{% url 'courses:course_lms_detail' course.id course.slug %}" class="text-decoration-none">
                     <div class="card">
                     <img src="{{ course.image.url }}" class="card-img-top" alt="{{ course.course_name }}">
                     <div class="card-body">

@@ -1794,7 +1794,7 @@
 					
 					// Loop through each course in the response
 					courses.forEach(function(course) {
-						var courseUrl = '/course-detail/' + course.slug + '/'; 
+						var courseUrl = '/course-detail/' + course.id + '/' + course.slug + '/'; 
 						var instructor = '/instructor-profile/'+course.instructor__user__username+'/';
 						var university = '/org-partner/'+course.org_partner__name__slug+'/';
 						// Append course info dynamically to the courses list

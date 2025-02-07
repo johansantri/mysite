@@ -48,7 +48,7 @@ urlpatterns = [
     path('course-instructor/<int:id>/', views.course_instructor, name='course_instructor'),
     path('team-member/remove/<int:member_id>/', views.remove_team_member, name='remove_team_member'),
     path('draft-lms/<int:id>/', views.draft_lms, name='draft-lms'),
-    path('course-detail/<slug:slug>/', views.course_lms_detail, name='course_lms_detail'),
+    path('course-detail/<int:id>/<slug:slug>/', views.course_lms_detail, name='course_lms_detail'),
 
     path('add-price/<int:id>/', views.add_course_price, name='add_course_price'),
     

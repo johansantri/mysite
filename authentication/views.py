@@ -83,6 +83,7 @@ def course_list(request):
         course_price = 'FREE' if not course.org_partner.balance or course.org_partner.balance == 0 else course.org_partner.balance
         courses_data.append({
             'course_name': course.course_name,
+            'course_id': course.id,
             'course_slug': course.slug,
             'course_image': course.image.url if course.image else None,
             'course_price': course_price,  # Store 'FREE' or the actual balance

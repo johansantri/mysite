@@ -277,13 +277,13 @@
 										<div class="col">
 											<div class="card h-100 shadow-lg border-0 rounded-3">
 												{% if similar_course.image %}
-												<a href="{% url 'courses:course_lms_detail' similar_course.slug %}" class="text-decoration-none text-dark"><img src="{{ similar_course.image.url }}" class="card-img-top" alt="{{ similar_course.course_name }}"></a>
+												<a href="{% url 'courses:course_lms_detail' similar_course.id similar_course.slug %}" class="text-decoration-none text-dark"><img src="{{ similar_course.image.url }}" class="card-img-top" alt="{{ similar_course.course_name }}"></a>
 												{% else %}
 													<img src="https://via.placeholder.com/150" class="card-img-top" alt="No Image Available">
 												{% endif %}
 												<div class="card-body">
 													<h5 class="card-title">
-														<a href="{% url 'courses:course_lms_detail' similar_course.slug %}" class="text-decoration-none text-dark">
+														<a href="{% url 'courses:course_lms_detail' similar_course.id similar_course.slug %}" class="text-decoration-none text-dark">
 															{{ similar_course.course_name }}
 														</a>
 													</h5>

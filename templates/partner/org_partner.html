@@ -90,7 +90,7 @@
                 <div class="row">
                     {% for course in page_obj %}
                     <div class="col-12 col-md-4 mb-4">
-                        <a href="{% url 'courses:course_lms_detail' course.slug %}" class="text-decoration-none">
+                        <a href="{% url 'courses:course_lms_detail' course.id course.slug %}" class="text-decoration-none">
                         <div class="bg-white p-4 rounded shadow-sm">
                            
                             <img src="{{ course.image.url }}" alt="Course image" class="img-fluid rounded mb-4" width="300" height="200"/>

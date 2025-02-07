@@ -160,9 +160,9 @@ def draft_lms(request, id):
     return render(request, 'courses/course_draft_view.html', {'course': course})
 
 
-def course_lms_detail(request, slug):
+def course_lms_detail(request, id,slug):
     # Fetch the course by slug
-    course = get_object_or_404(Course, slug=slug)
+    course = get_object_or_404(Course, id=id, slug=slug)
     
     # Check if the course's status is not 'published'
     if course.status_course != 'published':

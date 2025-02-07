@@ -50,7 +50,7 @@
                         <div class="course-box course-design d-flex ">
                             <div class="product">
                                 <div class="product-img">
-                                    <a href="{% url 'courses:course_lms_detail' course.course_slug %}">
+                                    <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}">
                                         <img class="img-fluid" alt="Img" src="{{ course.course_image }} ">
                                     </a>
                                     <div class="price">
@@ -77,7 +77,7 @@
                                             <a href="#rate"><i class="fa-regular fa-heart"></i></a>
                                         </div>
                                     </div>
-                                    <h3 class="title"><a href="{% url 'courses:course_lms_detail' course.course_slug %}">{{ course.course_name }}</a></h3>
+                                    <h3 class="title"><a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}">{{ course.course_name }}</a></h3>
                                     <div class="course-info d-flex align-items-center">
                                         <div class="rating-img d-flex align-items-center">
                                             <img src="{% static "assets/img/icon/icon-01.svg" %}" alt="Img">

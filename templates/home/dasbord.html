@@ -185,7 +185,7 @@
                                 <div class="course-box flex-fill">
                                     <div class="product">
                                         <div class="product-img">
-                                            <a href="{% url 'courses:course_lms_detail' enrollment.course.slug %}">
+                                            <a href="{% url 'courses:course_lms_detail' enrollment.course.id enrollment.course.slug %}">
                                                 <img class="img-fluid" alt="Img" src="{{ enrollment.course.image.url }}">
                                             </a>
                                             <div class="price">
@@ -205,7 +205,7 @@
                                                 </div>
                                             </div>
                                             <h3 class="title instructor-text">
-                                                <a href="{% url 'courses:course_lms_detail' enrollment.course.id %}">{{ enrollment.course.course_name }}</a>
+                                                <a href="{% url 'courses:course_lms_detail' enrollment.course.id enrollment.course.id %}">{{ enrollment.course.course_name }}</a>
                                             </h3>
                                         </div>
                                     </div>
