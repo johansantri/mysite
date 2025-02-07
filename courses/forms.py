@@ -17,9 +17,8 @@ from datetime import date
 class CourseRerunForm(forms.ModelForm):
     class Meta:
         model = Course
-        fields = ['course_number', 'category', 'level', 'course_run']  # Tidak perlu field 'course_name' dan 'org_partner'
+        fields = ['course_number', 'category', 'level', 'course_run']
 
-    # Hidden fields untuk mengirimkan data yang tidak boleh diubah
     course_name_hidden = forms.CharField(required=False, widget=forms.HiddenInput())
     org_partner_hidden = forms.ModelChoiceField(queryset=Partner.objects.all(), required=False, widget=forms.HiddenInput())
 
@@ -29,6 +28,7 @@ class CourseRerunForm(forms.ModelForm):
 
     category = forms.ModelChoiceField(queryset=Category.objects.all(), widget=forms.Select(attrs={'class': 'form-control', 'style': 'width: 100%'}))
     level = forms.ChoiceField(choices=[('basic', 'Basic'), ('middle', 'Middle'), ('advanced', 'Advanced')], widget=forms.Select(attrs={'class': 'form-control', 'style': 'width: 100%'}))
+
 #add course price
 class CoursePriceForm(forms.ModelForm):
     class Meta:

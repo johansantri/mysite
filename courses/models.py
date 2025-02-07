@@ -153,8 +153,8 @@ class Course(models.Model):
         # Check if a re-run exists for this course today
         existing_rerun = Course.objects.filter(
             course_name=self.course_name,  # Same course name
-            course_run__startswith="Run",  # Check if the course is a re-run
-            created_at__date=today  # Check if the re-run was created today
+            course_run__startswith="Run",  # Check if it's a re-run
+            created_at__date=today  # Check if it's the same day
         ).exists()
 
         if existing_rerun:
@@ -192,7 +192,7 @@ class Course(models.Model):
             course_number=new_course_number,  # Keep the same course_number as the original course
             slug=new_slug,
             org_partner=self.org_partner,
-            instructor=self.instructor,
+            instructor=self.instructor,  # Ensure instructor is copied
             category=self.category,
             level=self.level,
             status_course="draft",  # Start as draft
@@ -212,7 +212,79 @@ class Course(models.Model):
         # Save the new course instance
         new_course.save()
 
+        # Copy CoursePrice related to the new course
+        for course_price in self.prices.all():
+            CoursePrice.objects.create(
+                course=new_course,
+                price_type=course_price.price_type,
+                partner=course_price.partner,
+                partner_price=course_price.partner_price,
+                discount_percent=course_price.discount_percent,
+                discount_amount=course_price.discount_amount,
+                ice_share_rate=course_price.ice_share_rate,
+                admin_fee=course_price.admin_fee,
+                sub_total=course_price.sub_total,
+                portal_price=course_price.portal_price,
+                normal_price=course_price.normal_price,
+                calculate_admin_price=course_price.calculate_admin_price,
+                platform_fee=course_price.platform_fee,
+                voucher=course_price.voucher,
+                user_payment=course_price.user_payment,
+                partner_earning=course_price.partner_earning,
+                ice_earning=course_price.ice_earning
+            )
+
+        # Salin Section dan Material terkait
+        for section in self.sections.all():
+            new_section = Section.objects.create(
+                parent=section.parent,
+                title=section.title,
+                slug=section.slug,
+                courses=new_course
+            )
+            
+            # Salin Material untuk section baru
+            for material in section.materials.all():
+                Material.objects.create(
+                    section=new_section,
+                    title=material.title,
+                    description=material.description,
+                    created_at=material.created_at
+                )
+
+            # Salin Assessments terkait dengan Section baru
+            for assessment in section.assessments.all():
+                new_assessment = Assessment.objects.create(
+                    name=assessment.name,
+                    section=new_section,
+                    weight=assessment.weight,
+                    description=assessment.description,
+                    flag=assessment.flag,
+                    grade_range=assessment.grade_range,
+                    created_at=assessment.created_at
+                )
+                
+                # Salin Questions terkait dengan Assessment baru
+                for question in assessment.questions.all():
+                    new_question = Question.objects.create(
+                        assessment=new_assessment,
+                        text=question.text,
+                        created_at=question.created_at
+                    )
+                    
+                    # Salin Choices untuk masing-masing Question
+                    for choice in question.choices.all():
+                        Choice.objects.create(
+                            question=new_question,
+                            text=choice.text,
+                            is_correct=choice.is_correct
+                        )
+
         return new_course
+
+
+
+
 
     
 class PricingType(models.Model):

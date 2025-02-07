@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from .forms import CoursePriceForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from django.http import JsonResponse
-from .models import Course,CoursePrice,PricingType, Partner,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
+from .models import Course,Choice,CoursePrice,PricingType, Partner,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
 from django.contrib.auth.models import User, Universiti
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
@@ -30,21 +30,26 @@ from django.utils.text import slugify
 from django.utils import timezone
 
 def course_reruns(request, id):
-    """ View for creating a re-run of a course """
+    """ View for creating a re-run of a course, along with related data like CoursePrice, Assessments, and Materials """
 
+    # Ambil course yang ada berdasarkan ID
     course = get_object_or_404(Course, id=id)
 
-    # Check if the user has permission to create a re-run
+    # Cek apakah user memiliki izin untuk membuat re-run untuk course ini
     if not (request.user.is_superuser or request.user == course.org_partner.user or request.user == course.instructor.user):
         messages.error(request, "You do not have permission to create a re-run for this course.")
         return redirect('courses:studio', id=course.id)
 
+    # Jika request method POST, berarti user mengirimkan form untuk membuat re-run
     if request.method == 'POST':
+        
         form = CourseRerunForm(request.POST)
-
+        
+        # Jika form valid
         if form.is_valid():
-            # Check if a re-run already exists for today
             today = timezone.now().date()
+
+            # Cek apakah re-run sudah ada untuk hari ini
             existing_rerun = Course.objects.filter(
                 course_name=course.course_name,  # Same course name
                 course_run__startswith="Run",  # Check if it's a re-run
@@ -55,26 +60,107 @@ def course_reruns(request, id):
                 messages.error(request, "A re-run for this course has already been created today.")
                 return redirect('courses:studio', id=course.id)
 
-            # Proceed to create re-run
-            new_course = form.save(commit=False)
+            # Proses pembuatan course re-run
+            new_course = form.save(commit=False)  # Jangan simpan dulu, kita ingin memodifikasi beberapa field
 
-            # Manually assign the fields that should be copied from the original course
-            new_course.course_name = course.course_name  # Keep original course name
-            new_course.org_partner = course.org_partner  # Keep original partner
-            new_course.image = course.image  # Copy the image
-            new_course.description = course.description  # Copy the description
-            new_course.language = course.language  # Copy the language
-            new_course.sort_description = course.sort_description  # Copy sort_description
-            new_course.hour = course.hour  # Copy hour
-            new_course.author = request.user  # Set the current user as the author
-            new_course.link_video = course.link_video  # Copy the link_video
-
+            # Set field yang tidak boleh diubah
+            new_course.course_name = form.cleaned_data['course_name_hidden']
+            new_course.org_partner = form.cleaned_data['org_partner_hidden']
+            new_course.status_course = "draft"
             new_course.slug = f"{slugify(new_course.course_name)}-{new_course.course_run.lower().replace(' ', '-')}"
             new_course.created_at = timezone.now()
-            new_course.status_course = "draft"  # Start as draft
+            new_course.author = request.user  # Set pengguna yang membuat course baru
+            
+            # Set Instructor yang sama dari course lama ke course baru
+            new_course.instructor = course.instructor  # Menyalin instructor dari course lama
+            new_course.language = course.language  # Salin bahasa
+            new_course.image = course.image  # Salin image
+            new_course.description = course.description  # Salin description
+            new_course.sort_description = course.sort_description  # Salin sort description
+            new_course.hour = course.hour  # Salin hour
 
+            # Simpan course baru
             new_course.save()
 
+            # Salin CoursePrice yang terkait dengan course lama
+            for course_price in course.prices.all():
+                CoursePrice.objects.create(
+                    course=new_course,
+                    price_type=course_price.price_type,
+                    partner=course_price.partner,
+                    partner_price=course_price.partner_price,
+                    discount_percent=course_price.discount_percent,
+                    discount_amount=course_price.discount_amount,
+                    ice_share_rate=course_price.ice_share_rate,
+                    admin_fee=course_price.admin_fee,
+                    sub_total=course_price.sub_total,
+                    portal_price=course_price.portal_price,
+                    normal_price=course_price.normal_price,
+                    calculate_admin_price=course_price.calculate_admin_price,
+                    platform_fee=course_price.platform_fee,
+                    voucher=course_price.voucher,
+                    user_payment=course_price.user_payment,
+                    partner_earning=course_price.partner_earning,
+                    ice_earning=course_price.ice_earning
+                )
+
+            # Salin Section dan Material terkait
+            for section in course.sections.all():
+                new_section = Section.objects.create(
+                    parent=section.parent,
+                    title=section.title,
+                    slug=section.slug,
+                    courses=new_course
+                )
+                
+                # Salin Material untuk section baru
+                for material in section.materials.all():
+                    Material.objects.create(
+                        section=new_section,
+                        title=material.title,
+                        description=material.description,
+                        created_at=material.created_at
+                    )
+
+                # Salin Assessments terkait dengan Section baru
+                for assessment in section.assessments.all():
+                    new_assessment = Assessment.objects.create(
+                        name=assessment.name,
+                        section=new_section,
+                        weight=assessment.weight,
+                        description=assessment.description,
+                        flag=assessment.flag,
+                        grade_range=assessment.grade_range,
+                        created_at=assessment.created_at
+                    )
+                    
+                    # Salin Questions terkait dengan Assessment baru
+                    for question in assessment.questions.all():
+                        new_question = Question.objects.create(
+                            assessment=new_assessment,
+                            text=question.text,
+                            created_at=question.created_at
+                        )
+                        
+                        # Salin Choices untuk masing-masing Question
+                        for choice in question.choices.all():
+                            Choice.objects.create(
+                                question=new_question,
+                                text=choice.text,
+                                is_correct=choice.is_correct
+                            )
+
+            # Salin GradeRange terkait dengan course baru
+            for grade_range in course.grade_ranges.all():
+                GradeRange.objects.create(
+                    name=grade_range.name,
+                    min_grade=grade_range.min_grade,
+                    max_grade=grade_range.max_grade,
+                    course=new_course,
+                    created_at=grade_range.created_at
+                )
+
+            # Kirim pesan sukses
             messages.success(request, f"Re-run of course '{new_course.course_name}' created successfully!")
             return redirect('courses:studio', id=new_course.id)
 
@@ -83,13 +169,16 @@ def course_reruns(request, id):
             print(form.errors)  # Optional: print form errors for debugging
 
     else:
+        # Form untuk mengedit re-run
         form = CourseRerunForm(instance=course)
 
-        # Add values to hidden inputs for course_name and org_partner
+        # Tambahkan nilai ke hidden fields untuk course_name dan org_partner
         form.fields['course_name_hidden'].initial = course.course_name
         form.fields['org_partner_hidden'].initial = course.org_partner
 
     return render(request, 'courses/course_reruns.html', {'form': form, 'course': course})
+
+
 
 
 
