@@ -26,32 +26,59 @@ from decimal import Decimal
 from django.db.models import Sum
 from datetime import datetime
 from django.db.models import Count
-
+from django.utils.text import slugify
+from django.utils import timezone
 
 def course_reruns(request, id):
-    """ View for editing a course's re-run, allowing some fields to be editable """
+    """ View for creating a re-run of a course """
 
     course = get_object_or_404(Course, id=id)
 
-    # Check if the user has permission to edit this course
+    # Check if the user has permission to create a re-run
     if not (request.user.is_superuser or request.user == course.org_partner.user or request.user == course.instructor.user):
         messages.error(request, "You do not have permission to create a re-run for this course.")
         return redirect('courses:studio', id=course.id)
 
     if request.method == 'POST':
-        
-        form = CourseRerunForm(request.POST, instance=course)
+        form = CourseRerunForm(request.POST)
+
         if form.is_valid():
-            form.save()  # Save the updated course data
-            messages.success(request, f"Re-run of course '{course.course_name}' created successfully!")
-            return redirect('courses:studio', id=course.id)
+            # Check if a re-run already exists for today
+            today = timezone.now().date()
+            existing_rerun = Course.objects.filter(
+                course_name=course.course_name,  # Same course name
+                course_run__startswith="Run",  # Check if it's a re-run
+                created_at__date=today  # Check if it's the same day
+            ).exists()
+
+            if existing_rerun:
+                messages.error(request, "A re-run for this course has already been created today.")
+                return redirect('courses:studio', id=course.id)
+
+            # Proceed to create re-run
+            new_course = form.save(commit=False)
+            new_course.course_name = form.cleaned_data['course_name_hidden']
+            new_course.org_partner = form.cleaned_data['org_partner_hidden']
+            new_course.status_course = "draft"
+            new_course.slug = f"{slugify(new_course.course_name)}-{new_course.course_run.lower().replace(' ', '-')}"
+            new_course.created_at = timezone.now()
+            new_course.author = request.user  # Set the current user as the author
+
+            new_course.save()
+
+            messages.success(request, f"Re-run of course '{new_course.course_name}' created successfully!")
+            return redirect('courses:studio', id=new_course.id)
+
         else:
-            print(form.errors)
-            # If the form is invalid, display errors
             messages.error(request, "There was an error with the form. Please correct the errors below.")
+            print(form.errors)  # Optional: print form errors for debugging
+
     else:
-        
-        form = CourseRerunForm(instance=course)  # Populate the form with current course data
+        form = CourseRerunForm(instance=course)
+
+        # Add values to hidden inputs for course_name and org_partner
+        form.fields['course_name_hidden'].initial = course.course_name
+        form.fields['org_partner_hidden'].initial = course.org_partner
 
     return render(request, 'courses/course_reruns.html', {'form': form, 'course': course})
 

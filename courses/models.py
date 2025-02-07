@@ -148,17 +148,21 @@ class Course(models.Model):
     def create_rerun(self, course_run_input=None):
         """ Creates a re-run (new instance) of the current course, allowing user input for course_run and keeping the same course_number """
 
-        today = timezone.now().date()  # Get today's date
+        today = timezone.now().date()  # Get today's date in a timezone-aware format
+
+        # Log to verify if the date is correctly being retrieved
+        print(f"Checking re-run for course: {self.course_name} - Date: {today}")
 
         # Check if a re-run exists for this course today
         existing_rerun = Course.objects.filter(
             course_name=self.course_name,  # Same course name
             course_run__startswith="Run",  # Check if the course is a re-run (assuming 'Run' in the name)
-            created_at__date=today  # Check if the re-run was created today
+            created_at__date=today  # Check if the re-run was created today (timezone-aware)
         ).exists()
 
         if existing_rerun:
-            raise ValueError(f"A re-run for this course has already been created today.")
+            # Raise an error if a re-run already exists for today
+            raise ValidationError(f"A re-run for this course has already been created today.")
 
         # Allow the user to input `course_run` manually, if provided
         if course_run_input:
@@ -208,7 +212,7 @@ class Course(models.Model):
             start_enrol=self.start_enrol + timedelta(days=30) if self.start_enrol else None,
             end_enrol=self.end_enrol + timedelta(days=30) if self.end_enrol else None,
         )
-        
+
         return new_course
     
 class PricingType(models.Model):
