@@ -108,7 +108,11 @@
                                 <tr>
                                     <td><a href="{% url 'courses:course_lms_detail' course.id course.slug %}" class="text-decoration-none">{{ course.course_name }}</a></td>
                                     <td>
+                                        {% if course.image %}
                                         <img src="{{ course.image.url }}" alt="Course image" class="img-fluid" width="100" height="60"/>
+                                    {% else %}
+                                        <span>No Image Available</span>
+                                    {% endif %}
                                     </td>
                                     <td class="text-success fw-bold">Free</td>
                                     <td class="text-muted">58 Peserta</td>
