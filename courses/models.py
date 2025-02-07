@@ -150,18 +150,14 @@ class Course(models.Model):
 
         today = timezone.now().date()  # Get today's date in a timezone-aware format
 
-        # Log to verify if the date is correctly being retrieved
-        print(f"Checking re-run for course: {self.course_name} - Date: {today}")
-
         # Check if a re-run exists for this course today
         existing_rerun = Course.objects.filter(
             course_name=self.course_name,  # Same course name
-            course_run__startswith="Run",  # Check if the course is a re-run (assuming 'Run' in the name)
-            created_at__date=today  # Check if the re-run was created today (timezone-aware)
+            course_run__startswith="Run",  # Check if the course is a re-run
+            created_at__date=today  # Check if the re-run was created today
         ).exists()
 
         if existing_rerun:
-            # Raise an error if a re-run already exists for today
             raise ValidationError(f"A re-run for this course has already been created today.")
 
         # Allow the user to input `course_run` manually, if provided
@@ -190,7 +186,7 @@ class Course(models.Model):
         new_slug = f"{slugify(self.course_name)}-{new_course_run.lower().replace(' ', '-')}"
         
         # Create a new instance for the re-run course
-        new_course = Course.objects.create(
+        new_course = Course(
             course_name=self.course_name,
             course_run=new_course_run,
             course_number=new_course_number,  # Keep the same course_number as the original course
@@ -200,20 +196,24 @@ class Course(models.Model):
             category=self.category,
             level=self.level,
             status_course="draft",  # Start as draft
-            image=self.image,
-            link_video=self.link_video,
-            description=self.description,
-            sort_description=self.sort_description,
-            hour=self.hour,
-            author=self.author,
-            language=self.language,
+            image=self.image,  # Copy the image from the original course
+            link_video=self.link_video,  # Copy the link_video from the original course
+            description=self.description,  # Copy the description from the original course
+            sort_description=self.sort_description,  # Copy sort_description from the original course
+            hour=self.hour,  # Copy hour from the original course
+            author=self.author,  # Copy the author (current user)
+            language=self.language,  # Copy the language from the original course
             start_date=self.start_date + timedelta(days=30) if self.start_date else None,
             end_date=self.end_date + timedelta(days=30) if self.end_date else None,
             start_enrol=self.start_enrol + timedelta(days=30) if self.start_enrol else None,
             end_enrol=self.end_enrol + timedelta(days=30) if self.end_enrol else None,
         )
 
+        # Save the new course instance
+        new_course.save()
+
         return new_course
+
     
 class PricingType(models.Model):
     name = models.CharField(max_length=50, unique=True)  # Nama pricing type (contoh: 'Regular Price', 'Discount')

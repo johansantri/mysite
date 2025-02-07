@@ -57,12 +57,21 @@ def course_reruns(request, id):
 
             # Proceed to create re-run
             new_course = form.save(commit=False)
-            new_course.course_name = form.cleaned_data['course_name_hidden']
-            new_course.org_partner = form.cleaned_data['org_partner_hidden']
-            new_course.status_course = "draft"
+
+            # Manually assign the fields that should be copied from the original course
+            new_course.course_name = course.course_name  # Keep original course name
+            new_course.org_partner = course.org_partner  # Keep original partner
+            new_course.image = course.image  # Copy the image
+            new_course.description = course.description  # Copy the description
+            new_course.language = course.language  # Copy the language
+            new_course.sort_description = course.sort_description  # Copy sort_description
+            new_course.hour = course.hour  # Copy hour
+            new_course.author = request.user  # Set the current user as the author
+            new_course.link_video = course.link_video  # Copy the link_video
+
             new_course.slug = f"{slugify(new_course.course_name)}-{new_course.course_run.lower().replace(' ', '-')}"
             new_course.created_at = timezone.now()
-            new_course.author = request.user  # Set the current user as the author
+            new_course.status_course = "draft"  # Start as draft
 
             new_course.save()
 
@@ -81,6 +90,8 @@ def course_reruns(request, id):
         form.fields['org_partner_hidden'].initial = course.org_partner
 
     return render(request, 'courses/course_reruns.html', {'form': form, 'course': course})
+
+
 
 
 #add course price
