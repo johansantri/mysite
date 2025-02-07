@@ -234,14 +234,30 @@ class Course(models.Model):
                 ice_earning=course_price.ice_earning
             )
 
-        # Salin Section dan Material terkait
+       # Copy Section and Material related to the new course
         for section in self.sections.all():
+            # Create the new section first
             new_section = Section.objects.create(
-                parent=section.parent,
+                parent=None,  # Initially, no parent
                 title=section.title,
                 slug=section.slug,
                 courses=new_course
             )
+
+            # After creating the new section, update children (if any)
+            for child_section in section.children.all():
+                # Create new child sections, and update their parent_id to the newly created section
+                Section.objects.create(
+                    parent=new_section,  # Set the parent to the newly created section
+                    title=child_section.title,
+                    slug=child_section.slug,
+                    courses=new_course
+                )
+
+            # Now update any child sections that belong to this section, to reference the new parent
+            for child_section in section.children.all():
+                child_section.parent = new_section  # Set the correct parent ID
+                child_section.save()
             
             # Salin Material untuk section baru
             for material in section.materials.all():

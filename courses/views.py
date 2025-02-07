@@ -105,13 +105,30 @@ def course_reruns(request, id):
                 )
 
             # Salin Section dan Material terkait
+           # Salin Section dan Material terkait
             for section in course.sections.all():
+                # Create the new section
                 new_section = Section.objects.create(
-                    parent=section.parent,
+                    parent=None,  # Initially, the new section has no parent
                     title=section.title,
                     slug=section.slug,
                     courses=new_course
                 )
+                
+                # Now update the parent_id of child sections
+                for child_section in section.children.all():
+                    # Create new child sections with the correct parent_id
+                    Section.objects.create(
+                        parent=new_section,  # Set the parent to the newly created section
+                        title=child_section.title,
+                        slug=child_section.slug,
+                        courses=new_course
+                    )
+
+                # After creating the section and children, now update the child sections' parent_id
+                for child_section in section.children.all():
+                    child_section.parent = new_section  # Update parent_id
+                    child_section.save()
                 
                 # Salin Material untuk section baru
                 for material in section.materials.all():
