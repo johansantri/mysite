@@ -80,19 +80,20 @@ def course_list(request):
     # Prepare courses data for rendering in template
     courses_data = []
     for course in page_obj:
-        course_price = 'FREE' if not course.org_partner.balance or course.org_partner.balance == 0 else course.org_partner.balance
+        #course_price = 'FREE' if not course.org_partner.balance or course.org_partner.balance == 0 else course.org_partner.balance
         courses_data.append({
             'course_name': course.course_name,
             'course_id': course.id,
+            'course_enrollments': course.enrollments.count(),
             'course_slug': course.slug,
             'course_image': course.image.url if course.image else None,
-            'course_price': course_price,  # Store 'FREE' or the actual balance
+            #'course_price': course_price,  # Store 'FREE' or the actual balance
             'instructor': course.instructor.user.get_full_name() if course.instructor else None,
             'instructor_username': course.instructor.user.username if course.instructor else None,
             'photo': course.instructor.user.photo.url if course.instructor and course.instructor.user.photo else None,
             'partner': course.org_partner.name if course.org_partner else None,  # Corrected access to partner name
             'category': course.category.name if course.category else None,  # Corrected access to category name
-            'universiti': course.org_partner.name.name if course.org_partner and course.org_partner.name else None  # Serialize Universiti's name
+            #'universiti': course.org_partner.name.name if course.org_partner and course.org_partner.name else None  # Serialize Universiti's name
         })
 
     # Prepare the context for rendering
