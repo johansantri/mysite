@@ -51,6 +51,7 @@
                 <tr>
                   <th>Number</th>
                   <th>Course</th>
+                  <th>enrrol</th>
                   <th>Instructor</th>
                   <th>Partner</th>
                   <th>Status</th>
@@ -63,6 +64,7 @@
                   <tr>
                     <td>{{ course.course_number }}</td>
                     <td> <a href="{% url 'courses:studio' id=course.id %}"><span class="badge badge-primary">{{ course.course_name }}</span></a> </td>
+                    <td>{{ course.enrolment_count }}</td>
                     <td>{{ course.instructor_email }}</td>
                     <td>{{ course.org_partner_name }}</td>
                     <td>{{ course.status_course }}</td>

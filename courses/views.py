@@ -1450,6 +1450,8 @@ def delete_matrial(request, pk):
 #@login_required
 
 
+from django.db.models import Count
+
 def courseView(request):
     # Check if the user is authenticated
     if not request.user.is_authenticated:
@@ -1489,6 +1491,11 @@ def courseView(request):
         org_partner_name=F('org_partner__name__name')
     )
 
+    # Correctly annotate the enrolment count based on the relationship (e.g., 'enrollments')
+    courses = courses.annotate(
+        enrolment_count=Count('enrollments')  # This counts related 'enrollments' (adjust based on your model)
+    )
+
     # Paginate the courses
     paginator = Paginator(courses, 10)  # 10 courses per page
     page_number = request.GET.get('page', 1)
@@ -1524,6 +1531,7 @@ def courseView(request):
         'archive_count': archive_count,
         'curation_count': curation_count
     })
+
 
 
 
