@@ -1473,8 +1473,8 @@ def courseView(request):
         courses = courses.filter(status_course='draft')
     elif course_filter == 'published':
         courses = courses.filter(status_course='published')
-    elif course_filter == 'archived':
-        courses = courses.filter(status_course='archived')
+    elif course_filter == 'archive':
+        courses = courses.filter(status_course='archive')
     elif course_filter == 'curation':
         courses = courses.filter(status_course='curation')
 
@@ -1499,23 +1499,32 @@ def courseView(request):
     except EmptyPage:
         page_obj = paginator.page(paginator.num_pages)
 
-    # Calculate filtered counts for each filter
-    all_count = Course.objects.all().count()
-    draft_count = Course.objects.filter(status_course='draft').count()
-    published_count = Course.objects.filter(status_course='published').count()
-    archived_count = Course.objects.filter(status_course='archived').count()
-    curation_count = Course.objects.filter(status_course='curation').count()
+    # Calculate filtered counts for each filter (including search query)
+    all_courses = Course.objects.all()
+    draft_count = all_courses.filter(status_course='draft').count()
+    published_count = all_courses.filter(status_course='published').count()
+    archive_count = all_courses.filter(status_course='archive').count()
+    curation_count = all_courses.filter(status_course='curation').count()
+
+    # If there's a search query, update the counts to reflect only the filtered (search) results
+    if search_query:
+        all_courses = all_courses.filter(course_name__icontains=search_query)
+        draft_count = all_courses.filter(status_course='draft').count()
+        published_count = all_courses.filter(status_course='published').count()
+        archive_count = all_courses.filter(status_course='archive').count()
+        curation_count = all_courses.filter(status_course='curation').count()
 
     # Pass the filtered courses count to the template
     return render(request, 'courses/course_view.html', {
         'page_obj': page_obj,
         'course_filter': course_filter,
-        'all_count': all_count,
+        'all_count': all_courses.count(),
         'draft_count': draft_count,
         'published_count': published_count,
-        'archived_count': archived_count,
+        'archive_count': archive_count,
         'curation_count': curation_count
     })
+
 
 
 

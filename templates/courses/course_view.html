@@ -10,24 +10,15 @@
           <h1 class="display-5 fw-bold mb-4">My Courses</h1>
 
           <!-- Filter Buttons -->
-          <div class="d-flex flex-wrap justify-content-start mb-4">
-            <a href="?filter=all" class="btn btn-outline-dark me-3 mb-2 {% if course_filter == 'all' %}active{% endif %}">
-                All ({{ all_count }})
-            </a>
-            <a href="?filter=draft" class="btn btn-outline-secondary me-3 mb-2 {% if course_filter == 'draft' %}active{% endif %}">
-                Draft ({{ draft_count }})
-            </a>
-            <a href="?filter=published" class="btn btn-outline-secondary me-3 mb-2 {% if course_filter == 'published' %}active{% endif %}">
-                Published ({{ published_count }})
-            </a>
-            <a href="?filter=archived" class="btn btn-outline-secondary me-3 mb-2 {% if course_filter == 'archived' %}active{% endif %}">
-                Archived ({{ archived_count }})
-            </a>
-            <a href="?filter=curation" class="btn btn-outline-secondary mb-2 {% if course_filter == 'curation' %}active{% endif %}">
-                Curation ({{ curation_count }})
-            </a>
+           <!-- Filter and Search Bar -->
+           <div class="d-flex flex-wrap justify-content-start mb-4">
+            <a href="?filter=all" class="btn btn-outline-dark me-3 mb-2 {% if course_filter == 'all' %}active{% endif %}">All ({{ all_count }})</a>
+            <a href="?filter=draft" class="btn btn-outline-secondary me-3 mb-2 {% if course_filter == 'draft' %}active{% endif %}">Draft ({{ draft_count }})</a>
+            <a href="?filter=published" class="btn btn-outline-secondary me-3 mb-2 {% if course_filter == 'published' %}active{% endif %}">Published ({{ published_count }})</a>
+            <a href="?filter=archive" class="btn btn-outline-secondary me-3 mb-2 {% if course_filter == 'archive' %}active{% endif %}">Archived ({{ archive_count }})</a>
+            <a href="?filter=curation" class="btn btn-outline-secondary mb-2 {% if course_filter == 'curation' %}active{% endif %}">Curation ({{ curation_count }})</a>
         </div>
-        
+            
         
 
           <!-- Search Bar and New Button -->
@@ -47,6 +38,11 @@
               {% endif %}
             </div>
           </div>
+
+           <!-- Search Results Count -->
+            <div class="mb-4">
+                <p>Found {{ search_count }} result(s) for your search.</p>
+            </div>
   
           <!-- Courses Table -->
           <div class="table-responsive">
