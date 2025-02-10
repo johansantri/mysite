@@ -1448,93 +1448,77 @@ def delete_matrial(request, pk):
 
 #course view 
 #@login_required
+
+
 def courseView(request):
     # Check if the user is authenticated
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
+
     user = request.user
+    course_filter = request.GET.get('filter', 'all')  # Get filter from query string
 
+    # Filter courses based on the user's role and selected filter
     if user.is_superuser:
-
-        # Superadmin: Show all courses
-
         courses = Course.objects.all()
-
     elif user.is_partner:
-
-        # Partner: Show only their own courses
-
-        courses = Course.objects.filter(org_partner__user=user)  # Use org_partner to filter
-
+        courses = Course.objects.filter(org_partner__user=user)
     elif user.is_instructor:
-
-        # Instructor: Show only their own courses
-
-        courses = Course.objects.filter(instructor__user=user, instructor__status='Approved')  # Assuming instructor is related to user
-       # print(courses)
-
+        courses = Course.objects.filter(instructor__user=user, instructor__status='Approved')
     else:
-
-        # Optionally handle other user types or set courses to none
-
         courses = Course.objects.none()
 
+    # Apply the filter
+    if course_filter == 'draft':
+        courses = courses.filter(status_course='draft')
+    elif course_filter == 'published':
+        courses = courses.filter(status_course='published')
+    elif course_filter == 'archived':
+        courses = courses.filter(status_course='archived')
+    elif course_filter == 'curation':
+        courses = courses.filter(status_course='curation')
+
+    # Get search query if any
     search_query = request.GET.get('search', '').strip()
     if search_query:
         courses = courses.filter(course_name__icontains=search_query)
-    courses = courses.order_by('-id')  # To order by ascending order
-    # Fetch only necessary fields
-    #courses = courses.values('id', 'course_name', 'course_number','course_run','org_partner__name','status_course')
-    #courses = courses.annotate(org_partner_name=F('org_partner__name')).values('id', 'course_name', 'course_number', 'course_run', 'org_partner__name__name', 'status_course')
-    courses = courses.annotate(
-        org_partner_name=F('org_partner__name__name'),  # Resolve partner's name
-        instructor_email=F('instructor__user__email')  # Annotate instructor email
-    ).values(
-        'id',
-        'course_name',
-        'course_number',
-        'instructor_email',  # Use the annotation name
-        'org_partner_name',  # Use the partner name annotation
-        'status_course',
-        'course_run'
-    ).order_by('-id')
 
-    #print(courses)
-    #print(courses)
-    # Get the page number from the request
-    page_number = request.GET.get('page', 1)
-    try:
-        page_number = int(page_number)
-    except ValueError:
-        page_number = 1
+    # Annotate instructor_email and org_partner_name
+    courses = courses.annotate(
+        instructor_email=F('instructor__user__email'),
+        org_partner_name=F('org_partner__name__name')
+    )
 
     # Paginate the courses
-    paginator = Paginator(courses, 10)  # 5 courses per page
+    paginator = Paginator(courses, 10)  # 10 courses per page
+    page_number = request.GET.get('page', 1)
     try:
         page_obj = paginator.page(page_number)
     except PageNotAnInteger:
         page_obj = paginator.page(1)
     except EmptyPage:
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return JsonResponse({"error": "Page not found"}, status=404)
-        return redirect('/')  # Redirect for non-Ajax requests
+        page_obj = paginator.page(paginator.num_pages)
 
-    # Prepare paginated data to return as JSON
-    data = {
-        "items": list(page_obj),  # Convert page object to a list of dictionaries
-        "count": paginator.count,
-        "page_number": page_obj.number,
-        "num_pages": paginator.num_pages,
-        "has_next": page_obj.has_next(),
-        "has_previous": page_obj.has_previous(),
-    }
+    # Calculate filtered counts for each filter
+    all_count = Course.objects.all().count()
+    draft_count = Course.objects.filter(status_course='draft').count()
+    published_count = Course.objects.filter(status_course='published').count()
+    archived_count = Course.objects.filter(status_course='archived').count()
+    curation_count = Course.objects.filter(status_course='curation').count()
 
-    # If it's an Ajax request, return JSON response
-    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        return JsonResponse(data)
+    # Pass the filtered courses count to the template
+    return render(request, 'courses/course_view.html', {
+        'page_obj': page_obj,
+        'course_filter': course_filter,
+        'all_count': all_count,
+        'draft_count': draft_count,
+        'published_count': published_count,
+        'archived_count': archived_count,
+        'curation_count': curation_count
+    })
 
-    # Render the page normally for non-Ajax requests
-    return render(request, 'courses/course_view.html')
+
+
 
 def filter_courses_by_query(request, posts):
     """Filter courses based on search query."""
