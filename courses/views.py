@@ -29,10 +29,22 @@ from django.db.models import Count
 from django.utils.text import slugify
 from django.utils import timezone
 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.utils import timezone
+from .forms import CourseRerunForm
+from .models import Course, CoursePrice, Section, Material, Assessment, Question, Choice
+from django.utils.text import slugify
+
 def course_reruns(request, id):
     """ View for creating a re-run of a course, along with related data like CoursePrice, Assessments, and Materials """
 
     course = get_object_or_404(Course, id=id)
+
+    # Check if the course status is "archive"
+    if course.status_course != 'archive':
+        messages.warning(request, "Only archived courses can be re-run.")
+        return redirect('courses:studio', id=course.id)
 
     # Check if the user has permission to create a re-run for this course
     if not (request.user.is_superuser or request.user == course.org_partner.user or request.user == course.instructor.user):
@@ -99,22 +111,19 @@ def course_reruns(request, id):
 
             # Copy the Sections and related Materials, Assessments for the new course
             for section in course.sections.all():
-                # Check if the section already exists for the re-run
                 new_section_title = f"{section.title}-{new_course.course_run}"
                 existing_section = Section.objects.filter(
                     title=new_section_title, courses=new_course
                 ).first()
 
                 if not existing_section:
-                    # Create the main section for the new course
                     new_section = Section.objects.create(
-                        parent=None,  # No parent for the main section
+                        parent=None,
                         title=new_section_title,
                         slug=f"{section.slug}-{new_course.course_run}",
                         courses=new_course
                     )
-                    
-                    # Copy materials and assessments for the new section
+
                     for material in section.materials.all():
                         Material.objects.create(
                             section=new_section,
@@ -148,59 +157,6 @@ def course_reruns(request, id):
                                     is_correct=choice.is_correct
                                 )
 
-                # Handle child sections for the new section
-                for child_section in section.children.all():
-                    # Rename and check if the child section exists for the new course
-                    new_child_section_title = f"{child_section.title}-{new_course.course_run}"
-
-                    # Check if the child section already exists under the new section
-                    existing_child_section = Section.objects.filter(
-                        title=new_child_section_title, parent=new_section
-                    ).first()
-
-                    if not existing_child_section:
-                        # Only create the child section if it doesn't already exist
-                        new_child_section = Section.objects.create(
-                            parent=new_section,  # Correctly link the parent
-                            title=new_child_section_title,  # Correctly rename the child section
-                            slug=f"{child_section.slug}-{new_course.course_run}",
-                            courses=new_course
-                        )
-
-                        # Copy materials and assessments for the new child section
-                        for material in child_section.materials.all():
-                            Material.objects.create(
-                                section=new_child_section,
-                                title=material.title,
-                                description=material.description,
-                                created_at=material.created_at
-                            )
-
-                        for assessment in child_section.assessments.all():
-                            new_assessment = Assessment.objects.create(
-                                name=assessment.name,
-                                section=new_child_section,
-                                weight=assessment.weight,
-                                description=assessment.description,
-                                flag=assessment.flag,
-                                grade_range=assessment.grade_range,
-                                created_at=assessment.created_at
-                            )
-
-                            for question in assessment.questions.all():
-                                new_question = Question.objects.create(
-                                    assessment=new_assessment,
-                                    text=question.text,
-                                    created_at=question.created_at
-                                )
-
-                                for choice in question.choices.all():
-                                    Choice.objects.create(
-                                        question=new_question,
-                                        text=choice.text,
-                                        is_correct=choice.is_correct
-                                    )
-
             messages.success(request, f"Re-run of course '{new_course.course_name}' created successfully!")
             return redirect('courses:studio', id=new_course.id)
 
@@ -210,12 +166,11 @@ def course_reruns(request, id):
 
     else:
         form = CourseRerunForm(instance=course)
-
-        # Add values to the hidden fields for course_name and org_partner
         form.fields['course_name_hidden'].initial = course.course_name
         form.fields['org_partner_hidden'].initial = course.org_partner
 
     return render(request, 'courses/course_reruns.html', {'form': form, 'course': course})
+
 
 
 

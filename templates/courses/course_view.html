@@ -70,7 +70,11 @@
                     <td>{{ course.status_course }}</td>
                     <td>{{ course.course_run }}</td>
                     <td>
-                      <a href="{% url 'courses:course_reruns' id=course.id %}" class="btn btn-info btn-sm">Re-Runs</a>
+                      {% if course.status_course == 'archive' %}
+    <a href="{% url 'courses:course_reruns' id=course.id %}" class="btn btn-info btn-sm">Re-Runs</a>
+  {% else %}
+    <span class="text-muted">Re-Runs</span>
+  {% endif %}
                     </td>
                   </tr>
                 {% empty %}

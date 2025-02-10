@@ -11,12 +11,22 @@
         {% include "courses/course_set.html"%}
         <hr>  
         {% if messages %}
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {% for message in messages %}
-                {{ message }}
-            {% endfor %}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+            <div class="alert alert-dismissible fade show" role="alert">
+                {% for message in messages %}
+                    {% if message.tags == 'success' %}
+                        <div class="alert alert-success" role="alert">{{ message }}</div>
+                    {% elif message.tags == 'error' %}
+                        <div class="alert alert-danger" role="alert">{{ message }}</div>
+                    {% elif message.tags == 'warning' %}
+                        <div class="alert alert-warning" role="alert">{{ message }}</div>
+                    {% elif message.tags == 'info' %}
+                        <div class="alert alert-info" role="alert">{{ message }}</div>
+                    {% else %}
+                        <div class="alert alert-secondary" role="alert">{{ message }}</div>
+                    {% endif %}
+                {% endfor %}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
     
             <script>
                 // Automatically dismiss the alert after 3 seconds
