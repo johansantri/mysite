@@ -32,24 +32,21 @@ from django.utils import timezone
 def course_reruns(request, id):
     """ View for creating a re-run of a course, along with related data like CoursePrice, Assessments, and Materials """
 
-    # Ambil course yang ada berdasarkan ID
     course = get_object_or_404(Course, id=id)
 
-    # Cek apakah user memiliki izin untuk membuat re-run untuk course ini
+    # Check if the user has permission to create a re-run for this course
     if not (request.user.is_superuser or request.user == course.org_partner.user or request.user == course.instructor.user):
         messages.error(request, "You do not have permission to create a re-run for this course.")
         return redirect('courses:studio', id=course.id)
 
-    # Jika request method POST, berarti user mengirimkan form untuk membuat re-run
+    # If the request method is POST, the user is submitting the form to create the re-run
     if request.method == 'POST':
-        
         form = CourseRerunForm(request.POST)
-        
-        # Jika form valid
+
         if form.is_valid():
             today = timezone.now().date()
 
-            # Cek apakah re-run sudah ada untuk hari ini
+            # Check if a re-run already exists for today
             existing_rerun = Course.objects.filter(
                 course_name=course.course_name,  # Same course name
                 course_run__startswith="Run",  # Check if it's a re-run
@@ -60,29 +57,25 @@ def course_reruns(request, id):
                 messages.error(request, "A re-run for this course has already been created today.")
                 return redirect('courses:studio', id=course.id)
 
-            # Proses pembuatan course re-run
-            new_course = form.save(commit=False)  # Jangan simpan dulu, kita ingin memodifikasi beberapa field
-
-            # Set field yang tidak boleh diubah
+            # Process the creation of the new course re-run
+            new_course = form.save(commit=False)
             new_course.course_name = form.cleaned_data['course_name_hidden']
             new_course.org_partner = form.cleaned_data['org_partner_hidden']
             new_course.status_course = "draft"
             new_course.slug = f"{slugify(new_course.course_name)}-{new_course.course_run.lower().replace(' ', '-')}"
             new_course.created_at = timezone.now()
-            new_course.author = request.user  # Set pengguna yang membuat course baru
+            new_course.author = request.user  # Set the user who creates the new course
             
-            # Set Instructor yang sama dari course lama ke course baru
-            new_course.instructor = course.instructor  # Menyalin instructor dari course lama
-            new_course.language = course.language  # Salin bahasa
-            new_course.image = course.image  # Salin image
-            new_course.description = course.description  # Salin description
-            new_course.sort_description = course.sort_description  # Salin sort description
-            new_course.hour = course.hour  # Salin hour
-
-            # Simpan course baru
+            # Set Instructor and other fields from the original course
+            new_course.instructor = course.instructor
+            new_course.language = course.language
+            new_course.image = course.image
+            new_course.description = course.description
+            new_course.sort_description = course.sort_description
+            new_course.hour = course.hour
             new_course.save()
 
-            # Salin CoursePrice yang terkait dengan course lama
+            # Copy the CoursePrice related to the original course
             for course_price in course.prices.all():
                 CoursePrice.objects.create(
                     course=new_course,
@@ -104,75 +97,36 @@ def course_reruns(request, id):
                     ice_earning=course_price.ice_earning
                 )
 
-            # Salin Section dan Material terkait
+            # Copy the Sections and related Materials, Assessments for the new course
             for section in course.sections.all():
-                # Create the new section
-                new_section = Section.objects.create(
-                    parent=None,  # Initially, the new section has no parent
-                    title=section.title,
-                    slug=section.slug,
-                    courses=new_course
-                )
-                
-                # Salin Material dan Assessments untuk section baru
-                for material in section.materials.all():
-                    Material.objects.create(
-                        section=new_section,
-                        title=material.title,
-                        description=material.description,
-                        created_at=material.created_at
-                    )
+                # Check if the section already exists for the re-run
+                new_section_title = f"{section.title}-{new_course.course_run}"
+                existing_section = Section.objects.filter(
+                    title=new_section_title, courses=new_course
+                ).first()
 
-                for assessment in section.assessments.all():
-                    new_assessment = Assessment.objects.create(
-                        name=assessment.name,
-                        section=new_section,
-                        weight=assessment.weight,
-                        description=assessment.description,
-                        flag=assessment.flag,
-                        grade_range=assessment.grade_range,
-                        created_at=assessment.created_at
-                    )
-                    
-                    # Salin Questions terkait dengan Assessment baru
-                    for question in assessment.questions.all():
-                        new_question = Question.objects.create(
-                            assessment=new_assessment,
-                            text=question.text,
-                            created_at=question.created_at
-                        )
-                        
-                        # Salin Choices untuk masing-masing Question
-                        for choice in question.choices.all():
-                            Choice.objects.create(
-                                question=new_question,
-                                text=choice.text,
-                                is_correct=choice.is_correct
-                            )
-
-                # Handle child sections for the new section
-                for child_section in section.children.all():
-                    # Create new child sections with the correct parent_id
-                    new_child_section = Section.objects.create(
-                        parent=new_section,  # Set the parent correctly
-                        title=child_section.title,
-                        slug=child_section.slug,
+                if not existing_section:
+                    # Create the main section for the new course
+                    new_section = Section.objects.create(
+                        parent=None,  # No parent for the main section
+                        title=new_section_title,
+                        slug=f"{section.slug}-{new_course.course_run}",
                         courses=new_course
                     )
-
-                    # Copy related materials and assessments
-                    for material in child_section.materials.all():
+                    
+                    # Copy materials and assessments for the new section
+                    for material in section.materials.all():
                         Material.objects.create(
-                            section=new_child_section,
+                            section=new_section,
                             title=material.title,
                             description=material.description,
                             created_at=material.created_at
                         )
 
-                    for assessment in child_section.assessments.all():
+                    for assessment in section.assessments.all():
                         new_assessment = Assessment.objects.create(
                             name=assessment.name,
-                            section=new_child_section,
+                            section=new_section,
                             weight=assessment.weight,
                             description=assessment.description,
                             flag=assessment.flag,
@@ -194,17 +148,59 @@ def course_reruns(request, id):
                                     is_correct=choice.is_correct
                                 )
 
-            # Salin GradeRange terkait dengan course baru
-            for grade_range in course.grade_ranges.all():
-                GradeRange.objects.create(
-                    name=grade_range.name,
-                    min_grade=grade_range.min_grade,
-                    max_grade=grade_range.max_grade,
-                    course=new_course,
-                    created_at=grade_range.created_at
-                )
+                # Handle child sections for the new section
+                for child_section in section.children.all():
+                    # Rename and check if the child section exists for the new course
+                    new_child_section_title = f"{child_section.title}-{new_course.course_run}"
 
-            # Kirim pesan sukses
+                    # Check if the child section already exists under the new section
+                    existing_child_section = Section.objects.filter(
+                        title=new_child_section_title, parent=new_section
+                    ).first()
+
+                    if not existing_child_section:
+                        # Only create the child section if it doesn't already exist
+                        new_child_section = Section.objects.create(
+                            parent=new_section,  # Correctly link the parent
+                            title=new_child_section_title,  # Correctly rename the child section
+                            slug=f"{child_section.slug}-{new_course.course_run}",
+                            courses=new_course
+                        )
+
+                        # Copy materials and assessments for the new child section
+                        for material in child_section.materials.all():
+                            Material.objects.create(
+                                section=new_child_section,
+                                title=material.title,
+                                description=material.description,
+                                created_at=material.created_at
+                            )
+
+                        for assessment in child_section.assessments.all():
+                            new_assessment = Assessment.objects.create(
+                                name=assessment.name,
+                                section=new_child_section,
+                                weight=assessment.weight,
+                                description=assessment.description,
+                                flag=assessment.flag,
+                                grade_range=assessment.grade_range,
+                                created_at=assessment.created_at
+                            )
+
+                            for question in assessment.questions.all():
+                                new_question = Question.objects.create(
+                                    assessment=new_assessment,
+                                    text=question.text,
+                                    created_at=question.created_at
+                                )
+
+                                for choice in question.choices.all():
+                                    Choice.objects.create(
+                                        question=new_question,
+                                        text=choice.text,
+                                        is_correct=choice.is_correct
+                                    )
+
             messages.success(request, f"Re-run of course '{new_course.course_name}' created successfully!")
             return redirect('courses:studio', id=new_course.id)
 
@@ -213,17 +209,13 @@ def course_reruns(request, id):
             print(form.errors)  # Optional: print form errors for debugging
 
     else:
-        # Form untuk mengedit re-run
         form = CourseRerunForm(instance=course)
 
-        # Tambahkan nilai ke hidden fields untuk course_name dan org_partner
+        # Add values to the hidden fields for course_name and org_partner
         form.fields['course_name_hidden'].initial = course.course_name
         form.fields['org_partner_hidden'].initial = course.org_partner
 
     return render(request, 'courses/course_reruns.html', {'form': form, 'course': course})
-
-
-
 
 
 
