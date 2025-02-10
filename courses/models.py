@@ -146,8 +146,6 @@ class Course(models.Model):
             return {"status": "info", "message": "You are already enrolled in this course."}
     
     def create_rerun(self, course_run_input=None):
-        """ Creates a re-run (new instance) of the current course, allowing user input for course_run and keeping the same course_number """
-
         today = timezone.now().date()  # Get today's date in a timezone-aware format
 
         # Check if a re-run exists for this course today
@@ -234,7 +232,7 @@ class Course(models.Model):
                 ice_earning=course_price.ice_earning
             )
 
-       # Copy Section and Material related to the new course
+        # Copy Section and Material related to the new course
         for section in self.sections.all():
             # Create the new section first
             new_section = Section.objects.create(
@@ -244,22 +242,7 @@ class Course(models.Model):
                 courses=new_course
             )
 
-            # After creating the new section, update children (if any)
-            for child_section in section.children.all():
-                # Create new child sections, and update their parent_id to the newly created section
-                Section.objects.create(
-                    parent=new_section,  # Set the parent to the newly created section
-                    title=child_section.title,
-                    slug=child_section.slug,
-                    courses=new_course
-                )
-
-            # Now update any child sections that belong to this section, to reference the new parent
-            for child_section in section.children.all():
-                child_section.parent = new_section  # Set the correct parent ID
-                child_section.save()
-            
-            # Salin Material untuk section baru
+            # Salin material dan assessments terkait untuk section baru
             for material in section.materials.all():
                 Material.objects.create(
                     section=new_section,
@@ -268,7 +251,6 @@ class Course(models.Model):
                     created_at=material.created_at
                 )
 
-            # Salin Assessments terkait dengan Section baru
             for assessment in section.assessments.all():
                 new_assessment = Assessment.objects.create(
                     name=assessment.name,
@@ -279,8 +261,7 @@ class Course(models.Model):
                     grade_range=assessment.grade_range,
                     created_at=assessment.created_at
                 )
-                
-                # Salin Questions terkait dengan Assessment baru
+
                 for question in assessment.questions.all():
                     new_question = Question.objects.create(
                         assessment=new_assessment,
@@ -288,7 +269,6 @@ class Course(models.Model):
                         created_at=question.created_at
                     )
                     
-                    # Salin Choices untuk masing-masing Question
                     for choice in question.choices.all():
                         Choice.objects.create(
                             question=new_question,
@@ -296,7 +276,52 @@ class Course(models.Model):
                             is_correct=choice.is_correct
                         )
 
+            # Handle child sections for the new section
+            for child_section in section.children.all():
+                # Create new child sections, and set the parent to the new section
+                new_child_section = Section.objects.create(
+                    parent=new_section,  # Set parent correctly for child
+                    title=child_section.title,
+                    slug=child_section.slug,
+                    courses=new_course
+                )
+
+                # Copy materials and assessments for the child section
+                for material in child_section.materials.all():
+                    Material.objects.create(
+                        section=new_child_section,
+                        title=material.title,
+                        description=material.description,
+                        created_at=material.created_at
+                    )
+
+                for assessment in child_section.assessments.all():
+                    new_assessment = Assessment.objects.create(
+                        name=assessment.name,
+                        section=new_child_section,
+                        weight=assessment.weight,
+                        description=assessment.description,
+                        flag=assessment.flag,
+                        grade_range=assessment.grade_range,
+                        created_at=assessment.created_at
+                    )
+
+                    for question in assessment.questions.all():
+                        new_question = Question.objects.create(
+                            assessment=new_assessment,
+                            text=question.text,
+                            created_at=question.created_at
+                        )
+                        
+                        for choice in question.choices.all():
+                            Choice.objects.create(
+                                question=new_question,
+                                text=choice.text,
+                                is_correct=choice.is_correct
+                            )
+
         return new_course
+
 
 
 

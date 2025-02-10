@@ -105,7 +105,6 @@ def course_reruns(request, id):
                 )
 
             # Salin Section dan Material terkait
-           # Salin Section dan Material terkait
             for section in course.sections.all():
                 # Create the new section
                 new_section = Section.objects.create(
@@ -115,22 +114,7 @@ def course_reruns(request, id):
                     courses=new_course
                 )
                 
-                # Now update the parent_id of child sections
-                for child_section in section.children.all():
-                    # Create new child sections with the correct parent_id
-                    Section.objects.create(
-                        parent=new_section,  # Set the parent to the newly created section
-                        title=child_section.title,
-                        slug=child_section.slug,
-                        courses=new_course
-                    )
-
-                # After creating the section and children, now update the child sections' parent_id
-                for child_section in section.children.all():
-                    child_section.parent = new_section  # Update parent_id
-                    child_section.save()
-                
-                # Salin Material untuk section baru
+                # Salin Material dan Assessments untuk section baru
                 for material in section.materials.all():
                     Material.objects.create(
                         section=new_section,
@@ -139,7 +123,6 @@ def course_reruns(request, id):
                         created_at=material.created_at
                     )
 
-                # Salin Assessments terkait dengan Section baru
                 for assessment in section.assessments.all():
                     new_assessment = Assessment.objects.create(
                         name=assessment.name,
@@ -166,6 +149,50 @@ def course_reruns(request, id):
                                 text=choice.text,
                                 is_correct=choice.is_correct
                             )
+
+                # Handle child sections for the new section
+                for child_section in section.children.all():
+                    # Create new child sections with the correct parent_id
+                    new_child_section = Section.objects.create(
+                        parent=new_section,  # Set the parent correctly
+                        title=child_section.title,
+                        slug=child_section.slug,
+                        courses=new_course
+                    )
+
+                    # Copy related materials and assessments
+                    for material in child_section.materials.all():
+                        Material.objects.create(
+                            section=new_child_section,
+                            title=material.title,
+                            description=material.description,
+                            created_at=material.created_at
+                        )
+
+                    for assessment in child_section.assessments.all():
+                        new_assessment = Assessment.objects.create(
+                            name=assessment.name,
+                            section=new_child_section,
+                            weight=assessment.weight,
+                            description=assessment.description,
+                            flag=assessment.flag,
+                            grade_range=assessment.grade_range,
+                            created_at=assessment.created_at
+                        )
+
+                        for question in assessment.questions.all():
+                            new_question = Question.objects.create(
+                                assessment=new_assessment,
+                                text=question.text,
+                                created_at=question.created_at
+                            )
+
+                            for choice in question.choices.all():
+                                Choice.objects.create(
+                                    question=new_question,
+                                    text=choice.text,
+                                    is_correct=choice.is_correct
+                                )
 
             # Salin GradeRange terkait dengan course baru
             for grade_range in course.grade_ranges.all():
@@ -194,6 +221,7 @@ def course_reruns(request, id):
         form.fields['org_partner_hidden'].initial = course.org_partner
 
     return render(request, 'courses/course_reruns.html', {'form': form, 'course': course})
+
 
 
 
