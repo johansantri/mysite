@@ -1493,7 +1493,7 @@ def courseView(request):
     else:
         courses = Course.objects.none()
 
-    # Apply the filter
+    # Apply the filter for the course status
     if course_filter == 'draft':
         courses = courses.filter(status_course__status='draft')
     elif course_filter == 'published':
@@ -1541,26 +1541,14 @@ def courseView(request):
         # You could redirect the user or show a message in the template
 
     # Filter courses based on status_course IDs (only if the CourseStatus objects exist)
-    if draft_status:
-        draft_count = Course.objects.filter(status_course=draft_status).count()
-    else:
-        draft_count = 0  # or any fallback value
-    if published_status:
-        published_count = Course.objects.filter(status_course=published_status).count()
-    else:
-        published_count = 0
-    if archive_status:
-        archive_count = Course.objects.filter(status_course=archive_status).count()
-    else:
-        archive_count = 0
-    if curation_status:
-        curation_count = Course.objects.filter(status_course=curation_status).count()
-    else:
-        curation_count = 0
+    # Ensure these counts are based on the filtered courses, not the whole set.
+    draft_count = courses.filter(status_course=draft_status).count() if draft_status else 0
+    published_count = courses.filter(status_course=published_status).count() if published_status else 0
+    archive_count = courses.filter(status_course=archive_status).count() if archive_status else 0
+    curation_count = courses.filter(status_course=curation_status).count() if curation_status else 0
 
     # If there's a search query, update the counts to reflect only the filtered (search) results
     if search_query:
-        courses = courses.filter(course_name__icontains=search_query)
         draft_count = courses.filter(status_course=draft_status).count() if draft_status else 0
         published_count = courses.filter(status_course=published_status).count() if published_status else 0
         archive_count = courses.filter(status_course=archive_status).count() if archive_status else 0
