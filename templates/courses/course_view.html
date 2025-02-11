@@ -51,7 +51,7 @@
                 <tr>
                   <th>Number</th>
                   <th>Course</th>
-                  <th>enrrol</th>
+                  <th>Enroll</th>
                   <th>Instructor</th>
                   <th>Partner</th>
                   <th>Status</th>
@@ -63,41 +63,46 @@
                 {% for course in page_obj %}
                   <tr>
                     <td>{{ course.course_number }}</td>
-                    <td> <a href="{% url 'courses:studio' id=course.id %}">{{ course.course_name }}</a> </td>
+                    <td>
+                      <a href="{% url 'courses:studio' id=course.id %}">{{ course.course_name }}</a>
+                    </td>
                     <td>{{ course.enrolment_count }}</td>
                     <td>{{ course.instructor_email }}</td>
                     <td>{{ course.org_partner_name }}</td>
-                    <td><span class="
-                      {% if course.status_course == 'published' %}
-                          text-success
-                      {% elif course.status_course == 'draft' %}
-                          text-warning
-                      {% elif course.status_course == 'archive' %}
-                          text-danger
-                      {% elif course.status_course == 'curation' %}
-                          text-info
-                      {% else %}
-                          text-primary
-                      {% endif %}
-                  ">
-                    {{ course.status_course }}
-                  </span></td>
+                    <td>
+                      <span class="
+                        {% if course.status_course == 'published' %}
+                            text-success
+                        {% elif course.status_course == 'draft' %}
+                            text-warning
+                        {% elif course.status_course == 'archived' %}
+                            text-danger
+                        {% elif course.status_course == 'curation' %}
+                            text-info
+                        {% else %}
+                            text-primary
+                        {% endif %}
+                      ">
+                        {{ course.status_course }}
+                      </span>
+                    </td>
                     <td>{{ course.course_run }}</td>
                     <td>
-                      {% if course.status_course == 'archive' %}
-                        <a href="{% url 'courses:course_reruns' id=course.id %}" class="btn btn-info btn-sm">Re-Runs</a>
+                      {% if course.status_course.status == 'archived' %}
+                          <a href="{% url 'courses:course_reruns' id=course.id %}" class="btn btn-info btn-sm">Re-Runs</a>
                       {% else %}
-                        <span class="text-muted">Re-Runs</span>
+                          <span class="text-muted">Re-Runs</span>
                       {% endif %}
                     </td>
                   </tr>
                 {% empty %}
                   <tr>
-                    <td colspan="7" class="text-center">No courses found.</td>
+                    <td colspan="8" class="text-center">No courses found.</td>
                   </tr>
                 {% endfor %}
               </tbody>
             </table>
+            
           </div>
           
           <!-- Pagination -->

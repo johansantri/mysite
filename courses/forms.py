@@ -2,7 +2,7 @@
 from django import forms
 from django.forms import inlineformset_factory
 from django.core.cache import cache
-from .models import Course, Partner,Category, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment,PricingType, CoursePrice
+from .models import Course,CourseStatus, Partner,Category, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment,PricingType, CoursePrice
 from django_ckeditor_5.widgets import CKEditor5Widget
 from django.contrib.auth.models import User, Universiti
 import logging
@@ -354,8 +354,8 @@ class ProfilForm(forms.ModelForm):
 class CourseForm(forms.ModelForm):
     class Meta:
         model = Course
-        fields = ['course_name', 'course_number', 'course_run', 'slug', 'category', 'level',  'org_partner','slug']
-
+        fields = ['course_name', 'course_number', 'course_run', 'slug', 'category', 'level',  'org_partner']
+       # fields = ['course_name', 'course_number', 'course_run', 'org_partner', 'instructor', 'status_course', 'description']
         
         widgets = {
             "course_name": forms.TextInput(attrs={

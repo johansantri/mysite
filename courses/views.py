@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from .forms import CoursePriceForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from django.http import JsonResponse
-from .models import Course,Choice,CoursePrice,PricingType, Partner,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
+from .models import Course,CourseStatus,Choice,CoursePrice,PricingType, Partner,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
 from django.contrib.auth.models import User, Universiti
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
@@ -28,24 +28,68 @@ from datetime import datetime
 from django.db.models import Count
 from django.utils.text import slugify
 from django.utils import timezone
-
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.utils import timezone
 from .forms import CourseRerunForm
-from .models import Course, CoursePrice, Section, Material, Assessment, Question, Choice
+from .models import Course, CoursePrice,Enrollment, Section, Material, Assessment, Question, Choice
 from django.utils.text import slugify
 
+
+
+
+
+def started_courses(request):
+    if request.user.is_authenticated:
+        # Get all courses the user is enrolled in
+        enrollments = Enrollment.objects.filter(user=request.user)
+
+        # Get the status for 'published' directly by its actual field in the CourseStatus model
+        published_status = CourseStatus.objects.get(status='published')
+
+        # Filter for courses that have started and are published (status_course='published')
+        started_courses = enrollments.filter(
+            course__end_date__gte=timezone.now(),
+            course__status_course=published_status  # Use the actual CourseStatus object for filtering
+        ).values_list('course', flat=True)
+
+        # Get the course details for the started courses
+        courses = Course.objects.filter(id__in=started_courses)
+
+       
+
+        return render(request, 'home/started_courses.html', {
+            'courses': courses
+           
+        })
+
+    # Redirect to login page if the user is not authenticated
+    return redirect('authentication:login')
+
+
+
+
+
+#re-runs course
 def course_reruns(request, id):
     """ View for creating a re-run of a course, along with related data like CoursePrice, Assessments, and Materials """
 
     course = get_object_or_404(Course, id=id)
 
     # Check if the course status is "archive"
-    if course.status_course != 'archive':
-        messages.warning(request, "Only archived courses can be re-run.")
+    try:
+        archive_status = CourseStatus.objects.get(status='archived')
+        draft_status = CourseStatus.objects.get(status='draft')
+    except CourseStatus.DoesNotExist:
+        # Handle the case where the 'archived' status doesn't exist
+        messages.error(request, "The 'archived' status is missing. Please check your data.")
         return redirect('courses:studio', id=course.id)
 
+    # Check if the course status is 'archived'
+    if course.status_course != archive_status:
+        messages.warning(request, "Only archived courses can be re-run.")
+        return redirect('courses:studio', id=course.id)
     # Check if the user has permission to create a re-run for this course
     if not (request.user.is_superuser or request.user == course.org_partner.user or request.user == course.instructor.user):
         messages.error(request, "You do not have permission to create a re-run for this course.")
@@ -73,7 +117,7 @@ def course_reruns(request, id):
             new_course = form.save(commit=False)
             new_course.course_name = form.cleaned_data['course_name_hidden']
             new_course.org_partner = form.cleaned_data['org_partner_hidden']
-            new_course.status_course = "draft"
+            new_course.status_course = draft_status
             new_course.slug = f"{slugify(new_course.course_name)}-{new_course.course_run.lower().replace(' ', '-')}"
             new_course.created_at = timezone.now()
             new_course.author = request.user  # Set the user who creates the new course
@@ -109,53 +153,73 @@ def course_reruns(request, id):
                     ice_earning=course_price.ice_earning
                 )
 
+           
             # Copy the Sections and related Materials, Assessments for the new course
             for section in course.sections.all():
-                new_section_title = f"{section.title}-{new_course.course_run}"
+                # Create a new section title based on the original section's title and course_run
+                new_section_title = f"{section.title}"
+
+                # Check if the new section already exists for this course (avoid duplicates)
                 existing_section = Section.objects.filter(
                     title=new_section_title, courses=new_course
                 ).first()
 
+                # If section doesn't exist, create a new one
                 if not existing_section:
+                    # If the original section has a parent, copy it over as well
+                    parent_section = None
+                    if section.parent:
+                        # If the section has a parent, get the new parent section from the new course
+                        parent_section = Section.objects.filter(
+                            title=f"{section.parent.title}",
+                            courses=new_course
+                        ).first()
+
+                    # Create the new section
                     new_section = Section.objects.create(
-                        parent=None,
+                        parent=parent_section,  # Link to the parent section if it exists
                         title=new_section_title,
-                        slug=f"{section.slug}-{new_course.course_run}",
-                        courses=new_course
+                        slug=f"{section.slug}",  # Ensure the slug is unique
+                        courses=new_course  # Link the new section to the new course
                     )
 
+                    # Copy the materials associated with the section
                     for material in section.materials.all():
                         Material.objects.create(
-                            section=new_section,
+                            section=new_section,  # Link the material to the new section
                             title=material.title,
                             description=material.description,
-                            created_at=material.created_at
+                            created_at=material.created_at  # Copy the creation date, if needed
                         )
 
+                    # Copy the assessments associated with the section
                     for assessment in section.assessments.all():
                         new_assessment = Assessment.objects.create(
                             name=assessment.name,
-                            section=new_section,
+                            section=new_section,  # Link the assessment to the new section
                             weight=assessment.weight,
                             description=assessment.description,
                             flag=assessment.flag,
                             grade_range=assessment.grade_range,
-                            created_at=assessment.created_at
+                            created_at=assessment.created_at  # Copy the creation date, if needed
                         )
 
+                        # Copy the questions associated with the assessment
                         for question in assessment.questions.all():
                             new_question = Question.objects.create(
-                                assessment=new_assessment,
+                                assessment=new_assessment,  # Link the question to the new assessment
                                 text=question.text,
-                                created_at=question.created_at
+                                created_at=question.created_at  # Copy the creation date, if needed
                             )
 
+                            # Copy the choices associated with the question
                             for choice in question.choices.all():
                                 Choice.objects.create(
-                                    question=new_question,
+                                    question=new_question,  # Link the choice to the new question
                                     text=choice.text,
-                                    is_correct=choice.is_correct
+                                    is_correct=choice.is_correct  # Copy whether the choice is correct
                                 )
+
 
             messages.success(request, f"Re-run of course '{new_course.course_name}' created successfully!")
             return redirect('courses:studio', id=new_course.id)
@@ -170,10 +234,6 @@ def course_reruns(request, id):
         form.fields['org_partner_hidden'].initial = course.org_partner
 
     return render(request, 'courses/course_reruns.html', {'form': form, 'course': course})
-
-
-
-
 
 #add course price
 def add_course_price(request, id):
@@ -253,11 +313,14 @@ def instructor_profile(request, username):
     # Get the search term from the GET request (if any)
     search_term = request.GET.get('search', '')
 
+    # Get the 'published' status from CourseStatus model
+    published_status = CourseStatus.objects.get(status='published')  # Assuming 'status' field is used to store 'published'
+
     # Filter courses based on the search term, published status, and end_date
     courses = instructor.courses.filter(
         Q(course_name__icontains=search_term) &  # Search by course name
-        Q(status_course='published') &           # Only show published courses
-        Q(end_date__gte=datetime.now())  # Only courses that haven't ended yet
+        Q(status_course=published_status) &      # Filter by 'published' status (corrected)
+        Q(end_date__gte=datetime.now())          # Only courses that haven't ended yet
     ).order_by('start_date')  # Optional: Order by start date or any other field
 
     # Get the count of filtered courses
@@ -320,35 +383,40 @@ def draft_lms(request, id):
     return render(request, 'courses/course_draft_view.html', {'course': course})
 
 
-def course_lms_detail(request, id,slug):
-    # Fetch the course by slug
+def course_lms_detail(request, id, slug):
+    # Fetch the course by id and slug
     course = get_object_or_404(Course, id=id, slug=slug)
     
-    # Check if the course's status is not 'published'
-    if course.status_course != 'published':
-        return redirect('/')  # Redirect to the homepage or another page of your choice
+    # Get the 'published' CourseStatus
+    try:
+        published_status = CourseStatus.objects.get(status='published')
+    except CourseStatus.DoesNotExist:
+        return redirect('/')  # Redirect if the 'published' status doesn't exist
+    
+    # Check if the course's status is 'published'
+    if course.status_course != published_status:
+        return redirect('/')  # Redirect to homepage if not published
+    
+    # Check if the user is enrolled in the course
+    if request.user.is_authenticated:
+        is_enrolled = course.enrollments.filter(user=request.user).exists()
+    else:
+        is_enrolled = False
 
-    # Find similar courses based on category and level, only if the course is published
+    # Get similar courses based on the category and level (only published courses with future end_date)
     similar_courses = Course.objects.filter(
         category=course.category,
-        status_course='published',  # Only published courses
-        end_date__gte=datetime.now()  # Only courses with end_date in the future
-    ).exclude(id=course.id)[:5]  # Exclude the current course and limit to 5
+        status_course=published_status,
+        end_date__gte=timezone.now()
+    ).exclude(id=course.id)[:5]
 
-    # Optionally, add instructor as another similarity criterion
-    if course.instructor:
-        similar_courses_by_instructor = Course.objects.filter(
-            instructor=course.instructor,
-            status_course='published',  # Only published courses
-            end_date__gte=datetime.now()  # Only courses with end_date in the future
-        ).exclude(id=course.id)[:5]
-        similar_courses = similar_courses | similar_courses_by_instructor  # Combine queries (union)
-
-    # Render the course page with the similar courses
+    # Render the course detail page with the similar courses and enrollment status
     return render(request, 'home/course_detail.html', {
         'course': course,
+        'is_enrolled': is_enrolled,  # Pass the enrollment status to the template
         'similar_courses': similar_courses
     })
+
 
 def course_instructor(request,id):
     if not request.user.is_authenticated:
@@ -1405,7 +1473,7 @@ def delete_matrial(request, pk):
 #@login_required
 
 
-from django.db.models import Count
+
 
 def courseView(request):
     # Check if the user is authenticated
@@ -1427,13 +1495,13 @@ def courseView(request):
 
     # Apply the filter
     if course_filter == 'draft':
-        courses = courses.filter(status_course='draft')
+        courses = courses.filter(status_course__status='draft')
     elif course_filter == 'published':
-        courses = courses.filter(status_course='published')
+        courses = courses.filter(status_course__status='published')
     elif course_filter == 'archive':
-        courses = courses.filter(status_course='archive')
+        courses = courses.filter(status_course__status='archived')
     elif course_filter == 'curation':
-        courses = courses.filter(status_course='curation')
+        courses = courses.filter(status_course__status='curation')
 
     # Get search query if any
     search_query = request.GET.get('search', '').strip()
@@ -1461,26 +1529,48 @@ def courseView(request):
     except EmptyPage:
         page_obj = paginator.page(paginator.num_pages)
 
-    # Calculate filtered counts for each filter (including search query)
-    all_courses = Course.objects.all()
-    draft_count = all_courses.filter(status_course='draft').count()
-    published_count = all_courses.filter(status_course='published').count()
-    archive_count = all_courses.filter(status_course='archive').count()
-    curation_count = all_courses.filter(status_course='curation').count()
+    # Handle DoesNotExist gracefully and fetch CourseStatus
+    try:
+        draft_status = CourseStatus.objects.get(status='draft')
+        published_status = CourseStatus.objects.get(status='published')
+        archive_status = CourseStatus.objects.get(status='archived')
+        curation_status = CourseStatus.objects.get(status='curation')
+    except ObjectDoesNotExist:
+        draft_status = published_status = archive_status = curation_status = None
+        # Handle the case where CourseStatus entries are missing
+        # You could redirect the user or show a message in the template
+
+    # Filter courses based on status_course IDs (only if the CourseStatus objects exist)
+    if draft_status:
+        draft_count = Course.objects.filter(status_course=draft_status).count()
+    else:
+        draft_count = 0  # or any fallback value
+    if published_status:
+        published_count = Course.objects.filter(status_course=published_status).count()
+    else:
+        published_count = 0
+    if archive_status:
+        archive_count = Course.objects.filter(status_course=archive_status).count()
+    else:
+        archive_count = 0
+    if curation_status:
+        curation_count = Course.objects.filter(status_course=curation_status).count()
+    else:
+        curation_count = 0
 
     # If there's a search query, update the counts to reflect only the filtered (search) results
     if search_query:
-        all_courses = all_courses.filter(course_name__icontains=search_query)
-        draft_count = all_courses.filter(status_course='draft').count()
-        published_count = all_courses.filter(status_course='published').count()
-        archive_count = all_courses.filter(status_course='archive').count()
-        curation_count = all_courses.filter(status_course='curation').count()
+        courses = courses.filter(course_name__icontains=search_query)
+        draft_count = courses.filter(status_course=draft_status).count() if draft_status else 0
+        published_count = courses.filter(status_course=published_status).count() if published_status else 0
+        archive_count = courses.filter(status_course=archive_status).count() if archive_status else 0
+        curation_count = courses.filter(status_course=curation_status).count() if curation_status else 0
 
     # Pass the filtered courses count to the template
     return render(request, 'courses/course_view.html', {
         'page_obj': page_obj,
         'course_filter': course_filter,
-        'all_count': all_courses.count(),
+        'all_count': courses.count(),
         'draft_count': draft_count,
         'published_count': published_count,
         'archive_count': archive_count,
@@ -1513,66 +1603,42 @@ def course_create_view(request):
     # Check if the user is authenticated
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
+
     if request.user.is_partner or request.user.is_superuser or request.user.is_instructor:
-
         if request.method == 'POST':
-
             form = CourseForm(request.POST, user=request.user)  # Pass the logged-in user to the form
 
             if form.is_valid():
-
                 course = form.save(commit=False)  # Create a Course instance but don't save to the database yet
 
-
                 # Set the author to the logged-in user
-
                 course.author = request.user
                 
-
-                  # If the user is a partner or superuser, set the org_partner
-
-                if  request.user.is_superuser:
-
-                    partner = form.cleaned_data['org_partner']  # Get the selected partner from the form
-
-                    course.org_partner = partner  # Set the partner for the course
-
                 # If the user is a partner or superuser, set the org_partner
-
-                if request.user.is_partner :
-
+                if request.user.is_superuser or request.user.is_partner:
                     partner = form.cleaned_data['org_partner']  # Get the selected partner from the form
-
                     course.org_partner = partner  # Set the partner for the course
-
 
                 # If the user is an instructor, set the instructor
-
                 if request.user.is_instructor:
+                    instructor = Instructor.objects.get(user=request.user)  # Assuming a one-to-one relationship
+                    course.instructor = instructor
 
-                     instructor = Instructor.objects.get(user=request.user)  # Assuming a one-to-one relationship
-
-                     course.instructor = instructor 
+                # Set status_course programmatically (e.g., default to 'draft')
+                draft_status = CourseStatus.objects.get(status='draft')  # Assuming 'draft' exists in CourseStatus
+                course.status_course = draft_status  # Set the default status
 
                 # Save the course instance to the database
-
                 course.save()
 
                 return redirect('/courses')  # Redirect to a course list page or success page
-
             else:
-
                 print(form.errors)  # Print form errors to the console for debugging
-
         else:
-
             form = CourseForm(user=request.user)  # Pass the logged-in user to the form
 
     else:
-
         return redirect('/courses')
-    
-
 
     return render(request, 'courses/course_add.html', {'form': form})
 
@@ -1771,20 +1837,30 @@ def partner_detail(request, partner_id):
 
 #org partner from lms
 def org_partner(request, slug):
-    # Retrieve the partner using the provided slug of the Universiti model
-    partner = get_object_or_404(Partner, name__slug=slug)  # Use name__slug to access the slug in the Universiti model
+    # Retrieve the partner using the provided slug of the Partner model
+    partner = get_object_or_404(Partner, name__slug=slug)  # Use name__slug to access the slug in the Partner model
 
     # Get the search query and category filter from the request
     search_query = request.GET.get('search', '')  # Default to empty string if no search query
     selected_category = request.GET.get('category', '')  # Category filter
     sort_by = request.GET.get('sort_by', 'name')  # Default sort by course name
 
-    # Filter courses related to the partner, with status 'published' and end_date in the future
-    related_courses = Course.objects.filter(
-        org_partner_id=partner.id,
-        status_course='published',
-        end_date__gte=datetime.now()
-    )
+    # Get the 'published' CourseStatus ID
+    try:
+        published_status = CourseStatus.objects.get(status='published')
+    except CourseStatus.DoesNotExist:
+        published_status = None
+
+    if published_status:
+        # Filter courses related to the partner, with status 'published' and end_date in the future
+        related_courses = Course.objects.filter(
+            org_partner_id=partner.id,
+            status_course=published_status,  # Filter by the CourseStatus object (not the string)
+            end_date__gte=datetime.now()
+        )
+    else:
+        # If 'published' status doesn't exist, handle it gracefully
+        related_courses = Course.objects.none()
 
     # Apply search filter if provided
     if search_query:
@@ -1835,7 +1911,6 @@ def org_partner(request, slug):
 
     # Render the partner_detail template with the partner and related courses data
     return render(request, 'partner/org_partner.html', context)
-
 
 
 #search user

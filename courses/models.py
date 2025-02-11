@@ -84,40 +84,69 @@ class Category(models.Model):
 
 
 
+class CourseStatus(models.Model):
+    STATUS_CHOICES = [
+        ('draft', 'Draft'),
+        ('curation', 'Curation'),
+        ('published', 'Published'),
+        ('archived', 'Archived'),
+    ]
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
+    manual_message = models.TextField(blank=True, null=True)  # Pesan manual terkait status
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.get_status_display()} - {self.manual_message[:50]}"
+
+    def set_message(self, message):
+        """Menambahkan pesan manual pada status ini."""
+        self.manual_message = message
+        self.save()
+
+
+class CourseStatusHistory(models.Model):
+    course = models.ForeignKey('Course', on_delete=models.CASCADE, related_name="status_history")
+    status = models.CharField(max_length=20, choices=CourseStatus.STATUS_CHOICES)
+    manual_message = models.TextField(blank=True, null=True)
+    changed_at = models.DateTimeField(auto_now_add=True)  # Waktu perubahan status
+    changed_by = models.ForeignKey('auth.User', on_delete=models.CASCADE)  # Pengguna yang membuat perubahan
+
+    def __str__(self):
+        return f"Course {self.course.course_name} - Status: {self.status} at {self.changed_at}"
+
+    class Meta:
+        ordering = ['-changed_at']  # Urutkan berdasarkan waktu perubahan terbaru
+
+
 class Course(models.Model):
     course_name = models.CharField(max_length=250)
-    #slug = AutoSlugField(populate_from='title', unique=True, null=False, editable=False)
     course_number = models.CharField(max_length=250, blank=True)
     course_run = models.CharField(max_length=250, blank=True)
     slug = models.CharField(max_length=250, blank=True)
-    org_partner = models.ForeignKey(Partner, on_delete=models.CASCADE,related_name="courses")
-    instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE,related_name="courses",null=True)
+    org_partner = models.ForeignKey(Partner, on_delete=models.CASCADE, related_name="courses")
+    instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE, related_name="courses", null=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="category_courses")
-    level = models.CharField(max_length=10, choices=[('basic', 'Basic'),('middle', 'Middle'), ('advanced', 'Advanced')], default='basic', null=True, blank=True)
-    status_course = models.CharField(max_length=10, choices=[('draft', 'draft'), ('published', 'published'),('curation', 'curation'),('archive', 'archive')], default='draft', blank=True)
+    level = models.CharField(max_length=10, choices=[('basic', 'Basic'), ('middle', 'Middle'), ('advanced', 'Advanced')], default='basic', null=True, blank=True)
+    status_course = models.ForeignKey(CourseStatus, on_delete=models.CASCADE, related_name="courses")  # Hubungkan dengan CourseStatus
     created_at = models.DateTimeField(auto_now_add=True)
-    edited_on = models.DateTimeField(auto_now=True) 
+    edited_on = models.DateTimeField(auto_now=True)
     image = models.ImageField(upload_to='courses/', blank=True, null=True)
-    link_video = models.URLField(blank=True, null=True) 
+    link_video = models.URLField(blank=True, null=True)
     description = models.TextField()
-    sort_description = models.CharField(max_length=150, null=True,blank=True)
-    hour = models.CharField(max_length=2,null=True,blank=True)
+    sort_description = models.CharField(max_length=150, null=True, blank=True)
+    hour = models.CharField(max_length=2, null=True, blank=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    language = models.CharField(max_length=10,choices=[('en', 'English'),('id', 'Indonesia'), ('fr', 'French'), ('de', 'German')], default='en')
+    language = models.CharField(max_length=10, choices=[('en', 'English'), ('id', 'Indonesia'), ('fr', 'French'), ('de', 'German')], default='en')
     start_date = models.DateField(null=True)
     end_date = models.DateField(null=True)
     start_enrol = models.DateField(null=True)
     end_enrol = models.DateField(null=True)
 
-
     def __str__(self):
-
         return f"{self.course_name}"
-    
+
     def delete_old_image(self):
-        """
-        Hapus gambar lama jika sudah diganti.
-        """
+        """Hapus gambar lama jika sudah diganti."""
         if self.pk:  # Pastikan instance ada di database
             old_image = Course.objects.filter(pk=self.pk).values_list('image', flat=True).first()
             if old_image and old_image != self.image.name:
@@ -144,6 +173,45 @@ class Course(models.Model):
             return {"status": "success", "message": "Successfully enrolled in the course."}
         else:
             return {"status": "info", "message": "You are already enrolled in this course."}
+
+    def move_to_curation(self, message=None, user=None):
+        if self.status_course.status != 'draft':
+            raise ValidationError('Course is not in the correct stage for curation.')
+        self.status_course.status = 'curation'
+        if message:
+            self.status_course.set_message(message)  # Set pesan manual
+        self.status_course.save()
+
+        # Simpan riwayat perubahan status
+        CourseStatusHistory.objects.create(course=self, status=self.status_course.status, manual_message=message, changed_by=user)
+
+        return {"status": "info", "message": "The course is now under curation.", "manual_message": self.status_course.manual_message}
+
+    def publish_course(self, message=None, user=None):
+        if self.status_course.status != 'curation':
+            raise ValidationError('Course is not in the correct stage for publishing.')
+        self.status_course.status = 'published'
+        if message:
+            self.status_course.set_message(message)  # Set pesan manual
+        self.status_course.save()
+
+        # Simpan riwayat perubahan status
+        CourseStatusHistory.objects.create(course=self, status=self.status_course.status, manual_message=message, changed_by=user)
+
+        return {"status": "success", "message": "The course has been successfully published.", "manual_message": self.status_course.manual_message}
+
+    def archive_course(self, message=None, user=None):
+        if self.status_course.status != 'published':
+            raise ValidationError('Course cannot be archived before being published.')
+        self.status_course.status = 'archived'
+        if message:
+            self.status_course.set_message(message)  # Set pesan manual
+        self.status_course.save()
+
+        # Simpan riwayat perubahan status
+        CourseStatusHistory.objects.create(course=self, status=self.status_course.status, manual_message=message, changed_by=user)
+
+        return {"status": "info", "message": "The course has been archived.", "manual_message": self.status_course.manual_message}
     
     
 
@@ -279,7 +347,24 @@ class CoursePrice(models.Model):
     def __str__(self):
         return f"{self.course} - {self.price_type.name} - {self.partner_price}"
     
+class Subscription(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    start_date = models.DateTimeField(auto_now_add=True)
+    end_date = models.DateTimeField()
+    is_active = models.BooleanField(default=True)
+    subscription_type = models.CharField(
+        max_length=50,
+        choices=[('monthly', 'Monthly'), ('yearly', 'Yearly'), ('course_specific', 'Course-Specific')],
+        default='monthly'
+    )
 
+    def check_expiration(self):
+        if self.end_date < timezone.now():
+            self.is_active = False
+            self.save()
+
+    def __str__(self):
+        return f"{self.user.username} subscription ({self.subscription_type}) active from {self.start_date} to {self.end_date}"
 
 class Enrollment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='enrollments')

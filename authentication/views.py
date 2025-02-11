@@ -18,7 +18,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth import logout
 from authentication.forms import UserRegistrationForm, Userprofile, UserPhoto
 from .models import Profile
-from courses.models import Instructor, Course, Enrollment, Category
+from courses.models import Instructor,CourseStatus, Course, Enrollment, Category
 from django.http import HttpResponse,JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseForbidden
@@ -38,8 +38,11 @@ from django.views.decorators.csrf import csrf_protect
 #course_list lms
 
 def course_list(request):
-    # Get all courses
-    courses = Course.objects.filter(status_course='published')
+    # Get the 'published' status from CourseStatus model
+    published_status = CourseStatus.objects.get(status='published')  # Use 'status' field
+
+    # Get all courses with 'published' status
+    courses = Course.objects.filter(status_course=published_status)
 
     # Search functionality
     search_query = request.GET.get('search', '')
@@ -52,7 +55,7 @@ def course_list(request):
         courses = courses.filter(category__in=category_filter)
 
     # Pagination setup
-    paginator = Paginator(courses, 9)  # Show 4 courses per page
+    paginator = Paginator(courses, 9)  # Show 9 courses per page
     page_number = request.GET.get('page', 1)  # Default to page 1 if no page is provided
     
     # Validate page_number: if it's invalid or empty, default to page 1
@@ -225,9 +228,15 @@ def popular_courses(request):
     # Get the current date
     now = timezone.now().date()
 
-    # Get popular courses
+    # Get the 'published' CourseStatus ID
+    try:
+        published_status = CourseStatus.objects.get(status='published')
+    except CourseStatus.DoesNotExist:
+        return JsonResponse({'error': 'Published status not found.'}, status=404)
+
+    # Get popular courses filtered by the 'published' CourseStatus ID
     courses = Course.objects.filter(
-        status_course='published',
+        status_course=published_status,  # Use the 'published' CourseStatus object, not the string
         end_date__gte=now
     ).annotate(
         num_enrollments=Count('enrollments')
@@ -262,16 +271,23 @@ def popular_courses(request):
     return JsonResponse({'courses': courses_list})
 
 def home(request):
-    
-    popular_categories = Category.objects.annotate(
-    num_courses=Count('category_courses', filter=Q(category_courses__status_course='published'))
-    ).order_by('-num_courses')[:6]
+    try:
+        # Get the 'published' CourseStatus ID
+        published_status = CourseStatus.objects.get(status='published')
+    except CourseStatus.DoesNotExist:
+        # Handle case where 'published' status is missing
+        published_status = None
 
-    
-    
+    if published_status:
+        # Get the popular categories with published courses
+        popular_categories = Category.objects.annotate(
+            num_courses=Count('category_courses', filter=Q(category_courses__status_course=published_status))
+        ).order_by('-num_courses')[:6]
+    else:
+        # If no 'published' status exists, handle gracefully
+        popular_categories = []
 
-    
-    return render(request, 'home/index.html',{'popular_categories':popular_categories})
+    return render(request, 'home/index.html', {'popular_categories': popular_categories})
 
 
 

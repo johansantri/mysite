@@ -85,12 +85,16 @@
                 <tbody>
                     {% for course in page_obj %}
                         <tr>
-                            <td><a href="{% url 'courses:course_lms_detail' course.slug %}">{{ course.course_name }}</a></td>
+                            <td><a href="{% url 'courses:course_lms_detail' course.id course.slug %}">{{ course.course_name }}</a></td>
                             <td>
                                 <img src="{{ course.image.url }}" alt="{{ course.course_name }}" class="img-fluid" style="max-width: 100px;">
                             </td>
                             <td>{{ course.end_date }}</td>
-                            <td>{% if course.status_course == 'published' %} Published {% else %} Unpublished {% endif %}</td>
+                            <td>{% if course.status_course.status == 'published' %}
+                              Published
+                          {% else %}
+                              Unpublished
+                          {% endif %}</td>
                            
                         </tr>
                     {% empty %}

@@ -466,13 +466,23 @@
                                                         <a href="javascript:void(0);" class="btn btn-wish w-100"><i class="feather-share-2"></i> Share</a>
                                                     </div>
                                                 </div>
-                                                {% if request.user.is_authenticated%}
-												<form id="enrollForm">
-													<button type="button" onclick="enrollCourse()" class="btn btn-enroll w-100">Enroll Now</button>
-												</form>
-                                                {% else %}
-                                                <a href="{% url 'authentication:register' %}" class="btn btn-enroll w-100">Join Now</a>
-                                                {% endif %}
+                                                {% if request.user.is_authenticated %}
+													{% if is_enrolled %}
+														<!-- If the user is enrolled, show "Started Courses" -->
+														<a href="{% url 'courses:started_courses' %}" class="btn btn-enroll w-100">Started Courses</a>
+													{% else %}
+														<!-- If the user is not enrolled, show "Enroll Now" -->
+														<form id="enrollForm" method="POST" action="{% url 'course:enroll' course.id %}">
+															{% csrf_token %}
+															<button type="submit" class="btn btn-enroll w-100">Enroll Now</button>
+														</form>
+													{% endif %}
+												{% else %}
+													<!-- If the user is not authenticated, show "Join Now" -->
+													<a href="{% url 'authentication:register' %}" class="btn btn-enroll w-100">Join Now</a>
+												{% endif %}
+
+
                                             </div>
                                         </div>
                                     </div>
