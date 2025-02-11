@@ -44,7 +44,11 @@ urlpatterns = [
     path('edit-profile/<int:pk>/',views.edit_profile, name='edit-profile'), 
     path('edit-photo/<int:pk>/',views.edit_photo, name='edit-photo'), 
     path('edit-profile-save/<int:pk>/', views.edit_profile_save, name='edit-profile-save'),
+    #admin,partner, instructur
     path('dasbord/',views.dasbord, name='dasbord'),
+    #student
+    path('dashbord/',views.dashbord, name='dashbord'),
+
     path('all-user/',views.all_user,name='all-user'),
     path('user/<int:user_id>/', views.user_detail, name='user_detail'),  # Add this line
     path('course_list/', views.course_list, name='course_list'),

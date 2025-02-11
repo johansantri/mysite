@@ -200,7 +200,13 @@
 							{% elif request.user.is_authenticated and request.user.is_superuser %}
 							<li class="nav-item">
 								<a class="nav-link header-login" href="{% url 'authentication:dasbord'%}">{{user.username}}</a>
-								
+							{% elif request.user.is_authenticated and request.user.is_instructor %}
+							<li class="nav-item">
+								<a class="nav-link header-login" href="{% url 'authentication:dasbord'%}">{{user.username}}</a>	
+							</li>
+							{% elif request.user.is_authenticated and request.user.is_learner %}
+							<li class="nav-item">
+								<a class="nav-link header-login" href="{% url 'authentication:dashbord'%}">{{user.username}}</a>	
 							</li>
 							{% elif request.user.is_authenticated %}
 							<li class="nav-item">

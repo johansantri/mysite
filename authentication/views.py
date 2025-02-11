@@ -322,6 +322,37 @@ def dasbord(request):
         })
     return redirect("/login/?next=%s" % request.path)
 
+#dashboard for student
+def dashbord(request):
+    # Initialize variables
+    if request.user.is_authenticated:
+        enrollments = None
+        search_query = request.GET.get('search', '')  # Get search query from the request
+        enrollments_page = request.GET.get('enrollments_page', 1)  # Page number for enrollments
+        
+        # Fetch enrollments for the currently logged-in user
+        enrollments = Enrollment.objects.filter(user=request.user)
+
+        # Search logic for enrollments (by username or course name)
+        if search_query:
+            enrollments = enrollments.filter(
+                user__username__icontains=search_query
+            ) | enrollments.filter(
+                course__course_name__icontains=search_query
+            )  # Search by user username or course name
+        
+        # Pagination for enrollments
+        enrollments_paginator = Paginator(enrollments, 5)  # Show 5 enrollments per page
+        enrollments = enrollments_paginator.get_page(enrollments_page)
+
+        # Render the dashboard with the appropriate data
+        return render(request, 'learner/dashbord.html', {
+            'enrollments': enrollments,
+            'search_query': search_query,  # Pass the search query to the template
+            'enrollments_page': enrollments_page
+        })
+    return redirect("/login/?next=%s" % request.path)
+
 
 def pro(request,username):
     if request.user.is_authenticated:
