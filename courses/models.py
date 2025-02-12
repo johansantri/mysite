@@ -540,3 +540,13 @@ class CourseProgress(models.Model):
             return progress
         except cls.DoesNotExist:
             return 0
+class MaterialRead(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    material = models.ForeignKey(Material, on_delete=models.CASCADE)
+    read_at = models.DateTimeField(auto_now_add=True)  # Time when the material was read
+
+    class Meta:
+        unique_together = ('user', 'material')  # Ensure that each user can mark a material as read only once
+
+    def __str__(self):
+        return f"{self.user.username} - {self.material.title} - Read on {self.read_at}"

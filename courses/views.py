@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from .forms import CoursePriceForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from django.http import JsonResponse
-from .models import Course,CourseStatus,Choice,CoursePrice,PricingType, Partner,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
+from .models import Course,CourseStatus,Choice,CoursePrice,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
 from django.contrib.auth.models import User, Universiti
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
@@ -29,67 +29,80 @@ from django.db.models import Count
 from django.utils.text import slugify
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
-from django.utils import timezone
-from .forms import CourseRerunForm
-from .models import Course,CourseProgress, CoursePrice,Enrollment, Section, Material, Assessment, Question, Choice
-from django.utils.text import slugify
 
 
 
 
 
 
-@login_required
+
+
+
 def course_learn(request, username, slug):
     # Fetch the course by its slug
     course = get_object_or_404(Course, slug=slug)
 
     # Ensure that the logged-in user is authorized to access this course
     if request.user.username != username:
-        return redirect('courses:list')  # Redirect to courses list if the user is not authorized
+        return redirect('courses:list')  # Redirect if the user does not have access
 
-    # Get the sections related to the course
     sections = Section.objects.filter(courses=course).prefetch_related('materials', 'children')
-
+   
     # Collect all materials related to the course
     materials = []
     for section in sections:
         section_materials = section.materials.all()
         materials.extend(section_materials)
 
-    # Pagination for materials (next, previous material)
+    # Track current material index from the URL
     current_material_index = int(request.GET.get('material', 0))  # Default to first material if not specified
     if current_material_index >= len(materials):
         current_material_index = len(materials) - 1  # Prevent going out of range
 
     current_material = materials[current_material_index] if materials else None
 
-    # Pagination indexes
+    # Mark current material as read if not already marked as read
+    if current_material:
+        if not MaterialRead.objects.filter(user=request.user, material=current_material).exists():
+            MaterialRead.objects.create(user=request.user, material=current_material)
+
+    # Track user's reading progress
+    read_material_count = MaterialRead.objects.filter(user=request.user, material__in=materials).count()
+    total_material_count = len(materials)
+
+    # Calculate progress (percentage)
+    # Calculate progress (percentage)
+    course_progress = (read_material_count / total_material_count) * 100 if total_material_count > 0 else 0
+
+    # Round the progress to the nearest integer
+    course_progress = round(course_progress)
+
+    # Update or create the CourseProgress record for the user
+    course_progress_instance, created = CourseProgress.objects.get_or_create(user=request.user, course=course)
+    course_progress_instance.progress = course_progress
+    course_progress_instance.save()
+
+
+    # Pagination for materials (next, previous material)
     previous_material_index = max(current_material_index - 1, 0)  # Prevent going below 0
     next_material_index = min(current_material_index + 1, len(materials) - 1)  # Prevent going out of range
 
-    # Calculate course progress for the user
-    course_progress = 0
-    try:
-        course_progress = CourseProgress.objects.get(user=request.user, course=course).progress
-    except CourseProgress.DoesNotExist:
-        course_progress = 0
-
-    # Render the course page with the required context
+    # Pass the necessary data to the template
     context = {
         'course': course,
+        'course_name': course.course_name,  # Pass course name explicitly
         'sections': sections,
         'materials': materials,
         'current_material': current_material,
         'current_material_index': current_material_index,
         'previous_material_index': previous_material_index,
         'next_material_index': next_material_index,
-        'course_progress': course_progress,
+        'course_progress': course_progress,  # Ensure course progress is passed
     }
 
     return render(request, 'learner/course_learn.html', context)
+
+
 
 
 
