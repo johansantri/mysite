@@ -531,7 +531,8 @@ class CourseProgress(models.Model):
     progress = models.FloatField(default=0)  # Percentage completion of the course
     
     def __str__(self):
-        return f"{self.user.username} - {self.course.title}"
+        # Access the correct attribute course_name instead of title
+        return f"{self.user.username} - {self.course.course_name}"
 
     @classmethod
     def get_user_course_progress(cls, user, course):
@@ -540,6 +541,8 @@ class CourseProgress(models.Model):
             return progress
         except cls.DoesNotExist:
             return 0
+
+        
 class MaterialRead(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     material = models.ForeignKey(Material, on_delete=models.CASCADE)
