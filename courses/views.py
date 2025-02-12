@@ -39,12 +39,15 @@ from django.core.exceptions import ObjectDoesNotExist
 
 
 def course_learn(request, username, slug):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)  # Redirect to login if not authenticated
     # Fetch the course by its slug
     course = get_object_or_404(Course, slug=slug)
 
+
     # Ensure that the logged-in user is authorized to access this course
     if request.user.username != username:
-        return redirect('courses:list')  # Redirect if the user does not have access
+        return redirect('authentication:course_list')  # Redirect if the user does not have access
 
     sections = Section.objects.filter(courses=course).prefetch_related('materials', 'children')
    
