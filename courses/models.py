@@ -16,6 +16,8 @@ from datetime import timedelta
 from django.utils import timezone
 
 
+
+
 class Partner(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,related_name="partner_user")  # Add this line to associate partners with users
     name = models.ForeignKey(Universiti, on_delete=models.CASCADE,related_name="partner_univ")
@@ -521,3 +523,20 @@ class AttemptedQuestion(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.course} - {self.question.text} - {'Correct' if self.is_correct else 'Incorrect'}"
+    
+
+class CourseProgress(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    progress = models.FloatField(default=0)  # Percentage completion of the course
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.course.title}"
+
+    @classmethod
+    def get_user_course_progress(cls, user, course):
+        try:
+            progress = cls.objects.get(user=user, course=course).progress
+            return progress
+        except cls.DoesNotExist:
+            return 0

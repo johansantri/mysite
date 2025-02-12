@@ -79,11 +79,12 @@
 													<a href="#"><i class="fa-regular fa-heart"></i></a>
 												</div>
 											</div>
-											<h3 class="title instructor-text"><a href="course-details.html">{{ enrollment.course.course_name }}</a></h3>
+											<h3 class="title instructor-text"><a href="{% url 'courses:course_learn' enrollment.user.username enrollment.course.slug %}
+												">{{ enrollment.course.course_name }}  | {{ enrollment.course.slug }}</a></h3>
 											<div class="course-info d-flex align-items-center">
 												<div class="rating-img d-flex align-items-center">
 													<img src="assets/img/icon/icon-01.svg" alt="Img">
-													<p>12+ Lesson</p>
+													<p>{{ enrollment.user.username }}+ Lesson</p>
 												</div>
 												<div class="course-view d-flex align-items-center">
 													<img src="assets/img/icon/icon-02.svg" alt="Img">

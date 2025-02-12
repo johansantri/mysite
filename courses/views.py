@@ -33,8 +33,85 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.utils import timezone
 from .forms import CourseRerunForm
-from .models import Course, CoursePrice,Enrollment, Section, Material, Assessment, Question, Choice
+from .models import Course,CourseProgress, CoursePrice,Enrollment, Section, Material, Assessment, Question, Choice
 from django.utils.text import slugify
+
+
+
+
+
+
+@login_required
+def course_learn(request, username, slug):
+    # Fetch the course by its slug
+    course = get_object_or_404(Course, slug=slug)
+
+    # Ensure that the logged-in user is authorized to access this course
+    if request.user.username != username:
+        return redirect('courses:list')  # Redirect to courses list if the user is not authorized
+
+    # Get the sections related to the course
+    sections = Section.objects.filter(courses=course).prefetch_related('materials', 'children')
+
+    # Collect all materials related to the course
+    materials = []
+    for section in sections:
+        section_materials = section.materials.all()
+        materials.extend(section_materials)
+
+    # Pagination for materials (next, previous material)
+    current_material_index = int(request.GET.get('material', 0))  # Default to first material if not specified
+    if current_material_index >= len(materials):
+        current_material_index = len(materials) - 1  # Prevent going out of range
+
+    current_material = materials[current_material_index] if materials else None
+
+    # Pagination indexes
+    previous_material_index = max(current_material_index - 1, 0)  # Prevent going below 0
+    next_material_index = min(current_material_index + 1, len(materials) - 1)  # Prevent going out of range
+
+    # Calculate course progress for the user
+    course_progress = 0
+    try:
+        course_progress = CourseProgress.objects.get(user=request.user, course=course).progress
+    except CourseProgress.DoesNotExist:
+        course_progress = 0
+
+    # Render the course page with the required context
+    context = {
+        'course': course,
+        'sections': sections,
+        'materials': materials,
+        'current_material': current_material,
+        'current_material_index': current_material_index,
+        'previous_material_index': previous_material_index,
+        'next_material_index': next_material_index,
+        'course_progress': course_progress,
+    }
+
+    return render(request, 'learner/course_learn.html', context)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

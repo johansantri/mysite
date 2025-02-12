@@ -1,0 +1,79 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="page-content">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar with Sections, Subsections, and Assessments -->
+            <div class="col-xl-3 col-lg-3 theiaStickySidebar">
+              <div class="settings-widget account-settings">
+                <div class="settings-menu">
+                  <h3>Course Content</h3>
+                  <ul>
+                    {% for section_data in sections %}
+                      <li class="nav-item">
+                        <a class="nav-link" href="#section-{{ section_data.id }}" data-bs-toggle="collapse" aria-expanded="false">
+                          <i class="bx bxs-book"></i> {{ section_data.title }}
+                        </a>
+                        <ul class="collapse" id="section-{{ section_data.id }}">
+                          {% for subsection in section_data.children.all %}
+                            <li>
+                              <a class="nav-link" href="#subsection-{{ subsection.id }}">
+                                <i class="bx bxs-archive"></i> {{ subsection.title }}
+                              </a>
+                            </li>
+                          {% empty %}
+                            <li>No subsections available</li>
+                          {% endfor %}
+                        </ul>
+                      </li>
+                    {% empty %}
+                      <li class="nav-item">No sections available</li>
+                    {% endfor %}
+                    <li>
+                        <hr>
+                        <h3>{{ course.course_name }}</h3>
+                        <p class="text-muted">Your Progress: <span class="text-primary">{{ course_progress }}%</span></p>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Main Content Area (Course Details) -->
+            <div class="col-xl-9 col-lg-9">
+                <div class="support-wrap">
+                    <div class="material-content">
+                      {% if current_material %}
+                        <div class="material-item">
+                          <h5>{{ current_material.title }}</h5>
+                          <p>{% autoescape off %}{{ current_material.description }}{% endautoescape %}</p>
+                        </div>
+                      {% else %}
+                        <p>No material available for this section.</p>
+                      {% endif %}
+                    </div>
+                </div>
+
+                <!-- Navigation buttons -->
+                <div class="widget-btn mt-3">
+                  {% if previous_material_index >= 0 %}
+                    <a class="btn btn-black prev_btn" href="?material={{ previous_material_index }}">Previous</a>
+                  {% endif %}
+                  <a class="btn btn-black center" id="title-btn">
+                    {% if current_material %}
+                      {{ current_material.title }}
+                    {% else %}
+                      No Material
+                    {% endif %}
+                  </a>
+                  {% if next_material_index < materials|length %}
+                    <a class="btn btn-info-light next_btn" href="?material={{ next_material_index }}">Continue</a>
+                  {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+{% endblock %}
