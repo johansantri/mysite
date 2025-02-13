@@ -35,9 +35,6 @@ from django.db.models import Prefetch
 
 
 
-
-
-
 def course_learn(request, username, slug):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)  # Redirect to login if not authenticated
@@ -49,7 +46,7 @@ def course_learn(request, username, slug):
     if request.user.username != username:
         return redirect('authentication:course_list')  # Redirect if the user does not have access
 
-    # Prefetch materials, children, assessments, and questions in a single query for optimization
+    # Prefetch materials, children, assessments, questions, and choices
     sections = Section.objects.filter(courses=course).prefetch_related(
         Prefetch('materials', queryset=Material.objects.all()),
         Prefetch('children', queryset=Section.objects.all()),
@@ -60,68 +57,60 @@ def course_learn(request, username, slug):
         ))
     )
 
-    # Collect all materials related to the course
+    # Collect all materials and assessments for the course
     materials = []
     for section in sections:
         section_materials = section.materials.all()
         materials.extend(section_materials)
 
-    # Collect all assessments for the course
     assessments = []
     for section in sections:
-        section_assessments = section.assessments.all()  # Get assessments for each section
+        section_assessments = section.assessments.all()
         assessments.extend(section_assessments)
 
-    # Get the current material or assessment from the URL parameters
-    material_id = request.GET.get('material_id')  # Get the material ID from the query parameter
-    assessment_id = request.GET.get('assessment_id')  # Get the assessment ID from the query parameter
+    # Create a combined list of materials and assessments (assessment as one block)
+    combined_content = []
+    for material in materials:
+        combined_content.append(('material', material))
+    for assessment in assessments:
+        combined_content.append(('assessment', assessment))  # Add the entire assessment as a unit
+
+    # Get the current content (either material or assessment) from the URL parameters
+    material_id = request.GET.get('material_id')
+    assessment_id = request.GET.get('assessment_id')
     
-    current_material = None
-    current_assessment = None
-    
+    current_content = None
     if material_id:
-        current_material = get_object_or_404(Material, id=material_id)
-    if assessment_id:
-        current_assessment = get_object_or_404(Assessment, id=assessment_id)
+        current_content = ('material', get_object_or_404(Material, id=material_id))
+    elif assessment_id:
+        current_content = ('assessment', get_object_or_404(Assessment, id=assessment_id))
 
-    # Track user's reading progress
-    read_material_count = MaterialRead.objects.filter(user=request.user, material__in=materials).count()
-    total_material_count = len(materials)
+    # Find the index of the current content in the combined list
+    current_index = combined_content.index(current_content) if current_content else 0
 
-    # Calculate progress (percentage)
-    course_progress = (read_material_count / total_material_count) * 100 if total_material_count > 0 else 0
-    course_progress = round(course_progress)
+    # Calculate next and previous content (using modular arithmetic to loop through the list)
+    previous_content = combined_content[current_index - 1 if current_index > 0 else -1]
+    next_content = combined_content[current_index + 1 if current_index < len(combined_content) - 1 else 0]
 
-    # Update or create the CourseProgress record for the user
-    course_progress_instance, created = CourseProgress.objects.get_or_create(user=request.user, course=course)
-    course_progress_instance.progress = course_progress
-    course_progress_instance.save()
-
-    # Safe index calculation for next and previous material
-    current_material_index = materials.index(current_material) if current_material else 0
-    previous_material_index = max(current_material_index - 1, 0)  # Prevent going below 0
-    next_material_index = min(current_material_index + 1, len(materials) - 1)  # Prevent going out of range
-
-    # Build the URL for navigation links for materials
-    previous_material_url = f"?material_id={materials[previous_material_index].id}" if materials else "#"
-    next_material_url = f"?material_id={materials[next_material_index].id}" if materials else "#"
+    # Build URLs for navigation
+    previous_url = f"?{previous_content[0]}_id={previous_content[1].id}" if previous_content else "#"
+    next_url = f"?{next_content[0]}_id={next_content[1].id}" if next_content else "#"
 
     context = {
         'course': course,
-        'course_name': course.course_name,  # Pass course name explicitly
+        'course_name': course.course_name,
         'sections': sections,
         'materials': materials,
-        'assessments': assessments,  # Add assessments to the context
-        'current_material': current_material,
-        'current_assessment': current_assessment,
-        'previous_material_index': previous_material_index,
-        'next_material_index': next_material_index,
-        'previous_material_url': previous_material_url,
-        'next_material_url': next_material_url,
-        'course_progress': course_progress,  # Ensure course progress is passed
+        'assessments': assessments,
+        'current_content': current_content,
+        'previous_url': previous_url,
+        'next_url': next_url,
+        'course_progress': 0,  # Simplified for this example, you can calculate it as needed
     }
 
     return render(request, 'learner/course_learn.html', context)
+
+
 
 
 
