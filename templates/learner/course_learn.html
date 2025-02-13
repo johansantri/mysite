@@ -6,7 +6,7 @@
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar with Sections -->
-            <div class="col-md-3 d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="position: fixed; top: 0; left: 0; height: 100vh; width: 20%; z-index: 1000;"> <!-- Sidebar sticky dengan posisi fixed -->
+            <div class="col-md-3 d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="position: fixed; top: 0; left: 0; height: 100vh; width: 20%; z-index: 1000;"> 
                 <div class="settings-widget">
                     <div class="settings-menu">
                         <h3>Course Content</h3>
@@ -24,7 +24,6 @@
                                           </a>
                                       </li>
                                   {% endfor %}
-
                                   <!-- Display assessments for this section -->
                                   {% for assessment in section.assessments.all %}
                                       <li>
@@ -38,32 +37,42 @@
                               </ul>
                           </li>
                           {% endfor %}
-                          <p>Progress: {{ course_progress |floatformat:0  }}%</p>
+                          <p>Progress: {{ course_progress |floatformat:0 }}%</p>
                       </ul>
                     </div>
                 </div>
             </div>
 
             <!-- Main Content Area -->
-            <div class="col-md-9 offset-md-3" style="padding-left: 30px; padding-top: 20px;"> <!-- Konten materi dengan margin untuk menghindari sidebar -->
+            <div class="col-md-9 offset-md-3" style="padding-left: 30px; padding-top: 20px;">
                 <div class="material-content">
-
                     {% if current_content %}
                         {% if current_content.0 == 'material' %}
-                            <div class="material-item">
-                                <h2 class="material-title" style="color: #007bff;">{{ current_content.1.title }}</h2> <!-- Judul berwarna biru -->
-                                <p class="material-description">{{ current_content.1.description |safe}}</p>
+                            <div class="material-item" style="border-bottom: 2px solid #007bff; padding: 20px; background-color: #f9f9f9;">
+                                <h2 class="material-title" style="color: #007bff;">{{ current_content.1.title }}</h2>
+                                <p class="material-description" style="font-size: 16px; color: #555;">{{ current_content.1.description |safe}}</p>
                             </div>
                         {% elif current_content.0 == 'assessment' %}
-                            <div class="assessment-item">
-                                <h3 style="color: #007bff;">Assessment: {{ current_content.1.name }}</h3> <!-- Judul assessment berwarna biru -->
-                                <ul>
+                            <div class="assessment-item" style="border: 2px ; padding: 20px; border-radius: 10px; background-color: #f9f9f9;">
+                                <h3 style="color: #007bff;">Assessment: {{ current_content.1.name }}</h3>
+                                <ul style="list-style: none; padding-left: 0;">
                                     {% for question in current_content.1.questions.all %}
-                                        <li class="question">
-                                            <p>{{ question.text }}</p>
-                                            <ul>
+                                        <li class="question" style="margin-bottom: 20px;">
+                                            <!-- Label box for question text -->
+                                            <div style="display: inline-block; margin-left: 10px; padding: 10px; background-color: #e9ecef; border: 1px solid #007bff; border-radius: 8px; font-size: 16px; color: #555;">
+                                                {{ question.text }}
+                                            </div>
+                                            
+                                            <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
                                                 {% for choice in question.choices.all %}
-                                                    <li>{{ choice.text }}</li>
+                                                    <li style="margin-bottom: 10px;">
+                                                        <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}" id="choice_{{ choice.id }}" style="transform: scale(1.5);">
+
+                                                        <!-- Label box for choice -->
+                                                        <div style="display: inline-block; margin-left: 10px; padding: 10px; background-color: #e9ecef; border: 1px ; border-radius: 8px; font-size: 12px; color: #555;">
+                                                            <label for="choice_{{ choice.id }}" style="cursor: pointer; margin: 0; color: #555;">{{ choice.text }}</label>
+                                                        </div>
+                                                    </li>
                                                 {% endfor %}
                                             </ul>
                                         </li>
@@ -74,8 +83,8 @@
                     {% endif %}
 
                     <!-- Navigation buttons for content -->
-                    <div class="navigation-buttons">
-                        <a href="{{ previous_url }}" class="btn btn-secondary">Previous</a>
+                    <div class="navigation-buttons" style="margin-top: 30px;">
+                        <a href="{{ previous_url }}" class="btn btn-secondary" style="margin-right: 10px;">Previous</a>
                         <a href="{{ next_url }}" class="btn btn-primary">Next</a>
                     </div>
 
@@ -84,5 +93,4 @@
         </div>
     </div>
   </div>
-
 {% endblock %}
