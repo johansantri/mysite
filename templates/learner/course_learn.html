@@ -1,4 +1,4 @@
-{% extends 'home/base.html' %}
+{% extends 'home/tes.html' %}
 {% load static %}
 
 {% block content %}
@@ -6,85 +6,89 @@
     <div class="container">
         <div class="row">
             <!-- Sidebar with Sections -->
-            <div class="col-xl-3 col-lg-3 theiaStickySidebar">
-                <div class="settings-widget account-settings">
+            <div class="col-md-3">
+                <div class="settings-widget">
                     <div class="settings-menu">
                         <h3>Course Content</h3>
                         <ul>
                           {% for section in sections %}
                           <li class="nav-item">
-                              <a class="nav-link" href="#section-{{ section.id }}" data-bs-toggle="collapse" aria-expanded="false">
+                              <a class="nav-link" href="#">
                                   <i class="bx bxs-book"></i> {{ section.title }}
                               </a>
-                              <ul class="collapse" id="section-{{ section.id }}">
-                                  {% for subsection in section.children.all %}
-                                      <li>
-                                          <a class="nav-link" href="#subsection-{{ subsection.id }}">
-                                              <i class="bx bxs-archive"></i> {{ subsection.title }}
-                                          </a>
-                                      </li>
-                                  {% empty %}
-                                      <!-- No subsections available for this section -->
-                                  {% endfor %}
-                                  
-                                  <!-- Display materials for this section -->
+                              <ul>
                                   {% for material in section.materials.all %}
                                       <li>
-                                          <a class="nav-link" href="#material-{{ material.id }}">
+                                          <a class="nav-link" href="?material_id={{ material.id }}">
                                               <i class="bx bx-file"></i> {{ material.title }}
                                           </a>
+                                      </li>
+                                  {% endfor %}
+
+                                  <!-- Display assessments for this section -->
+                                  {% for assessment in section.assessments.all %}
+                                      <li>
+                                          <a class="nav-link" href="?assessment_id={{ assessment.id }}">
+                                              <i class="bx bx-pencil"></i> {{ assessment.name }}
+                                              {% if assessment.grade_range %}
+                                                  - Grade Range: {{ assessment.grade_range.min_grade }} to {{ assessment.grade_range.max_grade }}
+                                              {% endif %}
+                                          </a>
+
+                                          <!-- Display questions for each assessment -->
+                                        
                                       </li>
                                   {% empty %}
                                       
                                   {% endfor %}
                               </ul>
                           </li>
-                      {% empty %}
-                          <li>No sections available</li>
-                      {% endfor %}
-
-                          <li>
-                              <h3>{{ course_name }}</h3>  <!-- Display the course name -->
-                              <p>Progress: {{ course_progress|floatformat:0 }}%</p>  <!-- Display the course progress -->
-                          </li>
+                          {% endfor %}
                       </ul>
-                      
                     </div>
                 </div>
             </div>
 
             <!-- Main Content Area -->
-            <div class="col-xl-9 col-lg-9">
-                <div class="support-wrap">
-                    <div class="material-content">
-                        {% if current_material %}
-                            <div class="material-item">
-                                
-                                <p>{% autoescape off %}{{ current_material.description }}{% endautoescape %}</p>
-                            </div>
-                        {% else %}
-                            <p>No material available for this section.</p>
-                        {% endif %}
-                    </div>
+            <div class="col-md-9">
+                <div class="material-content">
+                    {% if current_material %}
+                        <div class="material-item">
+                            <h2>{{ current_material.title }}</h2>
+                            <p>{% autoescape off %}{{ current_material.description }}{% endautoescape %}</p>
+                        </div>
+                    {% endif %}
+
+                    {% if current_assessment %}
+                        <div class="assessment-item">
+                            <h3>{{ current_assessment.name }}</h3>
+                            {% for question in current_assessment.questions.all %}
+                                <div class="question">
+                                    <p>{{ question.text }}</p>
+                                    <ul>
+                                        {% for choice in question.choices.all %}
+                                            <li>{{ choice.text }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
 
-              
-
                 <!-- Navigation buttons -->
-                <div class="widget-btn mt-3">
-                    {% if previous_material_index >= 0 %}
-                        <a class="btn btn-black prev_btn" href="?material={{ previous_material_index }}">Previous</a>
-                    {% endif %}
-                    <a class="btn btn-black center" id="title-btn">
+                <div class="mt-3">
+                    <a class="btn btn-dark" href="{{ previous_material_url }}">Previous</a>
+                    <a class="btn btn-dark" id="title-btn">
                       {% if current_material %}
                         {{ current_material.title }}
+                      {% elif current_assessment %}
+                        {{ current_assessment.name }}
                       {% else %}
-                        No Material
+                        No Content
                       {% endif %}
                     </a>
-                    {% if next_material_index < materials|length %}
-                        <a class="btn btn-info-light next_btn" href="?material={{ next_material_index }}">Continue</a>
-                    {% endif %}
+                    <a class="btn btn-info" href="{{ next_material_url }}">Next</a>
                 </div>
             </div>
         </div>

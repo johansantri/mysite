@@ -29,7 +29,7 @@ from django.db.models import Count
 from django.utils.text import slugify
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
-
+from django.db.models import Prefetch
 
 
 
@@ -41,43 +41,55 @@ from django.core.exceptions import ObjectDoesNotExist
 def course_learn(request, username, slug):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)  # Redirect to login if not authenticated
+    
     # Fetch the course by its slug
     course = get_object_or_404(Course, slug=slug)
-
 
     # Ensure that the logged-in user is authorized to access this course
     if request.user.username != username:
         return redirect('authentication:course_list')  # Redirect if the user does not have access
 
-    sections = Section.objects.filter(courses=course).prefetch_related('materials', 'children')
-   
+    # Prefetch materials, children, assessments, and questions in a single query for optimization
+    sections = Section.objects.filter(courses=course).prefetch_related(
+        Prefetch('materials', queryset=Material.objects.all()),
+        Prefetch('children', queryset=Section.objects.all()),
+        Prefetch('assessments', queryset=Assessment.objects.all().prefetch_related(
+            Prefetch('questions', queryset=Question.objects.all().prefetch_related(
+                Prefetch('choices', queryset=Choice.objects.all())
+            ))
+        ))
+    )
+
     # Collect all materials related to the course
     materials = []
     for section in sections:
         section_materials = section.materials.all()
         materials.extend(section_materials)
 
-    # Track current material index from the URL
-    current_material_index = int(request.GET.get('material', 0))  # Default to first material if not specified
-    if current_material_index >= len(materials):
-        current_material_index = len(materials) - 1  # Prevent going out of range
+    # Collect all assessments for the course
+    assessments = []
+    for section in sections:
+        section_assessments = section.assessments.all()  # Get assessments for each section
+        assessments.extend(section_assessments)
 
-    current_material = materials[current_material_index] if materials else None
-
-    # Mark current material as read if not already marked as read
-    if current_material:
-        if not MaterialRead.objects.filter(user=request.user, material=current_material).exists():
-            MaterialRead.objects.create(user=request.user, material=current_material)
+    # Get the current material or assessment from the URL parameters
+    material_id = request.GET.get('material_id')  # Get the material ID from the query parameter
+    assessment_id = request.GET.get('assessment_id')  # Get the assessment ID from the query parameter
+    
+    current_material = None
+    current_assessment = None
+    
+    if material_id:
+        current_material = get_object_or_404(Material, id=material_id)
+    if assessment_id:
+        current_assessment = get_object_or_404(Assessment, id=assessment_id)
 
     # Track user's reading progress
     read_material_count = MaterialRead.objects.filter(user=request.user, material__in=materials).count()
     total_material_count = len(materials)
 
     # Calculate progress (percentage)
-    # Calculate progress (percentage)
     course_progress = (read_material_count / total_material_count) * 100 if total_material_count > 0 else 0
-
-    # Round the progress to the nearest integer
     course_progress = round(course_progress)
 
     # Update or create the CourseProgress record for the user
@@ -85,25 +97,34 @@ def course_learn(request, username, slug):
     course_progress_instance.progress = course_progress
     course_progress_instance.save()
 
-
-    # Pagination for materials (next, previous material)
+    # Safe index calculation for next and previous material
+    current_material_index = materials.index(current_material) if current_material else 0
     previous_material_index = max(current_material_index - 1, 0)  # Prevent going below 0
     next_material_index = min(current_material_index + 1, len(materials) - 1)  # Prevent going out of range
 
-    # Pass the necessary data to the template
+    # Build the URL for navigation links for materials
+    previous_material_url = f"?material_id={materials[previous_material_index].id}" if materials else "#"
+    next_material_url = f"?material_id={materials[next_material_index].id}" if materials else "#"
+
     context = {
         'course': course,
         'course_name': course.course_name,  # Pass course name explicitly
         'sections': sections,
         'materials': materials,
+        'assessments': assessments,  # Add assessments to the context
         'current_material': current_material,
-        'current_material_index': current_material_index,
+        'current_assessment': current_assessment,
         'previous_material_index': previous_material_index,
         'next_material_index': next_material_index,
+        'previous_material_url': previous_material_url,
+        'next_material_url': next_material_url,
         'course_progress': course_progress,  # Ensure course progress is passed
     }
 
     return render(request, 'learner/course_learn.html', context)
+
+
+
 
 
 
