@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from .forms import CoursePriceForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from django.http import JsonResponse
-from .models import Course,CourseStatus,Choice,CoursePrice,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
+from .models import Course,CourseStatus,Choice,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
 from django.contrib.auth.models import User, Universiti
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
@@ -30,6 +30,7 @@ from django.utils.text import slugify
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Prefetch
+import time
 
 
 
@@ -80,7 +81,11 @@ def course_learn(request, username, slug):
     assessment_id = request.GET.get('assessment_id')
     
     current_content = None
-    if material_id:
+
+    # If no material_id or assessment_id in URL, show the first material
+    if not material_id and not assessment_id:
+        current_content = ('material', materials[0]) if materials else None
+    elif material_id:
         current_content = ('material', get_object_or_404(Material, id=material_id))
     elif assessment_id:
         current_content = ('assessment', get_object_or_404(Assessment, id=assessment_id))
@@ -96,6 +101,10 @@ def course_learn(request, username, slug):
     previous_url = f"?{previous_content[0]}_id={previous_content[1].id}" if previous_content else "#"
     next_url = f"?{next_content[0]}_id={next_content[1].id}" if next_content else "#"
 
+    # Track user's progress
+    user_progress, created = CourseProgress.objects.get_or_create(user=request.user, course=course)
+
+    # Initialize the context dictionary
     context = {
         'course': course,
         'course_name': course.course_name,
@@ -105,15 +114,44 @@ def course_learn(request, username, slug):
         'current_content': current_content,
         'previous_url': previous_url,
         'next_url': next_url,
-        'course_progress': 0,  # Simplified for this example, you can calculate it as needed
+        'course_progress': user_progress.progress_percentage,  # Display current progress
     }
 
+    # Check if enough time has passed since the last click (e.g., 5 seconds)
+    last_click_time = request.session.get('last_click_time', 0)
+    current_time = time.time()  # Get the current time in seconds
+    if current_time - last_click_time < 5:
+        # If the user clicked too quickly, return the same page without updating the progress
+        return render(request, 'learner/course_learn.html', context)
+
+    # Update the last click time in the session
+    request.session['last_click_time'] = current_time
+
+    # Update progress based on current content, assume 1 point for each viewed content
+    if current_content:
+        # If content is a material, increment progress by 1
+        if current_content[0] == 'material':
+            # Record the material read time
+            MaterialRead.objects.get_or_create(user=request.user, material=current_content[1])
+            user_progress.progress += 1
+
+        # If content is an assessment, increment progress by the number of questions
+        elif current_content[0] == 'assessment':
+            # Record the assessment completion time
+            AssessmentRead.objects.get_or_create(user=request.user, assessment=current_content[1])
+            user_progress.progress += len(current_content[1].questions.all())  # Add number of questions in the assessment
+
+            # Track each question answered
+            for question in current_content[1].questions.all():
+                QuestionAnswer.objects.get_or_create(user=request.user, question=question)
+
+        total_content = len(combined_content)  # Total number of materials and assessments
+
+        # Make sure progress does not exceed 100%
+        user_progress.progress_percentage = min((user_progress.progress / total_content) * 100, 100)
+        user_progress.save()
+
     return render(request, 'learner/course_learn.html', context)
-
-
-
-
-
 
 
 

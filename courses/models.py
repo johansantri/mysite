@@ -529,9 +529,9 @@ class CourseProgress(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     progress = models.FloatField(default=0)  # Percentage completion of the course
+    progress_percentage = models.FloatField(default=0)  # New field to store percentage progress
     
     def __str__(self):
-        # Access the correct attribute course_name instead of title
         return f"{self.user.username} - {self.course.course_name}"
 
     @classmethod
@@ -553,3 +553,24 @@ class MaterialRead(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.material.title} - Read on {self.read_at}"
+class AssessmentRead(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    assessment = models.ForeignKey(Assessment, on_delete=models.CASCADE)
+    completed_at = models.DateTimeField(auto_now_add=True)  # Time when the assessment was completed
+
+    class Meta:
+        unique_together = ('user', 'assessment')  # Ensure that each user can mark an assessment as completed only once
+
+    def __str__(self):
+        return f"{self.user.username} - {self.assessment.name} - Completed on {self.completed_at}"
+
+class QuestionAnswer(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    answered_at = models.DateTimeField(auto_now_add=True)  # Time when the question was answered
+
+    class Meta:
+        unique_together = ('user', 'question')  # Ensure that each user can answer a question only once
+
+    def __str__(self):
+        return f"{self.user.username} - Answered {self.question.text} on {self.answered_at}"
