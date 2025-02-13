@@ -52,28 +52,219 @@
             <!-- Main Content Area -->
             <div class="col-md-9">
                 <div class="material-content">
+
                     {% if current_material %}
+                    <style>
+                        /* Styling untuk item materi */
+                        .material-item {
+                            margin: 30px auto;
+                            padding: 20px;
+                            background-color: #f9f9f9;
+                            border-radius: 8px;
+                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                            max-width: 800px;
+                            transition: transform 0.3s ease;
+                        }
+
+                        .material-item:hover {
+                            transform: translateY(-5px); /* Efek hover untuk memberikan efek kedalaman */
+                        }
+
+                        /* Judul materi */
+                        .material-title {
+                            font-size: 28px;
+                            color: #333;
+                            font-weight: 600;
+                            margin-bottom: 20px;
+                            text-align: center;
+                        }
+
+                        /* Deskripsi materi */
+                        .material-description {
+                            font-size: 16px;
+                            color: #555;
+                            line-height: 1.6;
+                            text-align: justify;
+                            white-space: pre-line; /* Memastikan line breaks ditampilkan */
+                            margin-bottom: 20px;
+                        }
+
+                        /* Responsif */
+                        @media screen and (max-width: 768px) {
+                            .material-item {
+                                padding: 15px;
+                            }
+
+                            .material-title {
+                                font-size: 22px;
+                            }
+
+                            .material-description {
+                                font-size: 14px;
+                            }
+                        }
+                        /* Styling for <pre> element */
+                            pre {
+                                background-color: #1e1e1e; /* Dark background (VS Code style) */
+                                border: 1px solid #3c3c3c; /* Slightly lighter border */
+                                padding: 15px;
+                                font-family: 'Courier New', Courier, monospace; /* Monospaced font */
+                                color: #d4d4d4; /* Light text color for better contrast */
+                                overflow: auto; /* Horizontal scroll if the code overflows */
+                                border-radius: 5px;
+                                line-height: 1.6; /* Better readability */
+                            }
+
+                            /* Styling for <code> element inside <pre> */
+                            code {
+                                font-size: 14px; /* Font size for code text */
+                                color: inherit; /* Use color from <pre> */
+                                white-space: pre-wrap; /* Ensure long code lines wrap instead of overflowing */
+                                word-wrap: break-word; /* Break words to fit the container */
+                            }
+
+                            /* Optional: Highlighted keywords for better readability */
+                            pre code .keyword {
+                                color: #569cd6; /* Light blue for keywords */
+                            }
+
+                            pre code .string {
+                                color: #d69d85; /* Light brownish-orange for strings */
+                            }
+
+                            pre code .comment {
+                                color: #6a9955; /* Green for comments */
+                            }
+
+
+
+                    </style>
                         <div class="material-item">
-                            <h2>{{ current_material.title }}</h2>
-                            <p>{% autoescape off %}{{ current_material.description }}{% endautoescape %}</p>
+                            <h2 class="material-title">{{ current_material.title }}</h2>
+                            <p class="material-description">{% autoescape off %}{{ current_material.description }}{% endautoescape %}</p>
                         </div>
                     {% endif %}
 
+
                     {% if current_assessment %}
+                    <style>
+                        
+                        /* Styling untuk form assessment */
+                        .assessment-item {
+                            margin: 30px auto;
+                            padding: 20px;
+                            background-color: #f9f9f9;
+                            border-radius: 8px;
+                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                            max-width: 800px;
+                        }
+
+                        .assessment-item h3 {
+                            font-size: 24px;
+                            color: #333;
+                            margin-bottom: 20px;
+                            text-align: center;
+                        }
+
+                        /* Styling untuk daftar soal */
+                        .question-list {
+                            margin-bottom: 20px;
+                        }
+
+                        .question {
+                            margin-bottom: 20px;
+                        }
+
+                        .question-text {
+                            font-size: 18px;
+                            font-weight: 600;
+                            margin-bottom: 10px;
+                            color: #444;
+                        }
+
+                        /* Styling untuk daftar pilihan */
+                        .choices-list {
+                            list-style: none;
+                            padding-left: 0;
+                        }
+
+                        .choice-item {
+                            margin: 10px 0;
+                            display: flex;
+                            align-items: center;
+                        }
+
+                        .choice-item input[type="radio"] {
+                            margin-right: 10px;
+                            accent-color: #007bff; /* Warna radio button */
+                        }
+
+                        .choice-label {
+                            font-size: 16px;
+                            color: #555;
+                        }
+
+                        /* Styling tombol submit */
+                        .submit-btn {
+                            width: 100%;
+                            padding: 12px;
+                            background-color: #007bff;
+                            color: white;
+                            border: none;
+                            border-radius: 5px;
+                            font-size: 18px;
+                            cursor: pointer;
+                            transition: background-color 0.3s ease;
+                        }
+
+                        .submit-btn:hover {
+                            background-color: #0056b3;
+                        }
+
+                        /* Responsif */
+                        @media screen and (max-width: 768px) {
+                            .assessment-item {
+                                padding: 15px;
+                            }
+
+                            .question-text {
+                                font-size: 16px;
+                            }
+
+                            .choice-label {
+                                font-size: 14px;
+                            }
+
+                            .submit-btn {
+                                font-size: 16px;
+                            }
+                        }
+
+                    </style>
                         <div class="assessment-item">
                             <h3>{{ current_assessment.name }}</h3>
-                            {% for question in current_assessment.questions.all %}
-                                <div class="question">
-                                    <p>{{ question.text }}</p>
-                                    <ul>
-                                        {% for choice in question.choices.all %}
-                                            <li>{{ choice.text }}</li>
-                                        {% endfor %}
-                                    </ul>
+                            <form method="POST" action="#">
+                                {% csrf_token %}
+                                <div class="question-list">
+                                    {% for question in current_assessment.questions.all %}
+                                        <div class="question">
+                                            <p class="question-text">{{ question.text }}</p>
+                                            <ul class="choices-list">
+                                                {% for choice in question.choices.all %}
+                                                    <li class="choice-item">
+                                                        <input type="radio" id="choice_{{ choice.id }}" name="question_{{ question.id }}" value="{{ choice.id }}">
+                                                        <label for="choice_{{ choice.id }}" class="choice-label">{{ choice.text }}</label>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    {% endfor %}
                                 </div>
-                            {% endfor %}
+                                <button type="submit" class="btn btn-primary submit-btn">Submit</button>
+                            </form>
                         </div>
                     {% endif %}
+
                 </div>
 
                 
