@@ -34,9 +34,6 @@
                                                   - Grade Range: {{ assessment.grade_range.min_grade }} to {{ assessment.grade_range.max_grade }}
                                               {% endif %}
                                           </a>
-
-                                          <!-- Display questions for each assessment -->
-                                        
                                       </li>
                                   {% empty %}
                                       
@@ -103,9 +100,6 @@
                                 font-size: 14px;
                             }
                         }
-                        
-
-
 
                     </style>
                         <div class="material-item">
@@ -235,10 +229,20 @@
                     {% endif %}
 
                 </div>
-
-                
             </div>
         </div>
     </div>
   </div>
+
+  <!-- Add sticky sidebar CSS here -->
+  <style>
+    /* Sticky sidebar */
+    .settings-widget {
+        position: sticky;
+        top: 0;
+        z-index: 999;
+        background-color: #fff;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+  </style>
 {% endblock %}
