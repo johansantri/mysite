@@ -76,20 +76,7 @@
                     {% endif %}
                 </div>
 
-                <!-- Navigation buttons -->
-                <div class="mt-3">
-                    <a class="btn btn-dark" href="{{ previous_material_url }}">Previous</a>
-                    <a class="btn btn-dark" id="title-btn">
-                      {% if current_material %}
-                        {{ current_material.title }}
-                      {% elif current_assessment %}
-                        {{ current_assessment.name }}
-                      {% else %}
-                        No Content
-                      {% endif %}
-                    </a>
-                    <a class="btn btn-info" href="{{ next_material_url }}">Next</a>
-                </div>
+                
             </div>
         </div>
     </div>
