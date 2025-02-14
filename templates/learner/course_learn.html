@@ -39,7 +39,16 @@
                           {% endfor %}
                           <hr>
                           <p class="fw-bold">Progress: {{ course_progress |floatformat:0 }}%</p>
-                     
+                            <div class="progress">
+                                <div class="progress-bar bg-success" 
+                                    role="progressbar" 
+                                    style="width: {{ course_progress|default:0 }}%" 
+                                    aria-valuenow="{{ course_progress|default:0 }}" 
+                                    aria-valuemin="0" 
+                                    aria-valuemax="100">
+                                </div>
+                            </div>
+                            <hr>
                           <p>status :  {% if user_grade == 'Pass' %}
                             <span class=" text-success fw-bold">Pass</span>
                         {% else %}
@@ -48,15 +57,7 @@
                         <hr>
                       
                         
-                        <div class="progress">
-                            <div class="progress-bar bg-success" 
-                                 role="progressbar" 
-                                 style="width: {{ course_progress|default:0 }}%" 
-                                 aria-valuenow="{{ course_progress|default:0 }}" 
-                                 aria-valuemin="0" 
-                                 aria-valuemax="100">
-                            </div>
-                        </div>
+                       
                         
 
                       </ul>
@@ -69,21 +70,21 @@
                 <div class="material-content">
                     {% if current_content %}
                         {% if current_content.0 == 'material' %}
-                            <div class="material-item" style="border-bottom: 2px solid #007bff; padding: 20px; background-color: #f9f9f9;">
-                                <h2 class="material-title" style="color: #007bff;">{{ current_content.1.title }}</h2>
+                            <div class="material-item" style="border-bottom: 2px solidrgb(134, 134, 134); padding: 20px; background-color: #f9f9f9;">
+                                <h2 class="material-title" style="color:rgb(0, 0, 0);">{{ current_content.1.title }}</h2>
                                 <p class="material-description" style="font-size: 16px; color: #555;">{{ current_content.1.description |safe}}</p>
                             </div>
                         {% elif current_content.0 == 'assessment' %}
                             <form method="POST" action="{% url 'courses:submit_assessment' assessment_id=current_content.1.id %}">
                                 {% csrf_token %}
                                 <input type="hidden" name="current_content_id" value="{{ current_material.id }}">
-                                <div class="assessment-item" style="border: 2px solid #007bff; padding: 20px; border-radius: 10px; background-color: #f9f9f9;">
+                                <div class="assessment-item" style="border: 2px solidrgb(0, 0, 0); padding: 20px; border-radius: 10px; background-color: #f9f9f9;">
                                     <h3 style="color: #007bff;">Assessment: {{ current_content.1.name }}</h3>
                                     <ul style="list-style: none; padding-left: 0;">
                                         {% for question in current_content.1.questions.all %}
                                             <li class="question" style="margin-bottom: 20px;">
                                                 <!-- Label box for question text -->
-                                                <div style="display: inline-block; margin-left: 10px; padding: 10px; background-color: #e9ecef; border: 1px solid #007bff; border-radius: 8px; font-size: 16px; color: #555;">
+                                                <div style="display: inline-block; margin-left: 10px; padding: 10px; background-color: #e9ecef;  border-radius: 8px; font-size: 16px; color: #555;">
                                                     {{ question.text }}
                                                 </div>
                                                 
@@ -93,7 +94,7 @@
                                                             <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}" id="choice_{{ choice.id }}" style="transform: scale(1.5);">
 
                                                             <!-- Label box for choice -->
-                                                            <div style="display: inline-block; margin-left: 10px; padding: 10px; background-color: #e9ecef; border: 1px solid #007bff; border-radius: 8px; font-size: 12px; color: #555;">
+                                                            <div style="display: inline-block; margin-left: 10px; padding: 10px; background-color: #e9ecef;  border-radius: 8px; font-size: 12px; color: #555;">
                                                                 <label for="choice_{{ choice.id }}" style="cursor: pointer; margin: 0; color: #555;">{{ choice.text }}</label>
                                                             </div>
                                                         </li>
@@ -102,8 +103,9 @@
                                             </li>
                                         {% endfor %}
                                     </ul>
+                                    <button type="submit" class="btn btn-success">Submit</button>
                                 </div>
-                                <button type="submit" class="btn btn-success">Submit</button>
+                                
                             </form>
                         {% endif %}
                     {% endif %}
