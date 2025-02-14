@@ -128,7 +128,7 @@ def course_learn(request, username, slug):
     
     if request.user.username != username:
         return redirect('authentication:course_list')
-     # Gunakan 'course_name' karena itu adalah atribut yang benar di model Course
+    
     course_name = course.course_name
     # Get sections, materials, and assessments
     sections = Section.objects.filter(courses=course).prefetch_related(
@@ -140,17 +140,13 @@ def course_learn(request, username, slug):
         ))
     )
     
-    materials = []
-    assessments = []
-    for section in sections:
-        materials.extend(section.materials.all())
-        assessments.extend(section.assessments.all())
-
+    # Create a combined content list with section information
     combined_content = []
-    for material in materials:
-        combined_content.append(('material', material))
-    for assessment in assessments:
-        combined_content.append(('assessment', assessment))
+    for section in sections:
+        for material in section.materials.all():
+            combined_content.append(('material', material, section))
+        for assessment in section.assessments.all():
+            combined_content.append(('assessment', assessment, section))
 
     total_content = len(combined_content)  # Total content (materials + assessments)
 
@@ -160,15 +156,23 @@ def course_learn(request, username, slug):
     
     current_content = None
     if not material_id and not assessment_id:
-        current_content = ('material', materials[0]) if materials else None
+        current_content = ('material', combined_content[0][1], combined_content[0][2]) if combined_content else None
     elif material_id:
-        current_content = ('material', get_object_or_404(Material, id=material_id))
+        material = get_object_or_404(Material, id=material_id)
+        current_content = ('material', material, next((s for s in sections if material in s.materials.all()), None))
     elif assessment_id:
-        current_content = ('assessment', get_object_or_404(Assessment, id=assessment_id))
+        assessment = get_object_or_404(Assessment, id=assessment_id)
+        current_content = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
 
-    current_index = combined_content.index(current_content) if current_content else 0
-    previous_content = combined_content[current_index - 1 if current_index > 0 else -1]
-    next_content = combined_content[current_index + 1 if current_index < len(combined_content) - 1 else 0]
+    # Ensure current_content is in the correct format for index lookup
+    if current_content and current_content[0] in ['material', 'assessment']:
+        current_index = next((i for i, content in enumerate(combined_content) if content[0] == current_content[0] and content[1] == current_content[1]), -1)
+    else:
+        current_index = -1
+
+    # Determine previous and next content
+    previous_content = combined_content[current_index - 1] if current_index > 0 else None
+    next_content = combined_content[current_index + 1] if current_index < len(combined_content) - 1 else None
 
     # Create URLs for navigation
     previous_url = f"?{previous_content[0]}_id={previous_content[1].id}" if previous_content else "#"
@@ -177,22 +181,18 @@ def course_learn(request, username, slug):
     # Track user's progress
     user_progress, created = CourseProgress.objects.get_or_create(user=request.user, course=course)
 
-    
     # Mengambil skor terakhir dari user
     score = Score.objects.filter(user=request.user, course=course).order_by('-date').first()
-     # Tentukan grade berdasarkan skor terakhir
     user_grade = 'Fail'
     if score:
         score_percentage = (score.score / score.total_questions) * 100
-        #print(f"Skor: {score.score} / {score.total_questions} = {score_percentage}%")  # Debugging output
-        user_grade = calculate_grade(score_percentage, course)  # Asumsi ada fungsi calculate_grade
+        user_grade = calculate_grade(score_percentage, course)
+
     # Handle the "next" button click and update progress (without updating score)
     if current_content:
         if current_content[0] == 'material':
-            # Record the material as read
             MaterialRead.objects.get_or_create(user=request.user, material=current_content[1])
         elif current_content[0] == 'assessment':
-            # Record the assessment as completed
             AssessmentRead.objects.get_or_create(user=request.user, assessment=current_content[1])
 
         # Calculate user progress
@@ -206,28 +206,23 @@ def course_learn(request, username, slug):
                     completed_content += 1
 
         # Update progress
-        progress = completed_content / total_content  # Fraction of completed content
+        progress = completed_content / total_content
         user_progress.progress = progress
-        user_progress.progress_percentage = progress * 100  # Convert to percentage
+        user_progress.progress_percentage = progress * 100
         user_progress.save()
    
     context = {
         'course': course,
         'course_name': course_name,
         'sections': sections,
-        'materials': materials,
-        'assessments': assessments,
         'current_content': current_content,
         'previous_url': previous_url,
         'next_url': next_url,
         'course_progress': user_progress.progress_percentage,
-        'user_grade': user_grade,  # Kirim grade ke template
+        'user_grade': user_grade,
     }
 
     return render(request, 'learner/course_learn.html', context)
-
-
-
 
 
 
