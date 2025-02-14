@@ -567,10 +567,12 @@ class AssessmentRead(models.Model):
 class QuestionAnswer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    answered_at = models.DateTimeField(auto_now_add=True)  # Time when the question was answered
+    choice = models.ForeignKey(Choice, on_delete=models.CASCADE)  # Menyimpan pilihan yang dipilih
+    answered_at = models.DateTimeField(auto_now_add=True)  # Waktu saat soal dijawab
 
     class Meta:
-        unique_together = ('user', 'question')  # Ensure that each user can answer a question only once
+        unique_together = ('user', 'question')  # Pastikan setiap user hanya bisa menjawab sekali untuk setiap pertanyaan
 
     def __str__(self):
-        return f"{self.user.username} - Answered {self.question.text} on {self.answered_at}"
+        return f"{self.user.username} - Answered {self.question.text} with {self.choice.text} on {self.answered_at}"
+

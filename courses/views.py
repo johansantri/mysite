@@ -33,9 +33,38 @@ from django.db.models import Prefetch
 import time
 
 
+def submit_assessment(request, assessment_id):
+    # Ambil assessment berdasarkan ID
+    assessment = get_object_or_404(Assessment, id=assessment_id)
+    
+    # Ambil semua pertanyaan dalam assessment ini
+    questions = assessment.questions.all()
+
+    # Cek apakah request method adalah POST
+    if request.method == 'POST':
+        for question in questions:
+            # Ambil pilihan yang dipilih oleh pengguna untuk setiap pertanyaan
+            choice_id = request.POST.get(f'question_{question.id}')
+            
+            # Jika pilihan ditemukan, simpan jawaban
+            if choice_id:
+                choice = get_object_or_404(Choice, id=choice_id)
+                
+                # Simpan jawaban pengguna dalam QuestionAnswer
+                QuestionAnswer.objects.get_or_create(
+                    user=request.user,
+                    question=question,
+                    choice=choice
+                )
+        
+        # Redirect ke halaman berikutnya atau halaman hasil
+        return redirect('next_page_or_results_url')
+
+    # Jika bukan POST, redirect kembali ke halaman assessment
+    return redirect(f'?assessment_id={assessment.id}')
 
 
-
+#all matrial and assesment view after enrol
 def course_learn(request, username, slug):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)  # Redirect to login if not authenticated
@@ -143,7 +172,13 @@ def course_learn(request, username, slug):
 
             # Track each question answered
             for question in current_content[1].questions.all():
-                QuestionAnswer.objects.get_or_create(user=request.user, question=question)
+                # Get the selected choice ID from the POST data
+                choice_id = request.POST.get(f'question_{question.id}')
+                if choice_id:
+                    # Get the Choice object corresponding to the selected choice ID
+                    choice = get_object_or_404(Choice, id=choice_id)
+                    # Save the QuestionAnswer
+                    QuestionAnswer.objects.get_or_create(user=request.user, question=question, choice=choice)
 
         total_content = len(combined_content)  # Total number of materials and assessments
 
@@ -152,6 +187,7 @@ def course_learn(request, username, slug):
         user_progress.save()
 
     return render(request, 'learner/course_learn.html', context)
+
 
 
 

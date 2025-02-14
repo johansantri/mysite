@@ -38,10 +38,12 @@
                           </li>
                           {% endfor %}
                           <p>Progress: {{ course_progress |floatformat:0 }}%</p>
+                          
                       </ul>
                     </div>
                 </div>
             </div>
+            
 
             <!-- Main Content Area -->
             <div class="col-md-9 offset-md-3" style="padding-left: 30px; padding-top: 20px;">
@@ -55,6 +57,8 @@
                         {% elif current_content.0 == 'assessment' %}
                             <div class="assessment-item" style="border: 2px ; padding: 20px; border-radius: 10px; background-color: #f9f9f9;">
                                 <h3 style="color: #007bff;">Assessment: {{ current_content.1.name }}</h3>
+                                <form method="POST" action="">
+                                    {% csrf_token %}
                                 <ul style="list-style: none; padding-left: 0;">
                                     {% for question in current_content.1.questions.all %}
                                         <li class="question" style="margin-bottom: 20px;">
@@ -78,6 +82,8 @@
                                         </li>
                                     {% endfor %}
                                 </ul>
+                                <button type="submit" class="btn btn-primary">Submit Answers</button>
+                            </form>
                             </div>
                         {% endif %}
                     {% endif %}
