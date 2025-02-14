@@ -6,10 +6,10 @@
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar with Sections -->
-            <div class="col-md-3 d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="position: fixed; top: 0; left: 0; height: 100vh; width: 20%; z-index: 1000;"> 
+            <div class="col-md-3 d-none d-md-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="position: fixed; top: 0; left: 0; height: 100vh; z-index: 1000;"> 
                 <div class="settings-widget">
                     <div class="settings-menu">
-                        <h3>Course Content</h3>
+                        <h3 class="h5">Course Content</h3>
                         <ul>
                           {% for section in sections %}
                           <li class="nav-item">
@@ -24,7 +24,6 @@
                                           </a>
                                       </li>
                                   {% endfor %}
-                                  <!-- Display assessments for this section -->
                                   {% for assessment in section.assessments.all %}
                                       <li>
                                           <a class="nav-link" href="?assessment_id={{ assessment.id }}" style="color: #ffffff;">
@@ -32,7 +31,6 @@
                                           </a>
                                       </li>
                                   {% empty %}
-                                      
                                   {% endfor %}
                               </ul>
                           </li>
@@ -50,53 +48,47 @@
                             </div>
                             <hr>
                           <p>status :  {% if user_grade == 'Pass' %}
-                            <span class=" text-success fw-bold">Pass</span>
+                            <span class="text-success fw-bold">Pass</span>
                         {% else %}
                             <span class="text-danger fw-bold">Fail</span>
                         {% endif %}</p>
                         <hr>
-                        
-                        
-                       
-                        
-
                       </ul>
                     </div>
                 </div>
             </div>
 
+            <!-- Button to toggle sidebar on mobile -->
+            <div class="d-md-none d-flex justify-content-center mb-3">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sidebarModal">Show Sidebar</button>
+            </div>
+
             <!-- Main Content Area -->
-            <div class="col-md-9 offset-md-3" style="padding-left: 30px; padding-top: 20px;">
+            <div class="col-md-9 offset-md-3 col-12" style="padding-top: 20px;">
                 <div class="material-content">
                     {% if current_content %}
                         {% if current_content.0 == 'material' %}
-                            <div class="material-item" style="border-bottom: 2px solidrgb(134, 134, 134); padding: 20px; background-color: #f9f9f9;">
-                                <h2 class="material-title" style="color:rgb(0, 0, 0);">{{ current_content.1.title }}</h2>
-                                <p class="material-description" style="font-size: 16px; color: #555;">{{ current_content.1.description |safe}}</p>
+                            <div class="material-item" style="border-bottom: 2px solid rgb(134, 134, 134); padding: 20px; background-color: #f9f9f9;">
+                                <h2 class="material-title h4" style="color: rgb(0, 0, 0);">{{ current_content.1.title }}</h2>
+                                <p class="material-description" style="font-size: 14px; color: #555;">{{ current_content.1.description |safe}}</p>
                             </div>
                         {% elif current_content.0 == 'assessment' %}
                             <form method="POST" action="{% url 'courses:submit_assessment' assessment_id=current_content.1.id %}">
                                 {% csrf_token %}
                                 <input type="hidden" name="current_content_id" value="{{ current_material.id }}">
-                                <div class="assessment-item" style="border: 2px solidrgb(0, 0, 0); padding: 20px; border-radius: 10px; background-color: #f9f9f9;">
-                                    <h3 style="color: #007bff;">Assessment: {{ current_content.1.name }}</h3>
+                                <div class="assessment-item" style="border: 2px solid rgb(0, 0, 0); padding: 20px; border-radius: 10px; background-color: #f9f9f9;">
+                                    <h3 class="h5" style="color: #007bff;">Assessment: {{ current_content.1.name }}</h3>
                                     <ul style="list-style: none; padding-left: 0;">
                                         {% for question in current_content.1.questions.all %}
                                             <li class="question" style="margin-bottom: 20px;">
-                                                <!-- Label box for question text -->
-                                                <div style="display: inline-block; margin-left: 10px; padding: 10px; background-color: #e9ecef;  border-radius: 8px; font-size: 16px; color: #555;">
+                                                <div style="display: inline-block; margin-left: 10px; padding: 10px; background-color: #e9ecef; border-radius: 8px; font-size: 14px; color: #555;">
                                                     {{ question.text }}
                                                 </div>
-                                                
                                                 <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
                                                     {% for choice in question.choices.all %}
-                                                        <li style="margin-bottom: 10px;">
-                                                            <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}" id="choice_{{ choice.id }}" style="transform: scale(1.5);">
-
-                                                            <!-- Label box for choice -->
-                                                            <div style="display: inline-block; margin-left: 10px; padding: 10px; background-color: #e9ecef;  border-radius: 8px; font-size: 12px; color: #555;">
-                                                                <label for="choice_{{ choice.id }}" style="cursor: pointer; margin: 0; color: #555;">{{ choice.text }}</label>
-                                                            </div>
+                                                        <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                                                            <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}" id="choice_{{ choice.id }}" style="transform: scale(1.5); margin-right: 10px;">
+                                                            <label for="choice_{{ choice.id }}" style="cursor: pointer; margin: 0; font-size: 14px; color: #555;">{{ choice.text }}</label>
                                                         </li>
                                                     {% endfor %}
                                                 </ul>
@@ -105,28 +97,86 @@
                                     </ul>
                                     <button type="submit" class="btn btn-success">Submit</button>
                                 </div>
-                                
                             </form>
                         {% endif %}
                     {% endif %}
 
-                    <!-- Status Grade (Pass or Fail) -->
-                   
-             
-                   
-
-
                     <!-- Navigation buttons for content -->
-                    <div class="navigation-buttons" style="margin-top: 30px;">
-                        <a href="{{ previous_url }}" class="btn btn-secondary" style="margin-right: 10px;">Previous</a>
+                    <div class="d-flex justify-content-between" style="margin-top: 30px;">
+                        <a href="{{ previous_url }}" class="btn btn-secondary">Previous</a>
                         <a href="{{ next_url }}" class="btn btn-primary">Next</a>
                     </div>
-
-                   
-
                 </div>
             </div>
         </div>
     </div>
   </div>
+
+  <!-- Modal for Sidebar -->
+  <div class="modal fade" id="sidebarModal" tabindex="-1" aria-labelledby="sidebarModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="sidebarModalLabel">Course Content</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <ul class="list-unstyled">
+            {% for section in sections %}
+            <li class="nav-item">
+                <a class="nav-link" href="#" style="color: #000;">
+                    <i class="bx bxs-book"></i> {{ section.title }}
+                </a>
+                <ul>
+                    {% for material in section.materials.all %}
+                        <li>
+                            <a class="nav-link" href="?material_id={{ material.id }}" style="color: #000;">
+                                <i class="bx bx-file"></i> {{ material.title }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                    {% for assessment in section.assessments.all %}
+                        <li>
+                            <a class="nav-link" href="?assessment_id={{ assessment.id }}" style="color: #000;">
+                                <i class="bx bx-pencil"></i> {{ assessment.name }}
+                            </a>
+                        </li>
+                    {% empty %}
+                    {% endfor %}
+                </ul>
+            </li>
+            {% endfor %}
+          </ul>
+          <hr>
+          <p class="fw-bold">Progress: {{ course_progress |floatformat:0 }}%</p>
+          <div class="progress">
+              <div class="progress-bar bg-success" 
+                  role="progressbar" 
+                  style="width: {{ course_progress|default:0 }}%" 
+                  aria-valuenow="{{ course_progress|default:0 }}" 
+                  aria-valuemin="0" 
+                  aria-valuemax="100">
+              </div>
+          </div>
+          <hr>
+          <p>Status: {% if user_grade == 'Pass' %}
+              <span class="text-success fw-bold">Pass</span>
+          {% else %}
+              <span class="text-danger fw-bold">Fail</span>
+          {% endif %}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // JavaScript to toggle sidebar on mobile
+    document.getElementById('toggleSidebar').addEventListener('click', function() {
+        const sidebar = document.querySelector('.col-md-3');
+        sidebar.classList.toggle('d-none');
+    });
+  </script>
 {% endblock %}
