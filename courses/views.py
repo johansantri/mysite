@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from .forms import CoursePriceForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from django.http import JsonResponse
-from .models import Course,CourseStatus,Choice,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
+from .models import Course,CourseStatus,Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
 from django.contrib.auth.models import User, Universiti
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
@@ -32,86 +32,133 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Prefetch
 import time
 
+# views.py
+
+
 
 def submit_assessment(request, assessment_id):
     # Ambil assessment berdasarkan ID
     assessment = get_object_or_404(Assessment, id=assessment_id)
-    
-    # Ambil semua pertanyaan dalam assessment ini
-    questions = assessment.questions.all()
 
-    # Cek apakah request method adalah POST
+    # Cek apakah user sudah pernah submit untuk assessment ini
+    if Score.objects.filter(user=request.user.username, course=assessment.section.courses, submitted=True).exists():
+        # Jika sudah pernah submit, redirect kembali ke halaman course_learn
+        return redirect('courses:course_learn', username=request.user.username, slug=assessment.section.courses.slug)
+
     if request.method == 'POST':
-        for question in questions:
-            # Ambil pilihan yang dipilih oleh pengguna untuk setiap pertanyaan
-            choice_id = request.POST.get(f'question_{question.id}')
+        correct_answers = 0
+        total_questions = assessment.questions.count()
+
+        # Proses setiap soal di assessment
+        for question in assessment.questions.all():
+            # Cek apakah user sudah memberikan jawaban untuk soal ini
+            if QuestionAnswer.objects.filter(user=request.user, question=question).exists():
+                # Jika sudah ada, jangan izinkan submit ulang
+                continue
+
+            # Ambil jawaban yang dipilih oleh user
+            user_answer = request.POST.get(f"question_{question.id}")
             
-            # Jika pilihan ditemukan, simpan jawaban
-            if choice_id:
-                choice = get_object_or_404(Choice, id=choice_id)
-                
-                # Simpan jawaban pengguna dalam QuestionAnswer
-                QuestionAnswer.objects.get_or_create(
+            if user_answer:
+                # Ambil choice berdasarkan ID yang dikirim oleh user
+                choice = Choice.objects.get(id=user_answer)
+
+                # Simpan jawaban user ke dalam model QuestionAnswer
+                QuestionAnswer.objects.create(
                     user=request.user,
                     question=question,
                     choice=choice
                 )
-        
-        # Redirect ke halaman berikutnya atau halaman hasil
-        return redirect('next_page_or_results_url')
 
-    # Jika bukan POST, redirect kembali ke halaman assessment
-    return redirect(f'?assessment_id={assessment.id}')
+                # Cek apakah jawaban user benar
+                if choice.is_correct:
+                    correct_answers += 1
+
+        # Menghitung nilai berdasarkan jawaban yang benar
+        score_percentage = (correct_answers / total_questions) * 100
+        grade = calculate_grade(score_percentage, assessment.section.courses)
+
+        # Menyimpan hasil score ke model Score
+        score = Score.objects.create(
+            user=request.user,  # Gunakan objek user langsung
+            course=assessment.section.courses,
+            section=assessment.section,
+            score=correct_answers,
+            total_questions=total_questions,
+            grade=grade,  # Grade berdasarkan persentase yang dihitung
+            submitted=True
+        )
+
+        # Perbarui progress user
+        user_progress, created = CourseProgress.objects.get_or_create(user=request.user, course=assessment.section.courses)
+        user_progress.progress = score_percentage  # Update progress berdasarkan skor
+        user_progress.save()
+
+        # Redirect ke halaman course setelah submit
+        return redirect('courses:course_learn', username=request.user.username, slug=assessment.section.courses.slug)
+
+    return render(request, 'submit_assessment.html', {'assessment': assessment})
+
+def calculate_grade(score_percentage, course):
+    # Ambil grade ranges untuk course ini
+    grade_ranges = GradeRange.objects.filter(course=course).order_by('min_grade')
+
+    # Debugging: Tampilkan nilai grade range dan persentase skor
+    print(f"Score Percentage: {score_percentage}%")
+    for grade_range in grade_ranges:
+        print(f"Grade Range for Course '{course.course_name}': {grade_range.name} ({grade_range.min_grade} - {grade_range.max_grade})")
+
+    # Memeriksa score_percentage dalam rentang grade yang ditemukan
+    for grade_range in grade_ranges:
+        if score_percentage >= grade_range.min_grade and score_percentage <= grade_range.max_grade:
+            print(f"Grade for Score {score_percentage}% is: {grade_range.name}")
+            return grade_range.name  # Mengembalikan nama grade (misalnya "Pass")
+
+    # Jika tidak ada grade range yang sesuai, default ke "Fail"
+    print("Grade is Fail (defaulting to Fail)")
+    return 'Fail'  # Default ke Fail jika tidak ada grade range yang sesuai
 
 
-#all matrial and assesment view after enrol
+
 def course_learn(request, username, slug):
     if not request.user.is_authenticated:
-        return redirect("/login/?next=%s" % request.path)  # Redirect to login if not authenticated
+        return redirect("/login/?next=%s" % request.path)
     
-    # Fetch the course by its slug
     course = get_object_or_404(Course, slug=slug)
-
-    # Ensure that the logged-in user is authorized to access this course
+    
     if request.user.username != username:
-        return redirect('authentication:course_list')  # Redirect if the user does not have access
-
-    # Prefetch materials, children, assessments, questions, and choices
+        return redirect('authentication:course_list')
+     # Gunakan 'course_name' karena itu adalah atribut yang benar di model Course
+    course_name = course.course_name
+    # Get sections, materials, and assessments
     sections = Section.objects.filter(courses=course).prefetch_related(
         Prefetch('materials', queryset=Material.objects.all()),
-        Prefetch('children', queryset=Section.objects.all()),
         Prefetch('assessments', queryset=Assessment.objects.all().prefetch_related(
             Prefetch('questions', queryset=Question.objects.all().prefetch_related(
                 Prefetch('choices', queryset=Choice.objects.all())
             ))
         ))
     )
-
-    # Collect all materials and assessments for the course
+    
     materials = []
-    for section in sections:
-        section_materials = section.materials.all()
-        materials.extend(section_materials)
-
     assessments = []
     for section in sections:
-        section_assessments = section.assessments.all()
-        assessments.extend(section_assessments)
+        materials.extend(section.materials.all())
+        assessments.extend(section.assessments.all())
 
-    # Create a combined list of materials and assessments (assessment as one block)
     combined_content = []
     for material in materials:
         combined_content.append(('material', material))
     for assessment in assessments:
-        combined_content.append(('assessment', assessment))  # Add the entire assessment as a unit
+        combined_content.append(('assessment', assessment))
 
-    # Get the current content (either material or assessment) from the URL parameters
+    total_content = len(combined_content)  # Total content (materials + assessments)
+
+    # Get current content ID from URL parameters
     material_id = request.GET.get('material_id')
     assessment_id = request.GET.get('assessment_id')
     
     current_content = None
-
-    # If no material_id or assessment_id in URL, show the first material
     if not material_id and not assessment_id:
         current_content = ('material', materials[0]) if materials else None
     elif material_id:
@@ -119,98 +166,65 @@ def course_learn(request, username, slug):
     elif assessment_id:
         current_content = ('assessment', get_object_or_404(Assessment, id=assessment_id))
 
-    # Find the index of the current content in the combined list
     current_index = combined_content.index(current_content) if current_content else 0
-
-    # Calculate next and previous content (using modular arithmetic to loop through the list)
     previous_content = combined_content[current_index - 1 if current_index > 0 else -1]
     next_content = combined_content[current_index + 1 if current_index < len(combined_content) - 1 else 0]
 
-    # Build URLs for navigation
+    # Create URLs for navigation
     previous_url = f"?{previous_content[0]}_id={previous_content[1].id}" if previous_content else "#"
     next_url = f"?{next_content[0]}_id={next_content[1].id}" if next_content else "#"
 
     # Track user's progress
     user_progress, created = CourseProgress.objects.get_or_create(user=request.user, course=course)
 
-    # Initialize the context dictionary
+    
+    # Mengambil skor terakhir dari user
+    score = Score.objects.filter(user=request.user, course=course).order_by('-date').first()
+     # Tentukan grade berdasarkan skor terakhir
+    user_grade = 'Fail'
+    if score:
+        score_percentage = (score.score / score.total_questions) * 100
+        print(f"Skor: {score.score} / {score.total_questions} = {score_percentage}%")  # Debugging output
+        user_grade = calculate_grade(score_percentage, course)  # Asumsi ada fungsi calculate_grade
+    # Handle the "next" button click and update progress (without updating score)
+    if current_content:
+        if current_content[0] == 'material':
+            # Record the material as read
+            MaterialRead.objects.get_or_create(user=request.user, material=current_content[1])
+        elif current_content[0] == 'assessment':
+            # Record the assessment as completed
+            AssessmentRead.objects.get_or_create(user=request.user, assessment=current_content[1])
+
+        # Calculate user progress
+        completed_content = 0
+        for content in combined_content:
+            if content[0] == 'material':
+                if MaterialRead.objects.filter(user=request.user, material=content[1]).exists():
+                    completed_content += 1
+            elif content[0] == 'assessment':
+                if AssessmentRead.objects.filter(user=request.user, assessment=content[1]).exists():
+                    completed_content += 1
+
+        # Update progress
+        progress = completed_content / total_content  # Fraction of completed content
+        user_progress.progress = progress
+        user_progress.progress_percentage = progress * 100  # Convert to percentage
+        user_progress.save()
+   
     context = {
         'course': course,
-        'course_name': course.course_name,
+        'course_name': course_name,
         'sections': sections,
         'materials': materials,
         'assessments': assessments,
         'current_content': current_content,
         'previous_url': previous_url,
         'next_url': next_url,
-        'course_progress': user_progress.progress_percentage,  # Display current progress
+        'course_progress': user_progress.progress_percentage,
+        'user_grade': user_grade,  # Kirim grade ke template
     }
 
-    # Check if enough time has passed since the last click (e.g., 5 seconds)
-    last_click_time = request.session.get('last_click_time', 0)
-    current_time = time.time()  # Get the current time in seconds
-    if current_time - last_click_time < 5:
-        # If the user clicked too quickly, return the same page without updating the progress
-        return render(request, 'learner/course_learn.html', context)
-
-    # Update the last click time in the session
-    request.session['last_click_time'] = current_time
-
-    # Update progress based on current content, assume 1 point for each viewed content
-    if current_content:
-        # If content is a material, increment progress by 1
-        if current_content[0] == 'material':
-            # Record the material read time
-            MaterialRead.objects.get_or_create(user=request.user, material=current_content[1])
-            user_progress.progress += 1
-
-        # If content is an assessment, increment progress by the number of questions
-        elif current_content[0] == 'assessment':
-            # Record the assessment completion time
-            AssessmentRead.objects.get_or_create(user=request.user, assessment=current_content[1])
-            user_progress.progress += len(current_content[1].questions.all())  # Add number of questions in the assessment
-
-            # Track each question answered
-            for question in current_content[1].questions.all():
-                # Get the selected choice ID from the POST data
-                choice_id = request.POST.get(f'question_{question.id}')
-                if choice_id:
-                    # Get the Choice object corresponding to the selected choice ID
-                    choice = get_object_or_404(Choice, id=choice_id)
-                    # Save the QuestionAnswer
-                    QuestionAnswer.objects.get_or_create(user=request.user, question=question, choice=choice)
-
-        total_content = len(combined_content)  # Total number of materials and assessments
-
-        # Make sure progress does not exceed 100%
-        user_progress.progress_percentage = min((user_progress.progress / total_content) * 100, 100)
-        user_progress.save()
-
     return render(request, 'learner/course_learn.html', context)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

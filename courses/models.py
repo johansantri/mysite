@@ -485,7 +485,9 @@ class Question(models.Model):
 
     def __str__(self):
         return self.text
-
+    # Method to get the correct choice
+    def correct_choice(self):
+        return self.choices.filter(is_correct=True).first()
 
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='choices')
@@ -530,7 +532,7 @@ class CourseProgress(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     progress = models.FloatField(default=0)  # Percentage completion of the course
     progress_percentage = models.FloatField(default=0)  # New field to store percentage progress
-    
+    grade = models.ForeignKey(GradeRange, null=True, blank=True, on_delete=models.SET_NULL)
     def __str__(self):
         return f"{self.user.username} - {self.course.course_name}"
 

@@ -1,0 +1,21 @@
+{% extends 'home/tes.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="page-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="result-item" style="border: 2px solid #007bff; padding: 20px; background-color: #f9f9f9;">
+                    <h3 style="color: #007bff;">Assessment Result: {{ assessment.name }}</h3>
+                    <p><strong>Score:</strong> {{ score }}%</p>
+                    <p><strong>Grade:</strong> {{ grade }}</p>
+                    <p><strong>Correct Answers:</strong> {{ correct_answers }} / {{ total_questions }}</p>
+                    <p><strong>Time Taken:</strong> {{ time_taken|timesince }}</p>
+                </div>
+                <a href="{% url 'course_learn' username=request.user.username slug=assessment.course.slug %}" class="btn btn-primary">Back to Course</a>
+            </div>
+        </div>
+    </div>
+  </div>
+{% endblock %}
