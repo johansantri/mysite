@@ -104,18 +104,18 @@ def calculate_grade(score_percentage, course):
     grade_ranges = GradeRange.objects.filter(course=course).order_by('min_grade')
 
     # Debugging: Tampilkan nilai grade range dan persentase skor
-    print(f"Score Percentage: {score_percentage}%")
-    for grade_range in grade_ranges:
-        print(f"Grade Range for Course '{course.course_name}': {grade_range.name} ({grade_range.min_grade} - {grade_range.max_grade})")
+    #print(f"Score Percentage: {score_percentage}%")
+    #for grade_range in grade_ranges:
+        #print(f"Grade Range for Course '{course.course_name}': {grade_range.name} ({grade_range.min_grade} - {grade_range.max_grade})")
 
     # Memeriksa score_percentage dalam rentang grade yang ditemukan
     for grade_range in grade_ranges:
         if score_percentage >= grade_range.min_grade and score_percentage <= grade_range.max_grade:
-            print(f"Grade for Score {score_percentage}% is: {grade_range.name}")
+            #print(f"Grade for Score {score_percentage}% is: {grade_range.name}")
             return grade_range.name  # Mengembalikan nama grade (misalnya "Pass")
 
     # Jika tidak ada grade range yang sesuai, default ke "Fail"
-    print("Grade is Fail (defaulting to Fail)")
+    #print("Grade is Fail (defaulting to Fail)")
     return 'Fail'  # Default ke Fail jika tidak ada grade range yang sesuai
 
 
@@ -184,7 +184,7 @@ def course_learn(request, username, slug):
     user_grade = 'Fail'
     if score:
         score_percentage = (score.score / score.total_questions) * 100
-        print(f"Skor: {score.score} / {score.total_questions} = {score_percentage}%")  # Debugging output
+        #print(f"Skor: {score.score} / {score.total_questions} = {score_percentage}%")  # Debugging output
         user_grade = calculate_grade(score_percentage, course)  # Asumsi ada fungsi calculate_grade
     # Handle the "next" button click and update progress (without updating score)
     if current_content:
