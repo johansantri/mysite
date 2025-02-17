@@ -73,7 +73,7 @@
                                         <tr>
                                             <td>{{ result.name }}</td>
                                             <td>{{ result.max_score }}</td>
-                                            <td>{{ result.score }}</td>
+                                            <td>{{ result.score | floatformat:2 }}</td>
                                         </tr>
                                         {% endfor %}
                                     </tbody>

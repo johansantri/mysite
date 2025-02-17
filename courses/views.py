@@ -22,7 +22,7 @@ from django.http import HttpResponseForbidden
 from django_ckeditor_5.widgets import CKEditor5Widget
 from django import forms
 from django.http import JsonResponse
-from decimal import Decimal
+from decimal import Decimal,ROUND_DOWN
 from django.db.models import Sum
 from datetime import datetime
 from django.db.models import Count
@@ -31,7 +31,7 @@ from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Prefetch
 import time
-from decimal import Decimal
+
 # views.py
 
 
@@ -156,6 +156,8 @@ def calculate_grade(overall_percentage, course):
 
 
 
+
+
 def course_learn(request, username, slug):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
@@ -230,7 +232,7 @@ def course_learn(request, username, slug):
     assessments = Assessment.objects.filter(section__courses=course)
     score_entries = Score.objects.filter(user=request.user.username, course=course)
 
-   # Hitung nilai untuk setiap asesmen
+    # Hitung nilai untuk setiap asesmen
     assessment_scores = []
     total_max_score = 0
     total_score = 0
@@ -240,7 +242,7 @@ def course_learn(request, username, slug):
         score_entry = score_entries.filter(section=section).first()
 
         # Menghitung jawaban benar untuk setiap soal di asesmen
-        correct_answers_count = 0
+        total_correct_answers = 0
         total_questions = assessment.questions.count()  # Total jumlah soal
 
         for question in assessment.questions.all():
@@ -249,14 +251,18 @@ def course_learn(request, username, slug):
             
             # Cek apakah jawaban yang dipilih benar
             correct_answers = answers.filter(choice__is_correct=True).count()  # Filter berdasarkan is_correct dari Choice model
-            correct_answers_count += correct_answers
+            total_correct_answers += correct_answers
 
-        # Pastikan pembagian untuk nilai skor dilakukan dengan pembulatan yang tepat
+        # Tentukan skor berdasarkan jumlah jawaban benar dan jumlah soal
         if total_questions > 0:
-            score_value = (Decimal(correct_answers_count) / Decimal(total_questions)) * Decimal(assessment.weight)
+            score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
         else:
             score_value = Decimal(0)
 
+        # Batasi skor agar tidak melebihi bobot maksimal
+        score_value = min(score_value, Decimal(assessment.weight))
+
+        # Tambahkan skor asesmen ke dalam list
         assessment_scores.append({
             'assessment': assessment,
             'score': score_value,
@@ -267,7 +273,10 @@ def course_learn(request, username, slug):
         total_max_score += assessment.weight
         total_score += score_value
 
-    # Pastikan bahwa skor total yang diperoleh dihitung sesuai dengan bobot
+    # Pastikan nilai total yang diperoleh dihitung sesuai dengan bobot
+    total_score = min(total_score, total_max_score)
+
+    # Hitung persentase keseluruhan
     if total_max_score > 0:
         overall_percentage = (total_score / total_max_score) * 100
     else:
@@ -288,7 +297,6 @@ def course_learn(request, username, slug):
         'max_score': total_max_score,  # Nilai maksimal total
         'score': total_score  # Nilai total yang diperoleh
     })
-
 
     # Tangani klik tombol "next" dan perbarui kemajuan (tanpa memperbarui skor)
     if current_content:
