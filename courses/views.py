@@ -783,10 +783,11 @@ def create_assessment(request, idcourse, idsection):
         if form.is_valid():
             # Convert new_weight to Decimal
             new_weight = Decimal(form.cleaned_data['weight'])
-            total_weight = Assessment.objects.filter(section=section).aggregate(Sum('weight'))['weight__sum'] or Decimal('0')
+            # Calculate total weight for the course
+            total_weight = Assessment.objects.filter(section__courses=course).aggregate(Sum('weight'))['weight__sum'] or Decimal('0')
 
             if total_weight + new_weight > Decimal('100'):
-                messages.error(request, "Total bobot untuk penilaian dalam section ini tidak boleh melebihi 100")
+                messages.error(request, "Total bobot untuk penilaian dalam course ini tidak boleh melebihi 100")
                 return render(request, 'courses/course_assessement.html', {'form': form, 'course': course, 'section': section})
 
             # Create the assessment instance but don't save it yet
