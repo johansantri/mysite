@@ -86,23 +86,61 @@ def submit_assessment(request, assessment_id):
     return render(request, 'submit_assessment.html', {'assessment': assessment})
 
 def calculate_overall_pass_fail(user, course):
-    scores = Score.objects.filter(user=user.username, course=course, submitted=True)
+    # Ambil semua asesmen untuk kursus ini
+    assessments = Assessment.objects.filter(section__courses=course)
+    total_max_score = 0  # Total skor maksimal dari semua asesmen
+    total_score = 0  # Total skor yang didapatkan dari pengguna
+    all_passed = True  # Untuk melacak apakah semua asesmen lulus
 
-    if not scores.exists():
-        return 0, "No assessments submitted"
+    # Hitung skor untuk setiap asesmen
+    for assessment in assessments:
+        total_questions = assessment.questions.count()  # Jumlah soal pada asesmen ini
+        total_correct_answers = 0  # Jumlah jawaban benar dari pengguna
 
-    total_score = sum(score.score for score in scores)
-    total_questions = sum(score.total_questions for score in scores)
+        for question in assessment.questions.all():
+            # Mengambil jawaban yang dipilih oleh pengguna untuk pertanyaan ini
+            answers = QuestionAnswer.objects.filter(question=question, user=user)
+            
+            # Cek apakah jawaban yang dipilih benar
+            correct_answers = answers.filter(choice__is_correct=True).count()  # Jawaban benar
+            total_correct_answers += correct_answers
 
-    if total_questions == 0:
-        return total_score, "No questions available"
+        # Tentukan skor berdasarkan jumlah jawaban benar dan jumlah soal
+        score_value = 0
+        if total_questions > 0:
+            # Menghitung skor berdasarkan jawaban benar dan total soal
+            score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
 
-    overall_percentage = (total_score / total_questions) * 100
+        # Tentukan status kelulusan per asesmen
+        passing_threshold = 60  # Ambang batas kelulusan per asesmen (misalnya 60%)
+        if (score_value / assessment.weight) * 100 < passing_threshold:
+            all_passed = False  # Jika ada asesmen yang tidak lulus, status keseluruhan adalah "Fail"
 
-    # Define the passing threshold
-    passing_threshold = 60  # Change this to your institution's passing percentage
+        total_max_score += assessment.weight  # Bobot maksimal
+        total_score += score_value  # Skor yang didapat pengguna
 
-    return total_score, "Pass" if overall_percentage >= passing_threshold else "Fail"
+    # Hitung persentase keseluruhan
+    if total_max_score > 0:
+        overall_percentage = (total_score / total_max_score) * 100
+    else:
+        overall_percentage = 0
+
+    # Ambil ambang batas kelulusan dari GradeRange
+    grade_range = GradeRange.objects.filter(course=course).first()  # Ambil grade range untuk kursus ini
+
+    if grade_range:
+        passing_threshold = grade_range.min_grade
+    else:
+        passing_threshold = 60  # Default jika tidak ada GradeRange
+
+    status = "Pass" if all_passed and overall_percentage >= passing_threshold else "Fail"
+
+    return total_score, overall_percentage, status
+
+
+
+
+
 
 def calculate_total_score_and_status(user_id, course):
     # Ambil semua asesmen untuk kursus yang ditentukan
@@ -148,11 +186,13 @@ def calculate_grade(overall_percentage, course):
 
     # Memeriksa score_percentage dalam rentang grade yang ditemukan
     for grade_range in grade_ranges:
+        # Periksa jika overall_percentage berada dalam rentang nilai yang valid
         if overall_percentage >= grade_range.min_grade and overall_percentage <= grade_range.max_grade:
             return grade_range.name  # Mengembalikan nama grade
 
     # Jika tidak ada grade range yang sesuai, default ke "Fail"
     return 'Fail'  # Default ke Fail jika tidak ada grade range yang sesuai
+
 
 
 
@@ -236,10 +276,16 @@ def course_learn(request, username, slug):
     assessment_scores = []
     total_max_score = 0
     total_score = 0
+    passing_criteria_met = True  # Flag untuk menentukan apakah lulus secara keseluruhan
+    all_assessments_submitted = True  # Flag untuk mengecek apakah semua asesmen sudah disubmit
 
     for assessment in assessments:
         section = assessment.section
         score_entry = score_entries.filter(section=section).first()
+
+        # Jika tidak ada skor yang diambil untuk asesmen ini, berarti asesmen belum disubmit
+        if not score_entry:
+            all_assessments_submitted = False
 
         # Menghitung jawaban benar untuk setiap soal di asesmen
         total_correct_answers = 0
@@ -273,6 +319,14 @@ def course_learn(request, username, slug):
         total_max_score += assessment.weight
         total_score += score_value
 
+        # Tentukan apakah asesmen ini memenuhi ambang batas kelulusan
+        grade_range = GradeRange.objects.filter(course=course).first()
+        passing_threshold = grade_range.min_grade if grade_range else 60  # Ambang batas kelulusan default 60
+
+        # Periksa apakah nilai asesmen ini memenuhi kriteria kelulusan
+        if (score_value / assessment.weight) * 100 < passing_threshold:
+            passing_criteria_met = False  # Jika ada asesmen yang gagal, set passing_criteria_met ke False
+
     # Pastikan nilai total yang diperoleh dihitung sesuai dengan bobot
     total_score = min(total_score, total_max_score)
 
@@ -298,28 +352,11 @@ def course_learn(request, username, slug):
         'score': total_score  # Nilai total yang diperoleh
     })
 
-    # Tangani klik tombol "next" dan perbarui kemajuan (tanpa memperbarui skor)
-    if current_content:
-        if current_content[0] == 'material':
-            MaterialRead.objects.get_or_create(user=request.user, material=current_content[1])
-        elif current_content[0] == 'assessment':
-            AssessmentRead.objects.get_or_create(user=request.user, assessment=current_content[1])
-
-        # Hitung kemajuan pengguna
-        completed_content = 0
-        for content in combined_content:
-            if content[0] == 'material':
-                if MaterialRead.objects.filter(user=request.user, material=content[1]).exists():
-                    completed_content += 1
-            elif content[0] == 'assessment':
-                if AssessmentRead.objects.filter(user=request.user, assessment=content[1]).exists():
-                    completed_content += 1
-
-        # Perbarui kemajuan
-        progress = completed_content / total_content
-        user_progress.progress = progress
-        user_progress.progress_percentage = progress * 100
-        user_progress.save()
+    # Tentukan status kelulusan berdasarkan apakah semua asesmen sudah disubmit dan apakah memenuhi kriteria kelulusan
+    if not all_assessments_submitted:
+        status = "Fail"  # Jika ada asesmen yang belum disubmit, status "Fail"
+    else:
+        status = "Pass" if passing_criteria_met else "Fail"  # Cek apakah memenuhi kriteria kelulusan
 
     context = {
         'course': course,
@@ -334,9 +371,11 @@ def course_learn(request, username, slug):
         'total_score': total_score,
         'overall_percentage': overall_percentage,
         'total_weight': total_max_score,  # Nilai maksimal total
+        'status': status  # Status kelulusan
     }
 
     return render(request, 'learner/course_learn.html', context)
+
 
 def started_courses(request):
     if request.user.is_authenticated:

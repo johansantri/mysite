@@ -49,15 +49,113 @@
                                 </div>
                             </div>
                             <hr>
-                            <p>status :  {% if user_grade == 'Pass' %}
-                                <span class="text-success fw-bold">Pass</span>
-                            {% else %}
-                                <span class="text-danger fw-bold">Fail</span>
-                            {% endif %}</p>
+                           <div class="js-container container" style="position: relative; top: 0px !important;">
+                            <p>status : 
+                                {% if status == 'Pass' %}
+                                    <span class="text-success fw-bold">Congratulations 🎈</span>
+                                {% else %}
+                                    <span class="text-danger fw-bold">🥺</span>
+                                {% endif %}
+                            </p>
+                        </div>
+
+                        <script>
+                            // Cek status dari template
+                            const status = "{{ status }}"; // Ambil status dari template
+
+                            if (status === 'Pass') {
+                                const Confettiful = function(el) {
+                                    this.el = el;
+                                    this.containerEl = null;
+
+                                    this.confettiFrequency = 3;
+                                    this.confettiColors = ['#EF2964', '#00C09D', '#2D87B0', '#48485E', '#EFFF1D'];
+                                    this.confettiAnimations = ['slow', 'medium', 'fast'];
+
+                                    this._setupElements();
+                                    this._renderConfetti();
+                                };
+
+                                Confettiful.prototype._setupElements = function() {
+                                    const containerEl = document.createElement('div');
+                                    containerEl.classList.add('confetti-container');
+                                    
+                                    // Set position to relative if not already set
+                                    if (this.el.style.position !== 'relative' && this.el.style.position !== 'absolute') {
+                                        this.el.style.position = 'relative';
+                                    }
+
+                                    this.el.appendChild(containerEl);
+                                    this.containerEl = containerEl;
+                                };
+
+                                Confettiful.prototype._renderConfetti = function() {
+                                    this.confettiInterval = setInterval(() => {
+                                        const confettiEl = document.createElement('div');
+                                        const confettiSize = (Math.floor(Math.random() * 3) + 7) + 'px';
+                                        const confettiBackground = this.confettiColors[Math.floor(Math.random() * this.confettiColors.length)];
+                                        const confettiLeft = (Math.floor(Math.random() * this.el.offsetWidth)) + 'px';
+                                        const confettiAnimation = this.confettiAnimations[Math.floor(Math.random() * this.confettiAnimations.length)];
+
+                                        confettiEl.classList.add('confetti', 'confetti--animation-' + confettiAnimation);
+                                        confettiEl.style.left = confettiLeft;
+                                        confettiEl.style.width = confettiSize;
+                                        confettiEl.style.height = confettiSize;
+                                        confettiEl.style.backgroundColor = confettiBackground;
+
+                                        // Remove confetti after 3 seconds
+                                        setTimeout(() => {
+                                            confettiEl.remove();
+                                        }, 3000);
+
+                                        this.containerEl.appendChild(confettiEl);
+                                    }, 25);
+                                };
+
+                                // Initialize confetti effect
+                                window.confettiful = new Confettiful(document.querySelector('.js-container'));
+                            }
+                        </script>
+
+                        <style>
+                            .confetti-container {
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                width: 100%;
+                                height: 100%;
+                                pointer-events: none; /* Prevent mouse events on the confetti container */
+                            }
+
+                            .confetti {
+                                position: absolute;
+                                border-radius: 50%;
+                                opacity: 0.8;
+                            }
+
+                            .confetti--animation-slow {
+                                animation: fall 3s linear forwards;
+                            }
+
+                            .confetti--animation-medium {
+                                animation: fall 2s linear forwards;
+                            }
+
+                            .confetti--animation-fast {
+                                animation: fall 1s linear forwards;
+                            }
+
+                            @keyframes fall {
+                                to {
+                                    transform: translateY(100vh); /* Move confetti down */
+                                    opacity: 0; /* Fade out */
+                                }
+                            }
+                        </style>
                             <hr>
                             <div class="container">
                                
-
+                           
                                
                                 <h3 class="h6">detail assement</h3>
                                 <table class="table table-dark table-striped">
@@ -66,6 +164,7 @@
                                             <th>assement</th>
                                             <th>max</th>
                                             <th>{{ request.user.username }}</th>
+                                            
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -74,6 +173,7 @@
                                             <td>{{ result.name }}</td>
                                             <td>{{ result.max_score }}</td>
                                             <td>{{ result.score | floatformat:2 }}</td>
+                                            
                                         </tr>
                                         {% endfor %}
                                     </tbody>
