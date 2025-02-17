@@ -6,37 +6,39 @@
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar with Sections -->
-            <div class="col-md-3 d-none d-md-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="position: fixed; top: 0; left: 0; height: 100vh; z-index: 1000;"> 
+            <!-- Sidebar with Sections -->
+            <div class="col-md-3 d-none d-md-flex flex-column flex-shrink-0 p-3 text-white bg-dark" 
+                style="position: fixed; top: 0; left: 0; height: 100vh; z-index: 1000; overflow-y: auto;">
                 <div class="settings-widget">
                     <div class="settings-menu">
                         <h3 class="h5">Course Content</h3>
                         <ul>
-                          {% for section in sections %}
-                          <li class="nav-item">
-                              <a class="nav-link" href="#" style="color: #ffffff;">
-                                  <i class="bx bxs-book"></i> {{ section.title }}
-                              </a>
-                              <ul>
-                                  {% for material in section.materials.all %}
-                                      <li>
-                                          <a class="nav-link" href="?material_id={{ material.id }}" style="color: #ffffff;">
-                                              <i class="bx bx-file"></i> {{ material.title }}
-                                          </a>
-                                      </li>
-                                  {% endfor %}
-                                  {% for assessment in section.assessments.all %}
-                                      <li>
-                                          <a class="nav-link" href="?assessment_id={{ assessment.id }}" style="color: #ffffff;">
-                                              <i class="bx bx-pencil"></i> {{ assessment.name }}
-                                          </a>
-                                      </li>
-                                  {% empty %}
-                                  {% endfor %}
-                              </ul>
-                          </li>
-                          {% endfor %}
-                          <hr>
-                          <p class="fw-bold">Progress: {{ course_progress |floatformat:0 }}%</p>
+                            {% for section in sections %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#" style="color: #ffffff;">
+                                        <i class="bx bxs-book"></i> {{ section.title }}
+                                    </a>
+                                    <ul>
+                                        {% for material in section.materials.all %}
+                                            <li>
+                                                <a class="nav-link" href="?material_id={{ material.id }}" style="color: #ffffff;">
+                                                    <i class="bx bx-file"></i> {{ material.title }}
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                        {% for assessment in section.assessments.all %}
+                                            <li>
+                                                <a class="nav-link" href="?assessment_id={{ assessment.id }}" style="color: #ffffff;">
+                                                    <i class="bx bx-pencil"></i> {{ assessment.name }}
+                                                </a>
+                                            </li>
+                                        {% empty %}
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+                            {% endfor %}
+                            <hr>
+                            <p class="fw-bold">Progress: {{ course_progress |floatformat:0 }}%</p>
                             <div class="progress">
                                 <div class="progress-bar bg-success" 
                                     role="progressbar" 
@@ -47,13 +49,40 @@
                                 </div>
                             </div>
                             <hr>
-                          <p>status :  {% if user_grade == 'Pass' %}
-                            <span class="text-success fw-bold">Pass</span>
-                        {% else %}
-                            <span class="text-danger fw-bold">Fail</span>
-                        {% endif %}</p>
-                        <hr>
-                      </ul>
+                            <p>status :  {% if user_grade == 'Pass' %}
+                                <span class="text-success fw-bold">Pass</span>
+                            {% else %}
+                                <span class="text-danger fw-bold">Fail</span>
+                            {% endif %}</p>
+                            <hr>
+                            <div class="container">
+                               
+
+                               
+                                <h3 class="h6">detail assement</h3>
+                                <table class="table table-dark table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>assement</th>
+                                            <th>max</th>
+                                            <th>{{ request.user.username }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for result in assessment_results %}
+                                        <tr>
+                                            <td>{{ result.name }}</td>
+                                            <td>{{ result.max_score }}</td>
+                                            <td>{{ result.score }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+
+                               
+                              
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
