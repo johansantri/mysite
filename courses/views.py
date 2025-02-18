@@ -308,6 +308,13 @@ def course_learn(request, username, slug):
 
     user_progress, created = CourseProgress.objects.get_or_create(user=request.user, course=course)
 
+    # Update progress setiap kali pengguna mengakses konten baru
+
+    if current_content:
+
+        user_progress.progress_percentage = (current_index + 1) / total_content * 100  # Hitung persentase kemajuan
+
+        user_progress.save()  # Simpan perubahan
 
     # Ambil skor terakhir dari pengguna
 
