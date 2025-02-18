@@ -12,7 +12,7 @@ from django.dispatch import receiver
 from django.db.models import Sum
 from datetime import date
 from decimal import Decimal
-from datetime import timedelta
+
 from django.utils import timezone
 
 

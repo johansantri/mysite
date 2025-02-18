@@ -31,6 +31,7 @@ from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Prefetch
 import time
+from datetime import timedelta
 
 # views.py
 
