@@ -41,7 +41,8 @@ def submit_assessment(request, assessment_id):
 
     # Cek apakah user sudah pernah submit untuk assessment ini
     if Score.objects.filter(user=request.user.username, course=assessment.section.courses, section=assessment.section, submitted=True).exists():
-        return redirect('courses:course_learn', username=request.user.username, slug=assessment.section.courses.slug)
+        # Redirect dengan membawa assessment_id agar tetap pada posisi yang sama
+        return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
 
     if request.method == 'POST':
         correct_answers = 0
@@ -80,8 +81,8 @@ def submit_assessment(request, assessment_id):
         user_progress.progress = score_percentage
         user_progress.save()
 
-        # Redirect ke halaman course setelah submit
-        return redirect('courses:course_learn', username=request.user.username, slug=assessment.section.courses.slug)
+        # Redirect ke halaman course setelah submit dengan mempertahankan assessment_id
+        return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
 
     return render(request, 'submit_assessment.html', {'assessment': assessment})
 
@@ -195,354 +196,190 @@ def calculate_grade(overall_percentage, course):
 
 
 
-
-
-
 def course_learn(request, username, slug):
 
     if not request.user.is_authenticated:
-
         return redirect("/login/?next=%s" % request.path)
-
 
     course = get_object_or_404(Course, slug=slug)
 
-
     if request.user.username != username:
-
         return redirect('authentication:course_list')
-
 
     course_name = course.course_name
 
-
     # Ambil section, material, dan assessment
-
     sections = Section.objects.filter(courses=course).prefetch_related(
-
         Prefetch('materials', queryset=Material.objects.all()),
-
         Prefetch('assessments', queryset=Assessment.objects.all().prefetch_related(
-
             Prefetch('questions', queryset=Question.objects.all().prefetch_related(
-
                 Prefetch('choices', queryset=Choice.objects.all())
-
             ))
-
         ))
-
     )
 
-
     # Buat daftar konten gabungan dengan informasi section
-
     combined_content = []
-
     for section in sections:
-
         for material in section.materials.all():
-
             combined_content.append(('material', material, section))
-
         for assessment in section.assessments.all():
-
             combined_content.append(('assessment', assessment, section))
-
 
     total_content = len(combined_content)  # Total konten (material + assessment)
 
-
     # Ambil ID konten saat ini dari parameter URL
-
     material_id = request.GET.get('material_id')
-
     assessment_id = request.GET.get('assessment_id')
 
-
     current_content = None
-
     if not material_id and not assessment_id:
-
         current_content = ('material', combined_content[0][1], combined_content[0][2]) if combined_content else None
-
     elif material_id:
-
         material = get_object_or_404(Material, id=material_id)
-
         current_content = ('material', material, next((s for s in sections if material in s.materials.all()), None))
-
     elif assessment_id:
-
         assessment = get_object_or_404(Assessment, id=assessment_id)
-
         current_content = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
 
-
     # Tentukan indeks konten saat ini
-
     if current_content and current_content[0] in ['material', 'assessment']:
-
         current_index = next((i for i, content in enumerate(combined_content) if content[0] == current_content[0] and content[1] == current_content[1]), -1)
-
     else:
-
         current_index = -1
 
-
     # Tentukan konten sebelumnya dan berikutnya
-
     previous_content = combined_content[current_index - 1] if current_index > 0 else None
-
     next_content = combined_content[current_index + 1] if current_index < len(combined_content) - 1 else None
 
-
     # Buat URL untuk navigasi
-
     previous_url = f"?{previous_content[0]}_id={previous_content[1].id}" if previous_content else "#"
-
     next_url = f"?{next_content[0]}_id={next_content[1].id}" if next_content else "#"
 
-
     # Lacak kemajuan pengguna
-
     user_progress, created = CourseProgress.objects.get_or_create(user=request.user, course=course)
-
-    # Update progress setiap kali pengguna mengakses konten baru
-
     if current_content:
-
         user_progress.progress_percentage = (current_index + 1) / total_content * 100  # Hitung persentase kemajuan
-
         user_progress.save()  # Simpan perubahan
 
     # Ambil skor terakhir dari pengguna
-
     score = Score.objects.filter(user=request.user.username, course=course).order_by('-date').first()
 
-
     user_grade = 'Fail'
-
     if score:
-
         score_percentage = (score.score / score.total_questions) * 100
-
         user_grade = calculate_grade(score_percentage, course)
 
-
     # Ambil semua asesmen untuk kursus ini
-
     assessments = Assessment.objects.filter(section__courses=course)
-
     score_entries = Score.objects.filter(user=request.user.username, course=course)
 
-
     # Hitung nilai untuk setiap asesmen
-
     assessment_scores = []
-
     total_max_score = 0
-
     total_score = 0
-
     passing_criteria_met = True  # Flag untuk menentukan apakah lulus secara keseluruhan
-
     all_assessments_submitted = True  # Flag untuk mengecek apakah semua asesmen sudah disubmit
 
-
     for assessment in assessments:
-
         section = assessment.section
-
         score_entry = score_entries.filter(section=section).first()
 
-
         # Jika tidak ada skor yang diambil untuk asesmen ini, berarti asesmen belum disubmit
-
         if not score_entry:
-
             all_assessments_submitted = False
 
-
         # Menghitung jawaban benar untuk setiap soal di asesmen
-
         total_correct_answers = 0
-
         total_questions = assessment.questions.count()  # Total jumlah soal
 
-
         for question in assessment.questions.all():
-
-            # Mengambil jawaban yang dipilih oleh pengguna untuk pertanyaan ini
-
             answers = QuestionAnswer.objects.filter(question=question, user=request.user)
 
-            
-
             # Cek apakah jawaban yang dipilih benar
-
             correct_answers = answers.filter(choice__is_correct=True).count()  # Filter berdasarkan is_correct dari Choice model
-
             total_correct_answers += correct_answers
 
-
         # Tentukan skor berdasarkan jumlah jawaban benar dan jumlah soal
-
         if total_questions > 0:
-
             score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
-
         else:
-
             score_value = Decimal(0)
 
-
         # Batasi skor agar tidak melebihi bobot maksimal
-
         score_value = min(score_value, Decimal(assessment.weight))
 
-
         # Tambahkan skor asesmen ke dalam list
-
         assessment_scores.append({
-
             'assessment': assessment,
-
             'score': score_value,
-
             'weight': assessment.weight
-
         })
-
 
         # Hitung total skor dan nilai maksimal
-
         total_max_score += assessment.weight
-
         total_score += score_value
 
-
         # Tentukan apakah asesmen ini memenuhi ambang batas kelulusan
-
         grade_range = GradeRange.objects.filter(course=course).first()
-
         passing_threshold = grade_range.min_grade if grade_range else 60  # Ambang batas kelulusan default 60
-
-
-        # Tambahkan logika untuk memastikan passing_threshold tidak 0
-
         if passing_threshold <= 0:
-
             passing_threshold = 60  # Set ambang batas minimum jika tidak ada yang ditentukan
-
-
-        # Periksa apakah nilai asesmen ini memenuhi kriteria kelulusan
-
         if total_questions > 0:
-
             if (score_value / assessment.weight) * 100 < passing_threshold:
-
                 passing_criteria_met = False  # Jika ada asesmen yang gagal, set passing_criteria_met ke False
 
-        else:
-
-            passing_criteria_met = False  # Jika tidak ada pertanyaan, set passing_criteria_met ke False
-
-
-        # Tambahkan log untuk debugging
-
-        print(f"Assessment: {assessment.name}, Score Value: {score_value}, Passing Threshold: {passing_threshold}, Passing Criteria Met: {passing_criteria_met}")
-
-
     # Pastikan nilai total yang diperoleh dihitung sesuai dengan bobot
-
     total_score = min(total_score, total_max_score)
 
-
     # Hitung persentase keseluruhan
-
     if total_max_score > 0:
-
         overall_percentage = (total_score / total_max_score) * 100
-
     else:
-
         overall_percentage = 0
 
-
     # Format hasil nilai per asesmen dan totalnya
-
     assessment_results = []
-
     for score in assessment_scores:
-
         assessment_results.append({
-
             'name': score['assessment'].name,  # Nama asesmen
-
             'max_score': score['weight'],  # Nilai maksimal (berdasarkan bobot)
-
             'score': score['score'],  # Nilai yang diperoleh
-
         })
 
-
     # Total nilai dan total skor
-
     assessment_results.append({
-
         'name': 'Total',
-
         'max_score': total_max_score,  # Nilai maksimal total
-
         'score': total_score  # Nilai total yang diperoleh
-
     })
 
-
-    # Tentukan status kelulusan berdasarkan apakah semua asesmen sudah disubmit dan apakah memenuhi kriteria kelulusan
-
+    # Tentukan status kelulusan
     if not all_assessments_submitted:
-
         status = "Fail"  # Jika ada asesmen yang belum disubmit, status "Fail"
-
     else:
-
         status = "Pass" if passing_criteria_met else "Fail"  # Cek apakah memenuhi kriteria kelulusan
 
-
     context = {
-
         'course': course,
-
         'course_name': course_name,
-
         'sections': sections,
-
         'current_content': current_content,
-
         'previous_url': previous_url,
-
         'next_url': next_url,
-
         'course_progress': user_progress.progress_percentage,
-
         'user_grade': user_grade,
-
         'assessment_results': assessment_results,  # Hasil asesmen
-
         'total_score': total_score,
-
         'overall_percentage': overall_percentage,
-
         'total_weight': total_max_score,  # Nilai maksimal total
-
         'status': status  # Status kelulusan
-
     }
 
-
     return render(request, 'learner/course_learn.html', context)
+
+
+
 
 def started_courses(request):
     if request.user.is_authenticated:
