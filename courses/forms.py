@@ -174,7 +174,7 @@ class GradeRangeForm(forms.ModelForm):
 class AssessmentForm(forms.ModelForm):
     class Meta:
         model = Assessment
-        fields = ['name', 'weight', 'flag']
+        fields = ['name', 'weight', 'flag', 'duration_in_minutes']  # Menambahkan durasi
         widgets = {
             'name': forms.TextInput(attrs={
                 'placeholder': 'Enter name of assessment here',
@@ -187,12 +187,19 @@ class AssessmentForm(forms.ModelForm):
                 'min': '0',  # Optional: Add minimum value
                 'max': '100',  # Optional: Add maximum value
             }),
+            'duration_in_minutes': forms.NumberInput(attrs={
+                'placeholder': 'Enter duration in minutes',
+                'class': 'form-control',
+                'type': 'number',
+                'min': '0',  # Durasi tidak boleh negatif
+            }),
         }
         labels = {
             'flag': 'Enable editor visual',  # Custom label for the flag field
         }
         help_texts = {
-            'weight': 'Enter the weight of the assessment (a percentage, 0-100).'
+            'weight': 'Enter the weight of the assessment (a percentage, 0-100).',
+            'duration_in_minutes': 'Enter the duration of the assessment in minutes. (e.g., 0, 5, 10, 30, 60, 120)'
         }
 
     def clean_weight(self):
@@ -201,16 +208,22 @@ class AssessmentForm(forms.ModelForm):
         if weight < 0 or weight > 100:
             raise forms.ValidationError("Weight must be between 0 and 100.")
         
-        # Additional validation logic can be added if needed (e.g., checking if total weight exceeds 100)
-        
         return weight
+
+    def clean_duration_in_minutes(self):
+        duration = self.cleaned_data.get('duration_in_minutes')
+        
+        if duration < 0:
+            raise forms.ValidationError("Duration must be a non-negative number.")
+        
+        return duration
 
     def clean(self):
         cleaned_data = super().clean()
         weight = cleaned_data.get('weight')
+        duration_in_minutes = cleaned_data.get('duration_in_minutes')
         
-        # You could also add custom validation across all assessments in the course
-        # For example, check if total weight exceeds 100%
+        # You could add additional cross-field validation here if needed
         
         return cleaned_data
 

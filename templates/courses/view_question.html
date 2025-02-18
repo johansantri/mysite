@@ -17,6 +17,7 @@
                   <tr>
                     <th scope="col">#</th>
                     <th scope="col">question</th>
+                    <th>x</th>
                     
                     
                   </tr>
@@ -28,8 +29,14 @@
                
                   <tr>
                     <th scope="row">{{ forloop.counter }}</th>
-                    <td><a href="{% url "courses:edit_question" course.id question.id section.id assessment.id %}">{{ question.text | safe}}</a></td>
-                   
+                    <td><a href="{% url "courses:edit_question" course.id question.id section.id assessment.id %}">{{ question.text | safe}}</a>   </td>
+                    <td><form method="POST" action="{% url 'courses:delete_question' course.id question.id section.id assessment.id %}" style="display:inline;">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger btn-sm" >
+        <i class="fa fa-remove"></i> 
+    </button>
+</form>
+</td>
                    
                   </tr>
                   {% empty %}

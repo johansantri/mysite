@@ -465,6 +465,7 @@ class Assessment(models.Model):
     weight = models.DecimalField(max_digits=5, decimal_places=2, default=0)  # Bobot untuk penilaian ini
     description = models.TextField(blank=True, null=True)
     flag = models.BooleanField(default=False)
+    duration_in_minutes = models.IntegerField(null=True, blank=True)
     grade_range = models.ForeignKey(GradeRange, related_name="assessments", on_delete=models.SET_NULL, null=True, blank=True)  # Menghubungkan dengan rentang nilai
     created_at = models.DateTimeField(auto_now_add=True)
 

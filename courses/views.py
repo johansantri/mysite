@@ -342,7 +342,7 @@ def course_learn(request, username, slug):
     grade_range = GradeRange.objects.filter(course=course, min_grade__gte=50).first()
 
     # Debug: Cek nilai grade_range dan passing_threshold
-    print("Grade Range:", grade_range)
+    
     if grade_range:
         passing_threshold = grade_range.min_grade
     else:
@@ -390,8 +390,7 @@ def course_learn(request, username, slug):
         'total_weight': total_max_score,  # Nilai maksimal total
         'status': status  # Status kelulusan
     }
-    print(f"Total Score: {total_score}, Total Max Score: {total_max_score}")
-    print(f"Overall Percentage: {overall_percentage}, Passing Threshold: {passing_threshold}")
+ 
 
     return render(request, 'learner/course_learn.html', context)
 
@@ -1140,6 +1139,53 @@ def edit_question(request, idcourse, idquestion, idsection, idassessment):
     return render(request, 'courses/edit_question.html', {
         'form': form,
         'choice_formset': choice_formset,
+        'course': course,
+        'section': section,
+        'assessment': assessment,
+    })
+
+#delete question
+@csrf_exempt
+def delete_question(request, idcourse, idquestion, idsection, idassessment):
+    # Check if the user is authenticated
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+
+    # Determine the course based on the user's role
+    if request.user.is_superuser:
+        course = get_object_or_404(Course, id=idcourse)
+    elif request.user.is_partner:
+        # Ensure the course is associated with the partner
+        course = get_object_or_404(Course, id=idcourse, org_partner__user_id=request.user.id)
+    elif request.user.is_instructor:
+        # Ensure the course is associated with the instructor
+        course = get_object_or_404(Course, id=idcourse, instructor__user_id=request.user.id)
+    else:
+        # Unauthorized access
+        messages.error(request, "You do not have permission to delete questions for this course.")
+        return redirect('courses:home')  # Redirect to a safe page
+
+    # Ensure the section belongs to the course
+    section = get_object_or_404(Section, id=idsection, courses=course)
+
+    # Ensure the assessment belongs to the section
+    assessment = get_object_or_404(Assessment, id=idassessment, section=section)
+
+    # Ensure the question belongs to the assessment
+    question = get_object_or_404(Question, id=idquestion, assessment=assessment)
+
+    if request.method == 'POST':
+        try:
+            # Deleting the question
+            question.delete()
+            messages.success(request, "Question deleted successfully.")
+        except Exception as e:
+            messages.error(request, f"Error deleting question: {e}")
+
+        # Redirecting back to the page with the list of questions
+        return redirect('courses:view-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
+
+    return render(request, 'courses/view_question.html', {
         'course': course,
         'section': section,
         'assessment': assessment,
