@@ -15,20 +15,19 @@
                         <ul>
                             {% for section in sections %}
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#" style="color: #ffffff;">
-                                        <i class="bx bxs-book"></i> {{ section.title }}
-                                    </a>
+                                    
+                                    <p>{{ section.title }}</p>
                                     <ul>
                                         {% for material in section.materials.all %}
                                             <li>
-                                                <a class="nav-link" href="?material_id={{ material.id }}" style="color: #ffffff;">
+                                                <a class="nav-link" href="?material_id={{ material.id }}" style="color:rgb(36, 117, 54);">
                                                     <i class="bx bx-file"></i> {{ material.title }}
                                                 </a>
                                             </li>
                                         {% endfor %}
                                         {% for assessment in section.assessments.all %}
                                             <li>
-                                                <a class="nav-link" href="?assessment_id={{ assessment.id }}" style="color: #ffffff;">
+                                                <a class="nav-link" href="?assessment_id={{ assessment.id }}" style="color:rgb(36, 117, 54);">
                                                     <i class="bx bx-pencil"></i> {{ assessment.name }}
                                                 </a>
                                             </li>
