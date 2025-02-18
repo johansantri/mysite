@@ -52,7 +52,7 @@
                            <div class="js-container container" style="position: relative; top: 0px !important;">
                                 <p>status : 
                                     {% if status == 'Pass' %}
-                                        <span class="text-success fw-bold">Congratulations 🎈</span>
+                                        <span class="text-success fw-bold">Congratulations 🎈 {{ request.user.username }}</span>
                                     {% else %}
                                         <span class="text-danger fw-bold">🥺</span>
                                     {% endif %}
@@ -162,13 +162,13 @@
                                
                            
                                
-                                <h3 class="h6">detail assement</h3>
+                                
                                 <table class="table table-dark table-striped">
                                     <thead>
                                         <tr>
                                             <th>assement</th>
-                                            <th>max</th>
-                                            <th>{{ request.user.username }}</th>
+                                            <th>grade</th>
+                                            <th>score</th>
                                             
                                         </tr>
                                     </thead>
