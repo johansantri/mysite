@@ -338,6 +338,20 @@ def course_learn(request, username, slug):
     else:
         overall_percentage = 0
 
+    # Ambil GradeRange yang memiliki min_grade >= 50 untuk Pass
+    grade_range = GradeRange.objects.filter(course=course, min_grade__gte=50).first()
+
+    # Debug: Cek nilai grade_range dan passing_threshold
+    print("Grade Range:", grade_range)
+    if grade_range:
+        passing_threshold = grade_range.min_grade
+    else:
+        passing_threshold = 60  # Default passing grade jika tidak ditemukan
+
+    # Tentukan apakah passing threshold tercapai
+    passing_criteria_met = overall_percentage >= passing_threshold  # Status kelulusan berdasarkan ambang batas
+
+
     # Format hasil nilai per asesmen dan totalnya
     assessment_results = []
     for score in assessment_scores:
@@ -358,7 +372,8 @@ def course_learn(request, username, slug):
     if not all_assessments_submitted:
         status = "Fail"  # Jika ada asesmen yang belum disubmit, status "Fail"
     else:
-        status = "Pass" if passing_criteria_met else "Fail"  # Cek apakah memenuhi kriteria kelulusan
+        status = "Pass" if passing_criteria_met else "Fail"  # Cek apakah nilai keseluruhan memenuhi kriteria kelulusan
+
 
     context = {
         'course': course,
@@ -375,6 +390,8 @@ def course_learn(request, username, slug):
         'total_weight': total_max_score,  # Nilai maksimal total
         'status': status  # Status kelulusan
     }
+    print(f"Total Score: {total_score}, Total Max Score: {total_max_score}")
+    print(f"Overall Percentage: {overall_percentage}, Passing Threshold: {passing_threshold}")
 
     return render(request, 'learner/course_learn.html', context)
 
