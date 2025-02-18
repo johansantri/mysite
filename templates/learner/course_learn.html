@@ -49,11 +49,10 @@
                             </div>
                             <hr>
                            <div class="js-container container" style="position: relative; top: 0px !important;">
-                                <p>status : 
+                                <p>
                                     {% if status == 'Pass' %}
-                                        <span class="text-success fw-bold">Congratulations 🎈 {{ request.user.username }}</span>
-                                    {% else %}
-                                        <span class="text-danger fw-bold">🥺</span>
+                                        <span class="text-success fw-bold">Congratulations 🎈 {{ request.user.username }} !🎉</span>
+                                    
                                     {% endif %}
                                 </p>
                             </div>
