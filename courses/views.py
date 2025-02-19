@@ -32,7 +32,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Prefetch
 import time
 from datetime import timedelta
-
+from django.db.models import Prefetch
 # views.py
 
 
@@ -195,10 +195,26 @@ def calculate_grade(overall_percentage, course):
     # Jika tidak ada grade range yang sesuai, default ke "Fail"
     return 'Fail'  # Default ke Fail jika tidak ada grade range yang sesuai
 
+def start_assessment(request, assessment_id):
+    # Get the assessment using the provided ID
+    assessment = get_object_or_404(Assessment, id=assessment_id)
+
+    # Set the start_time if it hasn't been set yet
+    if not assessment.start_time:
+        assessment.start_time = timezone.now()
+        assessment.save()
+
+    # Get the associated course slug and username
+    username = request.user.username
+    slug = assessment.section.courses.slug
+
+    # Redirect back to the course or assessment page after starting
+    return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
+
+
 
 
 def course_learn(request, username, slug):
-
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
 
@@ -242,6 +258,24 @@ def course_learn(request, username, slug):
     elif assessment_id:
         assessment = get_object_or_404(Assessment, id=assessment_id)
         current_content = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
+
+    # Tentukan apakah asesmen sudah dimulai dan apakah sudah habis
+    # Default values for is_started and is_expired
+    is_started = False
+    is_expired = False
+    remaining_time = assessment.duration_in_minutes * 60  # Start with the full duration in seconds
+
+    # Check if the assessment has started
+    if assessment.start_time:
+        is_started = True
+        end_time = assessment.start_time + timedelta(minutes=assessment.duration_in_minutes)
+        remaining_time = max(int((end_time - timezone.now()).total_seconds()), 0)  # Ensure non-negative time
+
+        # Check if the assessment has expired
+        if remaining_time <= 0:
+            is_expired = True
+            remaining_time = 0  # Set to zero if expired
+
 
     # Tentukan indeks konten saat ini
     if current_content and current_content[0] in ['material', 'assessment']:
@@ -389,11 +423,14 @@ def course_learn(request, username, slug):
         'total_score': total_score,
         'overall_percentage': overall_percentage,
         'total_weight': total_max_score,  # Nilai maksimal total
-        'status': status  # Status kelulusan
+        'status': status,  # Status kelulusan
+        'is_started': is_started,  # Status apakah soal sudah dimulai
+        'is_expired': is_expired,  # Status apakah waktu sudah habis
+        'remaining_time': remaining_time  # Waktu yang tersisa
     }
- 
 
     return render(request, 'learner/course_learn.html', context)
+
 
 
 

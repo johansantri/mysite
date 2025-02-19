@@ -195,51 +195,125 @@
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sidebarModal">Show Sidebar</button>
             </div>
 
-            <!-- Main Content Area -->
-            <div class="col-md-9 offset-md-3 col-12" style="padding-top: 20px;">
-                <div class="material-content">
-                    {% if current_content %}
-                        {% if current_content.0 == 'material' %}
-                            <div class="material-item" style="border-bottom: 2px solid rgb(134, 134, 134); padding: 20px; background-color: #f9f9f9;">
-                                <h2 class="material-title h4" style="color: rgb(0, 0, 0);">{{ current_content.1.title }}</h2>
-                                <p class="material-description" style="font-size: 14px; color: #555;">{{ current_content.1.description |safe}}</p>
-                            </div>
-                        {% elif current_content.0 == 'assessment' %}
-                            <form method="POST" action="{% url 'courses:submit_assessment' assessment_id=current_content.1.id %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="current_content_id" value="{{ current_material.id }}">
-                                <div class="assessment-item" style="border-bottom: 2px solid rgb(134, 134, 134); padding: 20px; background-color: #f9f9f9;">
-                                    <h3 class="h5" style="color: #007bff; font-size: 24px;">Assessment: {{ current_content.1.name }}</h3>
-                                    <ul style="list-style: none; padding-left: 0;">
-                                        {% for question in current_content.1.questions.all %}
-                                            <li class="question" style="margin-bottom: 30px;">
-                                                <div style="display: inline-block; margin-left: 10px; padding: 10px; background-color: #e9ecef; border-radius: 8px; font-size: 18px; color: #555;">
-                                                    {{ question.text }}
+                       <div class="col-md-9 offset-md-3 col-12" style="padding-top: 20px;">
+                            <div class="material-content">
+                                {% if current_content %}
+                                    {% if current_content.0 == 'material' %}
+                                        <div class="material-item" style="border-bottom: 2px solid rgb(134, 134, 134); padding: 20px; background-color: #f9f9f9;">
+                                            <h2 class="material-title h4" style="color: rgb(0, 0, 0);">{{ current_content.1.title }}</h2>
+                                            <p class="material-description" style="font-size: 14px; color: #555;">{{ current_content.1.description |safe}}</p>
+                                        </div>
+                                    {% elif current_content.0 == 'assessment' %}
+                                        <!-- Show "Setuju" button if assessment has not started yet -->
+                                        
+                                        {% if not is_started %}
+                                            <form method="post" action="{% url 'courses:start_assessment' assessment_id=current_content.1.id %}">
+                                                {% csrf_token %}
+                                                <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+                                                    <div class="alert alert-warning text-center" role="alert">
+                                                        <h4 class="alert-heading">Attention!</h4>
+                                                        <p> Before starting the exam, we would like to inform you that you will have <b>" {{ current_content.1.duration_in_minutes }} "</b> minutes to complete the exam. Please make the most of this time and answer the questions to the best of your ability.</p>
+                                                        
+                                                        <p class="mb-0">Once the time is up, you will not be able to submit your answers. Do you <b>agree</b> to proceed?</p>
+                                                        <hr>
+                                                        <button type="submit" class="btn btn-success">Agree</button>
+                                                    </div>
                                                 </div>
-                                                <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
-                                                    {% for choice in question.choices.all %}
-                                                        <li style="margin-bottom: 15px; display: flex; align-items: center;">
-                                                            <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}" id="choice_{{ choice.id }}" style="transform: scale(1.5); margin-right: 10px;">
-                                                            <label for="choice_{{ choice.id }}" style="cursor: pointer; margin: 0; font-size: 16px; color: #555;">{{ choice.text }}</label>
-                                                        </li>
-                                                    {% endfor %}
-                                                </ul>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                    <button type="submit" class="btn btn-success" style="font-size: 16px; padding: 10px 20px;">Submit</button>
-                                </div>
-                            </form>
-                        {% endif %}
-                    {% endif %}
+                                            </form>
+                                        {% elif is_started %}
+                                            <form method="POST" action="{% url 'courses:submit_assessment' assessment_id=current_content.1.id %}">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="current_content_id" value="{{ current_material.id }}">
+                                                <div class="assessment-item" style="border-bottom: 2px solid rgb(134, 134, 134); padding: 20px; background-color: #f9f9f9;">
+                                                    <h3 class="h5" style="color:rgb(2, 2, 2); font-size: 24px;">Assessment: {{ current_content.1.name }}</h3>
+                                                    <p>Time remaining: <span id="timer"></span></p>
+                                                    <ul style="list-style: none; padding-left: 0;">
+                                                        {% for question in current_content.1.questions.all %}
+                                                            <li class="question" style="margin-bottom: 30px;">
+                                                                <div style="display: inline-block; margin-left: 10px; padding: 10px; background-color: #e9ecef; border-radius: 8px; font-size: 18px; color: #555;">
+                                                                    {{ question.text }}
+                                                                </div>
+                                                                <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
+                                                                    {% for choice in question.choices.all %}
+                                                                        <li style="margin-bottom: 15px; display: flex; align-items: center;">
+                                                                            <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}" id="choice_{{ choice.id }}" style="transform: scale(1.5); margin-right: 10px;">
+                                                                            <label for="choice_{{ choice.id }}" style="cursor: pointer; margin: 0; font-size: 16px; color: #555;">{{ choice.text }}</label>
+                                                                        </li>
+                                                                    {% endfor %}
+                                                                </ul>
+                                                            </li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                    <button type="submit" class="btn btn-success" style="font-size: 16px; padding: 10px 20px;" id="submit-button" {% if is_expired %} disabled {% endif %}>Submit</button>
+                                                </div>
+                                            </form>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
 
-                    <!-- Navigation buttons for content -->
-                    <div class="d-flex justify-content-between" style="margin-top: 30px;">
-                        <a href="{{ previous_url }}" class="btn btn-secondary">Previous</a>
-                        <a href="{{ next_url }}" class="btn btn-primary">Next</a>
-                    </div>
-                </div>
-            </div>
+                                <!-- Navigation buttons for content -->
+                                <div class="d-flex justify-content-between" style="margin-top: 30px;">
+                                    <a href="{{ previous_url }}" class="btn btn-secondary">Previous</a>
+                                    <a href="{{ next_url }}" class="btn btn-primary">Next</a>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+        <script>
+    let remainingTime = {{ remaining_time }};  // Remaining time in seconds passed from Django
+    let timerElement = document.getElementById('timer');
+    let submitButton = document.getElementById('submit-button');
+    let timerInterval;
+    let formSubmitted = false; // Flag to track form submission
+
+    function updateTimer() {
+        if (formSubmitted) {
+            return;  // Exit if form has already been submitted
+        }
+
+        let minutes = Math.floor(remainingTime / 60);
+        let seconds = remainingTime % 60;
+
+        // Format the time to always show two digits for minutes and seconds
+        timerElement.textContent = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+        remainingTime--;  // Decrease remaining time by 1 second
+
+        
+
+        // If time is up (remainingTime < 0), stop the timer and submit the form
+        if (remainingTime < 0) {
+            formSubmitted = true;  // Prevent further submissions
+            submitButton.disabled = true;  // Disable submit button
+            
+            // Submit the form
+           // document.querySelector("form").submit();  // Automatically submit the form
+            
+            // Stop the timer
+            clearInterval(timerInterval);  
+        }
+    }
+
+    // Start the timer and update every second
+    timerInterval = setInterval(updateTimer, 1000);  // Start the timer
+
+    // Listen for form submission to prevent multiple submissions
+    document.querySelector("form").addEventListener("submit", function(event) {
+        if (formSubmitted) {
+            event.preventDefault();  // Prevent default action if already submitted
+        } else {
+            formSubmitted = true;  // Set the flag to true when form is submitted
+            clearInterval(timerInterval);  // Stop the timer
+        }
+    });
+</script>
+
+
+
+
         </div>
     </div>
   </div>

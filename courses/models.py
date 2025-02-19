@@ -466,6 +466,7 @@ class Assessment(models.Model):
     description = models.TextField(blank=True, null=True)
     flag = models.BooleanField(default=False)
     duration_in_minutes = models.IntegerField(null=True, blank=True)
+    start_time = models.DateTimeField(null=True, blank=True)
     grade_range = models.ForeignKey(GradeRange, related_name="assessments", on_delete=models.SET_NULL, null=True, blank=True)  # Menghubungkan dengan rentang nilai
     created_at = models.DateTimeField(auto_now_add=True)
 
