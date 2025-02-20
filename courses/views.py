@@ -287,6 +287,20 @@ def course_learn(request, username, slug):
     previous_content = combined_content[current_index - 1] if current_index > 0 else None
     next_content = combined_content[current_index + 1] if current_index < len(combined_content) - 1 else None
 
+     # Save track records for material and assessment
+    if current_content:
+        if current_content[0] == 'material':
+            material = current_content[1]
+            # Check if the user has already read the material
+            if not MaterialRead.objects.filter(user=request.user, material=material).exists():
+                MaterialRead.objects.create(user=request.user, material=material)
+                #print(f"User {request.user.username} read material: {material.title}")
+        elif current_content[0] == 'assessment':
+            assessment = current_content[1]
+            # Check if the user has already completed the assessment
+            if not AssessmentRead.objects.filter(user=request.user, assessment=assessment).exists():
+                AssessmentRead.objects.create(user=request.user, assessment=assessment)
+                #print(f"User {request.user.username} completed assessment: {assessment.name}")
     # Buat URL untuk navigasi
     previous_url = f"?{previous_content[0]}_id={previous_content[1].id}" if previous_content else "#"
     next_url = f"?{next_content[0]}_id={next_content[1].id}" if next_content else "#"
