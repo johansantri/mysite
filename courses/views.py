@@ -233,7 +233,6 @@ def start_assessment(request, assessment_id):
 
 
 def course_learn(request, username, slug):
-    # Pastikan user sudah login
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
 
@@ -244,11 +243,11 @@ def course_learn(request, username, slug):
     if request.user.username != username:
         return redirect('authentication:course_list')
 
-    # Cek apakah user sudah terdaftar di kursus ini
+     # Cek apakah user sudah terdaftar di kursus ini
     if not Enrollment.objects.filter(user=request.user, course=course).exists():
         # Jika user belum terdaftar, arahkan ke halaman course detail
         return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
-
+    
     course_name = course.course_name
 
     # Ambil section, material, dan assessment
