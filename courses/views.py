@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from .forms import CoursePriceForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from django.http import JsonResponse
-from .models import Course,CourseStatus,Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
+from .models import Course,CourseStatus,AssessmentSession,Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
 from django.contrib.auth.models import User, Universiti
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
@@ -43,6 +43,17 @@ def submit_assessment(request, assessment_id):
     # Cek apakah user sudah pernah submit untuk assessment ini
     if Score.objects.filter(user=request.user.username, course=assessment.section.courses, section=assessment.section, submitted=True).exists():
         # Redirect dengan membawa assessment_id agar tetap pada posisi yang sama
+        return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
+
+    # Cek apakah waktu ujian masih berlaku
+    session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
+    if not session:
+        messages.error(request, "Sesi ujian tidak ditemukan.")
+        return redirect('courses:course_list')
+
+    # Cek apakah waktu ujian sudah habis
+    if timezone.now() > session.end_time:
+        messages.error(request, "Waktu ujian telah habis, Anda tidak dapat mengirimkan jawaban.")
         return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
 
     if request.method == 'POST':
@@ -199,12 +210,21 @@ def start_assessment(request, assessment_id):
     # Get the assessment using the provided ID
     assessment = get_object_or_404(Assessment, id=assessment_id)
 
-    # Set the start_time if it hasn't been set yet
-    if not assessment.start_time:
-        assessment.start_time = timezone.now()
-        assessment.save()
+    # Check if the user already has a session for this assessment
+    existing_session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
 
-    # Get the associated course slug and username
+    if not existing_session:
+        # If the session doesn't exist, create a new one with start_time set to now
+        session = AssessmentSession(
+            user=request.user,
+            assessment=assessment,
+            start_time=timezone.now()  # Set the start time to now
+        )
+        # Calculate the end time by adding the duration of the assessment to the start time
+        session.end_time = session.start_time + timedelta(minutes=assessment.duration_in_minutes)
+        session.save()  # Save the session
+
+    # Get the associated course slug and username for redirecting
     username = request.user.username
     slug = assessment.section.courses.slug
 
@@ -212,14 +232,14 @@ def start_assessment(request, assessment_id):
     return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
 
 
-
-
 def course_learn(request, username, slug):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
 
+    # Ambil course berdasarkan slug
     course = get_object_or_404(Course, slug=slug)
 
+    # Pastikan user yang mengakses adalah user yang benar
     if request.user.username != username:
         return redirect('authentication:course_list')
 
@@ -256,26 +276,29 @@ def course_learn(request, username, slug):
         material = get_object_or_404(Material, id=material_id)
         current_content = ('material', material, next((s for s in sections if material in s.materials.all()), None))
     elif assessment_id:
+        # Ambil objek assessment berdasarkan ID
         assessment = get_object_or_404(Assessment, id=assessment_id)
         current_content = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
 
-    # Tentukan apakah asesmen sudah dimulai dan apakah sudah habis
-    # Default values for is_started and is_expired
+    # Cek apakah current_content[1] adalah objek assessment yang valid
     is_started = False
     is_expired = False
-    remaining_time = assessment.duration_in_minutes * 60  # Start with the full duration in seconds
+    remaining_time = 0
 
-    # Check if the assessment has started
-    if assessment.start_time:
-        is_started = True
-        end_time = assessment.start_time + timedelta(minutes=assessment.duration_in_minutes)
-        remaining_time = max(int((end_time - timezone.now()).total_seconds()), 0)  # Ensure non-negative time
+    if current_content and current_content[0] == 'assessment':
+        assessment = current_content[1]  # Pastikan ini adalah instance dari Assessment
+        session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
 
-        # Check if the assessment has expired
-        if remaining_time <= 0:
-            is_expired = True
-            remaining_time = 0  # Set to zero if expired
+        if session:
+            is_started = True
+            # Hitung waktu sisa berdasarkan waktu mulai dan waktu selesai
+            remaining_time = int((session.end_time - timezone.now()).total_seconds())
 
+            if remaining_time <= 0:
+                is_expired = True
+                remaining_time = 0
+        else:
+            is_started = False
 
     # Tentukan indeks konten saat ini
     if current_content and current_content[0] in ['material', 'assessment']:
@@ -287,20 +310,19 @@ def course_learn(request, username, slug):
     previous_content = combined_content[current_index - 1] if current_index > 0 else None
     next_content = combined_content[current_index + 1] if current_index < len(combined_content) - 1 else None
 
-     # Save track records for material and assessment
+    # Save track records for material and assessment
     if current_content:
         if current_content[0] == 'material':
             material = current_content[1]
             # Check if the user has already read the material
             if not MaterialRead.objects.filter(user=request.user, material=material).exists():
                 MaterialRead.objects.create(user=request.user, material=material)
-                #print(f"User {request.user.username} read material: {material.title}")
         elif current_content[0] == 'assessment':
             assessment = current_content[1]
             # Check if the user has already completed the assessment
             if not AssessmentRead.objects.filter(user=request.user, assessment=assessment).exists():
                 AssessmentRead.objects.create(user=request.user, assessment=assessment)
-                #print(f"User {request.user.username} completed assessment: {assessment.name}")
+
     # Buat URL untuk navigasi
     previous_url = f"?{previous_content[0]}_id={previous_content[1].id}" if previous_content else "#"
     next_url = f"?{next_content[0]}_id={next_content[1].id}" if next_content else "#"
@@ -329,6 +351,27 @@ def course_learn(request, username, slug):
     total_score = 0
     passing_criteria_met = True  # Flag untuk menentukan apakah lulus secara keseluruhan
     all_assessments_submitted = True  # Flag untuk mengecek apakah semua asesmen sudah disubmit
+
+  
+    # Ambil GradeRange yang terkait dengan kursus
+    grade_range = GradeRange.objects.filter(course=course).all()
+     # Pastikan grade_range ditemukan, lalu ambil min_grade
+
+   
+
+
+    # Jika grade_range ditemukan, ambil min_grade dan max_grade
+    if grade_range:
+        # Ambil ambang batas kelulusan dari GradeRange
+        passing_threshold = grade_range.filter(name='Pass').first().min_grade  # Ambang batas kelulusan
+        max_grade = grade_range.filter(name='Pass').first().max_grade  # Nilai maksimal
+    else:
+        # Jika tidak ada data di GradeRange, kita bisa mengembalikan error atau mengatur nilai default
+        return render(request, 'error_template.html', {'message': 'Grade range not found for this course.'})
+
+    # Hitung total skor dan nilai maksimal
+    total_max_score = 0
+    total_score = 0
 
     for assessment in assessments:
         section = assessment.section
@@ -369,15 +412,6 @@ def course_learn(request, username, slug):
         total_max_score += assessment.weight
         total_score += score_value
 
-        # Tentukan apakah asesmen ini memenuhi ambang batas kelulusan
-        grade_range = GradeRange.objects.filter(course=course).first()
-        passing_threshold = grade_range.min_grade if grade_range else 60  # Ambang batas kelulusan default 60
-        if passing_threshold <= 0:
-            passing_threshold = 60  # Set ambang batas minimum jika tidak ada yang ditentukan
-        if total_questions > 0:
-            if (score_value / assessment.weight) * 100 < passing_threshold:
-                passing_criteria_met = False  # Jika ada asesmen yang gagal, set passing_criteria_met ke False
-
     # Pastikan nilai total yang diperoleh dihitung sesuai dengan bobot
     total_score = min(total_score, total_max_score)
 
@@ -387,19 +421,19 @@ def course_learn(request, username, slug):
     else:
         overall_percentage = 0
 
-    # Ambil GradeRange yang memiliki min_grade >= 50 untuk Pass
-    grade_range = GradeRange.objects.filter(course=course, min_grade__gte=50).first()
-
-    # Debug: Cek nilai grade_range dan passing_threshold
-    
-    if grade_range:
-        passing_threshold = grade_range.min_grade
-    else:
-        passing_threshold = 60  # Default passing grade jika tidak ditemukan
-
     # Tentukan apakah passing threshold tercapai
     passing_criteria_met = overall_percentage >= passing_threshold  # Status kelulusan berdasarkan ambang batas
 
+    # Tentukan status kelulusan
+    if not all_assessments_submitted:
+        status = "Fail"  # Jika ada asesmen yang belum disubmit, status "Fail"
+    else:
+        status = "Pass" if passing_criteria_met else "Fail"  # Cek apakah nilai keseluruhan memenuhi kriteria kelulusan
+
+    # Debugging - Cek apakah nilai memenuhi passing threshold
+    print(f"Total Score: {total_score}, Total Max Score: {total_max_score}, Overall Percentage: {overall_percentage}")
+    print(f"Passing Criteria Met: {passing_criteria_met}")
+    print(f"Passing Criteria Met: {passing_threshold}")
 
     # Format hasil nilai per asesmen dan totalnya
     assessment_results = []
@@ -423,7 +457,6 @@ def course_learn(request, username, slug):
     else:
         status = "Pass" if passing_criteria_met else "Fail"  # Cek apakah nilai keseluruhan memenuhi kriteria kelulusan
 
-
     context = {
         'course': course,
         'course_name': course_name,
@@ -440,14 +473,12 @@ def course_learn(request, username, slug):
         'status': status,  # Status kelulusan
         'is_started': is_started,  # Status apakah soal sudah dimulai
         'is_expired': is_expired,  # Status apakah waktu sudah habis
-        'remaining_time': remaining_time  # Waktu yang tersisa
+        'remaining_time': remaining_time,  # Waktu yang tersisa
+        'max_grade': max_grade, #Tambahkan max_grade ke context
+        'passing_threshold':passing_threshold  # minimal ambang batas
     }
 
     return render(request, 'learner/course_learn.html', context)
-
-
-
-
 
 def started_courses(request):
     if request.user.is_authenticated:

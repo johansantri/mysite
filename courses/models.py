@@ -466,7 +466,7 @@ class Assessment(models.Model):
     description = models.TextField(blank=True, null=True)
     flag = models.BooleanField(default=False)
     duration_in_minutes = models.IntegerField(null=True, blank=True)
-    start_time = models.DateTimeField(null=True, blank=True)
+   
     grade_range = models.ForeignKey(GradeRange, related_name="assessments", on_delete=models.SET_NULL, null=True, blank=True)  # Menghubungkan dengan rentang nilai
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -479,6 +479,19 @@ class Assessment(models.Model):
         
         super().save(*args, **kwargs)
 
+class AssessmentSession(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    assessment = models.ForeignKey(Assessment, on_delete=models.CASCADE)
+    start_time = models.DateTimeField()  # Waktu mulai ujian
+    end_time = models.DateTimeField()  # Waktu selesai ujian, dihitung berdasarkan durasi
+
+    def save(self, *args, **kwargs):
+        # Menghitung waktu berakhir berdasarkan waktu mulai dan durasi
+        self.end_time = self.start_time + timedelta(minutes=self.assessment.duration_in_minutes)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Sesi ujian {self.assessment.name} untuk {self.user.username}"
 
 class Question(models.Model):
     assessment = models.ForeignKey(Assessment, related_name="questions", on_delete=models.CASCADE)

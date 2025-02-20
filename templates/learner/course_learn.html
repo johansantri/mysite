@@ -11,7 +11,7 @@
                 style="position: fixed; top: 0; left: 0; height: 100vh; z-index: 1000; overflow-y: auto;">
                 <div class="settings-widget">
                     <div class="settings-menu">
-                        <h3 class="h5">Course Content</h3>
+                        <h3 class="h5"> <a href="{% url 'authentication:dashbord'%}">Course Content</a> </h3> 
                         <ul>
                             {% for section in sections %}
                                 <li class="nav-item">
@@ -51,8 +51,27 @@
                            <div class="js-container container" style="position: relative; top: 0px !important;">
                                 <p>
                                     {% if status == 'Pass' %}
-                                        <span class="text-success fw-bold">Congratulations 🎈 {{ request.user.username }} !🎉</span>
-                                    
+                                        
+                                         <div class="result-info text-center mb-4">
+                                         <h5 class="text-center">Assessment Results</h5>
+                                         <span class="text-success fw-bold">Congratulations 🎈 {{ request.user.username }} !🎉</span>
+                                            <p class="mb-1">Passing Threshold: <span class="fw-bold">{{ passing_threshold }}</span></p>
+                                            <p class="mb-1">Your Score: <span class="fw-bold">{{ total_score | floatformat:2 }}</span></p>
+                                        </div>
+                                    {% else %}
+                                     <div class="container mt-4">
+                                        <h5 class="text-center">Assessment Results</h5>
+                                        
+                                        <div class="result-info text-center mb-4">
+                                        <span class="text-danger fw-bold">Unfortunately, you did not pass the course {{ request.user.username }} !</span>
+                                            <p class="mb-1">Passing Threshold: <span class="fw-bold">{{ passing_threshold }}</span></p>
+                                            <p class="mb-1">Your Score: <span class="fw-bold">{{ total_score | floatformat:2 }}</span></p>
+                                        </div>
+
+                                       
+                                           
+                                        
+                                    </div>
                                     {% endif %}
                                 </p>
                             </div>
