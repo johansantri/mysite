@@ -766,8 +766,15 @@ def instructor_profile(request, username):
 #ernroll
 def enroll_course(request, course_id):
     course = get_object_or_404(Course, id=course_id)
-    result = course.enroll_user(request.user)
-    return JsonResponse(result)
+    response = course.enroll_user(request.user)
+     # Check the response and use Django's messages framework to display the message
+    if response["status"] == "success":
+        messages.success(request, response["message"])  # Display success message
+    elif response["status"] == "error":
+        messages.error(request, response["message"])  # Display error message
+    else:
+        messages.info(request, response["message"])  # Display info message
+    return redirect('courses:course_lms_detail',id=course.id, slug=course.slug)
 
 def draft_lms(request, id):
     if not request.user.is_authenticated:
