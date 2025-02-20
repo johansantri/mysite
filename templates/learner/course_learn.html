@@ -50,28 +50,19 @@
                             <hr>
                            <div class="js-container container" style="position: relative; top: 0px !important;">
                                 <p>
-                                    {% if status == 'Pass' %}
-                                        
-                                         <div class="result-info text-center mb-4">
-                                         <h5 class="text-center">Assessment Results</h5>
-                                         <span class="text-success fw-bold">Congratulations 🎈 {{ request.user.username }} !🎉</span>
-                                            <p class="mb-1">Passing Threshold: <span class="fw-bold">{{ passing_threshold }}</span></p>
-                                            <p class="mb-1">Your Score: <span class="fw-bold">{{ total_score | floatformat:2 }}</span></p>
-                                        </div>
-                                    {% else %}
-                                     <div class="container mt-4">
-                                        <h5 class="text-center">Assessment Results</h5>
-                                        
+                                     {% if course_progress == 100 and status == 'Fail' %}
                                         <div class="result-info text-center mb-4">
-                                        <span class="text-danger fw-bold">Unfortunately, you did not pass the course {{ request.user.username }} !</span>
+                                            <span class="text-danger fw-bold">Unfortunately, you did not pass the course, {{ request.user.username }}!</span>
                                             <p class="mb-1">Passing Threshold: <span class="fw-bold">{{ passing_threshold }}</span></p>
                                             <p class="mb-1">Your Score: <span class="fw-bold">{{ total_score | floatformat:2 }}</span></p>
                                         </div>
-
-                                       
-                                           
-                                        
-                                    </div>
+                                    {% elif status == 'Pass' %}
+                                        <div class="result-info text-center mb-4">
+                                            <span class="text-success fw-bold">Congratulations 🎈 {{ request.user.username }}! 🎉</span>
+                                            <p class="mb-1">Passing Threshold: <span class="fw-bold">{{ passing_threshold }}</span></p>
+                                            <p class="mb-1">Your Score: <span class="fw-bold">{{ total_score | floatformat:2 }}</span></p>
+                                        </div>
+                                   
                                     {% endif %}
                                 </p>
                             </div>
@@ -211,7 +202,7 @@
 
             <!-- Button to toggle sidebar on mobile -->
             <div class="d-md-none d-flex justify-content-center mb-3">
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sidebarModal">Show Sidebar</button>
+                <button class="btn btn-primary" data-bs-toggle="modal" id="toggleSidebar" data-bs-target="#sidebarModal">Show Sidebar</button>
             </div>
 
                        <div class="col-md-9 offset-md-3 col-12" style="padding-top: 20px;">
@@ -281,7 +272,7 @@
 
 
 
-        <script>
+       <script>
     let remainingTime = {{ remaining_time }};  // Remaining time in seconds passed from Django
     let timerElement = document.getElementById('timer');
     let submitButton = document.getElementById('submit-button');
@@ -289,6 +280,13 @@
     let formSubmitted = false; // Flag to track form submission
 
     function updateTimer() {
+        // Cek apakah timerElement ada
+        if (!timerElement) {
+            clearInterval(timerInterval); // Hentikan timer jika elemen tidak ada
+            console.log("Timer element tidak ada, menghentikan timer.");
+            return; // Keluar dari fungsi
+        }
+
         if (formSubmitted) {
             return;  // Exit if form has already been submitted
         }
@@ -301,15 +299,13 @@
 
         remainingTime--;  // Decrease remaining time by 1 second
 
-        
-
         // If time is up (remainingTime < 0), stop the timer and submit the form
         if (remainingTime < 0) {
             formSubmitted = true;  // Prevent further submissions
             submitButton.disabled = true;  // Disable submit button
             
-            // Submit the form
-           // document.querySelector("form").submit();  // Automatically submit the form
+            // Optionally submit the form
+            // document.querySelector("form").submit();  // Automatically submit the form
             
             // Stop the timer
             clearInterval(timerInterval);  

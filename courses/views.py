@@ -435,10 +435,7 @@ def course_learn(request, username, slug):
     else:
         status = "Pass" if passing_criteria_met else "Fail"  # Cek apakah nilai keseluruhan memenuhi kriteria kelulusan
 
-    # Debugging - Cek apakah nilai memenuhi passing threshold
-    print(f"Total Score: {total_score}, Total Max Score: {total_max_score}, Overall Percentage: {overall_percentage}")
-    print(f"Passing Criteria Met: {passing_criteria_met}")
-    print(f"Passing Criteria Met: {passing_threshold}")
+   
 
     # Format hasil nilai per asesmen dan totalnya
     assessment_results = []
@@ -482,7 +479,7 @@ def course_learn(request, username, slug):
         'max_grade': max_grade, #Tambahkan max_grade ke context
         'passing_threshold':passing_threshold  # minimal ambang batas
     }
-
+    
     return render(request, 'learner/course_learn.html', context)
 
 
