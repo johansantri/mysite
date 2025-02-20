@@ -315,15 +315,7 @@
     // Start the timer and update every second
     timerInterval = setInterval(updateTimer, 1000);  // Start the timer
 
-    // Listen for form submission to prevent multiple submissions
-    document.querySelector("form").addEventListener("submit", function(event) {
-        if (formSubmitted) {
-            event.preventDefault();  // Prevent default action if already submitted
-        } else {
-            formSubmitted = true;  // Set the flag to true when form is submitted
-            clearInterval(timerInterval);  // Stop the timer
-        }
-    });
+   
 </script>
 
 
