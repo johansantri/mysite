@@ -54,7 +54,10 @@
                                         <div class="result-info text-center mb-4">
                                             <span class="text-danger fw-bold">Unfortunately, you did not pass the course, {{ request.user.username }}!</span>
                                             <p class="mb-1">Passing Threshold: <span class="fw-bold">{{ passing_threshold }}</span></p>
-                                            <p class="mb-1">Your Score: <span class="fw-bold">{{ total_score | floatformat:2 }}</span></p>
+                                            <p class="mb-1">Your Score: <span class="fw-bold">{{ total_score | floatformat:2 }}  </span>
+                                            <br>
+                                            Maybe your final score is greater than the threshold, but you must pass all assessments
+                                            </p>
                                         </div>
                                     {% elif status == 'Pass' %}
                                         <div class="result-info text-center mb-4">
