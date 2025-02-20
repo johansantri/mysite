@@ -469,7 +469,8 @@
                                                 {% if request.user.is_authenticated %}
 													{% if is_enrolled %}
 														<!-- If the user is enrolled, show "Started Courses" -->
-														<a href="{% url 'courses:started_courses' %}" class="btn btn-enroll w-100">Started Courses</a>
+														<a href="{% url 'courses:course_learn' request.user.username course.slug %}" class="btn btn-enroll w-100">Started Courses </a>
+														
 													{% else %}
 
 														{% if messages %}

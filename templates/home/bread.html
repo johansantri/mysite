@@ -8,7 +8,14 @@
                     <nav aria-label="breadcrumb" class="page-breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{% url "authentication:home"%}">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page"> <a href="{% url "authentication:dasbord"%}">Dashboard</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                            
+                             {% if request.user.is_superuser or request.user.is_partner or request.user.is_instructor %}
+                                <a href="{% url 'authentication:dasbord' %}">Dashboard</a>
+                            {% elif request.user.is_learner %}
+                                <a href="{% url 'authentication:dashbord' %}">Learner Dashboard</a>
+                            {% endif %}
+                             </li>
                         </ol>
                     </nav>
                 </div>

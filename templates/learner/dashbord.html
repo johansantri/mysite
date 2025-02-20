@@ -56,11 +56,11 @@
 								<div class="course-box flex-fill">
 									<div class="product">
 										<div class="product-img">
-											<a href="course-details.html">
+											<a href="{% url 'courses:course_learn' enrollment.user.username enrollment.course.slug %}">
 												<img class="img-fluid" alt="Img" src="{{ enrollment.course.image.url }}">
 											</a>
 											<div class="price">
-												<h3>$80 <span>$99.00</span></h3>
+												<h3>{{course.price}}</h3>
 											</div>
 										</div>
 										<div class="product-content">

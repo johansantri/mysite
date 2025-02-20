@@ -480,32 +480,7 @@ def course_learn(request, username, slug):
 
     return render(request, 'learner/course_learn.html', context)
 
-def started_courses(request):
-    if request.user.is_authenticated:
-        # Get all courses the user is enrolled in
-        enrollments = Enrollment.objects.filter(user=request.user)
 
-        # Get the status for 'published' directly by its actual field in the CourseStatus model
-        published_status = CourseStatus.objects.get(status='published')
-
-        # Filter for courses that have started and are published (status_course='published')
-        started_courses = enrollments.filter(
-            course__end_date__gte=timezone.now(),
-            course__status_course=published_status  # Use the actual CourseStatus object for filtering
-        ).values_list('course', flat=True)
-
-        # Get the course details for the started courses
-        courses = Course.objects.filter(id__in=started_courses)
-
-       
-
-        return render(request, 'home/started_courses.html', {
-            'courses': courses
-           
-        })
-
-    # Redirect to login page if the user is not authenticated
-    return redirect('authentication:login')
 
 
 

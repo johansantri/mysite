@@ -52,7 +52,7 @@ urlpatterns = [
     path('course-detail/<int:id>/<slug:slug>/', views.course_lms_detail, name='course_lms_detail'),
 
     path('add-price/<int:id>/', views.add_course_price, name='add_course_price'),
-    path('started-courses/', views.started_courses, name='started_courses'),
+    
     path('courses/re-runs/<int:id>/', views.course_reruns, name='course_reruns'),
     path('course-learn/<str:username>/<slug:slug>/', views.course_learn, name='course_learn'),
     path('submit_assessment/<int:assessment_id>/', views.submit_assessment, name='submit_assessment'),
