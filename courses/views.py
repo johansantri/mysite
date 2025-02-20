@@ -315,6 +315,9 @@ def course_learn(request, username, slug):
     previous_content = combined_content[current_index - 1] if current_index > 0 else None
     next_content = combined_content[current_index + 1] if current_index < len(combined_content) - 1 else None
 
+    # Tambahkan variabel untuk menentukan apakah ini adalah konten terakhir
+    is_last_content = next_content is None
+
     # Save track records for material and assessment
     if current_content:
         if current_content[0] == 'material':
@@ -478,7 +481,8 @@ def course_learn(request, username, slug):
         'is_expired': is_expired,  # Status apakah waktu sudah habis
         'remaining_time': remaining_time,  # Waktu yang tersisa
         'max_grade': max_grade, #Tambahkan max_grade ke context
-        'passing_threshold':passing_threshold  # minimal ambang batas
+        'passing_threshold':passing_threshold,  # minimal ambang batas
+        'is_last_content':is_last_content
     }
     
     return render(request, 'learner/course_learn.html', context)

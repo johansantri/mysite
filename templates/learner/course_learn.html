@@ -267,7 +267,11 @@
                                 <!-- Navigation buttons for content -->
                                 <div class="d-flex justify-content-between" style="margin-top: 30px;">
                                     <a href="{{ previous_url }}" class="btn btn-secondary">Previous</a>
+                                    {% if is_last_content %}
+                                        <p class="text-center">You have reached the end of this content. Thank you for participating!</p>
+                                    {% else %}
                                     <a href="{{ next_url }}" class="btn btn-primary">Next</a>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
