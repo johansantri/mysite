@@ -60,4 +60,5 @@ urlpatterns = [
     path('enroll/<int:course_id>/', views.enroll_course, name='enroll'),  # Define 'enroll' URL pattern
     path('add-comment/<int:material_id>/', views.add_comment, name='add_comment')
    
+   
 ]

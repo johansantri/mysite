@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from .forms import CoursePriceForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from django.http import JsonResponse
-from .models import Course,CourseStatus,AssessmentSession,Comment,Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
+from .models import Course,CourseStatus,AssessmentSession,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
 from django.contrib.auth.models import User, Universiti
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
@@ -33,11 +33,10 @@ from django.db.models import Prefetch
 import time
 from datetime import timedelta
 from django.db.models import Prefetch
-import logging
 # views.py
 
-logger = logging.getLogger(__name__)
 
+#add coment matrial course
 def add_comment(request, material_id):
     # Fetch the material object based on the provided material_id
     material = get_object_or_404(Material, id=material_id)
@@ -45,14 +44,14 @@ def add_comment(request, material_id):
     # Debugging: Check if material.section exists and log the course
     if material.section:
         if material.section.courses:
-            logger.debug(f"Course found: {material.section.courses.slug}")
+            
             course_slug = material.section.courses.slug
         else:
             # If no course is linked to the section, log the issue
-            logger.error(f"Section for material {material.id} has no associated course.")
+            
             return redirect('courses:course_list')  # Redirect if course is missing
     else:
-        logger.error(f"Material {material.id} has no section.")
+       
         return redirect('courses:course_list')  # Redirect if section is missing
 
     if request.method == 'POST':
@@ -66,6 +65,7 @@ def add_comment(request, material_id):
 
     # If not POST, just redirect back to the same material page
     return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': course_slug}) + f"?material_id={material.id}")
+
 
 
 def submit_assessment(request, assessment_id):
@@ -128,7 +128,7 @@ def submit_assessment(request, assessment_id):
         # Redirect ke halaman course setelah submit dengan mempertahankan assessment_id
         return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
 
-    return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
+    return render(request, 'submit_assessment.html', {'assessment': assessment})
 
 def calculate_overall_pass_fail(user, course):
     # Ambil semua asesmen untuk kursus ini
@@ -264,7 +264,6 @@ def start_assessment(request, assessment_id):
     return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
 
 
-
 def course_learn(request, username, slug):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
@@ -317,6 +316,28 @@ def course_learn(request, username, slug):
         # Ambil objek assessment berdasarkan ID
         assessment = get_object_or_404(Assessment, id=assessment_id)
         current_content = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
+
+
+     # Handle comments and pagination based on current_content
+    comments = None
+    page_comments = []  # Initialize the comments page to avoid errors
+
+    if current_content:
+        if current_content[0] == 'material':
+            material = current_content[1]
+            comments = Comment.objects.filter(material=material).order_by('-created_at')
+        elif current_content[0] == 'assessment':
+            # If it's an assessment, you won't find comments directly tied to assessments
+            # Instead, let's fetch comments related to the material in the same section
+            section = current_content[2]  # Get the section for the current assessment
+            comments = Comment.objects.filter(material__section=section).order_by('-created_at')
+
+        # Paginate comments if available
+        if comments:
+            paginator = Paginator(comments, 5)  # 5 comments per page
+            page_number = request.GET.get('page')
+            page_comments = paginator.get_page(page_number)
+
 
     # Cek apakah current_content[1] adalah objek assessment yang valid
     is_started = False
@@ -496,21 +517,22 @@ def course_learn(request, username, slug):
     else:
         status = "Pass" if passing_criteria_met else "Fail"  # Cek apakah nilai keseluruhan memenuhi kriteria kelulusan
 
+    
+   # Fetch the current material based on the material_id
+    material = None
+    comments = None
+    if material_id:
+        material = get_object_or_404(Material, id=material_id)
+        comments = Comment.objects.filter(material=material).order_by('-created_at')  # Fetch comments for the material
 
-    materials = section.materials.all()
-    # Fetch comments for each material
-    material_comments = {
-        material.id: Comment.objects.filter(material=material).order_by('-created_at')
-        for material in materials
-    }
+        # Paginate the comments (5 per page in this case)
+        paginator = Paginator(comments, 5)
+        page_number = request.GET.get('page')  # Get the page number from the URL
+        page_comments = paginator.get_page(page_number)
 
-    #tampilan koment
-    material = get_object_or_404(Material, id=material_id)
-    comments = Comment.objects.filter(material=material).order_by('-created_at')
-     # Paginate the comments
-    paginator = Paginator(comments, 5)  # Show 5 comments per page
-    page_number = request.GET.get('page')  # Get the current page number from the query string
-    page_koment = paginator.get_page(page_number)
+   
+
+
 
     context = {
         'course': course,
@@ -532,9 +554,9 @@ def course_learn(request, username, slug):
         'max_grade': max_grade, #Tambahkan max_grade ke context
         'passing_threshold':passing_threshold,  # minimal ambang batas
         'is_last_content':is_last_content,
-        'material_comments': material_comments,  # Add this to context
-        'comments': comments,
-        'page_koment':page_koment 
+        'comments': page_comments,  # Pass paginated comments to the template
+        'material': material if current_content and current_content[0] == 'material' else None,
+        'assessment': assessment if current_content and current_content[0] == 'assessment' else None,
     }
     
     return render(request, 'learner/course_learn.html', context)
