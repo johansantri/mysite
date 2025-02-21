@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from .forms import CoursePriceForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from django.http import JsonResponse
-from .models import Course,CourseStatus,AssessmentSession,Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
+from .models import Course,CourseStatus,AssessmentSession,Comment,Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
 from django.contrib.auth.models import User, Universiti
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
@@ -33,7 +33,39 @@ from django.db.models import Prefetch
 import time
 from datetime import timedelta
 from django.db.models import Prefetch
+import logging
 # views.py
+
+logger = logging.getLogger(__name__)
+
+def add_comment(request, material_id):
+    # Fetch the material object based on the provided material_id
+    material = get_object_or_404(Material, id=material_id)
+
+    # Debugging: Check if material.section exists and log the course
+    if material.section:
+        if material.section.courses:
+            logger.debug(f"Course found: {material.section.courses.slug}")
+            course_slug = material.section.courses.slug
+        else:
+            # If no course is linked to the section, log the issue
+            logger.error(f"Section for material {material.id} has no associated course.")
+            return redirect('courses:course_list')  # Redirect if course is missing
+    else:
+        logger.error(f"Material {material.id} has no section.")
+        return redirect('courses:course_list')  # Redirect if section is missing
+
+    if request.method == 'POST':
+        content = request.POST.get('content')
+        if content:
+            # Create and save the comment associated with the material
+            Comment.objects.create(user=request.user, content=content, material=material)
+
+        # Redirect back to the course learn page
+        return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': course_slug}) + f"?material_id={material.id}")
+
+    # If not POST, just redirect back to the same material page
+    return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': course_slug}) + f"?material_id={material.id}")
 
 
 def submit_assessment(request, assessment_id):
@@ -96,7 +128,7 @@ def submit_assessment(request, assessment_id):
         # Redirect ke halaman course setelah submit dengan mempertahankan assessment_id
         return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
 
-    return render(request, 'submit_assessment.html', {'assessment': assessment})
+    return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
 
 def calculate_overall_pass_fail(user, course):
     # Ambil semua asesmen untuk kursus ini
@@ -230,6 +262,7 @@ def start_assessment(request, assessment_id):
 
     # Redirect back to the course or assessment page after starting
     return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
+
 
 
 def course_learn(request, username, slug):
@@ -463,6 +496,22 @@ def course_learn(request, username, slug):
     else:
         status = "Pass" if passing_criteria_met else "Fail"  # Cek apakah nilai keseluruhan memenuhi kriteria kelulusan
 
+
+    materials = section.materials.all()
+    # Fetch comments for each material
+    material_comments = {
+        material.id: Comment.objects.filter(material=material).order_by('-created_at')
+        for material in materials
+    }
+
+    #tampilan koment
+    material = get_object_or_404(Material, id=material_id)
+    comments = Comment.objects.filter(material=material).order_by('-created_at')
+     # Paginate the comments
+    paginator = Paginator(comments, 5)  # Show 5 comments per page
+    page_number = request.GET.get('page')  # Get the current page number from the query string
+    page_koment = paginator.get_page(page_number)
+
     context = {
         'course': course,
         'course_name': course_name,
@@ -482,7 +531,10 @@ def course_learn(request, username, slug):
         'remaining_time': remaining_time,  # Waktu yang tersisa
         'max_grade': max_grade, #Tambahkan max_grade ke context
         'passing_threshold':passing_threshold,  # minimal ambang batas
-        'is_last_content':is_last_content
+        'is_last_content':is_last_content,
+        'material_comments': material_comments,  # Add this to context
+        'comments': comments,
+        'page_koment':page_koment 
     }
     
     return render(request, 'learner/course_learn.html', context)

@@ -593,3 +593,18 @@ class QuestionAnswer(models.Model):
     def __str__(self):
         return f"{self.user.username} - Answered {self.question.text} with {self.choice.text} on {self.answered_at}"
 
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField(blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    material = models.ForeignKey('Material', on_delete=models.CASCADE)
+    likes = models.IntegerField(default=0)  # Jumlah like
+    dislikes = models.IntegerField(default=0)  # Jumlah dislike
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['material']),
+        ]
+    
+    def __str__(self):
+        return f'Comment by {self.user.username} on {self.created_at}'

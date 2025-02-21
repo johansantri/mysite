@@ -1,6 +1,6 @@
 from django.contrib import admin
 from . import models 
-from .models import Partner,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
+from .models import Partner,Comment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
 from import_export.admin import ImportExportModelAdmin
 
 class CourseAdmin(ImportExportModelAdmin):
@@ -39,6 +39,7 @@ admin.site.register(CourseProgress)
 admin.site.register(MaterialRead)
 admin.site.register(Choice)
 admin.site.register(AssessmentSession)
+admin.site.register(Comment)
 @admin.register(Material)
 
 class MaterialAdmin(admin.ModelAdmin):

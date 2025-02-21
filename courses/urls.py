@@ -57,7 +57,7 @@ urlpatterns = [
     path('course-learn/<str:username>/<slug:slug>/', views.course_learn, name='course_learn'),
     path('submit_assessment/<int:assessment_id>/', views.submit_assessment, name='submit_assessment'),
     path('start-assessment/<int:assessment_id>/', views.start_assessment, name='start_assessment'),
-    path('enroll/<int:course_id>/', views.enroll_course, name='enroll')  # Define 'enroll' URL pattern
-   
+    path('enroll/<int:course_id>/', views.enroll_course, name='enroll'),  # Define 'enroll' URL pattern
+    path('add-comment/<int:material_id>/', views.add_comment, name='add_comment')
    
 ]

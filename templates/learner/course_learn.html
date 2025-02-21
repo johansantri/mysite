@@ -213,9 +213,97 @@
                                 {% if current_content %}
                                     {% if current_content.0 == 'material' %}
                                         <div class="material-item" style="border-bottom: 2px solid rgb(134, 134, 134); padding: 20px; background-color: #f9f9f9;">
-                                            <h2 class="material-title h4" style="color: rgb(0, 0, 0);">{{ current_content.1.title }}</h2>
+                                            <h2 class="material-title h4" style="color: rgb(0, 0, 0);">{{ current_content.1.title }} dan id {{ current_content.1.id }}</h2>
                                             <p class="material-description" style="font-size: 14px; color: #555;">{{ current_content.1.description |safe}}</p>
                                         </div>
+
+                                       
+                                        <!-- Form to Add Comment -->
+                                        <div class="comment-section" style="margin-top: 30px;">
+                                            <h4>Leave a Comment for disscuss</h4>
+                                            <form method="POST" action="{% url 'courses:add_comment' material_id=current_content.1.id %}">
+                                                {% csrf_token %}
+                                                <div class="form-group">
+                                                    <textarea name="content" class="form-control" rows="4" placeholder="Write your comment here..." required></textarea>
+                                                </div>
+                                                <br>
+                                                <button type="submit" class="btn btn-primary">Post Comment</button>
+                                            </form>
+                                        </div>
+
+    
+                                        <!-- Display Existing Comments -->
+                                        <div class="comments-list" style="margin-top: 20px; font-family: 'Arial', sans-serif; color: #333;">
+                                            <h4 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 20px; color: #2c3e50;">Comments</h4>
+                                            
+                                            {% for comment in page_koment %}
+                                                <div class="comment-item" style="border-bottom: 1px solid #ddd; padding: 20px 0; background-color: #f9f9f9; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                                                    <p style="font-size: 1rem; font-weight: 500; color: #2c3e50;">
+                                                        <strong>{{ comment.user.username }}</strong>
+                                                        <em style="font-size: 0.9rem; color: #7f8c8d;">on {{ comment.created_at|date:"F j, Y, g:i a" }}</em>
+                                                    </p>
+                                                    <p style="font-size: 1rem; color: #555; line-height: 1.6;">{{ comment.content }}</p>
+                                                </div>
+                                            {% empty %}
+                                                <p style="font-size: 1rem; color: #7f8c8d;">No comments yet. Be the first to comment!</p>
+                                            {% endfor %}
+                                            
+                                            <!-- Pagination Controls -->
+                                            <div class="pagination" style="text-align: center; margin-top: 20px;">
+                                                <span class="step-links">
+                                                    {% if page_koment.has_previous %}
+                                                        <a href="?material_id={{ current_content.1.id }}&page=1">&laquo; first</a>
+                                                        <a href="?material_id={{ current_content.1.id }}&page={{ page_koment.previous_page_number }}">previous</a>
+                                                    {% endif %}
+
+                                                    <span class="current">
+                                                        Page {{ page_koment.number }} of {{ page_koment.paginator.num_pages }}.
+                                                    </span>
+
+                                                    {% if page_koment.has_next %}
+                                                        <a href="?material_id={{ current_content.1.id }}&page={{ page_koment.next_page_number }}">next</a>
+                                                        <a href="?material_id={{ current_content.1.id }}&page={{ page_koment.paginator.num_pages }}">last &raquo;</a>
+                                                    {% endif %}
+                                                </span>
+                                            </div>
+
+
+
+
+                                        </div>
+
+
+
+                                        <style>
+                                        .pagination {
+                                            display: flex;
+                                            justify-content: center;
+                                            align-items: center;
+                                            margin-top: 20px;
+                                        }
+
+                                        .pagination a, .pagination .current {
+                                            margin: 0 5px;
+                                            padding: 8px 12px;
+                                            background-color: #3498db;
+                                            color: white;
+                                            text-decoration: none;
+                                            border-radius: 5px;
+                                            font-size: 1rem;
+                                        }
+
+                                        .pagination a:hover {
+                                            background-color: #2980b9;
+                                        }
+
+                                        .pagination .current {
+                                            background-color: #95a5a6;
+                                            pointer-events: none;
+                                        }
+
+                                        </style>
+
+
                                     {% elif current_content.0 == 'assessment' %}
                                         <!-- Show "Setuju" button if assessment has not started yet -->
                                         
@@ -279,51 +367,51 @@
 
 
 
-       <script>
-    let remainingTime = {{ remaining_time }};  // Remaining time in seconds passed from Django
-    let timerElement = document.getElementById('timer');
-    let submitButton = document.getElementById('submit-button');
-    let timerInterval;
-    let formSubmitted = false; // Flag to track form submission
+                                    <script>
+                                    let remainingTime = {{ remaining_time }};  // Remaining time in seconds passed from Django
+                                    let timerElement = document.getElementById('timer');
+                                    let submitButton = document.getElementById('submit-button');
+                                    let timerInterval;
+                                    let formSubmitted = false; // Flag to track form submission
 
-    function updateTimer() {
-        // Cek apakah timerElement ada
-        if (!timerElement) {
-            clearInterval(timerInterval); // Hentikan timer jika elemen tidak ada
-            console.log("Timer element tidak ada, menghentikan timer.");
-            return; // Keluar dari fungsi
-        }
+                                    function updateTimer() {
+                                        // Cek apakah timerElement ada
+                                        if (!timerElement) {
+                                            clearInterval(timerInterval); // Hentikan timer jika elemen tidak ada
+                                            console.log("Timer element tidak ada, menghentikan timer.");
+                                            return; // Keluar dari fungsi
+                                        }
 
-        if (formSubmitted) {
-            return;  // Exit if form has already been submitted
-        }
+                                        if (formSubmitted) {
+                                            return;  // Exit if form has already been submitted
+                                        }
 
-        let minutes = Math.floor(remainingTime / 60);
-        let seconds = remainingTime % 60;
+                                        let minutes = Math.floor(remainingTime / 60);
+                                        let seconds = remainingTime % 60;
 
-        // Format the time to always show two digits for minutes and seconds
-        timerElement.textContent = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                                        // Format the time to always show two digits for minutes and seconds
+                                        timerElement.textContent = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 
-        remainingTime--;  // Decrease remaining time by 1 second
+                                        remainingTime--;  // Decrease remaining time by 1 second
 
-        // If time is up (remainingTime < 0), stop the timer and submit the form
-        if (remainingTime < 0) {
-            formSubmitted = true;  // Prevent further submissions
-            submitButton.disabled = true;  // Disable submit button
-            
-            // Optionally submit the form
-            // document.querySelector("form").submit();  // Automatically submit the form
-            
-            // Stop the timer
-            clearInterval(timerInterval);  
-        }
-    }
+                                        // If time is up (remainingTime < 0), stop the timer and submit the form
+                                        if (remainingTime < 0) {
+                                            formSubmitted = true;  // Prevent further submissions
+                                            submitButton.disabled = true;  // Disable submit button
+                                            
+                                            // Optionally submit the form
+                                            // document.querySelector("form").submit();  // Automatically submit the form
+                                            
+                                            // Stop the timer
+                                            clearInterval(timerInterval);  
+                                        }
+                                    }
 
-    // Start the timer and update every second
-    timerInterval = setInterval(updateTimer, 1000);  // Start the timer
+                                    // Start the timer and update every second
+                                    timerInterval = setInterval(updateTimer, 1000);  // Start the timer
 
-   
-</script>
+                                
+                                </script>
 
 
 
