@@ -56,9 +56,19 @@ def add_comment(request, material_id):
 
     if request.method == 'POST':
         content = request.POST.get('content')
-        if content:
-            # Create and save the comment associated with the material
-            Comment.objects.create(user=request.user, content=content, material=material)
+        parent_id = request.POST.get('parent_id')  # Ambil parent_id dari form
+
+        parent_comment = None
+        if parent_id:
+            parent_comment = get_object_or_404(Comment, id=parent_id)  # Cari komentar induk berdasarkan parent_id
+
+        # Buat komentar baru atau balasan
+        Comment.objects.create(
+            user=request.user,
+            content=content,
+            material=material,
+            parent=parent_comment  # Menghubungkan balasan dengan komentar induk jika ada
+        )
 
         # Redirect back to the course learn page
         return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': course_slug}) + f"?material_id={material.id}")
@@ -325,18 +335,17 @@ def course_learn(request, username, slug):
     if current_content:
         if current_content[0] == 'material':
             material = current_content[1]
-            comments = Comment.objects.filter(material=material).order_by('-created_at')
+            comments = Comment.objects.filter(material=material, parent=None).order_by('-created_at')
         elif current_content[0] == 'assessment':
-            # If it's an assessment, you won't find comments directly tied to assessments
-            # Instead, let's fetch comments related to the material in the same section
             section = current_content[2]  # Get the section for the current assessment
-            comments = Comment.objects.filter(material__section=section).order_by('-created_at')
+            comments = Comment.objects.filter(material__section=section, parent=None).order_by('-created_at')
 
         # Paginate comments if available
         if comments:
             paginator = Paginator(comments, 5)  # 5 comments per page
             page_number = request.GET.get('page')
             page_comments = paginator.get_page(page_number)
+
 
 
     # Cek apakah current_content[1] adalah objek assessment yang valid
@@ -518,17 +527,7 @@ def course_learn(request, username, slug):
         status = "Pass" if passing_criteria_met else "Fail"  # Cek apakah nilai keseluruhan memenuhi kriteria kelulusan
 
     
-   # Fetch the current material based on the material_id
-    material = None
-    comments = None
-    if material_id:
-        material = get_object_or_404(Material, id=material_id)
-        comments = Comment.objects.filter(material=material).order_by('-created_at')  # Fetch comments for the material
-
-        # Paginate the comments (5 per page in this case)
-        paginator = Paginator(comments, 5)
-        page_number = request.GET.get('page')  # Get the page number from the URL
-        page_comments = paginator.get_page(page_number)
+  
 
    
 
