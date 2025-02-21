@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from .forms import CoursePriceForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from django.http import JsonResponse
-from .models import Course,CourseStatus,AssessmentSession,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
+from .models import Course,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
 from django.contrib.auth.models import User, Universiti
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
@@ -34,6 +34,32 @@ import time
 from datetime import timedelta
 from django.db.models import Prefetch
 # views.py
+
+
+#add coment course
+
+def add_comment_course(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+
+    if request.method == 'POST':
+        content = request.POST.get('content')
+        parent_id = request.POST.get('parent_id')  # Ambil parent_id jika ada
+
+        parent_comment = None
+        if parent_id:
+            parent_comment = get_object_or_404(CourseComment, id=parent_id)  # Ambil komentar induk atau balasan
+
+        # Buat komentar baru atau balasan
+        CourseComment.objects.create(
+            user=request.user,
+            content=content,
+            course=course,  # Menyambungkan komentar ke course
+            parent=parent_comment  # Menghubungkan dengan komentar induk atau balasan
+        )
+
+        return redirect(request.META.get('HTTP_REFERER'))  # Kembali ke halaman sebelumnya
+
+    return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
 
 
 #add coment matrial course
@@ -912,11 +938,35 @@ def course_lms_detail(request, id, slug):
         end_date__gte=timezone.now()
     ).exclude(id=course.id)[:5]
 
+    # Get all comments for the course, excluding replies (parent is None)
+    comments = CourseComment.objects.filter(course=course, parent=None).order_by('-created_at')
+
+    # Handling POST request for comment or reply
+    if request.method == 'POST':
+        content = request.POST.get('content')
+        parent_id = request.POST.get('parent_id')  # Check if it's a reply (parent comment)
+
+        # Default parent comment to None (for normal comments)
+        parent_comment = None
+        if parent_id:
+            parent_comment = get_object_or_404(CourseComment, id=parent_id)
+
+        # Create the comment (or reply if parent_comment exists)
+        CourseComment.objects.create(
+            user=request.user,
+            content=content,
+            course=course,
+            parent=parent_comment  # This associates the comment with its parent
+        )
+
+
     # Render the course detail page with the similar courses and enrollment status
     return render(request, 'home/course_detail.html', {
         'course': course,
         'is_enrolled': is_enrolled,  # Pass the enrollment status to the template
-        'similar_courses': similar_courses
+        'similar_courses': similar_courses,
+        'comments': comments
+        
     })
 
 

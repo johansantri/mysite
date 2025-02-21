@@ -608,3 +608,20 @@ class Comment(models.Model):
     
     def __str__(self):
         return f'Comment by {self.user.username} on {self.created_at}'
+    
+
+class CourseComment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField(blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    course = models.ForeignKey('Course', on_delete=models.CASCADE)
+    likes = models.IntegerField(default=0)  # Jumlah like
+    dislikes = models.IntegerField(default=0)  # Jumlah dislike
+    parent=models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE)
+    class Meta:
+        indexes = [
+            models.Index(fields=['course']),
+        ]
+    
+    def __str__(self):
+        return f'Comment by {self.user.username} on {self.created_at}'

@@ -58,7 +58,8 @@ urlpatterns = [
     path('submit_assessment/<int:assessment_id>/', views.submit_assessment, name='submit_assessment'),
     path('start-assessment/<int:assessment_id>/', views.start_assessment, name='start_assessment'),
     path('enroll/<int:course_id>/', views.enroll_course, name='enroll'),  # Define 'enroll' URL pattern
-    path('add-comment/<int:material_id>/', views.add_comment, name='add_comment')
+    path('add-comment/<int:material_id>/', views.add_comment, name='add_comment'),
+    path('add-comment-course/<int:course_id>/', views.add_comment_course, name='add_comment_course')  # Add this line
    
    
 ]
