@@ -83,7 +83,7 @@ jika mengalami kendala, coba ikuti langkah dibawah ini
 ### 9. Salin data dari models.py:
 
 *****
-Sebelum menjalankan aplikasi, salin data dari models.py **mysite\.venv\lib\site-packages\django\contrib\auth.** ke path Anda atau path sama seperti Anda salin
+Sebelum menjalankan aplikasi, salin data dibawah ini kedalam **mysite\.venv\lib\site-packages\django\contrib\auth.** models.py ke path Anda atau path sama seperti contoh
 Pastikan untuk menyalin seluruh isi **models.py.**
 ```shell
 from collections.abc import Iterable
