@@ -392,63 +392,80 @@
 							<!-- /Reviews -->
 							
 							<!-- Comment Section -->
-<div class="card comment-sec">
-    <div class="card-body">
-        <h5 class="subs-title">Post A Comment</h5>
-        <form method="POST" action="{% url 'courses:add_comment_course' course_id=course.id %}">
-            {% csrf_token %}
-            <div class="form-group">
-                <textarea name="content" rows="4" class="form-control" placeholder="Your Comments" required></textarea>
-            </div>
-            <input type="hidden" name="parent_id" value="">  <!-- For replying to a specific comment -->
-            <button type="submit" class="btn submit-btn">Submit</button>
-        </form>
-    </div>
-</div>
+								<div class="card comment-sec">
+									<div class="card-body">
+										<h5 class="subs-title">Post A Comment</h5>
+										<form method="POST" action="{% url 'courses:add_comment_course' course_id=course.id %}">
+											{% csrf_token %}
+											<div class="form-group">
+												<textarea name="content" rows="4" class="form-control" placeholder="Your Comments" required></textarea>
+											</div>
+											<input type="hidden" name="parent_id" value="">  <!-- For replying to a specific comment -->
+											<br><button type="submit" class="btn submit-btn">Submit</button>
+										</form>
+									</div>
+								</div>
 
-<!-- Displaying Comments -->
-<div class="comments-section">
-    {% for comment in comments %}
-        <div class="comment-item border rounded p-3 mb-3 bg-white shadow-sm">
-            <p><strong>{{ comment.user.username }}</strong> - <small>{{ comment.created_at|date:"F j, Y, g:i a" }}</small></p>
-            <p>{{ comment.content }}</p>
+								<!-- Displaying Comments -->
+								<div class="comments-section">
+									{% for comment in comments %}
+										<div class="comment-item border rounded p-3 mb-3 bg-white shadow-sm">
+											<p><strong>{{ comment.user.username }}</strong> - <small>{{ comment.created_at|date:"F j, Y, g:i a" }}</small></p>
+											<p>{{ comment.content }}</p>
 
-            <!-- Form to reply to this comment -->
-            <div class="reply-section">
-                <form method="POST" action="{% url 'courses:add_comment_course' course_id=course.id %}">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <textarea name="content" class="form-control" rows="2" placeholder="Reply to this comment..." required></textarea>
-                        <input type="hidden" name="parent_id" value="{{ comment.id }}">  <!-- Set parent_id to the current comment -->
-                    </div>
-                    <button type="submit" class="btn btn-secondary btn-sm mt-2">Reply</button>
-                </form>
-            </div>
+											<!-- Form to reply to this comment -->
+											<div class="reply-section">
+												<form method="POST" action="{% url 'courses:add_comment_course' course_id=course.id %}">
+													{% csrf_token %}
+													<div class="form-group">
+														<textarea name="content" class="form-control" rows="2" placeholder="Reply to this comment..." required></textarea>
+														<input type="hidden" name="parent_id" value="{{ comment.id }}">  <!-- Set parent_id to the current comment -->
+													</div>
+													<button type="submit" class="btn btn-secondary btn-sm mt-2">Reply</button>
+												</form>
+											</div>
 
-            <!-- Display Replies to this Comment -->
-            {% for reply in comment.comment_set.all %}
-                <div class="reply-item border rounded p-3 mt-3" style="background-color: #f1f1f1; margin-left: 20px;">
-                    <p><strong>{{ reply.user.username }}</strong> - <small>{{ reply.created_at|date:"F j, Y, g:i a" }}</small></p>
-                    <p>{{ reply.content }}</p>
-
-                    <!-- Form to reply to this reply -->
-                    <div class="reply-section">
-                        <form method="POST" action="{% url 'courses:course_detail' course_id=course.id %}">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <textarea name="content" class="form-control" rows="2" placeholder="Reply to this reply..." required></textarea>
-                                <input type="hidden" name="parent_id" value="{{ reply.id }}">  <!-- Set parent_id to the current reply -->
-                            </div>
-                            <button type="submit" class="btn btn-secondary btn-sm mt-2">Reply</button>
-                        </form>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    {% empty %}
-        <p>No comments yet. Be the first to comment!</p>
-    {% endfor %}
-</div>
+											<!-- Display Replies to this Comment -->
+											{% for reply in comment.replies %}
+												<div class="reply-item border rounded p-3 mt-3" style="background-color: #f1f1f1; margin-left: 20px;">
+													<p><strong>{{ reply.user.username }}</strong> - <small>{{ reply.created_at|date:"F j, Y, g:i a" }}</small></p>
+													<p>{{ reply.content }}</p>
+													<!-- Display Sub-Replies to this Reply -->
+													{% for sub_reply in reply.sub_replies %}
+													<div class="sub-reply-item border rounded p-3 mt-3" style="background-color: #e0e0e0; margin-left: 40px;">
+														<p><strong>{{ sub_reply.user.username }}</strong> - <small>{{ sub_reply.created_at|date:"F j, Y, g:i a" }}</small></p>
+														<p>{{ sub_reply.content }}</p>
+														<div class="reply-section">
+															<form method="POST" action="{% url 'courses:add_comment_course' course_id=course.id %}">
+																{% csrf_token %}
+																<div class="form-group">
+																	<textarea name="content" class="form-control" rows="2" placeholder="Reply to this reply..." required></textarea>
+																	<input type="hidden" name="parent_id" value="{{ reply.id }}">  <!-- Set parent_id to the current reply -->
+																</div>
+																
+																<button type="submit" class="btn btn-secondary btn-sm mt-2">Reply</button>
+															</form>
+														</div>
+													</div>
+												{% endfor %}
+													<!-- Form to reply to this reply -->
+													<div class="reply-section">
+														<form method="POST" action="{% url 'courses:add_comment_course' course_id=course.id %}">
+															{% csrf_token %}
+															<div class="form-group">
+																<textarea name="content" class="form-control" rows="2" placeholder="Reply to this reply..." required></textarea>
+																<input type="hidden" name="parent_id" value="{{ reply.id }}">  <!-- Set parent_id to the current reply -->
+															</div>
+															<button type="submit" class="btn btn-secondary btn-sm mt-2">Reply</button>
+														</form>
+													</div>
+												</div>
+											{% endfor %}
+										</div>
+									{% empty %}
+										<p>No comments yet. Be the first to comment!</p>
+									{% endfor %}
+								</div>
 
 
 

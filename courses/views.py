@@ -39,6 +39,10 @@ from django.db.models import Prefetch
 #add coment course
 
 def add_comment_course(request, course_id):
+    #cek akses
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+    
     course = get_object_or_404(Course, id=course_id)
 
     if request.method == 'POST':
@@ -64,6 +68,8 @@ def add_comment_course(request, course_id):
 
 #add coment matrial course
 def add_comment(request, material_id):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     # Fetch the material object based on the provided material_id
     material = get_object_or_404(Material, id=material_id)
 
@@ -105,6 +111,8 @@ def add_comment(request, material_id):
 
 
 def submit_assessment(request, assessment_id):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     # Ambil assessment berdasarkan ID
     assessment = get_object_or_404(Assessment, id=assessment_id)
 
@@ -167,6 +175,7 @@ def submit_assessment(request, assessment_id):
     return render(request, 'submit_assessment.html', {'assessment': assessment})
 
 def calculate_overall_pass_fail(user, course):
+    
     # Ambil semua asesmen untuk kursus ini
     assessments = Assessment.objects.filter(section__courses=course)
     total_max_score = 0  # Total skor maksimal dari semua asesmen
@@ -275,6 +284,8 @@ def calculate_grade(overall_percentage, course):
     return 'Fail'  # Default ke Fail jika tidak ada grade range yang sesuai
 
 def start_assessment(request, assessment_id):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     # Get the assessment using the provided ID
     assessment = get_object_or_404(Assessment, id=assessment_id)
 
@@ -939,25 +950,16 @@ def course_lms_detail(request, id, slug):
     ).exclude(id=course.id)[:5]
 
     # Get all comments for the course, excluding replies (parent is None)
+    # Mengambil komentar utama (parent=None) beserta balasannya
     comments = CourseComment.objects.filter(course=course, parent=None).order_by('-created_at')
 
-    # Handling POST request for comment or reply
-    if request.method == 'POST':
-        content = request.POST.get('content')
-        parent_id = request.POST.get('parent_id')  # Check if it's a reply (parent comment)
+    # Mengambil balasan (sub-reply) untuk setiap komentar
+    for comment in comments:
+        comment.replies = CourseComment.objects.filter(parent=comment).order_by('-created_at')
+        for reply in comment.replies:
+            reply.sub_replies = CourseComment.objects.filter(parent=reply).order_by('-created_at')
 
-        # Default parent comment to None (for normal comments)
-        parent_comment = None
-        if parent_id:
-            parent_comment = get_object_or_404(CourseComment, id=parent_id)
-
-        # Create the comment (or reply if parent_comment exists)
-        CourseComment.objects.create(
-            user=request.user,
-            content=content,
-            course=course,
-            parent=parent_comment  # This associates the comment with its parent
-        )
+    
 
 
     # Render the course detail page with the similar courses and enrollment status
