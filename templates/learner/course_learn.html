@@ -241,122 +241,122 @@
                                                 {% endfor %}
                                             </div>
                                             {% endif %}
-    {% if comments %}
-        <div class="comments-section">
-            <hr>
-            <div class="comments-list mt-4">
-                {% for comment in comments %}
-                    <div class="comment-item border rounded p-3 mb-3 bg-white shadow-sm">
-                        <p>
-                            <span class="fw-bold">{{ comment.user.username }}</span> 
-                            <small class="text-muted">Posted on {{ comment.created_at|date:"F j, Y, g:i a" }}</small>
-                        </p>
-                        <p>{{ comment.content }}</p>
+                                            {% if comments %}
+                                                <div class="comments-section">
+                                                    <hr>
+                                                    <div class="comments-list mt-4">
+                                                        {% for comment in comments %}
+                                                            <div class="comment-item border rounded p-3 mb-3 bg-white shadow-sm">
+                                                                <p>
+                                                                    <span class="fw-bold">{{ comment.user.username }}</span> 
+                                                                    <small class="text-muted">Posted on {{ comment.created_at|date:"F j, Y, g:i a" }}</small>
+                                                                </p>
+                                                                <p>{{ comment.content }}</p>
 
-                        <!-- Form to reply to a comment -->
-                        <div class="reply-section">
-                            <form method="POST" action="{% url 'courses:add_comment' material_id=current_content.1.id %}">
-                                {% csrf_token %}
-                               
-                                <div class="form-group">
-                                    <textarea name="content" class="form-control" rows="2" placeholder="Reply to this comment..." required></textarea>
-                                    <input type="hidden" name="parent_id" value="{{ comment.id }}">  <!-- Hidden field to reference the parent comment -->
-                                </div>
-                                <button type="submit" class="btn btn-secondary btn-sm mt-2">Reply</button>
-                            </form>
-                        </div>
+                                                                <!-- Form to reply to a comment -->
+                                                                <div class="reply-section">
+                                                                    <form method="POST" action="{% url 'courses:add_comment' material_id=current_content.1.id %}">
+                                                                        {% csrf_token %}
+                                                                    
+                                                                        <div class="form-group">
+                                                                            <textarea name="content" class="form-control" rows="2" placeholder="Reply to this comment..." required></textarea>
+                                                                            <input type="hidden" name="parent_id" value="{{ comment.id }}">  <!-- Hidden field to reference the parent comment -->
+                                                                        </div>
+                                                                        <button type="submit" class="btn btn-secondary btn-sm mt-2">Reply</button>
+                                                                    </form>
+                                                                </div>
 
-                        <!-- Display Replies to this Comment -->
-                        <div class="replies-container" style="max-height: 300px; overflow-y: auto;">
-                            {% for reply in comment.comment_set.all %}
-                                <div class="reply-item border rounded p-3 mt-3" style="background-color: #f1f1f1; margin-left: 20px;"> <!-- Indent replies -->
-                                    <p>
-                                        <span class="fw-bold">{{ reply.user.username }}</span> 
-                                        <small class="text-muted">Posted on {{ reply.created_at|date:"F j, Y, g:i a" }}</small>
-                                    </p>
-                                    <p>{{ reply.content }}</p>
+                                                                <!-- Display Replies to this Comment -->
+                                                                <div class="replies-container" style="max-height: 300px; overflow-y: auto;">
+                                                                    {% for reply in comment.comment_set.all %}
+                                                                        <div class="reply-item border rounded p-3 mt-3" style="background-color: #f1f1f1; margin-left: 20px;"> <!-- Indent replies -->
+                                                                            <p>
+                                                                                <span class="fw-bold">{{ reply.user.username }}</span> 
+                                                                                <small class="text-muted">Posted on {{ reply.created_at|date:"F j, Y, g:i a" }}</small>
+                                                                            </p>
+                                                                            <p>{{ reply.content }}</p>
 
-                                    <!-- Form to reply to a reply -->
-                                    <div class="reply-section">
-                                        <form method="POST" action="{% url 'courses:add_comment' material_id=current_content.1.id %}">
-                                            {% csrf_token %}
-                                            
-                                            <div class="form-group">
-                                                <textarea name="content" class="form-control" rows="2" placeholder="Reply to this reply..." required></textarea>
-                                                <input type="hidden" name="parent_id" value="{{ reply.id }}">  <!-- Hidden field for replying to a reply -->
-                                            </div>
-                                            <button type="submit" class="btn btn-secondary btn-sm mt-2">Reply</button>
-                                        </form>
-                                    </div>
+                                                                            <!-- Form to reply to a reply -->
+                                                                            <div class="reply-section">
+                                                                                <form method="POST" action="{% url 'courses:add_comment' material_id=current_content.1.id %}">
+                                                                                    {% csrf_token %}
+                                                                                    
+                                                                                    <div class="form-group">
+                                                                                        <textarea name="content" class="form-control" rows="2" placeholder="Reply to this reply..." required></textarea>
+                                                                                        <input type="hidden" name="parent_id" value="{{ reply.id }}">  <!-- Hidden field for replying to a reply -->
+                                                                                    </div>
+                                                                                    <button type="submit" class="btn btn-secondary btn-sm mt-2">Reply</button>
+                                                                                </form>
+                                                                            </div>
 
-                                    <!-- Display Replies to this Reply -->
-                                    <div class="nested-replies-container" style="max-height: 200px; overflow-y: auto; margin-left: 20px;">
-                                        {% for nested_reply in reply.comment_set.all %}
-                                            <div class="nested-reply-item border rounded p-3 mt-3" style="background-color: #e9ecef;">
-                                                <p>
-                                                    <span class="fw-bold">{{ nested_reply.user.username }}</span> 
-                                                    <small class="text-muted">Posted on {{ nested_reply.created_at|date:"F j, Y, g:i a" }}</small>
-                                                </p>
-                                                <p>{{ nested_reply.content }}</p>
+                                                                            <!-- Display Replies to this Reply -->
+                                                                            <div class="nested-replies-container" style="max-height: 200px; overflow-y: auto; margin-left: 20px;">
+                                                                                {% for nested_reply in reply.comment_set.all %}
+                                                                                    <div class="nested-reply-item border rounded p-3 mt-3" style="background-color: #e9ecef;">
+                                                                                        <p>
+                                                                                            <span class="fw-bold">{{ nested_reply.user.username }}</span> 
+                                                                                            <small class="text-muted">Posted on {{ nested_reply.created_at|date:"F j, Y, g:i a" }}</small>
+                                                                                        </p>
+                                                                                        <p>{{ nested_reply.content }}</p>
 
-                                                <form method="POST" action="{% url 'courses:add_comment' material_id=current_content.1.id %}">
-                                                    {% csrf_token %}
-                                                    
-                                                    <div class="form-group">
-                                                        <textarea name="content" class="form-control" rows="2" placeholder="Reply to this reply..." required></textarea>
-                                                        <input type="hidden" name="parent_id" value="{{ reply.id }}">  <!-- Hidden field for replying to a reply -->
+                                                                                        <form method="POST" action="{% url 'courses:add_comment' material_id=current_content.1.id %}">
+                                                                                            {% csrf_token %}
+                                                                                            
+                                                                                            <div class="form-group">
+                                                                                                <textarea name="content" class="form-control" rows="2" placeholder="Reply to this reply..." required></textarea>
+                                                                                                <input type="hidden" name="parent_id" value="{{ reply.id }}">  <!-- Hidden field for replying to a reply -->
+                                                                                            </div>
+                                                                                            <button type="submit" class="btn btn-secondary btn-sm mt-2">Reply</button>
+                                                                                        </form>
+                                                                                    </div>
+                                                                                {% empty %}
+                                                                                    <p>No replies yet.</p>
+                                                                                {% endfor %}
+                                                                            </div>
+                                                                        </div>
+                                                                    {% empty %}
+                                                                        <p>No replies yet.</p>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            </div>
+                                                        {% empty %}
+                                                            <div class="alert alert-info" role="alert">
+                                                                No comments yet. Be the first to comment!
+                                                            </div>
+                                                        {% endfor %}
                                                     </div>
-                                                    <button type="submit" class="btn btn-secondary btn-sm mt-2">Reply</button>
-                                                </form>
-                                            </div>
-                                        {% empty %}
-                                            <p>No replies yet.</p>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                            {% empty %}
-                                <p>No replies yet.</p>
-                            {% endfor %}
-                        </div>
-                    </div>
-                {% empty %}
-                    <div class="alert alert-info" role="alert">
-                        No comments yet. Be the first to comment!
-                    </div>
-                {% endfor %}
-            </div>
 
-            <!-- Pagination Links for Comments -->
-            <nav aria-label="Comments pagination">
-                <ul class="pagination justify-content-center mt-4">
-                    {% if comments.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link" href="?material_id={{ material.id }}&page=1">First</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="?material_id={{ material.id }}&page={{ comments.previous_page_number }}">Previous</a>
-                        </li>
-                    {% endif %}
-                    
-                    <li class="page-item disabled">
-                        <span class="page-link">Page {{ comments.number }} of {{ comments.paginator.num_pages }}</span>
-                    </li>
+                                                    <!-- Pagination Links for Comments -->
+                                                    <nav aria-label="Comments pagination">
+                                                        <ul class="pagination justify-content-center mt-4">
+                                                            {% if comments.has_previous %}
+                                                                <li class="page-item">
+                                                                    <a class="page-link" href="?material_id={{ material.id }}&page=1">First</a>
+                                                                </li>
+                                                                <li class="page-item">
+                                                                    <a class="page-link" href="?material_id={{ material.id }}&page={{ comments.previous_page_number }}">Previous</a>
+                                                                </li>
+                                                            {% endif %}
+                                                            
+                                                            <li class="page-item disabled">
+                                                                <span class="page-link">Page {{ comments.number }} of {{ comments.paginator.num_pages }}</span>
+                                                            </li>
 
-                    {% if comments.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" href="?material_id={{ material.id }}&page={{ comments.next_page_number }}">Next</a>
-                        </li>
-                        <li class="page-item">
-                            <a class="page-link" href="?material_id={{ material.id }}&page={{ comments.paginator.num_pages }}">Last</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </nav>
-        </div>
-    {% else %}
-        <p>No comments available.</p>
-    {% endif %}
-</div>
+                                                            {% if comments.has_next %}
+                                                                <li class="page-item">
+                                                                    <a class="page-link" href="?material_id={{ material.id }}&page={{ comments.next_page_number }}">Next</a>
+                                                                </li>
+                                                                <li class="page-item">
+                                                                    <a class="page-link" href="?material_id={{ material.id }}&page={{ comments.paginator.num_pages }}">Last</a>
+                                                                </li>
+                                                            {% endif %}
+                                                        </ul>
+                                                    </nav>
+                                                </div>
+                                            {% else %}
+                                                <p>No comments available.</p>
+                                            {% endif %}
+                                        </div>
 
 <style>
 @media (max-width: 767px) {
@@ -412,7 +412,26 @@
                                                                         <li style="margin-bottom: 15px; display: flex; align-items: center;">
                                                                             <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}" id="choice_{{ choice.id }}" style="transform: scale(1.5); margin-right: 10px;">
                                                                             <label for="choice_{{ choice.id }}" style="cursor: pointer; margin: 0; font-size: 16px; color: #555;">{{ choice.text }}</label>
+                                                                        
+                                                                        {% load custom_filters %}
+                                                                        {% with answered_question=answered_questions|get_item:question.id %}
+                                                                            {% if answered_question %}
+                                                                            <p>
+                                                                                {% if answered_question.choice == choice %}
+                                                                                    <small style="color: #007bff; "> (answer {{ request.user.username }}!)</small>
+                                                                                {% elif choice.is_correct %}
+                                                                                    <small style="color:  #28a745;"> (correct)</small>
+                                                                                {% else %}
+                                                                                    <small style="color: #dc3545;"> (is_correct)</small>
+                                                                                {% endif %}
+                                                                            </p>
                                                                         </li>
+                                                                            
+                                                                            
+                                                                            {% else %}
+                                                                                
+                                                                            {% endif %}
+                                                                        {% endwith %}
                                                                     {% endfor %}
                                                                 </ul>
                                                             </li>

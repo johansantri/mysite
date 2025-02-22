@@ -637,8 +637,22 @@ def course_learn(request, username, slug):
     
   
 
-   
+   # Get all assessments for this course
+    assessments = Assessment.objects.filter(section__courses=course)
 
+    # Get the assessment_id from the query parameters (if present)
+    assessment_id = request.GET.get('assessment_id')
+    
+    if assessment_id:
+        # Filter questions based on the selected assessment
+        assessment = assessments.get(id=assessment_id)
+        questions = Question.objects.filter(assessment=assessment)
+    else:
+        # Default behavior if no assessment is provided in the URL
+        questions = Question.objects.filter(assessment__in=assessments)
+
+    # Create a dictionary of answered questions
+    answered_questions = {q.id: QuestionAnswer.objects.filter(user=request.user, question=q).first() for q in questions}
 
 
     context = {
@@ -664,6 +678,7 @@ def course_learn(request, username, slug):
         'comments': page_comments,  # Pass paginated comments to the template
         'material': material if current_content and current_content[0] == 'material' else None,
         'assessment': assessment if current_content and current_content[0] == 'assessment' else None,
+        'answered_questions': answered_questions,
     }
     
     return render(request, 'learner/course_learn.html', context)
