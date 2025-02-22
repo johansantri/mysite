@@ -478,6 +478,7 @@
 													</div>
 												{% endfor %}
 													<!-- Form to reply to this reply -->
+													 <br>
 													<div class="reply-section">
 														<form method="POST" action="{% url 'courses:add_comment_course' course_id=course.id %}">
 															{% csrf_token %}

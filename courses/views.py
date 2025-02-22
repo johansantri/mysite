@@ -31,12 +31,44 @@ from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Prefetch
 import time
+import re
 from datetime import timedelta
 from django.db.models import Prefetch
 # views.py
 
+#add coment matrial course
+def is_bot(request):
+    """
+    Mengecek apakah permintaan berasal dari bot.
+    Dengan melihat user-agent dan header lainnya.
+    """
+    user_agent = request.META.get('HTTP_USER_AGENT', '').lower()
+    if 'bot' in user_agent or 'crawler' in user_agent:
+        return True  # Bot terdeteksi
+    return False
 
-#add coment course
+def is_spam(request, user, content):
+    """
+    Memeriksa apakah komentar terdeteksi sebagai spam berdasarkan
+    rate-limiting, bot detection dan blacklist keywords.
+    """
+    # 1. Cek Bot Detection
+    if is_bot(request):
+        return True  # Bot terdeteksi, komentar dianggap spam
+    
+    # 2. Cek Rate Limiting (Spam)
+    time_limit = timedelta(seconds=30)  # Menentukan batas waktu antara komentar
+    last_comment = Comment.objects.filter(user=user).order_by('-created_at').first()
+    if last_comment and timezone.now() - last_comment.created_at < time_limit:
+        return True  # Terlalu cepat mengirim komentar, dianggap spam
+    
+    # 3. Cek Kata Kunci yang Diblokir menggunakan metode model
+    comment_instance = Comment(user=user, content=content)
+    if comment_instance.contains_blacklisted_keywords():
+        return True  # Mengandung kata terlarang, dianggap spam
+    
+    return False
+
 def is_suspicious(request):
     """Check if the request is suspicious based on User-Agent or missing Referer."""
     user_agent = request.META.get('HTTP_USER_AGENT', '')
@@ -46,6 +78,59 @@ def is_suspicious(request):
     if 'bot' in user_agent.lower() or not referer:
         return True
     return False
+
+def add_comment(request, material_id):
+    # Pastikan pengguna terautentikasi
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+
+    # Ambil objek material berdasarkan material_id yang diberikan
+    material = get_object_or_404(Material, id=material_id)
+
+    # Memastikan bahwa material terhubung dengan kursus dan bagian yang valid
+    if material.section:
+        if material.section.courses:
+            course_slug = material.section.courses.slug
+        else:
+            # Jika tidak ada kursus yang terhubung, lakukan redirect
+            return redirect('courses:course_list')
+    else:
+        return redirect('courses:course_list')  # Redirect jika bagian tidak ditemukan
+
+    if request.method == 'POST':
+        if is_suspicious(request):
+            messages.warning(request, "Suspicious activity detected. Comment not posted.")
+            return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': course_slug}) + f"?material_id={material.id}")
+        
+        content = request.POST.get('content')
+        parent_id = request.POST.get('parent_id')  # Ambil parent_id dari form
+
+        parent_comment = None
+        if parent_id:
+            parent_comment = get_object_or_404(Comment, id=parent_id)  # Cari komentar induk berdasarkan parent_id
+
+        # Memeriksa apakah komentar adalah spam
+        if is_spam(request, request.user, content):
+            messages.warning(request, "Komentar Anda terdeteksi sebagai spam!")
+            return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': course_slug}) + f"?material_id={material.id}")
+
+        # Buat komentar baru atau balasan jika tidak terdeteksi sebagai spam
+        Comment.objects.create(
+            user=request.user,
+            content=content,
+            material=material,
+            parent=parent_comment  # Menghubungkan balasan dengan komentar induk jika ada
+        )
+
+        # Redirect kembali ke halaman kursus
+        messages.success(request, "Komentar berhasil diposting!")
+        return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': course_slug}) + f"?material_id={material.id}")
+
+    # Jika bukan POST, hanya redirect ke halaman material yang sama
+    return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': course_slug}) + f"?material_id={material.id}")
+
+#add coment course
+
 
 def add_comment_course(request, course_id):
     #cek akses
@@ -57,7 +142,7 @@ def add_comment_course(request, course_id):
     if request.method == 'POST':
         # Mengecek apakah request mencurigakan (bot detection)
         if is_suspicious(request):
-            messages.error(request, "Suspicious activity detected. Comment not posted.")
+            messages.warning(request, "Suspicious activity detected. Comment not posted.")
             return redirect('course_detail', course_id=course.id)
 
         content = request.POST.get('content')
@@ -78,12 +163,12 @@ def add_comment_course(request, course_id):
 
         # Memeriksa apakah komentar mengandung kata kunci terlarang
         if comment.contains_blacklisted_keywords():
-            messages.error(request, "Your comment contains blacklisted content.")
+            messages.warning(request, "Your comment contains blacklisted content.")
             return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
 
         # Memeriksa apakah komentar adalah spam berdasarkan cooldown
         if comment.is_spam():
-            messages.error(request, "You are posting too frequently. Please wait a moment before posting again.")
+            messages.warning(request, "You are posting too frequently. Please wait a moment before posting again.")
             return redirect('course_detail', course_id=course.id)
 
         comment.save()
@@ -93,47 +178,6 @@ def add_comment_course(request, course_id):
     return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
 
 
-#add coment matrial course
-def add_comment(request, material_id):
-    if not request.user.is_authenticated:
-        return redirect("/login/?next=%s" % request.path)
-    # Fetch the material object based on the provided material_id
-    material = get_object_or_404(Material, id=material_id)
-
-    # Debugging: Check if material.section exists and log the course
-    if material.section:
-        if material.section.courses:
-            
-            course_slug = material.section.courses.slug
-        else:
-            # If no course is linked to the section, log the issue
-            
-            return redirect('courses:course_list')  # Redirect if course is missing
-    else:
-       
-        return redirect('courses:course_list')  # Redirect if section is missing
-
-    if request.method == 'POST':
-        content = request.POST.get('content')
-        parent_id = request.POST.get('parent_id')  # Ambil parent_id dari form
-
-        parent_comment = None
-        if parent_id:
-            parent_comment = get_object_or_404(Comment, id=parent_id)  # Cari komentar induk berdasarkan parent_id
-
-        # Buat komentar baru atau balasan
-        Comment.objects.create(
-            user=request.user,
-            content=content,
-            material=material,
-            parent=parent_comment  # Menghubungkan balasan dengan komentar induk jika ada
-        )
-
-        # Redirect back to the course learn page
-        return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': course_slug}) + f"?material_id={material.id}")
-
-    # If not POST, just redirect back to the same material page
-    return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': course_slug}) + f"?material_id={material.id}")
 
 
 

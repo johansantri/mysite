@@ -232,6 +232,15 @@
 
                                             <!-- Display Comments for the Material -->
                                           <div class="material-item border-bottom p-4 bg-light">
+                                            {% if messages %}
+                                            <div class="alert-container">
+                                                {% for message in messages %}
+                                                    <div class="alert alert-{{ message.tags }} mt-3">
+                                                        {{ message }}
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                            {% endif %}
     {% if comments %}
         <div class="comments-section">
             <hr>
@@ -248,6 +257,7 @@
                         <div class="reply-section">
                             <form method="POST" action="{% url 'courses:add_comment' material_id=current_content.1.id %}">
                                 {% csrf_token %}
+                               
                                 <div class="form-group">
                                     <textarea name="content" class="form-control" rows="2" placeholder="Reply to this comment..." required></textarea>
                                     <input type="hidden" name="parent_id" value="{{ comment.id }}">  <!-- Hidden field to reference the parent comment -->
@@ -270,6 +280,7 @@
                                     <div class="reply-section">
                                         <form method="POST" action="{% url 'courses:add_comment' material_id=current_content.1.id %}">
                                             {% csrf_token %}
+                                            
                                             <div class="form-group">
                                                 <textarea name="content" class="form-control" rows="2" placeholder="Reply to this reply..." required></textarea>
                                                 <input type="hidden" name="parent_id" value="{{ reply.id }}">  <!-- Hidden field for replying to a reply -->
@@ -287,6 +298,16 @@
                                                     <small class="text-muted">Posted on {{ nested_reply.created_at|date:"F j, Y, g:i a" }}</small>
                                                 </p>
                                                 <p>{{ nested_reply.content }}</p>
+
+                                                <form method="POST" action="{% url 'courses:add_comment' material_id=current_content.1.id %}">
+                                                    {% csrf_token %}
+                                                    
+                                                    <div class="form-group">
+                                                        <textarea name="content" class="form-control" rows="2" placeholder="Reply to this reply..." required></textarea>
+                                                        <input type="hidden" name="parent_id" value="{{ reply.id }}">  <!-- Hidden field for replying to a reply -->
+                                                    </div>
+                                                    <button type="submit" class="btn btn-secondary btn-sm mt-2">Reply</button>
+                                                </form>
                                             </div>
                                         {% empty %}
                                             <p>No replies yet.</p>

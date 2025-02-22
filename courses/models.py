@@ -601,6 +601,7 @@ class Comment(models.Model):
     likes = models.IntegerField(default=0)  # Jumlah like
     dislikes = models.IntegerField(default=0)  # Jumlah dislike
     parent=models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE)
+
     class Meta:
         indexes = [
             models.Index(fields=['material']),
@@ -608,6 +609,18 @@ class Comment(models.Model):
     
     def __str__(self):
         return f'Comment by {self.user.username} on {self.created_at}'
+    def contains_blacklisted_keywords(self):
+        """Check if the comment contains any blacklisted keywords."""
+        blacklisted_keywords = [
+            'gratis', 'promo', 'diskon', 'belanja', 'jualan', 'poker', 'judi', 
+            'kredit', 'utang', 'deposito', 'investasi', 'uang', 'tawaran', 'hadiah', 
+            'pemenang', 'hack', 'phishing', 'penipuan', 'melanggar', 'bocor','kunci jawaban','email','0857',
+             '0858','0859','021','0812','0813','0811','0856','@gmail','@', 'penjualan'
+        ]
+        for keyword in blacklisted_keywords:
+            if keyword.lower() in self.content.lower():
+                return True
+        return False
     
 
 class CourseComment(models.Model):
