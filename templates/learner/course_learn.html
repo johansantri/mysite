@@ -415,14 +415,14 @@
                                                         {% for question in current_content.1.questions.all %}
                                                             <li class="question" style="margin-bottom: 30px;">
                                                                 <div style="display: inline-block; margin-left: 10px; padding: 10px; background-color: #e9ecef; border-radius: 8px; font-size: 18px; color: #555;">
-                                                                    {{ question.text }}
+                                                                    {{ question.text |safe }}
                                                                 </div>
                                                                 <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
                                                                     {% for choice in question.choices.all %}
                                                                         <li style="margin-bottom: 15px; display: flex; align-items: center;">
                                                                             <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}" id="choice_{{ choice.id }}" style="transform: scale(1.5); margin-right: 10px;">
-                                                                            <label for="choice_{{ choice.id }}" style="cursor: pointer; margin: 0; font-size: 16px; color: #555;">{{ choice.text }}</label>
-                                                                        
+                                                                            <label for="choice_{{ choice.id }}" style="cursor: pointer; margin: 0; font-size: 16px; color: #555;">{{ choice.text |safe }}</label>
+                                                                            
                                                                         {% load custom_filters %}
                                                                         {% with answered_question=answered_questions|get_item:question.id %}
                                                                             {% if answered_question %}
