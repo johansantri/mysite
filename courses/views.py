@@ -37,6 +37,15 @@ from django.db.models import Prefetch
 
 
 #add coment course
+def is_suspicious(request):
+    """Check if the request is suspicious based on User-Agent or missing Referer."""
+    user_agent = request.META.get('HTTP_USER_AGENT', '')
+    referer = request.META.get('HTTP_REFERER', '')
+    
+    # Bot detection (simple heuristic)
+    if 'bot' in user_agent.lower() or not referer:
+        return True
+    return False
 
 def add_comment_course(request, course_id):
     #cek akses
@@ -46,20 +55,38 @@ def add_comment_course(request, course_id):
     course = get_object_or_404(Course, id=course_id)
 
     if request.method == 'POST':
+        # Mengecek apakah request mencurigakan (bot detection)
+        if is_suspicious(request):
+            messages.error(request, "Suspicious activity detected. Comment not posted.")
+            return redirect('course_detail', course_id=course.id)
+
         content = request.POST.get('content')
-        parent_id = request.POST.get('parent_id')  # Ambil parent_id jika ada
-
+        parent_id = request.POST.get('parent_id')
         parent_comment = None
-        if parent_id:
-            parent_comment = get_object_or_404(CourseComment, id=parent_id)  # Ambil komentar induk atau balasan
 
-        # Buat komentar baru atau balasan
-        CourseComment.objects.create(
+        # Menentukan apakah ini komentar balasan
+        if parent_id:
+            parent_comment = get_object_or_404(CourseComment, id=parent_id)
+
+        # Membuat objek komentar
+        comment = CourseComment(
             user=request.user,
             content=content,
-            course=course,  # Menyambungkan komentar ke course
-            parent=parent_comment  # Menghubungkan dengan komentar induk atau balasan
+            course=course,
+            parent=parent_comment
         )
+
+        # Memeriksa apakah komentar mengandung kata kunci terlarang
+        if comment.contains_blacklisted_keywords():
+            messages.error(request, "Your comment contains blacklisted content.")
+            return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
+
+        # Memeriksa apakah komentar adalah spam berdasarkan cooldown
+        if comment.is_spam():
+            messages.error(request, "You are posting too frequently. Please wait a moment before posting again.")
+            return redirect('course_detail', course_id=course.id)
+
+        comment.save()
 
         return redirect(request.META.get('HTTP_REFERER'))  # Kembali ke halaman sebelumnya
 

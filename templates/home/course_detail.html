@@ -395,8 +395,19 @@
 								<div class="card comment-sec">
 									<div class="card-body">
 										<h5 class="subs-title">Post A Comment</h5>
+										
+
 										<form method="POST" action="{% url 'courses:add_comment_course' course_id=course.id %}">
 											{% csrf_token %}
+													{% if messages %}
+													<div class="alert-container">
+														{% for message in messages %}
+															<div class="alert alert-{{ message.tags }} mt-3">
+																{{ message }}
+															</div>
+														{% endfor %}
+													</div>
+													{% endif %}
 											<div class="form-group">
 												<textarea name="content" rows="4" class="form-control" placeholder="Your Comments" required></textarea>
 											</div>
@@ -412,11 +423,20 @@
 										<div class="comment-item border rounded p-3 mb-3 bg-white shadow-sm">
 											<p><strong>{{ comment.user.username }}</strong> - <small>{{ comment.created_at|date:"F j, Y, g:i a" }}</small></p>
 											<p>{{ comment.content }}</p>
-
+											
 											<!-- Form to reply to this comment -->
 											<div class="reply-section">
 												<form method="POST" action="{% url 'courses:add_comment_course' course_id=course.id %}">
 													{% csrf_token %}
+														{% if messages %}
+														<div class="alert-container">
+															{% for message in messages %}
+																<div class="alert alert-{{ message.tags }} mt-3">
+																	{{ message }}
+																</div>
+															{% endfor %}
+														</div>
+														{% endif %}
 													<div class="form-group">
 														<textarea name="content" class="form-control" rows="2" placeholder="Reply to this comment..." required></textarea>
 														<input type="hidden" name="parent_id" value="{{ comment.id }}">  <!-- Set parent_id to the current comment -->
@@ -438,6 +458,15 @@
 														<div class="reply-section">
 															<form method="POST" action="{% url 'courses:add_comment_course' course_id=course.id %}">
 																{% csrf_token %}
+																	{% if messages %}
+																	<div class="alert-container">
+																		{% for message in messages %}
+																			<div class="alert alert-{{ message.tags }} mt-3">
+																				{{ message }}
+																			</div>
+																		{% endfor %}
+																	</div>
+																	{% endif %}
 																<div class="form-group">
 																	<textarea name="content" class="form-control" rows="2" placeholder="Reply to this reply..." required></textarea>
 																	<input type="hidden" name="parent_id" value="{{ reply.id }}">  <!-- Set parent_id to the current reply -->
@@ -452,6 +481,15 @@
 													<div class="reply-section">
 														<form method="POST" action="{% url 'courses:add_comment_course' course_id=course.id %}">
 															{% csrf_token %}
+																{% if messages %}
+																<div class="alert-container">
+																	{% for message in messages %}
+																		<div class="alert alert-{{ message.tags }} mt-3">
+																			{{ message }}
+																		</div>
+																	{% endfor %}
+																</div>
+																{% endif %}
 															<div class="form-group">
 																<textarea name="content" class="form-control" rows="2" placeholder="Reply to this reply..." required></textarea>
 																<input type="hidden" name="parent_id" value="{{ reply.id }}">  <!-- Set parent_id to the current reply -->

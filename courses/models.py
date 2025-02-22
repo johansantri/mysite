@@ -634,3 +634,12 @@ class CourseComment(models.Model):
 
     def __str__(self):
         return f'Comment by {self.user.username} on {self.created_at}'
+    def contains_blacklisted_keywords(self):
+        """Check if the comment contains any blacklisted keywords."""
+        blacklisted_keywords = ['spam', 'ad', 'sex', 'judol','spam', 'viagra', 'casino', 'free', 'discount', 'buy now', 'click here', 
+    'money', 'investment', 'bitcoin', 'get rich', 'credit card', 'ad', 
+    'affiliate', 'deal', 'offer', 'prize', 'winner', 'hack', 'phishing', 'malware']  # Add your list of blacklisted words
+        for keyword in blacklisted_keywords:
+            if keyword.lower() in self.content.lower():
+                return True
+        return False
