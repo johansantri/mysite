@@ -397,6 +397,9 @@
                                         {% elif is_started %}
                                             <form method="POST" action="{% url 'courses:submit_assessment' assessment_id=current_content.1.id %}">
                                                 {% csrf_token %}
+                                                <input type="text" name="honeypot" style="display:none;" />
+                                                <input type="hidden" name="start_time" id="start_time" value="{{ current_time }}">
+
                                                 <input type="hidden" name="current_content_id" value="{{ current_material.id }}">
                                                 <div class="assessment-item" style="border-bottom: 2px solid rgb(134, 134, 134); padding: 20px; background-color: #f9f9f9;">
                                                     <h3 class="h5" style="color:rgb(2, 2, 2); font-size: 24px;">Assessment: {{ current_content.1.name }}</h3>

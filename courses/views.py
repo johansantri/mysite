@@ -186,7 +186,18 @@ def submit_assessment(request, assessment_id):
         return redirect("/login/?next=%s" % request.path)
     # Ambil assessment berdasarkan ID
     assessment = get_object_or_404(Assessment, id=assessment_id)
-
+    # Cek honeypot (bot jika terisi)
+    honeypot = request.POST.get('honeypot')
+    if honeypot:
+        messages.error(request, "Spam terdeteksi. Pengiriman dibatalkan.")
+        return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
+     # Periksa waktu pengisian form
+    start_time = request.POST.get('start_time')
+    if start_time:
+        elapsed_time = timezone.now() - timezone.make_aware(datetime.datetime.strptime(start_time, '%Y-%m-%d %H:%M:%S'))
+        if elapsed_time < timedelta(seconds=10):  # Cegah pengiriman terlalu cepat
+            messages.error(request, "Pengiriman terlalu cepat. Coba lagi setelah beberapa detik.")
+            return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
     # Cek apakah user sudah pernah submit untuk assessment ini
     if Score.objects.filter(user=request.user.username, course=assessment.section.courses, section=assessment.section, submitted=True).exists():
         # Redirect dengan membawa assessment_id agar tetap pada posisi yang sama
