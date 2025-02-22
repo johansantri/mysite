@@ -618,10 +618,19 @@ class CourseComment(models.Model):
     likes = models.IntegerField(default=0)  # Jumlah like
     dislikes = models.IntegerField(default=0)  # Jumlah dislike
     parent=models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE)
+    def is_spam(self):
+        # Membatasi komentar dengan interval 1 menit
+        last_comment_time = CourseComment.objects.filter(user=self.user).order_by('-created_at').first()
+        if last_comment_time:
+            time_difference = timezone.now() - last_comment_time.created_at
+            if time_difference < timedelta(minutes=1):  # Cooldown 1 menit
+                return True
+        return False
+
     class Meta:
         indexes = [
             models.Index(fields=['course']),
         ]
-    
+
     def __str__(self):
         return f'Comment by {self.user.username} on {self.created_at}'
