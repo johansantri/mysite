@@ -190,6 +190,7 @@ def submit_assessment(request, assessment_id):
     # Cek apakah user sudah pernah submit untuk assessment ini
     if Score.objects.filter(user=request.user.username, course=assessment.section.courses, section=assessment.section, submitted=True).exists():
         # Redirect dengan membawa assessment_id agar tetap pada posisi yang sama
+        messages.info(request, "Anda sudah mengirimkan jawaban untuk ujian ini.")
         return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
 
     # Cek apakah waktu ujian masih berlaku
@@ -200,7 +201,7 @@ def submit_assessment(request, assessment_id):
 
     # Cek apakah waktu ujian sudah habis
     if timezone.now() > session.end_time:
-        messages.error(request, "Waktu ujian telah habis, Anda tidak dapat mengirimkan jawaban.")
+        messages.warning(request, "Waktu ujian telah habis, Anda tidak dapat mengirimkan jawaban.")
         return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
 
     if request.method == 'POST':
@@ -240,6 +241,7 @@ def submit_assessment(request, assessment_id):
         user_progress.progress = score_percentage
         user_progress.save()
 
+        messages.success(request, "Jawaban Anda telah berhasil disubmit. Terima kasih!")
         # Redirect ke halaman course setelah submit dengan mempertahankan assessment_id
         return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
 
