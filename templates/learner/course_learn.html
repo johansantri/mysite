@@ -354,7 +354,7 @@
                                                     </nav>
                                                 </div>
                                             {% else %}
-                                                <p>No comments available.</p>
+                                                
                                             {% endif %}
                                         </div>
 
@@ -428,7 +428,7 @@
                                                                             {% if answered_question %}
                                                                             <p>
                                                                                 {% if answered_question.choice == choice %}
-                                                                                    <small style="color: #007bff; "> (answer {{ request.user.username }}!)</small>
+                                                                                    <small style="color: #007bff; "> ( {{ request.user.username }}!)</small>
                                                                                 {% elif choice.is_correct %}
                                                                                     <small style="color:  #28a745;"> (correct)</small>
                                                                                 {% else %}

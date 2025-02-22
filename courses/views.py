@@ -693,7 +693,7 @@ def course_learn(request, username, slug):
         'assessment': assessment if current_content and current_content[0] == 'assessment' else None,
         'answered_questions': answered_questions,
     }
-    
+    print(section)
     return render(request, 'learner/course_learn.html', context)
 
 
