@@ -495,7 +495,7 @@ class AssessmentSession(models.Model):
 
 class Question(models.Model):
     assessment = models.ForeignKey(Assessment, related_name="questions", on_delete=models.CASCADE)
-    text = models.CharField(blank=True, null=True,max_length=255)
+    text = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -506,7 +506,7 @@ class Question(models.Model):
 
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='choices')
-    text = models.CharField(blank=True, null=True, max_length=200)
+    text = models.TextField(blank=True, null=True)
     is_correct = models.BooleanField(default=False)
 
     def __str__(self):

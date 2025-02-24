@@ -34,11 +34,11 @@ Perhatikan Panduan dibawah ini untuk memulai aplikasi
 Proyek eksplorasi Python menggunakan framework Django.
 
 ## Akses Role
-- Superuser
+- Superuser admin@admin.com | admin
 - Staf
-- Partner
-- Instructor
-- Learner
+- Partner staf@staf.com | staf
+- Instructor instructor@instructor.com | instructor
+- Learner learn@learn.com | learn
 - Dan lainnya
 
 ## Instalasi
