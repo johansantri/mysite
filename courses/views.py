@@ -9,7 +9,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from .forms import CoursePriceForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
+from .forms import CoursePriceForm,AskOraForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from django.http import JsonResponse
 from .models import Course,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
 from django.contrib.auth.models import User, Universiti
@@ -35,6 +35,57 @@ import re
 from datetime import timedelta
 from django.db.models import Prefetch
 # views.py
+
+#ora create question
+@csrf_exempt
+def create_askora(request, idcourse, idsection, idassessment):
+    # Cek apakah pengguna sudah login
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+    
+    # Tentukan course berdasarkan peran pengguna
+    if request.user.is_superuser:
+        course = get_object_or_404(Course, id=idcourse)
+    elif request.user.is_partner:
+        course = get_object_or_404(Course, id=idcourse, org_partner__user_id=request.user.id)
+    elif request.user.is_instructor:
+        course = get_object_or_404(Course, id=idcourse, instructor__user_id=request.user.id)
+    else:
+        messages.error(request, "Anda tidak memiliki izin untuk membuat pertanyaan di kursus ini.")
+        return redirect('courses:home')  # Redirect ke halaman aman
+
+    # Pastikan section milik course
+    section = get_object_or_404(Section, id=idsection, courses=course)
+
+    # Pastikan assessment milik section
+    assessment = get_object_or_404(Assessment, id=idassessment, section=section)
+
+    # Menangani form jika metode adalah POST
+    if request.method == 'POST':
+        # Membuat form untuk AskOra
+        question_form = AskOraForm(request.POST)
+
+        # Validasi form
+        if question_form.is_valid():
+            # Menyimpan AskOra (pertanyaan)
+            askora = question_form.save(commit=False)
+            askora.assessment = assessment  # Tentukan assessment yang sesuai
+            askora.save()  # Simpan pertanyaan
+
+            messages.success(request, "Pertanyaan berhasil dibuat!")
+            return redirect('courses:create_askora', idcourse=idcourse, idsection=idsection, idassessment=idassessment)  # Redirect kembali ke halaman yang sama
+
+    else:
+        # Menangani GET request
+        question_form = AskOraForm()
+
+    return render(request, 'courses/create_ora.html', {
+        'course': course,
+        'section': section,
+        'assessment': assessment,
+        'question_form': question_form,
+    })
+
 
 #add coment matrial course
 def is_bot(request):

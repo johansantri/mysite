@@ -511,8 +511,64 @@ class Choice(models.Model):
 
     def __str__(self):
         return self.text
+class AskOra(models.Model):
+    assessment = models.ForeignKey(Assessment, related_name='ask_oras', on_delete=models.CASCADE)
+    question_text = models.TextField()  # Soal yang diberikan oleh dosen
+    file_requirement = models.FileField(upload_to='askora_files/', blank=True, null=True)  # File yang wajib diunggah (misalnya gambar, dokumen)
+    point = models.IntegerField()  # Nilai soal ini, misalnya 1-5
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"AskOra for {self.assessment.name}: {self.question_text[:50]}"  # Menampilkan nama assessment dan sebagian dari soal
+        
+class Submission(models.Model):
+    askora = models.ForeignKey(AskOra, related_name='submissions', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Peserta yang mengirimkan jawaban
+    answer_text = models.TextField()  # Jawaban teks dari peserta
+    answer_file = models.FileField(upload_to='submissions/', blank=True, null=True)  # Jawaban file jika diperlukan
+    score = models.IntegerField(null=True, blank=True)  # Nilai yang diberikan pada jawaban, diisi oleh reviewer
+    submitted_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"Submission for {self.askora.question_text[:50]} by {self.user.username}"
+    
+class PeerReview(models.Model):
+    submission = models.ForeignKey(Submission, related_name='peer_reviews', on_delete=models.CASCADE)
+    reviewer = models.ForeignKey(User, on_delete=models.CASCADE)  # User yang memberikan review
+    score = models.IntegerField(choices=[(1, 1), (2, 2), (3, 3), (4, 4), (5, 5)])  # Skor 1-5
+    comment = models.TextField(blank=True, null=True)  # Komentar dari reviewer
+    created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = ('submission', 'reviewer')  # Satu reviewer hanya bisa memberikan review sekali per submission
+
+    def __str__(self):
+        return f"Review by {self.reviewer.username} for {self.submission.user.username}'s submission"
+class AssessmentScore(models.Model):
+    submission = models.ForeignKey(Submission, related_name='assessment_scores', on_delete=models.CASCADE)
+    final_score = models.DecimalField(max_digits=5, decimal_places=2, default=0)  # Skor akhir
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def calculate_final_score(self):
+        # Skor berdasarkan penilaian peer review
+        peer_reviews = self.submission.peer_reviews.all()
+        if peer_reviews:
+            total_score = sum(review.score for review in peer_reviews)
+            peer_review_count = peer_reviews.count()
+            # Rata-rata skor peer review (bobot 50%)
+            avg_peer_score = total_score / peer_review_count
+        else:
+            avg_peer_score = 0
+        
+        # Skor berdasarkan jawaban peserta (bobot 50%) - Anda bisa menambahkan logika khusus
+        participant_score = 5  # Misalnya, ambil nilai maksimal (5) jika nilai ini diperoleh dari penilaian otomatis
+
+        # Menghitung skor akhir
+        self.final_score = (participant_score * 0.5) + (avg_peer_score * 0.5)
+        self.save()
+
+    def __str__(self):
+        return f"Score for {self.submission.user.username} in {self.submission.assessment.name}"
 
     
 class Score(models.Model):

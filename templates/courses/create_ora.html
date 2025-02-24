@@ -1,0 +1,35 @@
+{% extends 'home/base.html' %}
+{% block content %}
+
+
+<div class="page-content">
+  <div class="container">
+    <div class="row">
+      {% include "home/sidebar.html" %}
+      <div class="col-xl-9 col-lg-9">
+       
+        {% include "courses/course_set.html"%}
+        <hr>  
+       
+        <div class="support-wrap">
+         
+        
+             <h2>Create AskOra Question</h2>
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ question_form.as_p }}
+    <button type="submit" class="btn btn-primary">Submit Question</button>
+  </form>
+
+
+ 
+    </div>
+  </div>
+  </div>
+
+
+    </div>
+  </div>
+
+
+{% endblock %}

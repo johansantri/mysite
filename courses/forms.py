@@ -2,7 +2,7 @@
 from django import forms
 from django.forms import inlineformset_factory
 from django.core.cache import cache
-from .models import Course,CourseStatus, Partner,Category, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment,PricingType, CoursePrice
+from .models import Course,CourseStatus, AskOra,Partner,Category, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment,PricingType, CoursePrice
 from django_ckeditor_5.widgets import CKEditor5Widget
 from django.contrib.auth.models import User, Universiti
 import logging
@@ -12,6 +12,17 @@ from PIL import Image as PILImage
 import io
 from datetime import date
 
+
+class AskOraForm(forms.ModelForm):
+    class Meta:
+        model = AskOra
+        fields = ['question_text', 'file_requirement', 'point']  # Menyesuaikan field dengan model AskOra
+        
+        widgets = {
+            'question_text': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Masukkan soal di sini...', 'rows': 4}),
+            'file_requirement': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
+            'point': forms.NumberInput(attrs={'class': 'form-control', 'min': 1, 'max': 5}),
+        }
 
 #form re-runs
 class CourseRerunForm(forms.ModelForm):
