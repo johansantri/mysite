@@ -1183,7 +1183,8 @@ def course_grade(request, id):
         return redirect('/courses')
     
     course = get_object_or_404(Course, id=id)
-
+     # Retrieve sections related to this course
+    sections = Section.objects.filter(courses=course)  # Get all sections related to the course
    # Ensure grade ranges exist; create defaults if necessary
     grade_fail, created_fail = course.grade_ranges.get_or_create(
         name="Fail",
@@ -1203,12 +1204,22 @@ def course_grade(request, id):
     fail_range_max = int(grade_fail.max_grade)
     pass_range_min = fail_range_max + 1
 
+     # Retrieve the sections for the course
+    sections = Section.objects.filter(courses=course)  # Get all sections related to this course
+
+    # Retrieve all assessments associated with these sections
+    assessments = Assessment.objects.filter(section__in=sections)
+    total_weight = sum(assessment.weight for assessment in assessments)
+    
     return render(request, 'courses/course_grade.html', {
         'course': course,
+        'sections': sections,  # Pass the sections
         "fail_width": fail_width,
         "pass_width": pass_width,
         "fail_range_max": fail_range_max,
         "pass_range_min": pass_range_min,
+        'assessments': assessments,  # Pass assessments to the template
+        'total_weight': total_weight,
     })
 
 

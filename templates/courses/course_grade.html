@@ -71,8 +71,49 @@
            
         </div>
 
+<hr>
+            <table class="table">
+            <thead>
+            <tr>
 
- 
+            <th scope="col">name</th>
+            <th scope="col">weight</th>
+
+            <th scope="col">duration</th>
+
+            </tr>
+            </thead>
+            <tbody>
+
+            {% if assessments %}
+            {% for assessment in assessments %}
+            <tr>
+
+
+            <td>{{ assessment.name }}</td>
+            <td>{{ assessment.weight }}%</td>
+
+            <td>{{ assessment.duration_in_minutes }} minutes</td>
+
+
+            </tr>
+            
+            {% endfor %}
+            <tr>
+      <th scope="row">Total Weight</th>
+      <td scope="col" colspan="2">{{ total_weight }}%</td>
+     
+    </tr>
+
+            
+            {% else %}
+            <p>No assessments available for this course.</p>
+            {% endif %}
+            </tbody>
+            </table>
+            <a href="{% url 'courses:create-assessment' course.id sections.0.id %}" class="btn btn-info btn-sm">add weight assessment</a>
+
+
 
   </div>
   </div>

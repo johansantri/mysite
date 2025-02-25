@@ -16,12 +16,13 @@ from datetime import date
 class AskOraForm(forms.ModelForm):
     class Meta:
         model = AskOra
-        fields = ['question_text', 'file_requirement', 'point']  # Menyesuaikan field dengan model AskOra
+        fields = ['title','question_text']  # Menyesuaikan field dengan model AskOra
         
         widgets = {
-            'question_text': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Masukkan soal di sini...', 'rows': 4}),
-            'file_requirement': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
-            'point': forms.NumberInput(attrs={'class': 'form-control', 'min': 1, 'max': 5}),
+            'title':forms.TextInput(attrs={'class':'form-control','placeholder':'title '}),
+            'question_text': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Insert Question hare', 'rows': 4}),
+           
+           
         }
 
 #form re-runs

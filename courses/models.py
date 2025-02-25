@@ -459,6 +459,59 @@ class GradeRange(models.Model):
             raise ValueError("min_grade tidak bisa lebih besar dari max_grade")
         super().save(*args, **kwargs)
 
+class MicroCredential(models.Model):
+    title = models.CharField(max_length=250)  # Misalnya "Digital Marketing"
+    slug = models.CharField(max_length=250, blank=True)
+    description = models.TextField()
+    required_courses = models.ManyToManyField(Course, related_name="microcredentials")  # Relasi ke Course
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    edited_on = models.DateTimeField(auto_now=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.title
+
+    def get_min_score(self, course):
+        """
+        Menghitung skor minimum yang dibutuhkan untuk mendapatkan microcredential
+        berdasarkan rentang nilai yang ada pada course.
+        """
+        # Ambil rentang nilai untuk course ini
+        grade_ranges = GradeRange.objects.filter(course=course).order_by('min_grade')
+
+        # Asumsikan bahwa grade range pertama adalah rentang nilai kelulusan
+        if grade_ranges.exists():
+            passing_grade_range = grade_ranges.first()  # Rentang nilai pertama (biasanya rentang untuk kelulusan)
+            return passing_grade_range.min_grade
+        return 0.0  # Jika tidak ada grade range, set skor minimum menjadi 0.0
+    
+class UserMicroProgress(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="micro_progress")
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="user_progress")
+    microcredential = models.ForeignKey(MicroCredential, on_delete=models.CASCADE, related_name="user_progress")
+    progress = models.FloatField(default=0.0)  # Persentase progres (0-100)
+    score = models.FloatField(default=0.0)    # Skor akhir course
+    completed = models.BooleanField(default=False)  # True kalau course selesai
+    completed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ('user', 'course', 'microcredential')  # Pastikan unik per user-course-micro
+
+    def __str__(self):
+        return f"{self.user} - {self.course} ({self.microcredential})"
+
+class UserMicroCredential(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="microcredentials")
+    microcredential = models.ForeignKey(MicroCredential, on_delete=models.CASCADE, related_name="users")
+    completed = models.BooleanField(default=False)  # True kalau semua course lulus
+    certificate_id = models.CharField(max_length=250, blank=True, null=True)  # ID sertifikat (PDF atau blockchain)
+    issued_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.user} - {self.microcredential}"
+    
+
 class Assessment(models.Model):
     name = models.CharField(max_length=255)
     section = models.ForeignKey(Section, related_name="assessments", on_delete=models.CASCADE)
@@ -511,16 +564,22 @@ class Choice(models.Model):
 
     def __str__(self):
         return self.text
+    
 class AskOra(models.Model):
     assessment = models.ForeignKey(Assessment, related_name='ask_oras', on_delete=models.CASCADE)
+    title = models.CharField(max_length=200,null=True, blank=True)
     question_text = models.TextField()  # Soal yang diberikan oleh dosen
-    file_requirement = models.FileField(upload_to='askora_files/', blank=True, null=True)  # File yang wajib diunggah (misalnya gambar, dokumen)
-    point = models.IntegerField()  # Nilai soal ini, misalnya 1-5
+    
+    response_deadline = models.DateTimeField()  # Menambahkan batas waktu untuk respon peserta
     created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
         return f"AskOra for {self.assessment.name}: {self.question_text[:50]}"  # Menampilkan nama assessment dan sebagian dari soal
+    def is_responsive(self):
+        """Mengecek apakah waktu respon masih tersedia"""
+        return self.response_deadline > timezone.now()
         
+
 class Submission(models.Model):
     askora = models.ForeignKey(AskOra, related_name='submissions', on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)  # Peserta yang mengirimkan jawaban
@@ -531,12 +590,25 @@ class Submission(models.Model):
 
     def __str__(self):
         return f"Submission for {self.askora.question_text[:50]} by {self.user.username}"
+
+    def clean(self):
+        """Validasi batas waktu respon."""
+        # Cek apakah submission dilakukan setelah batas waktu
+        if self.askora.response_deadline < timezone.now():
+            raise ValidationError(f"Your submission is past the deadline for this question.")
+        
+    def save(self, *args, **kwargs):
+        """Override save untuk memastikan validasi dijalankan sebelum menyimpan."""
+        self.clean()  # Jalankan validasi sebelum menyimpan
+        super().save(*args, **kwargs)
+
     
 class PeerReview(models.Model):
     submission = models.ForeignKey(Submission, related_name='peer_reviews', on_delete=models.CASCADE)
     reviewer = models.ForeignKey(User, on_delete=models.CASCADE)  # User yang memberikan review
     score = models.IntegerField(choices=[(1, 1), (2, 2), (3, 3), (4, 4), (5, 5)])  # Skor 1-5
     comment = models.TextField(blank=True, null=True)  # Komentar dari reviewer
+    weight = models.DecimalField(max_digits=3, decimal_places=2, default=1.0)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -544,26 +616,25 @@ class PeerReview(models.Model):
 
     def __str__(self):
         return f"Review by {self.reviewer.username} for {self.submission.user.username}'s submission"
+    
 class AssessmentScore(models.Model):
     submission = models.ForeignKey(Submission, related_name='assessment_scores', on_delete=models.CASCADE)
     final_score = models.DecimalField(max_digits=5, decimal_places=2, default=0)  # Skor akhir
     created_at = models.DateTimeField(auto_now_add=True)
 
     def calculate_final_score(self):
-        # Skor berdasarkan penilaian peer review
         peer_reviews = self.submission.peer_reviews.all()
         if peer_reviews:
-            total_score = sum(review.score for review in peer_reviews)
+            total_score = sum(review.score * review.weight for review in peer_reviews)
             peer_review_count = peer_reviews.count()
-            # Rata-rata skor peer review (bobot 50%)
             avg_peer_score = total_score / peer_review_count
         else:
             avg_peer_score = 0
         
-        # Skor berdasarkan jawaban peserta (bobot 50%) - Anda bisa menambahkan logika khusus
-        participant_score = 5  # Misalnya, ambil nilai maksimal (5) jika nilai ini diperoleh dari penilaian otomatis
+        # Skor jawaban peserta, misalnya 50% bobot untuk jawaban otomatis
+        participant_score = 5  # Misalnya nilai maksimum 5
 
-        # Menghitung skor akhir
+        # Menghitung skor akhir dengan bobot
         self.final_score = (participant_score * 0.5) + (avg_peer_score * 0.5)
         self.save()
 
