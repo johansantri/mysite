@@ -887,6 +887,28 @@ def generate_certificate(request, course_id):
     else:
         status = "Pass" if passing_criteria_met else "Fail"  # Cek apakah nilai keseluruhan memenuhi kriteria kelulusan
 
+     # Format hasil nilai per asesmen dan totalnya
+    assessment_results = []
+    for score in assessment_scores:
+        assessment_results.append({
+            'name': score['assessment'].name,  # Nama asesmen
+            'max_score': score['weight'],  # Nilai maksimal (berdasarkan bobot)
+            'score': score['score'],  # Nilai yang diperoleh
+        })
+
+    # Total nilai dan total skor
+    assessment_results.append({
+        'name': 'Total',
+        'max_score': total_max_score,  # Nilai maksimal total
+        'score': total_score  # Nilai total yang diperoleh
+    })
+
+    # Tentukan status kelulusan
+    if not all_assessments_submitted:
+        status = "Fail"  # Jika ada asesmen yang belum disubmit, status "Fail"
+    else:
+        status = "Pass" if passing_criteria_met else "Fail"  # Cek apakah nilai keseluruhan memenuhi kriteria kelulusan
+
 
     # Render HTML untuk sertifikat menggunakan template yang sudah dibuat
     html_content = render_to_string('learner/certificate_template.html', {
@@ -896,7 +918,8 @@ def generate_certificate(request, course_id):
         'user_grade': user_grade,
         'total_score': total_score,
         'user': request.user,
-        'issue_date': timezone.now().strftime('%Y-%m-%d')  # Tanggal penerbitan sertifikat
+        'issue_date': timezone.now().strftime('%Y-%m-%d'),  # Tanggal penerbitan sertifikat
+        'assessment_results': assessment_results,  # Hasil asesmen
     })
 
     # Menghasilkan PDF dari HTML yang dirender

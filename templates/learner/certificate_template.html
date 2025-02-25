@@ -60,7 +60,7 @@
             right: 20px;
             width: 60px;
             height: 60px;
-            background: #28a745; /* Hijau cerah */
+            background: #28a745;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -68,10 +68,42 @@
             box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
         }
         .checklist::before {
-            content: '\2713'; /* Unicode untuk checklist */
+            content: '\2713';
             font-size: 30px;
             color: white;
             font-weight: bold;
+        }
+        .transcript {
+            margin-top: 40px;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .transcript th, .transcript td {
+            padding: 12px 15px;
+            font-size: 16px;
+            color: #333;
+        }
+        .transcript th {
+            background-color: #2a4066;
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .transcript td {
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .transcript tr:nth-child(even) {
+            background-color: #f9f9f9; /* Zebra stripes lembut */
+        }
+        .transcript tr:hover {
+            background-color: #f0f4f8; /* Hover effect */
         }
         .footer {
             margin-top: 40px;
@@ -107,6 +139,25 @@
         <div class="checklist"></div>
         <div class="watermark">Certified</div>
         
+        <table class="transcript">
+            <thead>
+                <tr>
+                    <th>Assessment</th>
+                    <th>Grade</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for result in assessment_results %}
+                <tr>
+                    <td>{{ result.name }}</td>
+                    <td>{{ result.max_score }}</td>
+                    <td>{{ result.score | floatformat:2 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
         <div class="footer">
             <p>Issued on: {{ issue_date }}</p>
         </div>
