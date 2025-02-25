@@ -60,7 +60,10 @@ urlpatterns = [
     path('enroll/<int:course_id>/', views.enroll_course, name='enroll'),  # Define 'enroll' URL pattern
     path('add-comment/<int:material_id>/', views.add_comment, name='add_comment'),
     path('add-comment-course/<int:course_id>/', views.add_comment_course, name='add_comment_course'),  # Add this line
-    path('course/<int:idcourse>/section/<int:idsection>/assessment/<int:idassessment>/create/', views.create_askora, name='create_askora')
+    path('course/<int:idcourse>/section/<int:idsection>/assessment/<int:idassessment>/create/', views.create_askora, name='create_askora'),
+    #sertifikat
+    path('certificate/<int:course_id>/', views.generate_certificate, name='generate_certificate')
+
    
    
 ]

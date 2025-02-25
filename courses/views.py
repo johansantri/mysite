@@ -18,7 +18,7 @@ from django.views.decorators.cache import cache_page
 from django.urls import reverse
 from django.contrib import messages
 from django.db.models import F
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden,HttpResponse
 from django_ckeditor_5.widgets import CKEditor5Widget
 from django import forms
 from django.http import JsonResponse
@@ -34,8 +34,42 @@ import time
 import re
 from datetime import timedelta
 from django.db.models import Prefetch
+from weasyprint import HTML
+from django.template.loader import render_to_string
 # views.py
 
+
+
+
+def calculate_score_for_user_and_course(user, course):
+    # Implementasikan logika untuk menghitung skor berdasarkan asesmen yang ada
+    assessments = Assessment.objects.filter(course=course)
+    total_score = 0
+    total_max_score = 0
+
+    for assessment in assessments:
+        # Hitung skor untuk setiap asesmen berdasarkan jawaban yang benar
+        total_correct_answers = 0
+        total_questions = assessment.questions.count()
+
+        for question in assessment.questions.all():
+            answers = QuestionAnswer.objects.filter(question=question, user=user)
+            correct_answers = answers.filter(choice__is_correct=True).count()
+            total_correct_answers += correct_answers
+
+        score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
+        total_score += score_value
+        total_max_score += assessment.weight
+
+    if total_max_score > 0:
+        percentage = (total_score / total_max_score) * 100
+        # Simpan skor ke dalam Score
+        score = Score(user=user, course=course, score=total_score, total_questions=total_max_score, percentage=percentage)
+        score.save()
+        return score
+    return None
+
+    
 #ora create question
 @csrf_exempt
 def create_askora(request, idcourse, idsection, idassessment):
@@ -748,6 +782,130 @@ def course_learn(request, username, slug):
     return render(request, 'learner/course_learn.html', context)
 
 
+def generate_certificate(request, course_id):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+     # Ambil skor terakhir dari pengguna
+      # Lacak kemajuan pengguna
+    course = get_object_or_404(Course, id=course_id)
+  
+   
+
+    score = Score.objects.filter(user=request.user.username, course=course).order_by('-date').first()
+
+    user_grade = 'Fail'
+    if score:
+        score_percentage = (score.score / score.total_questions) * 100
+        user_grade = calculate_grade(score_percentage, course)
+
+    # Ambil semua asesmen untuk kursus ini
+    assessments = Assessment.objects.filter(section__courses=course)
+    score_entries = Score.objects.filter(user=request.user.username, course=course)
+
+    # Hitung nilai untuk setiap asesmen
+    assessment_scores = []
+    total_max_score = 0
+    total_score = 0
+    passing_criteria_met = True  # Flag untuk menentukan apakah lulus secara keseluruhan
+    all_assessments_submitted = True  # Flag untuk mengecek apakah semua asesmen sudah disubmit
+
+  
+    # Ambil GradeRange yang terkait dengan kursus
+    grade_range = GradeRange.objects.filter(course=course).all()
+     # Pastikan grade_range ditemukan, lalu ambil min_grade
+
+   
+
+
+    # Jika grade_range ditemukan, ambil min_grade dan max_grade
+    if grade_range:
+        # Ambil ambang batas kelulusan dari GradeRange
+        passing_threshold = grade_range.filter(name='Pass').first().min_grade  # Ambang batas kelulusan
+        max_grade = grade_range.filter(name='Pass').first().max_grade  # Nilai maksimal
+    else:
+        # Jika tidak ada data di GradeRange, kita bisa mengembalikan error atau mengatur nilai default
+        return render(request, 'error_template.html', {'message': 'Grade range not found for this course.'})
+
+    # Hitung total skor dan nilai maksimal
+    total_max_score = 0
+    total_score = 0
+
+    for assessment in assessments:
+        section = assessment.section
+        score_entry = score_entries.filter(section=section).first()
+
+        # Jika tidak ada skor yang diambil untuk asesmen ini, berarti asesmen belum disubmit
+        if not score_entry:
+            all_assessments_submitted = False
+
+        # Menghitung jawaban benar untuk setiap soal di asesmen
+        total_correct_answers = 0
+        total_questions = assessment.questions.count()  # Total jumlah soal
+
+        for question in assessment.questions.all():
+            answers = QuestionAnswer.objects.filter(question=question, user=request.user)
+
+            # Cek apakah jawaban yang dipilih benar
+            correct_answers = answers.filter(choice__is_correct=True).count()  # Filter berdasarkan is_correct dari Choice model
+            total_correct_answers += correct_answers
+
+        # Tentukan skor berdasarkan jumlah jawaban benar dan jumlah soal
+        if total_questions > 0:
+            score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
+        else:
+            score_value = Decimal(0)
+
+        # Batasi skor agar tidak melebihi bobot maksimal
+        score_value = min(score_value, Decimal(assessment.weight))
+
+        # Tambahkan skor asesmen ke dalam list
+        assessment_scores.append({
+            'assessment': assessment,
+            'score': score_value,
+            'weight': assessment.weight
+        })
+
+        # Hitung total skor dan nilai maksimal
+        total_max_score += assessment.weight
+        total_score += score_value
+
+    # Pastikan nilai total yang diperoleh dihitung sesuai dengan bobot
+    total_score = min(total_score, total_max_score)
+
+    # Hitung persentase keseluruhan
+    if total_max_score > 0:
+        overall_percentage = (total_score / total_max_score) * 100
+    else:
+        overall_percentage = 0
+
+    # Tentukan apakah passing threshold tercapai
+    passing_criteria_met = overall_percentage >= passing_threshold  # Status kelulusan berdasarkan ambang batas
+
+    # Tentukan status kelulusan
+    if not all_assessments_submitted:
+        status = "Fail"  # Jika ada asesmen yang belum disubmit, status "Fail"
+    else:
+        status = "Pass" if passing_criteria_met else "Fail"  # Cek apakah nilai keseluruhan memenuhi kriteria kelulusan
+
+
+    # Render HTML untuk sertifikat menggunakan template yang sudah dibuat
+    html_content = render_to_string('learner/certificate_template.html', {
+        'passing_threshold':passing_threshold,
+        'status': status,
+        'course': course,
+        'user_grade': user_grade,
+        'total_score': total_score,
+        'user': request.user,
+        'issue_date': timezone.now().strftime('%Y-%m-%d')  # Tanggal penerbitan sertifikat
+    })
+
+    # Menghasilkan PDF dari HTML yang dirender
+    pdf = HTML(string=html_content).write_pdf()
+    filename = f"certificate_{course.slug}.pdf"
+    # Mengembalikan PDF sebagai file unduhan
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    return response
 
 
 
