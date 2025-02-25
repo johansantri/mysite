@@ -3,47 +3,113 @@
 <head>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            text-align: center;
-            background-color: #f9f9f9;
+            font-family: 'Georgia', serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
         .certificate {
-            margin-top: 100px;
-            border: 5px solid #4CAF50;
-            padding: 30px;
-            width: 80%;
-            margin-left: 10%;
-            background-color: #fff;
+            width: 900px;
+            background: url('https://www.transparenttextures.com/patterns/subtle-white-feathers.png'), #ffffff;
+            border: 8px double #2a4066;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+        .header {
+            background-color: #2a4066;
+            color: white;
+            padding: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            border-radius: 10px 10px 0 0;
+            margin: -40px -40px 30px -40px;
         }
         .title {
-            font-size: 36px;
+            font-size: 40px;
             font-weight: bold;
-            color: #4CAF50;
+            color: #d4af37;
+            margin: 20px 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
         .content {
-            margin-top: 20px;
             font-size: 20px;
+            line-height: 2;
+            color: #333;
+            margin: 15px 0;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .content strong {
+            color: #2a4066;
+            font-weight: bold;
+        }
+        .checklist {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: #28a745; /* Hijau cerah */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+        .checklist::before {
+            content: '\2713'; /* Unicode untuk checklist */
+            font-size: 30px;
+            color: white;
+            font-weight: bold;
         }
         .footer {
-            margin-top: 50px;
+            margin-top: 40px;
             font-size: 16px;
-            color: #888;
+            color: #666;
+            border-top: 2px dashed #d4af37;
+            padding-top: 20px;
+        }
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 60px;
+            color: rgba(212, 175, 55, 0.1);
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
     <div class="certificate">
-        <div class="title">Certificate of Completion</div>
-        <p class="content">Congratulations, <strong>{{ user.username }}</strong>!</p>
-        <p class="content">You have successfully completed the course <br>
-        <strong>{{ course.course_name }}</strong>.</p>
-        <p class="content">Your Score: <strong>{{ total_score }}</strong></p>
-        <p class="content">Passing Threshold: <strong>{{ passing_threshold }}</strong></p>
-        <p class="content">Status: <strong>{{ status }}</strong></p>
-    </div>
+        <div class="header">Certificate of Achievement</div>
+        <div class="title">Completion Certificate</div>
+        
+        <div class="content">This is to certify that</div>
+        <div class="content"><strong>{{ user.username }}</strong></div>
+        <div class="content">has successfully completed the course</div>
+        <div class="content"><strong>{{ course.course_name }}</strong></div>
+        <div class="content">with a score of <strong>{{ total_score }}</strong></div>
+        <div class="content">Passing Threshold: <strong>{{ passing_threshold }}</strong></div>
+        <div class="content">Status: <strong>{{ status }}</strong></div>
 
-    <div class="footer">
-        <p>Issued on: {{ issue_date }}</p>
+        <div class="checklist"></div>
+        <div class="watermark">Certified</div>
+        
+        <div class="footer">
+            <p>Issued on: {{ issue_date }}</p>
+        </div>
     </div>
 </body>
 </html>
