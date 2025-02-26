@@ -62,7 +62,9 @@ urlpatterns = [
     path('add-comment-course/<int:course_id>/', views.add_comment_course, name='add_comment_course'),  # Add this line
     path('course/<int:idcourse>/section/<int:idsection>/assessment/<int:idassessment>/create/', views.create_askora, name='create_askora'),
     #sertifikat
-    path('certificate/<int:course_id>/', views.generate_certificate, name='generate_certificate')
+    path('certificate/<int:course_id>/', views.generate_certificate, name='generate_certificate'),
+    path('submit-answer/<int:askora_id>/', views.submit_answer, name='submit_answer'),
+    path('submit-peer-review/<int:submission_id>/', views.submit_peer_review, name='submit_peer_review')
 
    
    

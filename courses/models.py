@@ -12,6 +12,7 @@ from django.dispatch import receiver
 from django.db.models import Sum
 from datetime import date
 from decimal import Decimal
+from django.core.validators import MinValueValidator
 
 from django.utils import timezone
 
@@ -567,40 +568,30 @@ class Choice(models.Model):
     
 class AskOra(models.Model):
     assessment = models.ForeignKey(Assessment, related_name='ask_oras', on_delete=models.CASCADE)
-    title = models.CharField(max_length=200,null=True, blank=True)
-    question_text = models.TextField()  # Soal yang diberikan oleh dosen
-    
-    response_deadline = models.DateTimeField()  # Menambahkan batas waktu untuk respon peserta
+    title = models.CharField(max_length=200, null=True, blank=True)
+    question_text = models.TextField()
+    response_deadline = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
-    
-    def __str__(self):
-        return f"AskOra for {self.assessment.name}: {self.question_text[:50]}"  # Menampilkan nama assessment dan sebagian dari soal
     def is_responsive(self):
-        """Mengecek apakah waktu respon masih tersedia"""
         return self.response_deadline > timezone.now()
-        
 
 class Submission(models.Model):
-    askora = models.ForeignKey(AskOra, related_name='submissions', on_delete=models.CASCADE)
+    askora = models.ForeignKey(
+        'AskOra',  # Menghubungkan ke model AskOra
+        related_name='submissions',
+        on_delete=models.CASCADE
+    )
     user = models.ForeignKey(User, on_delete=models.CASCADE)  # Peserta yang mengirimkan jawaban
     answer_text = models.TextField()  # Jawaban teks dari peserta
     answer_file = models.FileField(upload_to='submissions/', blank=True, null=True)  # Jawaban file jika diperlukan
-    score = models.IntegerField(null=True, blank=True)  # Nilai yang diberikan pada jawaban, diisi oleh reviewer
-    submitted_at = models.DateTimeField(auto_now_add=True)
+    score = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])  # Nilai jawaban
+    submitted_at = models.DateTimeField(auto_now_add=True)  # Waktu pengiriman jawaban
 
-    def __str__(self):
-        return f"Submission for {self.askora.question_text[:50]} by {self.user.username}"
 
-    def clean(self):
-        """Validasi batas waktu respon."""
-        # Cek apakah submission dilakukan setelah batas waktu
-        if self.askora.response_deadline < timezone.now():
-            raise ValidationError(f"Your submission is past the deadline for this question.")
+
+    
         
-    def save(self, *args, **kwargs):
-        """Override save untuk memastikan validasi dijalankan sebelum menyimpan."""
-        self.clean()  # Jalankan validasi sebelum menyimpan
-        super().save(*args, **kwargs)
+    
 
     
 class PeerReview(models.Model):
@@ -639,7 +630,8 @@ class AssessmentScore(models.Model):
         self.save()
 
     def __str__(self):
-        return f"Score for {self.submission.user.username} in {self.submission.assessment.name}"
+        # Mengakses assessment melalui askora
+        return f"Score for {self.submission.user.username} in {self.submission.askora.assessment.name}"
 
     
 class Score(models.Model):

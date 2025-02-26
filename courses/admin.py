@@ -43,7 +43,19 @@ admin.site.register(Comment)
 admin.site.register(AskOra)
 admin.site.register(CourseComment)
 # Mendaftarkan model ke admin
-admin.site.register(Submission)
+# Mendefinisikan tampilan model Submission di Admin
+class SubmissionAdmin(admin.ModelAdmin):
+    list_display = ('user', 'askora', 'score', 'submitted_at')  # Kolom yang ditampilkan dalam daftar
+    list_filter = ('askora', 'score')  # Menambahkan filter berdasarkan askora dan score
+    search_fields = ('user__username', 'askora__title')  # Fitur pencarian berdasarkan username atau judul askora
+    ordering = ('-submitted_at',)  # Urutkan berdasarkan waktu pengiriman terbaru
+
+    # Jika ingin menampilkan beberapa field di form saat menambahkan atau mengedit Submission
+    fields = ('user', 'askora', 'answer_text', 'answer_file', 'score', 'submitted_at')
+    readonly_fields = ('submitted_at',)  # Menyatakan bahwa submitted_at hanya bisa dibaca (tidak bisa diedit)
+
+# Mendaftarkan model Submission di admin
+admin.site.register(Submission, SubmissionAdmin)
 admin.site.register(PeerReview)
 admin.site.register(AssessmentScore)
 

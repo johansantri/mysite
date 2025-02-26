@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from .forms import CoursePriceForm,AskOraForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from django.http import JsonResponse
-from .models import Course,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
+from .models import Course,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
 from django.contrib.auth.models import User, Universiti
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
@@ -491,20 +491,20 @@ def course_learn(request, username, slug):
     if request.user.username != username:
         return redirect('authentication:course_list')
 
-     # Cek apakah user sudah terdaftar di kursus ini
+    # Cek apakah user sudah terdaftar di kursus ini
     if not Enrollment.objects.filter(user=request.user, course=course).exists():
-        # Jika user belum terdaftar, arahkan ke halaman course detail
         return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
     
     course_name = course.course_name
 
-    # Ambil section, material, dan assessment
+    # Ambil section, material, assessment, dan askora
     sections = Section.objects.filter(courses=course).prefetch_related(
         Prefetch('materials', queryset=Material.objects.all()),
         Prefetch('assessments', queryset=Assessment.objects.all().prefetch_related(
             Prefetch('questions', queryset=Question.objects.all().prefetch_related(
                 Prefetch('choices', queryset=Choice.objects.all())
-            ))
+            )),
+            Prefetch('ask_oras', queryset=AskOra.objects.all())
         ))
     )
 
@@ -515,59 +515,59 @@ def course_learn(request, username, slug):
             combined_content.append(('material', material, section))
         for assessment in section.assessments.all():
             combined_content.append(('assessment', assessment, section))
+            # Tambahkan AskOra ke dalam combined_content
+            for askora in assessment.ask_oras.all():
+                combined_content.append(('askora', askora, section))
 
-    total_content = len(combined_content)  # Total konten (material + assessment)
+    total_content = len(combined_content)  # Total konten (material + assessment + askora)
 
     # Ambil ID konten saat ini dari parameter URL
     material_id = request.GET.get('material_id')
     assessment_id = request.GET.get('assessment_id')
+    askora_id = request.GET.get('askora_id')  # Tambahkan askora_id
 
     current_content = None
-    if not material_id and not assessment_id:
+    if not material_id and not assessment_id and not askora_id:
         current_content = ('material', combined_content[0][1], combined_content[0][2]) if combined_content else None
     elif material_id:
         material = get_object_or_404(Material, id=material_id)
         current_content = ('material', material, next((s for s in sections if material in s.materials.all()), None))
     elif assessment_id:
-        # Ambil objek assessment berdasarkan ID
         assessment = get_object_or_404(Assessment, id=assessment_id)
         current_content = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
+    elif askora_id:
+        askora = get_object_or_404(AskOra, id=askora_id)
+        current_content = ('askora', askora, next((s for s in sections if askora.assessment in s.assessments.all()), None))
 
-
-     # Handle comments and pagination based on current_content
+    # Handle comments and pagination based on current_content
     comments = None
-    page_comments = []  # Initialize the comments page to avoid errors
-
+    page_comments = []
     if current_content:
         if current_content[0] == 'material':
             material = current_content[1]
             comments = Comment.objects.filter(material=material, parent=None).order_by('-created_at')
         elif current_content[0] == 'assessment':
-            section = current_content[2]  # Get the section for the current assessment
+            section = current_content[2]
+            comments = Comment.objects.filter(material__section=section, parent=None).order_by('-created_at')
+        elif current_content[0] == 'askora':
+            section = current_content[2]
             comments = Comment.objects.filter(material__section=section, parent=None).order_by('-created_at')
 
-        # Paginate comments if available
         if comments:
-            paginator = Paginator(comments, 5)  # 5 comments per page
+            paginator = Paginator(comments, 5)
             page_number = request.GET.get('page')
             page_comments = paginator.get_page(page_number)
 
-
-
-    # Cek apakah current_content[1] adalah objek assessment yang valid
+    # Cek status assessment
     is_started = False
     is_expired = False
     remaining_time = 0
-
     if current_content and current_content[0] == 'assessment':
-        assessment = current_content[1]  # Pastikan ini adalah instance dari Assessment
+        assessment = current_content[1]
         session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
-
         if session:
             is_started = True
-            # Hitung waktu sisa berdasarkan waktu mulai dan waktu selesai
             remaining_time = int((session.end_time - timezone.now()).total_seconds())
-
             if remaining_time <= 0:
                 is_expired = True
                 remaining_time = 0
@@ -575,7 +575,7 @@ def course_learn(request, username, slug):
             is_started = False
 
     # Tentukan indeks konten saat ini
-    if current_content and current_content[0] in ['material', 'assessment']:
+    if current_content and current_content[0] in ['material', 'assessment', 'askora']:
         current_index = next((i for i, content in enumerate(combined_content) if content[0] == current_content[0] and content[1] == current_content[1]), -1)
     else:
         current_index = -1
@@ -583,22 +583,21 @@ def course_learn(request, username, slug):
     # Tentukan konten sebelumnya dan berikutnya
     previous_content = combined_content[current_index - 1] if current_index > 0 else None
     next_content = combined_content[current_index + 1] if current_index < len(combined_content) - 1 else None
-
-    # Tambahkan variabel untuk menentukan apakah ini adalah konten terakhir
     is_last_content = next_content is None
 
-    # Save track records for material and assessment
+    # Save track records
     if current_content:
         if current_content[0] == 'material':
             material = current_content[1]
-            # Check if the user has already read the material
             if not MaterialRead.objects.filter(user=request.user, material=material).exists():
                 MaterialRead.objects.create(user=request.user, material=material)
         elif current_content[0] == 'assessment':
             assessment = current_content[1]
-            # Check if the user has already completed the assessment
             if not AssessmentRead.objects.filter(user=request.user, assessment=assessment).exists():
                 AssessmentRead.objects.create(user=request.user, assessment=assessment)
+        elif current_content[0] == 'askora':
+            # Opsional: Tambahkan logika untuk melacak pembacaan AskOra
+            pass
 
     # Buat URL untuk navigasi
     previous_url = f"?{previous_content[0]}_id={previous_content[1].id}" if previous_content else "#"
@@ -606,151 +605,162 @@ def course_learn(request, username, slug):
 
     # Lacak kemajuan pengguna
     user_progress, created = CourseProgress.objects.get_or_create(user=request.user, course=course)
-    #perbarui jika konten yang diakses berbeda dari yang sebelumnya
     if current_content and (current_index + 1) > user_progress.progress_percentage / 100 * total_content:
-        user_progress.progress_percentage = (current_index + 1) / total_content * 100  # Hitung persentase kemajuan
-        user_progress.save()  # Simpan perubahan
+        user_progress.progress_percentage = (current_index + 1) / total_content * 100
+        user_progress.save()
 
     # Ambil skor terakhir dari pengguna
     score = Score.objects.filter(user=request.user.username, course=course).order_by('-date').first()
-
     user_grade = 'Fail'
     if score:
         score_percentage = (score.score / score.total_questions) * 100
         user_grade = calculate_grade(score_percentage, course)
 
-    # Ambil semua asesmen untuk kursus ini
+    # Hitung skor assessment
     assessments = Assessment.objects.filter(section__courses=course)
     score_entries = Score.objects.filter(user=request.user.username, course=course)
-
-    # Hitung nilai untuk setiap asesmen
     assessment_scores = []
     total_max_score = 0
     total_score = 0
-    passing_criteria_met = True  # Flag untuk menentukan apakah lulus secara keseluruhan
-    all_assessments_submitted = True  # Flag untuk mengecek apakah semua asesmen sudah disubmit
+    passing_criteria_met = True
+    all_assessments_submitted = True
 
-  
-    # Ambil GradeRange yang terkait dengan kursus
     grade_range = GradeRange.objects.filter(course=course).all()
-     # Pastikan grade_range ditemukan, lalu ambil min_grade
-
-   
-
-
-    # Jika grade_range ditemukan, ambil min_grade dan max_grade
     if grade_range:
-        # Ambil ambang batas kelulusan dari GradeRange
-        passing_threshold = grade_range.filter(name='Pass').first().min_grade  # Ambang batas kelulusan
-        max_grade = grade_range.filter(name='Pass').first().max_grade  # Nilai maksimal
+        passing_threshold = grade_range.filter(name='Pass').first().min_grade
+        max_grade = grade_range.filter(name='Pass').first().max_grade
     else:
-        # Jika tidak ada data di GradeRange, kita bisa mengembalikan error atau mengatur nilai default
         return render(request, 'error_template.html', {'message': 'Grade range not found for this course.'})
-
-    # Hitung total skor dan nilai maksimal
-    total_max_score = 0
-    total_score = 0
 
     for assessment in assessments:
         section = assessment.section
         score_entry = score_entries.filter(section=section).first()
-
-        # Jika tidak ada skor yang diambil untuk asesmen ini, berarti asesmen belum disubmit
         if not score_entry:
             all_assessments_submitted = False
 
-        # Menghitung jawaban benar untuk setiap soal di asesmen
         total_correct_answers = 0
-        total_questions = assessment.questions.count()  # Total jumlah soal
-
+        total_questions = assessment.questions.count()
         for question in assessment.questions.all():
             answers = QuestionAnswer.objects.filter(question=question, user=request.user)
+            total_correct_answers += answers.filter(choice__is_correct=True).count()
 
-            # Cek apakah jawaban yang dipilih benar
-            correct_answers = answers.filter(choice__is_correct=True).count()  # Filter berdasarkan is_correct dari Choice model
-            total_correct_answers += correct_answers
-
-        # Tentukan skor berdasarkan jumlah jawaban benar dan jumlah soal
+        score_value = Decimal(0)
         if total_questions > 0:
             score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
-        else:
-            score_value = Decimal(0)
-
-        # Batasi skor agar tidak melebihi bobot maksimal
         score_value = min(score_value, Decimal(assessment.weight))
 
-        # Tambahkan skor asesmen ke dalam list
         assessment_scores.append({
             'assessment': assessment,
             'score': score_value,
             'weight': assessment.weight
         })
-
-        # Hitung total skor dan nilai maksimal
         total_max_score += assessment.weight
         total_score += score_value
 
-    # Pastikan nilai total yang diperoleh dihitung sesuai dengan bobot
     total_score = min(total_score, total_max_score)
+    overall_percentage = (total_score / total_max_score) * 100 if total_max_score > 0 else 0
+    passing_criteria_met = overall_percentage >= passing_threshold
+    status = "Pass" if all_assessments_submitted and passing_criteria_met else "Fail"
 
-    # Hitung persentase keseluruhan
-    if total_max_score > 0:
-        overall_percentage = (total_score / total_max_score) * 100
-    else:
-        overall_percentage = 0
+    assessment_results = [
+        {'name': score['assessment'].name, 'max_score': score['weight'], 'score': score['score']}
+        for score in assessment_scores
+    ]
+    assessment_results.append({'name': 'Total', 'max_score': total_max_score, 'score': total_score})
 
-    # Tentukan apakah passing threshold tercapai
-    passing_criteria_met = overall_percentage >= passing_threshold  # Status kelulusan berdasarkan ambang batas
+    # Ambil data AskOra dan Submission untuk pengguna saat ini (opsional untuk debugging)
+    askoras = AskOra.objects.filter(assessment__section__courses=course)
+    # Tangani submissions dengan try-except
+    try:
+        submissions = Submission.objects.filter(
+            askora__in=AskOra.objects.filter(assessment__section__courses=course), 
+            user=request.user
+        )
+    except Exception as e:
+        print(f"Error fetching submissions: {e}")
+        submissions = []  # Gunakan list kosong jika query gagal
 
-    # Tentukan status kelulusan
-    if not all_assessments_submitted:
-        status = "Fail"  # Jika ada asesmen yang belum disubmit, status "Fail"
-    else:
-        status = "Pass" if passing_criteria_met else "Fail"  # Cek apakah nilai keseluruhan memenuhi kriteria kelulusan
+    # Ambil pertanyaan dan jawaban untuk assessment
+    questions = Question.objects.filter(assessment__in=assessments)
+    answered_questions = {q.id: QuestionAnswer.objects.filter(user=request.user, question=q).first() for q in questions}
 
-   
+    # Ambil submissions teman untuk direview
+    peer_submissions = Submission.objects.filter(
+        askora__in=AskOra.objects.filter(assessment__section__courses=course)
+    ).exclude(user=request.user).prefetch_related('peer_reviews')
 
-    # Format hasil nilai per asesmen dan totalnya
-    assessment_results = []
-    for score in assessment_scores:
-        assessment_results.append({
-            'name': score['assessment'].name,  # Nama asesmen
-            'max_score': score['weight'],  # Nilai maksimal (berdasarkan bobot)
-            'score': score['score'],  # Nilai yang diperoleh
+    # Tambahkan informasi apakah sudah direview oleh pengguna saat ini
+    peer_submissions_data = []
+    for submission in peer_submissions:
+        has_reviewed = submission.peer_reviews.filter(reviewer=request.user).exists()
+        assessment_score, created = AssessmentScore.objects.get_or_create(submission=submission)
+        peer_reviews = submission.peer_reviews.all()
+        assessment_weight = float(submission.askora.assessment.weight)
+        max_peer_score = 5.0
+        if peer_reviews:
+            total_score = sum(float(review.score) * float(review.weight) for review in peer_reviews)
+            peer_review_count = peer_reviews.count()
+            avg_peer_score = total_score / peer_review_count
+            scaled_peer_score = (avg_peer_score / max_peer_score) * assessment_weight
+            participant_score = assessment_weight
+            final_score = (participant_score * 0.5) + (scaled_peer_score * 0.5)
+        else:
+            final_score = assessment_weight * 0.5
+        try:
+            assessment_score.final_score = final_score
+            assessment_score.save()
+        except Exception as e:
+            print(f"Error saving assessment score: {e}")
+            final_score = float(assessment_score.final_score or 0.0)
+        peer_submissions_data.append({
+            'submission': submission,
+            'has_reviewed': has_reviewed,
+            'final_score': final_score
         })
 
-    # Total nilai dan total skor
-    assessment_results.append({
-        'name': 'Total',
-        'max_score': total_max_score,  # Nilai maksimal total
-        'score': total_score  # Nilai total yang diperoleh
-    })
-
-    # Tentukan status kelulusan
-    if not all_assessments_submitted:
-        status = "Fail"  # Jika ada asesmen yang belum disubmit, status "Fail"
-    else:
-        status = "Pass" if passing_criteria_met else "Fail"  # Cek apakah nilai keseluruhan memenuhi kriteria kelulusan
-
-    
-  
-
-   # Get all assessments for this course
+    # Hitung skor assessment (multiple choice dan AskOra)
     assessments = Assessment.objects.filter(section__courses=course)
+    score_entries = Score.objects.filter(user=request.user.username, course=course)
+    assessment_scores = []
+    total_max_score = 0
+    total_score = 0
 
-    # Get the assessment_id from the query parameters (if present)
-    assessment_id = request.GET.get('assessment_id')
-    
-    if assessment_id:
-        # Filter questions based on the selected assessment
-        assessment = assessments.get(id=assessment_id)
-        questions = Question.objects.filter(assessment=assessment)
-    else:
-        # Default behavior if no assessment is provided in the URL
-        questions = Question.objects.filter(assessment__in=assessments)
+    for assessment in assessments:
+        score_value = Decimal(0)
+        # Skor Multiple Choice
+        total_correct_answers = 0
+        total_questions = assessment.questions.count()
+        if total_questions > 0:  # Assessment adalah multiple choice
+            for question in assessment.questions.all():
+                answers = QuestionAnswer.objects.filter(question=question, user=request.user)
+                total_correct_answers += answers.filter(choice__is_correct=True).count()
+            score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
+        else:  # Assessment adalah AskOra (tidak ada questions)
+            askora_submissions = Submission.objects.filter(
+                askora__assessment=assessment,
+                user=request.user
+            )
+            if askora_submissions.exists():
+                # Ambil submission terakhir untuk AskOra ini
+                latest_submission = askora_submissions.order_by('-submitted_at').first()
+                assessment_score = AssessmentScore.objects.filter(submission=latest_submission).first()
+                if assessment_score:
+                    score_value = Decimal(assessment_score.final_score)
 
-    # Create a dictionary of answered questions
-    answered_questions = {q.id: QuestionAnswer.objects.filter(user=request.user, question=q).first() for q in questions}
+        score_value = min(score_value, Decimal(assessment.weight))
+        assessment_scores.append({
+            'assessment': assessment,
+            'score': score_value,
+            'weight': assessment.weight
+        })
+        total_max_score += assessment.weight
+        total_score += score_value
+
+    assessment_results = [
+        {'name': score['assessment'].name, 'max_score': score['weight'], 'score': score['score']}
+        for score in assessment_scores
+    ]
+    assessment_results.append({'name': 'Total', 'max_score': total_max_score, 'score': total_score})
 
 
     context = {
@@ -762,24 +772,91 @@ def course_learn(request, username, slug):
         'next_url': next_url,
         'course_progress': user_progress.progress_percentage,
         'user_grade': user_grade,
-        'assessment_results': assessment_results,  # Hasil asesmen
+        'assessment_results': assessment_results,
         'total_score': total_score,
         'overall_percentage': overall_percentage,
-        'total_weight': total_max_score,  # Nilai maksimal total
-        'status': status,  # Status kelulusan
-        'is_started': is_started,  # Status apakah soal sudah dimulai
-        'is_expired': is_expired,  # Status apakah waktu sudah habis
-        'remaining_time': remaining_time,  # Waktu yang tersisa
-        'max_grade': max_grade, #Tambahkan max_grade ke context
-        'passing_threshold':passing_threshold,  # minimal ambang batas
-        'is_last_content':is_last_content,
-        'comments': page_comments,  # Pass paginated comments to the template
-        'material': material if current_content and current_content[0] == 'material' else None,
-        'assessment': assessment if current_content and current_content[0] == 'assessment' else None,
+        'total_weight': total_max_score,
+        'status': status,
+        'is_started': is_started,
+        'is_expired': is_expired,
+        'remaining_time': remaining_time,
+        'max_grade': max_grade,
+        'passing_threshold': passing_threshold,
+        'is_last_content': is_last_content,
+        'comments': page_comments,
+        'material': current_content[1] if current_content and current_content[0] == 'material' else None,
+        'assessment': current_content[1] if current_content and current_content[0] == 'assessment' else None,
+        'askora': current_content[1] if current_content and current_content[0] == 'askora' else None,
         'answered_questions': answered_questions,
+        'askoras': askoras,  # Tambahkan untuk debugging atau penggunaan di template
+        'submissions': submissions,  # Tambahkan untuk debugging atau penggunaan di template
+        'peer_submissions_data': peer_submissions_data,  # Tambahkan ini untuk review teman
     }
-    print(section)
+  
     return render(request, 'learner/course_learn.html', context)
+
+
+
+def submit_peer_review(request, submission_id):
+    submission = get_object_or_404(Submission, id=submission_id)
+    if request.method == 'POST':
+        if not PeerReview.objects.filter(submission=submission, reviewer=request.user).exists():
+            try:
+                peer_review = PeerReview(
+                    submission=submission,
+                    reviewer=request.user,
+                    score=int(request.POST.get('score')),
+                    comment=request.POST.get('comment'),
+                    weight=1.0
+                )
+                peer_review.save()
+                print(f"Peer review saved for Submission {submission.id} by {request.user.username}")
+
+                # Hitung skor akhir secara manual
+                assessment_score, created = AssessmentScore.objects.get_or_create(submission=submission)
+                peer_reviews = submission.peer_reviews.all()
+                if peer_reviews:
+                    total_score = sum(float(review.score) * float(review.weight) for review in peer_reviews)
+                    peer_review_count = peer_reviews.count()
+                    avg_peer_score = total_score / peer_review_count
+                    participant_score = 5.0
+                    assessment_score.final_score = (participant_score * 0.5) + (avg_peer_score * 0.5)
+                else:
+                    assessment_score.final_score = 2.5
+                assessment_score.save()
+                print(f"Final score updated: {assessment_score.final_score}")
+            except Exception as e:
+                print(f"Error in peer review process for Submission {submission.id}: {e}")
+    
+    assessment = submission.askora.assessment
+    course_slug = assessment.section.courses.slug
+    return redirect(
+        reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': course_slug}) + 
+        f"?assessment_id={assessment.id}"
+    )
+
+def submit_answer(request, askora_id):
+    askora = get_object_or_404(AskOra, id=askora_id)
+    if request.method == 'POST' and askora.is_responsive():
+        try:
+            submission = Submission(
+                askora=askora,
+                user=request.user,
+                answer_text=request.POST.get('answer_text'),
+                answer_file=request.FILES.get('answer_file')
+            )
+            submission.save()
+            print(f"Submission saved for AskOra {askora.id}")
+        except Exception as e:
+            print(f"Error saving submission: {e}")
+    
+    # Redirect ke course_learn dengan assessment_id
+    assessment = askora.assessment
+    course_slug = assessment.section.courses.slug  # Ganti .first() dengan akses langsung
+    return redirect(
+        reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': course_slug}) + 
+        f"?assessment_id={assessment.id}"
+    )
 
 
 def generate_certificate(request, course_id):

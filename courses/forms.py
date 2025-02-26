@@ -11,19 +11,27 @@ from django.core.files.base import ContentFile
 from PIL import Image as PILImage
 import io
 from datetime import date
+from django.core.exceptions import ValidationError
+from django.utils import timezone
 
 
 class AskOraForm(forms.ModelForm):
     class Meta:
         model = AskOra
-        fields = ['title','question_text']  # Menyesuaikan field dengan model AskOra
+        fields = ['title','question_text','response_deadline']  # Menyesuaikan field dengan model AskOra
         
         widgets = {
             'title':forms.TextInput(attrs={'class':'form-control','placeholder':'title '}),
             'question_text': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Insert Question hare', 'rows': 4}),
+            'response_deadline': forms.DateTimeInput(attrs={'class': 'form-control', 'placeholder': 'Select response deadline', 'type': 'datetime-local'})
            
            
         }
+        def clean_response_deadline(self):
+            response_deadline = self.cleaned_data['response_deadline']
+            if response_deadline < timezone.now():
+                raise ValidationError("The response deadline cannot be in the past.")
+            return response_deadline
 
 #form re-runs
 class CourseRerunForm(forms.ModelForm):
