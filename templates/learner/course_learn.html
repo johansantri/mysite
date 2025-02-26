@@ -12,30 +12,72 @@
                 <div class="settings-widget">
                     <div class="settings-menu">
                         <h3 class="h5"> <a href="{% url 'authentication:dashbord'%}">Course Content</a> </h3> 
-                        <ul>
-                            {% for section in sections %}
+                        <ul class="nav flex-column list-unstyled ms-3">
+                            {% for i in sections %}
                                 <li class="nav-item">
-                                    
-                                    <p>{{ section.title }}</p>
+                                    <p>{{ i.title }}</p>
                                     <ul>
-                                        {% for material in section.materials.all %}
-                                            <li>
-                                                <a class="nav-link" href="?material_id={{ material.id }}" style="color:rgb(36, 117, 54);">
-                                                    <i class="bx bx-file"></i> {{ material.title }}
-                                                </a>
-                                            </li>
-                                        {% endfor %}
-                                        {% for assessment in section.assessments.all %}
-                                            <li>
-                                                <a class="nav-link" href="?assessment_id={{ assessment.id }}" style="color:rgb(36, 117, 54);">
-                                                    <i class="bx bx-pencil"></i> {{ assessment.name }}
-                                                </a>
-                                            </li>
-                                        {% empty %}
-                                        {% endfor %}
+                                        {% if not i.children.all %}
+                                            <!-- If the section has no children (no subsections) -->
+                                            {% for material in i.materials.all %}
+                                                <li>
+                                                    <a class="nav-link" href="?material_id={{ material.id }}" style="color:rgb(36, 117, 54);">
+                                                        <i class="bx bx-file"></i> {{ material.title }}
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+
+                                            {% for assessment in i.assessments.all %}
+                                                <li>
+                                                    <a class="nav-link" href="?assessment_id={{ assessment.id }}" style="color:rgb(36, 117, 54);">
+                                                        <i class="bx bx-pencil"></i> {{ assessment.name }}
+                                                    </a>
+                                                </li>
+                                            {% empty %}
+                                                <li>No assessments available for this section.</li>
+                                            {% endfor %}
+                                            
+                                        {% else %}
+                                            <!-- If the section has children (subsections) -->
+                                            {% for obj in i.children.all %}
+                                                <li>
+                                                    <p>{{ obj.title }}</p>
+                                                    <ul>
+                                                        {% if not obj.children.all %}
+                                                            <!-- If the subsection has no further children -->
+                                                            {% for material in obj.materials.all %}
+                                                                <li>
+                                                                    <a class="nav-link" href="?material_id={{ material.id }}" style="color:rgb(36, 117, 54);">
+                                                                        <i class="bx bx-file"></i> {{ material.title }}
+                                                                    </a>
+                                                                </li>
+                                                            {% endfor %}
+
+                                                            {% for assessment in obj.assessments.all %}
+                                                                <li>
+                                                                    <a class="nav-link" href="?assessment_id={{ assessment.id }}" style="color:rgb(36, 117, 54);">
+                                                                        <i class="bx bx-pencil"></i> {{ assessment.name }}
+                                                                    </a>
+                                                                </li>
+                                                            {% empty %}
+                                                                <li>No assessments available for this subsection.</li>
+                                                            {% endfor %}
+                                                        {% else %}
+                                                            <!-- If the subsection has further children (subsubsections) -->
+                                                            {% for subobj in obj.children.all %}
+                                                                <li>
+                                                                    <a href="javascript:void(0);" class="form-control">A.1.1 {{ subobj.title }}</a>
+                                                                </li>
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </ul>
+                                                </li>
+                                            {% endfor %}
+                                        {% endif %}
                                     </ul>
                                 </li>
                             {% endfor %}
+
                             <hr>
                             <p class="fw-bold">Progress: {{ course_progress |floatformat:0 }}%</p>
                             <div class="progress">
@@ -64,7 +106,7 @@
                                             <span class="text-success fw-bold">Congratulations 🎈 {{ request.user.username }}! 🎉</span>
                                             <p class="mb-1">Passing Threshold: <span class="fw-bold">{{ passing_threshold }}</span></p>
                                             <p class="mb-1">Your Score: <span class="fw-bold">{{ total_score | floatformat:2 }}</span></p>
-                                            <a href="{% url 'courses:generate_certificate' course.id %}" class="btn btn-success btn-sm">cert</a>
+                                            <a href="{% url 'courses:generate_certificate' course.id %}" class="btn btn-success btn-sm">certificate</a>
                                         </div>
                                    
                                     {% endif %}
