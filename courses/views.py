@@ -499,12 +499,14 @@ def course_learn(request, username, slug):
     course_name = course.course_name
 
     # Ambil section, material, dan assessment
-   
-
-    #untuk menampilkan section
-    sections = Section.objects.filter(
-            parent=None, courses=course
-        ).prefetch_related('materials', 'assessments')  # Add all necessary relationships
+    sections = Section.objects.filter(courses=course).prefetch_related(
+        Prefetch('materials', queryset=Material.objects.all()),
+        Prefetch('assessments', queryset=Assessment.objects.all().prefetch_related(
+            Prefetch('questions', queryset=Question.objects.all().prefetch_related(
+                Prefetch('choices', queryset=Choice.objects.all())
+            ))
+        ))
+    )
 
     # Buat daftar konten gabungan dengan informasi section
     combined_content = []
