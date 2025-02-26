@@ -1281,27 +1281,28 @@ def course_lms_detail(request, id, slug):
     ).exclude(id=course.id)[:5]
 
     # Get all comments for the course, excluding replies (parent is None)
-    # Mengambil komentar utama (parent=None) beserta balasannya
     comments = CourseComment.objects.filter(course=course, parent=None).order_by('-created_at')
 
-    # Mengambil balasan (sub-reply) untuk setiap komentar
+    # Get replies for each comment
     for comment in comments:
         comment.replies = CourseComment.objects.filter(parent=comment).order_by('-created_at')
         for reply in comment.replies:
             reply.sub_replies = CourseComment.objects.filter(parent=reply).order_by('-created_at')
 
+    section_data = Section.objects.filter(
+            parent=None, courses=course
+        ).prefetch_related('materials', 'assessments')  # Add all necessary relationships
+
     
 
-
-    # Render the course detail page with the similar courses and enrollment status
+    # Render the course detail page with the similar courses, enrollment status, sections, materials, and assessments
     return render(request, 'home/course_detail.html', {
         'course': course,
-        'is_enrolled': is_enrolled,  # Pass the enrollment status to the template
+        'is_enrolled': is_enrolled,
         'similar_courses': similar_courses,
-        'comments': comments
-        
+        'comments': comments,
+        'section_data': section_data,  # Pass sections, materials, and assessments
     })
-
 
 def course_instructor(request,id):
     if not request.user.is_authenticated:

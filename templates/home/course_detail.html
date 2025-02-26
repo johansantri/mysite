@@ -80,195 +80,86 @@
 							</div>
 							<!-- /Overview -->
 							
+
 							<!-- Course Content -->
 							<div class="card content-sec">
 								<div class="card-body">
 									<div class="row">
-										<div class="col-sm-6">
-											<h5 class="subs-title">Course Content</h5>
-										</div>
-										<div class="col-sm-6 text-sm-end">
-											<h6>92 Lectures 10:56:11</h6>
-										</div>
+									<div class="col-sm-6">
+										<h5 class="subs-title">Course Content</h5>
 									</div>
-									<div class="course-card">
-										<h6 class="cou-title">
-											<a class="collapsed" data-bs-toggle="collapse" href="#collapseOne" aria-expanded="false">In which areas do you operate?</a>
-										</h6>
-										<div id="collapseOne" class="card-collapse collapse" style="">
-											<ul>
-												<li>
-													<p><img src="assets/img/icon/play.svg" alt="Img" class="me-2">Lecture1.1 Introduction to the User Experience Course</p>
-													<div>
-														<a href="javascript:void(0);">Preview</a>
-														<span>02:53</span>
-													</div>
-												</li>
-												<li>
-													<p><img src="assets/img/icon/play.svg" alt="Img" class="me-2">Lecture1.2 Exercise: Your first design challenge</p>
-													<div>
-														<a href="javascript:void(0);">Preview</a>
-														<span>02:53</span>
-													</div>
-												</li>
-												<li>
-													<p><img src="assets/img/icon/play.svg" alt="Img" class="me-2">Lecture1.3 How to solve the previous exercise</p>
-													<div>
-														<a href="javascript:void(0);">Preview</a>
-														<span>02:53</span>
-													</div>
-												</li>
-												<li>
-													<p><img src="assets/img/icon/play.svg" alt="Img" class="me-2">Lecture1.3 How to solve the previous exercise</p>
-													<div>
-														<a href="javascript:void(0);">Preview</a>
-														<span>02:53</span>
-													</div>
-												</li>
-												<li>
-													<p><img src="assets/img/icon/play.svg" alt="Img" class="me-2">Lecture1.5 How to use text layers effectively</p>
-													<div>
-														<a href="javascript:void(0);">Preview</a>
-														<span>02:53</span>
-													</div>
-												</li>
-											</ul>
-										</div>
+									<div class="col-sm-6 text-sm-end">
+										<h6>92 Lectures 10:56:11</h6>
 									</div>
-									<div class="course-card">
-										<h6 class="cou-title">
-											<a class="collapsed" data-bs-toggle="collapse" href="#course2" aria-expanded="false">The Brief</a>
-										</h6>
-										<div id="course2" class="card-collapse collapse" style="">
-											<ul>
-												<li>
-													<p><img src="assets/img/icon/play.svg" alt="Img" class="me-2">Lecture1.1 Introduction to the User Experience Course</p>
-													<div>
-														<a href="javascript:void(0);">Preview</a>
-														<span>02:53</span>
-													</div>
-												</li>
-												<li>
-													<p><img src="assets/img/icon/play.svg" alt="Img" class="me-2">Lecture1.2 Exercise: Your first design challenge</p>
-													<div>
-														<a href="javascript:void(0);">Preview</a>
-														<span>02:53</span>
-													</div>
-												</li>
-												<li>
-													<p><img src="assets/img/icon/play.svg" alt="Img" class="me-2">Lecture1.3 How to solve the previous exercise</p>
-													<div>
-														<a href="javascript:void(0);">Preview</a>
-														<span>02:53</span>
-													</div>
-												</li>
-												<li>
-													<p><img src="assets/img/icon/play.svg" alt="Img" class="me-2">Lecture1.3 How to solve the previous exercise</p>
-													<div>
-														<a href="javascript:void(0);">Preview</a>
-														<span>02:53</span>
-													</div>
-												</li>
-												<li>
-													<p><img src="assets/img/icon/play.svg" alt="Img" class="me-2">Lecture1.5 How to use text layers effectively</p>
-													<div>
-														<a href="javascript:void(0);">Preview</a>
-														<span>02:53</span>
-													</div>
-												</li>
-											</ul>
-										</div>
 									</div>
-									<div class="course-card">
-										<h6 class="cou-title">
-											<a class="collapsed" data-bs-toggle="collapse" href="#course3" aria-expanded="false">Wireframing Low Fidelity</a>
-										</h6>
-										<div id="course3" class="card-collapse collapse" style="">
-											<ul>
-												<li>
-													<p><img src="assets/img/icon/play.svg" alt="Img" class="me-2">Lecture1.1 Introduction to the User Experience Course</p>
+
+									{% for i in section_data %}
+									{% if not i.children.all %}
+										<!-- If the section is empty -->
+										<p>jika section kosong mulai dari sini</p>
+									{% else %}
+										{% for obj in i.children.all %}
+										{% if not obj.children.all %}
+											<div class="course-card">
+											<h6 class="cou-title">
+												<a class="collapsed" data-bs-toggle="collapse" href="#course-{{obj.id}}" aria-expanded="false">
+												{{ obj.title }}
+												</a>
+											</h6>
+											<div id="course-{{obj.id}}" class="card-collapse collapse">
+												<ul>
+												{% for material in obj.materials.all %}
+													<li>
+													<p><i class="fa fa-file" aria-hidden="true"></i>  {{ material.title }}</p>
 													<div>
 														<a href="javascript:void(0);">Preview</a>
-														<span>02:53</span>
+														<span>{{ material.duration }}</span>
 													</div>
-												</li>
-												<li>
-													<p><img src="assets/img/icon/play.svg" alt="Img" class="me-2">Lecture1.2 Exercise: Your first design challenge</p>
+													</li>
+												{% empty %}
+													<li>No materials available for this section.</li>
+												{% endfor %}
+
+												{% for assesment in obj.assessments.all %}
+													<li>
+													<p><i class="fa fa-check" aria-hidden="true"></i>  {{ assesment.name | safe }}</p>
 													<div>
-														<a href="javascript:void(0);">Preview</a>
-														<span>02:53</span>
+														
+														<span>{{ assesment.weight }} %</span>
 													</div>
-												</li>
-												<li>
-													<p><img src="assets/img/icon/play.svg" alt="Img" class="me-2">Lecture1.3 How to solve the previous exercise</p>
-													<div>
-														<a href="javascript:void(0);">Preview</a>
-														<span>02:53</span>
-													</div>
-												</li>
-												<li>
-													<p><img src="assets/img/icon/play.svg" alt="Img" class="me-2">Lecture1.3 How to solve the previous exercise</p>
-													<div>
-														<a href="javascript:void(0);">Preview</a>
-														<span>02:53</span>
-													</div>
-												</li>
-												<li>
-													<p><img src="assets/img/icon/play.svg" alt="Img" class="me-2">Lecture1.5 How to use text layers effectively</p>
-													<div>
-														<a href="javascript:void(0);">Preview</a>
-														<span>02:53</span>
-													</div>
-												</li>
-											</ul>
-										</div>
-									</div>
-									<div class="course-card">
-										<h6 class="cou-title mb-0">
-											<a class="collapsed" data-bs-toggle="collapse" href="#coursefour" aria-expanded="false">Type, Color & Icon Introduction</a>
-										</h6>
-										<div id="coursefour" class="card-collapse collapse" style="">
-											<ul>
-												<li>
-													<p><img src="assets/img/icon/play.svg" alt="Img" class="me-2">Lecture4.1 Introduction to the User Experience Course</p>
-													<div>
-														<a href="javascript:void(0);">Preview</a>
-														<span>02:53</span>
-													</div>
-												</li>
-												<li>
-													<p><img src="assets/img/icon/play.svg" alt="Img" class="me-2">Lecture4.2 Exercise: Your first design challenge</p>
-													<div>
-														<a href="javascript:void(0);">Preview</a>
-														<span>02:53</span>
-													</div>
-												</li>
-												<li>
-													<p><img src="assets/img/icon/play.svg" alt="Img" class="me-2">Lecture4.3 How to solve the previous exercise</p>
-													<div>
-														<a href="javascript:void(0);">Preview</a>
-														<span>02:53</span>
-													</div>
-												</li>
-												<li>
-													<p><img src="assets/img/icon/play.svg" alt="Img" class="me-2">Lecture4.4 How to solve the previous exercise</p>
-													<div>
-														<a href="javascript:void(0);">Preview</a>
-														<span>02:53</span>
-													</div>
-												</li>
-												<li>
-													<p><img src="assets/img/icon/play.svg" alt="Img" class="me-2">Lecture4.5 How to use text layers effectively</p>
-													<div>
-														<a href="javascript:void(0);">Preview</a>
-														<span>02:53</span>
-													</div>
-												</li>
-											</ul>
-										</div>
-									</div>
+													</li>
+												{% empty %}
+													<li>No assessment available for this section.</li>
+												{% endfor %}
+												</ul>
+											</div>
+											</div>
+										{% else %}
+											<div class="course-card">
+											<h6 class="cou-title">
+												<a class="collapsed" data-bs-toggle="collapse" href="#course-{{obj.id}}" aria-expanded="false">
+												{{ obj.title }}
+												</a>
+											</h6>
+											<div id="course-{{obj.id}}" class="card-collapse collapse">
+												<ul>
+												{% for subobj in obj.children.all %}
+													<li>
+													<p><img src="assets/img/icon/play.svg" alt="Img" class="me-2">A.1.1 {{ subobj.title }}</p>
+													</li>
+												{% endfor %}
+												<a href="javascript:void(0);" class="btn">Add Article</a>
+												<a href="javascript:void(0);" class="btn me-0">Add Description</a>
+												</ul>
+											</div>
+											</div>
+										{% endif %}
+										{% endfor %}
+									{% endif %}
+									{% endfor %}
 								</div>
-							</div>
+								</div>
+
 							<!-- /Course Content -->
 							<h2>Similar Courses with <strong>{{ course.instructor.user.first_name }}</strong></h2>
 
