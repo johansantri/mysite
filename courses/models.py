@@ -644,7 +644,7 @@ class Score(models.Model):
     time_taken = models.DurationField(null=True, blank=True)  # Store quiz duration
     date = models.DateTimeField(auto_now_add=True)
     submitted = models.BooleanField(default=False)
-
+    
     def __str__(self):
         return f"{self.user} - {self.course} - {self.score}/{self.total_questions} ({self.grade})"
     
