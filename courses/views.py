@@ -515,27 +515,27 @@ def course_learn(request, username, slug):
             combined_content.append(('material', material, section))
         for assessment in section.assessments.all():
             combined_content.append(('assessment', assessment, section))
-            # Tambahkan AskOra ke dalam combined_content
-            for askora in assessment.ask_oras.all():
-                combined_content.append(('askora', askora, section))
 
-    total_content = len(combined_content)  # Total konten (material + assessment + askora)
+    total_content = len(combined_content)
 
     # Ambil ID konten saat ini dari parameter URL
     material_id = request.GET.get('material_id')
     assessment_id = request.GET.get('assessment_id')
-    
 
+    # Tentukan current_content
     current_content = None
     if not material_id and not assessment_id:
-        current_content = ('material', combined_content[0][1], combined_content[0][2]) if combined_content else None
+        current_content = combined_content[0] if combined_content else None
     elif material_id:
         material = get_object_or_404(Material, id=material_id)
         current_content = ('material', material, next((s for s in sections if material in s.materials.all()), None))
     elif assessment_id:
         assessment = get_object_or_404(Assessment, id=assessment_id)
         current_content = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
-    
+
+    # Debugging untuk memastikan konten terdeteksi dengan benar
+    print("Combined Content:", [(c[0], c[1].id, c[2].id) for c in combined_content])
+    print("Current Content:", (current_content[0], current_content[1].id, current_content[2].id) if current_content else None)
 
     # Handle comments and pagination based on current_content
     comments = None
@@ -545,9 +545,6 @@ def course_learn(request, username, slug):
             material = current_content[1]
             comments = Comment.objects.filter(material=material, parent=None).order_by('-created_at')
         elif current_content[0] == 'assessment':
-            section = current_content[2]
-            comments = Comment.objects.filter(material__section=section, parent=None).order_by('-created_at')
-        elif current_content[0] == 'askora':
             section = current_content[2]
             comments = Comment.objects.filter(material__section=section, parent=None).order_by('-created_at')
 
@@ -573,15 +570,27 @@ def course_learn(request, username, slug):
             is_started = False
 
     # Tentukan indeks konten saat ini
-    if current_content and current_content[0] in ['material', 'assessment', 'askora']:
-        current_index = next((i for i, content in enumerate(combined_content) if content[0] == current_content[0] and content[1] == current_content[1]), -1)
-    else:
-        current_index = -1
+    current_index = -1
+    if current_content:
+        for i, content in enumerate(combined_content):
+            if (content[0] == current_content[0] and 
+                content[1].id == current_content[1].id and 
+                content[2].id == current_content[2].id):
+                current_index = i
+                break
+        if current_index == -1:
+            print("Warning: Current content not found in combined_content, defaulting to first content")
+            current_index = 0
+            current_content = combined_content[0] if combined_content else None
 
     # Tentukan konten sebelumnya dan berikutnya
     previous_content = combined_content[current_index - 1] if current_index > 0 else None
-    next_content = combined_content[current_index + 1] if current_index < len(combined_content) - 1 else None
+    next_content = combined_content[current_index + 1] if current_index < len(combined_content) - 1 and current_index != -1 else None
     is_last_content = next_content is None
+
+    # Buat URL untuk navigasi
+    previous_url = "#" if not previous_content else f"?{previous_content[0]}_id={previous_content[1].id}"
+    next_url = "#" if not next_content else f"?{next_content[0]}_id={next_content[1].id}"
 
     # Save track records
     if current_content:
@@ -593,13 +602,6 @@ def course_learn(request, username, slug):
             assessment = current_content[1]
             if not AssessmentRead.objects.filter(user=request.user, assessment=assessment).exists():
                 AssessmentRead.objects.create(user=request.user, assessment=assessment)
-        elif current_content[0] == 'askora':
-            # Opsional: Tambahkan logika untuk melacak pembacaan AskOra
-            pass
-
-    # Buat URL untuk navigasi
-    previous_url = f"?{previous_content[0]}_id={previous_content[1].id}" if previous_content else "#"
-    next_url = f"?{next_content[0]}_id={next_content[1].id}" if next_content else "#"
 
     # Lacak kemajuan pengguna
     user_progress, created = CourseProgress.objects.get_or_create(user=request.user, course=course)
@@ -630,7 +632,6 @@ def course_learn(request, username, slug):
 
     for assessment in assessments:
         score_value = Decimal(0)
-        # Skor Multiple Choice
         total_correct_answers = 0
         total_questions = assessment.questions.count()
         if total_questions > 0:  # Assessment adalah multiple choice
@@ -640,16 +641,16 @@ def course_learn(request, username, slug):
                 if answers.exists():
                     answers_exist = True
                 total_correct_answers += answers.filter(choice__is_correct=True).count()
-            if not answers_exist:  # Jika tidak ada jawaban untuk assessment ini
+            if not answers_exist:
                 all_assessments_submitted = False
             if total_questions > 0:
                 score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
-        else:  # Assessment adalah AskOra (tidak ada questions)
+        else:  # Assessment adalah AskOra
             askora_submissions = Submission.objects.filter(
                 askora__assessment=assessment,
                 user=request.user
             )
-            if not askora_submissions.exists():  # Jika tidak ada submission untuk AskOra
+            if not askora_submissions.exists():
                 all_assessments_submitted = False
             else:
                 latest_submission = askora_submissions.order_by('-submitted_at').first()
@@ -677,17 +678,16 @@ def course_learn(request, username, slug):
     ]
     assessment_results.append({'name': 'Total', 'max_score': total_max_score, 'score': total_score})
 
-    # Ambil data AskOra dan Submission untuk pengguna saat ini (opsional untuk debugging)
+    # Ambil data AskOra dan Submission
     askoras = AskOra.objects.filter(assessment__section__courses=course)
-    # Tangani submissions dengan try-except
     try:
         submissions = Submission.objects.filter(
-            askora__in=AskOra.objects.filter(assessment__section__courses=course), 
+            askora__in=AskOra.objects.filter(assessment__section__courses=course),
             user=request.user
         )
     except Exception as e:
         print(f"Error fetching submissions: {e}")
-        submissions = []  # Gunakan list kosong jika query gagal
+        submissions = []
 
     # Ambil pertanyaan dan jawaban untuk assessment
     questions = Question.objects.filter(assessment__in=assessments)
@@ -698,7 +698,6 @@ def course_learn(request, username, slug):
         askora__in=AskOra.objects.filter(assessment__section__courses=course)
     ).exclude(user=request.user).prefetch_related('peer_reviews')
 
-    # Tambahkan informasi apakah sudah direview oleh pengguna saat ini
     peer_submissions_data = []
     for submission in peer_submissions:
         has_reviewed = submission.peer_reviews.filter(reviewer=request.user).exists()
@@ -727,51 +726,6 @@ def course_learn(request, username, slug):
             'final_score': final_score
         })
 
-    # Hitung skor assessment (multiple choice dan AskOra)
-    assessments = Assessment.objects.filter(section__courses=course)
-    score_entries = Score.objects.filter(user=request.user.username, course=course)
-    assessment_scores = []
-    total_max_score = 0
-    total_score = 0
-
-    for assessment in assessments:
-        score_value = Decimal(0)
-        # Skor Multiple Choice
-        total_correct_answers = 0
-        total_questions = assessment.questions.count()
-        if total_questions > 0:  # Assessment adalah multiple choice
-            for question in assessment.questions.all():
-                answers = QuestionAnswer.objects.filter(question=question, user=request.user)
-                total_correct_answers += answers.filter(choice__is_correct=True).count()
-            score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
-        else:  # Assessment adalah AskOra (tidak ada questions)
-            askora_submissions = Submission.objects.filter(
-                askora__assessment=assessment,
-                user=request.user
-            )
-            if askora_submissions.exists():
-                # Ambil submission terakhir untuk AskOra ini
-                latest_submission = askora_submissions.order_by('-submitted_at').first()
-                assessment_score = AssessmentScore.objects.filter(submission=latest_submission).first()
-                if assessment_score:
-                    score_value = Decimal(assessment_score.final_score)
-
-        score_value = min(score_value, Decimal(assessment.weight))
-        assessment_scores.append({
-            'assessment': assessment,
-            'score': score_value,
-            'weight': assessment.weight
-        })
-        total_max_score += assessment.weight
-        total_score += score_value
-
-    assessment_results = [
-        {'name': score['assessment'].name, 'max_score': score['weight'], 'score': score['score']}
-        for score in assessment_scores
-    ]
-    assessment_results.append({'name': 'Total', 'max_score': total_max_score, 'score': total_score})
-
-
     context = {
         'course': course,
         'course_name': course_name,
@@ -795,16 +749,13 @@ def course_learn(request, username, slug):
         'comments': page_comments,
         'material': current_content[1] if current_content and current_content[0] == 'material' else None,
         'assessment': current_content[1] if current_content and current_content[0] == 'assessment' else None,
-        
         'answered_questions': answered_questions,
-        'askoras': askoras,  # Tambahkan untuk debugging atau penggunaan di template
-        'submissions': submissions,  # Tambahkan untuk debugging atau penggunaan di template
-        'peer_submissions_data': peer_submissions_data,  # Tambahkan ini untuk review teman
+        'askoras': askoras,
+        'submissions': submissions,
+        'peer_submissions_data': peer_submissions_data,
     }
-  
+
     return render(request, 'learner/course_learn.html', context)
-
-
 
 def submit_peer_review(request, submission_id):
     submission = get_object_or_404(Submission, id=submission_id)
