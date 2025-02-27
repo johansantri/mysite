@@ -64,7 +64,7 @@
                                             <span class="text-success fw-bold">Congratulations 🎈 {{ request.user.username }}! 🎉</span>
                                             <p class="mb-1">Passing Threshold: <span class="fw-bold">{{ passing_threshold }}</span></p>
                                             <p class="mb-1">Your Score: <span class="fw-bold">{{ total_score | floatformat:2 }}</span></p>
-                                            <a href="{% url 'courses:generate_certificate' course.id %}" class="btn btn-success btn-sm">cert</a>
+                                            <a href="{% url 'courses:generate_certificate' course.id %}" class="btn btn-success btn-sm">certificate</a>
                                         </div>
                                    
                                     {% endif %}
