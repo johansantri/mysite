@@ -9,9 +9,9 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from .forms import CoursePriceForm,AskOraForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
+from .forms import CoursePriceForm,MicroCredentialForm,AskOraForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from django.http import JsonResponse
-from .models import Course,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
+from .models import Course,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
 from django.contrib.auth.models import User, Universiti
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
@@ -38,7 +38,52 @@ from weasyprint import HTML
 from django.template.loader import render_to_string
 # views.py
 
+def deletemic(request, pk):
+    microcredential = get_object_or_404(MicroCredential, pk=pk)  # Get the MicroCredential by pk
 
+    if request.method == 'POST':  # Confirm deletion after form submission
+        microcredential.delete()
+        return redirect('courses:microcredential-list')  # Redirect to the list after deletion
+
+    return render(request, 'micro/delete_micro.html', {'microcredential': microcredential})
+
+
+
+def editmic(request, pk):
+    microcredential = get_object_or_404(MicroCredential, pk=pk)  # Get the MicroCredential by pk
+
+    if request.method == 'POST':
+        form = MicroCredentialForm(request.POST, request.FILES, instance=microcredential)  # Prepopulate form with existing data
+        if form.is_valid():
+            form.save()
+            return redirect('courses:microcredential-list')  # Redirect to the list after saving
+    else:
+        form = MicroCredentialForm(instance=microcredential)
+
+    return render(request, 'micro/edit_micro.html', {'form': form, 'microcredential': microcredential})
+
+def addmic(request):
+    if request.method == 'POST':
+        form = MicroCredentialForm(request.POST, request.FILES)  # Handle file uploads for the image field
+        if form.is_valid():
+            # Automatically set the author field to the logged-in user
+            form.instance.author = request.user
+            form.save()
+            return redirect('courses:microcredential-list')  # Redirect to the list of microcredentials
+    else:
+        form = MicroCredentialForm()
+
+    return render(request, 'micro/add_micro.html', {'form': form})
+    
+def detailmic(request, pk):
+    # Fetch the MicroCredential object by its primary key
+    microcredential = get_object_or_404(MicroCredential, pk=pk)
+
+    return render(request, 'micro/detail_micro.html', {'microcredential': microcredential})
+
+def listmic(request):
+    microcredentials = MicroCredential.objects.all()  # Fetch all MicroCredential instances
+    return render(request, 'micro/list_micro.html', {'microcredentials': microcredentials})
 
 
 def calculate_score_for_user_and_course(user, course):

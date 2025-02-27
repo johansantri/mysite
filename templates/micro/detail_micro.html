@@ -1,0 +1,39 @@
+{% extends 'home/base.html' %}
+{% block content %}
+
+<div class="page-content">
+  <div class="container">
+  <div class="row">
+
+      
+
+
+
+    {% include "home/sidebar.html" %}
+    <div class="col-xl-9 col-lg-9">
+      <div class="support-wrap">
+ <h1>{{ microcredential.title }}</h1>
+  
+  <p>{{ microcredential.description }}</p>
+  <p>Status: {{ microcredential.get_status_display }}</p>
+  <p>Category: {{ microcredential.category }}</p>
+  <p>Start Date: {{ microcredential.start_date }}</p>
+  <p>End Date: {{ microcredential.end_date }}</p>
+  <p>Minimum Total Score: {{ microcredential.min_total_score }}</p>
+
+  <br>
+  <a href="{% url 'coureses:microcredential-list' %}">Back to list</a>
+ </div>
+  </div>
+    
+
+ 
+  </div>
+
+  
+</div>
+    
+
+ 
+</div>
+{% endblock %}

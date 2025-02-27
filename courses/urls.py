@@ -64,7 +64,13 @@ urlpatterns = [
     #sertifikat
     path('certificate/<int:course_id>/', views.generate_certificate, name='generate_certificate'),
     path('submit-answer/<int:askora_id>/', views.submit_answer, name='submit_answer'),
-    path('submit-peer-review/<int:submission_id>/', views.submit_peer_review, name='submit_peer_review')
+    path('submit-peer-review/<int:submission_id>/', views.submit_peer_review, name='submit_peer_review'),
+
+    path('microcredentials/', views.listmic, name='microcredential-list'),
+    path('microcredentials/create/', views.addmic, name='microcredential-create'),
+    path('microcredentials/<int:pk>/edit/', views.editmic, name='microcredential-update'),
+    path('microcredentials/<int:pk>/delete/', views.deletemic, name='microcredential-delete'),
+    path('microcredentials/<int:pk>/', views.detailmic, name='microcredential-detail'),  # Detail view
 
    
    

@@ -461,10 +461,20 @@ class GradeRange(models.Model):
         super().save(*args, **kwargs)
 
 class MicroCredential(models.Model):
-    title = models.CharField(max_length=250)  # Misalnya "Digital Marketing"
+    title = models.CharField(max_length=250)
     slug = models.CharField(max_length=250, blank=True)
     description = models.TextField()
-    required_courses = models.ManyToManyField(Course, related_name="microcredentials")  # Relasi ke Course
+    required_courses = models.ManyToManyField(Course, related_name="microcredentials")
+    status = models.CharField(
+        max_length=20,
+        choices=[('active', 'Active'), ('inactive', 'Inactive'), ('draft', 'Draft')],
+        default='draft'
+    )
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+    image = models.ImageField(upload_to='microcredentials/', blank=True, null=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="microcredentials", null=True, blank=True)
+    min_total_score = models.FloatField(default=0.0, help_text="Total minimum score required across all courses")
     
     created_at = models.DateTimeField(auto_now_add=True)
     edited_on = models.DateTimeField(auto_now=True)
@@ -474,18 +484,10 @@ class MicroCredential(models.Model):
         return self.title
 
     def get_min_score(self, course):
-        """
-        Menghitung skor minimum yang dibutuhkan untuk mendapatkan microcredential
-        berdasarkan rentang nilai yang ada pada course.
-        """
-        # Ambil rentang nilai untuk course ini
         grade_ranges = GradeRange.objects.filter(course=course).order_by('min_grade')
-
-        # Asumsikan bahwa grade range pertama adalah rentang nilai kelulusan
         if grade_ranges.exists():
-            passing_grade_range = grade_ranges.first()  # Rentang nilai pertama (biasanya rentang untuk kelulusan)
-            return passing_grade_range.min_grade
-        return 0.0  # Jika tidak ada grade range, set skor minimum menjadi 0.0
+            return grade_ranges.first().min_grade
+        return 0.0
     
 class UserMicroProgress(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="micro_progress")

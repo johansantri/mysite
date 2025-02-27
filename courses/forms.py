@@ -2,7 +2,7 @@
 from django import forms
 from django.forms import inlineformset_factory
 from django.core.cache import cache
-from .models import Course,CourseStatus, AskOra,Partner,Category, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment,PricingType, CoursePrice
+from .models import Course,CourseStatus,MicroCredential, AskOra,Partner,Category, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment,PricingType, CoursePrice
 from django_ckeditor_5.widgets import CKEditor5Widget
 from django.contrib.auth.models import User, Universiti
 import logging
@@ -14,7 +14,23 @@ from datetime import date
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 
-
+class MicroCredentialForm(forms.ModelForm):
+    class Meta:
+        model = MicroCredential
+        fields = ['title', 'slug', 'description', 'required_courses', 'status', 'start_date', 'end_date', 'image', 'category', 'min_total_score']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 100%; font-size: 18px;'}),
+            'slug': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'start_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'end_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'status': forms.Select(attrs={'class': 'form-control'}),
+            'required_courses': forms.SelectMultiple(attrs={'class': 'form-control'}),
+            'category': forms.Select(attrs={'class': 'form-control'}),
+            'min_total_score': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
+            'image': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
+        }
+        
 class AskOraForm(forms.ModelForm):
     class Meta:
         model = AskOra
