@@ -293,7 +293,7 @@ def submit_assessment(request, assessment_id):
     session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
     if not session:
         messages.error(request, "Sesi ujian tidak ditemukan.")
-        return redirect('courses:course_list')
+        return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
 
     # Cek apakah waktu ujian sudah habis
     if timezone.now() > session.end_time:
