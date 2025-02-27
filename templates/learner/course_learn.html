@@ -212,6 +212,13 @@
                       
                       <div class="col-md-9 offset-md-3 col-12" style="padding-top: 20px;">
     <div class="material-content">
+                    {% if messages %}
+                        <div class="alert-container">
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} mt-3">{{ message }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
         {% if current_content %}
             {% if current_content.0 == 'material' %}
                 <div class="material-item" style="border-bottom: 2px solid rgb(116, 114, 114); padding: 20px; background-color: #f9f9f9;">
@@ -234,13 +241,7 @@
 
                 <!-- Display Comments for the Material -->
                 <div class="material-item border-bottom p-4 bg-light">
-                    {% if messages %}
-                        <div class="alert-container">
-                            {% for message in messages %}
-                                <div class="alert alert-{{ message.tags }} mt-3">{{ message }}</div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+                    
                     {% if comments %}
                         <div class="comments-section">
                             <hr>
@@ -454,41 +455,41 @@
                                 <p style="font-size: 16px; color: #555;">
                                     <strong>Submitted by:</strong> {{ peer_data.submission.user.username }} on {{ peer_data.submission.submitted_at|date:"M d, Y H:i" }}
                                 </p>
-                                <p style="font-size: 16px; color: #555;">
-                                    <strong>Answer:</strong> {{ peer_data.submission.answer_text|safe }}
-                                </p>
-                                {% if peer_data.submission.answer_file %}
-                                    <p style="font-size: 16px; color: #555;">
-                                        <strong>File:</strong> <a href="{{ peer_data.submission.answer_file.url }}" target="_blank" style="color: #007bff;">Download</a>
-                                    </p>
-                                {% endif %}
-                                <p style="font-size: 16px; color: #555;">
-                                    <strong>Final Score:</strong> {{ peer_data.final_score|floatformat:2 }}
-                                </p>
-                                {% if not peer_data.has_reviewed %}
-                                    <form method="post" action="{% url 'courses:submit_peer_review' peer_data.submission.id %}">
-                                        {% csrf_token %}
-                                        <div style="margin-bottom: 15px;">
-                                            <label for="score_{{ peer_data.submission.id }}" style="font-size: 16px; color: #555;">Score (1-5):</label>
-                                            <select class="form-control" id="score_{{ peer_data.submission.id }}" name="score" required>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                            </select>
-                                        </div>
-                                        <div style="margin-bottom: 15px;">
-                                            <label for="comment_{{ peer_data.submission.id }}" style="font-size: 16px; color: #555;">Comment (Optional):</label>
-                                            <textarea class="form-control" id="comment_{{ peer_data.submission.id }}" name="comment" rows="3" style="font-size: 16px; margin-top: 5px;"></textarea>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary" style="font-size: 16px; padding: 8px 15px;">
-                                            <i class="bx bx-check me-2"></i> Submit Review
-                                        </button>
-                                    </form>
-                                {% else %}
-                                    <p style="font-size: 16px; color: #555;">You have already reviewed this submission.</p>
-                                {% endif %}
+                                 {% if peer_data.can_review %}
+                                                    <p><strong>Answer:</strong> {{ peer_data.submission.answer_text|safe }}</p>
+                                                    {% if peer_data.submission.answer_file %}
+                                                        <p><strong>File:</strong> <a href="{{ peer_data.submission.answer_file.url }}" download>Download</a></p>
+                                                    {% endif %}
+                                                    <p><strong>Final Score:</strong> {{ peer_data.final_score|floatformat:2 }}</p>
+                                                    {% if peer_data.has_reviewed %}
+                                                        <p>You have already reviewed this submission.</p>
+                                                    {% else %}
+                                                        <form method="post" action="{% url 'courses:submit_peer_review' peer_data.submission.id %}" class="p-4 border rounded bg-light shadow-sm">
+                                                            {% csrf_token %}
+                                                            
+                                                            <div class="mb-3">
+                                                                <label for="score" class="form-label">Score (1-5): <small>If 1 means 'not satisfied at all,' and 5 means 'very satisfied.'</small></label>
+                                                                <select name="score" id="score" class="form-select w-50" required>
+                                                                    <option value="" disabled selected>Select a score</option>
+                                                                    <option value="1">1</option>
+                                                                    <option value="2">2</option>
+                                                                    <option value="3">3</option>
+                                                                    <option value="4">4</option>
+                                                                    <option value="5">5</option>
+                                                                </select>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label for="comment" class="form-label">Comment (Optional):</label>
+                                                                <textarea name="comment" id="comment" rows="3" class="form-control" placeholder="Write your comment here..."></textarea>
+                                                            </div>
+
+                                                            <button type="submit" class="btn btn-primary">Submit Review</button>
+                                                        </form>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <p><strong>Status:</strong> Submitted (You must submit your own answer to view details and review)</p>
+                                                {% endif %}
                             </li>
                         {% empty %}
                             <li style="font-size: 16px; color: #555;">No peer submissions available for review.</li>

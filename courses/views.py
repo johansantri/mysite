@@ -705,6 +705,13 @@ def course_learn(request, username, slug):
         peer_reviews = submission.peer_reviews.all()
         assessment_weight = float(submission.askora.assessment.weight)
         max_peer_score = 5.0
+
+        # Cek apakah pengguna saat ini telah mengirimkan tugas untuk AskOra yang sama
+        user_has_submitted = Submission.objects.filter(
+            askora=submission.askora,
+            user=request.user
+        ).exists()
+
         if peer_reviews:
             total_score = sum(float(review.score) * float(review.weight) for review in peer_reviews)
             peer_review_count = peer_reviews.count()
@@ -714,16 +721,19 @@ def course_learn(request, username, slug):
             final_score = (participant_score * 0.5) + (scaled_peer_score * 0.5)
         else:
             final_score = assessment_weight * 0.5
+
         try:
             assessment_score.final_score = final_score
             assessment_score.save()
         except Exception as e:
             print(f"Error saving assessment score: {e}")
             final_score = float(assessment_score.final_score or 0.0)
+
         peer_submissions_data.append({
             'submission': submission,
             'has_reviewed': has_reviewed,
-            'final_score': final_score
+            'final_score': final_score,
+            'can_review': user_has_submitted  # Tambahkan flag untuk menentukan apakah boleh review
         })
 
     context = {
@@ -756,7 +766,6 @@ def course_learn(request, username, slug):
     }
 
     return render(request, 'learner/course_learn.html', context)
-
 def submit_peer_review(request, submission_id):
     submission = get_object_or_404(Submission, id=submission_id)
     if request.method == 'POST':
