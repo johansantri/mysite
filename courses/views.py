@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from .forms import CoursePriceForm,MicroCredentialForm,AskOraForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from django.http import JsonResponse
-from .models import Course,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
+from .models import Course,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
 from django.contrib.auth.models import User, Universiti
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
@@ -37,6 +37,211 @@ from django.db.models import Prefetch
 from weasyprint import HTML
 from django.template.loader import render_to_string
 # views.py
+
+def enroll_microcredential(request, slug):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+
+    # Ambil microcredential berdasarkan slug
+    microcredential = get_object_or_404(MicroCredential, slug=slug)
+
+    # Cek apakah microcredential aktif dan dalam periode pendaftaran
+    current_date = timezone.now().date()
+    if microcredential.status != 'active':
+        messages.error(request, "This MicroCredential is not currently active.")
+        return redirect('courses:microcredential_detail', slug=slug)
+    
+    if microcredential.start_date and current_date < microcredential.start_date:
+        messages.error(request, "Enrollment has not yet started for this MicroCredential.")
+        return redirect('courses:microcredential_detail', slug=slug)
+    
+    if microcredential.end_date and current_date > microcredential.end_date:
+        messages.error(request, "Enrollment has closed for this MicroCredential.")
+        return redirect('courses:microcredential_detail', slug=slug)
+
+    # Proses enrollment jika metode adalah POST
+    if request.method == 'POST':
+        enrollment, created = microcredential.enroll_user(request.user)
+        if created:
+            messages.success(request, f"You have successfully enrolled in {microcredential.title} and its required courses!")
+        else:
+            messages.info(request, f"You are already enrolled in {microcredential.title}.")
+        return redirect('courses:microcredential_detail', slug=slug)
+
+    # Tampilkan halaman konfirmasi enrollment
+    context = {
+        'microcredential': microcredential,
+        'required_courses': microcredential.required_courses.all(),
+        'current_date': current_date,
+    }
+    return render(request, 'learner/enroll_microcredential.html', context)
+
+
+def microcredential_detail(request, slug):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+
+    # Ambil microcredential berdasarkan slug
+    microcredential = get_object_or_404(MicroCredential, slug=slug)
+
+    # Cek apakah pengguna sudah terdaftar
+    is_enrolled = microcredential.enrollments.filter(user=request.user).exists()
+
+    # Ambil semua kursus yang diperlukan
+    required_courses = microcredential.required_courses.all()
+
+    # Hitung status kelulusan dan skor untuk setiap kursus
+    course_progress = []
+    total_user_score = Decimal(0)
+    total_max_score = Decimal(0)
+    all_courses_completed = True
+
+    for course in required_courses:
+        assessments = Assessment.objects.filter(section__courses=course)
+        course_score = Decimal(0)
+        course_max_score = Decimal(0)
+        course_completed = True
+
+        for assessment in assessments:
+            score_value = Decimal(0)
+            total_questions = assessment.questions.count()
+            if total_questions > 0:  # Multiple choice
+                total_correct_answers = 0
+                answers_exist = False
+                for question in assessment.questions.all():
+                    answers = QuestionAnswer.objects.filter(question=question, user=request.user)
+                    if answers.exists():
+                        answers_exist = True
+                    total_correct_answers += answers.filter(choice__is_correct=True).count()
+                if not answers_exist:
+                    course_completed = False
+                if total_questions > 0:
+                    score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
+            else:  # AskOra
+                askora_submissions = Submission.objects.filter(
+                    askora__assessment=assessment,
+                    user=request.user
+                )
+                if not askora_submissions.exists():
+                    course_completed = False
+                else:
+                    latest_submission = askora_submissions.order_by('-submitted_at').first()
+                    assessment_score = AssessmentScore.objects.filter(submission=latest_submission).first()
+                    if assessment_score:
+                        score_value = Decimal(assessment_score.final_score)
+
+            score_value = min(score_value, Decimal(assessment.weight))
+            course_score += score_value
+            course_max_score += assessment.weight
+
+        min_score = Decimal(microcredential.get_min_score(course))
+        course_passed = course_completed and course_score >= min_score
+
+        course_progress.append({
+            'course': course,
+            'user_score': course_score,
+            'max_score': course_max_score,
+            'min_score': min_score,
+            'completed': course_completed,
+            'passed': course_passed
+        })
+
+        total_user_score += course_score
+        total_max_score += course_max_score
+        if not course_passed:
+            all_courses_completed = False
+
+    microcredential_passed = all_courses_completed and total_user_score >= Decimal(microcredential.min_total_score)
+
+    context = {
+        'microcredential': microcredential,
+        'course_progress': course_progress,
+        'total_user_score': total_user_score,
+        'total_max_score': total_max_score,
+        'min_total_score': microcredential.min_total_score,
+        'microcredential_passed': microcredential_passed,
+        'current_date': timezone.now().date(),
+        'is_enrolled': is_enrolled,  # Status enrollment
+    }
+
+    return render(request, 'learner/microcredential_detail.html', context)
+
+
+def generate_microcredential_certificate(request, id):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+
+    # Ambil microcredential berdasarkan ID
+    microcredential = get_object_or_404(MicroCredential, id=id)
+
+    # Cek apakah pengguna telah lulus microcredential (opsional)
+    required_courses = microcredential.required_courses.all()
+    total_user_score = Decimal(0)
+    total_max_score = Decimal(0)
+    all_courses_completed = True
+
+    for course in required_courses:
+        assessments = Assessment.objects.filter(section__courses=course)
+        course_score = Decimal(0)
+        course_max_score = Decimal(0)
+        course_completed = True
+
+        for assessment in assessments:
+            score_value = Decimal(0)
+            total_questions = assessment.questions.count()
+            if total_questions > 0:
+                total_correct_answers = 0
+                answers_exist = False
+                for question in assessment.questions.all():
+                    answers = QuestionAnswer.objects.filter(question=question, user=request.user)
+                    if answers.exists():
+                        answers_exist = True
+                    total_correct_answers += answers.filter(choice__is_correct=True).count()
+                if not answers_exist:
+                    course_completed = False
+                if total_questions > 0:
+                    score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
+            else:
+                askora_submissions = Submission.objects.filter(
+                    askora__assessment=assessment,
+                    user=request.user
+                )
+                if not askora_submissions.exists():
+                    course_completed = False
+                else:
+                    latest_submission = askora_submissions.order_by('-submitted_at').first()
+                    assessment_score = AssessmentScore.objects.filter(submission=latest_submission).first()
+                    if assessment_score:
+                        score_value = Decimal(assessment_score.final_score)
+
+            score_value = min(score_value, Decimal(assessment.weight))
+            course_score += score_value
+            course_max_score += assessment.weight
+
+        min_score = Decimal(microcredential.get_min_score(course))
+        if not (course_completed and course_score >= min_score):
+            all_courses_completed = False
+        total_user_score += course_score
+        total_max_score += course_max_score
+
+    microcredential_passed = all_courses_completed and total_user_score >= Decimal(microcredential.min_total_score)
+
+    if not microcredential_passed:
+        return render(request, 'error_template.html', {'message': 'You have not yet completed this MicroCredential.'})
+
+    # Render template sertifikat
+    html_content = render_to_string('learner/microcredential_certificate.html', {
+        'microcredential': microcredential,
+        'user': request.user,
+        'current_date': timezone.now().date(),
+    })
+
+    # Generate PDF
+    pdf = HTML(string=html_content).write_pdf()
+    filename = f"certificate_{microcredential.slug}.pdf"
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    return response
 
 def deletemic(request, pk):
     microcredential = get_object_or_404(MicroCredential, pk=pk)  # Get the MicroCredential by pk

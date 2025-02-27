@@ -1,6 +1,6 @@
 from django.contrib import admin
 from . import models 
-from .models import Submission,AskOra, PeerReview, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
+from .models import Submission,AskOra, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
 from import_export.admin import ImportExportModelAdmin
 
 class CourseAdmin(ImportExportModelAdmin):
@@ -35,6 +35,21 @@ admin.site.register(CourseStatus)
 admin.site.register(AssessmentRead)
 admin.site.register(QuestionAnswer)
 # Register your models here.
+class MicroCredentialAdmin(admin.ModelAdmin):
+    # Specify the fields to display in the list view
+    list_display = ('title', 'status', 'start_date', 'end_date', 'min_total_score', 'category', 'author')
+    # Add search functionality for specific fields (e.g., title, status, etc.)
+    search_fields = ('title', 'slug', 'description')
+    # Enable filtering by status and category
+    list_filter = ('status', 'category')
+    # Allow ordering by start date and end date
+    ordering = ('start_date',)
+
+    # Optionally, you can add inline editing for related models, for example, required courses
+    filter_horizontal = ('required_courses',)  # To make 'required_courses' display as a filterable horizontal list
+
+# Register the model with the custom admin class
+admin.site.register(MicroCredential, MicroCredentialAdmin)
 admin.site.register(CourseProgress)
 admin.site.register(MaterialRead)
 admin.site.register(Choice)

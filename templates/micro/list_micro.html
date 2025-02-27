@@ -15,7 +15,7 @@
 {% for microcredential in microcredentials %}
     <div>
         <h2><a href="{% url 'courses:microcredential-detail' microcredential.pk %}">{{ microcredential.title }}</a></h2>
-        <p>{{ microcredential.description }}</p>
+        <p>{{ microcredential.description | safe}}</p>
         <p>Status: {{ microcredential.get_status_display }}</p>
         <p><a href="{% url 'courses:microcredential-update' microcredential.pk %}">Edit</a></p>
         <p><a href="{% url 'courses:microcredential-delete' microcredential.pk %}">Delete</a></p>

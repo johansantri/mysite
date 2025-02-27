@@ -488,6 +488,23 @@ class MicroCredential(models.Model):
         if grade_ranges.exists():
             return grade_ranges.first().min_grade
         return 0.0
+    def enroll_user(self, user):
+        """Mendaftarkan pengguna ke microcredential dan semua kursus terkait."""
+        from .models import Enrollment, MicroCredentialEnrollment
+        
+        # Daftarkan ke microcredential
+        enrollment, created = MicroCredentialEnrollment.objects.get_or_create(
+            user=user,
+            microcredential=self
+        )
+        
+        # Daftarkan ke semua required_courses
+        for course in self.required_courses.all():
+            Enrollment.objects.get_or_create(
+                user=user,
+                course=course
+            )
+        return enrollment, created
     
 class UserMicroProgress(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="micro_progress")
@@ -779,3 +796,13 @@ class CourseComment(models.Model):
             if keyword.lower() in self.content.lower():
                 return True
         return False
+class MicroCredentialEnrollment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="microcredential_enrollments")
+    microcredential = models.ForeignKey('MicroCredential', on_delete=models.CASCADE, related_name="enrollments")
+    enrolled_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'microcredential')  # Pastikan pengguna hanya terdaftar sekali per microcredential
+
+    def __str__(self):
+        return f"{self.user.username} enrolled in {self.microcredential.title}"

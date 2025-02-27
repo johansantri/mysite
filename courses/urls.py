@@ -71,6 +71,9 @@ urlpatterns = [
     path('microcredentials/<int:pk>/edit/', views.editmic, name='microcredential-update'),
     path('microcredentials/<int:pk>/delete/', views.deletemic, name='microcredential-delete'),
     path('microcredentials/<int:pk>/', views.detailmic, name='microcredential-detail'),  # Detail view
+    path('microcredential/<slug:slug>/', views.microcredential_detail, name='microcredential_detail'),
+    path('microcredential/<int:id>/certificate/', views.generate_microcredential_certificate, name='generate_microcredential_certificate'),
+    path('microcredential/<slug:slug>/enroll/', views.enroll_microcredential, name='enroll_microcredential'),
 
    
    

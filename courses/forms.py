@@ -15,6 +15,7 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 
 class MicroCredentialForm(forms.ModelForm):
+    description = forms.CharField(widget=CKEditor5Widget())
     class Meta:
         model = MicroCredential
         fields = ['title', 'slug', 'description', 'required_courses', 'status', 'start_date', 'end_date', 'image', 'category', 'min_total_score']
@@ -30,7 +31,7 @@ class MicroCredentialForm(forms.ModelForm):
             'min_total_score': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
             'image': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
         }
-        
+
 class AskOraForm(forms.ModelForm):
     class Meta:
         model = AskOra

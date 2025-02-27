@@ -14,15 +14,23 @@
       <div class="support-wrap">
  <h1>{{ microcredential.title }}</h1>
   
-  <p>{{ microcredential.description }}</p>
+  <p>{{ microcredential.description | safe }}</p>
+
   <p>Status: {{ microcredential.get_status_display }}</p>
   <p>Category: {{ microcredential.category }}</p>
   <p>Start Date: {{ microcredential.start_date }}</p>
   <p>End Date: {{ microcredential.end_date }}</p>
   <p>Minimum Total Score: {{ microcredential.min_total_score }}</p>
-
+    <h3>Required Courses</h3>
+<ul>
+  {% for course in microcredential.required_courses.all %}
+    <li>{{ course.course_name }}</li>  <!-- Assuming 'Course' has a 'title' field -->
+  {% empty %}
+    <li>No required courses.</li>
+  {% endfor %}
+</ul>
   <br>
-  <a href="{% url 'coureses:microcredential-list' %}">Back to list</a>
+  <a href="{% url 'courses:microcredential-list' %}">Back to list</a>
  </div>
   </div>
     
