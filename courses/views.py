@@ -810,7 +810,7 @@ def submit_peer_review(request, submission_id):
                     weight=1.0
                 )
                 peer_review.save()
-                print(f"Peer review saved for Submission {submission.id} by {request.user.username}")
+                #print(f"Peer review saved for Submission {submission.id} by {request.user.username}")
 
                 # Hitung skor akhir secara manual
                 assessment_score, created = AssessmentScore.objects.get_or_create(submission=submission)
