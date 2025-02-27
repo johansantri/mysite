@@ -574,6 +574,8 @@ class AskOra(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     def is_responsive(self):
         return self.response_deadline > timezone.now()
+    def __str__(self):
+        return f"ask {self.title} "
 
 class Submission(models.Model):
     askora = models.ForeignKey(

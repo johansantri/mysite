@@ -209,430 +209,373 @@
                 <button class="btn btn-primary" data-bs-toggle="modal" id="toggleSidebar" data-bs-target="#sidebarModal">Show Sidebar</button>
             </div>
 
-                       <div class="col-md-9 offset-md-3 col-12" style="padding-top: 20px;">
-                            <div class="material-content">
-                                {% if current_content %}
-                                    {% if current_content.0 == 'material' %}
-                                            <div class="material-item" style="border-bottom: 2px solid rgb(116, 114, 114); padding: 20px; background-color: #f9f9f9;">
-                                                <h2 class="material-title h4" style="color: rgb(0, 0, 0);">{{ current_content.1.title }} </h2>
-                                                <p class="material-description" style="font-size: 14px; color: #555;">{{ current_content.1.description |safe}}</p>
+                      
+                      <div class="col-md-9 offset-md-3 col-12" style="padding-top: 20px;">
+    <div class="material-content">
+        {% if current_content %}
+            {% if current_content.0 == 'material' %}
+                <div class="material-item" style="border-bottom: 2px solid rgb(116, 114, 114); padding: 20px; background-color: #f9f9f9;">
+                    <h2 class="material-title h4" style="color: rgb(0, 0, 0);">{{ current_content.1.title }}</h2>
+                    <p class="material-description" style="font-size: 14px; color: #555;">{{ current_content.1.description |safe}}</p>
 
-                                                <!-- Form to Add Comment -->
-                                                <div class="comment-section" style="margin-top: 30px;">
-                                                    <h4>Leave a Comment for discussion</h4>
-                                                    <form method="POST" action="{% url 'courses:add_comment' material_id=current_content.1.id %}">
-                                                        {% csrf_token %}
-                                                        <div class="form-group">
-                                                            <textarea name="content" class="form-control" rows="4" placeholder="Write your comment here..." required></textarea>
-                                                        </div>
-                                                        <br>
-                                                        <button type="submit" class="btn btn-primary">Post Comment</button>
-                                                    </form>
+                    <!-- Form to Add Comment -->
+                    <div class="comment-section" style="margin-top: 30px;">
+                        <h4>Leave a Comment for discussion</h4>
+                        <form method="POST" action="{% url 'courses:add_comment' material_id=current_content.1.id %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <textarea name="content" class="form-control" rows="4" placeholder="Write your comment here..." required></textarea>
+                            </div>
+                            <br>
+                            <button type="submit" class="btn btn-primary">Post Comment</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Display Comments for the Material -->
+                <div class="material-item border-bottom p-4 bg-light">
+                    {% if messages %}
+                        <div class="alert-container">
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} mt-3">{{ message }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    {% if comments %}
+                        <div class="comments-section">
+                            <hr>
+                            <div class="comments-list mt-4">
+                                {% for comment in comments %}
+                                    <div class="comment-item border rounded p-3 mb-3 bg-white shadow-sm">
+                                        <p>
+                                            <span class="fw-bold">{{ comment.user.username }}</span> 
+                                            <small class="text-muted">Posted on {{ comment.created_at|date:"F j, Y, g:i a" }}</small>
+                                        </p>
+                                        <p>{{ comment.content }}</p>
+
+                                        <!-- Form to reply to a comment -->
+                                        <div class="reply-section">
+                                            <form method="POST" action="{% url 'courses:add_comment' material_id=current_content.1.id %}">
+                                                {% csrf_token %}
+                                                <div class="form-group">
+                                                    <textarea name="content" class="form-control" rows="2" placeholder="Reply to this comment..." required></textarea>
+                                                    <input type="hidden" name="parent_id" value="{{ comment.id }}">
                                                 </div>
-                                            </div>
-
-                                            <!-- Display Comments for the Material -->
-                                          <div class="material-item border-bottom p-4 bg-light">
-                                            {% if messages %}
-                                            <div class="alert-container">
-                                                {% for message in messages %}
-                                                    <div class="alert alert-{{ message.tags }} mt-3">
-                                                        {{ message }}
-                                                    </div>
-                                                {% endfor %}
-                                            </div>
-                                            {% endif %}
-                                            {% if comments %}
-                                                <div class="comments-section">
-                                                    <hr>
-                                                    <div class="comments-list mt-4">
-                                                        {% for comment in comments %}
-                                                            <div class="comment-item border rounded p-3 mb-3 bg-white shadow-sm">
-                                                                <p>
-                                                                    <span class="fw-bold">{{ comment.user.username }}</span> 
-                                                                    <small class="text-muted">Posted on {{ comment.created_at|date:"F j, Y, g:i a" }}</small>
-                                                                </p>
-                                                                <p>{{ comment.content }}</p>
-
-                                                                <!-- Form to reply to a comment -->
-                                                                <div class="reply-section">
-                                                                    <form method="POST" action="{% url 'courses:add_comment' material_id=current_content.1.id %}">
-                                                                        {% csrf_token %}
-                                                                    
-                                                                        <div class="form-group">
-                                                                            <textarea name="content" class="form-control" rows="2" placeholder="Reply to this comment..." required></textarea>
-                                                                            <input type="hidden" name="parent_id" value="{{ comment.id }}">  <!-- Hidden field to reference the parent comment -->
-                                                                        </div>
-                                                                        <button type="submit" class="btn btn-secondary btn-sm mt-2">Reply</button>
-                                                                    </form>
-                                                                </div>
-
-                                                                <!-- Display Replies to this Comment -->
-                                                                <div class="replies-container" style="max-height: 300px; overflow-y: auto;">
-                                                                    {% for reply in comment.comment_set.all %}
-                                                                        <div class="reply-item border rounded p-3 mt-3" style="background-color: #f1f1f1; margin-left: 20px;"> <!-- Indent replies -->
-                                                                            <p>
-                                                                                <span class="fw-bold">{{ reply.user.username }}</span> 
-                                                                                <small class="text-muted">Posted on {{ reply.created_at|date:"F j, Y, g:i a" }}</small>
-                                                                            </p>
-                                                                            <p>{{ reply.content }}</p>
-
-                                                                            <!-- Form to reply to a reply -->
-                                                                            <div class="reply-section">
-                                                                                <form method="POST" action="{% url 'courses:add_comment' material_id=current_content.1.id %}">
-                                                                                    {% csrf_token %}
-                                                                                    
-                                                                                    <div class="form-group">
-                                                                                        <textarea name="content" class="form-control" rows="2" placeholder="Reply to this reply..." required></textarea>
-                                                                                        <input type="hidden" name="parent_id" value="{{ reply.id }}">  <!-- Hidden field for replying to a reply -->
-                                                                                    </div>
-                                                                                    <button type="submit" class="btn btn-secondary btn-sm mt-2">Reply</button>
-                                                                                </form>
-                                                                            </div>
-
-                                                                            <!-- Display Replies to this Reply -->
-                                                                            <div class="nested-replies-container" style="max-height: 200px; overflow-y: auto; margin-left: 20px;">
-                                                                                {% for nested_reply in reply.comment_set.all %}
-                                                                                    <div class="nested-reply-item border rounded p-3 mt-3" style="background-color: #e9ecef;">
-                                                                                        <p>
-                                                                                            <span class="fw-bold">{{ nested_reply.user.username }}</span> 
-                                                                                            <small class="text-muted">Posted on {{ nested_reply.created_at|date:"F j, Y, g:i a" }}</small>
-                                                                                        </p>
-                                                                                        <p>{{ nested_reply.content }}</p>
-
-                                                                                        <form method="POST" action="{% url 'courses:add_comment' material_id=current_content.1.id %}">
-                                                                                            {% csrf_token %}
-                                                                                            
-                                                                                            <div class="form-group">
-                                                                                                <textarea name="content" class="form-control" rows="2" placeholder="Reply to this reply..." required></textarea>
-                                                                                                <input type="hidden" name="parent_id" value="{{ reply.id }}">  <!-- Hidden field for replying to a reply -->
-                                                                                            </div>
-                                                                                            <button type="submit" class="btn btn-secondary btn-sm mt-2">Reply</button>
-                                                                                        </form>
-                                                                                    </div>
-                                                                                {% empty %}
-                                                                                    <p>No replies yet.</p>
-                                                                                {% endfor %}
-                                                                            </div>
-                                                                        </div>
-                                                                    {% empty %}
-                                                                        <p>No replies yet.</p>
-                                                                    {% endfor %}
-                                                                </div>
-                                                            </div>
-                                                        {% empty %}
-                                                            <div class="alert alert-info" role="alert">
-                                                                No comments yet. Be the first to comment!
-                                                            </div>
-                                                        {% endfor %}
-                                                    </div>
-
-                                                    <!-- Pagination Links for Comments -->
-                                                    <nav aria-label="Comments pagination">
-                                                        <ul class="pagination justify-content-center mt-4">
-                                                            {% if comments.has_previous %}
-                                                                <li class="page-item">
-                                                                    <a class="page-link" href="?material_id={{ material.id }}&page=1">First</a>
-                                                                </li>
-                                                                <li class="page-item">
-                                                                    <a class="page-link" href="?material_id={{ material.id }}&page={{ comments.previous_page_number }}">Previous</a>
-                                                                </li>
-                                                            {% endif %}
-                                                            
-                                                            <li class="page-item disabled">
-                                                                <span class="page-link">Page {{ comments.number }} of {{ comments.paginator.num_pages }}</span>
-                                                            </li>
-
-                                                            {% if comments.has_next %}
-                                                                <li class="page-item">
-                                                                    <a class="page-link" href="?material_id={{ material.id }}&page={{ comments.next_page_number }}">Next</a>
-                                                                </li>
-                                                                <li class="page-item">
-                                                                    <a class="page-link" href="?material_id={{ material.id }}&page={{ comments.paginator.num_pages }}">Last</a>
-                                                                </li>
-                                                            {% endif %}
-                                                        </ul>
-                                                    </nav>
-                                                </div>
-                                            {% else %}
-                                                
-                                            {% endif %}
+                                                <button type="submit" class="btn btn-secondary btn-sm mt-2">Reply</button>
+                                            </form>
                                         </div>
 
-<style>
-@media (max-width: 767px) {
-    .comment-item, .reply-item, .nested-reply-item {
-        padding: 10px; /* Mengurangi padding pada perangkat kecil */
-    }
+                                        <!-- Display Replies to this Comment -->
+                                        <div class="replies-container" style="max-height: 300px; overflow-y: auto;">
+                                            {% for reply in comment.comment_set.all %}
+                                                <div class="reply-item border rounded p-3 mt-3" style="background-color: #f1f1f1; margin-left: 20px;">
+                                                    <p>
+                                                        <span class="fw-bold">{{ reply.user.username }}</span> 
+                                                        <small class="text-muted">Posted on {{ reply.created_at|date:"F j, Y, g:i a" }}</small>
+                                                    </p>
+                                                    <p>{{ reply.content }}</p>
 
-    .reply-section form textarea, .nested-replies-container {
-        font-size: 14px; /* Menyesuaikan ukuran font textarea dan balasan */
-    }
+                                                    <!-- Form to reply to a reply -->
+                                                    <div class="reply-section">
+                                                        <form method="POST" action="{% url 'courses:add_comment' material_id=current_content.1.id %}">
+                                                            {% csrf_token %}
+                                                            <div class="form-group">
+                                                                <textarea name="content" class="form-control" rows="2" placeholder="Reply to this reply..." required></textarea>
+                                                                <input type="hidden" name="parent_id" value="{{ reply.id }}">
+                                                            </div>
+                                                            <button type="submit" class="btn btn-secondary btn-sm mt-2">Reply</button>
+                                                        </form>
+                                                    </div>
 
-    .pagination {
-        font-size: 14px; /* Menyesuaikan ukuran font pagination */
-    }
-}
-
-</style>
-                                        {% elif current_content.0 == 'assessment' %}
-                                        <!-- Handle 'assessment' content here -->
-
-
-                                        <!-- Show "Setuju" button if assessment has not started yet -->
-                                        
-                                        {% if not is_started %}
-                                            <form method="post" action="{% url 'courses:start_assessment' assessment_id=current_content.1.id %}">
-                                                {% csrf_token %}
-                                                <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
-                                                    <div class="alert alert-warning text-center" role="alert">
-                                                        <h4 class="alert-heading">Attention!</h4>
-                                                        <p> Before starting the exam, we would like to inform you that you will have <b>" {{ current_content.1.duration_in_minutes }} "</b> minutes to complete the exam. Please make the most of this time and answer the questions to the best of your ability.</p>
-                                                        
-                                                        <p class="mb-0">Once the time is up, you will not be able to submit your answers. Do you <b>agree</b> to proceed?</p>
-                                                        <hr>
-                                                        <button type="submit" class="btn btn-success">Agree</button>
+                                                    <!-- Display Replies to this Reply -->
+                                                    <div class="nested-replies-container" style="max-height: 200px; overflow-y: auto; margin-left: 20px;">
+                                                        {% for nested_reply in reply.comment_set.all %}
+                                                            <div class="nested-reply-item border rounded p-3 mt-3" style="background-color: #e9ecef;">
+                                                                <p>
+                                                                    <span class="fw-bold">{{ nested_reply.user.username }}</span> 
+                                                                    <small class="text-muted">Posted on {{ nested_reply.created_at|date:"F j, Y, g:i a" }}</small>
+                                                                </p>
+                                                                <p>{{ nested_reply.content }}</p>
+                                                            </div>
+                                                        {% empty %}
+                                                            <p>No replies yet.</p>
+                                                        {% endfor %}
                                                     </div>
                                                 </div>
-                                            </form>
-                                        {% elif is_started %}
-                                            <form method="POST" action="{% url 'courses:submit_assessment' assessment_id=current_content.1.id %}">
-                                                {% csrf_token %}
-                                                <input type="text" name="honeypot" style="display:none;" />
-                                                <input type="hidden" name="start_time" id="start_time" value="{{ current_time }}">
+                                            {% empty %}
+                                                <p>No replies yet.</p>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                {% empty %}
+                                    <div class="alert alert-info" role="alert">
+                                        No comments yet. Be the first to comment!
+                                    </div>
+                                {% endfor %}
+                            </div>
 
-                                                <input type="hidden" name="current_content_id" value="{{ current_material.id }}">
-                                                <div class="assessment-item" style="border-bottom: 2px solid rgb(134, 134, 134); padding: 20px; background-color: #f9f9f9;">
-                                                    <h3 class="h5" style="color:rgb(2, 2, 2); font-size: 24px;">Assessment: {{ current_content.1.name }}</h3>
-                                                    <p>Time remaining: <span id="timer"></span></p>
-                                                    {% if messages %}
-                                                        <div class="alert-container">
-                                                            {% for message in messages %}
-                                                                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-                                                            {% endfor %}
-                                                        </div>
-                                                    {% endif %}
-                                                    <ul style="list-style: none; padding-left: 0;">
-                                                        {% for question in current_content.1.questions.all %}
-                                                            <li class="question" style="margin-bottom: 30px;">
-                                                                <div style="display: inline-block; margin-left: 10px; padding: 10px; background-color: #e9ecef; border-radius: 8px; font-size: 18px; color: #555;">
-                                                                    {{ question.text |safe }}
-                                                                </div>
-                                                                <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
-                                                                    {% for choice in question.choices.all %}
-                                                                        <li style="margin-bottom: 15px; display: flex; align-items: center;">
-                                                                            <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}" id="choice_{{ choice.id }}" style="transform: scale(1.5); margin-right: 10px;">
-                                                                            <label for="choice_{{ choice.id }}" style="cursor: pointer; margin: 0; font-size: 16px; color: #555;">{{ choice.text |safe }}</label>
-                                                                            
-                                                                        {% load custom_filters %}
-                                                                        {% with answered_question=answered_questions|get_item:question.id %}
-                                                                            {% if answered_question %}
-                                                                            <p>
-                                                                                {% if answered_question.choice == choice %}
-                                                                                    <small style="color: #007bff; "> ( {{ request.user.username }}!)</small>
-                                                                                {% elif choice.is_correct %}
-                                                                                    <small style="color:  #28a745;"> (correct)</small>
-                                                                                {% else %}
-                                                                                    <small style="color: #dc3545;"> (incorrect)</small>
-                                                                                {% endif %}
-                                                                            </p>
-                                                                        </li>
-                                                                            
-                                                                            
-                                                                            {% else %}
-                                                                                
-                                                                            {% endif %}
-                                                                        {% endwith %}
-                                                                    {% endfor %}
-                                                                </ul>
-                                                            </li>
-                                                        {% endfor %}
-                                                    </ul>
+                            <!-- Pagination Links for Comments -->
+                            <nav aria-label="Comments pagination">
+                                <ul class="pagination justify-content-center mt-4">
+                                    {% if comments.has_previous %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?material_id={{ material.id }}&page=1">First</a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="?material_id={{ material.id }}&page={{ comments.previous_page_number }}">Previous</a>
+                                        </li>
+                                    {% endif %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">Page {{ comments.number }} of {{ comments.paginator.num_pages }}</span>
+                                    </li>
+                                    {% if comments.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?material_id={{ material.id }}&page={{ comments.next_page_number }}">Next</a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="?material_id={{ material.id }}&page={{ comments.paginator.num_pages }}">Last</a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        </div>
+                    {% endif %}
+                </div>
 
-
-                                                    
-                                                    
-                                            </form>
-                                        {% endif %}
-                                        
-
-                                        <!-- Tampilkan AskOra -->
-<p style="font-size: 18px; color: #555; margin-top: 20px;">Open Response Questions</p>
-<ul style="list-style: none; padding-left: 0;">
-    {% for ask_ora in current_content.1.ask_oras.all %}
-        <li class="question" style="margin-bottom: 30px;">
-            <div style="display: inline-block; margin-left: 10px; padding: 10px; background-color: #e9ecef; border-radius: 8px; font-size: 18px; color: #555;">
-                {{ ask_ora.question_text |safe }}
-            </div>
-            <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
-                {% if ask_ora.is_responsive %}
-                    {% with submission=submissions|dictsort:"submitted_at"|last %}
-                        {% if submission and submission.askora == ask_ora %}
-                            <li style="margin-bottom: 15px;">
-                                <div style="padding: 10px; background-color: #d4edda; border-radius: 8px; color: #155724;">
-                                    <strong>Submitted!</strong> Your answer was submitted on {{ submission.submitted_at|date:"M d, Y H:i" }}.
+            {% elif current_content.0 == 'assessment' %}
+                <!-- Multiple Choice Questions -->
+                <div class="assessment-item" style="border-bottom: 2px solid rgb(134, 134, 134); padding: 20px; background-color: #f9f9f9;">
+                    <h3 class="h5" style="color: rgb(2, 2, 2); font-size: 24px;">Assessment: {{ current_content.1.name }}</h3>
+                    <p>Time remaining: <span id="timer"></span></p>
+                    {% if not is_started %}
+                        <form method="post" action="{% url 'courses:start_assessment' assessment_id=current_content.1.id %}">
+                            {% csrf_token %}
+                            <div class="alert alert-warning text-center" role="alert">
+                                <h4 class="alert-heading">Attention!</h4>
+                                <p>Before starting the exam, you will have <b>"{{ current_content.1.duration_in_minutes }}"</b> minutes to complete it. Do you <b>agree</b> to proceed?</p>
+                                <hr>
+                                <button type="submit" class="btn btn-success">Agree</button>
+                            </div>
+                        </form>
+                    {% elif is_started %}
+                        <form method="POST" action="{% url 'courses:submit_assessment' assessment_id=current_content.1.id %}">
+                            {% csrf_token %}
+                            <input type="text" name="honeypot" style="display:none;" />
+                            <input type="hidden" name="start_time" id="start_time" value="{{ current_time }}">
+                            <ul style="list-style: none; padding-left: 0;">
+                                {% for question in current_content.1.questions.all %}
+                                    <li class="question" style="margin-bottom: 30px;">
+                                        <div style="display: inline-block; margin-left: 10px; padding: 10px; background-color: #e9ecef; border-radius: 8px; font-size: 18px; color: #555;">
+                                            {{ question.text |safe }}
+                                        </div>
+                                        <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
+                                            {% for choice in question.choices.all %}
+                                                <li style="margin-bottom: 15px; display: flex; align-items: center;">
+                                                    <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}" id="choice_{{ choice.id }}" style="transform: scale(1.5); margin-right: 10px;">
+                                                    <label for="choice_{{ choice.id }}" style="cursor: pointer; margin: 0; font-size: 16px; color: #555;">{{ choice.text |safe }}</label>
+                                                    {% load custom_filters %}
+                                                    {% with answered_question=answered_questions|get_item:question.id %}
+                                                        {% if answered_question %}
+                                                            <small>
+                                                                {% if answered_question.choice == choice %}
+                                                                    ({{ request.user.username }}!)
+                                                                {% elif choice.is_correct %}
+                                                                    (correct)
+                                                                {% else %}
+                                                                    (incorrect)
+                                                                {% endif %}
+                                                            </small>
+                                                        {% endif %}
+                                                    {% endwith %}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            <button type="submit" id="submit-button" class="btn btn-primary">
+                                <i class="bx bx-check me-2"></i> Submit
+                            </button>
+                        </form>
+                    {% endif %}
+                </div>
+                
+                <!-- Open Response Questions and Peer Review -->
+                <div class="askora-item" style="padding: 20px; background-color: #f9f9f9;">
+                    
+                    <ul style="list-style: none; padding-left: 0;">
+                        {% for ask_ora in current_content.1.ask_oras.all %}
+                            <li class="question" style="margin-bottom: 30px;">
+                                <div style="display: inline-block; margin-left: 10px; padding: 10px; background-color: #e9ecef; border-radius: 8px; font-size: 18px; color: #555;">
+                                    {{ ask_ora.question_text |safe }}
                                 </div>
-                                <p style="font-size: 16px; color: #555; margin-top: 10px;">
-                                    <strong>Your Answer:</strong> {{ submission.answer_text|safe }}
+                                <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
+                                    {% if ask_ora.is_responsive %}
+                                        {% with submission=submissions|dictsort:"submitted_at"|last %}
+                                            {% if submission and submission.askora == ask_ora %}
+                                                <li style="margin-bottom: 15px;">
+                                                    <div style="padding: 10px; background-color: #d4edda; border-radius: 8px; color: #155724;">
+                                                        <strong>Submitted!</strong> Your answer was submitted on {{ submission.submitted_at|date:"M d, Y H:i" }}.
+                                                    </div>
+                                                    <p style="font-size: 16px; color: #555; margin-top: 10px;">
+                                                        <strong>Your Answer:</strong> {{ submission.answer_text|safe }}
+                                                    </p>
+                                                    {% if submission.answer_file %}
+                                                        <p style="font-size: 16px; color: #555;">
+                                                            <strong>File:</strong> <a href="{{ submission.answer_file.url }}" target="_blank" style="color: #007bff;">Download</a>
+                                                        </p>
+                                                    {% endif %}
+                                                </li>
+                                            {% else %}
+                                                <li style="margin-bottom: 15px;">
+                                                    <form method="post" enctype="multipart/form-data" action="{% url 'courses:submit_answer' ask_ora.id %}">
+                                                        {% csrf_token %}
+                                                        <div style="margin-bottom: 15px;">
+                                                            <label for="answer_text_{{ ask_ora.id }}" style="font-size: 16px; color: #555;">Your Answer:</label>
+                                                            <textarea class="form-control" id="answer_text_{{ ask_ora.id }}" name="answer_text" rows="4" style="font-size: 16px; margin-top: 5px;" required></textarea>
+                                                        </div>
+                                                        <div style="margin-bottom: 15px;">
+                                                            <label for="answer_file_{{ ask_ora.id }}" style="font-size: 16px; color: #555;">Upload File (Optional):</label>
+                                                            <input type="file" class="form-control" id="answer_file_{{ ask_ora.id }}" name="answer_file" style="font-size: 16px; margin-top: 5px;">
+                                                        </div>
+                                                        <button type="submit" class="btn btn-success" style="font-size: 16px; padding: 8px 15px;">
+                                                            <i class="bx bx-upload me-2"></i> Submit
+                                                        </button>
+                                                    </form>
+                                                    
+                                                </li>
+                                            {% endif %}
+
+                                             <!-- Peer Review Submissions -->
+                    <h3 style="font-size: 18px; color: #555; margin-top: 20px;">Peers Review Submissions</h3>
+                    <ul style="list-style: none; padding-left: 0;">
+                        {% for peer_data in peer_submissions_data %}
+                            <li style="margin-bottom: 30px; border: 1px solid #ddd; padding: 15px; border-radius: 8px;">
+                                <p style="font-size: 16px; color: #555;">
+                                    <strong>Submitted by:</strong> {{ peer_data.submission.user.username }} on {{ peer_data.submission.submitted_at|date:"M d, Y H:i" }}
                                 </p>
-                                {% if submission.answer_file %}
+                                <p style="font-size: 16px; color: #555;">
+                                    <strong>Answer:</strong> {{ peer_data.submission.answer_text|safe }}
+                                </p>
+                                {% if peer_data.submission.answer_file %}
                                     <p style="font-size: 16px; color: #555;">
-                                        <strong>File:</strong> <a href="{{ submission.answer_file.url }}" target="_blank" style="color: #007bff;">Download</a>
+                                        <strong>File:</strong> <a href="{{ peer_data.submission.answer_file.url }}" target="_blank" style="color: #007bff;">Download</a>
                                     </p>
                                 {% endif %}
-                            </li>
-                        {% else %}
-                            <li style="margin-bottom: 15px;">
-                                <form method="post" enctype="multipart/form-data" action="{% url 'courses:submit_answer' ask_ora.id %}">
-                                    {% csrf_token %}
-                                    <div style="margin-bottom: 15px;">
-                                        <label for="answer_text_{{ ask_ora.id }}" style="font-size: 16px; color: #555;">Your Answer:</label>
-                                        <textarea class="form-control" id="answer_text_{{ ask_ora.id }}" name="answer_text" rows="4" style="font-size: 16px; margin-top: 5px;" required></textarea>
-                                    </div>
-                                    <div style="margin-bottom: 15px;">
-                                        <label for="answer_file_{{ ask_ora.id }}" style="font-size: 16px; color: #555;">Upload File (Optional):</label>
-                                        <input type="file" class="form-control" id="answer_file_{{ ask_ora.id }}" name="answer_file" style="font-size: 16px; margin-top: 5px;">
-                                    </div>
-                                    <button type="submit" class="btn btn-success" style="font-size: 16px; padding: 8px 15px;">
-                                        <i class="bx bx-upload me-2"></i> Submit
-                                    </button>
-                                </form>
-                            </li>
-                        {% endif %}
-                    {% endwith %}
-                {% else %}
-                    <li style="margin-bottom: 15px;">
-                        <div style="padding: 10px; background-color: #fff3cd; border-radius: 8px; color: #856404;">
-                            <strong>Deadline Passed!</strong> Submissions closed on {{ ask_ora.response_deadline|date:"M d, Y H:i" }}.
-                        </div>
-                    </li>
-                {% endif %}
-            </ul>
-        </li>
-    {% empty %}
-        <li style="font-size: 16px; color: #555;">No open response questions available.</li>
-    {% endfor %}
-</ul>
-
-<!-- Bagian Peer Review -->
-<h3 style="font-size: 18px; color: #555; margin-top: 20px;">Peer Review Submissions</h3>
-<ul style="list-style: none; padding-left: 0;">
-    {% for peer_data in peer_submissions_data %}
-        <li style="margin-bottom: 30px; border: 1px solid #ddd; padding: 15px; border-radius: 8px;">
-            <p style="font-size: 16px; color: #555;">
-                <strong>Submitted by:</strong> {{ peer_data.submission.user.username }} on {{ peer_data.submission.submitted_at|date:"M d, Y H:i" }}
-            </p>
-            <p style="font-size: 16px; color: #555;">
-                <strong>Answer:</strong> {{ peer_data.submission.answer_text|safe }}
-            </p>
-            {% if peer_data.submission.answer_file %}
-                <p style="font-size: 16px; color: #555;">
-                    <strong>File:</strong> <a href="{{ peer_data.submission.answer_file.url }}" target="_blank" style="color: #007bff;">Download</a>
-                </p>
-            {% endif %}
-            <p style="font-size: 16px; color: #555;">
-                <strong>Final Score:</strong> {{ peer_data.final_score|floatformat:2 }}
-            </p>
-            {% if not peer_data.has_reviewed %}
-                <form method="post" action="{% url 'courses:submit_peer_review' peer_data.submission.id %}">
-                    {% csrf_token %}
-                    <div style="margin-bottom: 15px;">
-                        <label for="score_{{ peer_data.submission.id }}" style="font-size: 16px; color: #555;">Score (1-5):</label>
-                        <select class="form-control" id="score_{{ peer_data.submission.id }}" name="score" required>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                        </select>
-                    </div>
-                    <div style="margin-bottom: 15px;">
-                        <label for="comment_{{ peer_data.submission.id }}" style="font-size: 16px; color: #555;">Comment (Optional):</label>
-                        <textarea class="form-control" id="comment_{{ peer_data.submission.id }}" name="comment" rows="3" style="font-size: 16px; margin-top: 5px;"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary" style="font-size: 16px; padding: 8px 15px;">
-                        <i class="bx bx-check me-2"></i> Submit Review
-                    </button>
-                </form>
-            {% else %}
-                <p style="font-size: 16px; color: #555;">You have already reviewed this submission.</p>
-            {% endif %}
-        </li>
-    {% empty %}
-        <li style="font-size: 16px; color: #555;">No peer submissions available for review.</li>
-    {% endfor %}
-</ul>
-
-                                    {% endif %}
+                                <p style="font-size: 16px; color: #555;">
+                                    <strong>Final Score:</strong> {{ peer_data.final_score|floatformat:2 }}
+                                </p>
+                                {% if not peer_data.has_reviewed %}
+                                    <form method="post" action="{% url 'courses:submit_peer_review' peer_data.submission.id %}">
+                                        {% csrf_token %}
+                                        <div style="margin-bottom: 15px;">
+                                            <label for="score_{{ peer_data.submission.id }}" style="font-size: 16px; color: #555;">Score (1-5):</label>
+                                            <select class="form-control" id="score_{{ peer_data.submission.id }}" name="score" required>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                            </select>
+                                        </div>
+                                        <div style="margin-bottom: 15px;">
+                                            <label for="comment_{{ peer_data.submission.id }}" style="font-size: 16px; color: #555;">Comment (Optional):</label>
+                                            <textarea class="form-control" id="comment_{{ peer_data.submission.id }}" name="comment" rows="3" style="font-size: 16px; margin-top: 5px;"></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary" style="font-size: 16px; padding: 8px 15px;">
+                                            <i class="bx bx-check me-2"></i> Submit Review
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <p style="font-size: 16px; color: #555;">You have already reviewed this submission.</p>
                                 {% endif %}
-
-                                <!-- Navigation buttons for content -->
-                                <div class="d-flex justify-content-between" style="margin-top: 30px;">
-                                    <a href="{{ previous_url }}" class="btn btn-secondary">Previous</a>
-                                    {% if is_last_content %}
-                                        <p class="text-center">You have reached the end of this content. Thank you for participating!</p>
+                            </li>
+                        {% empty %}
+                            <li style="font-size: 16px; color: #555;">No peer submissions available for review.</li>
+                        {% endfor %}
+                    </ul>
+                                        {% endwith %}
                                     {% else %}
-                                    <a href="{{ next_url }}" class="btn btn-primary">Next</a>
+                                        <li style="margin-bottom: 15px;">
+                                            <div style="padding: 10px; background-color: #fff3cd; border-radius: 8px; color: #856404;">
+                                                <strong>Deadline Passed!</strong> Submissions closed on {{ ask_ora.response_deadline|date:"M d, Y H:i" }}.
+                                            </div>
+                                        </li>
                                     {% endif %}
-                                </div>
-                            </div>
-                        </div>
+                                </ul>
+                            </li>
+                        {% empty %}
+                            
+                        {% endfor %}
+                    </ul>
 
+                
+                </div>
+            {% endif %}
 
-
-
-                                    <script>
-                                    let remainingTime = {{ remaining_time }};  // Remaining time in seconds passed from Django
-                                    let timerElement = document.getElementById('timer');
-                                    let submitButton = document.getElementById('submit-button');
-                                    let timerInterval;
-                                    let formSubmitted = false; // Flag to track form submission
-
-                                    function updateTimer() {
-                                        // Cek apakah timerElement ada
-                                        if (!timerElement) {
-                                            clearInterval(timerInterval); // Hentikan timer jika elemen tidak ada
-                                            console.log("Timer element tidak ada, menghentikan timer.");
-                                            return; // Keluar dari fungsi
-                                        }
-
-                                        if (formSubmitted) {
-                                            return;  // Exit if form has already been submitted
-                                        }
-
-                                        let minutes = Math.floor(remainingTime / 60);
-                                        let seconds = remainingTime % 60;
-
-                                        // Format the time to always show two digits for minutes and seconds
-                                        timerElement.textContent = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-
-                                        remainingTime--;  // Decrease remaining time by 1 second
-
-                                        // If time is up (remainingTime < 0), stop the timer and submit the form
-                                        if (remainingTime < 0) {
-                                            formSubmitted = true;  // Prevent further submissions
-                                            submitButton.disabled = true;  // Disable submit button
-                                            
-                                            // Optionally submit the form
-                                            // document.querySelector("form").submit();  // Automatically submit the form
-                                            
-                                            // Stop the timer
-                                            clearInterval(timerInterval);  
-                                        }
-                                    }
-
-                                    // Start the timer and update every second
-                                    timerInterval = setInterval(updateTimer, 1000);  // Start the timer
-
-                                
-                                </script>
-
-
-
-
-        </div>
+            <!-- Navigation buttons for content -->
+            <div class="d-flex justify-content-between" style="margin-top: 30px;">
+                <a href="{{ previous_url }}" class="btn btn-secondary">Previous</a>
+                {% if is_last_content %}
+                    <p class="text-center">You have reached the end of this content. Thank you for participating!</p>
+                {% else %}
+                    <a href="{{ next_url }}" class="btn btn-primary">Next</a>
+                {% endif %}
+            </div>
+        {% endif %}
     </div>
-  </div>
+</div>
+
+<script>
+    let remainingTime = {{ remaining_time }};
+    let timerElement = document.getElementById('timer');
+    let submitButton = document.getElementById('submit-button');
+    let timerInterval;
+    let formSubmitted = false;
+
+    function updateTimer() {
+        if (!timerElement) {
+            clearInterval(timerInterval);
+            console.log("Timer element tidak ada, menghentikan timer.");
+            return;
+        }
+
+        if (formSubmitted) {
+            return;
+        }
+
+        let minutes = Math.floor(remainingTime / 60);
+        let seconds = remainingTime % 60;
+        timerElement.textContent = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        remainingTime--;
+
+        if (remainingTime < 0) {
+            formSubmitted = true;
+            submitButton.disabled = true;
+            clearInterval(timerInterval);
+        }
+    }
+
+    timerInterval = setInterval(updateTimer, 1000);
+    updateTimer();
+</script>
+
+<style>
+    @media (max-width: 767px) {
+        .comment-item, .reply-item, .nested-reply-item {
+            padding: 10px;
+        }
+        .reply-section form textarea, .nested-replies-container {
+            font-size: 14px;
+        }
+        .pagination {
+            font-size: 14px;
+        }
+    }
+</style>
+
+
+
 
   <!-- Modal for Sidebar -->
   <div class="modal fade" id="sidebarModal" tabindex="-1" aria-labelledby="sidebarModalLabel" aria-hidden="true">

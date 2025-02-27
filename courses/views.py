@@ -786,7 +786,7 @@ def course_learn(request, username, slug):
         'comments': page_comments,
         'material': current_content[1] if current_content and current_content[0] == 'material' else None,
         'assessment': current_content[1] if current_content and current_content[0] == 'assessment' else None,
-        'askora': current_content[1] if current_content and current_content[0] == 'askora' else None,
+        
         'answered_questions': answered_questions,
         'askoras': askoras,  # Tambahkan untuk debugging atau penggunaan di template
         'submissions': submissions,  # Tambahkan untuk debugging atau penggunaan di template
