@@ -524,10 +524,10 @@ def course_learn(request, username, slug):
     # Ambil ID konten saat ini dari parameter URL
     material_id = request.GET.get('material_id')
     assessment_id = request.GET.get('assessment_id')
-    askora_id = request.GET.get('askora_id')  # Tambahkan askora_id
+    
 
     current_content = None
-    if not material_id and not assessment_id and not askora_id:
+    if not material_id and not assessment_id:
         current_content = ('material', combined_content[0][1], combined_content[0][2]) if combined_content else None
     elif material_id:
         material = get_object_or_404(Material, id=material_id)
@@ -535,9 +535,7 @@ def course_learn(request, username, slug):
     elif assessment_id:
         assessment = get_object_or_404(Assessment, id=assessment_id)
         current_content = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
-    elif askora_id:
-        askora = get_object_or_404(AskOra, id=askora_id)
-        current_content = ('askora', askora, next((s for s in sections if askora.assessment in s.assessments.all()), None))
+    
 
     # Handle comments and pagination based on current_content
     comments = None
@@ -616,13 +614,11 @@ def course_learn(request, username, slug):
         score_percentage = (score.score / score.total_questions) * 100
         user_grade = calculate_grade(score_percentage, course)
 
-    # Hitung skor assessment
+    # Hitung skor assessment dan status
     assessments = Assessment.objects.filter(section__courses=course)
-    score_entries = Score.objects.filter(user=request.user.username, course=course)
     assessment_scores = []
     total_max_score = 0
     total_score = 0
-    passing_criteria_met = True
     all_assessments_submitted = True
 
     grade_range = GradeRange.objects.filter(course=course).all()
@@ -633,22 +629,35 @@ def course_learn(request, username, slug):
         return render(request, 'error_template.html', {'message': 'Grade range not found for this course.'})
 
     for assessment in assessments:
-        section = assessment.section
-        score_entry = score_entries.filter(section=section).first()
-        if not score_entry:
-            all_assessments_submitted = False
-
+        score_value = Decimal(0)
+        # Skor Multiple Choice
         total_correct_answers = 0
         total_questions = assessment.questions.count()
-        for question in assessment.questions.all():
-            answers = QuestionAnswer.objects.filter(question=question, user=request.user)
-            total_correct_answers += answers.filter(choice__is_correct=True).count()
+        if total_questions > 0:  # Assessment adalah multiple choice
+            answers_exist = False
+            for question in assessment.questions.all():
+                answers = QuestionAnswer.objects.filter(question=question, user=request.user)
+                if answers.exists():
+                    answers_exist = True
+                total_correct_answers += answers.filter(choice__is_correct=True).count()
+            if not answers_exist:  # Jika tidak ada jawaban untuk assessment ini
+                all_assessments_submitted = False
+            if total_questions > 0:
+                score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
+        else:  # Assessment adalah AskOra (tidak ada questions)
+            askora_submissions = Submission.objects.filter(
+                askora__assessment=assessment,
+                user=request.user
+            )
+            if not askora_submissions.exists():  # Jika tidak ada submission untuk AskOra
+                all_assessments_submitted = False
+            else:
+                latest_submission = askora_submissions.order_by('-submitted_at').first()
+                assessment_score = AssessmentScore.objects.filter(submission=latest_submission).first()
+                if assessment_score:
+                    score_value = Decimal(assessment_score.final_score)
 
-        score_value = Decimal(0)
-        if total_questions > 0:
-            score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
         score_value = min(score_value, Decimal(assessment.weight))
-
         assessment_scores.append({
             'assessment': assessment,
             'score': score_value,
@@ -862,151 +871,91 @@ def submit_answer(request, askora_id):
 def generate_certificate(request, course_id):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
-     # Ambil skor terakhir dari pengguna
-      # Lacak kemajuan pengguna
+
     course = get_object_or_404(Course, id=course_id)
-  
-   
-
-    score = Score.objects.filter(user=request.user.username, course=course).order_by('-date').first()
-
-    user_grade = 'Fail'
-    if score:
-        score_percentage = (score.score / score.total_questions) * 100
-        user_grade = calculate_grade(score_percentage, course)
 
     # Ambil semua asesmen untuk kursus ini
     assessments = Assessment.objects.filter(section__courses=course)
-    score_entries = Score.objects.filter(user=request.user.username, course=course)
-
-    # Hitung nilai untuk setiap asesmen
     assessment_scores = []
     total_max_score = 0
     total_score = 0
-    passing_criteria_met = True  # Flag untuk menentukan apakah lulus secara keseluruhan
-    all_assessments_submitted = True  # Flag untuk mengecek apakah semua asesmen sudah disubmit
+    all_assessments_submitted = True
 
-  
     # Ambil GradeRange yang terkait dengan kursus
     grade_range = GradeRange.objects.filter(course=course).all()
-     # Pastikan grade_range ditemukan, lalu ambil min_grade
-
-   
-
-
-    # Jika grade_range ditemukan, ambil min_grade dan max_grade
     if grade_range:
-        # Ambil ambang batas kelulusan dari GradeRange
-        passing_threshold = grade_range.filter(name='Pass').first().min_grade  # Ambang batas kelulusan
-        max_grade = grade_range.filter(name='Pass').first().max_grade  # Nilai maksimal
+        passing_threshold = grade_range.filter(name='Pass').first().min_grade
+        max_grade = grade_range.filter(name='Pass').first().max_grade
     else:
-        # Jika tidak ada data di GradeRange, kita bisa mengembalikan error atau mengatur nilai default
         return render(request, 'error_template.html', {'message': 'Grade range not found for this course.'})
 
-    # Hitung total skor dan nilai maksimal
-    total_max_score = 0
-    total_score = 0
-
     for assessment in assessments:
-        section = assessment.section
-        score_entry = score_entries.filter(section=section).first()
-
-        # Jika tidak ada skor yang diambil untuk asesmen ini, berarti asesmen belum disubmit
-        if not score_entry:
-            all_assessments_submitted = False
-
-        # Menghitung jawaban benar untuk setiap soal di asesmen
+        score_value = Decimal(0)
+        # Skor Multiple Choice
         total_correct_answers = 0
-        total_questions = assessment.questions.count()  # Total jumlah soal
+        total_questions = assessment.questions.count()
+        if total_questions > 0:  # Assessment adalah multiple choice
+            answers_exist = False
+            for question in assessment.questions.all():
+                answers = QuestionAnswer.objects.filter(question=question, user=request.user)
+                if answers.exists():
+                    answers_exist = True
+                total_correct_answers += answers.filter(choice__is_correct=True).count()
+            if not answers_exist:
+                all_assessments_submitted = False
+            if total_questions > 0:
+                score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
+        else:  # Assessment adalah AskOra (tidak ada questions)
+            askora_submissions = Submission.objects.filter(
+                askora__assessment=assessment,
+                user=request.user
+            )
+            if not askora_submissions.exists():
+                all_assessments_submitted = False
+            else:
+                latest_submission = askora_submissions.order_by('-submitted_at').first()
+                assessment_score = AssessmentScore.objects.filter(submission=latest_submission).first()
+                if assessment_score:
+                    score_value = Decimal(assessment_score.final_score)
 
-        for question in assessment.questions.all():
-            answers = QuestionAnswer.objects.filter(question=question, user=request.user)
-
-            # Cek apakah jawaban yang dipilih benar
-            correct_answers = answers.filter(choice__is_correct=True).count()  # Filter berdasarkan is_correct dari Choice model
-            total_correct_answers += correct_answers
-
-        # Tentukan skor berdasarkan jumlah jawaban benar dan jumlah soal
-        if total_questions > 0:
-            score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
-        else:
-            score_value = Decimal(0)
-
-        # Batasi skor agar tidak melebihi bobot maksimal
         score_value = min(score_value, Decimal(assessment.weight))
-
-        # Tambahkan skor asesmen ke dalam list
         assessment_scores.append({
             'assessment': assessment,
             'score': score_value,
             'weight': assessment.weight
         })
-
-        # Hitung total skor dan nilai maksimal
         total_max_score += assessment.weight
         total_score += score_value
 
-    # Pastikan nilai total yang diperoleh dihitung sesuai dengan bobot
     total_score = min(total_score, total_max_score)
+    overall_percentage = (total_score / total_max_score) * 100 if total_max_score > 0 else 0
+    passing_criteria_met = overall_percentage >= passing_threshold
+    status = "Pass" if all_assessments_submitted and passing_criteria_met else "Fail"
 
-    # Hitung persentase keseluruhan
-    if total_max_score > 0:
-        overall_percentage = (total_score / total_max_score) * 100
-    else:
-        overall_percentage = 0
+    # Format hasil nilai per asesmen dan totalnya
+    assessment_results = [
+        {'name': score['assessment'].name, 'max_score': score['weight'], 'score': score['score']}
+        for score in assessment_scores
+    ]
+    assessment_results.append({'name': 'Total', 'max_score': total_max_score, 'score': total_score})
 
-    # Tentukan apakah passing threshold tercapai
-    passing_criteria_met = overall_percentage >= passing_threshold  # Status kelulusan berdasarkan ambang batas
-
-    # Tentukan status kelulusan
-    if not all_assessments_submitted:
-        status = "Fail"  # Jika ada asesmen yang belum disubmit, status "Fail"
-    else:
-        status = "Pass" if passing_criteria_met else "Fail"  # Cek apakah nilai keseluruhan memenuhi kriteria kelulusan
-
-     # Format hasil nilai per asesmen dan totalnya
-    assessment_results = []
-    for score in assessment_scores:
-        assessment_results.append({
-            'name': score['assessment'].name,  # Nama asesmen
-            'max_score': score['weight'],  # Nilai maksimal (berdasarkan bobot)
-            'score': score['score'],  # Nilai yang diperoleh
-        })
-
-    # Total nilai dan total skor
-    assessment_results.append({
-        'name': 'Total',
-        'max_score': total_max_score,  # Nilai maksimal total
-        'score': total_score  # Nilai total yang diperoleh
-    })
-
-    # Tentukan status kelulusan
-    if not all_assessments_submitted:
-        status = "Fail"  # Jika ada asesmen yang belum disubmit, status "Fail"
-    else:
-        status = "Pass" if passing_criteria_met else "Fail"  # Cek apakah nilai keseluruhan memenuhi kriteria kelulusan
-
-
-    # Render HTML untuk sertifikat menggunakan template yang sudah dibuat
+    # Render HTML untuk sertifikat
     html_content = render_to_string('learner/certificate_template.html', {
-        'passing_threshold':passing_threshold,
+        'passing_threshold': passing_threshold,
         'status': status,
         'course': course,
-        'user_grade': user_grade,
         'total_score': total_score,
         'user': request.user,
-        'issue_date': timezone.now().strftime('%Y-%m-%d'),  # Tanggal penerbitan sertifikat
-        'assessment_results': assessment_results,  # Hasil asesmen
+        'issue_date': timezone.now().strftime('%Y-%m-%d'),
+        'assessment_results': assessment_results,
     })
 
     # Menghasilkan PDF dari HTML yang dirender
     pdf = HTML(string=html_content).write_pdf()
     filename = f"certificate_{course.slug}.pdf"
-    # Mengembalikan PDF sebagai file unduhan
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
     return response
-
 
 
 
