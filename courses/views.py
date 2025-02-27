@@ -620,7 +620,7 @@ def course_learn(request, username, slug):
     assessments = Assessment.objects.filter(section__courses=course)
     assessment_scores = []
     total_max_score = 0
-    total_score = 0
+    total_score = 0  # Inisialisasi total_score
     all_assessments_submitted = True
 
     grade_range = GradeRange.objects.filter(course=course).all()
@@ -665,18 +665,22 @@ def course_learn(request, username, slug):
             'weight': assessment.weight
         })
         total_max_score += assessment.weight
-        total_score += score_value
+        total_score += score_value  # Tambahkan ke total_score
 
-    total_score = min(total_score, total_max_score)
+    total_score = min(total_score, total_max_score)  # Batasi dengan total_max_score
     overall_percentage = (total_score / total_max_score) * 100 if total_max_score > 0 else 0
     passing_criteria_met = overall_percentage >= passing_threshold
     status = "Pass" if all_assessments_submitted and passing_criteria_met else "Fail"
 
+    # Persiapkan assessment_results
     assessment_results = [
         {'name': score['assessment'].name, 'max_score': score['weight'], 'score': score['score']}
         for score in assessment_scores
     ]
     assessment_results.append({'name': 'Total', 'max_score': total_max_score, 'score': total_score})
+
+    # Debugging untuk memastikan skor
+    print(f"Total Score: {total_score}, Assessment Results Total: {assessment_results[-1]['score']}")
 
     # Ambil data AskOra dan Submission
     askoras = AskOra.objects.filter(assessment__section__courses=course)
@@ -713,9 +717,9 @@ def course_learn(request, username, slug):
         ).exists()
 
         if peer_reviews:
-            total_score = sum(float(review.score) * float(review.weight) for review in peer_reviews)
+            total_score_reviews = sum(float(review.score) * float(review.weight) for review in peer_reviews)
             peer_review_count = peer_reviews.count()
-            avg_peer_score = total_score / peer_review_count
+            avg_peer_score = total_score_reviews / peer_review_count
             scaled_peer_score = (avg_peer_score / max_peer_score) * assessment_weight
             participant_score = assessment_weight
             final_score = (participant_score * 0.5) + (scaled_peer_score * 0.5)
@@ -733,7 +737,7 @@ def course_learn(request, username, slug):
             'submission': submission,
             'has_reviewed': has_reviewed,
             'final_score': final_score,
-            'can_review': user_has_submitted  # Tambahkan flag untuk menentukan apakah boleh review
+            'can_review': user_has_submitted
         })
 
     context = {
@@ -746,7 +750,7 @@ def course_learn(request, username, slug):
         'course_progress': user_progress.progress_percentage,
         'user_grade': user_grade,
         'assessment_results': assessment_results,
-        'total_score': total_score,
+        'total_score': total_score,  # Skor total yang benar (97.00)
         'overall_percentage': overall_percentage,
         'total_weight': total_max_score,
         'status': status,
@@ -766,6 +770,8 @@ def course_learn(request, username, slug):
     }
 
     return render(request, 'learner/course_learn.html', context)
+
+
 def submit_peer_review(request, submission_id):
     submission = get_object_or_404(Submission, id=submission_id)
     if request.method == 'POST':
