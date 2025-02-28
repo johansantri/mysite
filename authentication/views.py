@@ -18,7 +18,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth import logout
 from authentication.forms import UserRegistrationForm, Userprofile, UserPhoto
 from .models import Profile
-from courses.models import Instructor,CourseStatus, Course, Enrollment, Category,CourseProgress
+from courses.models import Instructor,CourseStatus,Enrollment, MicroCredentialEnrollment,Course, Enrollment, Category,CourseProgress
 from django.http import HttpResponse,JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseForbidden
@@ -31,7 +31,29 @@ from django.views.decorators.csrf import csrf_protect
 # Create your views here.
 
 
+def mycourse(request):
+    if request.user.is_authenticated:
+        # Mengambil semua MicroCredential yang diambil oleh user yang sedang login
+        course = Enrollment.objects.filter(user=request.user)
 
+        # Render template dengan data microcredentials
+        return render(request, 'learner/mycourse_list.html', {
+            'course': course
+        })
+          
+    return redirect("/login/?next=%s" % request.path)
+def microcredential_list(request):
+    if request.user.is_authenticated:
+        # Mengambil semua MicroCredential yang diambil oleh user yang sedang login
+        microcredentials = MicroCredentialEnrollment.objects.filter(user=request.user)
+
+        # Render template dengan data microcredentials
+        return render(request, 'learner/microcredential_list.html', {
+            'microcredentials': microcredentials
+        })
+
+    # Jika user belum login, redirect ke halaman login
+    return redirect("/login/?next=%s" % request.path)
 
 
 

@@ -5,24 +5,20 @@
         <div class="settings-menu">
             <h3 class="h5">Dashboard</h3>
             <ul class="nav flex-column">
+               
                 <li class="nav-item">
-                    <a href="student-dashboard.html" class="nav-link active">
-                        <i class="bx bxs-tachometer"></i> Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="student-profile.html" class="nav-link">
+                    <a href="student-profile.html" class="nav-link active">
                         <i class="bx bxs-user"></i> My Profile
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="student-courses.html" class="nav-link">
-                        <i class="bx bxs-graduation"></i> Enrolled Courses
+                    <a href="{% url 'authentication:mycourse' %}" class="nav-link">
+                        <i class="bx bxs-graduation"></i> My Courses
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="student-wishlist.html" class="nav-link">
-                        <i class="bx bxs-heart"></i> Wishlist
+                    <a href="{% url 'authentication:microcredential' %}" class="nav-link">
+                        <i class="bx bxs-heart"></i> Microcredential
                     </a>
                 </li>
                 <li class="nav-item">
@@ -65,12 +61,12 @@
             <h3 class="h5 mt-4">Account Settings</h3>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a href="student-settings.html" class="nav-link">
+                    <a href="{% url 'authentication:profile' user.username %}" class="nav-link">
                         <i class="bx bxs-cog"></i> Settings
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="index.html" class="nav-link">
+                    <a href="{% url 'authentication:logout' %}" class="nav-link">
                         <i class="bx bxs-log-out"></i> Logout
                     </a>
                 </li>

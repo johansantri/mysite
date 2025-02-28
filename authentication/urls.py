@@ -52,6 +52,8 @@ urlpatterns = [
     path('all-user/',views.all_user,name='all-user'),
     path('user/<int:user_id>/', views.user_detail, name='user_detail'),  # Add this line
     path('course_list/', views.course_list, name='course_list'),
+    path('microcredential/',views.microcredential_list, name='microcredential'),
+    path('mycourse/',views.mycourse, name='mycourse')
     
                        
 
