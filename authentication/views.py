@@ -18,7 +18,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth import logout
 from authentication.forms import UserRegistrationForm, Userprofile, UserPhoto
 from .models import Profile
-from courses.models import Instructor,CourseStatus, Course, Enrollment, Category
+from courses.models import Instructor,CourseStatus, Course, Enrollment, Category,CourseProgress
 from django.http import HttpResponse,JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseForbidden
@@ -340,7 +340,22 @@ def dashbord(request):
             ) | enrollments.filter(
                 course__course_name__icontains=search_query
             )  # Search by user username or course name
+         # Count of total enrollments
+        total_enrollments = enrollments.count()
+
         
+        # Fetch active courses that the user is enrolled in with "published" status
+        active_courses = Course.objects.filter(
+            id__in=enrollments.values('course'),
+            status_course__status='published',
+            start_enrol__lte=timezone.now(),  # Enrolment start date is in the past
+            end_enrol__gte=timezone.now()     # Enrolment end date is in the future
+        )
+
+        # Completed Courses (assuming the course has a boolean 'is_completed' field)
+        
+        completed_courses = CourseProgress.objects.filter(user=request.user, progress_percentage=100)
+
         # Pagination for enrollments
         enrollments_paginator = Paginator(enrollments, 5)  # Show 5 enrollments per page
         enrollments = enrollments_paginator.get_page(enrollments_page)
@@ -349,7 +364,10 @@ def dashbord(request):
         return render(request, 'learner/dashbord.html', {
             'enrollments': enrollments,
             'search_query': search_query,  # Pass the search query to the template
-            'enrollments_page': enrollments_page
+            'enrollments_page': enrollments_page,
+            'total_enrollments': total_enrollments,  # Total enrollments count
+            'active_courses': active_courses,
+            'completed_courses':completed_courses
         })
     return redirect("/login/?next=%s" % request.path)
 
