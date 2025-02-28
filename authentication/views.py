@@ -18,7 +18,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth import logout
 from authentication.forms import UserRegistrationForm, Userprofile, UserPhoto
 from .models import Profile
-from courses.models import Instructor,CourseStatus,Enrollment, MicroCredentialEnrollment,Course, Enrollment, Category,CourseProgress
+from courses.models import Instructor,CourseStatus,Enrollment,MicroCredential, MicroCredentialEnrollment,Course, Enrollment, Category,CourseProgress
 from django.http import HttpResponse,JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseForbidden
@@ -330,11 +330,21 @@ def home(request):
         popular_categories = Category.objects.annotate(
             num_courses=Count('category_courses', filter=Q(category_courses__status_course=published_status))
         ).order_by('-num_courses')[:6]
+        
+        # Get the active microcredentials
+        popular_microcredentials = MicroCredential.objects.filter(
+            status='active'
+        ).order_by('-created_at')[:6]  # Limit to 6 popular microcredentials
+        
     else:
         # If no 'published' status exists, handle gracefully
         popular_categories = []
+        popular_microcredentials = []
 
-    return render(request, 'home/index.html', {'popular_categories': popular_categories})
+    return render(request, 'home/index.html', {
+        'popular_categories': popular_categories,
+        'popular_microcredentials': popular_microcredentials,
+    })
 
 
 

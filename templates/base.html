@@ -503,7 +503,7 @@
 				<div class="section-header aos" data-aos="fade-up">
 					<div class="section-sub-head">
 						<span>What’s New</span>
-						<h2>TRENDING COURSES</h2>
+						<h2>TRENDING PROFESIONAL COURSES</h2>
 					</div>
 					<div class="all-btn all-category d-flex align-items-center">
 						<a href="course-list.html" class="btn btn-primary">All Courses</a>
@@ -514,11 +514,12 @@
 						bibendum gravida maecenas augue elementum et neque. Suspendisse imperdiet.</p>
 				</div>
 				<div class="owl-carousel trending-course owl-theme aos" data-aos="fade-up">
+					 {% for microcredential in popular_microcredentials %}
 					<div class="course-box trend-box">
 						<div class="product trend-product">
 							<div class="product-img">
 								<a href="course-details.html">
-									<img class="img-fluid" alt="Img" src="{% static "assets/img/course/course-07.jpg"%}">
+									<img class="img-fluid" alt="Img" src="{{ microcredential.image.url }}">
 								</a>
 								<div class="price">
 									<h3>$200 <span>$99.00</span></h3>
@@ -527,7 +528,7 @@
 							<div class="product-content">
 								<div class="course-group d-flex">
 									<div class="course-group-img d-flex">
-										<a href="instructor-profile.html"><img src="{% static "assets/img/user/user.jpg"%}" alt="Img"
+										<a href="#"><img src="{% static "assets/img/user/user2.jpg"%}" alt="Img"
 												class="img-fluid"></a>
 										<div class="course-name">
 											<h4><a href="instructor-profile.html">John Michael</a></h4>
@@ -538,8 +539,7 @@
 										<a href="#"><i class="fa-regular fa-heart"></i></a>
 									</div>
 								</div>
-								<h3 class="title"><a href="course-details.html">Learn JavaScript and Express to become a
-										professional JavaScript</a></h3>
+								<h3 class="title"><a href="{% url 'courses:enroll_microcredential' microcredential.slug %}">{{ microcredential.title }}</a></h3>
 								<div class="course-info d-flex align-items-center">
 									<div class="rating-img d-flex align-items-center">
 										<img src="{% static "assets/img/icon/icon-01.svg"%}" alt="Img" class="img-fluid">
@@ -566,6 +566,9 @@
 							</div>
 						</div>
 					</div>
+					{% empty %}
+						<p>No popular micro-credentials found.</p>
+					{% endfor %}
 					<div class="course-box trend-box">
 						<div class="product trend-product">
 							<div class="product-img">
