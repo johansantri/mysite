@@ -1,6 +1,6 @@
-###########
+####
 What is MYSITE
-###########
+####
 
 MYSITE merupakan pengembangan aplikasi LMS berbasis Python Django.
 
