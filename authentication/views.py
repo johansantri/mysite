@@ -33,23 +33,48 @@ from django.views.decorators.csrf import csrf_protect
 
 def mycourse(request):
     if request.user.is_authenticated:
-        # Mengambil semua MicroCredential yang diambil oleh user yang sedang login
-        course = Enrollment.objects.filter(user=request.user)
+        # Mengambil semua kursus yang diambil oleh user yang sedang login
+        courses = Enrollment.objects.filter(user=request.user)
 
-        # Render template dengan data microcredentials
+        # Pencarian (Search)
+        search_query = request.GET.get('search', '')
+        if search_query:
+            # Menambahkan filter pencarian berdasarkan nama kursus
+            courses = courses.filter(Q(course__course_name__icontains=search_query))
+
+        # Pagination
+        paginator = Paginator(courses, 10)  # 10 item per halaman
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        # Render template dengan data kursus dan pagination
         return render(request, 'learner/mycourse_list.html', {
-            'course': course
+            'page_obj': page_obj,
+            'search_query': search_query
         })
           
     return redirect("/login/?next=%s" % request.path)
+
 def microcredential_list(request):
     if request.user.is_authenticated:
         # Mengambil semua MicroCredential yang diambil oleh user yang sedang login
         microcredentials = MicroCredentialEnrollment.objects.filter(user=request.user)
 
-        # Render template dengan data microcredentials
+        # Pencarian (Search)
+        search_query = request.GET.get('search', '')
+        if search_query:
+            # Menambahkan filter pencarian berdasarkan judul atau nama microcredential
+            microcredentials = microcredentials.filter(Q(microcredential__title__icontains=search_query))
+
+        # Pagination
+        paginator = Paginator(microcredentials, 10)  # 10 item per halaman
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        # Render template dengan data microcredentials dan pagination
         return render(request, 'learner/microcredential_list.html', {
-            'microcredentials': microcredentials
+            'page_obj': page_obj,
+            'search_query': search_query
         })
 
     # Jika user belum login, redirect ke halaman login
