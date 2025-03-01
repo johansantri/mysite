@@ -19,17 +19,7 @@
                 <form method="POST">
                     {% csrf_token %}
                 
-                    <!-- ✅ Menampilkan Pesan Kesalahan -->
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="alert 
-                                {% if message.tags == 'success' %}alert-success
-                                {% elif message.tags == 'error' %}alert-danger
-                                {% else %}alert-info{% endif %}" role="alert">
-                                {{ message }}
-                            </div>
-                        {% endfor %}
-                    {% endif %}
+                   
                 
                     {% if request.user.is_superuser %}
                         <!-- ✅ Superuser Bisa Pilih Semua Opsi -->

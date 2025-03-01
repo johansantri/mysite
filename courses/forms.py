@@ -250,6 +250,8 @@ class AssessmentForm(forms.ModelForm):
     def clean_duration_in_minutes(self):
         duration = self.cleaned_data.get('duration_in_minutes')
         
+        if duration is None:
+            raise forms.ValidationError("Duration cannot be empty.")
         if duration < 0:
             raise forms.ValidationError("Duration must be a non-negative number.")
         
