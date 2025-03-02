@@ -68,6 +68,7 @@ urlpatterns = [
 
     path('microcredentials/', views.listmic, name='microcredential-list'),
     path('microcredentials/create/', views.addmic, name='microcredential-create'),
+    path('autocomplete/', views.course_autocomplete, name='course_autocomplete'),
     path('microcredentials/<int:pk>/edit/', views.editmic, name='microcredential-update'),
     path('microcredentials/<int:pk>/delete/', views.deletemic, name='microcredential-delete'),
     path('microcredentials/<int:pk>/', views.detailmic, name='microcredential-detail'),  # Detail view

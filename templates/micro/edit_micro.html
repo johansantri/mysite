@@ -36,4 +36,29 @@
 
  
 </div>
+<script>
+  $(document).ready(function() {
+    $('.select2').select2({
+      placeholder: 'Search for a course',  // Add a placeholder for better UX
+      ajax: {
+        url: '{% url "courses:course_autocomplete" %}',  // URL for your autocomplete endpoint
+        dataType: 'json',
+        delay: 250,  // Delay to wait for user to stop typing
+        data: function (params) {
+          return {
+            q: params.term  // Send the search term as a parameter
+          };
+        },
+        processResults: function (data) {
+          return {
+            results: data.results  // Assuming response contains a "results" key with list of courses
+          };
+        },
+        cache: true  // Optional: improves performance by caching requests
+      },
+      minimumInputLength: 1  // Wait until the user types at least one character
+    });
+  });
+</script>
+
 {% endblock %}

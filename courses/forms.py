@@ -26,7 +26,7 @@ class MicroCredentialForm(forms.ModelForm):
             'start_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'end_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'status': forms.Select(attrs={'class': 'form-control'}),
-            'required_courses': forms.SelectMultiple(attrs={'class': 'form-control'}),
+            'required_courses': forms.SelectMultiple(attrs={'class': 'form-control select2'}),
             'category': forms.Select(attrs={'class': 'form-control'}),
             'min_total_score': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
             'image': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
