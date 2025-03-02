@@ -244,6 +244,8 @@ def generate_microcredential_certificate(request, id):
     return response
 
 def deletemic(request, pk):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     microcredential = get_object_or_404(MicroCredential, pk=pk)  # Get the MicroCredential by pk
 
     if request.method == 'POST':  # Confirm deletion after form submission
@@ -255,6 +257,8 @@ def deletemic(request, pk):
 
 
 def editmic(request, pk):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     microcredential = get_object_or_404(MicroCredential, pk=pk)  # Get the MicroCredential by pk
 
     if request.method == 'POST':
@@ -267,6 +271,8 @@ def editmic(request, pk):
 
     return render(request, 'micro/edit_micro.html', {'form': form, 'microcredential': microcredential})
 def course_autocomplete(request):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     query = request.GET.get('q', '')  # Get the search term
     courses = Course.objects.filter(course_name__icontains=query, status_course__status='published')  # Adjust based on your model
     
@@ -275,6 +281,8 @@ def course_autocomplete(request):
     return JsonResponse({'results': results})
 
 def addmic(request):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     if request.method == 'POST':
         form = MicroCredentialForm(request.POST, request.FILES)  # Handle file uploads for the image field
         if form.is_valid():
