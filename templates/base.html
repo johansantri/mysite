@@ -539,7 +539,7 @@
 										<a href="#"><i class="fa-regular fa-heart"></i></a>
 									</div>
 								</div>
-								<h3 class="title"><a href="{% url 'courses:enroll_microcredential' microcredential.slug %}">{{ microcredential.title }}</a></h3>
+								<h3 class="title"><a href="{% url 'courses:micro_detail' microcredential.id microcredential.slug %}">{{ microcredential.title }}</a></h3>
 								<div class="course-info d-flex align-items-center">
 									<div class="rating-img d-flex align-items-center">
 										<img src="{% static "assets/img/icon/icon-01.svg"%}" alt="Img" class="img-fluid">

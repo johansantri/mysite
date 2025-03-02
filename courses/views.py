@@ -38,6 +38,10 @@ from weasyprint import HTML
 from django.template.loader import render_to_string
 # views.py
 
+def micro_detail(request,id,slug):
+    microcredential = get_object_or_404(MicroCredential, id=id, slug=slug)
+    return render(request,'micro/micro_detail.html',{'microcredential': microcredential})
+
 def enroll_microcredential(request, slug):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
@@ -296,12 +300,16 @@ def addmic(request):
     return render(request, 'micro/add_micro.html', {'form': form})
     
 def detailmic(request, pk):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     # Fetch the MicroCredential object by its primary key
     microcredential = get_object_or_404(MicroCredential, pk=pk)
 
     return render(request, 'micro/detail_micro.html', {'microcredential': microcredential})
 
 def listmic(request):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     microcredentials = MicroCredential.objects.all()  # Fetch all MicroCredential instances
     return render(request, 'micro/list_micro.html', {'microcredentials': microcredentials})
 

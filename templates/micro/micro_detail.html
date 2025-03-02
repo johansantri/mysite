@@ -1,0 +1,251 @@
+{% extends 'home/base.html' %}
+{% load static %}
+{% block content %}
+
+
+
+			<!-- Inner Banner -->
+			<div class="inner-banner">
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-8">
+							<div class="instructor-wrap border-bottom-0 m-0">
+								<div class="about-instructor align-items-center">
+									
+																		
+									<div class="rating mb-0">							
+										<i class="fas fa-star filled"></i>
+										<i class="fas fa-star filled"></i>
+										<i class="fas fa-star filled"></i>
+										<i class="fas fa-star filled"></i>
+										<i class="fas fa-star"></i>
+										<span class="d-inline-block average-rating"><span>4.5</span> (15)</span>
+									</div>
+								</div>
+								<span class="web-badge mb-3">{% if microcredential.category %}{{ microcredential.category }}{% else %}N/A{% endif %}</span>
+							</div>
+							<h2>{{ microcredential.title }}</h2>
+							<p>{{ course.sort_description }}</p>
+													
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- /Inner Banner -->
+			
+			<!-- Course Content -->
+			<section class="page-content course-sec">
+				<div class="container">
+				
+					<div class="row">
+						<div class="col-lg-8">
+						
+							<!-- Overview -->
+							<div class="card overview-sec">
+								<div class="card-body">
+									<h5 class="subs-title">Overview</h5>
+									
+									<p>{{microcredential.description | safe}}</p>
+									
+									
+									
+								</div>
+							</div>
+							<!-- /Overview -->
+							
+							<!-- Course Content -->
+							<div class="card content-sec">
+								<div class="card-body">
+									
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col"><div class="col-sm-6">
+                                                    <h5 class="subs-title">Required Courses:</h5>
+                                                </div></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for course in microcredential.required_courses.all %}
+                                            <tr>
+                                                <td>
+                                                    <a class="collapsed" data-bs-toggle="collapse" href="#collapse{{ forloop.counter }}" aria-expanded="false">{{ course.course_name }}</a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+								
+								</div>
+							</div>
+							<!-- /Course Content -->
+							
+						
+							
+							<!-- Reviews -->
+							<div class="card review-sec">
+								<div class="card-body">
+									<h5 class="subs-title">Reviews</h5>
+									<div class="instructor-wrap">
+										<div class="about-instructor">
+											<div class="abt-instructor-img">
+												<a href="instructor-profile.html"><img src="assets/img/user/user1.jpg" alt="img" class="img-fluid"></a>
+											</div>
+											<div class="instructor-detail">
+												<h5><a href="instructor-profile.html">Nicole Brown</a></h5>
+												<p>UX/UI Designer</p>
+											</div>
+										</div>
+										<div class="rating">							
+											<i class="fas fa-star filled"></i>
+											<i class="fas fa-star filled"></i>
+											<i class="fas fa-star filled"></i>
+											<i class="fas fa-star filled"></i>
+											<i class="fas fa-star"></i>
+											<span class="d-inline-block average-rating">4.5 Instructor Rating</span>
+										</div>
+									</div>
+									<p class="rev-info">“ This is the second Photoshop course I have completed with Cristian. Worth every penny and recommend it highly. To get the most out of this course, its best to to take the Beginner to Advanced course first. The sound and video quality is of a good standard. Thank you Cristian. “</p>
+									<a href="javascript:void(0);" class="btn btn-reply"><i class="feather-corner-up-left"></i> Reply</a>
+								</div>
+							</div>
+							<!-- /Reviews -->
+							
+							<!-- Comment -->
+							<div class="card comment-sec">
+								<div class="card-body">
+									<h5 class="subs-title">Post A comment</h5>
+									<form>
+										<div class="row">
+											<div class="col-md-6">
+												<div class="input-block">
+													<input type="text" class="form-control" placeholder="Full Name">
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="input-block">
+													<input type="email" class="form-control" placeholder="Email">
+												</div>
+											</div>
+										</div>
+										<div class="input-block">
+											<input type="email" class="form-control" placeholder="Subject">
+										</div>
+										<div class="input-block">
+											<textarea rows="4" class="form-control" placeholder="Your Comments"></textarea>
+										</div>
+										<div class="submit-section">
+											<button class="btn submit-btn" type="submit">Submit</button>
+										</div>
+									</form>
+								</div>
+							</div>
+							<!-- /Comment -->
+							
+						</div>	
+						
+						<div class="col-lg-4">
+							<div class="sidebar-sec">
+							
+							<!-- Video -->
+                                <div class="video-sec vid-bg">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <!-- Fancybox trigger link -->
+                                             <!-- Fancybox trigger link for the video -->
+                                                
+                                                    
+                                               
+                                                    {% if microcredential.image %}
+                                                    <img src="{{ microcredential.image.url }}" alt="{{ microcredential.title }}" class="img-fluid mb-3" style="max-width: 100%;">
+                                                    {% endif %}
+
+                                            <div class="video-details">
+                                                <div class="course-fee">
+                                                    <h2>FREE</h2>
+                                                    <p><span>$99.00</span> 50% off</p>
+                                                </div>
+                                                <div class="row gx-2">
+                                                    <div class="col-md-6">
+                                                        <a href="course-wishlist.html" class="btn btn-wish w-100"><i class="feather-heart"></i> Add to Wishlist</a>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <a href="javascript:void(0);" class="btn btn-wish w-100"><i class="feather-share-2"></i> Share</a>
+                                                    </div>
+                                                </div>
+                                                
+												 <!-- Formulir Konfirmasi -->
+                                                 <div class="alert alert-info" role="alert">
+                                                    <p>By enrolling in this MicroCredential, you will automatically be enrolled in all required courses listed above.</p>
+                                                    <form method="post" action="{% url 'courses:enroll_microcredential' slug=microcredential.slug %}">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-primary btn-lg">Enrollment</button>
+                                                        <a href="{% url 'authentication:home'  %}" class="btn btn-secondary btn-lg">Cancel</a>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /Video -->
+
+                                <!-- Include Fancybox JS -->
+                                <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
+
+                                <script>
+                                    Fancybox.bind('[data-fancybox="video-gallery"]', {
+                                        infinite: false,
+                                        arrows: true,
+                                        closeButton: "top",
+                                        dragToClose: true
+                                    });
+                                </script>
+								
+							
+								
+								<!-- Features -->
+								<div class="card feature-sec">
+									<div class="card-body">
+										<div class="cat-title">
+											<h4>Includes</h4>
+										</div>
+                                        <style>
+                                            .right-align {
+                                                text-align: right;
+                                            }
+                                        
+                                            .left {
+                                                text-align: left;
+                                            }
+                                            li {
+                                                display: flex;
+                                                justify-content: space-between; /* Ensures content aligns to both ends */
+                                                align-items: center; /* Vertically align items */
+                                            }
+                                        </style>
+                                        
+                                        <ul class="list-unstyled">
+                                            <li class="left"><strong>Category:</strong> {% if microcredential.category %}{{ microcredential.category }}{% else %}N/A{% endif %}</li>
+                                            <li><strong>Status:</strong> {{ microcredential.status|title }}</li>
+                                            <li><strong>Start Date:</strong> {% if microcredential.start_date %}{{ microcredential.start_date|date:"M d, Y" }}{% else %}N/A{% endif %}</li>
+                                            <li><strong>End Date:</strong> {% if microcredential.end_date %}{{ microcredential.end_date|date:"M d, Y" }}{% else %}N/A{% endif %}</li>
+                                            <li><strong>Created:</strong> {{ microcredential.created_at|date:"M d, Y" }}</li>
+                                            <li><strong>Last Edited:</strong> {{ microcredential.edited_on|date:"M d, Y" }}</li>
+                                            <li><strong>Author:</strong> {{ microcredential.author.username }}</li>
+                                        </ul>
+
+                                        
+                                        
+									</div>
+								</div>
+								<!-- /Features -->
+								
+							</div>
+						</div>
+					</div>	
+				</div>
+			</section>
+			<!-- /Pricing Plan -->
+
+			
+{% endblock %}
