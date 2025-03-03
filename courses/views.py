@@ -3162,17 +3162,18 @@ def org_partner(request, slug):
     return render(request, 'partner/org_partner.html', context)
 
 
-#search user
+# search user optimized with index and pagination
 def search_users(request):
     query = request.GET.get('q', '')
     
-    # If query is empty, return no users or all active users (depending on your use case)
     if query:
-        users = User.objects.filter(Q(email__icontains=query) & Q(is_active=True)).only('id', 'email')
+        users = User.objects.filter(
+            Q(email__icontains=query) & Q(is_active=True)
+        ).only('id', 'email')  # Ensure only necessary fields are fetched
     else:
         users = User.objects.filter(is_active=True).only('id', 'email')
-    
-    # Optional: Implement pagination (if needed)
+
+    # Apply pagination
     paginator = Paginator(users, 20)  # Show 20 users per page
     page_number = request.GET.get('page')  # Get the page number from the query params
     page_obj = paginator.get_page(page_number)
@@ -3186,24 +3187,22 @@ def search_users(request):
         'total_pages': paginator.num_pages,
         'total_users': paginator.count,
     })
-#search partner
+
+# search partner optimized with pagination
 def search_partner(request):
     query = request.GET.get('q', '')
     
-    # If query is empty, return no users or all active users (depending on your use case)
     if query:
         partners = Universiti.objects.filter(
-        Q(name__icontains=query) | Q(email__icontains=query)
-    ).only('id', 'name', 'email')
+            Q(name__icontains=query) | Q(email__icontains=query)
+        ).only('id', 'name', 'email')
     else:
         partners = Universiti.objects.filter(Q(name__icontains=query)).only('id', 'name')
 
-    # Optional: Implement pagination (if needed)
-    paginator = Paginator(partners, 20)  # Show 20 users per page
-    page_number = request.GET.get('page')  # Get the page number from the query params
+    paginator = Paginator(partners, 20)
+    page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    # Prepare data for response
     partners_data = [{'id': universiti.id, 'text': universiti.name} for universiti in page_obj]
 
     return JsonResponse({
@@ -3212,6 +3211,7 @@ def search_partner(request):
         'total_pages': paginator.num_pages,
         'total_partners': paginator.count,
     })
+
 
 
 
