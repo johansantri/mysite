@@ -307,16 +307,22 @@ def detailmic(request, pk):
 
     return render(request, 'micro/detail_micro.html', {'microcredential': microcredential})
 
+
 def listmic(request):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
-    
+
     # Pencarian berdasarkan query parameter 'search'
     search_query = request.GET.get('search', '')
     if search_query:
+        # Filter berdasarkan pencarian
         microcredentials = MicroCredential.objects.filter(title__icontains=search_query)
     else:
+        # Ambil semua microcredential jika tidak ada pencarian
         microcredentials = MicroCredential.objects.all()
+
+    # Mengambil data microcredentials dan menghitung jumlah peserta yang terdaftar
+    microcredentials = microcredentials.annotate(num_enrollments=Count('enrollments'))
 
     # Pagination: Menampilkan 10 microcredentials per halaman
     paginator = Paginator(microcredentials, 10)

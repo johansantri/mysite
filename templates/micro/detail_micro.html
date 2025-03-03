@@ -3,45 +3,56 @@
 
 <div class="page-content">
   <div class="container">
-  <div class="row">
+    <div class="row">
+      {% include "home/sidebar.html" %}
+      <div class="col-xl-9 col-lg-9">
+        <div class="support-wrap">
+          <h1>{{ microcredential.title }}</h1>
 
-      
+          <!-- Deskripsi Microcredential -->
+          <p>{{ microcredential.description | safe }}</p>
 
+          <!-- Informasi Microcredential -->
+          <div class="mb-4">
+            <p><strong>Status:</strong> {{ microcredential.get_status_display }}</p>
+            <p><strong>Category:</strong> {{ microcredential.category }}</p>
+            <p><strong>Start Date:</strong> {{ microcredential.start_date }}</p>
+            <p><strong>End Date:</strong> {{ microcredential.end_date }}</p>
+            <p><strong>Minimum Total Score:</strong> {{ microcredential.min_total_score }}</p>
+          </div>
 
+          <!-- Required Courses Table -->
+          <h3>Required Courses</h3>
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Course Name</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for course in microcredential.required_courses.all %}
+                <tr>
+                  <td>{{ course.course_name }}</td> <!-- Assuming 'Course' has a 'course_name' field -->
+                  <td>
+                    <a href="#" class="btn btn-info btn-sm">View</a>
+                  </td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="2">No required courses available.</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
 
-    {% include "home/sidebar.html" %}
-    <div class="col-xl-9 col-lg-9">
-      <div class="support-wrap">
- <h1>{{ microcredential.title }}</h1>
-  
-  <p>{{ microcredential.description | safe }}</p>
-
-  <p>Status: {{ microcredential.get_status_display }}</p>
-  <p>Category: {{ microcredential.category }}</p>
-  <p>Start Date: {{ microcredential.start_date }}</p>
-  <p>End Date: {{ microcredential.end_date }}</p>
-  <p>Minimum Total Score: {{ microcredential.min_total_score }}</p>
-    <h3>Required Courses</h3>
-<ul>
-  {% for course in microcredential.required_courses.all %}
-    <li>{{ course.course_name }}</li>  <!-- Assuming 'Course' has a 'title' field -->
-  {% empty %}
-    <li>No required courses.</li>
-  {% endfor %}
-</ul>
-  <br>
-  <a href="{% url 'courses:microcredential-list' %}">Back to list</a>
- </div>
+          <!-- Back to list link -->
+          <br>
+          <a href="{% url 'courses:microcredential-list' %}" class="btn btn-secondary">Back to list</a>
+        </div>
+      </div>
+    </div>
   </div>
-    
-
- 
-  </div>
-
-  
 </div>
-    
 
- 
-</div>
 {% endblock %}

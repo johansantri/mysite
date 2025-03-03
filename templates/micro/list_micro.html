@@ -29,6 +29,7 @@
                       <thead>
                           <tr>
                               <th scope="col">Title</th>
+                              <th scope="col">enroll</th>
                               <th scope="col">Actions</th>
                           </tr>
                       </thead>
@@ -36,6 +37,7 @@
                           {% for microcredential in page_obj %}
                           <tr>
                               <td><a href="{% url 'courses:microcredential-detail' microcredential.pk %}">{{ microcredential.title }}</a></td>
+                               <td>{{ microcredential.num_enrollments }}</td>
                               <td>
                                   <a href="{% url 'courses:microcredential-update' microcredential.pk %}" class="btn btn-warning btn-sm">Edit</a>
                                   <a href="{% url 'courses:microcredential-delete' microcredential.pk %}" class="btn btn-danger btn-sm">Delete</a>

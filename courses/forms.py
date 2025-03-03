@@ -20,8 +20,11 @@ class MicroCredentialForm(forms.ModelForm):
         model = MicroCredential
         fields = ['title', 'slug', 'description', 'required_courses', 'status', 'start_date', 'end_date', 'image', 'category', 'min_total_score']
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 100%; font-size: 18px;'}),
-            'slug': forms.TextInput(attrs={'class': 'form-control'}),
+            'title': forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 100%; font-size: 18px;',"oninput": "listingslug(value)"}),
+             "slug": forms.HiddenInput(attrs={
+                "class": "form-control",
+                "maxlength": "200"
+            }),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
             'start_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'end_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
