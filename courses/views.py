@@ -3008,13 +3008,16 @@ def partner_detail(request, partner_id):
     if selected_category:
         related_courses = related_courses.filter(category__name=selected_category)
 
+    # Annotate each course with the number of enrollments (learners)
+    related_courses = related_courses.annotate(learner_count=Count('enrollments'))
+
     # Sort the courses based on the sort_by value
     if sort_by == 'name':
         related_courses = related_courses.order_by('course_name')
     elif sort_by == 'date':
         related_courses = related_courses.order_by('created_at')
     elif sort_by == 'learners':
-        related_courses = related_courses.annotate(learner_count=Count('enrollments')).order_by('-learner_count')
+        related_courses = related_courses.order_by('-learner_count')
     elif sort_by == 'status':
         related_courses = related_courses.order_by('status_course')
 
@@ -3032,12 +3035,16 @@ def partner_detail(request, partner_id):
     # Fetch categories that have courses linked to this partner
     categories_with_courses = Category.objects.filter(category_courses__org_partner_id=partner.id).distinct()
 
+    # --- Calculate unique learners across all courses ---
+    # Count unique users who are enrolled in any of the courses of this partner
+    unique_learners = Enrollment.objects.filter(course__in=related_courses).values('user').distinct().count()
+
     # Pagination setup
     page_number = request.GET.get('page')
     paginator = Paginator(related_courses, 10)
     page_obj = paginator.get_page(page_number)
 
-    # Context data
+    # Context data, including learner_count for each course and unique learner count
     context = {
         'partner': partner,
         'page_obj': page_obj,
@@ -3046,11 +3053,11 @@ def partner_detail(request, partner_id):
         'grouped_courses': grouped_courses,
         'selected_category': selected_category,
         'categories': categories_with_courses,  # Only categories with courses
-        'sort_by': sort_by
+        'sort_by': sort_by,
+        'unique_learners': unique_learners  # Add unique learners to the context
     }
 
     return render(request, 'partner/partner_detail.html', context)
-
 
 
 #org partner from lms
