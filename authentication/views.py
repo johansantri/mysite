@@ -18,7 +18,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth import logout
 from authentication.forms import UserRegistrationForm, Userprofile, UserPhoto
 from .models import Profile
-from courses.models import Instructor,CourseStatus,Enrollment,MicroCredential, MicroCredentialEnrollment,Course, Enrollment, Category,CourseProgress
+from courses.models import Instructor,Assessment,GradeRange,Submission,AssessmentScore,QuestionAnswer,CourseStatus,Enrollment,MicroCredential, MicroCredentialEnrollment,Course, Enrollment, Category,CourseProgress
 from django.http import HttpResponse,JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseForbidden
@@ -28,6 +28,8 @@ from django.core import serializers
 from django.db.models import Count
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_protect
+from decimal import Decimal
+
 # Create your views here.
 
 
@@ -165,65 +167,75 @@ def course_list(request):
 
 #detailuser
 def user_detail(request, user_id):
-    # Check if the user is authenticated
-    if not request.user.is_authenticated:
-        return redirect("/login/?next=%s" % request.path)
-
-    try:
-        if request.user.is_superuser:
-            # Superuser can view details of any user
-            user = get_object_or_404(User, id=user_id)
-        elif request.user.is_partner:
-            # Partner can view users related to their university, excluding superusers
-            if request.user.university:
-                user = get_object_or_404(
-                    User,
-                    id=user_id,
-                    university=request.user.university,
-                    is_superuser=False
-                )
-            else:
-                # Deny access if the partner is not associated with a university
-                return HttpResponseForbidden("You are not associated with any university.")
-        else:
-            # Other users can only view their own details
-            user = get_object_or_404(User, id=request.user.id)
-    except User.DoesNotExist:
-        return HttpResponseForbidden("You do not have permission to view this user's details.")
-
-    # Pencarian berdasarkan query parameter 'search'
-    search_query = request.GET.get('search', '').strip()
+    # Pastikan pengguna yang mengakses adalah pengguna yang tepat
+    user = get_object_or_404(User, id=user_id)  # Menggunakan user_id untuk mengambil pengguna
+    
+    # Ambil daftar kursus yang diikuti oleh pengguna ini
+    enrollments = Enrollment.objects.filter(user=user)
+    courses = [enrollment.course for enrollment in enrollments]
+    
+    # Implementasi pencarian berdasarkan course_name
+    search_query = request.GET.get('search', '')
     if search_query:
-        # Filter courses by search query
-         courses = user.enrollments.filter(course__course_name__icontains=search_query).select_related('course')
-    else:
-        # Get all the courses the user has enrolled in
-        courses = user.enrollments.all().select_related('course')
+        courses = [course for course in courses if search_query.lower() in course.course_name.lower()]
+    
+    # Menyiapkan data untuk pagination
+    course_details = []
+    for course in courses:
+        # Ambil total skor dan status dari setiap kursus
+        total_max_score = 0
+        total_score = 0
+        status = "Fail"  # Default status
+        
+        # Ambil nilai grade range untuk kursus tersebut
+        grade_range = GradeRange.objects.filter(course=course).first()
+        passing_threshold = grade_range.min_grade if grade_range else 0
 
-    # Pagination: Show 5 courses per page
-    page_number = request.GET.get('page', 1)
-
-    # Ensure that the page number is valid and not less than 1
-    try:
-        page_number = int(page_number)
-        if page_number < 1:
-            page_number = 1
-    except ValueError:
-        page_number = 1
-
-    paginator = Paginator(courses, 5)
+        # Loop untuk mengambil skor dari setiap assessment dalam kursus
+        assessments = Assessment.objects.filter(section__courses=course)
+        for assessment in assessments:
+            # Ambil skor untuk assessment ini
+            score_value = Decimal(0)
+            total_correct_answers = 0
+            total_questions = assessment.questions.count()
+            
+            # Hitung skor untuk assessment ini (misalnya multiple-choice)
+            if total_questions > 0:
+                for question in assessment.questions.all():
+                    answers = QuestionAnswer.objects.filter(question=question, user=user)
+                    total_correct_answers += answers.filter(choice__is_correct=True).count()
+                if total_questions > 0:
+                    score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
+            
+            total_max_score += assessment.weight
+            total_score += score_value
+        
+        # Hitung status kelulusan
+        if total_max_score > 0:
+            overall_percentage = (total_score / total_max_score) * 100
+            if overall_percentage >= passing_threshold:
+                status = "Pass"
+        
+        # Tambahkan detail kursus ke daftar
+        course_details.append({
+            'course_name': course.course_name,
+            'total_score': total_score,
+            'total_max_score': total_max_score,
+            'status': status
+        })
+    
+    # Pagination untuk hasil kursus
+    paginator = Paginator(course_details, 5)  # Menampilkan 5 kursus per halaman
+    page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    # Prepare the context with the user's details and enrolled courses
     context = {
         'user': user,
-        'courses': page_obj,
-        'search_query': search_query,
+        'course_details': page_obj,  # Gunakan page_obj untuk paginasi
+        'search_query': search_query,  # Kirim query pencarian untuk form pencarian
     }
-
-    # Render the user detail template
+    
     return render(request, 'authentication/user_detail.html', context)
-
 
 def all_user(request):
     if not request.user.is_authenticated:

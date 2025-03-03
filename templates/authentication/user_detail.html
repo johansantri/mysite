@@ -113,26 +113,34 @@
 
                 <!-- Daftar Course yang diambil pengguna -->
                 <h3>Enrolled Courses</h3>
+                
                 <table class="table table-hover">
                     <thead>
-                    <tr>
-                        <th scope="col">Course Title</th>
-                        <th scope="col">Enrolled At</th>
-                    </tr>
+                        <tr>
+                            <th>Course Title</th>
+                            <th>Total Score</th>
+                            <th>Status</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    {% for enrollment in courses %}
+                        {% for course in course_details %}
                         <tr>
-                        <td><a href="">{{ enrollment.course.course_name }}</a></td>
-                        <td>{{ enrollment.enrolled_at }}</td>
+                            <td>{{ course.course_name }}</td>
+                            <td>{{ course.total_score }} / {{ course.total_max_score }}</td>
+                            <td>
+                                {% if course.status == "Pass" %}
+                                    <span class="badge bg-success">Passed</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Failed</span>
+                                {% endif %}
+                            </td>
                         </tr>
-                    {% empty %}
-                        <tr>
-                        <td colspan="2">No courses found.</td>
-                        </tr>
-                    {% endfor %}
+                        {% endfor %}
                     </tbody>
                 </table>
+
+
+
 
                 <!-- Pagination -->
                 <div class="d-flex justify-content-center">
