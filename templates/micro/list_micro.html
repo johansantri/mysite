@@ -3,33 +3,100 @@
 
 <div class="page-content">
   <div class="container">
-  <div class="row">
+    <div class="row">
 
       
 
 
 
-    {% include "home/sidebar.html" %}
-    <div class="col-xl-9 col-lg-9">
-      <div class="support-wrap">
-{% for microcredential in microcredentials %}
-    <div>
-        <h2><a href="{% url 'courses:microcredential-detail' microcredential.pk %}">{{ microcredential.title }}</a></h2>
-        <p>{{ microcredential.description | safe}}</p>
-        <p>Status: {{ microcredential.get_status_display }}</p>
-        <p><a href="{% url 'courses:microcredential-update' microcredential.pk %}">Edit</a></p>
-        <p><a href="{% url 'courses:microcredential-delete' microcredential.pk %}">Delete</a></p>
-    </div>
-{% endfor %}
- </div>
-  </div>
-    
+        {% include "home/sidebar.html" %}
+          <div class="col-xl-9 col-lg-9">
+            <div class="support-wrap">
+              <div class="container mt-5">
+                <h1>Microcredentials List</h1>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <!-- Tombol New Micro di sebelah kiri -->
+                    <a href="{% url 'courses:microcredential-create' %}" class="btn btn-success btn-sm">New Micro</a>
+                    
+                    <!-- Form Pencarian di sebelah kanan -->
+                    <form method="get" action="{% url 'courses:microcredential-list' %}" class="d-flex">
+                        <input type="text" class="form-control me-2" name="search" placeholder="Search Microcredentials" value="{{ search_query }}">
+                        <button class="btn btn-outline-secondary" type="submit">Search</button>
+                    </form>
+                </div>
+
+                   <table class="table table-hover">
+                      <thead>
+                          <tr>
+                              <th scope="col">Title</th>
+                              <th scope="col">Actions</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {% for microcredential in page_obj %}
+                          <tr>
+                              <td><a href="{% url 'courses:microcredential-detail' microcredential.pk %}">{{ microcredential.title }}</a></td>
+                              <td>
+                                  <a href="{% url 'courses:microcredential-update' microcredential.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                                  <a href="{% url 'courses:microcredential-delete' microcredential.pk %}" class="btn btn-danger btn-sm">Delete</a>
+                              </td>
+                          </tr>
+                          {% empty %}
+                          <tr>
+                              <td colspan="2">No microcredentials found.</td>
+                          </tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+
+
+
+                  <!-- Pagination -->
+                        <nav>
+                            <ul class="pagination justify-content-center">
+                                {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1&search={{ search_query }}" aria-label="First">
+                                        <span aria-hidden="true">&laquo;&laquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}&search={{ search_query }}" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                {% endif %}
+
+                                <li class="page-item active" aria-current="page">
+                                    <span class="page-link">{{ page_obj.number }}</span>
+                                </li>
+
+                                {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.next_page_number }}&search={{ search_query }}" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&search={{ search_query }}" aria-label="Last">
+                                        <span aria-hidden="true">&raquo;&raquo;</span>
+                                    </a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                        
+            </div>
+
+            </div>
+          </div>
+        
 
  
-  </div>
+    </div>
 
   
-</div>
+  </div>
     
 
  

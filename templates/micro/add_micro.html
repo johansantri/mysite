@@ -12,17 +12,17 @@
     {% include "home/sidebar.html" %}
     <div class="col-xl-9 col-lg-9">
       <div class="support-wrap">
-<h1>Add New MicroCredential</h1>
+        <h1>Add New MicroCredential</h1>
 
-  <form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}  <!-- Render form fields -->
-    
-    <button type="submit" class="btn btn-success">Save</button>
-  </form>
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{ form.as_p }}  <!-- Render form fields -->
+          {{ form.media }}
+          <button type="submit" class="btn btn-success">Save</button>
+        </form>
 
-  <br>
-  <a href="{% url 'courses:microcredential-list' %}">Cancel</a>  <!-- Link to go back to the list -->
+      <br>
+    <a href="{% url 'courses:microcredential-list' %}">Cancel</a>  <!-- Link to go back to the list -->
 
    </div>
   </div>
@@ -37,4 +37,29 @@
 
  
 </div>
+
+<script>
+  $(document).ready(function() {
+    $('.select2').select2({
+      placeholder: 'Search for a course',  // Add a placeholder for better UX
+      ajax: {
+        url: '{% url "courses:course_autocomplete" %}',  // URL for your autocomplete endpoint
+        dataType: 'json',
+        delay: 250,  // Delay to wait for user to stop typing
+        data: function (params) {
+          return {
+            q: params.term  // Send the search term as a parameter
+          };
+        },
+        processResults: function (data) {
+          return {
+            results: data.results  // Assuming response contains a "results" key with list of courses
+          };
+        },
+        cache: true  // Optional: improves performance by caching requests
+      },
+      minimumInputLength: 1  // Wait until the user types at least one character
+    });
+  });
+</script>
 {% endblock %}

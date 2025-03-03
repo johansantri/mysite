@@ -310,8 +310,20 @@ def detailmic(request, pk):
 def listmic(request):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
-    microcredentials = MicroCredential.objects.all()  # Fetch all MicroCredential instances
-    return render(request, 'micro/list_micro.html', {'microcredentials': microcredentials})
+    
+    # Pencarian berdasarkan query parameter 'search'
+    search_query = request.GET.get('search', '')
+    if search_query:
+        microcredentials = MicroCredential.objects.filter(title__icontains=search_query)
+    else:
+        microcredentials = MicroCredential.objects.all()
+
+    # Pagination: Menampilkan 10 microcredentials per halaman
+    paginator = Paginator(microcredentials, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'micro/list_micro.html', {'page_obj': page_obj, 'search_query': search_query})
 
 
 def calculate_score_for_user_and_course(user, course):
