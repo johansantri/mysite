@@ -3,14 +3,10 @@
 
 {% block content %}
 
-<div class="container py-4">
-    <div class="row">
+ 
+     
         
-        <!-- Sidebar -->
-        {% include "learner/sidebar.html" %}
-        <!-- /Sidebar -->
         
-        <div class="col-md-9 offset-md-3 col-12" style="padding-top: 20px;">
             <h1>List of Courses Taken</h1>
 
             <!-- Search Form -->
@@ -59,8 +55,6 @@
             {% else %}
                 <p>You haven't enrolled in any courses yet.</p>
             {% endif %}
-        </div>
-    </div>
-</div>
-
+       
+  
 {% endblock %}
