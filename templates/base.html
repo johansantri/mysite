@@ -1115,40 +1115,29 @@
 						<h2>500+ Leading Universities And Companies</h2>
 					</div>
 				</div>
+
+				
+				
+			
 				<div class="lead-group aos" data-aos="fade-up">
 					<div class="lead-group-slider owl-carousel owl-theme">
+					
+						{% for partner in partners %}
 						<div class="item">
 							<div class="lead-img">
-								<img class="img-fluid" alt="Img" src="{% static "assets/img/lead-01.png"%}">
+								{% if partner.logo %}
+									<img src="{{ partner.logo.url }}" alt="{{ partner.name }}" class="img-fluid">
+								{% else %}
+									<img src="{% static "assets/img/lead-02.png"%}" alt="{{ partner.name }}" class="img-fluid">
+								{% endif %}
 							</div>
 						</div>
-						<div class="item">
-							<div class="lead-img">
-								<img class="img-fluid" alt="Img" src="{% static "assets/img/lead-02.png"%}">
-							</div>
-						</div>
-						<div class="item">
-							<div class="lead-img">
-								<img class="img-fluid" alt="Img" src="{% static "assets/img/lead-03.png"%}">
-							</div>
-						</div>
-						<div class="item">
-							<div class="lead-img">
-								<img class="img-fluid" alt="Img" src="{% static "assets/img/lead-04.png"%}">
-							</div>
-						</div>
-						<div class="item">
-							<div class="lead-img">
-								<img class="img-fluid" alt="Img" src="{% static "assets/img/lead-05.png"%}">
-							</div>
-						</div>
-						<div class="item">
-							<div class="lead-img">
-								<img class="img-fluid" alt="Img" src="{% static "assets/img/lead-06.png"%}">
-							</div>
-						</div>
+						{% endfor %}
+						
 					</div>
 				</div>
+
+				
 			</div>
 		</section>
 		<!-- /Leading Companies -->

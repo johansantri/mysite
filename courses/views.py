@@ -1466,7 +1466,6 @@ def instructor_profile(request, username):
 
     # Ensure that the instructor has a provider (Partner) with a slug in the related Universiti
     if not instructor.provider or not hasattr(instructor.provider.name, 'slug'):
-        # Handle the case where there is no provider or slug
         partner_slug = None
     else:
         partner_slug = instructor.provider.name.slug  # Access slug from Universiti model
@@ -1484,8 +1483,14 @@ def instructor_profile(request, username):
         Q(end_date__gte=datetime.now())          # Only courses that haven't ended yet
     ).order_by('start_date')  # Optional: Order by start date or any other field
 
+    # Annotate each course with the total number of enrollments (participants)
+    courses = courses.annotate(total_enrollments=Count('enrollments'))
+
     # Get the count of filtered courses
     courses_count = courses.count()
+
+    # Calculate the total number of unique participants across all courses
+    total_participants = courses.aggregate(total_participants=Count('enrollments__user', distinct=True))['total_participants']
 
     # Implement pagination: Show 6 courses per page
     paginator = Paginator(courses, 6)
@@ -1513,7 +1518,8 @@ def instructor_profile(request, username):
         'page_obj': page_obj,
         'courses_count': courses_count,  # Pass the count to the template
         'search_term': search_term,
-        'partner_slug': partner_slug  # Pass partner_slug to the template
+        'partner_slug': partner_slug,  # Pass partner_slug to the template
+        'total_participants': total_participants,  # Pass total participants to the template
     })
 #ernroll
 def enroll_course(request, course_id):

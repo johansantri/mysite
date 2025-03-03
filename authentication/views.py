@@ -18,7 +18,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth import logout
 from authentication.forms import UserRegistrationForm, Userprofile, UserPhoto
 from .models import Profile
-from courses.models import Instructor,Assessment,GradeRange,Submission,AssessmentScore,QuestionAnswer,CourseStatus,Enrollment,MicroCredential, MicroCredentialEnrollment,Course, Enrollment, Category,CourseProgress
+from courses.models import Instructor,Partner,Assessment,GradeRange,Submission,AssessmentScore,QuestionAnswer,CourseStatus,Enrollment,MicroCredential, MicroCredentialEnrollment,Course, Enrollment, Category,CourseProgress
 from django.http import HttpResponse,JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseForbidden
@@ -374,15 +374,25 @@ def home(request):
         popular_microcredentials = MicroCredential.objects.filter(
             status='active'
         ).order_by('-created_at')[:6]  # Limit to 6 popular microcredentials
-        
+
+        # Get all partners
+        partners = Partner.objects.all()  # Fetch all partners
+
     else:
         # If no 'published' status exists, handle gracefully
         popular_categories = []
         popular_microcredentials = []
+        partners = []  # If no published courses, no partners are needed
+
+    # Pagination: Show 6 partners per page
+    paginator = Paginator(partners, 6)  # You can adjust the number of partners per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     return render(request, 'home/index.html', {
         'popular_categories': popular_categories,
         'popular_microcredentials': popular_microcredentials,
+        'partners': page_obj,  # Send the paginated partners to the template
     })
 
 
