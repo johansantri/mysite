@@ -4,580 +4,521 @@
 {% block content %}
   <div class="page-content">
     <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar with Sections -->
-            <!-- Sidebar with Sections -->
-            <div class="col-md-3 d-none d-md-flex flex-column flex-shrink-0 p-3 text-white bg-dark" 
-                style="position: fixed; top: 0; left: 0; height: 100vh; z-index: 1000; overflow-y: auto;">
-                <div class="settings-widget">
-                    <div class="settings-menu">
-                        <h3 class="h5"> <a href="{% url 'authentication:dashbord'%}">Course Content</a> </h3> 
-                        <ul>
-                            {% for section in sections %}
-                                <li class="nav-item">
-                                    
-                                    <p>{{ section.title }}</p>
-                                    <ul>
-                                        {% for material in section.materials.all %}
-                                            <li>
-                                                <a class="nav-link" href="?material_id={{ material.id }}" style="color:rgb(36, 117, 54);">
-                                                    <i class="bx bx-file"></i> {{ material.title }}
-                                                </a>
-                                            </li>
-                                        {% endfor %}
-                                        {% for assessment in section.assessments.all %}
-                                            <li>
-                                                <a class="nav-link" href="?assessment_id={{ assessment.id }}" style="color:rgb(36, 117, 54);">
-                                                    <i class="bx bx-pencil"></i> {{ assessment.name }}
-                                                </a>
-                                            </li>
-                                        {% empty %}
-                                        {% endfor %}
-                                    </ul>
-                                </li>
-                            {% endfor %}
-                            <hr>
-                            <p class="fw-bold">Progress: {{ course_progress |floatformat:0 }}%</p>
-                            <div class="progress">
-                                <div class="progress-bar bg-success" 
-                                    role="progressbar" 
-                                    style="width: {{ course_progress|default:0 }}%" 
-                                    aria-valuenow="{{ course_progress|default:0 }}" 
-                                    aria-valuemin="0" 
-                                    aria-valuemax="100">
-                                </div>
-                            </div>
-                            <hr>
-                           <div class="js-container container" style="position: relative; top: 0px !important;">
-                                <p>
-                                     {% if course_progress == 100 and status == 'Fail' %}
-                                        <div class="result-info text-center mb-4">
-                                            <span class="text-danger fw-bold">Unfortunately, you did not pass the course, {{ request.user.username }}!</span>
-                                            <p class="mb-1">Passing Threshold: <span class="fw-bold">{{ passing_threshold }}</span></p>
-                                            <p class="mb-1">Your Score: <span class="fw-bold">{{ total_score | floatformat:2 }}  </span>
-                                            <br>
-                                            Maybe your final score is greater than the threshold, but you must pass all assessments
-                                            </p>
-                                        </div>
-                                    {% elif status == 'Pass' %}
-                                        <div class="result-info text-center mb-4">
-                                            <span class="text-success fw-bold">Congratulations 🎈 {{ request.user.username }}! 🎉</span>
-                                            <p class="mb-1">Passing Threshold: <span class="fw-bold">{{ passing_threshold }}</span></p>
-                                            <p class="mb-1">Your Score: <span class="fw-bold">{{ total_score | floatformat:2 }}</span></p>
-                                            <a href="{% url 'courses:generate_certificate' course.id %}" class="btn btn-success btn-sm">certificate</a>
-                                        </div>
-                                   
-                                    {% endif %}
-                                </p>
-                            </div>
-
-                            <script>
-                                // Cek status dari template
-                                const status = "{{ status }}"; // Ambil status dari template
-
-                                if (status === 'Pass') {
-                                    const Confettiful = function(el) {
-                                        this.el = el;
-                                        this.containerEl = null;
-
-                                        this.confettiFrequency = 3;
-                                        this.confettiColors = ['#EF2964', '#00C09D', '#2D87B0', '#48485E', '#EFFF1D'];
-                                        this.confettiAnimations = ['slow', 'medium', 'fast'];
-
-                                        this._setupElements();
-                                        this._renderConfetti();
-                                    };
-
-                                    Confettiful.prototype._setupElements = function() {
-                                        const containerEl = document.createElement('div');
-                                        containerEl.classList.add('confetti-container');
-                                        
-                                        // Set position to relative if not already set
-                                        if (this.el.style.position !== 'relative' && this.el.style.position !== 'absolute') {
-                                            this.el.style.position = 'relative';
-                                        }
-
-                                        this.el.appendChild(containerEl);
-                                        this.containerEl = containerEl;
-                                    };
-
-                                    Confettiful.prototype._renderConfetti = function() {
-                                        this.confettiInterval = setInterval(() => {
-                                            const confettiEl = document.createElement('div');
-                                            const confettiSize = (Math.floor(Math.random() * 3) + 7) + 'px';
-                                            const confettiBackground = this.confettiColors[Math.floor(Math.random() * this.confettiColors.length)];
-                                            const confettiLeft = (Math.floor(Math.random() * this.el.offsetWidth)) + 'px';
-                                            const confettiAnimation = this.confettiAnimations[Math.floor(Math.random() * this.confettiAnimations.length)];
-
-                                            confettiEl.classList.add('confetti', 'confetti--animation-' + confettiAnimation);
-                                            confettiEl.style.left = confettiLeft;
-                                            confettiEl.style.width = confettiSize;
-                                            confettiEl.style.height = confettiSize;
-                                            confettiEl.style.backgroundColor = confettiBackground;
-
-                                            // Remove confetti after 3 seconds
-                                            setTimeout(() => {
-                                                confettiEl.remove();
-                                            }, 3000);
-
-                                            this.containerEl.appendChild(confettiEl);
-                                        }, 25);
-
-                                        // Stop confetti effect after 10 seconds
-                                        setTimeout(() => {
-                                            clearInterval(this.confettiInterval);
-                                        }, 10000); // 10 seconds
-                                    };
-
-                                    // Initialize confetti effect
-                                    window.confettiful = new Confettiful(document.querySelector('.js-container'));
-                                }
-                            </script>
-
-                            <style>
-                                .confetti-container {
-                                    position: absolute;
-                                    top: 0;
-                                    left: 0;
-                                    width: 100%;
-                                    height: 100%;
-                                    pointer-events: none; /* Prevent mouse events on the confetti container */
-                                }
-
-                                .confetti {
-                                    position: absolute;
-                                    border-radius: 50%;
-                                    opacity: 0.8;
-                                }
-
-                                .confetti--animation-slow {
-                                    animation: fall 3s linear forwards;
-                                }
-
-                                .confetti--animation-medium {
-                                    animation: fall 2s linear forwards;
-                                }
-
-                                .confetti--animation-fast {
-                                    animation: fall 1s linear forwards;
-                                }
-
-                                @keyframes fall {
-                                    to {
-                                        transform: translateY(100vh); /* Move confetti down */
-                                        opacity: 0; /* Fade out */
-                                    }
-                                }
-                            </style>
-                            <hr>
-                            <div class="container">
-                               
-                           
-                               
-                                
-                                <table class="table table-dark table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>assement</th>
-                                            <th>grade</th>
-                                            <th>score</th>
-                                            
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for result in assessment_results %}
-                                        <tr>
-                                            <td>{{ result.name }}</td>
-                                            <td>{{ result.max_score }}</td>
-                                            <td>{{ result.score | floatformat:2 }}</td>
-                                            
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-
-                               
-                              
-                            </div>
-                        </div>
-                    </div>
+      <div class="row">
+        <!-- Sidebar with Sections -->
+        <div class="col-md-3 d-none d-md-flex flex-column flex-shrink-0 p-3 text-white bg-dark" 
+            style="position: fixed; top: 0; left: 0; height: 100vh; z-index: 1000; overflow-y: auto;">
+          <!-- Konten sidebar tetap sama -->
+          <div class="settings-widget">
+            <div class="settings-menu">
+              <h3 class="h5"><a href="{% url 'authentication:dashbord' %}">Course Content</a></h3> 
+              <ul>
+                {% for section in sections %}
+                  <li class="nav-item">
+                    <p>{{ section.title }}</p>
+                    <ul>
+                      {% for material in section.materials.all %}
+                        <li>
+                          <a class="nav-link" href="?material_id={{ material.id }}" style="color:rgb(36, 117, 54);">
+                            <i class="bx bx-file"></i> {{ material.title }}
+                          </a>
+                        </li>
+                      {% endfor %}
+                      {% for assessment in section.assessments.all %}
+                        <li>
+                          <a class="nav-link" href="?assessment_id={{ assessment.id }}" style="color:rgb(36, 117, 54);">
+                            <i class="bx bx-pencil"></i> {{ assessment.name }}
+                          </a>
+                        </li>
+                      {% empty %}
+                      {% endfor %}
+                    </ul>
+                  </li>
+                {% endfor %}
+                <hr>
+                <p class="fw-bold">Progress: {{ course_progress |floatformat:0 }}%</p>
+                <div class="progress">
+                  <div class="progress-bar bg-success" 
+                      role="progressbar" 
+                      style="width: {{ course_progress|default:0 }}%" 
+                      aria-valuenow="{{ course_progress|default:0 }}" 
+                      aria-valuemin="0" 
+                      aria-valuemax="100">
+                  </div>
                 </div>
-            </div>
-
-            <!-- Button to toggle sidebar on mobile -->
-            <div class="d-md-none d-flex justify-content-center mb-3">
-                <button class="btn btn-primary" data-bs-toggle="modal" id="toggleSidebar" data-bs-target="#sidebarModal">Show Sidebar</button>
-            </div>
-
-                      
-                      <div class="col-md-9 offset-md-3 col-12" style="padding-top: 20px;">
-    <div class="material-content">
-                    {% if messages %}
-                        <div class="alert-container">
-                            {% for message in messages %}
-                                <div class="alert alert-{{ message.tags }} mt-3">{{ message }}</div>
-                            {% endfor %}
-                        </div>
+                <hr>
+                <div class="js-container container" style="position: relative; top: 0px !important;">
+                  <p>
+                    {% if course_progress == 100 and status == 'Fail' %}
+                      <div class="result-info text-center mb-4">
+                        <span class="text-danger fw-bold">Unfortunately, you did not pass the course, {{ request.user.username }}!</span>
+                        <p class="mb-1">Passing Threshold: <span class="fw-bold">{{ passing_threshold }}</span></p>
+                        <p class="mb-1">Your Score: <span class="fw-bold">{{ total_score | floatformat:2 }}  </span>
+                        <br>
+                        Maybe your final score is greater than the threshold, but you must pass all assessments
+                        </p>
+                      </div>
+                    {% elif status == 'Pass' %}
+                      <div class="result-info text-center mb-4">
+                        <span class="text-success fw-bold">Congratulations 🎈 {{ request.user.username }}! 🎉</span>
+                        <p class="mb-1">Passing Threshold: <span class="fw-bold">{{ passing_threshold }}</span></p>
+                        <p class="mb-1">Your Score: <span class="fw-bold">{{ total_score | floatformat:2 }}</span></p>
+                        <a href="{% url 'courses:generate_certificate' course.id %}" class="btn btn-success btn-sm">certificate</a>
+                      </div>
                     {% endif %}
-        {% if current_content %}
-            {% if current_content.0 == 'material' %}
+                  </p>
+                </div>
+                <!-- Script dan style untuk confetti tetap sama -->
+                <script>
+                  const status = "{{ status }}";
+                  if (status === 'Pass') {
+                    const Confettiful = function(el) {
+                      this.el = el;
+                      this.containerEl = null;
+                      this.confettiFrequency = 3;
+                      this.confettiColors = ['#EF2964', '#00C09D', '#2D87B0', '#48485E', '#EFFF1D'];
+                      this.confettiAnimations = ['slow', 'medium', 'fast'];
+                      this._setupElements();
+                      this._renderConfetti();
+                    };
+                    Confettiful.prototype._setupElements = function() {
+                      const containerEl = document.createElement('div');
+                      containerEl.classList.add('confetti-container');
+                      if (this.el.style.position !== 'relative' && this.el.style.position !== 'absolute') {
+                        this.el.style.position = 'relative';
+                      }
+                      this.el.appendChild(containerEl);
+                      this.containerEl = containerEl;
+                    };
+                    Confettiful.prototype._renderConfetti = function() {
+                      this.confettiInterval = setInterval(() => {
+                        const confettiEl = document.createElement('div');
+                        const confettiSize = (Math.floor(Math.random() * 3) + 7) + 'px';
+                        const confettiBackground = this.confettiColors[Math.floor(Math.random() * this.confettiColors.length)];
+                        const confettiLeft = (Math.floor(Math.random() * this.el.offsetWidth)) + 'px';
+                        const confettiAnimation = this.confettiAnimations[Math.floor(Math.random() * this.confettiAnimations.length)];
+                        confettiEl.classList.add('confetti', 'confetti--animation-' + confettiAnimation);
+                        confettiEl.style.left = confettiLeft;
+                        confettiEl.style.width = confettiSize;
+                        confettiEl.style.height = confettiSize;
+                        confettiEl.style.backgroundColor = confettiBackground;
+                        setTimeout(() => {
+                          confettiEl.remove();
+                        }, 3000);
+                        this.containerEl.appendChild(confettiEl);
+                      }, 25);
+                      setTimeout(() => {
+                        clearInterval(this.confettiInterval);
+                      }, 10000);
+                    };
+                    window.confettiful = new Confettiful(document.querySelector('.js-container'));
+                  }
+                </script>
+                <style>
+                  .confetti-container {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    pointer-events: none;
+                  }
+                  .confetti {
+                    position: absolute;
+                    border-radius: 50%;
+                    opacity: 0.8;
+                  }
+                  .confetti--animation-slow { animation: fall 3s linear forwards; }
+                  .confetti--animation-medium { animation: fall 2s linear forwards; }
+                  .confetti--animation-fast { animation: fall 1s linear forwards; }
+                  @keyframes fall {
+                    to {
+                      transform: translateY(100vh);
+                      opacity: 0;
+                    }
+                  }
+                </style>
+                <hr>
+                <div class="container">
+                  <table class="table table-dark table-striped">
+                    <thead>
+                      <tr>
+                        <th>assement</th>
+                        <th>grade</th>
+                        <th>score</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for result in assessment_results %}
+                        <tr>
+                          <td>{{ result.name }}</td>
+                          <td>{{ result.max_score }}</td>
+                          <td>{{ result.score | floatformat:2 }}</td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Button to toggle sidebar on mobile -->
+        <div class="d-md-none d-flex justify-content-center mb-3">
+          <button class="btn btn-primary" data-bs-toggle="modal" id="toggleSidebar" data-bs-target="#sidebarModal">Show Sidebar</button>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9 offset-md-3 col-12" style="padding-top: 20px;">
+          <div class="material-content">
+            {% if messages %}
+              <div class="alert-container">
+                {% for message in messages %}
+                  <div class="alert alert-{{ message.tags }} mt-3">{{ message }}</div>
+                {% endfor %}
+              </div>
+            {% endif %}
+            {% if current_content %}
+              {% if current_content.0 == 'material' %}
+                <!-- Material content tetap sama -->
                 <div class="material-item" style="border-bottom: 2px solid rgb(116, 114, 114); padding: 20px; background-color: #f9f9f9;">
-                    <h2 class="material-title h4" style="color: rgb(0, 0, 0);">{{ current_content.1.title }}</h2>
-                    <p class="material-description" style="font-size: 14px; color: #555;">{{ current_content.1.description |safe}}</p>
-
-                    <!-- Form to Add Comment -->
-                    <div class="comment-section" style="margin-top: 30px;">
-                        <h4>Leave a Comment for discussion</h4>
-                        <form method="POST" action="{% url 'courses:add_comment' material_id=current_content.1.id %}">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <textarea name="content" class="form-control" rows="4" placeholder="Write your comment here..." required></textarea>
-                            </div>
-                            <br>
-                            <button type="submit" class="btn btn-primary">Post Comment</button>
-                        </form>
-                    </div>
+                  <h2 class="material-title h4" style="color: rgb(0, 0, 0);">{{ current_content.1.title }}</h2>
+                  <p class="material-description" style="font-size: 14px; color: #555;">{{ current_content.1.description |safe}}</p>
+                  <div class="comment-section" style="margin-top: 30px;">
+                    <h4>Leave a Comment for discussion</h4>
+                    <form method="POST" action="{% url 'courses:add_comment' material_id=current_content.1.id %}">
+                      {% csrf_token %}
+                      <div class="form-group">
+                        <textarea name="content" class="form-control" rows="4" placeholder="Write your comment here..." required></textarea>
+                      </div>
+                      <br>
+                      <button type="submit" class="btn btn-primary">Post Comment</button>
+                    </form>
+                  </div>
                 </div>
-
-                <!-- Display Comments for the Material -->
                 <div class="material-item border-bottom p-4 bg-light">
-                    
-                    {% if comments %}
-                        <div class="comments-section">
-                            <hr>
-                            <div class="comments-list mt-4">
-                                {% for comment in comments %}
-                                    <div class="comment-item border rounded p-3 mb-3 bg-white shadow-sm">
-                                        <p>
-                                            <span class="fw-bold">{{ comment.user.username }}</span> 
-                                            <small class="text-muted">Posted on {{ comment.created_at|date:"F j, Y, g:i a" }}</small>
-                                        </p>
-                                        <p>{{ comment.content }}</p>
-
-                                        <!-- Form to reply to a comment -->
-                                        <div class="reply-section">
-                                            <form method="POST" action="{% url 'courses:add_comment' material_id=current_content.1.id %}">
-                                                {% csrf_token %}
-                                                <div class="form-group">
-                                                    <textarea name="content" class="form-control" rows="2" placeholder="Reply to this comment..." required></textarea>
-                                                    <input type="hidden" name="parent_id" value="{{ comment.id }}">
-                                                </div>
-                                                <button type="submit" class="btn btn-secondary btn-sm mt-2">Reply</button>
-                                            </form>
-                                        </div>
-
-                                        <!-- Display Replies to this Comment -->
-                                        <div class="replies-container" style="max-height: 300px; overflow-y: auto;">
-                                            {% for reply in comment.comment_set.all %}
-                                                <div class="reply-item border rounded p-3 mt-3" style="background-color: #f1f1f1; margin-left: 20px;">
-                                                    <p>
-                                                        <span class="fw-bold">{{ reply.user.username }}</span> 
-                                                        <small class="text-muted">Posted on {{ reply.created_at|date:"F j, Y, g:i a" }}</small>
-                                                    </p>
-                                                    <p>{{ reply.content }}</p>
-
-                                                    <!-- Form to reply to a reply -->
-                                                    <div class="reply-section">
-                                                        <form method="POST" action="{% url 'courses:add_comment' material_id=current_content.1.id %}">
-                                                            {% csrf_token %}
-                                                            <div class="form-group">
-                                                                <textarea name="content" class="form-control" rows="2" placeholder="Reply to this reply..." required></textarea>
-                                                                <input type="hidden" name="parent_id" value="{{ reply.id }}">
-                                                            </div>
-                                                            <button type="submit" class="btn btn-secondary btn-sm mt-2">Reply</button>
-                                                        </form>
-                                                    </div>
-
-                                                    <!-- Display Replies to this Reply -->
-                                                    <div class="nested-replies-container" style="max-height: 200px; overflow-y: auto; margin-left: 20px;">
-                                                        {% for nested_reply in reply.comment_set.all %}
-                                                            <div class="nested-reply-item border rounded p-3 mt-3" style="background-color: #e9ecef;">
-                                                                <p>
-                                                                    <span class="fw-bold">{{ nested_reply.user.username }}</span> 
-                                                                    <small class="text-muted">Posted on {{ nested_reply.created_at|date:"F j, Y, g:i a" }}</small>
-                                                                </p>
-                                                                <p>{{ nested_reply.content }}</p>
-                                                            </div>
-                                                        {% empty %}
-                                                            <p>No replies yet.</p>
-                                                        {% endfor %}
-                                                    </div>
-                                                </div>
-                                            {% empty %}
-                                                <p>No replies yet.</p>
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                {% empty %}
-                                    <div class="alert alert-info" role="alert">
-                                        No comments yet. Be the first to comment!
-                                    </div>
-                                {% endfor %}
+                  {% if comments %}
+                    <div class="comments-section">
+                      <hr>
+                      <div class="comments-list mt-4">
+                        {% for comment in comments %}
+                          <div class="comment-item border rounded p-3 mb-3 bg-white shadow-sm">
+                            <p>
+                              <span class="fw-bold">{{ comment.user.username }}</span> 
+                              <small class="text-muted">Posted on {{ comment.created_at|date:"F j, Y, g:i a" }}</small>
+                            </p>
+                            <p>{{ comment.content }}</p>
+                            <div class="reply-section">
+                              <form method="POST" action="{% url 'courses:add_comment' material_id=current_content.1.id %}">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                  <textarea name="content" class="form-control" rows="2" placeholder="Reply to this comment..." required></textarea>
+                                  <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                </div>
+                                <button type="submit" class="btn btn-secondary btn-sm mt-2">Reply</button>
+                              </form>
                             </div>
-
-                            <!-- Pagination Links for Comments -->
-                            <nav aria-label="Comments pagination">
-                                <ul class="pagination justify-content-center mt-4">
-                                    {% if comments.has_previous %}
-                                        <li class="page-item">
-                                            <a class="page-link" href="?material_id={{ material.id }}&page=1">First</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="?material_id={{ material.id }}&page={{ comments.previous_page_number }}">Previous</a>
-                                        </li>
-                                    {% endif %}
-                                    <li class="page-item disabled">
-                                        <span class="page-link">Page {{ comments.number }} of {{ comments.paginator.num_pages }}</span>
-                                    </li>
-                                    {% if comments.has_next %}
-                                        <li class="page-item">
-                                            <a class="page-link" href="?material_id={{ material.id }}&page={{ comments.next_page_number }}">Next</a>
-                                        </li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="?material_id={{ material.id }}&page={{ comments.paginator.num_pages }}">Last</a>
-                                        </li>
-                                    {% endif %}
-                                </ul>
-                            </nav>
-                        </div>
-                    {% endif %}
+                            <div class="replies-container" style="max-height: 300px; overflow-y: auto;">
+                              {% for reply in comment.comment_set.all %}
+                                <div class="reply-item border rounded p-3 mt-3" style="background-color: #f1f1f1; margin-left: 20px;">
+                                  <p>
+                                    <span class="fw-bold">{{ reply.user.username }}</span> 
+                                    <small class="text-muted">Posted on {{ reply.created_at|date:"F j, Y, g:i a" }}</small>
+                                  </p>
+                                  <p>{{ reply.content }}</p>
+                                  <div class="reply-section">
+                                    <form method="POST" action="{% url 'courses:add_comment' material_id=current_content.1.id %}">
+                                      {% csrf_token %}
+                                      <div class="form-group">
+                                        <textarea name="content" class="form-control" rows="2" placeholder="Reply to this reply..." required></textarea>
+                                        <input type="hidden" name="parent_id" value="{{ reply.id }}">
+                                      </div>
+                                      <button type="submit" class="btn btn-secondary btn-sm mt-2">Reply</button>
+                                    </form>
+                                  </div>
+                                  <div class="nested-replies-container" style="max-height: 200px; overflow-y: auto; margin-left: 20px;">
+                                    {% for nested_reply in reply.comment_set.all %}
+                                      <div class="nested-reply-item border rounded p-3 mt-3" style="background-color: #e9ecef;">
+                                        <p>
+                                          <span class="fw-bold">{{ nested_reply.user.username }}</span> 
+                                          <small class="text-muted">Posted on {{ nested_reply.created_at|date:"F j, Y, g:i a" }}</small>
+                                        </p>
+                                        <p>{{ nested_reply.content }}</p>
+                                      </div>
+                                    {% empty %}
+                                      <p>No replies yet.</p>
+                                    {% endfor %}
+                                  </div>
+                                </div>
+                              {% empty %}
+                                <p>No replies yet.</p>
+                              {% endfor %}
+                            </div>
+                          </div>
+                        {% empty %}
+                          <div class="alert alert-info" role="alert">
+                            No comments yet. Be the first to comment!
+                          </div>
+                        {% endfor %}
+                      </div>
+                      <nav aria-label="Comments pagination">
+                        <ul class="pagination justify-content-center mt-4">
+                          {% if comments.has_previous %}
+                            <li class="page-item">
+                              <a class="page-link" href="?material_id={{ material.id }}&page=1">First</a>
+                            </li>
+                            <li class="page-item">
+                              <a class="page-link" href="?material_id={{ material.id }}&page={{ comments.previous_page_number }}">Previous</a>
+                            </li>
+                          {% endif %}
+                          <li class="page-item disabled">
+                            <span class="page-link">Page {{ comments.number }} of {{ comments.paginator.num_pages }}</span>
+                          </li>
+                          {% if comments.has_next %}
+                            <li class="page-item">
+                              <a class="page-link" href="?material_id={{ material.id }}&page={{ comments.next_page_number }}">Next</a>
+                            </li>
+                            <li class="page-item">
+                              <a class="page-link" href="?material_id={{ material.id }}&page={{ comments.paginator.num_pages }}">Last</a>
+                            </li>
+                          {% endif %}
+                        </ul>
+                      </nav>
+                    </div>
+                  {% endif %}
                 </div>
 
-            {% elif current_content.0 == 'assessment' %}
+              {% elif current_content.0 == 'assessment' %}
                 <!-- Multiple Choice Questions -->
-                <div class="assessment-item" style="border-bottom: 2px solid rgb(134, 134, 134); padding: 20px; background-color: #f9f9f9;">
+                {% if current_content.1.questions.exists %}
+                  <div class="assessment-item" style="border-bottom: 2px solid rgb(134, 134, 134); padding: 20px; background-color: #f9f9f9;">
                     <h3 class="h5" style="color: rgb(2, 2, 2); font-size: 24px;">Assessment: {{ current_content.1.name }}</h3>
                     <p>Time remaining: <span id="timer"></span></p>
                     {% if not is_started %}
-                        <form method="post" action="{% url 'courses:start_assessment' assessment_id=current_content.1.id %}">
-                            {% csrf_token %}
-                            <div class="alert alert-warning text-center" role="alert">
-                                <h4 class="alert-heading">Attention!</h4>
-                                <p>Before starting the exam, you will have <b>"{{ current_content.1.duration_in_minutes }}"</b> minutes to complete it. Do you <b>agree</b> to proceed?</p>
-                                <hr>
-                                <button type="submit" class="btn btn-success">Agree</button>
-                            </div>
-                        </form>
+                      <form method="post" action="{% url 'courses:start_assessment' assessment_id=current_content.1.id %}">
+                        {% csrf_token %}
+                        <div class="alert alert-warning text-center" role="alert">
+                          <h4 class="alert-heading">Attention!</h4>
+                          <p>Before starting the exam, you will have <b>{{ current_content.1.duration_in_minutes }}</b> minutes to complete it. Do you <b>agree</b> to proceed?</p>
+                          <hr>
+                          <button type="submit" class="btn btn-success">Agree</button>
+                        </div>
+                      </form>
                     {% elif is_started %}
-                        <form method="POST" action="{% url 'courses:submit_assessment' assessment_id=current_content.1.id %}">
-                            {% csrf_token %}
-                            <input type="text" name="honeypot" style="display:none;" />
-                            <input type="hidden" name="start_time" id="start_time" value="{{ current_time }}">
-                            <ul style="list-style: none; padding-left: 0;">
-                                {% for question in current_content.1.questions.all %}
-                                    <li class="question" style="margin-bottom: 30px;">
-                                        <div style="display: inline-block; margin-left: 10px; padding: 10px; background-color: #e9ecef; border-radius: 8px; font-size: 18px; color: #555;">
-                                            {{ question.text |safe }}
-                                        </div>
-                                        <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
-                                            {% for choice in question.choices.all %}
-                                                <li style="margin-bottom: 15px; display: flex; align-items: center;">
-                                                    <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}" id="choice_{{ choice.id }}" style="transform: scale(1.5); margin-right: 10px;">
-                                                    <label for="choice_{{ choice.id }}" style="cursor: pointer; margin: 0; font-size: 16px; color: #555;">{{ choice.text |safe }}</label>
-                                                    {% load custom_filters %}
-                                                    {% with answered_question=answered_questions|get_item:question.id %}
-                                                        {% if answered_question %}
-                                                            <small>
-                                                                {% if answered_question.choice == choice %}
-                                                                    ({{ request.user.username }}!)
-                                                                {% elif choice.is_correct %}
-                                                                    (correct)
-                                                                {% else %}
-                                                                    (incorrect)
-                                                                {% endif %}
-                                                            </small>
-                                                        {% endif %}
-                                                    {% endwith %}
-                                                </li>
-                                            {% endfor %}
-                                        </ul>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                            <button type="submit" id="submit-button" class="btn btn-primary">
-                                <i class="bx bx-check me-2"></i> Submit
-                            </button>
-                        </form>
-                    {% endif %}
-                </div>
-                
-                <!-- Open Response Questions and Peer Review -->
-                <div class="askora-item" style="padding: 20px; background-color: #f9f9f9;">
-                    
-                    <ul style="list-style: none; padding-left: 0;">
-                        {% for ask_ora in current_content.1.ask_oras.all %}
+                      <form method="POST" action="{% url 'courses:submit_assessment' assessment_id=current_content.1.id %}">
+                        {% csrf_token %}
+                        <input type="text" name="honeypot" style="display:none;" />
+                        <input type="hidden" name="start_time" id="start_time" value="{{ current_time }}">
+                        <ul style="list-style: none; padding-left: 0;">
+                          {% for question in current_content.1.questions.all %}
                             <li class="question" style="margin-bottom: 30px;">
-                                <div style="display: inline-block; margin-left: 10px; padding: 10px; background-color: #e9ecef; border-radius: 8px; font-size: 18px; color: #555;">
-                                    {{ ask_ora.question_text |safe }}
-                                </div>
-                                <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
-                                    {% if ask_ora.is_responsive %}
-                                        {% with submission=submissions|dictsort:"submitted_at"|last %}
-                                            {% if submission and submission.askora == ask_ora %}
-                                                <li style="margin-bottom: 15px;">
-                                                    <div style="padding: 10px; background-color: #d4edda; border-radius: 8px; color: #155724;">
-                                                        <strong>Submitted!</strong> Your answer was submitted on {{ submission.submitted_at|date:"M d, Y H:i" }}.
-                                                    </div>
-                                                    <p style="font-size: 16px; color: #555; margin-top: 10px;">
-                                                        <strong>Your Answer:</strong> {{ submission.answer_text|safe }}
-                                                    </p>
-                                                    {% if submission.answer_file %}
-                                                        <p style="font-size: 16px; color: #555;">
-                                                            <strong>File:</strong> <a href="{{ submission.answer_file.url }}" target="_blank" style="color: #007bff;">Download</a>
-                                                        </p>
-                                                    {% endif %}
-                                                </li>
-                                            {% else %}
-                                                <li style="margin-bottom: 15px;">
-                                                    <form method="post" enctype="multipart/form-data" action="{% url 'courses:submit_answer' ask_ora.id %}">
-                                                        {% csrf_token %}
-                                                        <div style="margin-bottom: 15px;">
-                                                            <label for="answer_text_{{ ask_ora.id }}" style="font-size: 16px; color: #555;">Your Answer:</label>
-                                                            <textarea class="form-control" id="answer_text_{{ ask_ora.id }}" name="answer_text" rows="4" style="font-size: 16px; margin-top: 5px;" required></textarea>
-                                                        </div>
-                                                        <div style="margin-bottom: 15px;">
-                                                            <label for="answer_file_{{ ask_ora.id }}" style="font-size: 16px; color: #555;">Upload File (Optional):</label>
-                                                            <input type="file" class="form-control" id="answer_file_{{ ask_ora.id }}" name="answer_file" style="font-size: 16px; margin-top: 5px;">
-                                                        </div>
-                                                        <button type="submit" class="btn btn-success" style="font-size: 16px; padding: 8px 15px;">
-                                                            <i class="bx bx-upload me-2"></i> Submit
-                                                        </button>
-                                                    </form>
-                                                    
-                                                </li>
-                                            {% endif %}
+                              <div style="display: inline-block; margin-left: 10px; padding: 10px; background-color: #e9ecef; border-radius: 8px; font-size: 18px; color: #555;">
+                                {{ question.text |safe }}
+                              </div>
+                              <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
+                                {% for choice in question.choices.all %}
+                                  <li style="margin-bottom: 15px; display: flex; align-items: center;">
+                                    <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}" id="choice_{{ choice.id }}" style="transform: scale(1.5); margin-right: 10px;">
+                                    <label for="choice_{{ choice.id }}" style="cursor: pointer; margin: 0; font-size: 16px; color: #555;">{{ choice.text |safe }}</label>
+                                    {% load custom_filters %}
+                                    {% with answered_question=answered_questions|get_item:question.id %}
+                                      {% if answered_question %}
+                                        <small>
+                                          {% if answered_question.choice == choice %}
+                                            ({{ request.user.username }}!)
+                                          {% elif choice.is_correct %}
+                                            (correct)
+                                          {% else %}
+                                            (incorrect)
+                                          {% endif %}
+                                        </small>
+                                      {% endif %}
+                                    {% endwith %}
+                                  </li>
+                                {% endfor %}
+                              </ul>
+                            </li>
+                          {% endfor %}
+                        </ul>
+                        <button type="submit" id="submit-button" class="btn btn-primary">
+                          <i class="bx bx-check me-2"></i> Submit
+                        </button>
+                      </form>
+                    {% endif %}
+                  </div>
+                {% endif %}
 
-                                             <!-- Peer Review Submissions -->
-                    <h3 style="font-size: 18px; color: #555; margin-top: 20px;">Peers Review Submissions</h3>
+                <!-- Open Response Questions (AskOra) -->
+                {% if not current_content.1.questions.exists %}
+                  <div class="askora-item" style="padding: 20px; background-color: #f9f9f9;">
+                    <h3 class="h5" style="color: rgb(2, 2, 2); font-size: 24px;">Assessment: {{ current_content.1.name }}</h3>
                     <ul style="list-style: none; padding-left: 0;">
-                        {% for peer_data in peer_submissions_data %}
-                            <li style="margin-bottom: 30px; border: 1px solid #ddd; padding: 15px; border-radius: 8px;">
-                                <p style="font-size: 16px; color: #555;">
-                                    <strong>Submitted by:</strong> {{ peer_data.submission.user.username }} on {{ peer_data.submission.submitted_at|date:"M d, Y H:i" }}
-                                </p>
-                                 {% if peer_data.can_review %}
-                                                    <p><strong>Answer:</strong> {{ peer_data.submission.answer_text|safe }}</p>
-                                                    {% if peer_data.submission.answer_file %}
-                                                        <p><strong>File:</strong> <a href="{{ peer_data.submission.answer_file.url }}" download>Download</a></p>
-                                                    {% endif %}
-                                                    <p><strong>Final Score:</strong> {{ peer_data.final_score|floatformat:2 }}</p>
-                                                    {% if peer_data.has_reviewed %}
-                                                        <p>You have already reviewed this submission.</p>
-                                                    {% else %}
-                                                        <form method="post" action="{% url 'courses:submit_peer_review' peer_data.submission.id %}" class="p-4 border rounded bg-light shadow-sm">
-                                                            {% csrf_token %}
-                                                            
-                                                            <div class="mb-3">
-                                                                <label for="score" class="form-label">Score (1-5): <small>If 1 means 'not satisfied at all,' and 5 means 'very satisfied.'</small></label>
-                                                                <select name="score" id="score" class="form-select w-50" required>
-                                                                    <option value="" disabled selected>Select a score</option>
-                                                                    <option value="1">1</option>
-                                                                    <option value="2">2</option>
-                                                                    <option value="3">3</option>
-                                                                    <option value="4">4</option>
-                                                                    <option value="5">5</option>
-                                                                </select>
-                                                            </div>
-
-                                                            <div class="mb-3">
-                                                                <label for="comment" class="form-label">Comment (Optional):</label>
-                                                                <textarea name="comment" id="comment" rows="3" class="form-control" placeholder="Write your comment here..."></textarea>
-                                                            </div>
-
-                                                            <button type="submit" class="btn btn-primary">Submit Review</button>
-                                                        </form>
-                                                    {% endif %}
-                                                {% else %}
-                                                    <p><strong>Status:</strong> Submitted (You must submit your own answer to view details and review)</p>
-                                                {% endif %}
-                            </li>
-                        {% empty %}
-                            <li style="font-size: 16px; color: #555;">No peer submissions available for review.</li>
-                        {% endfor %}
-                    </ul>
-                                        {% endwith %}
-                                    {% else %}
-                                        <li style="margin-bottom: 15px;">
-                                            <div style="padding: 10px; background-color: #fff3cd; border-radius: 8px; color: #856404;">
-                                                <strong>Deadline Passed!</strong> Submissions closed on {{ ask_ora.response_deadline|date:"M d, Y H:i" }}.
-                                            </div>
-                                        </li>
+                      {% for ask_ora in current_content.1.ask_oras.all %}
+                        <li class="question" style="margin-bottom: 30px;">
+                          <div style="display: inline-block; margin-left: 10px; padding: 10px; background-color: #e9ecef; border-radius: 8px; font-size: 18px; color: #555;">
+                            {{ ask_ora.question_text |safe }}
+                          </div>
+                          <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
+                            {% if ask_ora.is_responsive %}
+                              {% with submission=submissions|dictsort:"submitted_at"|last %}
+                                {% if submission and submission.askora == ask_ora %}
+                                  <li style="margin-bottom: 15px;">
+                                    <div style="padding: 10px; background-color: #d4edda; border-radius: 8px; color: #155724;">
+                                      <strong>Submitted!</strong> Your answer was submitted on {{ submission.submitted_at|date:"M d, Y H:i" }}.
+                                    </div>
+                                    <p style="font-size: 16px; color: #555; margin-top: 10px;">
+                                      <strong>Your Answer:</strong> {{ submission.answer_text|safe }}
+                                    </p>
+                                    {% if submission.answer_file %}
+                                      <p style="font-size: 16px; color: #555;">
+                                        <strong>File:</strong> <a href="{{ submission.answer_file.url }}" target="_blank" style="color: #007bff;">Download</a>
+                                      </p>
                                     {% endif %}
-                                </ul>
-                            </li>
-                        {% empty %}
-                            
-                        {% endfor %}
+                                  </li>
+                                {% else %}
+                                  <li style="margin-bottom: 15px;">
+                                    <form method="post" enctype="multipart/form-data" action="{% url 'courses:submit_answer' ask_ora.id %}">
+                                      {% csrf_token %}
+                                      <div style="margin-bottom: 15px;">
+                                        <label for="answer_text_{{ ask_ora.id }}" style="font-size: 16px; color: #555;">Your Answer:</label>
+                                        <textarea class="form-control" id="answer_text_{{ ask_ora.id }}" name="answer_text" rows="4" style="font-size: 16px; margin-top: 5px;" required></textarea>
+                                      </div>
+                                      <div style="margin-bottom: 15px;">
+                                        <label for="answer_file_{{ ask_ora.id }}" style="font-size: 16px; color: #555;">Upload File (Optional):</label>
+                                        <input type="file" class="form-control" id="answer_file_{{ ask_ora.id }}" name="answer_file" style="font-size: 16px; margin-top: 5px;">
+                                      </div>
+                                      <button type="submit" class="btn btn-success" style="font-size: 16px; padding: 8px 15px;">
+                                        <i class="bx bx-upload me-2"></i> Submit
+                                      </button>
+                                    </form>
+                                  </li>
+                                {% endif %}
+                              {% endwith %}
+                            {% else %}
+                              <li style="margin-bottom: 15px;">
+                                <div style="padding: 10px; background-color: #fff3cd; border-radius: 8px; color: #856404;">
+                                  <strong>Deadline Passed!</strong> Submissions closed on {{ ask_ora.response_deadline|date:"M d, Y H:i" }}.
+                                </div>
+                              </li>
+                            {% endif %}
+                          </ul>
+                        </li>
+                      {% empty %}
+                        <li style="font-size: 16px; color: #555;">No open response questions available.</li>
+                      {% endfor %}
                     </ul>
 
-                
-                </div>
-            {% endif %}
+                    <!-- Peer Review Submissions -->
+                    <h3 style="font-size: 18px; color: #555; margin-top: 20px;">Peer Review Submissions</h3>
+                    <ul style="list-style: none; padding-left: 0;">
+                      {% for peer_data in peer_submissions_data %}
+                        <li style="margin-bottom: 30px; border: 1px solid #ddd; padding: 15px; border-radius: 8px;">
+                          <p style="font-size: 16px; color: #555;">
+                            <strong>Submitted by:</strong> {{ peer_data.submission.user.username }} on {{ peer_data.submission.submitted_at|date:"M d, Y H:i" }}
+                          </p>
+                          {% if peer_data.can_review %}
+                            <p><strong>Answer:</strong> {{ peer_data.submission.answer_text|safe }}</p>
+                            {% if peer_data.submission.answer_file %}
+                              <p><strong>File:</strong> <a href="{{ peer_data.submission.answer_file.url }}" download>Download</a></p>
+                            {% endif %}
+                            <p><strong>Final Score:</strong> {{ peer_data.final_score|floatformat:2 }}</p>
+                            {% if peer_data.has_reviewed %}
+                              <p>You have already reviewed this submission.</p>
+                            {% else %}
+                              <form method="post" action="{% url 'courses:submit_peer_review' peer_data.submission.id %}" class="p-4 border rounded bg-light shadow-sm">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                  <label for="score" class="form-label">Score (1-5): <small>If 1 means 'not satisfied at all,' and 5 means 'very satisfied.'</small></label>
+                                  <select name="score" id="score" class="form-select w-50" required>
+                                    <option value="" disabled selected>Select a score</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                  </select>
+                                </div>
+                                <div class="mb-3">
+                                  <label for="comment" class="form-label">Comment (Optional):</label>
+                                  <textarea name="comment" id="comment" rows="3" class="form-control" placeholder="Write your comment here..."></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Submit Review</button>
+                              </form>
+                            {% endif %}
+                          {% else %}
+                            <p><strong>Status:</strong> Submitted (You must submit your own answer to view details and review)</p>
+                          {% endif %}
+                        </li>
+                      {% empty %}
+                        <li style="font-size: 16px; color: #555;">No peer submissions available for review.</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                {% endif %}
+              {% endif %}
 
-            <!-- Navigation buttons for content -->
-            <div class="d-flex justify-content-between" style="margin-top: 30px;">
+              <!-- Navigation buttons for content -->
+              <div class="d-flex justify-content-between" style="margin-top: 30px;">
                 <a href="{{ previous_url }}" class="btn btn-secondary">Previous</a>
                 {% if is_last_content %}
-                    <p class="text-center">You have reached the end of this content. Thank you for participating!</p>
+                  <p class="text-center">You have reached the end of this content. Thank you for participating!</p>
                 {% else %}
-                    <a href="{{ next_url }}" class="btn btn-primary">Next</a>
+                  <a href="{{ next_url }}" class="btn btn-primary">Next</a>
                 {% endif %}
-            </div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Timer Script (khusus Multiple Choice) -->
+        {% if current_content.0 == 'assessment' and current_content.1.questions.exists %}
+          <script>
+            let remainingTime = {{ remaining_time }};
+            let timerElement = document.getElementById('timer');
+            let submitButton = document.getElementById('submit-button');
+            let timerInterval;
+            let formSubmitted = false;
+
+            function updateTimer() {
+              if (!timerElement) {
+                clearInterval(timerInterval);
+                console.log("Timer element tidak ada, menghentikan timer.");
+                return;
+              }
+
+              if (formSubmitted) {
+                return;
+              }
+
+              let minutes = Math.floor(remainingTime / 60);
+              let seconds = remainingTime % 60;
+              timerElement.textContent = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+              remainingTime--;
+
+              if (remainingTime < 0) {
+                formSubmitted = true;
+                submitButton.disabled = true;
+                submitButton.hidden = true;
+                clearInterval(timerInterval);
+              }
+            }
+
+            timerInterval = setInterval(updateTimer, 1000);
+            updateTimer();
+          </script>
         {% endif %}
+
+        <style>
+          @media (max-width: 767px) {
+            .comment-item, .reply-item, .nested-reply-item { padding: 10px; }
+            .reply-section form textarea, .nested-replies-container { font-size: 14px; }
+            .pagination { font-size: 14px; }
+          }
+        </style>
+      </div>
     </div>
-</div>
-
-<script>
-    let remainingTime = {{ remaining_time }};
-    let timerElement = document.getElementById('timer');
-    let submitButton = document.getElementById('submit-button');
-    let timerInterval;
-    let formSubmitted = false;
-
-    function updateTimer() {
-        if (!timerElement) {
-            clearInterval(timerInterval);
-            console.log("Timer element tidak ada, menghentikan timer.");
-            return;
-        }
-
-        if (formSubmitted) {
-            return;
-        }
-
-        let minutes = Math.floor(remainingTime / 60);
-        let seconds = remainingTime % 60;
-        timerElement.textContent = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-        remainingTime--;
-
-        if (remainingTime < 0) {
-            formSubmitted = true;
-            submitButton.disabled = true;
-            submitButton.hidden = true;
-            clearInterval(timerInterval);
-        }
-    }
-
-    timerInterval = setInterval(updateTimer, 1000);
-    updateTimer();
-</script>
-
-<style>
-    @media (max-width: 767px) {
-        .comment-item, .reply-item, .nested-reply-item {
-            padding: 10px;
-        }
-        .reply-section form textarea, .nested-replies-container {
-            font-size: 14px;
-        }
-        .pagination {
-            font-size: 14px;
-        }
-    }
-</style>
-
-
-
+  </div>
 
   <!-- Modal for Sidebar -->
   <div class="modal fade" id="sidebarModal" tabindex="-1" aria-labelledby="sidebarModalLabel" aria-hidden="true">
@@ -590,46 +531,46 @@
         <div class="modal-body">
           <ul class="list-unstyled">
             {% for section in sections %}
-            <li class="nav-item">
+              <li class="nav-item">
                 <a class="nav-link" href="#" style="color: #000;">
-                    <i class="bx bxs-book"></i> {{ section.title }}
+                  <i class="bx bxs-book"></i> {{ section.title }}
                 </a>
                 <ul>
-                    {% for material in section.materials.all %}
-                        <li>
-                            <a class="nav-link" href="?material_id={{ material.id }}" style="color: #000;">
-                                <i class="bx bx-file"></i> {{ material.title }}
-                            </a>
-                        </li>
-                    {% endfor %}
-                    {% for assessment in section.assessments.all %}
-                        <li>
-                            <a class="nav-link" href="?assessment_id={{ assessment.id }}" style="color: #000;">
-                                <i class="bx bx-pencil"></i> {{ assessment.name }}
-                            </a>
-                        </li>
-                    {% empty %}
-                    {% endfor %}
+                  {% for material in section.materials.all %}
+                    <li>
+                      <a class="nav-link" href="?material_id={{ material.id }}" style="color: #000;">
+                        <i class="bx bx-file"></i> {{ material.title }}
+                      </a>
+                    </li>
+                  {% endfor %}
+                  {% for assessment in section.assessments.all %}
+                    <li>
+                      <a class="nav-link" href="?assessment_id={{ assessment.id }}" style="color: #000;">
+                        <i class="bx bx-pencil"></i> {{ assessment.name }}
+                      </a>
+                    </li>
+                  {% empty %}
+                  {% endfor %}
                 </ul>
-            </li>
+              </li>
             {% endfor %}
           </ul>
           <hr>
           <p class="fw-bold">Progress: {{ course_progress |floatformat:0 }}%</p>
           <div class="progress">
-              <div class="progress-bar bg-success" 
-                  role="progressbar" 
-                  style="width: {{ course_progress|default:0 }}%" 
-                  aria-valuenow="{{ course_progress|default:0 }}" 
-                  aria-valuemin="0" 
-                  aria-valuemax="100">
-              </div>
+            <div class="progress-bar bg-success" 
+                role="progressbar" 
+                style="width: {{ course_progress|default:0 }}%" 
+                aria-valuenow="{{ course_progress|default:0 }}" 
+                aria-valuemin="0" 
+                aria-valuemax="100">
+            </div>
           </div>
           <hr>
           <p>Status: {% if user_grade == 'Pass' %}
-              <span class="text-success fw-bold">Pass</span>
+            <span class="text-success fw-bold">Pass</span>
           {% else %}
-              <span class="text-danger fw-bold">Fail</span>
+            <span class="text-danger fw-bold">Fail</span>
           {% endif %}</p>
         </div>
         <div class="modal-footer">
@@ -640,10 +581,9 @@
   </div>
 
   <script>
-    // JavaScript to toggle sidebar on mobile
     document.getElementById('toggleSidebar').addEventListener('click', function() {
-        const sidebar = document.querySelector('.col-md-3');
-        sidebar.classList.toggle('d-none');
+      const sidebar = document.querySelector('.col-md-3');
+      sidebar.classList.toggle('d-none');
     });
   </script>
 {% endblock %}
