@@ -251,6 +251,9 @@ def all_user(request):
     if date_to:
         users = users.filter(date_joined__lte=date_to)
 
+    # Annotate the total courses enrolled by each user
+    users = users.annotate(total_courses=Count('enrollments'))
+
     # Get the total count of users (before pagination and filtering)
     total_user_count = users.count()
 

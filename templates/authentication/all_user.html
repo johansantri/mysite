@@ -39,6 +39,7 @@
                             <th>Username</th>
                             <th>Email</th>
                             <th>Org</th>
+                            <th scope="col">Total</th>
                             <th>Joined & Last Login</th>
                             {% if request.user.is_superuser %}
                             <th>Admin</th>
@@ -57,6 +58,7 @@
                             <td><a class="dropdown-item" href="{% url 'authentication:user_detail' user.id %}">{{ user.username }}</a></td>
                             <td>{{ user.email }}</td>
                             <td>{{ user.university }}</td>
+                            <td>{{ user.total_courses }}</td> 
                             <td>{{ user.date_joined }} and <span class="badge bg-success">{{ user.last_login }}</span></td>
                             {% if request.user.is_superuser %}
                             <td>
