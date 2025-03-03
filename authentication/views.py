@@ -168,7 +168,7 @@ def user_detail(request, user_id):
     # Check if the user is authenticated
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
-    
+
     try:
         if request.user.is_superuser:
             # Superuser can view details of any user
@@ -191,14 +191,38 @@ def user_detail(request, user_id):
     except User.DoesNotExist:
         return HttpResponseForbidden("You do not have permission to view this user's details.")
 
-    # Prepare the context with the user's details
+    # Pencarian berdasarkan query parameter 'search'
+    search_query = request.GET.get('search', '').strip()
+    if search_query:
+        # Filter courses by search query
+         courses = user.enrollments.filter(course__course_name__icontains=search_query).select_related('course')
+    else:
+        # Get all the courses the user has enrolled in
+        courses = user.enrollments.all().select_related('course')
+
+    # Pagination: Show 5 courses per page
+    page_number = request.GET.get('page', 1)
+
+    # Ensure that the page number is valid and not less than 1
+    try:
+        page_number = int(page_number)
+        if page_number < 1:
+            page_number = 1
+    except ValueError:
+        page_number = 1
+
+    paginator = Paginator(courses, 5)
+    page_obj = paginator.get_page(page_number)
+
+    # Prepare the context with the user's details and enrolled courses
     context = {
-        'user': user
+        'user': user,
+        'courses': page_obj,
+        'search_query': search_query,
     }
 
     # Render the user detail template
     return render(request, 'authentication/user_detail.html', context)
-
 
 
 def all_user(request):

@@ -102,6 +102,86 @@
                     </div>
                     </div>
 
+
+                     <!-- Form pencarian untuk course -->
+                <form method="get">
+                    <div class="input-group mb-3">
+                    <input type="text" class="form-control" name="search" placeholder="Search Courses" value="{{ search_query }}">
+                    <button class="btn btn-outline-secondary" type="submit">Search</button>
+                    </div>
+                </form>
+
+                <!-- Daftar Course yang diambil pengguna -->
+                <h3>Enrolled Courses</h3>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">Course Title</th>
+                        <th scope="col">Enrolled At</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for enrollment in courses %}
+                        <tr>
+                        <td><a href="">{{ enrollment.course.course_name }}</a></td>
+                        <td>{{ enrollment.enrolled_at }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                        <td colspan="2">No courses found.</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                <!-- Pagination -->
+                <div class="d-flex justify-content-center">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            <!-- Previous Button -->
+                            {% if courses.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ courses.previous_page_number }}&search={{ search_query }}" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo; Previous</span>
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link" tabindex="-1" aria-disabled="true">&laquo; Previous</span>
+                                </li>
+                            {% endif %}
+
+                            <!-- Page Number Links -->
+                            {% for num in courses.paginator.page_range %}
+                                {% if courses.number == num %}
+                                    <li class="page-item active" aria-current="page">
+                                        <span class="page-link">{{ num }}</span>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ num }}&search={{ search_query }}">{{ num }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            <!-- Next Button -->
+                            {% if courses.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ courses.next_page_number }}&search={{ search_query }}" aria-label="Next">
+                                        <span aria-hidden="true">Next &raquo;</span>
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link" tabindex="-1" aria-disabled="true">Next &raquo;</span>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+
+
+
                 <!-- Return Button -->
                 <a href="{% url 'authentication:all-user' %}" class="btn btn-secondary mt-3">
                     <i class="fa fa-arrow-left"></i> Back to Users List

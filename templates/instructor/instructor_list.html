@@ -13,6 +13,7 @@
                     
                     <th>Username</th>
                     <th>university</th>
+                    <th>total course</th>
                     <th>Status</th>
                     
                     <th>Experience</th>
@@ -24,6 +25,7 @@
                     <tr>
                         <td><a href="{% url 'courses:instructor_detail' instructor.id %}"> {{instructor.user.email }}</a></td>
                         <td>{{ instructor.user.university }}</td>
+                         <td>{{ instructor.num_courses }}</td>
                         <td>  {% if instructor.status == 'Pending' %}
                           <span class="badge bg-warning">{{ instructor.status }}</span> <!-- Yellow for Pending -->
                       {% elif instructor.status == 'Approved' %}

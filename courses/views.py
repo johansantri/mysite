@@ -2234,13 +2234,13 @@ def instructor_view(request):
 
     if request.user.is_superuser:  # This checks if the user is an admin
 
-        instructors = Instructor.objects.all()  # Admin sees all instructors
+        instructors = Instructor.objects.all().annotate(num_courses=Count('courses'))  # Admin sees all instructors
 
     elif request.user.is_partner:
 
         # Otherwise, filter based on the user's associated partner or provider
 
-        instructors = Instructor.objects.filter(provider__user=request.user)
+        instructors = Instructor.objects.filter(provider__user=request.user).annotate(num_courses=Count('courses'))
 
     elif request.user.is_instructor:
 
