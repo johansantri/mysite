@@ -163,7 +163,7 @@ class CourseInstructorForm(forms.ModelForm):
         queryset=Instructor.objects.none(),  # Start with an empty queryset
         required=True,
         widget=forms.Select(attrs={
-            'class': 'form-control',
+            'class': 'form-control select2',
         })
     )
 

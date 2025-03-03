@@ -1587,40 +1587,64 @@ def course_lms_detail(request, id, slug):
         'section_data': section_data,  # Pass sections, materials, and assessments
     })
 
-def course_instructor(request,id):
+
+def course_instructor(request, id):
+    # Pastikan user sudah login
     if not request.user.is_authenticated:
-        return redirect("/login/?next=%s" % request.path)
+        return redirect(f"/login/?next={request.path}")
+    
     user = request.user
     course = None
-    # Determine the course based on the user's role
-    if request.user.is_superuser:
+
+    # Menentukan course berdasarkan role user
+    if user.is_superuser:
         course = get_object_or_404(Course, id=id)
     elif user.is_partner:
-        #course = Course.objects.filter(id=id, org_partner_id=request.user.id).first()
         course = get_object_or_404(Course, id=id, org_partner__user_id=user.id)
-        print(course)
     elif user.is_instructor:
-        messages.error(request, "You have do not have permission.")
-        #course = get_object_or_404(Course, id=id, instructor__user_id=user.id)
-    # If no course is found, redirect to the courses list page
-        print(course)
+        messages.error(request, "You do not have permission to manage this course.")
+        return redirect('/courses')  # Instruktur tidak diizinkan untuk mengelola kursus ini
+
+    # Jika course tidak ditemukan berdasarkan kondisi, redirect ke daftar kursus
     if not course:
         return redirect('/courses')
-    
 
-    course = get_object_or_404(Course, id=id)
-
+    # Menangani POST request untuk menambahkan instruktur
     if request.method == 'POST':
         form = CourseInstructorForm(request.POST, instance=course, request=request)
         if form.is_valid():
             form.save()
-            messages.success(request, "You have add instructor to this course.")
+            messages.success(request, "Instructor has been successfully added to the course.")
             return redirect('courses:course_instructor', id=course.id)
     else:
-        form = CourseInstructorForm(instance=course, request=request)  # For GET requests, display the form with existing course data
+        # Untuk GET request, menampilkan form yang sudah ada
+        form = CourseInstructorForm(instance=course, request=request)
 
+    return render(request, 'instructor/course_instructor.html', {'course': course, 'form': form})
+
+
+# Fungsi untuk pencarian instruktur menggunakan Select2 (AJAX)
+def search_instructors(request):
+    query = request.GET.get('q', '')
+    page_number = int(request.GET.get('page', 1))
+    page_size = 10  # Membatasi jumlah instruktur yang ditampilkan per halaman
+
+    # Filter instruktur berdasarkan pencarian username
+    instructors = User.objects.filter(username__icontains=query, is_instructor=True)
     
-    return render(request,'instructor/course_instructor.html',{'course': course, 'form': form})
+    # Paginasi instruktur
+    paginator = Paginator(instructors, page_size)
+    page_obj = paginator.get_page(page_number)
+
+    # Mengembalikan hasil pencarian dalam format JSON untuk Select2
+    results = [{'id': instructor.id, 'text': instructor.username} for instructor in page_obj]
+
+    return JsonResponse({
+        'results': results, 
+        'total_pages': paginator.num_pages,  # Menyediakan total halaman
+        'current_page': page_obj.number      # Menyediakan halaman saat ini
+    })
+
 #create grade
 #@login_required
 def course_grade(request, id):
