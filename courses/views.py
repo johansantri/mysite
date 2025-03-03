@@ -3101,81 +3101,68 @@ def partner_detail(request, partner_id):
 
 #org partner from lms
 def org_partner(request, slug):
-    # Retrieve the partner using the provided slug of the Partner model
-    partner = get_object_or_404(Partner, name__slug=slug)  # Use name__slug to access the slug in the Partner model
+    partner = get_object_or_404(Partner, name__slug=slug)
+    search_query = request.GET.get('search', '')
+    selected_category = request.GET.get('category', '')
+    sort_by = request.GET.get('sort_by', 'name')
 
-    # Get the search query and category filter from the request
-    search_query = request.GET.get('search', '')  # Default to empty string if no search query
-    selected_category = request.GET.get('category', '')  # Category filter
-    sort_by = request.GET.get('sort_by', 'name')  # Default sort by course name
-
-    # Get the 'published' CourseStatus ID
     try:
         published_status = CourseStatus.objects.get(status='published')
     except CourseStatus.DoesNotExist:
         published_status = None
 
     if published_status:
-        # Filter courses related to the partner, with status 'published' and end_date in the future
+        # Optimalkan dengan select_related untuk mengambil relasi category
         related_courses = Course.objects.filter(
             org_partner_id=partner.id,
-            status_course=published_status,  # Filter by the CourseStatus object (not the string)
+            status_course=published_status,
             end_date__gte=datetime.now()
-        )
+        ).select_related('category')  # Optimalkan dengan select_related
+
+        # Filter pencarian
+        if search_query:
+            related_courses = related_courses.filter(course_name__icontains=search_query)
+
+        # Filter berdasarkan kategori
+        if selected_category:
+            related_courses = related_courses.filter(category__name=selected_category)
+
+        # Sorting berdasarkan parameter
+        if sort_by == 'learners':
+            related_courses = related_courses.annotate(total_enrollments=Count('enrollments')).order_by('-total_enrollments')
+        elif sort_by == 'date':
+            related_courses = related_courses.order_by('created_at')
+        else:
+            related_courses = related_courses.order_by('course_name')
+
+        # Hanya ambil data yang diperlukan
+        related_courses = related_courses.annotate(total_enrollments=Count('enrollments'))
+
     else:
-        # If 'published' status doesn't exist, handle it gracefully
         related_courses = Course.objects.none()
 
-    # Apply search filter if provided
-    if search_query:
-        related_courses = related_courses.filter(course_name__icontains=search_query)
-
-    # Apply category filter if provided
-    if selected_category:
-        related_courses = related_courses.filter(category__name=selected_category)
-
-    # Sort the courses based on the sort_by value
-    if sort_by == 'name':
-        related_courses = related_courses.order_by('course_name')
-    elif sort_by == 'date':
-        related_courses = related_courses.order_by('created_at')  # Assuming 'created_at' is a field
-    elif sort_by == 'learners':
-        # Count the number of learners (enrollments) and sort by that
-        related_courses = related_courses.annotate(learner_count=Count('enrollments')).order_by('-learner_count')
-
-    # Count the total number of related courses after applying filters
-    total_courses = related_courses.count()
-
-    # Group courses by category (if category field exists)
-    grouped_courses = {}
-    for course in related_courses:
-        category_name = course.category.name if course.category else 'Uncategorized'
-        if category_name not in grouped_courses:
-            grouped_courses[category_name] = []
-        grouped_courses[category_name].append(course)
-
-    # Implement server-side pagination
-    page_number = request.GET.get('page')  # Get the page number from the request
-    paginator = Paginator(related_courses, 10)  # Show 10 courses per page
-
-    # Get the current page of courses
+    # Pagination
+    page_number = request.GET.get('page')
+    paginator = Paginator(related_courses, 10)  # 10 per halaman
     page_obj = paginator.get_page(page_number)
 
-    # Create context dictionary to pass to the template
+    # Hitung total peserta unik
+    unique_learners = related_courses.aggregate(
+        unique_users=Count('enrollments__user', distinct=True)
+    )['unique_users']
+
     context = {
         'partner': partner,
-        'page_obj': page_obj,  # Pass the paginated courses to the template
-        'total_courses': total_courses,  # Pass the total course count to the template
-        'search_query': search_query,  # Pass the search query to the template
-        'grouped_courses': grouped_courses,  # Pass grouped courses by category
-        'selected_category': selected_category,  # Pass the selected category to the template
-        'categories': Category.objects.all(),  # Pass all categories to the template
-        'sort_by': sort_by  # Pass the sort_by parameter to the template
+        'page_obj': page_obj,
+        'total_courses': related_courses.count(),
+        'unique_learners': unique_learners,
+        'search_query': search_query,
+        'selected_category': selected_category,
+        'categories': Category.objects.all(),
+        'sort_by': sort_by,
     }
 
-    # Render the partner_detail template with the partner and related courses data
     return render(request, 'partner/org_partner.html', context)
-
 
 # search user optimized with index and pagination
 def search_users(request):
