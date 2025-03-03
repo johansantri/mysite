@@ -250,6 +250,11 @@ def generate_microcredential_certificate(request, id):
 def deletemic(request, pk):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
+    if not request.user.is_superuser:
+        # Jika pengguna bukan superuser, beri pesan dan arahkan ke halaman lain (misalnya halaman utama)
+        messages.error(request, "You do not have permission to delete this microcredential.")
+        return redirect('courses:microcredential-list')
+    
     microcredential = get_object_or_404(MicroCredential, pk=pk)  # Get the MicroCredential by pk
 
     if request.method == 'POST':  # Confirm deletion after form submission
@@ -264,6 +269,11 @@ def editmic(request, pk):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
     microcredential = get_object_or_404(MicroCredential, pk=pk)  # Get the MicroCredential by pk
+
+    if not request.user.is_superuser:
+        # Jika pengguna bukan superuser, beri pesan dan arahkan ke halaman lain (misalnya halaman utama)
+        messages.error(request, "You do not have permission to edit this microcredential.")
+        return redirect('courses:microcredential-list')  
 
     if request.method == 'POST':
         form = MicroCredentialForm(request.POST, request.FILES, instance=microcredential)  # Prepopulate form with existing data
@@ -287,6 +297,11 @@ def course_autocomplete(request):
 def addmic(request):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
+    if not request.user.is_superuser:
+        # Jika pengguna bukan superuser, beri pesan dan arahkan ke halaman lain (misalnya halaman utama)
+        messages.error(request, "You do not have permission to add this microcredential.")
+        return redirect('courses:microcredential-list')
+    
     if request.method == 'POST':
         form = MicroCredentialForm(request.POST, request.FILES)  # Handle file uploads for the image field
         if form.is_valid():
