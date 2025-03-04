@@ -1,10 +1,6 @@
-{% extends 'home/base.html' %}
+{% extends 'home/tes.html' %}
 {% block content %}
-<div class="page-content">
-    <div class="container">
-        <div class="row">
-            {% include "home/sidebar.html" %}
-            <div class="col-xl-9 col-lg-9">
+
                 <h1 class="h2">User Area</h1>
 
                 {% if request.user.is_superuser or request.user.is_partner %}
@@ -63,30 +59,30 @@
                             {% if request.user.is_superuser %}
                             <td>
                                 {% if user.is_superuser %}
-                                    <span class="badge bg-success"><i class="fa fa-check" aria-hidden="true"></i></span>
+                                    <span class="badge bg-success"><i class="bi bi-check" aria-hidden="true"></i></span>
                                 {% else %}
-                                    <span class="badge bg-danger"><i class="fa fa-times" aria-hidden="true"></i></span>
+                                    <span class="badge bg-danger"><i class="bi bi-x" aria-hidden="true"></i></span>
                                 {% endif %}
                             </td>
                             <td>
                                 {% if user.is_staff %}
-                                    <span class="badge bg-success"><i class="fa fa-check" aria-hidden="true"></i></span>
+                                    <span class="badge bg-success"><i class="bi bi-check" aria-hidden="true"></i></span>
                                 {% else %}
-                                    <span class="badge bg-danger"><i class="fa fa-times" aria-hidden="true"></i></span>
+                                    <span class="badge bg-danger"><i class="bi bi-x" aria-hidden="true"></i></span>
                                 {% endif %}
                             </td>
                             <td>
                                 {% if user.is_partner %}
-                                    <span class="badge bg-success"><i class="fa fa-check" aria-hidden="true"></i></span>
+                                    <span class="badge bg-success"><i class="bi bi-check" aria-hidden="true"></i></span>
                                 {% else %}
-                                    <span class="badge bg-danger"><i class="fa fa-times" aria-hidden="true"></i></span>
+                                    <span class="badge bg-danger"><i class="bi bi-x" aria-hidden="true"></i></span>
                                 {% endif %}
                             </td>
                             <td>
                                 {% if user.is_instructor %}
-                                    <span class="badge bg-success"><i class="fa fa-check" aria-hidden="true"></i></span>
+                                    <span class="badge bg-success"><i class="bi bi-check" aria-hidden="true"></i></span>
                                 {% else %}
-                                    <span class="badge bg-danger"><i class="fa fa-times" aria-hidden="true"></i></span>
+                                    <span class="badge bg-danger"><i class="bi bi-x" aria-hidden="true"></i></span>
                                 {% endif %}
                             </td>
                             <td>
@@ -131,8 +127,5 @@
                     </nav>
                 </div>
                 {% endif %}
-            </div>
-        </div>
-    </div>
-</div>
+  
 {% endblock %}
