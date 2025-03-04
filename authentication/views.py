@@ -397,36 +397,52 @@ def home(request):
 
 
 
-
 def dasbord(request):
-    # Initialize variables
-    if request.user.is_authenticated:
-        enrollments = None
-        search_query = request.GET.get('search', '')  # Get search query from the request
-        enrollments_page = request.GET.get('enrollments_page', 1)  # Page number for enrollments
-        
-        # Fetch enrollments for the currently logged-in user
-        enrollments = Enrollment.objects.filter(user=request.user)
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
 
-        # Search logic for enrollments (by username or course name)
-        if search_query:
-            enrollments = enrollments.filter(
-                user__username__icontains=search_query
-            ) | enrollments.filter(
-                course__course_name__icontains=search_query
-            )  # Search by user username or course name
-        
-        # Pagination for enrollments
-        enrollments_paginator = Paginator(enrollments, 5)  # Show 5 enrollments per page
-        enrollments = enrollments_paginator.get_page(enrollments_page)
+    # Get search query and page number from GET parameters
+    search_query = request.GET.get('search', '').strip()
+    enrollments_page = request.GET.get('enrollments_page', 1)
 
-        # Render the dashboard with the appropriate data
-        return render(request, 'home/dasbord.html', {
-            'enrollments': enrollments,
-            'search_query': search_query,  # Pass the search query to the template
-            'enrollments_page': enrollments_page
-        })
-    return redirect("/login/?next=%s" % request.path)
+    # Fetch enrollments for the currently logged-in user
+    enrollments = Enrollment.objects.filter(user=request.user)
+
+    # Search logic for enrollments
+    if search_query:
+        enrollments = enrollments.filter(
+        Q(user__username__icontains=search_query) |
+        Q(course__course_name__icontains=search_query)
+        )
+
+    # Pagination for enrollments
+    enrollments_paginator = Paginator(enrollments, 5) # 5 enrollments per page
+    enrollments = enrollments_paginator.get_page(enrollments_page)
+
+    # Calculate totals
+    total_enrollments = Enrollment.objects.count() # Total semua enrollment
+    total_courses = Course.objects.count() # Total semua course
+    total_instructors = Instructor.objects.count() # Total semua instructor
+    total_learners = User.objects.filter(is_learner=True).count() # Asumsi ada field is_learner
+    total_partners = Partner.objects.count() # Total semua partner
+    publish_status = CourseStatus.objects.get(status='published')
+    total_published_courses = Course.objects.filter(status_course=publish_status).count()
+
+    # Context untuk template
+    context = {
+    'enrollments': enrollments,
+    'search_query': search_query,
+    'enrollments_page': enrollments_page,
+    'total_enrollments': total_enrollments,
+    'total_courses': total_courses,
+    'total_instructors': total_instructors,
+    'total_learners': total_learners,
+    'total_partners': total_partners,
+    'total_published_courses': total_published_courses,
+    }
+
+    return render(request, 'home/dasbord.html', context)
+
 
 #dashboard for student
 def dashbord(request):
