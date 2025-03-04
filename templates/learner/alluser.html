@@ -1,20 +1,10 @@
-{% extends 'home/base.html' %}
+{% extends 'home/tes.html' %}
 {% block content %}
-<div class="page-content">
-    <div class="container">
-      <div class="row">
-        {% include "home/sidebar.html" %}
-        <div class="col-xl-9 col-lg-9">
+
       
 
           <h1 class="h2">user area</h1>
-            {% if messages %}
-            <ul class="messages">
-            {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}><span class="badge bg-warning text-dark">{{ message }}</span></li>
-            {% endfor %}
-            </ul>
-            {% endif %}
+         
             {%  if request.user.is_superuser %}
             <div class="btn-toolbar mb-2 mb-md-0">
           
@@ -125,9 +115,5 @@
 
 
 
-        </div>
-
-      </div>
-    </div>
-</div>
+  
   {% endblock %}

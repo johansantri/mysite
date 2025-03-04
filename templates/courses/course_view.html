@@ -1,23 +1,19 @@
-{% extends 'home/base.html' %}
+{% extends 'home/tes.html' %}
 {% block content %}
-<div class="page-content">
-  <div class="container">
-    <div class="row">
-      {% include "home/sidebar.html" %}
-      <div class="col-xl-9 col-lg-9">
+
       
-        <div class="container">
+        
           <h1 class="display-5 fw-bold mb-4">My Courses</h1>
 
           <!-- Filter Buttons -->
            <!-- Filter and Search Bar -->
            <div class="d-flex flex-wrap justify-content-start mb-4">
-            <a href="?filter=all" class="btn btn-outline-dark me-3 mb-2 {% if course_filter == 'all' %}active{% endif %}">All ({{ all_count }})</a>
-            <a href="?filter=draft" class="btn btn-outline-secondary me-3 mb-2 {% if course_filter == 'draft' %}active{% endif %}">Draft ({{ draft_count }})</a>
-            <a href="?filter=published" class="btn btn-outline-secondary me-3 mb-2 {% if course_filter == 'published' %}active{% endif %}">Published ({{ published_count }})</a>
-            <a href="?filter=archive" class="btn btn-outline-secondary me-3 mb-2 {% if course_filter == 'archive' %}active{% endif %}">Archived ({{ archive_count }})</a>
-            <a href="?filter=curation" class="btn btn-outline-secondary mb-2 {% if course_filter == 'curation' %}active{% endif %}">Curation ({{ curation_count }})</a>
-        </div>
+              <a href="?filter=all" class="btn btn-outline-dark me-3 mb-2 {% if course_filter == 'all' %}active{% endif %}">All ({{ all_count }})</a>
+              <a href="?filter=draft" class="btn btn-outline-secondary me-3 mb-2 {% if course_filter == 'draft' %}active{% endif %}">Draft ({{ draft_count }})</a>
+              <a href="?filter=published" class="btn btn-outline-secondary me-3 mb-2 {% if course_filter == 'published' %}active{% endif %}">Published ({{ published_count }})</a>
+              <a href="?filter=archive" class="btn btn-outline-secondary me-3 mb-2 {% if course_filter == 'archive' %}active{% endif %}">Archived ({{ archive_count }})</a>
+              <a href="?filter=curation" class="btn btn-outline-secondary mb-2 {% if course_filter == 'curation' %}active{% endif %}">Curation ({{ curation_count }})</a>
+           </div>
             
         
 
@@ -142,9 +138,6 @@
               </nav>
             </div>
           </div>
-        </div>   
-      </div>
-    </div>
-  </div>
-</div>
+        
+ 
 {% endblock %}

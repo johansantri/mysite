@@ -89,13 +89,13 @@
     <!-- Sidebar menu-->
     <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
     <aside class="app-sidebar">
-      <div class="app-sidebar__user"><a href="{% url 'authentication:edit-photo' user.id%}"><img class="app-sidebar__user-avatar" {% if request.user.photo %} src="{{ request.user.photo.url }}"  {% elif not request.user.photo %} src="{% static "assets/img/user/user1.jpg"%}" {% endif %} alt="User Image"></a>
+      <div class="app-sidebar__user"><img class="app-sidebar__user-avatar"  src="{% static "assets/img/user/user1.jpg"%}"  alt="User Image">
         <div>
           <p class="app-sidebar__user-name">{{ request.user.first_name }} {{ request.user.last_name }}</p>
           <p class="app-sidebar__user-designation">{{request.user.hobby}}</p>
                         {% if not user.university %}
 
-                        <a href="{% url 'authentication:profile' user.username %}" class="add-course btn-primary">Update my profile</a>
+                        <a href="#" class="add-course btn-primary">Update my profile</a>
                         {% else %}
                         <p  class="add-course btn-primary">{{user.university}}</p>
                         <a href="{% url 'courses:instructor_add' %}" class="add-course btn-primary">Become an instructor</a>
@@ -154,13 +154,25 @@
     <main class="app-content">
       
       <div class="app-title">
-          {% if messages %}
-            <div class="alert-container">
-              {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} mt-3">{{ message }}</div>
-              {% endfor %}
-            </div>
-          {% endif %}
+        {% if messages %}
+
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                <div class="alert alert-success" role="alert">{{ message }}</div>
+            {% elif message.tags == 'error' %}
+                <div class="alert alert-danger" role="alert">{{ message }}</div>
+            {% elif message.tags == 'warning' %}
+                <div class="alert alert-warning" role="alert">{{ message }}</div>
+            {% elif message.tags == 'info' %}
+                <div class="alert alert-info" role="alert">{{ message }}</div>
+            {% else %}
+                <div class="alert alert-secondary" role="alert">{{ message }}</div>
+            {% endif %}
+        {% endfor %}
+    
+
+
+    {% endif %}
         <ul class="app-breadcrumb breadcrumb">
           <li class="breadcrumb-item"><i class="bi bi-house-door fs-6"></i></li>
           <li class="breadcrumb-item"><a href="{% url 'authentication:home' %}">home</a></li>

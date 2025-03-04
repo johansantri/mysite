@@ -1,34 +1,12 @@
-{% extends 'home/base.html' %}
+{% extends 'home/tes.html' %}
 {% block content %}
 
-<div class="page-content">
-  <div class="container">
-  <div class="row">
 
-      
-
-
-
-    {% include "home/sidebar.html" %}
-    <div class="col-xl-9 col-lg-9">
-      <div class="support-wrap">
 <form method="POST">
     {% csrf_token %}
     <p>Are you sure you want to delete the MicroCredential: {{ microcredential.title }}?</p>
     <button type="submit">Yes, Delete</button>
     <a href="{% url 'courses:microcredential-list' %}">Cancel</a>
 </form>
- </div>
-  </div>
-    
 
- 
-  </div>
-
-  
-</div>
-    
-
- 
-</div>
 {% endblock %}

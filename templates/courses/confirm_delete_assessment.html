@@ -1,43 +1,21 @@
-{% extends 'home/base.html' %}
+{% extends 'home/tes.html' %}
 {% block content %}
 
-<div class="page-content">
-  <div class="container">
-  <div class="row">
-
-      
-
-
-
-    {% include "home/sidebar.html" %}
-    <div class="col-xl-9 col-lg-9">
-      <div class="support-wrap">
     
   
 
         <div class="tile-body">
             <h6>Confirm Deletion</h6>
-  <p>Are you sure you want to delete the assessment "<strong><span class="badge rounded-pill bg-warning text-dark">{{ assessment.name }}</span></strong>"? This action cannot be undone.All questions and answers will be lost</p>
+            <p>Are you sure you want to delete the assessment "<strong><span class="badge rounded-pill bg-warning text-dark">{{ assessment.name }}</span></strong>"? This action cannot be undone.All questions and answers will be lost</p>
 
-  <form method="POST">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-danger btn-sm">Yes, delete</button>
-    <a href="{% url "courses:view-question" course.id section.id assessment.id %}" class="btn btn-secondary btn-sm">Cancel</a>
-  </form>
+          <form method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Yes, delete</button>
+            <a href="{% url "courses:view-question" course.id section.id assessment.id %}" class="btn btn-secondary btn-sm">Cancel</a>
+          </form>
       
-    </div>
-  </div>
-    
+        </div>
 
- 
-  </div>
-
-  
-</div>
-    
-
- 
-</div>
 
 
 

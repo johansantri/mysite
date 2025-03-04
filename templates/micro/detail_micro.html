@@ -1,12 +1,6 @@
-{% extends 'home/base.html' %}
+{% extends 'home/tes.html' %}
 {% block content %}
 
-<div class="page-content">
-  <div class="container">
-    <div class="row">
-      {% include "home/sidebar.html" %}
-      <div class="col-xl-9 col-lg-9">
-        <div class="support-wrap">
           <h1>{{ microcredential.title }}</h1>
 
           <!-- Deskripsi Microcredential -->
@@ -49,10 +43,6 @@
           <!-- Back to list link -->
           <br>
           <a href="{% url 'courses:microcredential-list' %}" class="btn btn-secondary">Back to list</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+
 
 {% endblock %}

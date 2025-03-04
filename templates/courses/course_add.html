@@ -1,26 +1,9 @@
-{% extends 'home/base.html' %}
+{% extends 'home/tes.html' %}
 {% block content %}
 
-<div class="page-content">
-  <div class="container">
-  <div class="row">
-
-      
-
-
-
-    {% include "home/sidebar.html" %}
-    <div class="col-xl-9 col-lg-9">
-      <div class="support-wrap">
       <div class="tile">
         <h3 class="tile-title">Create new course</h3>
-        {% if messages %}
-        <ul class="messages">
-        {% for message in messages %}
-        <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-        </ul>
-        {% endif %}
+       
 
         <div class="tile-body">
           <form  method="POST" action="" >
@@ -47,19 +30,7 @@
         </div>
        
       </div>
-    </div>
-  </div>
-    
 
- 
-  </div>
-
-  
-</div>
-    
-
- 
-</div>
 
 <script>
   function slugify(text) {

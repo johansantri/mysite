@@ -1,12 +1,8 @@
-{% extends 'home/base.html' %}
+{% extends 'home/tes.html' %}
 
 {% block content %}
 
-<div class="page-content">
-  <div class="container">
-    <div class="row">
-      {% include "home/sidebar.html" %}
-      <div class="col-xl-9 col-lg-9">
+
         <div class="support-wrap">
         <h2>Re-run of course: {{ course.course_name }}</h2>
 
@@ -76,9 +72,6 @@
           <p>You must be logged in to create a re-run.</p>
         {% endif %}
     </div>
-      </div>
-    </div>
-  </div>
-</div>
+      
 
 {% endblock %}

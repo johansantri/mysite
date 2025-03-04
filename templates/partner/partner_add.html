@@ -1,11 +1,6 @@
-{% extends 'home/base.html' %}
+{% extends 'home/tes.html' %}
 {% block content %}
-<div class="page-content">
-  <div class="container">
-    <div class="row">
-      {% include "home/sidebar.html" %}
-      
-      <div class="col-xl-9 col-lg-9 col-md-12">
+
         <div class="support-wrap">
           <div class="tile">
             <h3 class="tile-title">Create New Partner</h3>
@@ -14,7 +9,7 @@
               <form  method="POST" action="" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{form}}
-               
+                {{form.media}}
                   &nbsp;
                 <div class="tile-footer">
                   <button class="btn btn-primary" type="submit">
@@ -31,10 +26,7 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
+ 
 
 <script>
   $(document).ready(function() {

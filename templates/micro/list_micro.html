@@ -1,38 +1,9 @@
-{% extends 'home/base.html' %}
+{% extends 'home/tes.html' %}
 {% block content %}
 
-<div class="page-content">
-  <div class="container">
-    <div class="row">
-
-      
-
-
-
-        {% include "home/sidebar.html" %}
-          <div class="col-xl-9 col-lg-9">
-            <div class="support-wrap">
-              <div class="container mt-5">
+              
                 <h1>Microcredentials List</h1>
-                {% if messages %}
-
-                    {% for message in messages %}
-                        {% if message.tags == 'success' %}
-                            <div class="alert alert-success" role="alert">{{ message }}</div>
-                        {% elif message.tags == 'error' %}
-                            <div class="alert alert-danger" role="alert">{{ message }}</div>
-                        {% elif message.tags == 'warning' %}
-                            <div class="alert alert-warning" role="alert">{{ message }}</div>
-                        {% elif message.tags == 'info' %}
-                            <div class="alert alert-info" role="alert">{{ message }}</div>
-                        {% else %}
-                            <div class="alert alert-secondary" role="alert">{{ message }}</div>
-                        {% endif %}
-                    {% endfor %}
-                
-
-
-                {% endif %}
+             
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <!-- Tombol New Micro di sebelah kiri -->
                     <a href="{% url 'courses:microcredential-create' %}" class="btn btn-success btn-sm">New Micro</a>
@@ -107,19 +78,8 @@
                             </ul>
                         </nav>
                         
-            </div>
-
-            </div>
-          </div>
-        
+            
 
  
-    </div>
 
-  
-  </div>
-    
-
- 
-</div>
 {% endblock %}
