@@ -2275,35 +2275,50 @@ def instructor_view(request):
     # Check if the user is authenticated
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
-    # Check if the user is an admin
 
-    if request.user.is_superuser:  # This checks if the user is an admin
-
-        instructors = Instructor.objects.all().annotate(num_courses=Count('courses'))  # Admin sees all instructors
-
+    # Get search query from GET parameters
+    search_query = request.GET.get('q', '').strip()
+    
+    # Define base queryset based on user role
+    if request.user.is_superuser:
+        # Admin sees all instructors
+        instructors = Instructor.objects.all().annotate(num_courses=Count('courses'))
     elif request.user.is_partner:
-
-        # Otherwise, filter based on the user's associated partner or provider
-
+        # Partner sees instructors linked to their provider
         instructors = Instructor.objects.filter(provider__user=request.user).annotate(num_courses=Count('courses'))
-
     elif request.user.is_instructor:
-
         messages.error(request, "You do not have permission to view this instructor list.")
-
-        return render(request, 'instructor/instructor_list.html', {'instructors': []})  # Return an empty list or redirect
-
-
+        return render(request, 'instructor/instructor_list.html', {'instructors': []})
     else:
-
-        # Handle case where the user does not have any of the above roles
-
         messages.error(request, "You do not have permission to view this instructor list.")
+        return render(request, 'instructor/instructor_list.html', {'instructors': []})
 
-        return render(request, 'instructor/instructor_list.html', {'instructors': []})  # Return an empty list or redirect
+    # Apply search filter if query exists
+    if search_query:
+        instructors = instructors.filter(
+            Q(user__username__icontains=search_query) | Q(user__email__icontains=search_query)
+        )  # Pencarian berdasarkan username atau email dari model User
 
+    # Pagination
+    items_per_page = 10  # Jumlah item per halaman
+    paginator = Paginator(instructors, items_per_page)
+    page_number = request.GET.get('page')
 
-    return render(request, 'instructor/instructor_list.html', {'instructors': instructors})
+    try:
+        instructors_page = paginator.page(page_number)
+    except PageNotAnInteger:
+        instructors_page = paginator.page(1)
+    except EmptyPage:
+        instructors_page = paginator.page(paginator.num_pages)
+
+    # Context untuk template
+    context = {
+        'instructors': instructors_page,
+        'search_query': search_query,
+        'paginator': paginator,
+    }
+
+    return render(request, 'instructor/instructor_list.html', context)
 
 #delete instructor
 #@login_required

@@ -112,13 +112,17 @@
         {% if user.is_authenticated %}
 
         {% if user.is_partner  %}
-        <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon bi bi-laptop"></i><span class="app-menu__label">UI Elements</span><i class="treeview-indicator bi bi-chevron-right"></i></a>
-          <ul class="treeview-menu">
+        <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon bi bi-laptop"></i><span class="app-menu__label">Matrial</span><i class="treeview-indicator bi bi-chevron-right"></i></a>
+          <ul class="treeview-menu">           
             
-            <li><a class="treeview-item" href="{% url 'courses:partner_view' %}"><i class="icon bi bi-circle-fill"></i> partner</a></li>
-            <li><a class="treeview-item" href="{% url 'courses:instructor_view' %}"><i class="icon bi bi-circle-fill"></i> instructor</a></li>
+            <li><a class="treeview-item" href="{% url 'courses:course_view' %}"><i class="icon bi bi-circle-fill"></i> course</a></li>
+            <li><a class="treeview-item" href="{% url 'courses:microcredential-list' %}"><i class="icon bi bi-circle-fill"></i> micro</a></li>
           </ul>
         </li>
+        <li><a class="app-menu__item" href="{% url 'courses:partner_view' %}"><i class="app-menu__icon bi bi-people"></i><span class="app-menu__label"> partner</span></a></li>
+        <li><a class="app-menu__item" href="{% url 'courses:instructor_view' %}"><i class="app-menu__icon bi bi-person-lines-fill"></i><span class="app-menu__label">instructor</span></a></li>
+        <li><a class="app-menu__item" href="{% url 'authentication:all-user' %}"><i class="app-menu__icon bi bi-person-workspace"></i><span class="app-menu__label">learner</span></a></li>
+       
         {% elif user.is_instructor %}
         <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon bi bi-ui-checks"></i><span class="app-menu__label">Forms</span><i class="treeview-indicator bi bi-chevron-right"></i></a>
           <ul class="treeview-menu">
