@@ -265,13 +265,7 @@
 
         <!-- Main Content -->
        
-            {% if messages %}
-              <div class="alert-container">
-                {% for message in messages %}
-                  <div class="alert alert-{{ message.tags }} mt-3">{{ message }}</div>
-                {% endfor %}
-              </div>
-            {% endif %}
+            
 
             {% if current_content %}
               {% if current_content.0 == 'material' %}

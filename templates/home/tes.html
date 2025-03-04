@@ -130,14 +130,17 @@
     <main class="app-content">
       
       <div class="app-title">
-        <div>
-          <h1><i class="bi bi-ui-checks"></i> Form Samples</h1>
-          <p>Sample forms</p>
-        </div>
+          {% if messages %}
+            <div class="alert-container">
+              {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} mt-3">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
         <ul class="app-breadcrumb breadcrumb">
           <li class="breadcrumb-item"><i class="bi bi-house-door fs-6"></i></li>
-          <li class="breadcrumb-item">Forms</li>
-          <li class="breadcrumb-item"><a href="#">Sample Forms</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'authentication:home' %}">home</a></li>
+          
         </ul>
       </div>
       <div class="row">
