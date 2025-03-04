@@ -487,7 +487,7 @@ class CourseForm(forms.ModelForm):
 
 
 class PartnerForm(forms.ModelForm):
-    
+    description = forms.CharField(widget=CKEditor5Widget())
     class Meta:
         model = Partner
         fields = ['name','user','phone', 'tax', 'iceiprice', 'logo', 'address', 'description']
