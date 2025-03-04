@@ -2,176 +2,269 @@
 {% load static %}
 
 {% block content %}
-  <div class="page-content">
-    <div class="container-fluid">
-      <div class="row">
-        <!-- Sidebar with Sections -->
-        <div class="col-md-3 d-none d-md-flex flex-column flex-shrink-0 p-3 text-white bg-dark" 
-            style="position: fixed; top: 0; left: 0; height: 100vh; z-index: 1000; overflow-y: auto;">
-          <!-- Konten sidebar tetap sama -->
-          <div class="settings-widget">
-            <div class="settings-menu">
-              <h3 class="h5"><a href="{% url 'authentication:dashbord' %}">Course Content</a></h3> 
-              <ul>
-                {% for section in sections %}
-                  <li class="nav-item">
-                    <p>{{ section.title }}</p>
-                    <ul>
-                      {% for material in section.materials.all %}
-                        <li>
-                          <a class="nav-link" href="?material_id={{ material.id }}" style="color:rgb(36, 117, 54);">
-                            <i class="bx bx-file"></i> {{ material.title }}
-                          </a>
-                        </li>
-                      {% endfor %}
-                      {% for assessment in section.assessments.all %}
-                        <li>
-                          <a class="nav-link" href="?assessment_id={{ assessment.id }}" style="color:rgb(36, 117, 54);">
-                            <i class="bx bx-pencil"></i> {{ assessment.name }}
-                          </a>
-                        </li>
-                      {% empty %}
-                      {% endfor %}
-                    </ul>
-                  </li>
-                {% endfor %}
-                <hr>
-                <p class="fw-bold">Progress: {{ course_progress |floatformat:0 }}%</p>
-                <div class="progress">
-                  <div class="progress-bar bg-success" 
-                      role="progressbar" 
-                      style="width: {{ course_progress|default:0 }}%" 
-                      aria-valuenow="{{ course_progress|default:0 }}" 
-                      aria-valuemin="0" 
-                      aria-valuemax="100">
-                  </div>
-                </div>
-                <hr>
-                <div class="js-container container" style="position: relative; top: 0px !important;">
-                  <p>
-                    {% if course_progress == 100 and status == 'Fail' %}
-                      <div class="result-info text-center mb-4">
-                        <span class="text-danger fw-bold">Unfortunately, you did not pass the course, {{ request.user.username }}!</span>
-                        <p class="mb-1">Passing Threshold: <span class="fw-bold">{{ passing_threshold }}</span></p>
-                        <p class="mb-1">Your Score: <span class="fw-bold">{{ total_score | floatformat:2 }}  </span>
-                        <br>
-                        Maybe your final score is greater than the threshold, but you must pass all assessments
-                        </p>
-                      </div>
-                    {% elif status == 'Pass' %}
-                      <div class="result-info text-center mb-4">
-                        <span class="text-success fw-bold">Congratulations 🎈 {{ request.user.username }}! 🎉</span>
-                        <p class="mb-1">Passing Threshold: <span class="fw-bold">{{ passing_threshold }}</span></p>
-                        <p class="mb-1">Your Score: <span class="fw-bold">{{ total_score | floatformat:2 }}</span></p>
-                        <a href="{% url 'courses:generate_certificate' course.id %}" class="btn btn-success btn-sm">certificate</a>
-                      </div>
-                    {% endif %}
-                  </p>
-                </div>
-                <!-- Script dan style untuk confetti tetap sama -->
-                <script>
-                  const status = "{{ status }}";
-                  if (status === 'Pass') {
-                    const Confettiful = function(el) {
-                      this.el = el;
-                      this.containerEl = null;
-                      this.confettiFrequency = 3;
-                      this.confettiColors = ['#EF2964', '#00C09D', '#2D87B0', '#48485E', '#EFFF1D'];
-                      this.confettiAnimations = ['slow', 'medium', 'fast'];
-                      this._setupElements();
-                      this._renderConfetti();
-                    };
-                    Confettiful.prototype._setupElements = function() {
-                      const containerEl = document.createElement('div');
-                      containerEl.classList.add('confetti-container');
-                      if (this.el.style.position !== 'relative' && this.el.style.position !== 'absolute') {
-                        this.el.style.position = 'relative';
-                      }
-                      this.el.appendChild(containerEl);
-                      this.containerEl = containerEl;
-                    };
-                    Confettiful.prototype._renderConfetti = function() {
-                      this.confettiInterval = setInterval(() => {
-                        const confettiEl = document.createElement('div');
-                        const confettiSize = (Math.floor(Math.random() * 3) + 7) + 'px';
-                        const confettiBackground = this.confettiColors[Math.floor(Math.random() * this.confettiColors.length)];
-                        const confettiLeft = (Math.floor(Math.random() * this.el.offsetWidth)) + 'px';
-                        const confettiAnimation = this.confettiAnimations[Math.floor(Math.random() * this.confettiAnimations.length)];
-                        confettiEl.classList.add('confetti', 'confetti--animation-' + confettiAnimation);
-                        confettiEl.style.left = confettiLeft;
-                        confettiEl.style.width = confettiSize;
-                        confettiEl.style.height = confettiSize;
-                        confettiEl.style.backgroundColor = confettiBackground;
-                        setTimeout(() => {
-                          confettiEl.remove();
-                        }, 3000);
-                        this.containerEl.appendChild(confettiEl);
-                      }, 25);
-                      setTimeout(() => {
-                        clearInterval(this.confettiInterval);
-                      }, 10000);
-                    };
-                    window.confettiful = new Confettiful(document.querySelector('.js-container'));
-                  }
-                </script>
-                <style>
-                  .confetti-container {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    pointer-events: none;
-                  }
-                  .confetti {
-                    position: absolute;
-                    border-radius: 50%;
-                    opacity: 0.8;
-                  }
-                  .confetti--animation-slow { animation: fall 3s linear forwards; }
-                  .confetti--animation-medium { animation: fall 2s linear forwards; }
-                  .confetti--animation-fast { animation: fall 1s linear forwards; }
-                  @keyframes fall {
-                    to {
-                      transform: translateY(100vh);
-                      opacity: 0;
-                    }
-                  }
-                </style>
-                <hr>
-                <div class="container">
-                  <table class="table table-dark table-striped">
-                    <thead>
-                      <tr>
-                        <th>assement</th>
-                        <th>grade</th>
-                        <th>score</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for result in assessment_results %}
-                        <tr>
-                          <td>{{ result.name }}</td>
-                          <td>{{ result.max_score }}</td>
-                          <td>{{ result.score | floatformat:2 }}</td>
-                        </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
-                </div>
-              </ul>
-            </div>
-          </div>
-        </div>
+   <!-- Sidebar menu-->
+   <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
+   <aside class="app-sidebar">
+     <div class="app-sidebar__user"><img class="app-sidebar__user-avatar" {% if request.user.photo %} src="{{ request.user.photo.url }}" % elif not request.user.photo %} {% static "assets/img/user/user1.jpg"%} {% endif %} alt="User Image">
+       <div>
+         <p class="app-sidebar__user-name">{{ request.user.first_name }} {{ request.user.last_name }}</p>
+         <p class="app-sidebar__user-designation">{{request.user.hobby}}</p>
+       </div>
+     </div>
 
-        <!-- Button to toggle sidebar on mobile -->
-        <div class="d-md-none d-flex justify-content-center mb-3">
-          <button class="btn btn-primary" data-bs-toggle="modal" id="toggleSidebar" data-bs-target="#sidebarModal">Show Sidebar</button>
-        </div>
+     <ul class="app-menu">
+      
+      <li><a class="app-menu__item active" href="dashboard.html"><i class="app-menu__icon bi bi-speedometer"></i><span class="app-menu__label">Dashboard</span></a></li>
+     
+
+
+     
+      
+        <li class="treeview">
+          <a class="app-menu__item" href="#" data-toggle="treeview">
+            <i class="app-menu__icon bi bi-ui-checks"></i>
+            <span class="app-menu__label">Course Content</span>
+            <i class="treeview-indicator bi bi-chevron-right"></i>
+          </a>
+          <ul class="treeview-menu">
+            {% for i in sections %}
+              {% if not i.children.all and not i.materials.all and not i.assessments.all %}
+                <!-- Jika section kosong -->
+                <li>
+                  <a class="treeview-item" href="#">
+                    <i class="icon bi bi-circle-fill"></i> {{ i.title }} (No content available)
+                  </a>
+                </li>
+              {% else %}
+                <!-- Section dengan konten -->
+                <li>
+                  <a class="treeview-item collapsed" data-bs-toggle="collapse" href="#section-{{ i.id }}" aria-expanded="false">
+                    <i class="icon bi bi-folder-fill"></i> {{ i.title }}
+                  </a>
+                  <ul class="treeview-menu collapse" id="section-{{ i.id }}" style="padding-left: 20px;">
+                    {% for obj in i.children.all %}
+                      {% if not obj.children.all %}
+                        <!-- Sub-section tanpa children -->
+                        <li>
+                          <a class="treeview-item collapsed" data-bs-toggle="collapse" href="#course-{{ obj.id }}" aria-expanded="false">
+                            <i class="icon bi bi-folder"></i> {{ obj.title }}
+                          </a>
+                          <ul class="treeview-menu collapse" id="course-{{ obj.id }}" style="padding-left: 20px;">
+                            {% for material in obj.materials.all %}
+                              <li>
+                                <a class="treeview-item" href="?material_id={{ material.id }}">
+                                  <i class="icon bi bi-file-earmark-text"></i> {{ material.title }}
+                                  <span>{{ material.duration }}</span>
+                                </a>
+                              </li>
+                            {% empty %}
+                              <li>
+                                <a class="treeview-item" href="#">
+                                  <i class="icon bi bi-info-circle"></i> No materials available
+                                </a>
+                              </li>
+                            {% endfor %}
+                            {% for assessment in obj.assessments.all %}
+                              <li>
+                                <a class="treeview-item" href="?assessment_id={{ assessment.id }}">
+                                  <i class="icon bi bi-check-square"></i> {{ assessment.name | safe }}
+                                  <span>{{ assessment.weight }}%</span>
+                                </a>
+                              </li>
+                            {% empty %}
+                              <li>
+                                <a class="treeview-item" href="#">
+                                  <i class="icon bi bi-info-circle"></i> No assessments available
+                                </a>
+                              </li>
+                            {% endfor %}
+                          </ul>
+                        </li>
+                      {% else %}
+                        <!-- Sub-section dengan children -->
+                        <li>
+                          <a class="treeview-item collapsed" data-bs-toggle="collapse" href="#course-{{ obj.id }}" aria-expanded="false">
+                            <i class="icon bi bi-folder"></i> {{ obj.title }}
+                          </a>
+                          <ul class="treeview-menu collapse" id="course-{{ obj.id }}" style="padding-left: 20px;">
+                            {% for subobj in obj.children.all %}
+                              <li>
+                                <a class="treeview-item" href="?section_id={{ subobj.id }}">
+                                  <i class="icon bi bi-play-circle"></i> {{ subobj.title }}
+                                </a>
+                              </li>
+                            {% endfor %}
+                          </ul>
+                        </li>
+                      {% endif %}
+                    {% endfor %}
+                    <!-- Materials dan Assessments langsung di section (tanpa children) -->
+                    {% for material in i.materials.all %}
+                      <li>
+                        <a class="treeview-item" href="?material_id={{ material.id }}">
+                          <i class="icon bi bi-file-earmark-text"></i> {{ material.title }}
+                          <span>{{ material.duration }}</span>
+                        </a>
+                      </li>
+                    {% endfor %}
+                    {% for assessment in i.assessments.all %}
+                      <li>
+                        <a class="treeview-item" href="?assessment_id={{ assessment.id }}">
+                          <i class="icon bi bi-check-square"></i> {{ assessment.name | safe }}
+                          <span>{{ assessment.weight }}%</span>
+                        </a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </li>
+     
+    </ul>
+
+   
+
+
+
+     <ul class="app-menu">
+     
+      
+              <p style="color:white;text-align:center;" >Progress: {{ course_progress |floatformat:0 }}%</p>
+              <div class="progress">
+                <div class="progress-bar bg-success" 
+                    role="progressbar" 
+                    style="width: {{ course_progress|default:0 }}%" 
+                    aria-valuenow="{{ course_progress|default:0 }}" 
+                    aria-valuemin="0" 
+                    aria-valuemax="100">
+                </div>
+              </div>
+            
+              <div class="js-container container" style="position: relative; top: 0px !important;">
+                <p style="color:white;text-align:center;">
+                  {% if course_progress == 100 and status == 'Fail' %}
+                    <div class="result-info text-center mb-4">
+                      <span class="text-danger fw-bold">Unfortunately, you did not pass the course, {{ request.user.username }}!</span>
+                      <p style="color:white;text-align:center;">Passing Threshold: <span class="fw-bold">{{ passing_threshold }}</span></p>
+                      <p style="color:white;text-align:center;">Your Score: <span class="fw-bold">{{ total_score | floatformat:2 }}  </span>
+                      <br>
+                      Maybe your final score is greater than the threshold, but you must pass all assessments
+                      </p>
+                    </div>
+                  {% elif status == 'Pass' %}
+                    <div class="result-info text-center mb-4">
+                      <span class="text-success fw-bold">Congratulations 🎈 {{ request.user.username }}! 🎉</span>
+                      <p style="color:white;text-align:center;">Threshold: <span class="fw-bold">{{ passing_threshold }}</span>
+                      Score: <span class="fw-bold">{{ total_score | floatformat:2 }}</span></p>
+                      <a href="{% url 'courses:generate_certificate' course.id %}" class="btn btn-success btn-sm"><i class="bi bi-patch-check"> certificate</i>
+                      </a>
+                    </div>
+                  {% endif %}
+                </p>
+              </div>
+              <!-- Script dan style untuk confetti tetap sama -->
+              <script>
+                const status = "{{ status }}";
+                if (status === 'Pass') {
+                  const Confettiful = function(el) {
+                    this.el = el;
+                    this.containerEl = null;
+                    this.confettiFrequency = 3;
+                    this.confettiColors = ['#EF2964', '#00C09D', '#2D87B0', '#48485E', '#EFFF1D'];
+                    this.confettiAnimations = ['slow', 'medium', 'fast'];
+                    this._setupElements();
+                    this._renderConfetti();
+                  };
+                  Confettiful.prototype._setupElements = function() {
+                    const containerEl = document.createElement('div');
+                    containerEl.classList.add('confetti-container');
+                    if (this.el.style.position !== 'relative' && this.el.style.position !== 'absolute') {
+                      this.el.style.position = 'relative';
+                    }
+                    this.el.appendChild(containerEl);
+                    this.containerEl = containerEl;
+                  };
+                  Confettiful.prototype._renderConfetti = function() {
+                    this.confettiInterval = setInterval(() => {
+                      const confettiEl = document.createElement('div');
+                      const confettiSize = (Math.floor(Math.random() * 3) + 7) + 'px';
+                      const confettiBackground = this.confettiColors[Math.floor(Math.random() * this.confettiColors.length)];
+                      const confettiLeft = (Math.floor(Math.random() * this.el.offsetWidth)) + 'px';
+                      const confettiAnimation = this.confettiAnimations[Math.floor(Math.random() * this.confettiAnimations.length)];
+                      confettiEl.classList.add('confetti', 'confetti--animation-' + confettiAnimation);
+                      confettiEl.style.left = confettiLeft;
+                      confettiEl.style.width = confettiSize;
+                      confettiEl.style.height = confettiSize;
+                      confettiEl.style.backgroundColor = confettiBackground;
+                      setTimeout(() => {
+                        confettiEl.remove();
+                      }, 1000);
+                      this.containerEl.appendChild(confettiEl);
+                    }, 25);
+                    setTimeout(() => {
+                      clearInterval(this.confettiInterval);
+                    }, 1000);
+                  };
+                  window.confettiful = new Confettiful(document.querySelector('.js-container'));
+                }
+              </script>
+              <style>
+                .confetti-container {
+                  position: absolute;
+                  top: 0;
+                  left: 0;
+                  width: 100%;
+                  height: 100%;
+                  pointer-events: none;
+                }
+                .confetti {
+                  position: absolute;
+                  border-radius: 50%;
+                  opacity: 0.8;
+                }
+                .confetti--animation-slow { animation: fall 3s linear forwards; }
+                .confetti--animation-medium { animation: fall 2s linear forwards; }
+                .confetti--animation-fast { animation: fall 1s linear forwards; }
+                @keyframes fall {
+                  to {
+                    transform: translateY(100vh);
+                    opacity: 0;
+                  }
+                }
+              </style>
+              <hr>
+              <div class="container">
+                <table class="table table-dark table-hover table-bordered dataTable no-footer">
+                  <thead>
+                    <tr>
+                      <th>Assement</th>
+                      <th>Grade</th>
+                      <th>Score</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for result in assessment_results %}
+                      <tr>
+                        <td>{{ result.name }}</td>
+                        <td>{{ result.max_score }}</td>
+                        <td>{{ result.score | floatformat:2 }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+    </ul>
+
+   
+   </aside>
+   
+
+     
 
         <!-- Main Content -->
-        <div class="col-md-9 offset-md-3 col-12" style="padding-top: 20px;">
-          <div class="material-content">
+       
             {% if messages %}
               <div class="alert-container">
                 {% for message in messages %}
@@ -179,6 +272,7 @@
                 {% endfor %}
               </div>
             {% endif %}
+
             {% if current_content %}
               {% if current_content.0 == 'material' %}
                 <!-- Material content tetap sama -->
@@ -468,8 +562,7 @@
                 {% endif %}
               </div>
             {% endif %}
-          </div>
-        </div>
+      
 
         <!-- Timer Script (khusus Multiple Choice) -->
         {% if current_content.0 == 'assessment' and current_content.1.questions.exists %}
@@ -516,74 +609,9 @@
             .pagination { font-size: 14px; }
           }
         </style>
-      </div>
-    </div>
-  </div>
+    
 
-  <!-- Modal for Sidebar -->
-  <div class="modal fade" id="sidebarModal" tabindex="-1" aria-labelledby="sidebarModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="sidebarModalLabel">Course Content</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <ul class="list-unstyled">
-            {% for section in sections %}
-              <li class="nav-item">
-                <a class="nav-link" href="#" style="color: #000;">
-                  <i class="bx bxs-book"></i> {{ section.title }}
-                </a>
-                <ul>
-                  {% for material in section.materials.all %}
-                    <li>
-                      <a class="nav-link" href="?material_id={{ material.id }}" style="color: #000;">
-                        <i class="bx bx-file"></i> {{ material.title }}
-                      </a>
-                    </li>
-                  {% endfor %}
-                  {% for assessment in section.assessments.all %}
-                    <li>
-                      <a class="nav-link" href="?assessment_id={{ assessment.id }}" style="color: #000;">
-                        <i class="bx bx-pencil"></i> {{ assessment.name }}
-                      </a>
-                    </li>
-                  {% empty %}
-                  {% endfor %}
-                </ul>
-              </li>
-            {% endfor %}
-          </ul>
-          <hr>
-          <p class="fw-bold">Progress: {{ course_progress |floatformat:0 }}%</p>
-          <div class="progress">
-            <div class="progress-bar bg-success" 
-                role="progressbar" 
-                style="width: {{ course_progress|default:0 }}%" 
-                aria-valuenow="{{ course_progress|default:0 }}" 
-                aria-valuemin="0" 
-                aria-valuemax="100">
-            </div>
-          </div>
-          <hr>
-          <p>Status: {% if user_grade == 'Pass' %}
-            <span class="text-success fw-bold">Pass</span>
-          {% else %}
-            <span class="text-danger fw-bold">Fail</span>
-          {% endif %}</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <script>
-    document.getElementById('toggleSidebar').addEventListener('click', function() {
-      const sidebar = document.querySelector('.col-md-3');
-      sidebar.classList.toggle('d-none');
-    });
-  </script>
+
+
 {% endblock %}
