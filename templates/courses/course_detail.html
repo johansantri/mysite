@@ -33,16 +33,14 @@
         {% if not i.children.all and not i.materials.all and not i.assessments.all %}
           <!-- Jika section kosong -->
           <div class="curriculum-grid mb-0">
-            <div class="curriculum-head">
-              <div class="col-8">
-                <input name="titleupsection" id="titleupsection-{{i.id}}" autocomplete="off" value="{{i.title}}" style="background:rgba(227, 227, 227, 0.41);" type="text" class="form-control ada"/>
-                <div id="error-section-{{i.id}}" style="color: red; display: none;"></div>
-                <input name="idupsection" id="idupsection-{{i.id}}" value="{{i.id}}" style="background:rgba(227, 227, 227, 0.41);" type="hidden" class="form-control"/>
-                <input name="courses_id" id="courses_id-{{i.id}}" value="{{i.courses_id}}" style="background:rgba(227, 227, 227, 0.41);" type="hidden" class="form-control"/>
-              </div>
-              <a href="javascript:void(0);" class="btn delete-btn-section" data-id="{{ i.id }}"><i class="bi bi-trash"></i></a>
-              <a href="javascript:void(0);" class="btn" data-id="{{i.id}}" data-bs-toggle="modal" data-bs-target="#exampleModal-{{i.id}}"><i class="bi bi-plus"></i></a>
+            <div class="curriculum-head d-flex align-items-center">
+              <input name="titleupsection" id="titleupsection-{{i.id}}" autocomplete="off" value="{{i.title}}" type="text" class="form-control me-2" style="background:rgba(227, 227, 227, 0.41);"/>
+              <input name="idupsection" id="idupsection-{{i.id}}" value="{{i.id}}" type="hidden" class="form-control"/>
+              <input name="courses_id" id="courses_id-{{i.id}}" value="{{i.courses_id}}" type="hidden" class="form-control"/>
+              <a href="javascript:void(0);" class="btn btn-danger delete-btn-section me-2" data-id="{{ i.id }}"><i class="bi bi-trash"></i></a>
+              <a href="javascript:void(0);" class="btn btn-success" data-id="{{i.id}}" data-bs-toggle="modal" data-bs-target="#exampleModal-{{i.id}}"><i class="bi bi-plus"></i></a>
             </div>
+            <div id="error-section-{{i.id}}" style="color: red; display: none;"></div>
             <div class="curriculum-info">
               <div id="accordion-one">
                 <p>No subsections available</p>
@@ -100,50 +98,46 @@
 
           <!-- Section dengan Subsections -->
           <div class="curriculum-grid mb-0">
-            <div class="curriculum-head">
-              <div class="col-8">
-                <input name="titleupsection" value="{{i.title}}" id="titleupsection-{{i.id}}" style="background:rgba(227, 227, 227, 0.41);" type="text" class="form-control"/>
-                <div id="error-section-{{i.id}}" style="color: red; display: none;"></div>
-                <input name="idupsection" id="idupsection-{{i.id}}" value="{{i.id}}" style="background:rgba(227, 227, 227, 0.41);" type="hidden" class="form-control ada"/>
-                <input name="courses_id" id="courses_id-{{i.id}}" value="{{i.courses_id}}" style="background:rgba(227, 227, 227, 0.41);" type="hidden" class="form-control ada"/>
-              </div>
-              <a href="javascript:void(0);" class="btn delete-btn-section" data-id="{{ i.id }}"><i class="bi bi-trash"></i></a>
-              <a href="javascript:void(0);" class="btn" data-id="{{i.id}}" data-bs-toggle="modal" data-bs-target="#newModal-{{i.id}}"><i class="bi bi-plus"></i></a>
+            <div class="curriculum-head d-flex align-items-center">
+              <input name="titleupsection" value="{{i.title}}" id="titleupsection-{{i.id}}" type="text" class="form-control me-2" style="background:rgba(227, 227, 227, 0.41);"/>
+              <input name="idupsection" id="idupsection-{{i.id}}" value="{{i.id}}" type="hidden" class="form-control ada"/>
+              <input name="courses_id" id="courses_id-{{i.id}}" value="{{i.courses_id}}" type="hidden" class="form-control ada"/>
+              <a href="javascript:void(0);" class="btn btn-danger delete-btn-section me-2" data-id="{{ i.id }}"><i class="bi bi-trash"></i></a>
+              <a href="javascript:void(0);" class="btn btn-success" data-id="{{i.id}}" data-bs-toggle="modal" data-bs-target="#newModal-{{i.id}}"><i class="bi bi-plus"></i></a>
             </div>
+            <div id="error-section-{{i.id}}" style="color: red; display: none;"></div>
             <div class="curriculum-info">
               <div id="accordion-one" class="accordion">
                 {% for obj in i.children.all %}
                   {% if not obj.children.all %}
                     <!-- Subsection tanpa children -->
                     <div class="faq-grid">
-                      <div class="faq-header">
-                        <a class="collapsed faq-collapse" data-bs-toggle="collapse" href="#collapse-{{obj.id}}" aria-expanded="false">
-                          <i class="fas fa-align-justify"></i>
-                          <div class="col-8">
-                            <input name="titlepusection" value="{{obj.title}}" id="titlepusection-{{obj.id}}" type="text" class="form-control"/>
-                            <input name="parent_id" id="parent_id-{{obj.id}}" value="{{obj.parent_id}}" type="hidden" class="form-control"/>
-                            <input name="courses_id" id="courses_id-{{obj.id}}" value="{{obj.courses_id}}" type="hidden" class="form-control"/>
-                          </div>
+                      <div class="faq-header d-flex align-items-center">
+                        <a class="collapsed faq-collapse flex-grow-1 d-flex align-items-center" data-bs-toggle="collapse" href="#collapse-{{obj.id}}" aria-expanded="false">
+                          <i class="bi bi-list me-2"></i>
+                          <input name="titlepusection" value="{{obj.title}}" id="titlepusection-{{obj.id}}" type="text" class="form-control"/>
+                          <input name="parent_id" id="parent_id-{{obj.id}}" value="{{obj.parent_id}}" type="hidden" class="form-control"/>
+                          <input name="courses_id" id="courses_id-{{obj.id}}" value="{{obj.courses_id}}" type="hidden" class="form-control"/>
                         </a>
-                        <div class="faq-right">
-                          <a href="javascript:void(0);"><i class="far fa-pen-to-square me-1"></i></a>
-                          <a href="javascript:void(0);" class="me-0 delete-btn-section" data-id="{{ obj.id }}"><i class="bi bi-trash"></i></a>
+                        <div class="faq-right d-flex">
+                          <a href="javascript:void(0);" class="btn btn-warning me-2"><i class="bi bi-pencil-square"></i></a>
+                          <a href="javascript:void(0);" class="btn btn-danger delete-btn-section" data-id="{{ obj.id }}"><i class="bi bi-trash"></i></a>
                         </div>
                       </div>
                       <div id="collapse-{{obj.id}}" class="collapse" data-bs-parent="#accordion-one">
                         <br>
                         {% for material in obj.materials.all %}
-                          <div class="border rounded p-3 mb-2">
+                          <div class="border rounded p-3 mb-2 d-flex justify-content-between align-items-center">
                             <a href="{% url 'courses:edit_matrial' course.id material.id %}">{{ material.title }}</a>
-                            <a href="javascript:void(0);" class="btn delete-btn-matrial btn-sm" data-id="{{ material.id }}"><i class="bi bi-trash"></i></a>
+                            <a href="javascript:void(0);" class="btn btn-danger delete-btn-matrial btn-sm" data-id="{{ material.id }}"><i class="bi bi-trash"></i></a>
                           </div>
                         {% empty %}
                           <p>No materials available for this section.</p>
                         {% endfor %}
                         {% for assesment in obj.assessments.all %}
-                          <div class="border rounded p-3 mb-2">
+                          <div class="border rounded p-3 mb-2 d-flex justify-content-between align-items-center">
                             <a href="{% url 'courses:view-question' course.id obj.id assesment.id %}">{{ assesment.name | safe }}</a>
-                            <a href="{% url 'courses:delete_assessment' course.id obj.id assesment.id %}" class="btn delete-btn-matrial btn-sm"><i class="bi bi-trash"></i></a>
+                            <a href="{% url 'courses:delete_assessment' course.id obj.id assesment.id %}" class="btn btn-danger delete-btn-matrial btn-sm"><i class="bi bi-trash"></i></a>
                           </div>
                         {% empty %}
                           <p>No assessments available for this section.</p>
@@ -151,8 +145,8 @@
                         <div class="faq-body">
                           <div class="add-article-btns">
                             <div class="widget-btn">
-                              <a href="{% url 'courses:add-matrial' course.id obj.id %}" class="btn">Add Material <i class="bi bi-fast-forward"></i></a>
-                              <a href="{% url 'courses:create-assessment' course.id obj.id %}" class="btn me-0">Add Assessment <i class="bi bi-list-ul"></i></a>
+                              <a href="{% url 'courses:add-matrial' course.id obj.id %}" class="btn btn-primary">Add Material <i class="bi bi-file-earmark-plus"></i></a>
+                              <a href="{% url 'courses:create-assessment' course.id obj.id %}" class="btn btn-primary me-0">Add Assessment <i class="bi bi-list-ul"></i></a>
                             </div>
                           </div>
                         </div>
@@ -161,29 +155,27 @@
                   {% else %}
                     <!-- Subsection dengan children -->
                     <div class="faq-grid">
-                      <div class="faq-header">
-                        <a class="collapsed faq-collapse" data-bs-toggle="collapse" href="#collapse-{{obj.id}}" aria-expanded="false">
-                          <i class="fas fa-align-justify"></i>
-                          <div class="col-8">
-                            <input name="titlepusection" value="{{obj.title}}" id="titlepusection-{{obj.id}}" type="text" class="form-control"/>
-                            <input name="parent_id" id="parent_id-{{obj.id}}" value="{{obj.parent_id}}" type="hidden" class="form-control"/>
-                            <input name="courses_id" id="courses_id-{{obj.id}}" value="{{obj.courses_id}}" type="hidden" class="form-control"/>
-                          </div>
+                      <div class="faq-header d-flex align-items-center">
+                        <a class="collapsed faq-collapse flex-grow-1 d-flex align-items-center" data-bs-toggle="collapse" href="#collapse-{{obj.id}}" aria-expanded="false">
+                          <i class="bi bi-list me-2"></i>
+                          <input name="titlepusection" value="{{obj.title}}" id="titlepusection-{{obj.id}}" type="text" class="form-control"/>
+                          <input name="parent_id" id="parent_id-{{obj.id}}" value="{{obj.parent_id}}" type="hidden" class="form-control"/>
+                          <input name="courses_id" id="courses_id-{{obj.id}}" value="{{obj.courses_id}}" type="hidden" class="form-control"/>
                         </a>
-                        <div class="faq-right">
-                          <a href="javascript:void(0);" onclick="document.getElementById('titlepusection-{{obj.id}}').focus();"><i class="far fa-plus me-1"></i></a>
-                          <a href="javascript:void(0);"><i class="far fa-pen-to-square me-1"></i></a>
-                          <a href="javascript:void(0);" class="me-0 delete-btn-section" data-id="{{ obj.id }}"><i class="far fa-trash-can"></i></a>
+                        <div class="faq-right d-flex">
+                          <a href="javascript:void(0);" class="btn btn-success me-2" onclick="document.getElementById('titlepusection-{{obj.id}}').focus();"><i class="bi bi-plus"></i></a>
+                          <a href="javascript:void(0);" class="btn btn-warning me-2"><i class="bi bi-pencil-square"></i></a>
+                          <a href="javascript:void(0);" class="btn btn-danger delete-btn-section" data-id="{{ obj.id }}"><i class="bi bi-trash"></i></a>
                         </div>
                       </div>
                       <div id="collapse-{{obj.id}}" class="collapse" data-bs-parent="#accordion-one">
                         <div class="faq-body">
                           <div class="add-article-btns">
                             {% for subobj in obj.children.all %}
-                              <a href="javascript:void(0);" class="form-control">A.1.1 {{subobj.title}}</a><br>
+                              <a href="javascript:void(0);" class="form-control d-block mb-2">A.1.1 {{subobj.title}}</a>
                             {% endfor %}
-                            <a href="javascript:void(0);" class="btn">Add Article</a>
-                            <a href="javascript:void(0);" class="btn me-0">Add Description</a>
+                            <a href="javascript:void(0);" class="btn btn-primary">Add Article <i class="bi bi-file-earmark-plus"></i></a>
+                            <a href="javascript:void(0);" class="btn btn-primary me-0">Add Description <i class="bi bi-text-left"></i></a>
                           </div>
                         </div>
                       </div>
@@ -196,11 +188,54 @@
         {% endif %}
       {% endfor %}
 
-      <div class="row widget-btn">
+      <div class="row widget-btn mt-3">
         <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#exampleModal-{{course.id}}">+ Section</button>
       </div>
     </div>
   </fieldset>
+
+  <!-- CSS Tambahan -->
+  <style>
+    .curriculum-head, .faq-header {
+      width: 100%;
+      padding: 10px 0;
+    }
+    .form-control {
+      flex-grow: 1;
+      margin-right: 10px;
+      background: #fff; /* Default untuk subsection */
+    }
+    .btn {
+      padding: 0.375rem 0.75rem; /* Sesuaikan dengan tinggi input */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 40px; /* Lebar minimum tombol */
+    }
+    .faq-collapse {
+      text-decoration: none;
+      color: inherit;
+      width: 100%;
+    }
+    .faq-right {
+      flex-shrink: 0;
+    }
+    .curriculum-grid, .faq-grid {
+      margin-bottom: 15px;
+    }
+    @media (max-width: 768px) {
+      .curriculum-head, .faq-header {
+        flex-wrap: wrap;
+      }
+      .form-control {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+      .btn {
+        width: auto;
+      }
+    }
+  </style>
 
   <!-- Scripts -->
   <script>
