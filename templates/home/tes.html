@@ -94,7 +94,14 @@
     <!-- Sidebar menu-->
     <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
     <aside class="app-sidebar">
-      <div class="app-sidebar__user"><img class="app-sidebar__user-avatar"  src="{% static "assets/img/user/user1.jpg"%}"  alt="User Image">
+      <div class="app-sidebar__user"> 
+        <a href="{% url 'authentication:edit-photo' request.user.id %}  ">
+           {% if request.user.photo %}
+          <img src="{{ request.user.photo.url }}" alt="User Avatar" class="app-sidebar__user-avatar">
+          {% else %}
+          <img class="app-sidebar__user-avatar"  src="{% static "assets/img/user/user1.jpg"%}"  alt="User Image">
+          {% endif %}
+        </a>
         <div>
           <p class="app-sidebar__user-name">{{ request.user.first_name }} {{ request.user.last_name }}</p>
           <p class="app-sidebar__user-designation">{{request.user.hobby}}</p>
@@ -108,10 +115,12 @@
         </div>
       </div>
       <ul class="app-menu">
-        <li><a class="app-menu__item active" href="{% url 'authentication:dashbord' %}"><i class="app-menu__icon bi bi-speedometer"></i><span class="app-menu__label">Dashboard</span></a></li>
+
+        
         {% if user.is_authenticated %}
 
         {% if user.is_partner  %}
+        <li><a class="app-menu__item active" href="{% url 'authentication:dasbord' %}"><i class="app-menu__icon bi bi-speedometer"></i><span class="app-menu__label">Dashboard</span></a></li>
         <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon bi bi-laptop"></i><span class="app-menu__label">Matrial</span><i class="treeview-indicator bi bi-chevron-right"></i></a>
           <ul class="treeview-menu">           
             
@@ -124,6 +133,7 @@
         <li><a class="app-menu__item" href="{% url 'authentication:all-user' %}"><i class="app-menu__icon bi bi-person-workspace"></i><span class="app-menu__label">learner</span></a></li>
        
         {% elif user.is_instructor %}
+        <li><a class="app-menu__item active" href="{% url 'authentication:dasbord' %}"><i class="app-menu__icon bi bi-speedometer"></i><span class="app-menu__label">Dashboard</span></a></li>
         <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon bi bi-ui-checks"></i><span class="app-menu__label">Forms</span><i class="treeview-indicator bi bi-chevron-right"></i></a>
           <ul class="treeview-menu">
             <li><a class="treeview-item" href="form-components.html"><i class="icon bi bi-circle-fill"></i> Form Components</a></li>
@@ -131,13 +141,14 @@
           </ul>
         </li>
         {% elif user.is_superuser %}
-        
+        <li><a class="app-menu__item active" href="{% url 'authentication:dasbord' %}"><i class="app-menu__icon bi bi-speedometer"></i><span class="app-menu__label">Dashboard</span></a></li>
         <li><a class="app-menu__item" href="{% url 'courses:partner_view' %}"><i class="app-menu__icon bi bi-people"></i><span class="app-menu__label"> partner</span></a></li>
         <li><a class="app-menu__item" href="{% url 'courses:instructor_view' %}"><i class="app-menu__icon bi bi-person-lines-fill"></i><span class="app-menu__label">instructor</span></a></li>
         <li><a class="app-menu__item" href="{% url 'authentication:all-user' %}"><i class="app-menu__icon bi bi-person-workspace"></i><span class="app-menu__label">learner</span></a></li>
         <li><a class="app-menu__item" href="{% url 'courses:course_view' %}"><i class="app-menu__icon bi bi-file-earmark-diff"></i><span class="app-menu__label">course</span></a></li>
         <li><a class="app-menu__item" href="{% url 'courses:microcredential-list' %}"><i class="app-menu__icon bi bi-file-earmark-spreadsheet"></i><span class="app-menu__label">micro</span></a></li>
         {% else %}
+        <li><a class="app-menu__item active" href="{% url 'authentication:dashbord' %}"><i class="app-menu__icon bi bi-speedometer"></i><span class="app-menu__label">Dashboard</span></a></li>
         <li class="treeview"><a class="app-menu__item" href="#" data-toggle="treeview"><i class="app-menu__icon bi bi-file-earmark"></i><span class="app-menu__label">Pages</span><i class="treeview-indicator bi bi-chevron-right"></i></a>
           <ul class="treeview-menu">
             <li><a class="treeview-item" href="{% url 'authentication:mycourse' %}"><i class="icon bi bi-circle-fill"></i> my course</a></li>
