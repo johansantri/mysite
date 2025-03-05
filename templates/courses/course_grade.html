@@ -107,7 +107,10 @@
             {% endif %}
             </tbody>
             </table>
-            <a href="{% url 'courses:create-assessment' course.id sections.0.id %}" class="btn btn-info btn-sm">add weight assessment</a>
+            <a href="{% if sections and sections.0.id %}{% url 'courses:create-assessment' course.id sections.0.id %}{% else %}#{% endif %}" class="btn btn-info btn-sm">
+                add weight assessment
+            </a>
+            
 
 
 

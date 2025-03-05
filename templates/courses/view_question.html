@@ -4,43 +4,68 @@
             {% include "courses/course_set.html"%}
            
         <hr>
-            <p>Questions for Assessment: <strong> <a href="{% url "courses:edit_assessment"  course.id section.id assessment.id %}">{{ assessment.name }} </a></strong>  <a href="{% url "courses:delete_assessment" course.id section.id assessment.id %}">  <i class="fa fa-remove"></i></a>  </p>
+            <p>Questions for Assessment: <strong> <a href="{% url "courses:edit_assessment"  course.id section.id assessment.id %}">{{ assessment.name }} </a></strong>  <a href="{% url "courses:delete_assessment" course.id section.id assessment.id %}">  &nbsp; <i class="bi bi-trash"></i></a>  </p>
            
             <a href="{% url "courses:create_question" course.id section.id assessment.id %}" class="btn btn-success">add question multiple choice <i class="fa fa-plus"></i> </a> 
-             <a href="{% url 'courses:create_askora' idcourse=course.id idsection=section.id idassessment=assessment.id %}" class="btn btn-success">add open response assessment <i class="fa fa-plus"></i> </a>
+             <a href="{% url 'courses:create_askora' idcourse=course.id idsection=section.id idassessment=assessment.id %}" class="btn btn-success">add open response assessment <i class="bi bi-plus"></i> </a>
          
-            <table class="table table-striped table-hover">
-                <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">question</th>
-                    <th>x</th>
-                    
-                    
-                  </tr>
-                </thead>
-                <tbody>
-                    {% for question in assessment.questions.all %}
-                   
-                    
-               
+             <table class="table table-striped table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Question</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for question in assessment.questions.all %}
                   <tr>
                     <th scope="row">{{ forloop.counter }}</th>
-                    <td><a href="{% url "courses:edit_question" course.id question.id section.id assessment.id %}">{{ question.text | truncatechars:75|safe}}</a>   </td>
-                    <td><form method="POST" action="{% url 'courses:delete_question' course.id question.id section.id assessment.id %}" style="display:inline;">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-danger btn-sm" >
-        <i class="fa fa-remove"></i> 
-    </button>
-</form>
-</td>
-                   
+                    <td>
+                      <a href="{% url 'courses:edit_question' course.id question.id section.id assessment.id %}">
+                        {{ question.text | truncatechars:75 | safe }} <i class="bi bi-pencil-square"></i>
+                       
+                      </a>
+                    </td>
+                    <td>
+                      <form method="POST" action="{% url 'courses:delete_question' course.id question.id section.id assessment.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </form>
+                    </td>
                   </tr>
-                  {% empty %}
-                    <p>No questions available for this assessment.</p>
+                {% empty %}
+                  <tr>
+                    <td colspan="3">No multiple-choice questions available.</td>
+                  </tr>
                 {% endfor %}
-                </tbody>
-              </table>
+            
+                {% for askora in assessment.ask_oras.all %}
+                  <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>
+                      <a href="{% url 'courses:edit_askora' course.id askora.id section.id assessment.id %}">
+                        {{ askora.question_text | truncatechars:75 | safe }}  <i class="bi bi-pencil-square"></i>
+                      </a>
+                    </td>
+                    <td>
+                      <form method="POST" action="{% url 'courses:delete_askora' course.id askora.id section.id assessment.id %}"  style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                {% empty %}
+                  <tr>
+                    <td colspan="3">No open-response questions available.</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
   
  
   {% endblock %}

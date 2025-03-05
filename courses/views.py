@@ -412,8 +412,8 @@ def create_askora(request, idcourse, idsection, idassessment):
             askora.assessment = assessment  # Tentukan assessment yang sesuai
             askora.save()  # Simpan pertanyaan
 
-            messages.success(request, "Pertanyaan berhasil dibuat!")
-            return redirect('courses:create_askora', idcourse=idcourse, idsection=idsection, idassessment=idassessment)  # Redirect kembali ke halaman yang sama
+            messages.success(request, "question open response assement successfully to add")
+            return redirect('courses:view-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)  # Redirect kembali ke halaman yang sama
 
     else:
         # Menangani GET request
@@ -425,6 +425,55 @@ def create_askora(request, idcourse, idsection, idassessment):
         'assessment': assessment,
         'question_form': question_form,
     })
+
+
+def edit_askora(request, idcourse, idaskora, idsection, idassessment):
+    # Fetch the objects needed (course, section, assessment, and askora)
+    course = get_object_or_404(Course, id=idcourse)
+    section = get_object_or_404(Section, id=idsection)
+    assessment = get_object_or_404(Assessment, id=idassessment, section=section)
+    askora = get_object_or_404(AskOra, id=idaskora, assessment=assessment)
+
+    # Handle the form submission (POST)
+    if request.method == 'POST':
+        form = AskOraForm(request.POST, instance=askora)  # pre-populate with the existing data
+        if form.is_valid():
+            form.save()  # Save the updated AskOra
+            messages.success(request, "AskOra question updated successfully!")
+            return redirect('courses:view-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
+    else:
+        form = AskOraForm(instance=askora)  # Populate the form with existing data
+
+    # Render the template with the form
+    return render(request, 'courses/edit_askora.html', {
+        'course': course,
+        'section': section,
+        'assessment': assessment,
+        'askora': askora,
+        'question_form': form  # Pass the form to the template
+    })
+
+
+def delete_askora(request, idcourse, idaskora, idsection, idassessment):
+    # Fetch the relevant objects
+    course = get_object_or_404(Course, id=idcourse)
+    section = get_object_or_404(Section, id=idsection)
+    assessment = get_object_or_404(Assessment, id=idassessment, section=section)
+    askora = get_object_or_404(AskOra, id=idaskora, assessment=assessment)
+
+    # Check if the user has permission to delete (optional, based on your logic)
+    if request.user.is_authenticated:
+        
+
+        # Delete the AskOra object
+        askora.delete()
+        messages.error(request, "AskOra question deleted successfully.")
+
+        # Redirect after deletion
+        return redirect('courses:view-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
+
+    # Redirect if not authenticated
+    return redirect("/login/?next=%s" % request.path)
 
 
 #add coment matrial course
@@ -2160,7 +2209,10 @@ def question_view(request, idcourse, idsection, idassessment):
 
     # Ensure the assessment belongs to the section
     assessment = get_object_or_404(
-        Assessment.objects.prefetch_related('questions__choices'),
+        Assessment.objects.prefetch_related(
+            'questions__choices',  # prefetch related choices for multiple-choice questions
+            'ask_oras'  # prefetch related ask_oras for open-response questions
+        ),
         id=idassessment,
         section=section
     )
