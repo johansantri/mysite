@@ -172,24 +172,20 @@
       
       <div class="app-title">
         {% if messages %}
-
-        {% for message in messages %}
-            {% if message.tags == 'success' %}
-                <div class="alert alert-success" role="alert">{{ message }}</div>
-            {% elif message.tags == 'error' %}
-                <div class="alert alert-danger" role="alert">{{ message }}</div>
-            {% elif message.tags == 'warning' %}
-                <div class="alert alert-warning" role="alert">{{ message }}</div>
-            {% elif message.tags == 'info' %}
-                <div class="alert alert-info" role="alert">{{ message }}</div>
-            {% else %}
-                <div class="alert alert-secondary" role="alert">{{ message }}</div>
-            {% endif %}
-        {% endfor %}
-    
-
-
-    {% endif %}
+          <div class="alert-messages">
+            {% for message in messages %}
+              <div class="alert 
+                {% if message.tags == 'success' %}alert-success{% endif %}
+                {% if message.tags == 'error' %}alert-danger{% endif %}
+                {% if message.tags == 'warning' %}alert-warning{% endif %}
+                {% if message.tags == 'info' %}alert-info{% endif %}
+                alert-dismissible fade show" role="alert">
+                {{ message }}
+                
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
         <ul class="app-breadcrumb breadcrumb">
           <li class="breadcrumb-item"><i class="bi bi-house-door fs-6"></i></li>
           <li class="breadcrumb-item"><a href="{% url 'authentication:home' %}">home</a></li>

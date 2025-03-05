@@ -1937,7 +1937,7 @@ def edit_assessment(request, idcourse, idsection, idassessment):
 
             # Now save the assessment
             assessment.save()
-            messages.success(request, "Assessment updated successfully!")
+            messages.warning(request, "Assessment updated successfully!")
             return redirect('courses:view-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
 
     else:
