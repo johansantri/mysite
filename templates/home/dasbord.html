@@ -1,285 +1,133 @@
 {% extends 'home/tes.html' %}
-{% load static %} 
+{% load static %}
 
 {% block content %}
 
+<!-- Dashboard Grid -->
+<div class="row justify-content-center">
+    <div class="col-lg-4 col-md-6 d-flex">
+        <div class="card dash-info flex-fill">
+            <div class="card-body">
+                <h5>Enrolled Courses</h5>
+                <h2>{{ total_enrollments }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-6 d-flex">
+        <div class="card dash-info flex-fill">
+            <div class="card-body">
+                <h5>Active Courses</h5>
+                <h2>{{ total_published_courses }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-6 d-flex">
+        <div class="card dash-info flex-fill">
+            <div class="card-body">
+                <h5>Partner</h5>
+                <h2>{{ total_partners }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-6 d-flex">
+        <div class="card dash-info flex-fill">
+            <div class="card-body">
+                <h5>Total Students</h5>
+                <h2>{{ total_learners }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-6 d-flex">
+        <div class="card dash-info flex-fill">
+            <div class="card-body">
+                <h5>Total Courses</h5>
+                <h2>{{ total_courses }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-6 d-flex">
+        <div class="card dash-info flex-fill">
+            <div class="card-body">
+                <h5>Total Earnings</h5>
+                <h2>$486</h2>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Dashboard Grid -->
 
+<br>
 
-           
+<!-- Recently Created Courses Table -->
+<div class="instructor-course-table">
+    <div class="dashboard-title">
+        <h4>Recently Created Courses</h4>
+    </div>
+    <div class="table-responsive custom-table">
+        {% if courses_created_today %}
+            <!-- Display Courses -->
+            <table class="table table-nowrap mb-0">
+                <thead>
+                    <tr>
+                        <th>Courses</th>
+                        <th>date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course in courses_created_today %}
+                    <tr>
+                        <td>{{ course.course_name }}</td>
+                        <td>{{ course.created_at }}</td>
+                        <td>Published</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No courses created today.</p>
+        {% endif %}
+    </div>
+</div>
 
-           
+<!-- Pagination Links -->
+<nav aria-label="Page navigation">
+    <ul class="pagination">
+        {% if courses_created_today.has_previous %}
+            <li class="page-item"><a class="page-link" href="?courses_page=1">First</a></li>
+            <li class="page-item"><a class="page-link" href="?courses_page={{ courses_created_today.previous_page_number }}">Previous</a></li>
+        {% endif %}
 
-                <!-- Dashboard Grid -->
-                <div class="row justify-content-center">
-                    <div class="col-lg-4 col-md-6 d-flex">
-                        <div class="card dash-info flex-fill">
-                            <div class="card-body">
-                                <h5>Enrolled Courses</h5>
-                                <h2>{{ total_enrollments }}</h2>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6 d-flex">
-                        <div class="card dash-info flex-fill">
-                            <div class="card-body">
-                                <h5>Active Courses</h5>
-                                <h2>{{ total_published_courses }}</h2>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6 d-flex">
-                        <div class="card dash-info flex-fill">
-                            <div class="card-body">
-                                <h5>Partner</h5>
-                                <h2>{{ total_partners }}</h2>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6 d-flex">
-                        <div class="card dash-info flex-fill">
-                            <div class="card-body">
-                                <h5>Total Students</h5>
-                                <h2>{{ total_learners }}</h2>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6 d-flex">
-                        <div class="card dash-info flex-fill">
-                            <div class="card-body">
-                                <h5>Total Courses</h5>
-                                <h2>{{ total_courses }}</h2>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6 d-flex">
-                        <div class="card dash-info flex-fill">
-                            <div class="card-body">
-                                <h5>Total Earnings</h5>
-                                <h2>$486</h2>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- /Dashboard Grid -->
+        <li class="page-item disabled"><span class="page-link">Page {{ courses_created_today.number }} of {{ courses_created_today.paginator.num_pages }}</span></li>
 
-                <div class="instructor-course-table">
-                    <div class="dashboard-title">
-                        <h4>Recently Created Courses</h4>
-                    </div>
-                    <div class="table-responsive custom-table">
+        {% if courses_created_today.has_next %}
+            <li class="page-item"><a class="page-link" href="?courses_page={{ courses_created_today.next_page_number }}">Next</a></li>
+            <li class="page-item"><a class="page-link" href="?courses_page={{ courses_created_today.paginator.num_pages }}">Last</a></li>
+        {% endif %}
+    </ul>
+</nav>
 
-                        <!-- Referred Users-->
-                        <table class="table table-nowrap mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Courses</th>
-                                    <th>Enrolled</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="table-course-detail">
-                                            <a href="course-details.html" class="course-table-img">
-                                                <span><img src="{% static "assets/img/instructor/instructor-table-01.jpg"%}"
-                                                        alt="Img"></span>
-                                                Complete HTML, CSS and Javascript Course
-                                            </a>
-                                        </div>
-                                    </td>
-                                    <td>0</td>
-                                    <td>Published</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="table-course-detail">
-                                            <a href="course-details.html" class="course-table-img">
-                                                <span><img src="{% static "assets/img/instructor/instructor-table-05.jpg"%}"
-                                                        alt="Img"></span>
-                                                Complete Course on Fullstack Web Developer
-                                            </a>
-                                        </div>
-                                    </td>
-                                    <td>2</td>
-                                    <td>Published</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="table-course-detail">
-                                            <a href="course-details.html" class="course-table-img">
-                                                <span><img src="{% static "assets/img/instructor/instructor-table-02.jpg"%}"
-                                                        alt="Img"></span>
-                                                Data Science Fundamentals and Advanced Bootcamp
-                                            </a>
-                                        </div>
-                                    </td>
-                                    <td>2</td>
-                                    <td>Published</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="table-course-detail">
-                                            <a href="course-details.html" class="course-table-img">
-                                                <span><img src="{% static "assets/img/instructor/instructor-table-03.jpg"%}"
-                                                        alt="Img"></span>
-                                                Master Microservices with Spring Boot and Spring Cloud
-                                            </a>
-                                        </div>
-                                    </td>
-                                    <td>1</td>
-                                    <td>Published</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="table-course-detail">
-                                            <a href="course-details.html" class="course-table-img">
-                                                <span><img src="{% static "assets/img/instructor/instructor-table-04.jpg"%}"
-                                                        alt="Img"></span>
-                                                Information About UI/UX Design Degree
-                                            </a>
-                                        </div>
-                                    </td>
-                                    <td>3</td>
-                                    <td>Published</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-
-                <div class="dashboard-title">
-                    <h4>Recently Enrolled Courses</h4>
-                </div>
-
-
-   
-
-                <!-- Search Form -->
-                <form method="get" action="{% url 'authentication:dasbord' %}" class="form-inline">
-                    <div class="row">
-                        <div class="col-auto">
-                            <input type="text" name="search" value="{{ search_query }}" class="form-control" placeholder="Search enrollments course">
-                        </div>
-                        <div class="col-auto">
-                            <button type="submit" class="btn btn-info">Search</button>
-                        </div>
-                    </div>
-                </form>
-                
-                <br>
-                <!-- Enrollments List -->
-               
-                {% if enrollments %}
-                    <div class="row">
-                        {% for enrollment in enrollments %}
-                            <!-- Course Grid -->
-                            <div class="col-xxl-4 col-md-6 d-flex">
-                                <div class="course-box flex-fill">
-                                    <div class="product">
-                                        <div class="product-img">
-                                            <a href="{% url 'courses:course_lms_detail' enrollment.course.id enrollment.course.slug %}">
-                                                <img class="img-fluid" alt="Img" src="{{ enrollment.course.image.url }}">
-                                            </a>
-                                            <div class="price">
-                                                <h3>${{ enrollment.course.price }} <span>${{ enrollment.course.original_price }}</span></h3>
-                                            </div>
-                                        </div>
-                                        <div class="product-content">
-                                            <div class="course-group d-flex">
-                                                <div class="course-group-img d-flex">
-                                                    <a href="{% url 'courses:instructor_profile' enrollment.course.instructor.user.username %}">
-                                                        {% if enrollment.course.instructor.user.photo %}
-                                                            <img src="{{ enrollment.course.instructor.user.photo.url }}" alt="Instructor Img" class="img-fluid">
-                                                        {% else %}
-                                                            <img src="path/to/default/image.jpg" alt="Instructor Img" class="img-fluid">
-                                                        {% endif %}
-                                                    </a>
-                                                    <div class="course-name">
-                                                        <h4><a href="{% url 'courses:instructor_profile' enrollment.course.instructor.user.username %}">{{ enrollment.course.instructor.user.username }}</a></h4>
-                                                        
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <h3 class="title instructor-text">
-                                                <a href="{% url 'courses:course_lms_detail' enrollment.course.id enrollment.course.slug %}">{{ enrollment.course.course_name }}</a>
-                                            </h3>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- /Course Grid -->
-                        {% endfor %}
-                    </div>
-
-                    <!-- Pagination for enrollments -->
-                    <div class="dash-pagination">
-                        <div class="row align-items-center">
-                            <!-- Page Information -->
-                            <div class="col-6">
-                                <p>Page {{ enrollments.number }} of {{ enrollments.paginator.num_pages }}</p>
-                            </div>
-                            
-                            <!-- Pagination Controls -->
-                            <div class="col-6">
-                                <ul class="pagination justify-content-end">
-                                    <!-- Previous Page Button -->
-                                    {% if enrollments.has_previous %}
-                                        <li>
-                                            <a href="?enrollments_page={{ enrollments.previous_page_number }}&search={{ search_query }}">
-                                                <i class="bx bx-chevron-left"></i>
-                                            </a>
-                                        </li>
-                                    {% else %}
-                                        <li class="disabled">
-                                            <a href="#"><i class="bx bx-chevron-left"></i></a>
-                                        </li>
-                                    {% endif %}
-                                    
-                                    <!-- Page Number Links -->
-                                    {% for page_num in enrollments.paginator.page_range %}
-                                        <li class="{% if enrollments.number == page_num %}active{% endif %}">
-                                            <a href="?enrollments_page={{ page_num }}&search={{ search_query }}">{{ page_num }}</a>
-                                        </li>
-                                    {% endfor %}
-                                    
-                                    <!-- Next Page Button -->
-                                    {% if enrollments.has_next %}
-                                        <li>
-                                            <a href="?enrollments_page={{ enrollments.next_page_number }}&search={{ search_query }}">
-                                                <i class="bx bx-chevron-right"></i>
-                                            </a>
-                                        </li>
-                                    {% else %}
-                                        <li class="disabled">
-                                            <a href="#"><i class="bx bx-chevron-right"></i></a>
-                                        </li>
-                                    {% endif %}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    
-                {% else %}
-                    <p>No enrollments found.</p>
-                {% endif %}
-
-               
-                    
-
-                    
-
-                    
-
-
-
-
-
-                </div>
-            
-          
-
-
+<!-- Partner Courses Section -->
+{% if partner_courses %}
+    <h3>Your Courses</h3>
+    <table class="table table-nowrap mb-0">
+        <thead>
+            <tr>
+                <th>Courses</th>
+                <th>date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for course in partner_courses %}
+                <tr>
+                    <td>{{ course.course_name }}</td>
+                    <td>{{ course.created_at }}</td>
+                    <td>Published</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
 
 {% endblock content %}

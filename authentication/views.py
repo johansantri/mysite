@@ -396,49 +396,98 @@ def home(request):
     })
 
 
-
 def dasbord(request):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
 
-    # Get search query and page number from GET parameters
-    search_query = request.GET.get('search', '').strip()
-    enrollments_page = request.GET.get('enrollments_page', 1)
+    # Get page number from GET parameters
+    courses_page = request.GET.get('courses_page', 1)
 
-    # Fetch enrollments for the currently logged-in user
-    enrollments = Enrollment.objects.filter(user=request.user)
-
-    # Search logic for enrollments
-    if search_query:
-        enrollments = enrollments.filter(
-        Q(user__username__icontains=search_query) |
-        Q(course__course_name__icontains=search_query)
-        )
-
-    # Pagination for enrollments
-    enrollments_paginator = Paginator(enrollments, 5) # 5 enrollments per page
-    enrollments = enrollments_paginator.get_page(enrollments_page)
-
-    # Calculate totals
-    total_enrollments = Enrollment.objects.count() # Total semua enrollment
-    total_courses = Course.objects.count() # Total semua course
-    total_instructors = Instructor.objects.count() # Total semua instructor
-    total_learners = User.objects.filter(is_learner=True).count() # Asumsi ada field is_learner
-    total_partners = Partner.objects.count() # Total semua partner
+    # Initialize variables for partner-specific data
+    partner_courses = None
+    partner_enrollments = None
+    total_enrollments = 0
+    total_courses = 0
+    total_instructors = 0
+    total_learners = 0
+    total_partners = 1 if request.user.partner_user else Partner.objects.count()  # Set total_partners to 1 if the user is a partner
+    total_published_courses = 0
     publish_status = CourseStatus.objects.get(status='published')
-    total_published_courses = Course.objects.filter(status_course=publish_status).count()
 
-    # Context untuk template
+    # Logic based on user role
+    if request.user.is_superuser:
+        # For superuser, count data for all partners
+        total_enrollments = Enrollment.objects.count()
+        total_courses = Course.objects.count()
+        total_instructors = Instructor.objects.count()
+        total_learners = User.objects.filter(is_learner=True).count()
+        total_published_courses = Course.objects.filter(status_course=publish_status).count()
+        partner_courses = Course.objects.all()  # Superuser sees all courses
+    elif request.user.partner_user:  # Check if the user has a partner associated
+        # For partner, get data specific to the partner
+        partner = request.user.partner_user  # Access the partner instance linked to the user
+
+        # Debugging: Check if the partner is correctly fetched
+        print(f"Partner: {partner.name} - ID: {partner.id}")
+
+        # Filter courses based on the partner's organization
+        partner_courses = Course.objects.filter(org_partner=partner)
+        
+        # Debugging: Check how many courses the partner has
+        print(f"Partner has {partner_courses.count()} courses")
+        
+        # Filter enrollments based on the partner's courses
+        partner_enrollments = Enrollment.objects.filter(course__org_partner=partner)
+        
+        # Debugging: Check how many enrollments the partner has
+        print(f"Partner has {partner_enrollments.count()} enrollments")
+
+        # Calculate total counts for the partner's data
+        total_enrollments = partner_enrollments.count()
+        total_courses = partner_courses.count()
+
+        # Retrieve instructors for the partner's courses (linking through the courses)
+        total_instructors = Instructor.objects.filter(provider__user=request.user).annotate(num_courses=Count('courses')).count()
+
+        # Debugging: Check how many instructors the partner has
+        print(f"Partner has {total_instructors} instructors")
+
+        # Count total learners (users enrolled in courses of the partner)
+        total_learners = User.objects.filter(
+            enrollments__course__org_partner=partner,  # Use 'enrollments' instead of 'enrollment'
+            is_learner=True  # Ensure the user is a learner
+        ).distinct().count()  # Use .distinct() to ensure each learner is counted only once
+
+        # Debugging: Check how many learners the partner has
+        print(f"Partner has {total_learners} learners")
+
+        # Count published courses for the partner
+        total_published_courses = partner_courses.filter(status_course=publish_status).count()
+
+        # Debugging: Check how many published courses the partner has
+        print(f"Partner has {total_published_courses} published courses")
+
+    # Get the current date
+    today = timezone.now().date()
+
+    # Ensure the QuerySet is ordered for courses created today
+    courses_created_today = Course.objects.filter(created_at__date=today).order_by('created_at')
+
+    # Pagination for courses created today
+    courses_paginator = Paginator(courses_created_today, 5)  # 5 courses per page
+    courses_created_today = courses_paginator.get_page(courses_page)
+
+    # Context for the template
     context = {
-    'enrollments': enrollments,
-    'search_query': search_query,
-    'enrollments_page': enrollments_page,
-    'total_enrollments': total_enrollments,
-    'total_courses': total_courses,
-    'total_instructors': total_instructors,
-    'total_learners': total_learners,
-    'total_partners': total_partners,
-    'total_published_courses': total_published_courses,
+        'courses_page': courses_page,
+        'total_enrollments': total_enrollments,
+        'total_courses': total_courses,
+        'total_instructors': total_instructors,
+        'total_learners': total_learners,
+        'total_partners': total_partners,  # Correct total_partners value
+        'total_published_courses': total_published_courses,
+        'courses_created_today': courses_created_today,
+        'partner_courses': partner_courses,  # Pass partner-specific courses if available
     }
 
     return render(request, 'home/dasbord.html', context)
