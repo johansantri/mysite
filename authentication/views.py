@@ -501,8 +501,8 @@ def dashbord(request):
         search_query = request.GET.get('search', '')  # Get search query from the request
         enrollments_page = request.GET.get('enrollments_page', 1)  # Page number for enrollments
         
-        # Fetch enrollments for the currently logged-in user
-        enrollments = Enrollment.objects.filter(user=request.user)
+        # Fetch enrollments for the currently logged-in user and order by enrolled_at
+        enrollments = Enrollment.objects.filter(user=request.user).order_by('-enrolled_at')  # Order by enrolled_at field
 
         # Search logic for enrollments (by username or course name)
         if search_query:
@@ -511,10 +511,10 @@ def dashbord(request):
             ) | enrollments.filter(
                 course__course_name__icontains=search_query
             )  # Search by user username or course name
-         # Count of total enrollments
+        
+        # Count of total enrollments
         total_enrollments = enrollments.count()
 
-        
         # Fetch active courses that the user is enrolled in with "published" status
         active_courses = Course.objects.filter(
             id__in=enrollments.values('course'),
@@ -524,7 +524,6 @@ def dashbord(request):
         )
 
         # Completed Courses (assuming the course has a boolean 'is_completed' field)
-        
         completed_courses = CourseProgress.objects.filter(user=request.user, progress_percentage=100)
 
         # Pagination for enrollments

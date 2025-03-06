@@ -46,7 +46,7 @@
                 {% for enrollment in enrollments %}
                 <div class="col-xxl-4 col-md-6">
                     <div class="card h-100 shadow-sm">
-                        <img src="{{ enrollment.course.image.url }}" class="card-img-top" alt="Course Image">
+                        
                         <div class="card-body">
                             <h5 class="card-title">
                                 <a href="{% url 'courses:course_learn' enrollment.user.username enrollment.course.slug %}" class="text-decoration-none text-dark">
