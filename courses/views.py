@@ -888,9 +888,7 @@ def course_learn(request, username, slug):
         assessment = get_object_or_404(Assessment, id=assessment_id)
         current_content = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
 
-    # Debugging untuk memastikan konten terdeteksi dengan benar
-    print("Combined Content:", [(c[0], c[1].id, c[2].id) for c in combined_content])
-    print("Current Content:", (current_content[0], current_content[1].id, current_content[2].id) if current_content else None)
+  
 
     # Handle comments and pagination based on current_content
     comments = None
@@ -1034,8 +1032,7 @@ def course_learn(request, username, slug):
     ]
     assessment_results.append({'name': 'Total', 'max_score': total_max_score, 'score': total_score})
 
-    # Debugging untuk memastikan skor
-    print(f"Total Score: {total_score}, Assessment Results Total: {assessment_results[-1]['score']}")
+    
 
     # Ambil data AskOra dan Submission
     askoras = AskOra.objects.filter(assessment__section__courses=course)
@@ -1045,7 +1042,7 @@ def course_learn(request, username, slug):
             user=request.user
         )
     except Exception as e:
-        print(f"Error fetching submissions: {e}")
+        
         submissions = []
 
     # Ambil pertanyaan dan jawaban untuk assessment
