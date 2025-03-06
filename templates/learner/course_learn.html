@@ -394,62 +394,68 @@
               {% elif current_content.0 == 'assessment' %}
                 <!-- Multiple Choice Questions -->
                 {% if current_content.1.questions.exists %}
-                  <div class="assessment-item" style="border-bottom: 2px solid rgb(134, 134, 134); padding: 20px; background-color: #f9f9f9;">
-                    <h3 class="h5" style="color: rgb(2, 2, 2); font-size: 24px;">Assessment: {{ current_content.1.name }}</h3>
-                    <p>Time remaining: <span id="timer"></span></p>
-                    {% if not is_started %}
-                      <form method="post" action="{% url 'courses:start_assessment' assessment_id=current_content.1.id %}">
-                        {% csrf_token %}
-                        <div class="alert alert-warning text-center" role="alert">
-                          <h4 class="alert-heading">Attention!</h4>
-                          <p>Before starting the exam, you will have <b>{{ current_content.1.duration_in_minutes }}</b> minutes to complete it. Do you <b>agree</b> to proceed?</p>
-                          <hr>
-                          <button type="submit" class="btn btn-success">Agree</button>
-                        </div>
-                      </form>
-                    {% elif is_started %}
-                      <form method="POST" action="{% url 'courses:submit_assessment' assessment_id=current_content.1.id %}">
-                        {% csrf_token %}
-                        <input type="text" name="honeypot" style="display:none;" />
-                        <input type="hidden" name="start_time" id="start_time" value="{{ current_time }}">
-                        <ul style="list-style: none; padding-left: 0;">
-                          {% for question in current_content.1.questions.all|randomize %}
-                            <li class="question" style="margin-bottom: 30px;">
-                              <div style="display: inline-block; margin-left: 10px; padding: 10px; background-color: #e9ecef; border-radius: 8px; font-size: 18px; color: #555;">
-                                {{ question.text |safe }}
-                              </div>
-                              <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
-                                {% for choice in question.choices.all|randomize %}
-                                  <li style="margin-bottom: 15px; display: flex; align-items: center;">
-                                    <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}" id="choice_{{ choice.id }}" style="transform: scale(1.5); margin-right: 10px;">
-                                    <label for="choice_{{ choice.id }}" style="cursor: pointer; margin: 0; font-size: 16px; color: #555;">{{ choice.text |safe }}</label>
-                                    {% load custom_filters %}
-                                    {% with answered_question=answered_questions|get_item:question.id %}
-                                      {% if answered_question %}
-                                        <small>
-                                          {% if answered_question.choice == choice %}
-                                            ({{ request.user.username }}!)
-                                          {% elif choice.is_correct %}
-                                            (correct)
-                                          {% else %}
-                                            (incorrect)
-                                          {% endif %}
-                                        </small>
-                                      {% endif %}
-                                    {% endwith %}
-                                  </li>
-                                {% endfor %}
-                              </ul>
-                            </li>
-                          {% endfor %}
-                        </ul>
-                        <button type="submit" id="submit-button" class="btn btn-primary">
-                          <i class="bx bx-check me-2"></i> Submit
-                        </button>
-                      </form>
-                    {% endif %}
-                  </div>
-                {% endif %}
+                <div class="assessment-item" style="border-bottom: 2px solid rgb(134, 134, 134); padding: 20px; background-color: #f9f9f9;">
+                  <h3 class="h5" style="color: rgb(2, 2, 2); font-size: 24px;">Assessment: {{ current_content.1.name }}</h3>
+                  <p>Time remaining: <span id="timer"></span></p>
+          
+                  <!-- Jika belum mulai dan durasi > 0, tampilkan form "Setuju" -->
+                  {% if not is_started and current_content.1.duration_in_minutes > 0 %}
+                    <form method="post" action="{% url 'courses:start_assessment' assessment_id=current_content.1.id %}">
+                      {% csrf_token %}
+                      <div class="alert alert-warning text-center" role="alert">
+                        <h4 class="alert-heading">Attention!</h4>
+                        <p>Before starting the exam, you will have <b>{{ current_content.1.duration_in_minutes }}</b> minutes to complete it. Do you <b>agree</b> to proceed?</p>
+                        <hr>
+                        <button type="submit" class="btn btn-success">Agree</button>
+                      </div>
+                    </form>
+          
+                  <!-- Jika sudah mulai atau durasi = 0, tampilkan soal -->
+                  {% elif is_started or current_content.1.duration_in_minutes == 0 %}
+                    <form method="POST" action="{% url 'courses:submit_assessment' assessment_id=current_content.1.id %}">
+                      {% csrf_token %}
+                      <input type="text" name="honeypot" style="display:none;" />
+                      <input type="hidden" name="start_time" id="start_time" value="{{ current_time }}">
+          
+                      <ul style="list-style: none; padding-left: 0;">
+                        {% for question in current_content.1.questions.all|randomize %}
+                          <li class="question" style="margin-bottom: 30px;">
+                            <div style="display: inline-block; margin-left: 10px; padding: 10px; background-color: #e9ecef; border-radius: 8px; font-size: 18px; color: #555;">
+                              {{ question.text |safe }}
+                            </div>
+                            <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
+                              {% for choice in question.choices.all|randomize %}
+                                <li style="margin-bottom: 15px; display: flex; align-items: center;">
+                                  <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}" id="choice_{{ choice.id }}" style="transform: scale(1.5); margin-right: 10px;">
+                                  <label for="choice_{{ choice.id }}" style="cursor: pointer; margin: 0; font-size: 16px; color: #555;">{{ choice.text |safe }}</label>
+                                  {% with answered_question=answered_questions|get_item:question.id %}
+                                    {% if answered_question %}
+                                      <small>
+                                        {% if answered_question.choice == choice %}
+                                          ({{ request.user.username }}!)
+                                        {% elif choice.is_correct %}
+                                          (correct)
+                                        {% else %}
+                                          (incorrect)
+                                        {% endif %}
+                                      </small>
+                                    {% endif %}
+                                  {% endwith %}
+                                </li>
+                              {% endfor %}
+                            </ul>
+                          </li>
+                        {% endfor %}
+                      </ul>
+                      <button type="submit" id="submit-button" class="btn btn-primary">
+                        <i class="bx bx-check me-2"></i> Submit
+                      </button>
+                    </form>
+          
+      
+                  {% endif %}
+                </div>
+              {% endif %}
 
                 <!-- Open Response Questions (AskOra) -->
                 {% if not current_content.1.questions.exists %}
@@ -574,40 +580,47 @@
 
         <!-- Timer Script (khusus Multiple Choice) -->
         {% if current_content.0 == 'assessment' and current_content.1.questions.exists %}
-          <script>
-            let remainingTime = {{ remaining_time }};
-            let timerElement = document.getElementById('timer');
-            let submitButton = document.getElementById('submit-button');
-            let timerInterval;
-            let formSubmitted = false;
+            <!-- Script Timer -->
+            <script>
+              let remainingTime = {{ remaining_time }};
+              let timerElement = document.getElementById('timer');
+              let submitButton = document.getElementById('submit-button');
+              let timerInterval;
+              let formSubmitted = false;
 
-            function updateTimer() {
-              if (!timerElement) {
-                clearInterval(timerInterval);
-                console.log("Timer element tidak ada, menghentikan timer.");
-                return;
+              function updateTimer() {
+                if (!timerElement) {
+                  clearInterval(timerInterval);
+                  console.log("Timer element tidak ada, menghentikan timer.");
+                  return;
+                }
+
+                if (formSubmitted) {
+                  return;
+                }
+
+                // Jika duration = 0, tampilkan "Unlimited" dan jangan kurangi waktu
+                if ({{ current_content.1.duration_in_minutes }} === 0) {
+                  timerElement.textContent = "Unlimited";
+                  return;
+                }
+
+                let minutes = Math.floor(remainingTime / 60);
+                let seconds = remainingTime % 60;
+                timerElement.textContent = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                remainingTime--;
+
+                if (remainingTime < 0) {
+                  formSubmitted = true;
+                  submitButton.disabled = true;
+                  submitButton.hidden = true;
+                  clearInterval(timerInterval);
+                }
               }
 
-              if (formSubmitted) {
-                return;
-              }
-
-              let minutes = Math.floor(remainingTime / 60);
-              let seconds = remainingTime % 60;
-              timerElement.textContent = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-              remainingTime--;
-
-              if (remainingTime < 0) {
-                formSubmitted = true;
-                submitButton.disabled = true;
-                submitButton.hidden = true;
-                clearInterval(timerInterval);
-              }
-            }
-
-            timerInterval = setInterval(updateTimer, 1000);
-            updateTimer();
-          </script>
+              timerInterval = setInterval(updateTimer, 1000);
+              updateTimer();
+            </script>
         {% endif %}
 
         <style>

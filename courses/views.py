@@ -624,36 +624,45 @@ def add_comment_course(request, course_id):
 def submit_assessment(request, assessment_id):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
+
     # Ambil assessment berdasarkan ID
     assessment = get_object_or_404(Assessment, id=assessment_id)
+
     # Cek honeypot (bot jika terisi)
     honeypot = request.POST.get('honeypot')
     if honeypot:
         messages.error(request, "Spam terdeteksi. Pengiriman dibatalkan.")
         return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
-     # Periksa waktu pengisian form
+
+    # Periksa waktu pengisian form (cegah pengiriman terlalu cepat)
     start_time = request.POST.get('start_time')
     if start_time:
-        elapsed_time = timezone.now() - timezone.make_aware(datetime.datetime.strptime(start_time, '%Y-%m-%d %H:%M:%S'))
-        if elapsed_time < timedelta(seconds=10):  # Cegah pengiriman terlalu cepat
-            messages.error(request, "Pengiriman terlalu cepat. Coba lagi setelah beberapa detik.")
+        try:
+            start_time_obj = timezone.make_aware(datetime.datetime.strptime(start_time, '%Y-%m-%dT%H:%M:%S.%fZ'))
+            elapsed_time = timezone.now() - start_time_obj
+            if elapsed_time < timedelta(seconds=10):  # Cegah pengiriman terlalu cepat
+                messages.error(request, "Pengiriman terlalu cepat. Coba lagi setelah beberapa detik.")
+                return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
+        except ValueError:
+            messages.error(request, "Format waktu mulai tidak valid.")
             return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
+
     # Cek apakah user sudah pernah submit untuk assessment ini
     if Score.objects.filter(user=request.user.username, course=assessment.section.courses, section=assessment.section, submitted=True).exists():
-        # Redirect dengan membawa assessment_id agar tetap pada posisi yang sama
         messages.info(request, "Anda sudah mengirimkan jawaban untuk ujian ini.")
         return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
 
-    # Cek apakah waktu ujian masih berlaku
+    # Cek sesi dan waktu hanya jika durasi > 0
     session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
-    if not session:
-        messages.error(request, "Sesi ujian tidak ditemukan.")
-        return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
+    if assessment.duration_in_minutes > 0:  # Hanya cek waktu jika bukan unlimited
+        if not session:
+            messages.error(request, "Sesi ujian tidak ditemukan.")
+            return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
 
-    # Cek apakah waktu ujian sudah habis
-    if timezone.now() > session.end_time:
-        messages.warning(request, "Waktu ujian telah habis, Anda tidak dapat mengirimkan jawaban.")
-        return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
+        # Cek apakah waktu ujian sudah habis
+        if timezone.now() > session.end_time:
+            messages.warning(request, "Waktu ujian telah habis, Anda tidak dapat mengirimkan jawaban.")
+            return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
 
     if request.method == 'POST':
         correct_answers = 0
@@ -673,7 +682,7 @@ def submit_assessment(request, assessment_id):
                     correct_answers += 1
 
         # Menghitung nilai berdasarkan jawaban yang benar
-        score_percentage = (correct_answers / total_questions) * 100
+        score_percentage = (correct_answers / total_questions) * 100 if total_questions > 0 else 0
         grade = calculate_grade(score_percentage, assessment.section.courses)
 
         # Menyimpan hasil score ke model Score
@@ -693,7 +702,6 @@ def submit_assessment(request, assessment_id):
         user_progress.save()
 
         messages.success(request, "Jawaban Anda telah berhasil disubmit. Terima kasih!")
-        # Redirect ke halaman course setelah submit dengan mempertahankan assessment_id
         return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
 
     return render(request, 'submit_assessment.html', {'assessment': assessment})
@@ -910,15 +918,20 @@ def course_learn(request, username, slug):
     is_started = False
     is_expired = False
     remaining_time = 0
-    if current_content and current_content[0] == 'assessment':
-        assessment = current_content[1]
-        session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
-        if session:
+
+    # Cek session jika sudah ada
+    session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
+    if session:
+        is_started = True
+        remaining_time = int((session.end_time - timezone.now()).total_seconds())
+        if remaining_time <= 0:
+            is_expired = True
+            remaining_time = 0
+    else:
+        # Jika duration_in_minutes = 0, anggap sudah mulai tanpa perlu "Setuju"
+        if assessment.duration_in_minutes == 0:
             is_started = True
-            remaining_time = int((session.end_time - timezone.now()).total_seconds())
-            if remaining_time <= 0:
-                is_expired = True
-                remaining_time = 0
+            remaining_time = 0  # Tidak ada batas waktu
         else:
             is_started = False
 
