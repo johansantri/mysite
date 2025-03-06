@@ -5,11 +5,25 @@
    <!-- Sidebar menu-->
    <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
    <aside class="app-sidebar">
-     <div class="app-sidebar__user"><img class="app-sidebar__user-avatar" {% if request.user.photo %} src="{{ request.user.photo.url }}" % elif not request.user.photo %} {% static "assets/img/user/user1.jpg"%} {% endif %} alt="User Image">
-       <div>
-         <p class="app-sidebar__user-name">{{ request.user.first_name }} {{ request.user.last_name }}</p>
-         <p class="app-sidebar__user-designation">{{request.user.hobby}}</p>
-       </div>
+     <div class="app-sidebar__user">
+      <a href="{% url 'authentication:edit-photo' request.user.id %}  ">
+        {% if request.user.photo %}
+       <img src="{{ request.user.photo.url }}" alt="User Avatar" class="app-sidebar__user-avatar">
+       {% else %}
+       <img class="app-sidebar__user-avatar"  src="{% static "assets/img/user/user1.jpg"%}"  alt="User Image">
+       {% endif %}
+     </a>
+     <div>
+      <p class="app-sidebar__user-name">{{ request.user.first_name }} {{ request.user.last_name }}</p>
+      <p class="app-sidebar__user-designation">{{request.user.hobby}}</p>
+                    {% if not user.university %}
+
+                    <a href="#" class="add-course btn-primary">Update my profile</a>
+                    {% else %}
+                    <p  class="add-course btn-primary">{{user.university}}</p>
+                    <a href="{% url 'courses:instructor_add' %}" class="add-course btn-primary">Become an instructor</a>
+                    {% endif %}
+    </div>
      </div>
 
      <ul class="app-menu">

@@ -24,7 +24,7 @@
           <div class="d-flex gap-4">
             <div>
               <p class="h5 fw-bold">Total students</p>
-              <p class="h4">3,043,707</p>
+              <p class="h4">{{ total_students }}</p>
             </div>
             <div>
               <p class="h5 fw-bold">Reviews</p>
@@ -77,6 +77,7 @@
                         <th>Course Name</th>
                         <th>Image</th>
                         <th>End Date</th>
+                        <th>Participats</th>
                         <th>Status</th>
                         
                     </tr>
@@ -89,6 +90,7 @@
                                 <img src="{{ course.image.url }}" alt="{{ course.course_name }}" class="img-fluid" style="max-width: 100px;">
                             </td>
                             <td>{{ course.end_date }}</td>
+                            <td>{{ course.participants_count }}</td>
                             <td>{% if course.status_course.status == 'published' %}
                               Published
                           {% else %}

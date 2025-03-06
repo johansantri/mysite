@@ -31,7 +31,13 @@
             <div class="tile-footer">
               &nbsp;
               <br>
-              <button class="btn btn-primary"  type="submit"><i class="bi bi-check-circle-fill me-2"></i>submit now</button>&nbsp;&nbsp;&nbsp;<a class="btn btn-secondary" href="{% url 'authentication:dasbord'%}"><i class="bi bi-x-circle-fill me-2"></i>Cancel</a>
+              <button class="btn btn-primary"  type="submit"><i class="bi bi-check-circle-fill me-2"></i>submit now</button>&nbsp;&nbsp;&nbsp;
+              <a class="btn btn-secondary" href="{% if user.is_superuser or user.is_partner %}
+                                                      {% url 'authentication:dasbord' %}
+                                                  {% else %}
+                                                      {% url 'authentication:dashbord' %}
+                                                  {% endif %}">
+ <i class="bi bi-x-circle-fill me-2"></i>Cancel</a>
             </div>
           </form>
         </div>

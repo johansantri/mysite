@@ -29,6 +29,7 @@ from django.db.models import Count
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_protect
 from decimal import Decimal
+from django.urls import reverse
 
 # Create your views here.
 
@@ -43,6 +44,9 @@ def mycourse(request):
         if search_query:
             # Menambahkan filter pencarian berdasarkan nama kursus
             courses = courses.filter(Q(course__course_name__icontains=search_query))
+
+        # Ordering the courses by enrolled_at or any relevant field
+        courses = courses.order_by('-enrolled_at')  # Adjust this field based on your needs
 
         # Pagination
         paginator = Paginator(courses, 10)  # 10 item per halaman
@@ -67,6 +71,9 @@ def microcredential_list(request):
         if search_query:
             # Menambahkan filter pencarian berdasarkan judul atau nama microcredential
             microcredentials = microcredentials.filter(Q(microcredential__title__icontains=search_query))
+
+        # Add order_by to ensure consistent pagination
+        microcredentials = microcredentials.order_by('microcredential__title')  # Change 'title' to your preferred field
 
         # Pagination
         paginator = Paginator(microcredentials, 10)  # 10 item per halaman
@@ -410,7 +417,7 @@ def dasbord(request):
     total_courses = 0
     total_instructors = 0
     total_learners = 0
-    total_partners = 1 if request.user.partner_user else Partner.objects.count()  # Set total_partners to 1 if the user is a partner
+    total_partners = 0
     total_published_courses = 0
     publish_status = CourseStatus.objects.get(status='published')
 
@@ -423,56 +430,37 @@ def dasbord(request):
         total_learners = User.objects.filter(is_learner=True).count()
         total_published_courses = Course.objects.filter(status_course=publish_status).count()
         partner_courses = Course.objects.all()  # Superuser sees all courses
+        total_partners =  Partner.objects.count()  # Set total_partners to 1 if the user is a partner
     elif request.user.partner_user:  # Check if the user has a partner associated
         # For partner, get data specific to the partner
-        partner = request.user.partner_user  # Access the partner instance linked to the user
-
-        # Debugging: Check if the partner is correctly fetched
-        print(f"Partner: {partner.name} - ID: {partner.id}")
+        partner = request.user.partner_user  # Access the partner instance linked to the user       
 
         # Filter courses based on the partner's organization
-        partner_courses = Course.objects.filter(org_partner=partner)
+        partner_courses = Course.objects.filter(org_partner=partner)      
         
-        # Debugging: Check how many courses the partner has
-        print(f"Partner has {partner_courses.count()} courses")
         
         # Filter enrollments based on the partner's courses
-        partner_enrollments = Enrollment.objects.filter(course__org_partner=partner)
-        
-        # Debugging: Check how many enrollments the partner has
-        print(f"Partner has {partner_enrollments.count()} enrollments")
+        partner_enrollments = Enrollment.objects.filter(course__org_partner=partner)        
 
         # Calculate total counts for the partner's data
         total_enrollments = partner_enrollments.count()
         total_courses = partner_courses.count()
-
         # Retrieve instructors for the partner's courses (linking through the courses)
-        total_instructors = Instructor.objects.filter(provider__user=request.user).annotate(num_courses=Count('courses')).count()
-
-        # Debugging: Check how many instructors the partner has
-        print(f"Partner has {total_instructors} instructors")
+        total_instructors = Instructor.objects.filter(provider__user=request.user).annotate(num_courses=Count('courses')).count()        
 
         # Count total learners (users enrolled in courses of the partner)
         total_learners = User.objects.filter(
             enrollments__course__org_partner=partner,  # Use 'enrollments' instead of 'enrollment'
             is_learner=True  # Ensure the user is a learner
-        ).distinct().count()  # Use .distinct() to ensure each learner is counted only once
-
-        # Debugging: Check how many learners the partner has
-        print(f"Partner has {total_learners} learners")
+        ).distinct().count()  # Use .distinct() to ensure each learner is counted only once        
 
         # Count published courses for the partner
-        total_published_courses = partner_courses.filter(status_course=publish_status).count()
-
-        # Debugging: Check how many published courses the partner has
-        print(f"Partner has {total_published_courses} published courses")
+        total_published_courses = partner_courses.filter(status_course=publish_status).count()     
 
     # Get the current date
     today = timezone.now().date()
-
     # Ensure the QuerySet is ordered for courses created today
     courses_created_today = Course.objects.filter(created_at__date=today).order_by('created_at')
-
     # Pagination for courses created today
     courses_paginator = Paginator(courses_created_today, 5)  # 5 courses per page
     courses_created_today = courses_paginator.get_page(courses_page)
@@ -630,7 +618,7 @@ def edit_photo(request, pk):
             if old_photo_path and os.path.exists(old_photo_path):
                 os.remove(old_photo_path)
 
-            return redirect('authentication:dasbord')
+            return redirect(reverse('authentication:edit-photo', args=[pk]))
 
         else:
             return render(request, 'home/edit_photo.html', {'form': form}, status=400)

@@ -2288,6 +2288,13 @@ def instructor_detail(request, id):
     # Get the count of filtered courses
     courses_count = courses.count()
 
+       # Hitung jumlah total siswa yang terdaftar di semua kursus yang diberikan instruktur ini
+    total_students = Enrollment.objects.filter(course__in=courses).values('user').annotate(num_students=Count('user')).count()
+
+    # Add a participant count for each course
+    # We're using annotate to count the number of enrollments for each course
+    courses = courses.annotate(participants_count=Count('enrollments'))
+
     # Implement pagination: Show 6 courses per page
     paginator = Paginator(courses, 6)
 
@@ -2315,11 +2322,11 @@ def instructor_detail(request, id):
         'courses_count': courses_count,  # Total number of filtered courses
         'search_term': search_term,  # Pass the search query to the template
         'partner_slug': partner_slug,  # Pass the partner slug to the template
+        'total_students': total_students,
     }
 
     # Render the instructor_detail template with the context
     return render(request, 'instructor/instructor_detail.html', context)
-
 #view instructor
 #@login_required
 
