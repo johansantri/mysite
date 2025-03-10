@@ -1,124 +1,104 @@
-####
-What is MYSITE
-####
+# What is MYSITE
 
-MYSITE merupakan pengembangan aplikasi LMS berbasis Python Django.
+MYSITE is a Python Django-based LMS (Learning Management System) application.
 
 *******************
 Release Information
 *******************
 
-Repo ini dirancang untuk bekerja team dalam pembuatan LMS
-<https://github.com/johansantri/mysite>`_ page.
+This repository is designed for team collaboration in the development of the LMS.
+For more details, visit the [repository page](https://github.com/johansantri/mysite).
 
 **************************
-Perubahan dan Pengembangan Aplikasi LMS
+Changes and Development of LMS Application
 **************************
 
 *******************
-Kebutuhan Requirements
+Requirements
 *******************
 
-Django 5.1.
+- Django 5.1.
 
-Aplikasi ini berjalan di Python 3 dengan framework Django 5.1.
+This application runs on Python 3 with the Django 5.1 framework.
 
 ************
-Installasi
+Installation
 ************
 
-Perhatikan Panduan dibawah ini untuk memulai aplikasi
+Follow the instructions below to get started with the application.
 
 ***************
 # Testing Website
-Proyek eksplorasi Python menggunakan framework Django.
+Python project exploration using the Django framework.
 
-## Akses Role
-- Superuser admin@admin.com | admin
-- Staf
-- Partner staf@staf.com | staf
-- Instructor instructor@instructor.com | instructor
-- Learner learn@learn.com | learn
-- Dan lainnya
+## Role Access
+- Superuser: admin@admin.com | admin
+- Partner: partner@partner.com | partner
+- Instructor: instructor@instructor.com | instructor
+- Learner: learn@learn.com | learn
+- And others
 
-## Instalasi
+## Installation
 
-Pastikan Anda telah menginstal **Python** dan **pip** di sistem Anda sebelum memulai.
+Make sure you have **Python** and **pip** installed on your system before starting.
 
-### 1. Clone repositori ini:
+### 1. Clone this repository:
 ```shell
 git clone https://github.com/johansantri/mysite.git
 ```
-### 2. Pindah ke direktori proyek:
+### 2. Navigate to the project directory:
 ```shell
 cd mysite
 ```
-### 3. Buat virtual environment:
-Anda bisa melihat referensi berikut <https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/> jenis OS dalam menggunakan virtual environment ini menggunakan Windows
+### 3. Create a virtual environment:
+Refer to this guide for setting up a virtual environment for your OS using Windows: [Python Virtual Environment Installation Guide](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/)
 ```shell
 py -m venv .venv
 ```
-### 4. Aktifkan virtual environment:
+### 4. Activate the virtual environment:
 ```shell
 .venv\Scripts\activate
-```
 
-### 5. Install requests:
+```
+### 5. Install requests package:
 ```shell
 py -m pip install requests
 ```
-### 6. Install dependencies dari requirements.txt:
+
+### 6. Install dependencies from requirements.txt:
 ```shell
 py -m pip install -r requirements.txt
 ```
-### 7. Freeze requirements (untuk mencatat versi package):
+### 7. Freeze requirements (to track package versions):
 ```shell
 py -m pip freeze
 ```
-### 8.Jalankan server
-``` shell
-python manage.py runserver
-```
-jika mengalami kendala, coba ikuti langkah dibawah ini
-### 9. Salin data dari models.py:
-
-ulangi proses dari awal
-
-*****
-### 10. Jalankan makemigrations:
+### 8.Run makemigrations:
 ```shell
 python manage.py makemigrations
 ```
+****
+Note: Make sure Python is installed before running this command, and that you have cleared the contents of the migrations folders (course, auth, authentication) in mysite\authentication\migrations. For example, remove all migration files like 001_ and any higher numbers.
+****
 
-Catatan:
-Pastikan Anda sudah menginstal **Python** sebelum menjalankan perintah ini.
-dan Anda sudah menghapus semua isi dari folder migrations [course, auth, authentication]
-**mysite\authentication\migrations**
-contoh 001_ sd angka terbesar
-
-### 11. Jalankan migrasi database:
+### 9. Run database migrations:
 ```shell
 python manage.py migrate
 ```
-### 12. Jalankan server:
+### 10. Run the server:
 ```shell
 python manage.py runserver
 ```
-### 13. Untuk membuat superuser:
+### 11. To create a superuser:
 ```shell
 python manage.py createsuperuser
 ```
 ****
-Langkah-langkah untuk membuat superuser:
+Steps to create a superuser:
 
-Masukkan email Anda, contoh: admin@admin.com
-Masukkan username Anda, contoh: admin
-Masukkan password Anda, contoh: admin
-Ulangi password Anda
-Pilih yes untuk melanjutkan
+Enter your email, for example: admin@admin.com
+Enter your username, for example: admin
+Enter your password, for example: admin
+Re-enter your password
+Select "yes" to continue
 ****
-### 14. Jalankan Server:
-```shell
-python manage.py runserver
-```
-Akses url **http://127.0.0.1:8000/**
