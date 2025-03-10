@@ -1,0 +1,11 @@
+<!-- authentication/templates/authentication/login.html -->
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}  <!-- Renders the form fields as <p> elements -->
+    
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>  <!-- Display error message if credentials are invalid -->
+    {% endif %}
+    
+    <button type="submit">Login</button>
+</form>

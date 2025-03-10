@@ -26,7 +26,7 @@ admin.site.register(models.Category)
 admin.site.register(models.Instructor)
 admin.site.register(models.TeamMember)
 admin.site.register(GradeRange)
-admin.site.register(Universiti)
+
 admin.site.register(Enrollment)
 admin.site.register(PricingType)
 admin.site.register(CoursePrice)

@@ -1,0 +1,10 @@
+<!-- authentication/templates/authentication/home.html -->
+<h1>Welcome to the Home Page!</h1>
+
+{% if user.is_authenticated %}
+    <p>You are logged in as {{ user.username }}.</p>
+    <a href="{% url 'authentication:logout' %}">Logout</a>
+{% else %}
+    <p>You are not logged in.</p>
+    <a href="{% url 'authentication:login' %}">Login</a>
+{% endif %}

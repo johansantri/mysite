@@ -1,6 +1,6 @@
 # models.py
 from django.db import models
-from django.contrib.auth.models import User, Universiti
+from authentication.models import CustomUser, Universiti
 from autoslug import AutoSlugField
 from django.utils.text import slugify
 import os
@@ -20,7 +20,7 @@ from django.utils import timezone
 
 
 class Partner(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE,related_name="partner_user")  # Add this line to associate partners with users
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE,related_name="partner_user")  # Add this line to associate partners with users
     name = models.ForeignKey(Universiti, on_delete=models.CASCADE,related_name="partner_univ")
    
     phone = models.CharField(max_length=50,null=True, blank=True)
@@ -32,7 +32,7 @@ class Partner(models.Model):
     account_holder_name = models.CharField(max_length=250,null=True, blank=True)
     balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     logo = models.ImageField(upload_to='logos/',null=True, blank=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="partner_author") 
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="partner_author") 
     created_ad = models.DateTimeField(auto_now_add=True)  # Automatically set when the ad is created
     updated_ad = models.DateTimeField(auto_now=True) 
 
@@ -64,7 +64,7 @@ class Instructor(models.Model):
         ('Rejected', 'Rejected'),
     ]
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="instructors")
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="instructors")
     bio = models.TextField()
     tech = models.CharField(max_length=255)
     expertise = models.CharField(max_length=255)
@@ -79,7 +79,7 @@ class Instructor(models.Model):
         return f"{self.user.email} "
     
 class Category(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Add this line to associate partners with users
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)  # Add this line to associate partners with users
     name = models.CharField(max_length=250)
 
     def __str__(self):
@@ -112,7 +112,7 @@ class CourseStatusHistory(models.Model):
     status = models.CharField(max_length=20, choices=CourseStatus.STATUS_CHOICES)
     manual_message = models.TextField(blank=True, null=True)
     changed_at = models.DateTimeField(auto_now_add=True)  # Waktu perubahan status
-    changed_by = models.ForeignKey('auth.User', on_delete=models.CASCADE)  # Pengguna yang membuat perubahan
+    changed_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)  # Pengguna yang membuat perubahan
 
     def __str__(self):
         return f"Course {self.course.course_name} - Status: {self.status} at {self.changed_at}"
@@ -138,7 +138,7 @@ class Course(models.Model):
     description = models.TextField()
     sort_description = models.CharField(max_length=150, null=True, blank=True)
     hour = models.CharField(max_length=2, null=True, blank=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     language = models.CharField(max_length=10, choices=[('en', 'English'), ('id', 'Indonesia'), ('fr', 'French'), ('de', 'German')], default='en')
     start_date = models.DateField(null=True)
     end_date = models.DateField(null=True)
@@ -351,7 +351,7 @@ class CoursePrice(models.Model):
         return f"{self.course} - {self.price_type.name} - {self.partner_price}"
     
 class Subscription(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     start_date = models.DateTimeField(auto_now_add=True)
     end_date = models.DateTimeField()
     is_active = models.BooleanField(default=True)
@@ -370,7 +370,7 @@ class Subscription(models.Model):
         return f"{self.user.username} subscription ({self.subscription_type}) active from {self.start_date} to {self.end_date}"
 
 class Enrollment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='enrollments')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='enrollments')
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='enrollments')
     enrolled_at = models.DateTimeField(auto_now_add=True)
 
@@ -384,7 +384,7 @@ class TeamMember(models.Model):
 
     course = models.ForeignKey(Course, related_name='team_members', on_delete=models.CASCADE)
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Change name to user
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)  # Change name to user
 
     def __str__(self):
 
@@ -478,7 +478,7 @@ class MicroCredential(models.Model):
     
     created_at = models.DateTimeField(auto_now_add=True)
     edited_on = models.DateTimeField(auto_now=True)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
@@ -507,7 +507,7 @@ class MicroCredential(models.Model):
         return enrollment, created
     
 class UserMicroProgress(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="micro_progress")
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="micro_progress")
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="user_progress")
     microcredential = models.ForeignKey(MicroCredential, on_delete=models.CASCADE, related_name="user_progress")
     progress = models.FloatField(default=0.0)  # Persentase progres (0-100)
@@ -522,7 +522,7 @@ class UserMicroProgress(models.Model):
         return f"{self.user} - {self.course} ({self.microcredential})"
 
 class UserMicroCredential(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="microcredentials")
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="microcredentials")
     microcredential = models.ForeignKey(MicroCredential, on_delete=models.CASCADE, related_name="users")
     completed = models.BooleanField(default=False)  # True kalau semua course lulus
     certificate_id = models.CharField(max_length=250, blank=True, null=True)  # ID sertifikat (PDF atau blockchain)
@@ -553,7 +553,7 @@ class Assessment(models.Model):
         super().save(*args, **kwargs)
 
 class AssessmentSession(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     assessment = models.ForeignKey(Assessment, on_delete=models.CASCADE)
     start_time = models.DateTimeField()  # Waktu mulai ujian
     end_time = models.DateTimeField()  # Waktu selesai ujian, dihitung berdasarkan durasi
@@ -602,7 +602,7 @@ class Submission(models.Model):
         related_name='submissions',
         on_delete=models.CASCADE
     )
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Peserta yang mengirimkan jawaban
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)  # Peserta yang mengirimkan jawaban
     answer_text = models.TextField()  # Jawaban teks dari peserta
     answer_file = models.FileField(upload_to='submissions/', blank=True, null=True)  # Jawaban file jika diperlukan
     score = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])  # Nilai jawaban
@@ -617,7 +617,7 @@ class Submission(models.Model):
     
 class PeerReview(models.Model):
     submission = models.ForeignKey(Submission, related_name='peer_reviews', on_delete=models.CASCADE)
-    reviewer = models.ForeignKey(User, on_delete=models.CASCADE)  # User yang memberikan review
+    reviewer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)  # User yang memberikan review
     score = models.IntegerField(choices=[(1, 1), (2, 2), (3, 3), (4, 4), (5, 5)])  # Skor 1-5
     comment = models.TextField(blank=True, null=True)  # Komentar dari reviewer
     weight = models.DecimalField(max_digits=3, decimal_places=2, default=1.0)
@@ -683,7 +683,7 @@ class AttemptedQuestion(models.Model):
     
 
 class CourseProgress(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     progress = models.FloatField(default=0)  # Percentage completion of the course
     progress_percentage = models.FloatField(default=0)  # New field to store percentage progress
@@ -701,7 +701,7 @@ class CourseProgress(models.Model):
 
         
 class MaterialRead(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     material = models.ForeignKey(Material, on_delete=models.CASCADE)
     read_at = models.DateTimeField(auto_now_add=True)  # Time when the material was read
 
@@ -711,7 +711,7 @@ class MaterialRead(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.material.title} - Read on {self.read_at}"
 class AssessmentRead(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     assessment = models.ForeignKey(Assessment, on_delete=models.CASCADE)
     completed_at = models.DateTimeField(auto_now_add=True)  # Time when the assessment was completed
 
@@ -722,7 +722,7 @@ class AssessmentRead(models.Model):
         return f"{self.user.username} - {self.assessment.name} - Completed on {self.completed_at}"
 
 class QuestionAnswer(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     choice = models.ForeignKey(Choice, on_delete=models.CASCADE)  # Menyimpan pilihan yang dipilih
     answered_at = models.DateTimeField(auto_now_add=True)  # Waktu saat soal dijawab
@@ -734,7 +734,7 @@ class QuestionAnswer(models.Model):
         return f"{self.user.username} - Answered {self.question.text} with {self.choice.text} on {self.answered_at}"
 
 class Comment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     content = models.TextField(blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
     material = models.ForeignKey('Material', on_delete=models.CASCADE)
@@ -764,7 +764,7 @@ class Comment(models.Model):
     
 
 class CourseComment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     content = models.TextField(blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
     course = models.ForeignKey('Course', on_delete=models.CASCADE)
@@ -797,7 +797,7 @@ class CourseComment(models.Model):
                 return True
         return False
 class MicroCredentialEnrollment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="microcredential_enrollments")
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="microcredential_enrollments")
     microcredential = models.ForeignKey('MicroCredential', on_delete=models.CASCADE, related_name="enrollments")
     enrolled_at = models.DateTimeField(auto_now_add=True)
 

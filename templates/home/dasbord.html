@@ -59,8 +59,8 @@
     <div class="col-lg-4 col-md-6 d-flex">
         <div class="card dash-info flex-fill">
             <div class="card-body">
-                <h5>Total Earnings</h5>
-                <h2>$486</h2>
+                <h5>Total instructor</h5>
+                <h2>{{total_instructors}}</h2>
             </div>
         </div>
     </div>
@@ -90,7 +90,7 @@
                     <tr>
                         <td>{{ course.course_name }}</td>
                         <td>{{ course.created_at }}</td>
-                        <td>Published</td>
+                        <td>{{ course.status_course }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -118,27 +118,5 @@
     </ul>
 </nav>
 
-<!-- Partner Courses Section -->
-{% if partner_courses %}
-    <h3>Your Courses</h3>
-    <table class="table table-nowrap mb-0">
-        <thead>
-            <tr>
-                <th>Courses</th>
-                <th>date</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for course in partner_courses %}
-                <tr>
-                    <td>{{ course.course_name }}</td>
-                    <td>{{ course.created_at }}</td>
-                    <td>Published</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-{% endif %}
 
 {% endblock content %}

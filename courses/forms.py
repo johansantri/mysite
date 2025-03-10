@@ -4,7 +4,8 @@ from django.forms import inlineformset_factory
 from django.core.cache import cache
 from .models import Course,CourseStatus,MicroCredential, AskOra,Partner,Category, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment,PricingType, CoursePrice
 from django_ckeditor_5.widgets import CKEditor5Widget
-from django.contrib.auth.models import User, Universiti
+
+from authentication.models import CustomUser, Universiti
 import logging
 from django.utils.text import slugify
 from django.core.files.base import ContentFile
@@ -156,35 +157,34 @@ class CoursePriceForm(forms.ModelForm):
             instance.save()
         return instance
 
-# Initialize the logger
-logger = logging.getLogger(__name__)
 class CourseInstructorForm(forms.ModelForm):
     instructor = forms.ModelChoiceField(
-        queryset=Instructor.objects.none(),  # Start with an empty queryset
+        queryset=Instructor.objects.none(),
         required=True,
-        widget=forms.Select(attrs={
-            'class': 'form-control select2',
-        })
+        widget=forms.Select(attrs={'class': 'form-control select2'})
     )
 
     class Meta:
         model = Course
-        fields = ['instructor']  # Include only the instructor field
+        fields = ['instructor']
 
     def __init__(self, *args, **kwargs):
-        request = kwargs.pop('request', None)
-        super(CourseInstructorForm, self).__init__(*args, **kwargs)
-
-        if request and request.user.is_authenticated:
-            if request.user.is_superuser:
-                # Superusers can see all instructors
+        self.request = kwargs.pop('request', None)
+        super().__init__(*args, **kwargs)
+        if self.request and self.request.user.is_authenticated:
+            if self.request.user.is_superuser:
                 self.fields['instructor'].queryset = Instructor.objects.all()
-            elif request.user.is_partner:
-                # Partners can see only instructors related to their partner account
-                self.fields['instructor'].queryset = Instructor.objects.filter(provider__user=request.user)
-            elif request.user.is_instructor:
-                # Instructors cannot modify this field, or it could be restricted differently
+            elif self.request.user.is_partner:
+                self.fields['instructor'].queryset = Instructor.objects.filter(provider__user=self.request.user)
+            elif self.request.user.is_instructor:
                 self.fields['instructor'].queryset = Instructor.objects.none()
+
+    def clean_instructor(self):
+        instructor = self.cleaned_data.get('instructor')
+        if not instructor:
+            raise forms.ValidationError("Please select a valid instructor.")
+        return instructor
+
 
 class GradeRangeForm(forms.ModelForm):
     class Meta:
@@ -537,10 +537,10 @@ class PartnerForm(forms.ModelForm):
 
         if user_queryset_ids is None:
             # Log the cache miss for debugging purposes
-            logger.debug("Cache miss for user queryset.")
+            #logger.debug("Cache miss for user queryset.")
             
             # Query only active users, limit the number of users
-            user_queryset = User.objects.filter(is_active=True).only('id', 'username')[:100]
+            user_queryset = CustomUser.objects.filter(is_active=True).only('id', 'username')[:100]
             
             # Cache only the user IDs to minimize cache size
             user_queryset_ids = list(user_queryset.values_list('id', flat=True))  # List of user IDs
@@ -550,7 +550,7 @@ class PartnerForm(forms.ModelForm):
             self.fields['user'].queryset = user_queryset
         else:
             # If the IDs are in the cache, reconstruct the queryset
-            self.fields['user'].queryset = User.objects.filter(id__in=user_queryset_ids)
+            self.fields['user'].queryset = CustomUser.objects.filter(id__in=user_queryset_ids)
 
 
 
@@ -610,10 +610,10 @@ class PartnerFormUpdate(forms.ModelForm):
         if user:
             if user.is_superuser:
                 # Superuser bisa mengedit semua field
-                self.fields['user'].queryset = User.objects.all()
+                self.fields['user'].queryset = CustomUser.objects.all()
                 self.fields['name'].queryset = Universiti.objects.all()
             elif hasattr(user, 'partner_user'):  # Cek apakah user adalah partner
-                self.fields['user'].queryset = User.objects.filter(id=user.id)
+                self.fields['user'].queryset = CustomUser.objects.filter(id=user.id)
 
                 # Filter field `name` untuk hanya menampilkan univer terkait dengan user tertentu
                 self.fields['name'].queryset = Universiti.objects.filter(partner_univ__user=user)
@@ -692,14 +692,14 @@ class TeamMemberForm(forms.ModelForm):
 
         super(TeamMemberForm, self).__init__(*args, **kwargs)
 
-        self.fields['email'].queryset = User.objects.all()  # Limit user choices if needed
+        self.fields['email'].queryset = CustomUser.objects.all()  # Limit user choices if needed
 
 
     def clean_email(self):
 
         email = self.cleaned_data.get('email')
 
-        if not User.objects.filter(email=email).exists():
+        if not CustomUser.objects.filter(email=email).exists():
 
             raise forms.ValidationError("No user found with this email.")
 

@@ -1,22 +1,26 @@
-from django.shortcuts import render, get_object_or_404
+# authentication/views.py
+from django.shortcuts import render, redirect,get_object_or_404
 import os
-from django.conf import settings
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User, Universiti
 from PIL import Image
 from io import BytesIO
 from django.core.files.base import ContentFile
-# import this for sending email to user
-from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth import authenticate, login,logout
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.mail import EmailMessage
-from django.shortcuts import render, redirect
+from django.core.mail import send_mail
 from django.template.loader import render_to_string
-from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.contrib.auth import logout
-from authentication.forms import UserRegistrationForm, Userprofile, UserPhoto
+from django.contrib.auth.tokens import default_token_generator
+from .forms import RegistrationForm,LoginForm
+from django.conf import settings
+from django.contrib import messages
+from .models import CustomUser
+from django.contrib.auth.forms import PasswordResetForm,SetPasswordForm
+from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
+from django.urls import reverse
+from django.core.mail import send_mail
+from authentication.forms import  Userprofile, UserPhoto
 from .models import Profile
 from courses.models import Instructor,Partner,Assessment,GradeRange,Submission,AssessmentScore,QuestionAnswer,CourseStatus,Enrollment,MicroCredential, MicroCredentialEnrollment,Course, Enrollment, Category,CourseProgress
 from django.http import HttpResponse,JsonResponse
@@ -30,8 +34,6 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_protect
 from decimal import Decimal
 from django.urls import reverse
-
-# Create your views here.
 
 
 def mycourse(request):
@@ -175,7 +177,7 @@ def course_list(request):
 #detailuser
 def user_detail(request, user_id):
     # Pastikan pengguna yang mengakses adalah pengguna yang tepat
-    user = get_object_or_404(User, id=user_id)  # Menggunakan user_id untuk mengambil pengguna
+    user = get_object_or_404(CustomUser, id=user_id)  # Menggunakan user_id untuk mengambil pengguna
     
     # Ambil daftar kursus yang diikuti oleh pengguna ini
     enrollments = Enrollment.objects.filter(user=user)
@@ -251,11 +253,11 @@ def all_user(request):
     # Role-based filtering
     if request.user.is_superuser:
         # Superuser can access all users
-        users = User.objects.all().order_by('-date_joined')
+        users = CustomUser.objects.all().order_by('-date_joined')
     elif request.user.is_partner:
         # Partner can only access users related to their university, excluding superusers
         if request.user.university:
-            users = User.objects.filter(
+            users = CustomUser.objects.filter(
                 university=request.user.university, 
                 is_superuser=False
             ).order_by('-date_joined')
@@ -264,7 +266,7 @@ def all_user(request):
             return HttpResponseForbidden("You are not associated with any university.")
     else:
         # If not superuser or partner, show only self data
-        users = User.objects.filter(id=request.user.id).order_by('-date_joined')
+        users = CustomUser.objects.filter(id=request.user.id).order_by('-date_joined')
 
     # Get filters from GET request
     search_query = request.GET.get('search', '').strip()
@@ -316,93 +318,6 @@ def all_user(request):
 
     return render(request, 'authentication/all_user.html', context)
 
-@csrf_protect  # Keep this if you're doing a POST request or if you need it for security
-def popular_courses(request):
-    # Get the current date
-    now = timezone.now().date()
-
-    # Get the 'published' CourseStatus ID
-    try:
-        published_status = CourseStatus.objects.get(status='published')
-    except CourseStatus.DoesNotExist:
-        return JsonResponse({'error': 'Published status not found.'}, status=404)
-
-    # Get popular courses filtered by the 'published' CourseStatus ID
-    courses = Course.objects.filter(
-        status_course=published_status,  # Use the 'published' CourseStatus object, not the string
-        end_date__gte=now
-    ).annotate(
-        num_enrollments=Count('enrollments')
-    ).order_by('-num_enrollments')[:6]
-
-    # Check if there are no courses
-    if not courses.exists():
-        return JsonResponse({'error': 'No popular courses found.'}, status=404)
-
-    # Convert queryset to list of dictionaries
-    courses_list = list(courses.values(
-        'id', 'course_name', 'slug', 'image','num_enrollments',
-        'instructor__user__first_name',
-        'instructor__user__last_name', 
-        'instructor__user__photo',
-        'instructor__user__username',
-        'org_partner__name__name',
-        'org_partner__name__slug',
-        'org_partner__logo',
-    ))
-
-    # Update image URLs to be full URLs
-    for course in courses_list:
-        if course['image']:
-            course['image'] = settings.MEDIA_URL + course['image']
-        if course['instructor__user__photo']:
-            course['instructor__user__photo'] = settings.MEDIA_URL + course['instructor__user__photo']
-        if course['org_partner__logo']:
-            course['org_partner__logo'] = settings.MEDIA_URL + course['org_partner__logo']
-    
-    # Return JSON response
-    return JsonResponse({'courses': courses_list})
-
-def home(request):
-    try:
-        # Get the 'published' CourseStatus ID
-        published_status = CourseStatus.objects.get(status='published')
-    except CourseStatus.DoesNotExist:
-        # Handle case where 'published' status is missing
-        published_status = None
-
-    if published_status:
-        # Get the popular categories with published courses
-        popular_categories = Category.objects.annotate(
-            num_courses=Count('category_courses', filter=Q(category_courses__status_course=published_status))
-        ).order_by('-num_courses')[:6]
-        
-        # Get the active microcredentials
-        popular_microcredentials = MicroCredential.objects.filter(
-            status='active'
-        ).order_by('-created_at')[:6]  # Limit to 6 popular microcredentials
-
-        # Get all partners
-        partners = Partner.objects.all()  # Fetch all partners
-
-    else:
-        # If no 'published' status exists, handle gracefully
-        popular_categories = []
-        popular_microcredentials = []
-        partners = []  # If no published courses, no partners are needed
-
-    # Pagination: Show 6 partners per page
-    paginator = Paginator(partners, 6)  # You can adjust the number of partners per page
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
-    return render(request, 'home/index.html', {
-        'popular_categories': popular_categories,
-        'popular_microcredentials': popular_microcredentials,
-        'partners': page_obj,  # Send the paginated partners to the template
-    })
-
-
 def dasbord(request):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
@@ -419,7 +334,13 @@ def dasbord(request):
     total_learners = 0
     total_partners = 0
     total_published_courses = 0
-    publish_status = CourseStatus.objects.get(status='published')
+    try:
+        publish_status = CourseStatus.objects.get(status='published')
+    except CourseStatus.DoesNotExist:
+        # Handle the case where no matching data exists
+        publish_status = None  # Or some default value
+
+    #publish_status = CourseStatus.objects.get(status='published')
 
     # Logic based on user role
     if request.user.is_superuser:
@@ -427,13 +348,13 @@ def dasbord(request):
         total_enrollments = Enrollment.objects.count()
         total_courses = Course.objects.count()
         total_instructors = Instructor.objects.count()
-        total_learners = User.objects.filter(is_learner=True).count()
+        total_learners = CustomUser.objects.filter(is_learner=True).count()
         total_published_courses = Course.objects.filter(status_course=publish_status).count()
         partner_courses = Course.objects.all()  # Superuser sees all courses
         total_partners =  Partner.objects.count()  # Set total_partners to 1 if the user is a partner
-    elif request.user.partner_user:  # Check if the user has a partner associated
+    elif request.user.is_partner:  # Check if the user has a partner associated
         # For partner, get data specific to the partner
-        partner = request.user.partner_user  # Access the partner instance linked to the user       
+        partner = request.user.is_partner  # Access the partner instance linked to the user       
 
         # Filter courses based on the partner's organization
         partner_courses = Course.objects.filter(org_partner=partner)      
@@ -448,22 +369,33 @@ def dasbord(request):
         # Retrieve instructors for the partner's courses (linking through the courses)
         total_instructors = Instructor.objects.filter(provider__user=request.user).annotate(num_courses=Count('courses')).count()        
 
-        # Count total learners (users enrolled in courses of the partner)
-        total_learners = User.objects.filter(
-            enrollments__course__org_partner=partner,  # Use 'enrollments' instead of 'enrollment'
-            is_learner=True  # Ensure the user is a learner
-        ).distinct().count()  # Use .distinct() to ensure each learner is counted only once        
-
+            
+        total_learners = CustomUser.objects.filter(
+        is_learner=True,  # Ensure the user is a learner
+        university=partner  # Use 'university' instead of 'org_partner'
+        ).distinct().count() 
         # Count published courses for the partner
         total_published_courses = partner_courses.filter(status_course=publish_status).count()     
 
     # Get the current date
+    # Get the current date
     today = timezone.now().date()
-    # Ensure the QuerySet is ordered for courses created today
-    courses_created_today = Course.objects.filter(created_at__date=today).order_by('created_at')
-    # Pagination for courses created today
-    courses_paginator = Paginator(courses_created_today, 5)  # 5 courses per page
-    courses_created_today = courses_paginator.get_page(courses_page)
+
+    # Check if the user has any courses related to their university (partner)
+    if partner_courses.count() > 0:  # Check if there are partner_courses
+        # Filter courses created today based on the user's associated university/partner
+        courses_created_today = partner_courses.filter(
+            created_at__date=today,
+        ).order_by('created_at')
+
+        # Pagination for courses created today
+        courses_paginator = Paginator(courses_created_today, 5)  # 5 courses per page
+        courses_created_today = courses_paginator.get_page(courses_page)
+    else:
+        # If no courses are found, set an empty queryset for courses created today
+        courses_created_today = []  # Or you can handle it differently (e.g., show a message)
+
+
 
     # Context for the template
     context = {
@@ -475,7 +407,7 @@ def dasbord(request):
         'total_partners': total_partners,  # Correct total_partners value
         'total_published_courses': total_published_courses,
         'courses_created_today': courses_created_today,
-        'partner_courses': partner_courses,  # Pass partner-specific courses if available
+        
     }
 
     return render(request, 'home/dasbord.html', context)
@@ -532,7 +464,7 @@ def dashbord(request):
 
 def pro(request,username):
     if request.user.is_authenticated:
-        username=User.objects.get(username=username)
+        username=CustomUser.objects.get(username=username)
         instructor = Instructor.objects.filter(user=username).first()
 
         return render(request,'home/profile.html',{
@@ -547,7 +479,7 @@ def pro(request,username):
 @login_required
 def edit_profile(request, pk):
     # Retrieve the user instance based on the primary key
-    user = get_object_or_404(User, pk=pk)
+    user = get_object_or_404(CustomUser, pk=pk)
 
     if request.method == "GET":
         # Render the form with the user's current data
@@ -594,7 +526,7 @@ def process_image_to_webp(uploaded_photo):
 
 #update image
 def edit_photo(request, pk):
-    user = get_object_or_404(User, pk=pk)
+    user = get_object_or_404(CustomUser, pk=pk)
 
     if request.method == "GET":
         form = UserPhoto(instance=user)
@@ -626,7 +558,7 @@ def edit_photo(request, pk):
 @login_required
 def edit_profile_save(request, pk):
     # Ensure the profile exists, fetching by pk
-    profile = get_object_or_404(User, pk=pk)
+    profile = get_object_or_404(CustomUser, pk=pk)
 
     if request.method == "POST":
         # Create a form instance bound to the profile
@@ -642,80 +574,234 @@ def edit_profile_save(request, pk):
     # If the method is not POST, handle it gracefully (e.g., redirect)
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-def logout_view(request):
-    logout(request)
-    return redirect('authentication:login')
-def register(request):
-    form = UserRegistrationForm()
 
-    if request.method == "POST":
-        form = UserRegistrationForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.is_active = False
-            user.save()
+#populercourse
+def popular_courses(request):
+    # Get the current date
+    now = timezone.now().date()
 
-            # email user with activation link
-            current_site = get_current_site(request)
-            mail_subject = "Activate your account."
+    # Get the 'published' CourseStatus ID
+    try:
+        published_status = CourseStatus.objects.get(status='published')
+    except CourseStatus.DoesNotExist:
+        return JsonResponse({'error': 'Published status not found.'}, status=404)
 
-            # the message will render what is written in authentication/email_activation/activate_email_message.html
-            message = render_to_string('authentication/email_activation/activate_email_message.html', {
-                    'user': form.cleaned_data['username'],
-                    'domain': current_site.domain,
-                    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                    'token':  default_token_generator.make_token(user),
-                })
-            to_email = form.cleaned_data['email']
-            email = EmailMessage(
-                mail_subject, message, to=[to_email]
-            )
-            email.send()
-            messages.success(request, 'Account created successfully. Please check your email to activate your account.')
-            return redirect('login')
-        else:
-            messages.error(request, 'Account creation failed. Please try again.')
+    # Get popular courses filtered by the 'published' CourseStatus ID
+    courses = Course.objects.filter(
+        status_course=published_status,  # Use the 'published' CourseStatus object, not the string
+        end_date__gte=now
+    ).annotate(
+        num_enrollments=Count('enrollments')
+    ).order_by('-num_enrollments')[:6]
 
+    # Check if there are no courses
+    if not courses.exists():
+        return JsonResponse({'error': 'No popular courses found.'}, status=404)
 
-    return render(request, 'authentication/register.html',{
-        'form': form
+    # Convert queryset to list of dictionaries
+    courses_list = list(courses.values(
+        'id', 'course_name', 'slug', 'image','num_enrollments',
+        'instructor__user__first_name',
+        'instructor__user__last_name', 
+        'instructor__user__photo',
+        'instructor__user__username',
+        'org_partner__name__name',
+        'org_partner__name__slug',
+        'org_partner__logo',
+    ))
+
+    # Update image URLs to be full URLs
+    for course in courses_list:
+        if course['image']:
+            course['image'] = settings.MEDIA_URL + course['image']
+        if course['instructor__user__photo']:
+            course['instructor__user__photo'] = settings.MEDIA_URL + course['instructor__user__photo']
+        if course['org_partner__logo']:
+            course['org_partner__logo'] = settings.MEDIA_URL + course['org_partner__logo']
+    
+    # Return JSON response
+    return JsonResponse({'courses': courses_list})
+
+# Home page
+def home(request):
+    try:
+        # Get the 'published' CourseStatus ID
+        published_status = CourseStatus.objects.get(status='published')
+    except CourseStatus.DoesNotExist:
+        # Handle case where 'published' status is missing
+        published_status = None
+
+    if published_status:
+        # Get the popular categories with published courses
+        popular_categories = Category.objects.annotate(
+            num_courses=Count('category_courses', filter=Q(category_courses__status_course=published_status))
+        ).order_by('-num_courses')[:6]
+        
+        # Get the active microcredentials
+        popular_microcredentials = MicroCredential.objects.filter(
+            status='active'
+        ).order_by('-created_at')[:6]  # Limit to 6 popular microcredentials
+
+        # Get all partners
+        partners = Partner.objects.all()  # Fetch all partners
+
+    else:
+        # If no 'published' status exists, handle gracefully
+        popular_categories = []
+        popular_microcredentials = []
+        partners = []  # If no published courses, no partners are needed
+
+    # Pagination: Show 6 partners per page
+    paginator = Paginator(partners, 6)  # You can adjust the number of partners per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'home/index.html', {
+        'popular_categories': popular_categories,
+        'popular_microcredentials': popular_microcredentials,
+        'partners': page_obj,  # Send the paginated partners to the template
     })
 
-# to activate user from email
-def activate(request, uidb64, token):
-    try:
-        uid = urlsafe_base64_decode(uidb64).decode()
-        user = User.objects.get(pk=uid)
-    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
-        user = None
-    if user is not None and default_token_generator.check_token(user, token):
-        user.is_active = True
-        user.save()
-        return render(request, 'authentication/email_activation/activation_successful.html')
-    else:
-        return render(request, 'authentication/email_activation/activation_unsuccessful.html')
 
-def profile_list(request):
-    if request.user.is_authenticated:
-        profiles = Profile.objects.exclude(user=request.user)
-        return render(request,'authentication/profile.html',{'profiles':profiles})
+# Logout view
+def logout_view(request):
+    logout(request)
+    return redirect('authentication:home')  # Redirect to home page after logout
+
+
+# Login view
+def login_view(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=email, password=password)
+
+            if user is not None:
+                login(request, user)
+                return redirect('authentication:home')  # Redirect to home after login
+            else:
+                return render(request, 'authentication/login.html', {'form': form, 'error': 'Invalid email or password'})
+
     else:
-        return redirect('login')
-    
-def profile(request,pk):
-    if request.user.is_authenticated:
-        profile = Profile.objects.get(user_id=pk)
-        if request.method == "POST":
-            current_user_profile = request.user.profile
-            action = request.POST['follow']
-            if action =="unfollow":
-                current_user_profile.follows.remove(profile)
-            elif action == "follow":
-                current_user_profile.follows.add(profile)
-            current_user_profile.save()
-            
-        return render(request,'authentication/myprofile.html',{'profile':profile})
+        form = LoginForm()
+
+    return render(request, 'authentication/login.html', {'form': form})
+
+# Register view
+def register_view(request):
+    if request.method == "POST":
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data["password1"])  # Enkripsi password
+            user.is_active = False  # Deactivate account until email is verified
+            user.save()
+
+            # Generate token and uid for email activation
+            token = default_token_generator.make_token(user)
+            uid = urlsafe_base64_encode(str(user.pk).encode())  # No need for .decode()
+
+            current_site = get_current_site(request)
+            mail_subject = 'Activate your account'
+            message = render_to_string('authentication/activation_email.html', {
+                'user': user,
+                'domain': current_site.domain,
+                'uid': uid,
+                'token': token,
+            })
+            send_mail(mail_subject, message, 'noreply@yourdomain.com', [user.email])
+
+            return HttpResponse('Registration successful! Please check your email to activate your account.')
     else:
-        return redirect('login')
+        form = RegistrationForm()
+    return render(request, 'authentication/register.html', {'form': form})
+
+# Account activation view
+def activate_account(request, uidb64, token):
+    try:
+        # Decode uidb64 to get the user ID
+        uid = urlsafe_base64_decode(uidb64).decode('utf-8')  # Decode back to string
+        user = CustomUser.objects.get(pk=uid)
+    except (TypeError, ValueError, CustomUser.DoesNotExist):
+        user = None
     
+    if user is not None and default_token_generator.check_token(user, token):
+        user.is_active = True  # Set user to active
+        user.save()
+        login(request, user)  # Automatically log the user in after activation
+        return redirect('authentication:home')  # Redirect to the home page after login
+    else:
+        return HttpResponse('Activation link is invalid or expired.')
+
+
+
+# Custom Password Reset View
+def custom_password_reset(request):
+    form = PasswordResetForm(request.POST or None)
+
+    if request.method == "POST" and form.is_valid():
+        email = form.cleaned_data['email']
+
+        try:
+            user = CustomUser.objects.get(email=email)  # Adjust if you're using a custom user model
+        except CustomUser.DoesNotExist:
+            return render(request, 'x/password_reset_done.html')  # Optionally, handle this silently
+
+        # Generate UID and token for the user
+        uid = urlsafe_base64_encode(str(user.pk).encode())  # Encode UID
+        token = default_token_generator.make_token(user)  # Generate token
+
+        # Prepare the context for the email
+        context = {
+            'protocol': 'http',  # You can change this to 'https' if needed
+            'domain': get_current_site(request).domain,
+            'uid': uid,
+            'token': token,
+        }
+
+        # Render the email content using the password_reset_email template
+        email_subject = "Password Reset Request"
+        email_message = render_to_string('x/password_reset_email.html', context)
+
+        # Send the email
+        send_mail(email_subject, email_message, 'no-reply@yourdomain.com', [email])
+
+        # Render password reset done page (without showing the reset link)
+        return render(request, 'x/password_reset_done.html')
+
+    return render(request, 'x/password_reset_form.html', {'form': form})   
+
+
+
+
+# Custom Password Reset Done View
+def custom_password_reset_done(request):
+    return render(request, 'x/password_reset_done.html')
+
+# Custom Password Reset Confirm View
+def custom_password_reset_confirm(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode('utf-8')  # Decode user ID
+        user = CustomUser.objects.get(pk=uid)
+    except (TypeError, ValueError, CustomUser.DoesNotExist):
+        user = None
     
+    if user and default_token_generator.check_token(user, token):
+        if request.method == 'POST':
+            form = SetPasswordForm(user, request.POST)
+            if form.is_valid():
+                form.save()
+                return redirect('authentication:password_reset_complete')
+        else:
+            form = SetPasswordForm(user)
+
+        return render(request, 'x/password_reset_confirm.html', {'form': form})
+    
+    else:
+        return render(request, 'x/password_reset_invalid.html')  # Show error if invalid token or user
+
+# Custom Password Reset Complete View
+def custom_password_reset_complete(request):
+    return render(request, 'x/password_reset_complete.html')

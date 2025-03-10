@@ -1,14 +1,40 @@
-# forms.py
-import re
 from django import forms
+from captcha.fields import CaptchaField
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordResetForm, SetPasswordForm,UserChangeForm
-from django.contrib.auth.models import User, Universiti
-from django.forms import ModelForm
+from authentication.models import CustomUser, Universiti
+import re
+from .models import CustomUser
+
+class RegistrationForm(forms.ModelForm):
+    password1 = forms.CharField(widget=forms.PasswordInput)
+    password2 = forms.CharField(widget=forms.PasswordInput)
+    captcha = CaptchaField()
+
+    class Meta:
+        model = CustomUser
+        fields = ['email', 'username', 'password1', 'password2']
+
+    def clean_password2(self):
+        password1 = self.cleaned_data.get("password1")
+        password2 = self.cleaned_data.get("password2")
+        if password1 != password2:
+            raise forms.ValidationError("Passwords don't match.")
+        return password2
+
+
+
+class LoginForm(forms.Form):
+    email = forms.EmailField()
+    password = forms.CharField(widget=forms.PasswordInput)
+    captcha = CaptchaField()  # Add the captcha field here
+
+
+
 
 class Userprofile(forms.ModelForm):
     
     class Meta:
-        model = User
+        model = CustomUser
         fields = [
         'first_name', 'last_name', 'email', 
         'hobby', 'birth', 'address', 'country', 
@@ -55,7 +81,7 @@ class UserPhoto(UserChangeForm):
 
     class Meta:
 
-        model = User
+        model = CustomUser
 
         fields = ['photo']
 
@@ -72,90 +98,4 @@ class UserPhoto(UserChangeForm):
 
             'required': True  # Set required as a boolean
 
-        })
-       
-
-
-# uncomment this if you want to change the class/design of the login form
-class UserLoginForm(AuthenticationForm):
-    class Meta:
-        model = User
-        fields = ['username', 'password']
-
-    def __init__(self, *args, **kwargs):
-        super(UserLoginForm, self).__init__(*args, **kwargs)
-        self.fields['username'].widget.attrs.update({
-            'class': 'form-control',
-            'placeholder': 'email',
-            'required': 'True'
-        })
-        self.fields['password'].widget.attrs.update({
-            'class': 'form-control',
-            'placeholder': 'Password',
-            'required': 'True'
-        })
-
-
-
-# Customizing Registration Form from UserCreationForm
-class UserRegistrationForm(UserCreationForm):
-    class Meta:
-        model = User
-        fields = ['username','email', 'password1', 'password2']
-
-    # uncomment this if you want to change the class/design of the registration form inputs
-    def __init__(self, *args, **kwargs):
-        super(UserRegistrationForm, self).__init__(*args, **kwargs)
-        self.fields['username'].widget.attrs.update({
-            'class': 'form-control',
-            'placeholder': 'username',
-            'required': 'True'
-        })
-        self.fields['email'].widget.attrs.update({
-            'class': 'form-control',
-            'placeholder': 'Email',
-            'required': 'True'
-        })
-        self.fields['password1'].widget.attrs.update({
-            'class': 'form-control',
-            'placeholder': 'Password',
-            'required': 'True'
-        })
-        self.fields['password2'].widget.attrs.update({
-            'class': 'form-control',
-            'placeholder': 'Retype Password',
-            'required': 'True'
-        })
-
-
-class ResetPasswordForm(PasswordResetForm):
-    class Meta:
-        model = User
-        fields = ['email']
-
-    def __init__(self, *args, **kwargs):
-        super(ResetPasswordForm, self).__init__(*args, **kwargs)
-        self.fields['email'].widget.attrs.update({
-            'class': 'form-control',
-            'placeholder': 'Email',
-            'required': 'True'
-        })
-
-
-class ResetPasswordConfirmForm(SetPasswordForm):
-    class Meta:
-        model = User
-        fields = ['new_password1', 'new_password2']
-
-    def __init__(self, *args, **kwargs):
-        super(ResetPasswordConfirmForm, self).__init__(*args, **kwargs)
-        self.fields['new_password1'].widget.attrs.update({
-            'class': 'form-control',
-            'placeholder': 'New Password',
-            'required': 'True'
-        })
-        self.fields['new_password2'].widget.attrs.update({
-            'class': 'form-control',
-            'placeholder': 'Retype New Password',
-            'required': 'True'
         })

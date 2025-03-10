@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import CoursePriceForm,MicroCredentialForm,AskOraForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from django.http import JsonResponse
 from .models import Course,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
-from django.contrib.auth.models import User, Universiti
+from authentication.models import CustomUser, Universiti
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
 from django.urls import reverse
@@ -32,6 +32,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Prefetch
 import time
 import re
+import logging
 from datetime import timedelta
 from django.db.models import Prefetch
 from weasyprint import HTML
@@ -1667,63 +1668,59 @@ def course_lms_detail(request, id, slug):
         'section_data': section_data,  # Pass sections, materials, and assessments
     })
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 def course_instructor(request, id):
-    # Pastikan user sudah login
     if not request.user.is_authenticated:
         return redirect(f"/login/?next={request.path}")
     
     user = request.user
     course = None
 
-    # Menentukan course berdasarkan role user
     if user.is_superuser:
         course = get_object_or_404(Course, id=id)
     elif user.is_partner:
         course = get_object_or_404(Course, id=id, org_partner__user_id=user.id)
     elif user.is_instructor:
         messages.error(request, "You do not have permission to manage this course.")
-        return redirect('/courses')  # Instruktur tidak diizinkan untuk mengelola kursus ini
+        return redirect('/courses')
 
-    # Jika course tidak ditemukan berdasarkan kondisi, redirect ke daftar kursus
     if not course:
         return redirect('/courses')
 
-    # Menangani POST request untuk menambahkan instruktur
     if request.method == 'POST':
+        logger.debug(f"Raw POST data: {request.POST}")
         form = CourseInstructorForm(request.POST, instance=course, request=request)
         if form.is_valid():
+            logger.debug(f"Cleaned data: {form.cleaned_data}")
             form.save()
             messages.success(request, "Instructor has been successfully added to the course.")
             return redirect('courses:course_instructor', id=course.id)
+        else:
+            logger.debug(f"Form errors: {form.errors}")
     else:
-        # Untuk GET request, menampilkan form yang sudah ada
         form = CourseInstructorForm(instance=course, request=request)
 
     return render(request, 'instructor/course_instructor.html', {'course': course, 'form': form})
 
-
 # Fungsi untuk pencarian instruktur menggunakan Select2 (AJAX)
+
+
 def search_instructors(request):
-    query = request.GET.get('q', '')
-    page_number = int(request.GET.get('page', 1))
-    page_size = 10  # Membatasi jumlah instruktur yang ditampilkan per halaman
+    q = request.GET.get('q', '')
+    if request.user.is_authenticated:
+        if request.user.is_superuser:
+            instructors = Instructor.objects.filter(user__username__icontains=q)
+        elif request.user.is_partner:
+            instructors = Instructor.objects.filter(user__username__icontains=q, provider__user=request.user)
+        else:
+            instructors = Instructor.objects.none()
 
-    # Filter instruktur berdasarkan pencarian username
-    instructors = User.objects.filter(username__icontains=query, is_instructor=True)
-    
-    # Paginasi instruktur
-    paginator = Paginator(instructors, page_size)
-    page_obj = paginator.get_page(page_number)
-
-    # Mengembalikan hasil pencarian dalam format JSON untuk Select2
-    results = [{'id': instructor.id, 'text': instructor.username} for instructor in page_obj]
-
-    return JsonResponse({
-        'results': results, 
-        'total_pages': paginator.num_pages,  # Menyediakan total halaman
-        'current_page': page_obj.number      # Menyediakan halaman saat ini
-    })
+        results = [{'id': i.id, 'text': str(i.user.username)} for i in instructors[:10]]
+        logger.debug(f"Search results: {results}")
+        return JsonResponse({'results': results})
+    return JsonResponse({'results': []})
 
 #create grade
 #@login_required
@@ -2476,7 +2473,7 @@ def course_team(request, id):
 
             try:
 
-                user_instance = User.objects.get(email=email)  # Retrieve the User instance
+                user_instance = CustomUser.objects.get(email=email)  # Retrieve the User instance
 
                 team_member = TeamMember(course=course, user=user_instance)
 
@@ -2484,7 +2481,7 @@ def course_team(request, id):
 
                 return redirect('courses:course_team', id=course.id)
 
-            except User.DoesNotExist:
+            except CustomUser.DoesNotExist:
 
                 form.add_error('email', "No user found with this email.")  # Add an error if user not found
 
@@ -2972,20 +2969,25 @@ def course_create_view(request):
                     course.instructor = instructor
 
                 # Set status_course programmatically (e.g., default to 'draft')
-                draft_status = CourseStatus.objects.get(status='draft')  # Assuming 'draft' exists in CourseStatus
+                try:
+                    draft_status = CourseStatus.objects.get(status='draft')
+                except CourseStatus.DoesNotExist:
+                    draft_status = None  # Or provide a default value or take any other action
+
+                #draft_status = CourseStatus.objects.get(status='draft')  # Assuming 'draft' exists in CourseStatus
                 course.status_course = draft_status  # Set the default status
 
                 # Save the course instance to the database
                 course.save()
 
-                return redirect('/courses')  # Redirect to a course list page or success page
+                return redirect('/courses/')  # Redirect to a course list page or success page
             else:
                 print(form.errors)  # Print form errors to the console for debugging
         else:
             form = CourseForm(user=request.user)  # Pass the logged-in user to the form
 
     else:
-        return redirect('/courses')
+        return redirect('/courses/')
 
     return render(request, 'courses/course_add.html', {'form': form})
 
@@ -3259,11 +3261,11 @@ def search_users(request):
     query = request.GET.get('q', '')
     
     if query:
-        users = User.objects.filter(
+        users = CustomUser.objects.filter(
             Q(email__icontains=query) & Q(is_active=True)
         ).only('id', 'email')  # Ensure only necessary fields are fetched
     else:
-        users = User.objects.filter(is_active=True).only('id', 'email')
+        users = CustomUser.objects.filter(is_active=True).only('id', 'email')
 
     # Apply pagination
     paginator = Paginator(users, 20)  # Show 20 users per page
