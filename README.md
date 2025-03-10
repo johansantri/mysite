@@ -71,7 +71,8 @@ py -m pip install -r requirements.txt
 ```
 ### 7. Freeze requirements (to track package versions):
 ```shell
-py -m pip freeze
+pip freeze > requirements.txt
+
 ```
 ### 8.Run makemigrations:
 ```shell
