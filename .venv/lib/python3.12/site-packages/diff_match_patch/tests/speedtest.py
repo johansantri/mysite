@@ -18,24 +18,20 @@ limitations under the License.
 """
 
 import gc
-import imp
-import os
-import sys
+import importlib
+import pkgutil
 import time
 
-parentPath = os.path.abspath("..")
-if parentPath not in sys.path:
-    sys.path.insert(0, parentPath)
 import diff_match_patch as dmp_module
 
 # Force a module reload.  Allows one to edit the DMP module and rerun the test
 # without leaving the Python interpreter.
-imp.reload(dmp_module)
+importlib.reload(dmp_module)
 
 
 def main():
-    text1 = open("speedtest1.txt").read()
-    text2 = open("speedtest2.txt").read()
+    text1 = pkgutil.get_data("diff_match_patch.tests", "speedtest1.txt").decode()
+    text2 = pkgutil.get_data("diff_match_patch.tests", "speedtest2.txt").decode()
 
     dmp = dmp_module.diff_match_patch()
     dmp.Diff_Timeout = 0.0

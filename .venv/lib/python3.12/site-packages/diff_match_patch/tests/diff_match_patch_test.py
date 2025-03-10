@@ -833,6 +833,16 @@ class DiffTest(DiffMatchPatchTest):
         # Convert delta string into a diff.
         self.assertEqual(diffs, self.dmp.diff_fromDelta(text1, delta))
 
+        diffs = self.dmp.diff_main(
+            "\U0001F64B\U0001F64B", "\U0001F64B\U0001F64C\U0001F64B"
+        )
+        delta = self.dmp.diff_toDelta(diffs)
+        self.assertEqual("=2\t+%F0%9F%99%8C\t=2", delta)
+        self.assertEqual(
+            diffs,
+            self.dmp.diff_fromDelta("\U0001F64B\U0001F64B", "=2\t+%F0%9F%99%8C\t=2"),
+        )
+
         # Verify pool of unchanged characters.
         diffs = [
             (
@@ -848,6 +858,76 @@ class DiffTest(DiffMatchPatchTest):
 
         # Convert delta string into a diff.
         self.assertEqual(diffs, self.dmp.diff_fromDelta("", delta))
+
+        # Unicode: split surrogates
+        self.assertEqual(
+            self.dmp.diff_toDelta(
+                [
+                    (self.dmp.DIFF_INSERT, "\U0001F171"),
+                    (self.dmp.DIFF_EQUAL, "\U0001F170\U0001F171"),
+                ]
+            ),
+            self.dmp.diff_toDelta(
+                self.dmp.diff_main(
+                    "\U0001F170\U0001F171", "\U0001F171\U0001F170\U0001F171"
+                )
+            ),
+            "Inserting similar surrogate pair at beginning",
+        )
+        self.assertEqual(
+            self.dmp.diff_toDelta(
+                [
+                    (self.dmp.DIFF_EQUAL, "\U0001F170"),
+                    (self.dmp.DIFF_INSERT, "\U0001F172"),
+                    (self.dmp.DIFF_EQUAL, "\U0001F171"),
+                ]
+            ),
+            self.dmp.diff_toDelta(
+                self.dmp.diff_main(
+                    "\U0001F170\U0001F171", "\U0001F170\U0001F172\U0001F171"
+                )
+            ),
+            "Inserting similar surrogate pair in the middle",
+        )
+        self.assertEqual(
+            self.dmp.diff_toDelta(
+                [
+                    (self.dmp.DIFF_DELETE, "\U0001F171"),
+                    (self.dmp.DIFF_EQUAL, "\U0001F170\U0001F171"),
+                ]
+            ),
+            self.dmp.diff_toDelta(
+                self.dmp.diff_main(
+                    "\U0001F171\U0001F170\U0001F171", "\U0001F170\U0001F171"
+                )
+            ),
+            "Deleting similar surogate pair at the beginning",
+        )
+        self.assertEqual(
+            self.dmp.diff_toDelta(
+                [
+                    (self.dmp.DIFF_EQUAL, "\U0001F170"),
+                    (self.dmp.DIFF_DELETE, "\U0001F172"),
+                    (self.dmp.DIFF_EQUAL, "\U0001F171"),
+                ]
+            ),
+            self.dmp.diff_toDelta(
+                self.dmp.diff_main(
+                    "\U0001F170\U0001F172\U0001F171", "\U0001F170\U0001F171"
+                )
+            ),
+            "Deleting similar surogate pair in the middle",
+        )
+        self.assertEqual(
+            self.dmp.diff_toDelta(
+                [
+                    (self.dmp.DIFF_DELETE, "\U0001F170"),
+                    (self.dmp.DIFF_INSERT, "\U0001F171"),
+                ]
+            ),
+            self.dmp.diff_toDelta(self.dmp.diff_main("\U0001F170", "\U0001F171")),
+            "Swap surrogate pair",
+        )
 
         # 160 kb string.
         a = "abcdefghij"

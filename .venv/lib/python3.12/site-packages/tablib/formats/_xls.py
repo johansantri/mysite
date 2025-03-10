@@ -1,6 +1,6 @@
 """ Tablib - XLS Support.
 """
-
+import datetime
 from io import BytesIO
 
 import xlrd
@@ -12,6 +12,9 @@ import tablib
 # special styles
 wrap = xlwt.easyxf("alignment: wrap on")
 bold = xlwt.easyxf("font: bold on")
+datetime_style = xlwt.easyxf(num_format_str='M/D/YY h:mm')
+date_style = xlwt.easyxf(num_format_str='M/D/YY')
+time_style = xlwt.easyxf(num_format_str='h:mm:ss')
 
 
 class XLSFormat:
@@ -57,7 +60,7 @@ class XLSFormat:
         wb = xlwt.Workbook(encoding='utf8')
 
         for i, dset in enumerate(databook._datasets):
-            ws = wb.add_sheet(dset.title if dset.title else 'Sheet%s' % (i))
+            ws = wb.add_sheet(dset.title if dset.title else f"Sheet{i}")
 
             cls.dset_sheet(dset, ws)
 
@@ -100,7 +103,7 @@ class XLSFormat:
 
         dbook.wipe()
 
-        xls_book = xlrd.open_workbook(file_contents=in_stream)
+        xls_book = xlrd.open_workbook(file_contents=in_stream.read())
 
         for sheet in xls_book.sheets():
             data = tablib.Dataset()
@@ -138,6 +141,13 @@ class XLSFormat:
                 elif len(row) < dataset.width:
                     ws.write(i, j, col, bold)
 
+                # format date types
+                elif isinstance(col, datetime.datetime):
+                    ws.write(i, j, col, datetime_style)
+                elif isinstance(col, datetime.date):
+                    ws.write(i, j, col, date_style)
+                elif isinstance(col, datetime.time):
+                    ws.write(i, j, col, time_style)
                 # wrap the rest
                 else:
                     try:
