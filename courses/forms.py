@@ -334,7 +334,7 @@ class MatrialForm(forms.ModelForm):
         }
 
 class ProfilForm(forms.ModelForm):
-    description = forms.CharField(widget=CKEditor5Widget())
+    #description = forms.CharField(widget=CKEditor5Widget())
     class Meta:
         model = Course
         fields = ['sort_description','description','image','link_video','hour','language','level','start_date','end_date','start_enrol','end_enrol']
@@ -343,6 +343,10 @@ class ProfilForm(forms.ModelForm):
         widgets = {
             
             'sort_description': forms.TextInput(attrs={'placeholder': 'Enter short description here', 'class': 'form-control'}),
+            "description": CKEditor5Widget(
+                attrs={"class": "django_ckeditor_5"},
+                config_name="extends",
+            ),
             #'description': CKEditor5Widget(attrs={'placeholder': 'Enter full description here', 'class': 'django_ckeditor_5'}),
             'image': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
             'link_video': forms.URLInput(attrs={'placeholder': 'Enter video URL here', 'class': 'form-control'}),
