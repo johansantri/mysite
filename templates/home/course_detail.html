@@ -72,6 +72,7 @@
 								<div class="card-body">
 									<h5 class="subs-title">Overview</h5>
 									<h6>Course Description</h6>
+									
 									<p>{{course.description | safe}}</p>
 									
 									
@@ -499,31 +500,34 @@
 											<h4>Includes</h4>
 										</div>
                                         <style>
-                                            .right-align {
-                                                text-align: right;
-                                            }
-                                        
-                                            .left {
-                                                text-align: left;
-                                            }
-                                            li {
-                                                display: flex;
-                                                justify-content: space-between; /* Ensures content aligns to both ends */
-                                                align-items: center; /* Vertically align items */
-                                            }
-                                        </style>
-                                        
-                                        <ul>
-                                            <li class="left"> Course Number: <span class="right-align">{{course.course_number}}</span></li>
-                                            <li> Class run: <span>{{course.course_run}}</span></li>
-                                            <li> Class start: <span>{{course.start_date}}</span></li>
-                                            <li> Class end: <span>{{course.end_date}}</span></li>
-                                            <li> Enroll start: <span>{{course.start_enrol}}</span></li>
-                                            <li> Enroll end: <span>{{course.end_enrol}}</span></li>
-                                            <li> Hours Effort: <span>{{course.hour}}</span></li>
-                                            <li> Language: <span>{{course.language}}</span></li>
-                                            <li> Level: <span>{{course.level}}</span></li>
-                                        </ul>
+											/* Membatasi hanya pada elemen dengan class 'course-details' */
+											.course-details .right-align {
+												text-align: right;
+											}
+										
+											.course-details .left {
+												text-align: left;
+											}
+										
+											.course-details li {
+												display: flex;
+												justify-content: space-between; /* Memastikan konten berada di kedua ujung */
+												align-items: center; /* Menyelaraskan item secara vertikal */
+											}
+										</style>
+										
+										<ul class="course-details">
+											<li class="left">Course Number: <span class="right-align">{{course.course_number}}</span></li>
+											<li>Class run: <span>{{course.course_run}}</span></li>
+											<li>Class start: <span>{{course.start_date}}</span></li>
+											<li>Class end: <span>{{course.end_date}}</span></li>
+											<li>Enroll start: <span>{{course.start_enrol}}</span></li>
+											<li>Enroll end: <span>{{course.end_enrol}}</span></li>
+											<li>Hours Effort: <span>{{course.hour}}</span></li>
+											<li>Language: <span>{{course.language}}</span></li>
+											<li>Level: <span>{{course.level}}</span></li>
+										</ul>
+										
                                         
 									</div>
 								</div>
@@ -546,4 +550,5 @@
 					.then(data => alert(data.message));
 				}
 				</script>
+				
 {% endblock %}

@@ -43,7 +43,11 @@ class AskOraForm(forms.ModelForm):
         
         widgets = {
             'title':forms.TextInput(attrs={'class':'form-control','placeholder':'title '}),
-            'question_text': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Insert Question hare', 'rows': 4}),
+            "question_text": CKEditor5Widget(
+                attrs={"class": "django_ckeditor_5"},
+                config_name="extends",
+            ),
+            #'question_text': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Insert Question hare', 'rows': 4}),
             'response_deadline': forms.DateTimeInput(attrs={'class': 'form-control', 'placeholder': 'Select response deadline', 'type': 'datetime-local'})
            
            
@@ -321,13 +325,17 @@ class SectionForm(forms.ModelForm):
         fields = ['title','courses','parent']
 
 class MatrialForm(forms.ModelForm):
-    description = forms.CharField(widget=CKEditor5Widget())
+    #description = forms.CharField(widget=CKEditor5Widget())
     class Meta:
         model = Material
         fields = ['title','description']
         widgets = {
             
             'title': forms.TextInput(attrs={'placeholder': 'Enter short title here', 'class': 'form-control'}),
+            "description": CKEditor5Widget(
+                attrs={"class": "django_ckeditor_5"},
+                config_name="extends",
+            ),
             #'description': CKEditor5Widget(attrs={'placeholder': 'Enter full description here', 'class': 'django_ckeditor_5'}),
             'image': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
             

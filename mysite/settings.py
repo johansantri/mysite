@@ -151,7 +151,9 @@ DEFAULT_FROM_EMAIL = 'Django Test Email Address'
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static_files"),
+]
 
 
 customColorPalette = [
@@ -348,12 +350,7 @@ CKEDITOR_5_CONFIGS = {
         },
     },
 }
-STORAGES = {
-    "default": {"BACKEND": "articles.storage.CustomStorage"},
-    "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
-    },
-}
+
 CKEDITOR_5_CUSTOM_CSS = "custom.css"
 CSRF_COOKIE_NAME = "new_csrf_cookie_name"
 CKEDITOR_5_FILE_UPLOAD_PERMISSION = "staff","is_partner",'authenticated'

@@ -14,6 +14,7 @@
   <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ question_form.as_p }}
+    {{ question_form.media }}
     <button type="submit" class="btn btn-primary">Submit Question</button>
   </form>
 
