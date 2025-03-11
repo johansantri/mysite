@@ -147,14 +147,12 @@ EMAIL_HOST_PASSWORD = 'vdee kfzo dyvk idsa'  # Ganti dengan password aplikasi Gm
 # Email pengirim default untuk email otomatis
 DEFAULT_FROM_EMAIL = 'Django Test Email Address'
 
-STATIC_URL = "/static/"
+
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static_files"),
-]
+
+
 
 customColorPalette = [
     {"color": "hsl(4, 90%, 58%)", "label": "Red"},
