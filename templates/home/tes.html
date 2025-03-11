@@ -95,23 +95,33 @@
     <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
     <aside class="app-sidebar">
       <div class="app-sidebar__user"> 
-        <a href="{% url 'authentication:edit-photo' request.user.id %}  ">
-           {% if request.user.photo %}
-          <img src="{{ request.user.photo.url }}" alt="User Avatar" class="app-sidebar__user-avatar">
-          {% else %}
-          <img class="app-sidebar__user-avatar"  src="{% static "assets/img/user/user1.jpg"%}"  alt="User Image">
-          {% endif %}
-        </a>
-        <div>
-          <p class="app-sidebar__user-name">{{ request.user.first_name }} {{ request.user.last_name }}</p>
-          <p class="app-sidebar__user-designation">{{request.user.hobby}}</p>
-                        {% if not user.university %}
-
-                        <a href="#" class="add-course btn-primary">Update my profile</a>
-                        {% else %}
-                        <p  class="add-course btn-primary">{{user.university}}</p>
-                        <a href="{% url 'courses:instructor_add' %}" class="add-course btn-primary">Become an instructor</a>
-                        {% endif %}
+            <a href="{% if user.is_authenticated %}{% url 'authentication:edit-photo' request.user.id %}{% else %}#{% endif %}">
+              {% if user.is_authenticated %}
+                  {% if request.user.photo %}
+                      <img src="{{ request.user.photo.url }}" alt="User Avatar" class="app-sidebar__user-avatar">
+                  {% else %}
+                      <img class="app-sidebar__user-avatar" src="{% static 'assets/img/user/user1.jpg' %}" alt="User Image">
+                  {% endif %}
+              {% else %}
+                  <!-- Placeholder image or icon for unauthenticated users -->
+                  <img class="app-sidebar__user-avatar" src="{% static 'assets/img/user/default-avatar.jpg' %}" alt="Guest Image">
+              {% endif %}
+          </a>
+          <div>
+              {% if user.is_authenticated %}
+                  <p class="app-sidebar__user-name">{{ request.user.first_name }} {{ request.user.last_name }}</p>
+                  <p class="app-sidebar__user-designation">{{ request.user.hobby }}</p>
+                  {% if not user.university %}
+                      <a href="#" class="add-course btn-primary">Update my profile</a>
+                  {% else %}
+                      <p class="add-course btn-primary">{{ user.university }}</p>
+                      <a href="{% url 'courses:instructor_add' %}" class="add-course btn-primary">Become an instructor</a>
+                  {% endif %}
+              {% else %}
+                  <p class="app-sidebar__user-name">Guest</p>
+                  <a href="{% url 'authentication:login' %}" class="btn-primary">Login to view profile</a>
+              {% endif %}
+          </div>
         </div>
       </div>
       <ul class="app-menu">
