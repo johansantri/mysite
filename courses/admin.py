@@ -1,7 +1,16 @@
 from django.contrib import admin
 from . import models 
-from .models import Submission,AskOra, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
+from .models import Submission,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
 from import_export.admin import ImportExportModelAdmin
+admin.site.register(Hashtag)
+admin.site.register(BlacklistedKeyword)
+admin.site.register(UserProfile)
+@admin.register(SosPost)
+class SosPostAdmin(admin.ModelAdmin):
+    list_display = ('user', 'content', 'created_at',  'deleted')
+    search_fields = ('user__username', 'content')
+    list_filter = ('deleted', 'created_at')
+    ordering = ('-created_at',)
 
 class CourseAdmin(ImportExportModelAdmin):
     list_display = ('course_name', 'course_number', 'course_run', 'category', 'level')  # Adjust based on your fields

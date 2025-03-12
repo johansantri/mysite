@@ -1,0 +1,38 @@
+{% extends 'home/sos.html' %}
+{% load static %}
+
+{% block content %}
+<div class="col-md-8 main-content">
+    <div id="messages" class="alert-messages" hx-swap-oob="true"></div>
+    <div class="card tweet-card tweet-card-post">
+        <div class="card-body">
+            <form hx-post="{% url 'courses:create_post' %}" hx-target="#new-posts" hx-swap="afterbegin">
+                {% csrf_token %}
+                {{ form.content }}
+                <div id="charCount">0/150</div>
+                {{ form.captcha }}
+                <button type="submit" class="btn btn-outline-primary mt-3">Post </button>
+            </form>
+        </div>
+    </div>
+    <br>
+    <div id="post-list">
+        <div id="new-posts"></div> <!-- Wadah untuk tweet baru -->
+        {% for post in posts %}
+            {% include 'home/post_item.html' with post=post %}
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    let textarea = document.querySelector('#id_content');
+    textarea.addEventListener('input', function() {
+        let chars = this.value.length;
+        document.getElementById('charCount').innerText = `${chars}/150`;
+    });
+    document.body.addEventListener('clearForm', function() {
+        textarea.value = '';
+        document.getElementById('charCount').innerText = '0/150';
+    });
+</script>
+{% endblock content %}

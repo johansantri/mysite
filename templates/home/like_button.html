@@ -1,0 +1,17 @@
+<div id="like-{{ post.id }}">
+    {% if liked %}
+        <button hx-post="{% url 'courses:like_post' post.id %}" 
+                hx-target="#like-{{ post.id }}" 
+                hx-swap="outerHTML" 
+                class="btn btn-link p-0 text-danger">
+            <i class="fas fa-heart"></i> {{ like_count }}
+        </button>
+    {% else %}
+        <button hx-post="{% url 'courses:like_post' post.id %}" 
+                hx-target="#like-{{ post.id }}" 
+                hx-swap="outerHTML" 
+                class="btn btn-link p-0 text-muted">
+            <i class="far fa-heart"></i> {{ like_count }}
+        </button>
+    {% endif %}
+</div>

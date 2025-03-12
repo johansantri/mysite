@@ -2,7 +2,7 @@
 from django import forms
 from django.forms import inlineformset_factory
 from django.core.cache import cache
-from .models import Course,CourseStatus,MicroCredential, AskOra,Partner,Category, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment,PricingType, CoursePrice
+from .models import Course,SosPost,CourseStatus,MicroCredential, AskOra,Partner,Category, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment,PricingType, CoursePrice
 from django_ckeditor_5.widgets import CKEditor5Widget
 
 from authentication.models import CustomUser, Universiti
@@ -14,6 +14,30 @@ import io
 from datetime import date
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from captcha.fields import CaptchaField
+
+class SosPostForm(forms.ModelForm):
+    #captcha = CaptchaField()
+    
+    class Meta:
+        model = SosPost
+        fields = ['content']
+        widgets = {
+            'content': forms.Textarea(attrs={
+                'rows': 2,
+                'maxlength': 150,
+                'class': 'form-control',
+                'placeholder': 'Apa yang ada di pikiranmu?',
+                'hx-target': '#post-list',
+                'hx-swap': 'prepend'
+            }),
+        }
+
+    def clean_content(self):
+        content = self.cleaned_data['content']
+        if len(content) > 150:
+            raise forms.ValidationError("Maksimum 150 karakter!")
+        return content
 
 class MicroCredentialForm(forms.ModelForm):
     description = forms.CharField(widget=CKEditor5Widget())

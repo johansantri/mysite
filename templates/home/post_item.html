@@ -1,0 +1,48 @@
+
+
+   <!-- Feed Tweet -->
+   <div class="card tweet-card">
+    <div class="card-body">
+        <div class="d-flex mb-3">
+            {% if post.user.photo %}
+                <img src="{{ post.user.photo.url }}" class="rounded-circle me-2" alt="User" style="width: 50px; height: 50px;">
+            {% else %}
+                <img src="/media/profile_pics/default-avatar.png" class="rounded-circle me-2" alt="User" style="width: 50px; height: 50px;">
+            {% endif %}
+
+
+            <div>
+                <strong class="text-primary">{{ post.user.first_name }} {{ post.user.last_name }}</strong>
+                <p><small class="text-muted">@{{ post.user.username }} - {{ post.created_at }}</small></p>
+                <p>{{ post.content }}</p>
+                <div class="d-flex mt-3">
+                    
+                    <div id="like-{{ post.id }}">
+                        {% if post.liked %}
+                            <button hx-post="{% url 'courses:like_post' post.id %}" 
+                                    hx-target="#like-{{ post.id }}" 
+                                    hx-swap="outerHTML" 
+                                    class="btn btn-link p-0 text-danger">
+                                <i class="fas fa-heart"></i> {{ post.like_count }}
+                            </button>
+                        {% else %}
+                            <button hx-post="{% url 'courses:like_post' post.id %}" 
+                                    hx-target="#like-{{ post.id }}" 
+                                    hx-swap="outerHTML" 
+                                    class="btn btn-link p-0 text-muted">
+                                <i class="far fa-heart"></i> {{ post.like_count }}
+                            </button>
+                        {% endif %}
+                        &nbsp;
+                        <i class="fa fa-retweet" aria-hidden="true"></i>
+                        &nbsp;
+                        <i class="fa fa-reply" aria-hidden="true"></i>
+                    </div>
+
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br>

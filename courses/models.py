@@ -4,6 +4,7 @@ from authentication.models import CustomUser, Universiti
 from autoslug import AutoSlugField
 from django.utils.text import slugify
 import os
+import re
 from datetime import timedelta
 from django.core.exceptions import ValidationError
 from django.conf import settings
@@ -13,12 +14,22 @@ from django.db.models import Sum
 from datetime import date
 from decimal import Decimal
 from django.core.validators import MinValueValidator
-
+import bleach
 from django.utils import timezone
 
 
+class UserProfile(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    blocked_until = models.DateTimeField(null=True, blank=True)
+    def is_blocked(self):
+        return self.blocked_until and self.blocked_until > timezone.now()
 
-
+class BlacklistedKeyword(models.Model):
+    keyword = models.CharField(max_length=100, unique=True)
+    
+    def __str__(self):
+        return self.keyword
+    
 class Partner(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE,related_name="partner_user")  # Add this line to associate partners with users
     name = models.ForeignKey(Universiti, on_delete=models.CASCADE,related_name="partner_univ")
@@ -788,14 +799,13 @@ class CourseComment(models.Model):
     def __str__(self):
         return f'Comment by {self.user.username} on {self.created_at}'
     def contains_blacklisted_keywords(self):
-        """Check if the comment contains any blacklisted keywords."""
-        blacklisted_keywords = ['spam', 'ad', 'sex', 'judol','spam', 'viagra', 'casino', 'free', 'discount', 'buy now', 'click here', 
-    'money', 'investment', 'bitcoin', 'get rich', 'credit card', 'ad', 
-    'affiliate', 'deal', 'offer', 'prize', 'winner', 'hack', 'phishing', 'malware']  # Add your list of blacklisted words
+        """Memeriksa apakah konten mengandung kata-kata yang diblacklist."""
+        blacklisted_keywords = BlacklistedKeyword.objects.values_list('keyword', flat=True)
         for keyword in blacklisted_keywords:
-            if keyword.lower() in self.content.lower():
+            if re.search(r'\b' + re.escape(keyword) + r'\b', self.content.lower()):
                 return True
         return False
+    
 class MicroCredentialEnrollment(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="microcredential_enrollments")
     microcredential = models.ForeignKey('MicroCredential', on_delete=models.CASCADE, related_name="enrollments")
@@ -806,3 +816,80 @@ class MicroCredentialEnrollment(models.Model):
 
     def __str__(self):
         return f"{self.user.username} enrolled in {self.microcredential.title}"
+    
+
+
+
+
+class SosPost(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    deleted = models.BooleanField(default=False)
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
+
+
+    def clean_content(self):
+        """Membersihkan konten dari tag HTML berbahaya."""
+        return bleach.clean(self.content)
+
+    def clean(self):
+        """Validasi sebelum simpan."""
+        self.content = self.clean_content()
+        if len(self.content) > 150:
+            raise ValidationError("Konten terlalu panjang, maksimum 150 karakter.")
+        if self.contains_blacklisted_keywords():
+            raise ValidationError("Konten mengandung kata-kata yang dilarang.")
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        super().save(*args, **kwargs)
+        # Simpan hashtag setelah post disimpan
+        self.save_hashtags()
+
+    def contains_blacklisted_keywords(self):
+        blacklisted_keywords = BlacklistedKeyword.objects.values_list('keyword', flat=True)
+        for keyword in blacklisted_keywords:
+            if re.search(r'\b' + re.escape(keyword) + r'\b', self.content.lower()):
+                return True
+        return False
+
+    def get_hashtags(self):
+        """Ekstrak hashtag dari konten."""
+        return re.findall(r'#\w+', self.content)
+
+    def save_hashtags(self):
+        """Simpan hashtag ke model Hashtag."""
+        hashtags = self.get_hashtags()
+        for tag in hashtags:
+            hashtag, created = Hashtag.objects.get_or_create(name=tag[1:].lower())
+            hashtag.posts.add(self)
+
+    def retweet_post(self, user):
+        if self.retweet:
+            return None
+        retweet_content = f"Retweeted: {self.content}"
+        return SosPost.objects.create(
+            user=user,
+            content=retweet_content[:150],  # Pastikan sesuai batas
+            retweet=self
+        )
+
+    def delete_post(self):
+        self.deleted = True
+        self.save()
+
+    def __str__(self):
+        return f'Post by {self.user.username} on {self.created_at}'
+
+class Hashtag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    posts = models.ManyToManyField(SosPost, related_name='hashtags')
+
+class Like(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    post = models.ForeignKey(SosPost, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'post')  # Memastikan kombinasi user dan post unik

@@ -9,9 +9,9 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from .forms import CoursePriceForm,MicroCredentialForm,AskOraForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
+from .forms import CoursePriceForm,SosPostForm,MicroCredentialForm,AskOraForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from django.http import JsonResponse
-from .models import Course,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
+from .models import Course,Like,SosPost,Hashtag,UserProfile,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
 from authentication.models import CustomUser, Universiti
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
@@ -32,12 +32,158 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Prefetch
 import time
 import re
+from django.db import IntegrityError
+from django.middleware.csrf import get_token
+from django.core.exceptions import ValidationError
 import logging
 from datetime import timedelta
 from django.db.models import Prefetch
 from weasyprint import HTML
 from django.template.loader import render_to_string
+from django_ratelimit.decorators import ratelimit
 # views.py
+
+
+def create_and_list_sos_posts(request):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+
+    user_profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    if user_profile.is_blocked():
+        return render(request, 'blocked.html', {'until': user_profile.blocked_until})
+
+    posts = SosPost.objects.filter(deleted=False).select_related('user').order_by('-created_at')
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    # Tambahkan liked dan like_count untuk setiap postingan
+    for post in page_obj:
+        post.liked = Like.objects.filter(user=request.user, post=post).exists()
+        post.like_count = Like.objects.filter(post=post).count()
+
+    today = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    trending = Hashtag.objects.filter(posts__created_at__gte=today).annotate(count=Count('posts')).order_by('-count')[:5]
+
+    form = SosPostForm()
+    context = {
+        'form': form,
+        'posts': page_obj,
+        'trending': trending,
+        'default_photo': '/media/profile_pics/hasbusiness-icon.png'
+    }
+    return render(request, 'home/sosial.html', context)
+
+@ratelimit(key='user', rate='1/m', method='POST')
+def create_post(request):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+    
+    user_agent = request.META.get('HTTP_USER_AGENT', '').lower()
+    if 'bot' in user_agent or 'crawler' in user_agent:
+        return HttpResponse(render_to_string('messages.html', {'message': "Akses diblokir. Terdeteksi bot!", 'type': 'error'}))
+
+    user_profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    if user_profile.is_blocked():
+        return render(request, 'blocked.html', {'until': user_profile.blocked_until})
+
+    was_limited = getattr(request, 'limited', False)
+    if was_limited:
+        user_profile.blocked_until = timezone.now() + timedelta(days=1)
+        user_profile.save()
+        return HttpResponse(render_to_string('messages.html', {'message': "Diblokir 1 hari karena melanggar batas!", 'type': 'error'}))
+    
+    if request.method == 'POST':
+        form = SosPostForm(request.POST)
+        if form.is_valid():
+            new_post = form.save(commit=False)
+            new_post.user = request.user
+            new_post.save()
+            liked = Like.objects.filter(user=request.user, post=new_post).exists()
+            like_count = Like.objects.filter(post=new_post).count()
+            html = render_to_string('home/post_item.html', {
+                'post': new_post,
+                'liked': liked,
+                'like_count': like_count,
+                'request': request,
+                'default_photo': '/media/profile_pics/hasbusiness-icon.png'
+            })
+            return HttpResponse(html, headers={'HX-Trigger': 'clearForm'})
+        else:
+            return HttpResponse(render_to_string('messages.html', {'message': "Form tidak valid!", 'type': 'error'}))
+    return HttpResponse(status=400)
+
+def like_post(request, post_id):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+
+    if request.method == 'POST':
+        try:
+            post = get_object_or_404(SosPost, id=post_id)
+            like = Like.objects.filter(user=request.user, post=post).first()
+
+            if like:
+                like.delete()
+                liked = False
+            else:
+                Like.objects.create(user=request.user, post=post)
+                liked = True
+
+            like_count = Like.objects.filter(post=post).count()
+
+            html = render_to_string('home/like_button.html', {
+                'post': post,
+                'liked': liked,
+                'like_count': like_count
+            })
+            return HttpResponse(html)
+
+        except SosPost.DoesNotExist:
+            return HttpResponse(render_to_string('messages.html', {'message': "Postingan tidak ditemukan!", 'type': 'error'}))
+        except Exception:
+            return HttpResponse(status=500)
+
+    return HttpResponse(status=400)
+
+def retweet_post(request, post_id):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+    
+    post = SosPost.objects.get(id=post_id)
+    retweet = post.retweet_post(request.user)
+    if retweet:
+        html = render_to_string('home/post_item.html', {'post': retweet})
+        return HttpResponse(html, headers={'HX-Trigger': 'clearForm'})
+    return HttpResponse(render_to_string('messages.html', {'message': "Tidak bisa retweet ulang!", 'type': 'error'}))
+
+def reply_post(request, post_id):
+    try:
+        if not request.user.is_authenticated:
+            return redirect("/login/?next=%s" % request.path)
+        if request.method == 'POST':
+            form = SosPostForm(request.POST)
+            if form.is_valid():
+                reply = form.save(commit=False)
+                reply.user = request.user
+                reply.parent = SosPost.objects.get(id=post_id)
+                reply.save()
+                html = render_to_string('home/post_item.html', {'post': reply})
+                return HttpResponse(html, headers={'HX-Trigger': 'clearForm'})
+            return HttpResponse(render_to_string('messages.html', {'message': "Form tidak valid!", 'type': 'error'}))
+        return HttpResponse(status=400)
+    except SosPost.DoesNotExist:
+        return HttpResponse(render_to_string('messages.html', {'message': "Post tidak ditemukan!", 'type': 'error'}))
+    except Exception:
+        return HttpResponse(status=500)
+
+def load_posts(request):
+    """Load posts via HTMX."""
+    page_number = request.GET.get('page', 1)
+    posts = SosPost.objects.filter(deleted=False).select_related('user').order_by('-created_at')
+    paginator = Paginator(posts, 10)
+    page_obj = paginator.get_page(page_number)
+    html = render_to_string('home/post_list.html', {'posts': page_obj})
+    return HttpResponse(html)
 
 def micro_detail(request,id,slug):
     microcredential = get_object_or_404(MicroCredential, id=id, slug=slug)

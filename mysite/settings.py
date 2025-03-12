@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'courses',
     'import_export',
     'django_ckeditor_5',
+    'django_ratelimit',
     
 ]
 
@@ -88,6 +89,31 @@ DATABASES = {
     }
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
+        'LOCATION': '127.0.0.1:11211',  # Pastikan Memcached berjalan pada IP dan port ini
+    }
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'debug.log',
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -129,6 +155,10 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
@@ -148,12 +178,7 @@ EMAIL_HOST_PASSWORD = 'vdee kfzo dyvk idsa'  # Ganti dengan password aplikasi Gm
 DEFAULT_FROM_EMAIL = 'Django Test Email Address'
 
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static_files"),
-]
 
 
 customColorPalette = [
@@ -354,3 +379,4 @@ CKEDITOR_5_CONFIGS = {
 CKEDITOR_5_CUSTOM_CSS = "custom.css"
 CSRF_COOKIE_NAME = "new_csrf_cookie_name"
 CKEDITOR_5_FILE_UPLOAD_PERMISSION = "staff","is_partner",'authenticated'
+
