@@ -7,7 +7,7 @@ from .models import CustomUser, Universiti
 class UniversitiAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug', 'location')
     search_fields = ('name', 'location')
-
+    list_per_page = 10
 admin.site.register(Universiti, UniversitiAdmin)
 
 # Menyesuaikan admin untuk model CustomUser
@@ -35,5 +35,5 @@ class CustomUserAdmin(UserAdmin):
     )
     filter_horizontal = ()
     ordering = ('email',)  # Mengurutkan berdasarkan email
-
+    list_per_page = 10
 admin.site.register(CustomUser, CustomUserAdmin)

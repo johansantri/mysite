@@ -11,10 +11,12 @@ class SosPostAdmin(admin.ModelAdmin):
     search_fields = ('user__username', 'content')
     list_filter = ('deleted', 'created_at')
     ordering = ('-created_at',)
+    list_per_page = 10
 
 class CourseAdmin(ImportExportModelAdmin):
     list_display = ('course_name', 'course_number', 'course_run', 'category', 'level')  # Adjust based on your fields
     search_fields = ['course_name', 'course_number']  # Optional: add search functionality
+    list_per_page = 10
 
 # Register the model with the admin site using the ImportExportModelAdmin
 admin.site.register(Course, CourseAdmin)
@@ -25,11 +27,13 @@ class CalculateAdminPriceAdmin(admin.ModelAdmin):
     search_fields = ('name',)  # Memungkinkan pencarian berdasarkan nama
     list_filter = ('created_at',)  # Filter berdasarkan tanggal dibuat
     ordering = ('-created_at',)  # Urutkan dari yang terbaru
+    list_per_page = 10
 
 admin.site.register(models.Section)
 class PartnerAdmin(admin.ModelAdmin):
     autocomplete_fields = ['user','author']  # This will apply autocomplete to the 'user' ForeignKey field
     search_fields = ['name', 'abbreviation', 'user__username']
+    list_per_page = 10
 admin.site.register(Partner, PartnerAdmin)
 admin.site.register(models.Category)
 admin.site.register(models.Instructor)
@@ -56,6 +60,7 @@ class MicroCredentialAdmin(admin.ModelAdmin):
 
     # Optionally, you can add inline editing for related models, for example, required courses
     filter_horizontal = ('required_courses',)  # To make 'required_courses' display as a filterable horizontal list
+    list_per_page = 10
 
 # Register the model with the custom admin class
 admin.site.register(MicroCredential, MicroCredentialAdmin)
@@ -77,7 +82,7 @@ class SubmissionAdmin(admin.ModelAdmin):
     # Jika ingin menampilkan beberapa field di form saat menambahkan atau mengedit Submission
     fields = ('user', 'askora', 'answer_text', 'answer_file', 'score', 'submitted_at')
     readonly_fields = ('submitted_at',)  # Menyatakan bahwa submitted_at hanya bisa dibaca (tidak bisa diedit)
-
+    list_per_page = 10
 # Mendaftarkan model Submission di admin
 admin.site.register(Submission, SubmissionAdmin)
 admin.site.register(PeerReview)
@@ -90,7 +95,7 @@ class MaterialAdmin(admin.ModelAdmin):
     list_display = ('title', 'section', 'created_at')
 
     list_filter = ('section',)
-
+    list_per_page = 10
 
 class ChoiceInline(admin.TabularInline):
     model = Choice
@@ -106,3 +111,4 @@ admin.site.register(AttemptedQuestion)
 class ScoreAdmin(admin.ModelAdmin):
     list_display = ('user', 'score', 'total_questions', 'grade', 'date')
     list_filter = ('grade', 'date')
+    list_per_page = 10
