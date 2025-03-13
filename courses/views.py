@@ -46,33 +46,52 @@ from django_ratelimit.decorators import ratelimit
 
 def create_and_list_sos_posts(request):
     if not request.user.is_authenticated:
-        return redirect("/login/?next=%s" % request.path)
-
+        return render(request, 'login_required.html')
+    
     user_profile, _ = UserProfile.objects.get_or_create(user=request.user)
     if user_profile.is_blocked():
         return render(request, 'blocked.html', {'until': user_profile.blocked_until})
 
-    posts = SosPost.objects.filter(deleted=False).select_related('user').order_by('-created_at')
-    paginator = Paginator(posts, 10)
-    page_number = request.GET.get('page', 1)
-    page_obj = paginator.get_page(page_number)
-
-    # Tambahkan liked dan like_count untuk setiap postingan
-    for post in page_obj:
+    # Ambil post awal (misalnya 10 pertama)
+    posts = SosPost.objects.filter(deleted=False).select_related('user', 'parent').prefetch_related('replies').order_by('-created_at')[:10]
+    
+    for post in posts:
         post.liked = Like.objects.filter(user=request.user, post=post).exists()
         post.like_count = Like.objects.filter(post=post).count()
 
     today = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
     trending = Hashtag.objects.filter(posts__created_at__gte=today).annotate(count=Count('posts')).order_by('-count')[:5]
-
+    
     form = SosPostForm()
     context = {
         'form': form,
-        'posts': page_obj,
+        'posts': posts,
         'trending': trending,
         'default_photo': '/media/profile_pics/hasbusiness-icon.png'
     }
     return render(request, 'home/sosial.html', context)
+
+def load_more_posts(request):
+    if request.method == 'GET':
+        offset = int(request.GET.get('offset', 0))
+        limit = 10  # Jumlah post per load
+        
+        posts = SosPost.objects.filter(deleted=False).select_related('user', 'parent').prefetch_related('replies').order_by('-created_at')[offset:offset + limit]
+        
+        for post in posts:
+            post.liked = Like.objects.filter(user=request.user, post=post).exists()
+            post.like_count = Like.objects.filter(post=post).count()
+        
+        html = ''
+        if posts:
+            html = render_to_string('home/post_item.html', {'post': post}, request=request)  # Render setiap post
+            for post in posts:
+                html += render_to_string('home/post_item.html', {'post': post}, request=request)
+        else:
+            html = '<p>No more posts to load.</p>'
+        
+        return HttpResponse(html)
+    return HttpResponse(status=400)
 
 @ratelimit(key='user', rate='1/m', method='POST')
 def create_post(request):
@@ -145,16 +164,7 @@ def like_post(request, post_id):
 
     return HttpResponse(status=400)
 
-def retweet_post(request, post_id):
-    if not request.user.is_authenticated:
-        return redirect("/login/?next=%s" % request.path)
-    
-    post = SosPost.objects.get(id=post_id)
-    retweet = post.retweet_post(request.user)
-    if retweet:
-        html = render_to_string('home/post_item.html', {'post': retweet})
-        return HttpResponse(html, headers={'HX-Trigger': 'clearForm'})
-    return HttpResponse(render_to_string('messages.html', {'message': "Tidak bisa retweet ulang!", 'type': 'error'}))
+
 
 def reply_post(request, post_id):
     try:
@@ -167,6 +177,8 @@ def reply_post(request, post_id):
                 reply.user = request.user
                 reply.parent = SosPost.objects.get(id=post_id)
                 reply.save()
+                reply.liked = Like.objects.filter(user=request.user, post=reply).exists()
+                reply.like_count = Like.objects.filter(post=reply).count()
                 html = render_to_string('home/post_item.html', {'post': reply})
                 return HttpResponse(html, headers={'HX-Trigger': 'clearForm'})
             return HttpResponse(render_to_string('messages.html', {'message': "Form tidak valid!", 'type': 'error'}))
@@ -175,15 +187,16 @@ def reply_post(request, post_id):
         return HttpResponse(render_to_string('messages.html', {'message': "Post tidak ditemukan!", 'type': 'error'}))
     except Exception:
         return HttpResponse(status=500)
+    
+def reply_form(request, post_id):
+    try:
+        post = SosPost.objects.get(id=post_id)
+        html = render_to_string('home/reply_form.html', {'post_id': post_id})
+        return HttpResponse(html)
+    except SosPost.DoesNotExist:
+        return HttpResponse(render_to_string('messages.html', {'message': "Post tidak ditemukan!", 'type': 'error'}))
 
-def load_posts(request):
-    """Load posts via HTMX."""
-    page_number = request.GET.get('page', 1)
-    posts = SosPost.objects.filter(deleted=False).select_related('user').order_by('-created_at')
-    paginator = Paginator(posts, 10)
-    page_obj = paginator.get_page(page_number)
-    html = render_to_string('home/post_list.html', {'posts': page_obj})
-    return HttpResponse(html)
+
 
 def micro_detail(request,id,slug):
     microcredential = get_object_or_404(MicroCredential, id=id, slug=slug)

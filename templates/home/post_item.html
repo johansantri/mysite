@@ -1,48 +1,56 @@
-
-
-   <!-- Feed Tweet -->
-   <div class="card tweet-card">
+&nbsp;
+<div class="card tweet-card {% if post.parent %}reply-card{% endif %}" style="{% if post.parent %}margin-left: 20px;{% endif %}">
+    
     <div class="card-body">
-        <div class="d-flex mb-3">
-            {% if post.user.photo %}
-                <img src="{{ post.user.photo.url }}" class="rounded-circle me-2" alt="User" style="width: 50px; height: 50px;">
-            {% else %}
-                <img src="/media/profile_pics/default-avatar.png" class="rounded-circle me-2" alt="User" style="width: 50px; height: 50px;">
+        <!-- Konten Postingan -->
+         
+        <p>
+            {% if post.parent %}
+                <small class="text-muted">Balasan untuk @{{ post.parent.user.username }}</small><br>
             {% endif %}
-
-
-            <div>
-                <strong class="text-primary">{{ post.user.first_name }} {{ post.user.last_name }}</strong>
-                <p><small class="text-muted">@{{ post.user.username }} - {{ post.created_at }}</small></p>
-                <p>{{ post.content }}</p>
-                <div class="d-flex mt-3">
-                    
-                    <div id="like-{{ post.id }}">
-                        {% if post.liked %}
-                            <button hx-post="{% url 'courses:like_post' post.id %}" 
-                                    hx-target="#like-{{ post.id }}" 
-                                    hx-swap="outerHTML" 
-                                    class="btn btn-link p-0 text-danger">
-                                <i class="fas fa-heart"></i> {{ post.like_count }}
-                            </button>
-                        {% else %}
-                            <button hx-post="{% url 'courses:like_post' post.id %}" 
-                                    hx-target="#like-{{ post.id }}" 
-                                    hx-swap="outerHTML" 
-                                    class="btn btn-link p-0 text-muted">
-                                <i class="far fa-heart"></i> {{ post.like_count }}
-                            </button>
-                        {% endif %}
-                        &nbsp;
-                        <i class="fa fa-retweet" aria-hidden="true"></i>
-                        &nbsp;
-                        <i class="fa fa-reply" aria-hidden="true"></i>
-                    </div>
-
-                    
-                </div>
+            {{ post.content }} - <strong>{{ post.user.username }}</strong>
+            <small class="text-muted">({{ post.created_at|date:"d M Y H:i" }})</small>
+        </p>
+        <div class="d-flex align-items-center">
+            <!-- Like/Unlike dengan Ikon Love -->
+            <div id="like-{{ post.id }}">
+                {% if post.liked %}
+                    <button hx-post="{% url 'courses:like_post' post_id=post.id %}" 
+                            hx-target="#like-{{ post.id }}" 
+                            hx-swap="outerHTML" 
+                            class="btn btn-link p-0 text-danger" 
+                            aria-label="Unlike post">
+                        <i class="fas fa-heart"></i> {{ post.like_count }}
+                    </button>
+                {% else %}
+                    <button hx-post="{% url 'courses:like_post' post_id=post.id %}" 
+                            hx-target="#like-{{ post.id }}" 
+                            hx-swap="outerHTML" 
+                            class="btn btn-link p-0 text-muted" 
+                            aria-label="Like post">
+                        <i class="far fa-heart"></i> {{ post.like_count }}
+                    </button>
+                {% endif %}
             </div>
+            &nbsp;
+            <!-- Tombol Reply -->
+            <button class="btn btn-link p-0 text-primary" 
+                    hx-get="{% url 'courses:reply_form' post_id=post.id %}" 
+                    hx-target="#reply-form-{{ post.id }}" 
+                    hx-swap="innerHTML">
+                    <i class="fa fa-reply" aria-hidden="true"></i>
+            </button>
         </div>
+
+        <!-- Wadah Form Reply -->
+        <div id="reply-form-{{ post.id }}"></div>
+
+        <!-- Tampilkan Balasan -->
+        <div id="replies-{{ post.id }}">
+            {% for reply in post.replies.all %}
+                {% include 'home/post_item.html' with post=reply %}
+            {% endfor %}
+        </div>
+        
     </div>
 </div>
-<br>

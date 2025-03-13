@@ -1,0 +1,8 @@
+<form hx-post="{% url 'courses:reply_post' post_id=post_id %}" 
+      hx-target="#replies-{{ post_id }}" 
+      hx-swap="prepend" 
+      class="mt-2">
+    {% csrf_token %}
+    <textarea name="content" rows="2" class="form-control" placeholder="Tulis balasan..." required></textarea>
+    <button type="submit" class="btn btn-outline-primary">reply</button>
+</form>

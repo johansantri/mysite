@@ -4,35 +4,84 @@
 {% block content %}
 <div class="col-md-8 main-content">
     <div id="messages" class="alert-messages" hx-swap-oob="true"></div>
+    
+    <!-- Form Postingan Utama -->
     <div class="card tweet-card tweet-card-post">
         <div class="card-body">
-            <form hx-post="{% url 'courses:create_post' %}" hx-target="#new-posts" hx-swap="afterbegin">
+            <form hx-post="{% url 'courses:create_post' %}" hx-target="#new-posts" hx-swap="prepend">
                 {% csrf_token %}
-                {{ form.content }}
+                <textarea name="content" id="id_content" class="form-control" rows="3" placeholder="Apa yang Anda pikirkan?"></textarea>
                 <div id="charCount">0/150</div>
                 {{ form.captcha }}
-                <button type="submit" class="btn btn-outline-primary mt-3">Post </button>
+                <button type="submit" class="btn btn-outline-primary mt-3"> post</button>
             </form>
         </div>
     </div>
     <br>
+
+    <!-- Daftar Postingan -->
     <div id="post-list">
-        <div id="new-posts"></div> <!-- Wadah untuk tweet baru -->
+        
+        <div id="new-posts"></div>
+        
         {% for post in posts %}
-            {% include 'home/post_item.html' with post=post %}
+            {% if not post.parent %}
+                {% include 'home/post_item.html' with post=post %}
+            {% endif %}
         {% endfor %}
+        
+        <div id="loading" style="display: none;">Loading...</div>
+        <div id="no-more" style="display: none;">No more posts to load.</div>
     </div>
 </div>
 
 <script>
-    let textarea = document.querySelector('#id_content');
-    textarea.addEventListener('input', function() {
+    let mainTextarea = document.querySelector('#id_content');
+    mainTextarea.addEventListener('input', function() {
         let chars = this.value.length;
         document.getElementById('charCount').innerText = `${chars}/150`;
     });
     document.body.addEventListener('clearForm', function() {
-        textarea.value = '';
+        mainTextarea.value = '';
         document.getElementById('charCount').innerText = '0/150';
+        document.querySelectorAll('textarea[name="content"]').forEach(textarea => {
+            textarea.value = '';
+        });
+    });
+
+    // Load More saat scroll ke bawah
+    let offset = 10;  // Mulai dari post ke-11
+    let loading = false;
+
+    window.addEventListener('scroll', function() {
+        if (loading) return;
+        
+        const postList = document.getElementById('post-list');
+        const loadingDiv = document.getElementById('loading');
+        const noMoreDiv = document.getElementById('no-more');
+        
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {  // 100px sebelum akhir
+            loading = true;
+            loadingDiv.style.display = 'block';
+            
+            fetch(`{% url 'courses:load_more_posts' %}?offset=${offset}`)
+                .then(response => response.text())
+                .then(html => {
+                    loadingDiv.style.display = 'none';
+                    if (html.includes('No more posts')) {
+                        noMoreDiv.style.display = 'block';
+                    } else {
+                        postList.insertAdjacentHTML('beforeend', html);
+                        offset += 10;  // Tambah offset untuk load berikutnya
+                        loading = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading more posts:', error);
+                    loadingDiv.style.display = 'none';
+                    loading = false;
+                });
+        }
     });
 </script>
 {% endblock content %}

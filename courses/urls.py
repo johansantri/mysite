@@ -79,13 +79,15 @@ urlpatterns = [
     path('microcredential/<int:id>/certificate/', views.generate_microcredential_certificate, name='generate_microcredential_certificate'),
     path('microcredential/<slug:slug>/enroll/', views.enroll_microcredential, name='enroll_microcredential'),
     #detail micro lms
-    path('microcredential/<int:id>/<slug:slug>', views.micro_detail, name="micro_detail"),
     path('sosial/', views.create_and_list_sos_posts, name='create_and_list_sos_posts'),
     path('sosial/create/', views.create_post, name='create_post'),
     path('sosial/like/<int:post_id>/', views.like_post, name='like_post'),
-    path('sosial/retweet/<int:post_id>/', views.retweet_post, name='retweet_post'),
+   
     path('sosial/reply/<int:post_id>/', views.reply_post, name='reply_post'),
-    path('sosial/load-posts/', views.load_posts, name='load_posts'),
+    path('sosial/reply-form/<int:post_id>/', views.reply_form, name='reply_form'),  # Ditambahkan
+    
+    path('sosial/load-more/', views.load_more_posts, name='load_more_posts'),
+
    
    
 ]

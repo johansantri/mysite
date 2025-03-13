@@ -826,8 +826,7 @@ class SosPost(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     deleted = models.BooleanField(default=False)
-    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
-
+    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
 
     def clean_content(self):
         """Membersihkan konten dari tag HTML berbahaya."""
@@ -844,7 +843,6 @@ class SosPost(models.Model):
     def save(self, *args, **kwargs):
         self.clean()
         super().save(*args, **kwargs)
-        # Simpan hashtag setelah post disimpan
         self.save_hashtags()
 
     def contains_blacklisted_keywords(self):
@@ -866,12 +864,12 @@ class SosPost(models.Model):
             hashtag.posts.add(self)
 
     def retweet_post(self, user):
-        if self.retweet:
+        if self.retweet:  # Pastikan ada field retweet jika digunakan
             return None
         retweet_content = f"Retweeted: {self.content}"
         return SosPost.objects.create(
             user=user,
-            content=retweet_content[:150],  # Pastikan sesuai batas
+            content=retweet_content[:150],
             retweet=self
         )
 
@@ -885,6 +883,8 @@ class SosPost(models.Model):
 class Hashtag(models.Model):
     name = models.CharField(max_length=50, unique=True)
     posts = models.ManyToManyField(SosPost, related_name='hashtags')
+    def __str__(self):
+        return f'#{self.name}'
 
 class Like(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
