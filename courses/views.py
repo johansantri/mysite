@@ -43,6 +43,75 @@ from django.template.loader import render_to_string
 from django_ratelimit.decorators import ratelimit
 # views.py
 
+def search_posts(request):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+    
+    user_agent = request.META.get('HTTP_USER_AGENT', '').lower()
+    if 'bot' in user_agent or 'crawler' in user_agent:
+        return HttpResponse(render_to_string('messages.html', {'message': "Akses diblokir. Terdeteksi bot!", 'type': 'error'}))
+
+    user_profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    if user_profile.is_blocked():
+        return render(request, 'blocked.html', {'until': user_profile.blocked_until})
+
+    was_limited = getattr(request, 'limited', False)
+    if was_limited:
+        user_profile.blocked_until = timezone.now() + timedelta(days=1)
+        user_profile.save()
+        return HttpResponse(render_to_string('messages.html', {'message': "Diblokir 1 hari karena melanggar batas!", 'type': 'error'}))
+    
+    query = request.GET.get('q', '').strip()
+    posts = SosPost.objects.filter(
+        deleted=False,
+        content__icontains=query
+    ).select_related('user', 'parent').prefetch_related('replies').order_by('-created_at')[:10]
+    
+    for post in posts:
+        post.liked = Like.objects.filter(user=request.user, post=post).exists()
+        post.like_count = Like.objects.filter(post=post).count()
+    
+    html = ''
+    for post in posts:
+        if not post.parent:
+            html += render_to_string('home/post_item.html', {'post': post}, request=request)
+    
+    return HttpResponse(html if html else '<p>No posts found for this search.</p>')
+
+
+def posts_by_hashtag(request, hashtag):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+    
+    user_agent = request.META.get('HTTP_USER_AGENT', '').lower()
+    if 'bot' in user_agent or 'crawler' in user_agent:
+        return HttpResponse(render_to_string('messages.html', {'message': "Akses diblokir. Terdeteksi bot!", 'type': 'error'}))
+
+    user_profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    if user_profile.is_blocked():
+        return render(request, 'blocked.html', {'until': user_profile.blocked_until})
+
+    was_limited = getattr(request, 'limited', False)
+    if was_limited:
+        user_profile.blocked_until = timezone.now() + timedelta(days=1)
+        user_profile.save()
+        return HttpResponse(render_to_string('messages.html', {'message': "Diblokir 1 hari karena melanggar batas!", 'type': 'error'}))
+    
+    posts = SosPost.objects.filter(
+        deleted=False,
+        hashtags__name=hashtag.lower()
+    ).select_related('user', 'parent').prefetch_related('replies').order_by('-created_at')[:10]
+    
+    for post in posts:
+        post.liked = Like.objects.filter(user=request.user, post=post).exists()
+        post.like_count = Like.objects.filter(post=post).count()
+    
+    html = ''
+    for post in posts:
+        if not post.parent:  # Hanya post utama
+            html += render_to_string('home/post_item.html', {'post': post}, request=request)
+    
+    return HttpResponse(html if html else '<p>No posts found for this hashtag.</p>')
 
 def create_and_list_sos_posts(request):
     if not request.user.is_authenticated:
@@ -72,25 +141,43 @@ def create_and_list_sos_posts(request):
     return render(request, 'home/sosial.html', context)
 
 def load_more_posts(request):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+    
+    user_agent = request.META.get('HTTP_USER_AGENT', '').lower()
+    if 'bot' in user_agent or 'crawler' in user_agent:
+        return HttpResponse(render_to_string('messages.html', {'message': "Akses diblokir. Terdeteksi bot!", 'type': 'error'}))
+
+    user_profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    if user_profile.is_blocked():
+        return render(request, 'blocked.html', {'until': user_profile.blocked_until})
+
+    was_limited = getattr(request, 'limited', False)
+    if was_limited:
+        user_profile.blocked_until = timezone.now() + timedelta(days=1)
+        user_profile.save()
+        return HttpResponse(render_to_string('messages.html', {'message': "Diblokir 1 hari karena melanggar batas!", 'type': 'error'}))
+    
     if request.method == 'GET':
         offset = int(request.GET.get('offset', 0))
-        limit = 10  # Jumlah post per load
+        hashtag = request.GET.get('hashtag', None)
+        query = request.GET.get('q', None)
+        limit = 10
         
-        posts = SosPost.objects.filter(deleted=False).select_related('user', 'parent').prefetch_related('replies').order_by('-created_at')[offset:offset + limit]
+        qs = SosPost.objects.filter(deleted=False)
+        if hashtag:
+            qs = qs.filter(hashtags__name=hashtag.lower())
+        if query:
+            qs = qs.filter(content__icontains=query)
         
-        for post in posts:
-            post.liked = Like.objects.filter(user=request.user, post=post).exists()
-            post.like_count = Like.objects.filter(post=post).count()
+        posts = qs.select_related('user', 'parent').prefetch_related('replies').order_by('-created_at')[offset:offset + limit]
         
         html = ''
-        if posts:
-            html = render_to_string('home/post_item.html', {'post': post}, request=request)  # Render setiap post
-            for post in posts:
+        for post in posts:
+            if not post.parent:
                 html += render_to_string('home/post_item.html', {'post': post}, request=request)
-        else:
-            html = '<p>No more posts to load.</p>'
         
-        return HttpResponse(html)
+        return HttpResponse(html if html else '<p>No more posts to load.</p>')
     return HttpResponse(status=400)
 
 @ratelimit(key='user', rate='1/m', method='POST')

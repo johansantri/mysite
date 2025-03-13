@@ -58,29 +58,7 @@
                 
             </div>
             {% block content %}{% endblock content %}
-            <div class="col-md-2 sidebar-right">
-                <h5>Pencarian</h5>
-                <input type="text" class="form-control mb-3" placeholder="Cari di Twitter...">
-                <h5>Tren</h5>
-                <ul class="list-group mb-3">
-                    {% for trend in trending %}
-                        <li class="list-group-item">#{{ trend.name }} ({{ trend.count }})</li>
-                    {% empty %}
-                        <li class="list-group-item">Belum ada tren</li>
-                    {% endfor %}
-                </ul>
-                <h5>Orang yang disarankan</h5>
-                <ul class="list-group">
-                    <li class="list-group-item d-flex justify-content-between">
-                        <span>User 1</span>
-                        <button class="btn btn-outline-primary btn-sm">Follow</button>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between">
-                        <span>User 2</span>
-                        <button class="btn btn-outline-primary btn-sm">Follow</button>
-                    </li>
-                </ul>
-            </div>
+            
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

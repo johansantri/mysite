@@ -38,6 +38,35 @@
     </div>
 </div>
 
+<div class="col-md-2 sidebar-right">
+    <h5>Pencarian</h5>
+    <input type="text" 
+           class="form-control mb-3" 
+           placeholder="Cari di Twitter..." 
+           hx-get="{% url 'courses:search_posts' %}" 
+           hx-target="#post-list" 
+           hx-swap="innerHTML" 
+           hx-trigger="keyup delay:500ms" 
+           name="q">
+    <h5>Tren</h5>
+    <ul class="list-group mb-3">
+        {% for trend in trending %}
+            <li class="list-group-item">
+                <a href="#"
+                   hx-get="{% url 'courses:posts_by_hashtag' hashtag=trend.name %}"
+                   hx-target="#post-list"
+                   hx-swap="innerHTML"
+                   onclick="setCurrentHashtag('{{ trend.name }}')">
+                    #{{ trend.name }} ({{ trend.count }})
+                </a>
+            </li>
+        {% empty %}
+            <li class="list-group-item">Belum ada tren</li>
+        {% endfor %}
+    </ul>
+    
+</div>
+
 <script>
     let mainTextarea = document.querySelector('#id_content');
     mainTextarea.addEventListener('input', function() {
@@ -52,10 +81,26 @@
         });
     });
 
-    // Load More saat scroll ke bawah di .main-content
-    let offset = 10;  // Mulai dari post ke-11
+    let offset = 10;
     let loading = false;
+    let currentHashtag = '';
+    let currentQuery = '';  // Simpan kata kunci pencarian
     const mainContent = document.querySelector('.main-content');
+
+    function setCurrentHashtag(hashtag) {
+        currentHashtag = hashtag;
+        currentQuery = '';  // Reset pencarian saat hashtag dipilih
+        offset = 10;
+        document.getElementById('no-more').style.display = 'none';
+    }
+
+    // Setel kata kunci pencarian dari input
+    document.querySelector('input[name="q"]').addEventListener('input', function() {
+        currentQuery = this.value.trim();
+        currentHashtag = '';  // Reset hashtag saat pencarian digunakan
+        offset = 10;
+        document.getElementById('no-more').style.display = 'none';
+    });
 
     mainContent.addEventListener('scroll', function() {
         if (loading) return;
@@ -64,12 +109,18 @@
         const loadingDiv = document.getElementById('loading');
         const noMoreDiv = document.getElementById('no-more');
         
-        // Cek apakah scroll mendekati bawah .main-content
         if (mainContent.scrollTop + mainContent.clientHeight >= mainContent.scrollHeight - 100) {
             loading = true;
             loadingDiv.style.display = 'block';
             
-            fetch(`{% url 'courses:load_more_posts' %}?offset=${offset}`)
+            let url = `{% url 'courses:load_more_posts' %}?offset=${offset}`;
+            if (currentHashtag) {
+                url += `&hashtag=${encodeURIComponent(currentHashtag)}`;
+            } else if (currentQuery) {
+                url += `&q=${encodeURIComponent(currentQuery)}`;
+            }
+            
+            fetch(url)
                 .then(response => response.text())
                 .then(html => {
                     loadingDiv.style.display = 'none';

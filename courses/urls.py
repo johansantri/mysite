@@ -85,9 +85,9 @@ urlpatterns = [
    
     path('sosial/reply/<int:post_id>/', views.reply_post, name='reply_post'),
     path('sosial/reply-form/<int:post_id>/', views.reply_form, name='reply_form'),  # Ditambahkan
-    
+    path('sosial/hashtag/<str:hashtag>/', views.posts_by_hashtag, name='posts_by_hashtag'),  # Rute baru
     path('sosial/load-more/', views.load_more_posts, name='load_more_posts'),
-
+    path('sosial/search/', views.search_posts, name='search_posts'),  # Rute baru
    
    
 ]
