@@ -2,6 +2,11 @@
 <html>
 <head>
     <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
         body {
             font-family: 'Georgia', serif;
             background-color: #f0f4f8;
@@ -12,8 +17,10 @@
             align-items: center;
             min-height: 100vh;
         }
+
         .certificate {
-            width: 900px;
+            width: 210mm; /* Ukuran A4 secara horizontal */
+            height: 297mm; /* Ukuran A4 secara vertikal */
             background: url('https://www.transparenttextures.com/patterns/subtle-white-feathers.png'), #ffffff;
             border: 8px double #2a4066;
             border-radius: 15px;
@@ -22,7 +29,9 @@
             position: relative;
             overflow: hidden;
             text-align: center;
+            box-sizing: border-box; /* Menghindari padding tambahan melebihi ukuran */
         }
+
         .header {
             background-color: #2a4066;
             color: white;
@@ -33,6 +42,7 @@
             border-radius: 10px 10px 0 0;
             margin: -40px -40px 30px -40px;
         }
+
         .title {
             font-size: 40px;
             font-weight: bold;
@@ -41,6 +51,7 @@
             text-transform: uppercase;
             letter-spacing: 2px;
         }
+
         .content {
             font-size: 20px;
             line-height: 2;
@@ -50,10 +61,12 @@
             margin-left: auto;
             margin-right: auto;
         }
+
         .content strong {
             color: #2a4066;
             font-weight: bold;
         }
+
         .checklist {
             position: absolute;
             top: 20px;
@@ -67,12 +80,14 @@
             justify-content: center;
             box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
         }
+
         .checklist::before {
             content: '\2713';
             font-size: 30px;
             color: white;
             font-weight: bold;
         }
+
         .transcript {
             margin-top: 40px;
             width: 80%;
@@ -84,11 +99,13 @@
             border-radius: 8px;
             overflow: hidden;
         }
+
         .transcript th, .transcript td {
             padding: 12px 15px;
             font-size: 16px;
             color: #333;
         }
+
         .transcript th {
             background-color: #2a4066;
             color: white;
@@ -96,15 +113,19 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
+
         .transcript td {
             border-bottom: 1px solid #e0e0e0;
         }
+
         .transcript tr:nth-child(even) {
             background-color: #f9f9f9; /* Zebra stripes lembut */
         }
+
         .transcript tr:hover {
             background-color: #f0f4f8; /* Hover effect */
         }
+
         .footer {
             margin-top: 40px;
             font-size: 16px;
@@ -112,6 +133,7 @@
             border-top: 2px dashed #d4af37;
             padding-top: 20px;
         }
+
         .watermark {
             position: absolute;
             top: 50%;
