@@ -165,11 +165,25 @@ def like_post(request, post_id):
     return HttpResponse(status=400)
 
 
-
+@ratelimit(key='user', rate='1/m', method='POST')
 def reply_post(request, post_id):
     try:
         if not request.user.is_authenticated:
             return redirect("/login/?next=%s" % request.path)
+        user_agent = request.META.get('HTTP_USER_AGENT', '').lower()
+        if 'bot' in user_agent or 'crawler' in user_agent:
+            return HttpResponse(render_to_string('messages.html', {'message': "Akses diblokir. Terdeteksi bot!", 'type': 'error'}))
+
+        user_profile, _ = UserProfile.objects.get_or_create(user=request.user)
+        if user_profile.is_blocked():
+            return render(request, 'blocked.html', {'until': user_profile.blocked_until})
+
+        was_limited = getattr(request, 'limited', False)
+        if was_limited:
+            user_profile.blocked_until = timezone.now() + timedelta(days=1)
+            user_profile.save()
+            return HttpResponse(render_to_string('messages.html', {'message': "Diblokir 1 hari karena melanggar batas!", 'type': 'error'}))
+        
         if request.method == 'POST':
             form = SosPostForm(request.POST)
             if form.is_valid():
