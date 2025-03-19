@@ -141,11 +141,18 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
+# URL untuk mengakses file statis
 STATIC_URL = "/static/"
+
+# Direktori untuk mengumpulkan file statis pada produksi (gunakan folder 'staticfiles' pada server)
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
+# URL untuk mengakses file media (misalnya gambar, video yang di-upload pengguna)
 MEDIA_URL = "/media/"
+
+# Direktori untuk menyimpan file media yang di-upload oleh pengguna
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
 
 
 # Default primary key field type

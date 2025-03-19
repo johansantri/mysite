@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Twitter Clone with Bootstrap 5</title>
+    <title>SOSIAL POST</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <!-- Di <head> pada home/sos.html -->
@@ -14,11 +14,33 @@
         .tweet-card-post { position: sticky; top: 0; z-index: 100; }
         .main-content { max-height: 100vh; overflow-y: auto; }
         .alert-messages { position: fixed; top: 10px; right: 10px; z-index: 200; }
+
+        /* Ukuran gambar avatar yang lebih kecil untuk tampilan mobile */
+        @media (max-width: 768px) {
+            .app-sidebar__user-avatar {
+                width: 40px; /* Ukuran lebar gambar */
+                height: 40px; /* Ukuran tinggi gambar */
+            }
+        }
+
+        /* Custom styling for mobile */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            .sidebar.show {
+                display: block;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container-fluid">
         <div class="row">
+         <!-- Toggle button for mobile -->
+            <button class="btn btn-primary d-md-none btn-sm" id="sidebarToggle" type="button">
+                <i class="bi bi-list"></i> {{ request.user.first_name }} {{ request.user.last_name }}
+            </button>
             <div class="col-md-2 bg-dark text-white p-3 sidebar">
                 <a href="{% if user.is_authenticated %}{% url 'authentication:edit-photo' request.user.id %}{% else %}#{% endif %}" class="user-profile">
                     <div class="user-info">
@@ -135,6 +157,12 @@
                 evt.detail.headers['X-CSRFToken'] = getCookie('new_csrf_cookie_name');
                // console.log('Header dikirim:', evt.detail.headers);  // Debug header
             });
+        });
+    </script>
+      <script>
+        // Toggle sidebar functionality for mobile
+        document.getElementById('sidebarToggle').addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.toggle('show');
         });
     </script>
 </body>
