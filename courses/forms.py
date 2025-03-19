@@ -567,26 +567,15 @@ class PartnerForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Cache user queryset
-        user_cache_key = 'user_queryset_active'
-        user_queryset_ids = cache.get(user_cache_key)
-
-        if user_queryset_ids is None:
-            # Log the cache miss for debugging purposes
-            #logger.debug("Cache miss for user queryset.")
+       
             
-            # Query only active users, limit the number of users
-            user_queryset = CustomUser.objects.filter(is_active=True).only('id', 'username')[:100]
+     
+         # Batasi jumlah universitas yang ditampilkan ke maksimum 10
+        self.fields['name'].queryset = Universiti.objects.only('id', 'name')[:10]
+        
+        # Batasi jumlah pengguna yang ditampilkan ke maksimum 10
+        self.fields['user'].queryset = CustomUser.objects.filter(is_active=True).only('id', 'username')[:10]    
             
-            # Cache only the user IDs to minimize cache size
-            user_queryset_ids = list(user_queryset.values_list('id', flat=True))  # List of user IDs
-            cache.set(user_cache_key, user_queryset_ids, timeout=60*60)  # Cache for 1 hour
-            
-            # Set the queryset in the form
-            self.fields['user'].queryset = user_queryset
-        else:
-            # If the IDs are in the cache, reconstruct the queryset
-            self.fields['user'].queryset = CustomUser.objects.filter(id__in=user_queryset_ids)
 
 
 
@@ -645,9 +634,11 @@ class PartnerFormUpdate(forms.ModelForm):
 
         if user:
             if user.is_superuser:
-                # Superuser bisa mengedit semua field
-                self.fields['user'].queryset = CustomUser.objects.all()
-                self.fields['name'].queryset = Universiti.objects.all()
+                 # Batasi jumlah universitas yang ditampilkan ke maksimum 10
+                self.fields['name'].queryset = Universiti.objects.only('id', 'name')[:10]
+                
+                # Batasi jumlah pengguna yang ditampilkan ke maksimum 10
+                self.fields['user'].queryset = CustomUser.objects.filter(is_active=True).only('id', 'username')[:10]
             elif hasattr(user, 'partner_user'):  # Cek apakah user adalah partner
                 self.fields['user'].queryset = CustomUser.objects.filter(id=user.id)
 
