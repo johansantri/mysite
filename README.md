@@ -51,23 +51,23 @@ git clone https://github.com/johansantri/mysite.git
 cd mysite
 ```
 ### 3. Create a virtual environment:
-Refer to this guide for setting up a virtual environment for your OS using Windows: [Python Virtual Environment Installation Guide](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/)
+Refer to this guide for setting up a virtual environment for your OS using linux: [Python Virtual Environment Installation Guide](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/)
 ```shell
-py -m venv .venv
+python3 -m venv .venv
 ```
 ### 4. Activate the virtual environment:
 ```shell
-.venv\Scripts\activate
+source .venv/bin/activate
 
 ```
 ### 5. Install requests package:
 ```shell
-py -m pip install requests
+python3 -m pip install requests
 ```
 
 ### 6. Install dependencies from requirements.txt:
 ```shell
-py -m pip install -r requirements.txt
+python3 -m pip install -r requirements.txt
 ```
 ### 7. Freeze requirements (to track package versions):
 ```shell
