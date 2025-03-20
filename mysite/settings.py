@@ -23,14 +23,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-*t=li&h7o=sj40!ic&)p+8!fy3p@*tfg+mz6!xuftigv_qa9yy'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True #False
+DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','localhost','ini.icei.ac.id','20.11.247.222']
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
-X_FRAME_OPTIONS = 'DENY'
-SECURE_SSL_REDIRECT = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
+
+ALLOWED_HOSTS = ['127.0.0.1','localhost']
+
 
 
 # Application definition
@@ -141,12 +138,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-# URL untuk mengakses file statis
-STATIC_URL = "/static/"
 
-# Direktori untuk mengumpulkan file statis pada produksi (gunakan folder 'staticfiles' pada server)
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+# URL untuk mengakses file statis di browser
+STATIC_URL = '/static/'
 
+# Jika Anda mengonfigurasi untuk pengumpulan file statis (collectstatic) di lingkungan produksi
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Tempat mengumpulkan file statis saat menggunakan collectstatic
+
+# Folder tempat file statis tambahan Anda berada (selain folder static default)
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),  # Folder 'static' yang ada di dalam proyek Anda
+]
 # URL untuk mengakses file media (misalnya gambar, video yang di-upload pengguna)
 MEDIA_URL = "/media/"
 
