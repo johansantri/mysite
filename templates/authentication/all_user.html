@@ -5,6 +5,7 @@
 
                 {% if request.user.is_superuser or request.user.is_partner %}
                 <!-- Toolbar and Search/Filter for Superuser or Partner -->
+                <div class="table-responsive">
                 <div class="btn-toolbar mb-2 mb-md-0">
                     {% if request.user.is_superuser %}
                     <div class="btn-group me-2">
@@ -27,7 +28,7 @@
                     </form>
                 </div>
                 {% endif %}
-
+                
                 <!-- User Table -->
                 <table class="table table-hover">
                     <thead>
@@ -105,7 +106,7 @@
                         {% endfor %}
                     </tbody>
                 </table>
-
+                </div>
                 <!-- Pagination -->
                 {% if request.user.is_superuser or request.user.is_partner %}
                 <p>Total: {{ total_user_count }} || Page {{ users.number }} of {{ users.paginator.num_pages }}</p>
