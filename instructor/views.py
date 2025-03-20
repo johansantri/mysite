@@ -7,10 +7,202 @@ from django.core.paginator import Paginator
 from django.db.models import Prefetch
 import csv
 from decimal import Decimal
+from django.contrib import messages
 from courses.models import Course, Enrollment,Section,GradeRange,QuestionAnswer, CourseProgress, PeerReview,MaterialRead, AssessmentRead, AssessmentScore,Material,Assessment, Submission, CustomUser, Instructor
 from authentication.models import CustomUser, Universiti
 # Create your views here.
 
+# View untuk Instructor mengajukan kurasi
+@login_required
+def instructor_submit_curation(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+    
+    # Pastikan pengguna adalah Instructor dan ditugaskan ke kursus ini
+    if not request.user.is_instructor or course.instructor.user != request.user:
+        raise PermissionDenied("You do not have permission to submit this course for curation.")
+
+    if request.method == "POST":
+        # Pastikan status saat ini adalah 'draft'
+        if course.status_course.status != 'draft':
+            messages.error(request, "Course can only be submitted for curation from 'Draft' status.")
+            return redirect('instructor_course_detail', course_id=course.id)
+
+        # Ubah status ke 'curation'
+        course.change_status('curation', request.user, message="Submitted for curation by Instructor.")
+        messages.success(request, "Course has been submitted for curation.")
+        return redirect('instructor_course_detail', course_id=course.id)
+
+    return render(request, 'instructor/submit_curation.html', {'course': course})
+
+# View untuk Partner meninjau kurasi
+@login_required
+def partner_review_curation(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+
+    # Pastikan pengguna adalah Partner dan memiliki hak atas kursus ini
+    if not request.user.is_partner or course.org_partner.user != request.user:
+        raise PermissionDenied("You do not have permission to review this course.")
+
+    if request.method == "POST":
+        # Pastikan status saat ini adalah 'curation'
+        if course.status_course.status != 'curation':
+            messages.error(request, "Course can only be reviewed in 'Curation' status.")
+            return redirect('studios', course_id=course.id)
+
+        action = request.POST.get('action')
+        message = request.POST.get('message')
+
+        if not message:
+            messages.error(request, "Please provide a message for your review.")
+            return redirect('partner_review_curation', course_id=course.id)
+
+        if action == 'accept':
+            # Partner menerima, tetap di 'curation', ajukan ke Superuser
+            course.change_status('curation', request.user, message=f"Accepted by Partner: {message}")
+            messages.success(request, "Course has been accepted and submitted for Superuser review.")
+        elif action == 'reject':
+            # Partner menolak, kembali ke 'draft'
+            course.change_status('draft', request.user, message=f"Rejected by Partner: {message}")
+            messages.success(request, "Course has been rejected and returned to Instructor for revisions.")
+        else:
+            messages.error(request, "Invalid action.")
+            return redirect('partner_review_curation', course_id=course.id)
+
+        return redirect('partner_course_detail', course_id=course.id)
+
+    return render(request, 'partner/review_curation.html', {
+        'course': course,
+        'history': course.status_history.all()
+    })
+
+# View untuk Superuser meninjau dan mempublikasikan
+@login_required
+def superuser_publish_course(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+
+    # Pastikan pengguna adalah Superuser
+    if not request.user.is_superuser:
+        raise PermissionDenied("You do not have permission to publish this course.")
+
+    if request.method == "POST":
+        # Pastikan status saat ini adalah 'curation'
+        if course.status_course.status != 'curation':
+            messages.error(request, "Course can only be published from 'Curation' status.")
+            return redirect('studios', course_id=course.id)
+
+        action = request.POST.get('action')
+        message = request.POST.get('message')
+
+        if not message:
+            messages.error(request, "Please provide a message for your review.")
+            return redirect('superuser_publish_course', course_id=course.id)
+
+        if action == 'publish':
+            # Superuser menerima, ubah status ke 'published'
+            course.change_status('published', request.user, message=f"Published by Superuser: {message}")
+            messages.success(request, "Course has been published to the catalog.")
+        elif action == 'reject':
+            # Superuser menolak, kembali ke 'curation' untuk Partner
+            course.change_status('curation', request.user, message=f"Rejected by Superuser: {message}")
+            messages.success(request, "Course has been rejected and returned to Partner for revisions.")
+        else:
+            messages.error(request, "Invalid action.")
+            return redirect('superuser_publish_course', course_id=course.id)
+
+        return redirect('superuser_course_detail', course_id=course.id)
+
+    return render(request, 'partner/publish_course.html', {
+        'course': course,
+        'history': course.status_history.all()
+    })
+
+@login_required
+def studios(request, id):
+    # Ambil kursus berdasarkan id
+    course = get_object_or_404(Course.objects.select_related('status_course', 'org_partner', 'instructor', 'author', 'author__university'), id=id)
+
+    # Ambil riwayat status kursus
+    status_history = course.status_history.all()
+
+    # Ambil materi dan assessment terkait kursus
+    sections = Section.objects.filter(courses=course).prefetch_related('materials', 'assessments')
+    materials = Material.objects.filter(section__courses=course)
+    assessments = Assessment.objects.filter(section__courses=course)
+
+    # Tentukan peran pengguna
+    user = request.user
+    is_instructor = user.is_instructor and course.instructor and course.instructor.user == user
+    is_partner = user.is_partner and course.org_partner.user == user
+    is_superuser = user.is_superuser
+
+    # Logika untuk proses kurasi
+    if request.method == "POST":
+        action = request.POST.get('action')
+        message = request.POST.get('message')
+
+        # Instructor: Mengajukan kurasi (draft -> curation)
+        if action == 'submit_curation' and is_instructor:
+            if course.status_course.status != 'draft':
+                messages.error(request, "Course can only be submitted for curation from 'Draft' status.")
+            elif not materials.exists() or not assessments.exists():
+                messages.error(request, "Course must have materials and assessments before submitting for curation.")
+            else:
+                # Simpan pesan murni dari pengguna
+                course.change_status('curation', user, message=message or "Submitted for curation by Instructor.")
+                messages.success(request, "Course has been submitted for curation.")
+            return redirect('courses:studio', id=course.id)
+
+        # Partner: Meninjau kurasi (accept -> curation, reject -> draft)
+        elif action in ['partner_accept', 'partner_reject'] and is_partner:
+            if course.status_course.status != 'curation':
+                messages.error(request, "Course can only be reviewed in 'Curation' status.")
+            elif not message:
+                messages.error(request, "Please provide a message for your review.")
+            else:
+                if action == 'partner_accept':
+                    # Simpan pesan murni dari pengguna
+                    course.change_status('curation', user, message=message)
+                    messages.success(request, "Course has been accepted and submitted for Superuser review.")
+                elif action == 'partner_reject':
+                    # Simpan pesan murni dari pengguna
+                    course.change_status('draft', user, message=message)
+                    messages.success(request, "Course has been rejected and returned to Instructor for revisions.")
+            return redirect('courses:studio', id=course.id)
+
+        # Superuser: Mempublikasikan atau menolak (publish -> published, reject -> curation)
+        elif action in ['superuser_publish', 'superuser_reject'] and is_superuser:
+            if course.status_course.status != 'curation':
+                messages.error(request, "Course can only be published from 'Curation' status.")
+            elif not message:
+                messages.error(request, "Please provide a message for your review.")
+            else:
+                if action == 'superuser_publish':
+                    # Simpan pesan murni dari pengguna
+                    course.change_status('published', user, message=message)
+                    messages.success(request, "Course has been published to the catalog.")
+                elif action == 'superuser_reject':
+                    # Simpan pesan murni dari pengguna
+                    course.change_status('curation', user, message=message)
+                    messages.success(request, "Course has been rejected and returned to Partner for revisions.")
+            return redirect('courses:studio', id=course.id)
+
+    # Siapkan konteks untuk template
+    context = {
+        'course': course,
+        'status_history': status_history,
+        'materials': materials,
+        'assessments': assessments,
+        'is_instructor': is_instructor,
+        'is_partner': is_partner,
+        'is_superuser': is_superuser,
+        # Informasi author untuk laporan
+        'author_full_name': course.author.username,
+        'author_email': course.author.email,
+        'author_university': course.author.university.name if course.author.university else 'N/A',
+        'author_gender': course.author.gender or 'N/A',
+    }
+
+    return render(request, 'instructor/studio.html', context)
 
 @login_required
 def instructor_learning_report(request):

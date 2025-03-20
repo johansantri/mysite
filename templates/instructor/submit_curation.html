@@ -1,0 +1,19 @@
+{% extends 'home/tes.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Dashboard Grid -->
+<div class="row justify-content-center">
+<div class="container mt-5">
+    <h2>Submit Course for Curation: {{ course.course_name }}</h2>
+    <p>Current Status: {{ course.status_course.get_status_display }}</p>
+    <p>Are you sure you want to submit this course for curation? Once submitted, the course will be reviewed by the Partner.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Submit for Curation</button>
+        <a href="{% url 'instructor:instructor_course_detail' course_id=course.id %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

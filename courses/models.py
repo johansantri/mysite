@@ -158,6 +158,26 @@ class Course(models.Model):
 
     def __str__(self):
         return f"{self.course_name}"
+    
+    def change_status(self, new_status, user, message=None):
+        """
+        Mengubah status kursus dan mencatat riwayat perubahan.
+        Args:
+            new_status (str): Status baru ('draft', 'curation', 'published', 'archived')
+            user (CustomUser): Pengguna yang melakukan perubahan
+            message (str, optional): Pesan terkait perubahan status
+        """
+        # Catat riwayat perubahan
+        CourseStatusHistory.objects.create(
+            course=self,
+            status=new_status,
+            manual_message=message,
+            changed_by=user
+        )
+        # Perbarui status kursus
+        self.status_course.status = new_status
+        self.status_course.manual_message = message
+        self.status_course.save()
 
     def delete_old_image(self):
         """Hapus gambar lama jika sudah diganti."""

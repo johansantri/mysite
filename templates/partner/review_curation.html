@@ -1,0 +1,52 @@
+{% extends 'home/tes.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Dashboard Grid -->
+<div class="row justify-content-center">
+<div class="container mt-5">
+    <h2>Review Course: {{ course.course_name }}</h2>
+    <p>Current Status: {{ course.status_course.get_status_display }}</p>
+    <p>Latest Message: {{ course.status_course.manual_message }}</p>
+
+    <h4>Status History</h4>
+    {% if history %}
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Status</th>
+                <th>Message</th>
+                <th>Changed By</th>
+                <th>Changed At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in history %}
+            <tr>
+                <td>{{ entry.get_status_display }}</td>
+                <td>{{ entry.manual_message }}</td>
+                <td>{{ entry.changed_by.username }}</td>
+                <td>{{ entry.changed_at|date:"Y-m-d H:i:s" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No status history available.</p>
+    {% endif %}
+
+    <h4>Review Course</h4>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="message">Review Message:</label>
+            <textarea name="message" id="message" class="form-control" rows="5" required></textarea>
+        </div>
+        <button type="submit" name="action" value="accept" class="btn btn-success">Accept and Submit to Superuser</button>
+        <button type="submit" name="action" value="reject" class="btn btn-danger">Reject and Return to Instructor</button>
+        <a href="#" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+</div>
+{% endblock %}
