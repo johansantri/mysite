@@ -8,6 +8,7 @@ from django.db.models import Prefetch
 import csv
 from decimal import Decimal
 from courses.models import Course, Enrollment,Section,GradeRange,QuestionAnswer, CourseProgress, PeerReview,MaterialRead, AssessmentRead, AssessmentScore,Material,Assessment, Submission, CustomUser, Instructor
+from authentication.models import CustomUser, Universiti
 # Create your views here.
 
 
@@ -21,30 +22,26 @@ def instructor_learning_report(request):
     except Instructor.DoesNotExist:
         raise PermissionDenied("Instructor profile not found.")
 
-    # Get the selected course and learner (if any)
     course_id = request.GET.get('course_id')
     learner_id = request.GET.get('learner_id')
     courses = Course.objects.filter(instructor=instructor).select_related('instructor')
 
-    # Get all learners enrolled in the instructor's courses for the dropdown
     all_learners = CustomUser.objects.filter(
         id__in=Enrollment.objects.filter(course__instructor=instructor).values_list('user_id', flat=True)
-    ).distinct()
+    ).select_related('university').distinct()
 
     if learner_id:
-        # Filter courses by the selected learner
         courses = courses.filter(enrollments__user_id=learner_id)
     if course_id:
         courses = courses.filter(id=course_id)
 
     report_data = []
 
-    # Pre-fetch grade ranges for all courses
     grade_ranges = GradeRange.objects.filter(course__in=courses).all()
     grade_range_dict = {gr.course_id: gr for gr in grade_ranges if gr.name == 'Pass'}
 
     for course in courses:
-        enrollments = Enrollment.objects.filter(course=course).select_related('user')
+        enrollments = Enrollment.objects.filter(course=course).select_related('user', 'user__university')
         if learner_id:
             enrollments = enrollments.filter(user_id=learner_id)
 
@@ -171,6 +168,10 @@ def instructor_learning_report(request):
 
             report_data.append({
                 'learner': learner,
+                'learner_full_name': learner.username,  # Gunakan username sebagai nama
+                'learner_email': learner.email,
+                'learner_university': learner.university.name if learner.university else 'N/A',
+                'learner_gender': learner.gender or 'N/A',
                 'course': course,
                 'progress_percentage': progress_percentage,
                 'materials_read': len(materials_read),
@@ -197,7 +198,8 @@ def instructor_learning_report(request):
 
         writer = csv.writer(response)
         writer.writerow([
-            'Learner', 'Course', 'Progress (%)', 'Materials Read', 'Materials Read (%)',
+            'Learner Name', 'Email', 'University', 'Gender',
+            'Course', 'Progress (%)', 'Materials Read', 'Materials Read (%)',
             'Assessments Completed', 'Assessments Completed (%)', 'Total Score', 'Threshold', 'Status',
             'Last Login', 'Material Name', 'Access Time', 'Duration (Minutes)', 'Assessment Name', 'Weight', 'Score'
         ])
@@ -205,7 +207,7 @@ def instructor_learning_report(request):
         for data in report_data:
             for material in data['material_access_details']:
                 writer.writerow([
-                    data['learner'].username,
+                    data['learner_full_name'], data['learner_email'], data['learner_university'], data['learner_gender'],
                     data['course'].course_name,
                     data['progress_percentage'],
                     f"{data['materials_read']}/{data['total_materials']}",
@@ -223,7 +225,7 @@ def instructor_learning_report(request):
                 ])
             for assessment in data['assessment_details']:
                 writer.writerow([
-                    data['learner'].username,
+                    data['learner_full_name'], data['learner_email'], data['learner_university'], data['learner_gender'],
                     data['course'].course_name,
                     data['progress_percentage'],
                     f"{data['materials_read']}/{data['total_materials']}",
@@ -268,7 +270,8 @@ def instructor_learner_detail_report(request):
     if not learner_id:
         return redirect('instructor_learning_report')
 
-    learner = get_object_or_404(CustomUser, id=learner_id)
+    # Ambil data peserta dengan informasi universitas menggunakan select_related
+    learner = get_object_or_404(CustomUser.objects.select_related('university'), id=learner_id)
     courses = Course.objects.filter(instructor=instructor, enrollments__user=learner).select_related('instructor')
 
     report_data = []
@@ -335,7 +338,7 @@ def instructor_learner_detail_report(request):
         assessments_completed_percentage = (assessments_completed / total_assessments * 100) if total_assessments > 0 else 0
 
         assessment_scores = []
-        askora_submissions_details = []  # Untuk menyimpan detail submission AskOra
+        askora_submissions_details = []
         total_max_score = Decimal('0')
         total_score = Decimal('0')
         all_assessments_submitted = True
@@ -344,7 +347,7 @@ def instructor_learner_detail_report(request):
             score_value = Decimal('0')
             total_questions = assessment.questions.count()
 
-            if total_questions > 0:  # Multiple choice assessment
+            if total_questions > 0:
                 answers_exist = False
                 total_correct_answers = 0
                 for question in assessment.questions.all():
@@ -356,7 +359,7 @@ def instructor_learner_detail_report(request):
                     all_assessments_submitted = False
                 if total_questions > 0:
                     score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
-            else:  # AskOra assessment
+            else:
                 askora_submissions = Submission.objects.filter(
                     askora__assessment=assessment,
                     user=learner
@@ -371,7 +374,6 @@ def instructor_learner_detail_report(request):
                     if assessment_score:
                         score_value = Decimal(assessment_score.final_score)
 
-                    # Tambahkan detail submission AskOra
                     peer_reviews = latest_submission.peer_reviews.all()
                     peer_reviews_data = [
                         {
@@ -424,7 +426,7 @@ def instructor_learner_detail_report(request):
             'total_score': total_score,
             'threshold': passing_threshold,
             'assessment_details': assessment_scores,
-            'askora_submissions_details': askora_submissions_details,  # Tambahkan detail submission AskOra
+            'askora_submissions_details': askora_submissions_details,
             'status': status,
         })
 
@@ -434,6 +436,7 @@ def instructor_learner_detail_report(request):
 
         writer = csv.writer(response)
         writer.writerow([
+            'Learner Name', 'Email', 'University', 'Gender',
             'Course', 'Progress (%)', 'Materials Read', 'Materials Read (%)',
             'Assessments Completed', 'Assessments Completed (%)', 'Total Score', 'Threshold', 'Status',
             'Material Name', 'Access Time', 'Duration (Minutes)', 'Assessment Name', 'Weight', 'Score',
@@ -443,6 +446,7 @@ def instructor_learner_detail_report(request):
         for data in report_data:
             for material in data['material_access_details']:
                 writer.writerow([
+                    learner.username, learner.email, learner.university.name if learner.university else 'N/A', learner.gender or 'N/A',
                     data['course'].course_name,
                     data['progress_percentage'],
                     f"{data['materials_read']}/{data['total_materials']}",
@@ -459,6 +463,7 @@ def instructor_learner_detail_report(request):
                 ])
             for assessment in data['assessment_details']:
                 writer.writerow([
+                    learner.username, learner.email, learner.university.name if learner.university else 'N/A', learner.gender or 'N/A',
                     data['course'].course_name,
                     data['progress_percentage'],
                     f"{data['materials_read']}/{data['total_materials']}",
@@ -477,6 +482,7 @@ def instructor_learner_detail_report(request):
             for askora in data['askora_submissions_details']:
                 for peer_review in askora['peer_reviews']:
                     writer.writerow([
+                        learner.username, learner.email, learner.university.name if learner.university else 'N/A', learner.gender or 'N/A',
                         data['course'].course_name,
                         data['progress_percentage'],
                         f"{data['materials_read']}/{data['total_materials']}",
@@ -504,6 +510,10 @@ def instructor_learner_detail_report(request):
         'report_data': report_data,
         'instructor': instructor,
         'last_login': learner.last_login,
+        'learner_full_name': learner.username,  # Gunakan username sebagai nama
+        'learner_email': learner.email,
+        'learner_university': learner.university.name if learner.university else 'N/A',
+        'learner_gender': learner.gender or 'N/A',  # Tidak menggunakan get_gender_display karena gen menggunakan nilai yang sama
     }
 
     return render(request, 'instructor/learner_detail_report.html', context)

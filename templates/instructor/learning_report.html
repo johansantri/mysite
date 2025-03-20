@@ -45,11 +45,16 @@
             {% for data in report_data %}
             <div class="card mb-4">
                 <div class="card-header">
-                    <h4>{{ data.learner.username }} -  <a href="{% url 'instructor:instructor_learner_detail_report' %}?learner_id={{ data.learner.id }}" class="btn btn-sm btn-info float-right">{{ data.course.course_name }}</a></h4>
+                    <h4>
+                        {{ data.learner.username }} - {{ data.course.course_name }}
+                        <a href="{% url 'instructor:instructor_learner_detail_report' %}?learner_id={{ data.learner.id }}" class="btn btn-sm btn-info float-right">View Learner Details</a>
+                    </h4>
+                    <p><strong>Full Name:</strong> {{ data.learner_full_name }}</p>
+                    <p><strong>Email:</strong> {{ data.learner_email }}</p>
+                    <p><strong>University:</strong> {{ data.learner_university }}</p>
+                    <p><strong>Gender:</strong> {{ data.learner_gender|title }}</p>
                 </div>
                 <div class="card-body">
-                    <!-- Di dalam loop for data in report_data, tambahkan link di card header -->
-                  
                     <p><strong>Progress:</strong> {{ data.progress_percentage|floatformat:2 }}%</p>
                     <p><strong>Materials Read:</strong> {{ data.materials_read }}/{{ data.total_materials }} ({{ data.materials_read_percentage|floatformat:2 }}%)</p>
                     <p><strong>Assessments Completed:</strong> {{ data.assessments_completed }}/{{ data.total_assessments }} ({{ data.assessments_completed_percentage|floatformat:2 }}%)</p>
@@ -145,4 +150,4 @@
             {% endif %}
         </div>
     </div>
-{% endblock %}
+        {% endblock %}

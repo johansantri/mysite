@@ -5,6 +5,10 @@
         <div class="container mt-5">
             <h2 class="mb-4">Learner Detail Report: {{ learner.username }}</h2>
             <p>Instructor: {{ instructor.user.username }}</p>
+            <p><strong>Full Name:</strong> {{ learner_full_name }}</p>
+            <p><strong>Email:</strong> {{ learner_email }}</p>
+            <p><strong>University:</strong> {{ learner_university }}</p>
+            <p><strong>Gender:</strong> {{ learner_gender|title }}</p> <!-- Gunakan filter title untuk kapitalisasi -->
             <p><strong>Last Login:</strong> {% if last_login %}{{ last_login|date:"Y-m-d H:i:s" }}{% else %}Never logged in{% endif %}</p>
         
             <!-- Export to CSV Button -->
