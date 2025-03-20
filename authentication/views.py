@@ -318,6 +318,8 @@ def all_user(request):
 
     return render(request, 'authentication/all_user.html', context)
 
+
+
 def dasbord(request):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
@@ -325,7 +327,7 @@ def dasbord(request):
     # Get page number from GET parameters
     courses_page = request.GET.get('courses_page', 1)
 
-    # Initialize variables for partner-specific data
+    # Initialize variables
     partner_courses = None
     partner_enrollments = None
     total_enrollments = 0
@@ -334,68 +336,110 @@ def dasbord(request):
     total_learners = 0
     total_partners = 0
     total_published_courses = 0
+
     try:
         publish_status = CourseStatus.objects.get(status='published')
     except CourseStatus.DoesNotExist:
-        # Handle the case where no matching data exists
-        publish_status = None  # Or some default value
-
-    #publish_status = CourseStatus.objects.get(status='published')
+        publish_status = None
 
     # Logic based on user role
     if request.user.is_superuser:
-        # For superuser, count data for all partners
+        # Superuser: Access to all data
         total_enrollments = Enrollment.objects.count()
         total_courses = Course.objects.count()
         total_instructors = Instructor.objects.count()
         total_learners = CustomUser.objects.filter(is_learner=True).count()
-        total_published_courses = Course.objects.filter(status_course=publish_status).count()
+        total_partners = Partner.objects.count()
+        total_published_courses = Course.objects.filter(status_course=publish_status).count() if publish_status else 0
         partner_courses = Course.objects.all()  # Superuser sees all courses
-        total_partners =  Partner.objects.count()  # Set total_partners to 1 if the user is a partner
-    elif request.user.is_partner:  # Check if the user has a partner associated
-        # For partner, get data specific to the partner
-        partner = request.user.is_partner  # Access the partner instance linked to the user       
+    elif request.user.is_partner:
+        # Partner: Access to data related to their organization
+        try:
+            partner = Partner.objects.get(user=request.user)  # Assuming Partner has a ForeignKey to CustomUser
+        except Partner.DoesNotExist:
+            partner = None
 
-        # Filter courses based on the partner's organization
-        partner_courses = Course.objects.filter(org_partner=partner)      
-        
-        
-        # Filter enrollments based on the partner's courses
-        partner_enrollments = Enrollment.objects.filter(course__org_partner=partner)        
+        if partner:
+            # Courses associated with the partner's organization
+            partner_courses = Course.objects.filter(org_partner=partner)
+            # Enrollments in the partner's courses
+            partner_enrollments = Enrollment.objects.filter(course__org_partner=partner)
+            # Total enrollments for the partner
+            total_enrollments = partner_enrollments.count()
+            # Total courses for the partner
+            total_courses = partner_courses.count()
+            # Total instructors associated with the partner's courses
+            total_instructors = Instructor.objects.filter(courses__org_partner=partner).distinct().count()
+            # Total learners enrolled in the partner's courses
+            total_learners = CustomUser.objects.filter(
+                enrollments__course__org_partner=partner,
+                is_learner=True
+            ).distinct().count()
+            # Total published courses for the partner
+            total_published_courses = partner_courses.filter(status_course=publish_status).count() if publish_status else 0
+        else:
+            # If partner not found, set defaults
+            partner_courses = Course.objects.none()
+            total_enrollments = 0
+            total_courses = 0
+            total_instructors = 0
+            total_learners = 0
+            total_published_courses = 0
+    elif request.user.is_instructor:
+        # Instructor: Access to data related to themselves only
+        try:
+            instructor = Instructor.objects.get(user=request.user)  # Assuming Instructor has a ForeignKey to CustomUser
+        except Instructor.DoesNotExist:
+            instructor = None
 
-        # Calculate total counts for the partner's data
-        total_enrollments = partner_enrollments.count()
-        total_courses = partner_courses.count()
-        # Retrieve instructors for the partner's courses (linking through the courses)
-        total_instructors = Instructor.objects.filter(provider__user=request.user).annotate(num_courses=Count('courses')).count()        
+        if instructor:
+            # Courses taught by this instructor
+            partner_courses = Course.objects.filter(instructor=instructor)
+            # Enrollments in the instructor's courses
+            partner_enrollments = Enrollment.objects.filter(course__instructor=instructor)
+            # Total enrollments in the instructor's courses
+            total_enrollments = partner_enrollments.count()
+            # Total courses taught by the instructor
+            total_courses = partner_courses.count()
+            # Total instructors (just the instructor themselves)
+            total_instructors = 1
+            # Total learners enrolled in the instructor's courses
+            total_learners = CustomUser.objects.filter(
+                enrollments__course__instructor=instructor,
+                is_learner=True
+            ).distinct().count()
+            # Total published courses by the instructor
+            total_published_courses = partner_courses.filter(status_course=publish_status).count() if publish_status else 0
+        else:
+            # If instructor not found, set defaults
+            partner_courses = Course.objects.none()
+            total_enrollments = 0
+            total_courses = 0
+            total_instructors = 0
+            total_learners = 0
+            total_published_courses = 0
+    else:
+        # Default case for users who are neither superuser, partner, nor instructor
+        partner_courses = Course.objects.none()
+        total_enrollments = 0
+        total_courses = 0
+        total_instructors = 0
+        total_learners = 0
+        total_published_courses = 0
 
-            
-        total_learners = CustomUser.objects.filter(
-        is_learner=True,  # Ensure the user is a learner
-        university=partner  # Use 'university' instead of 'org_partner'
-        ).distinct().count() 
-        # Count published courses for the partner
-        total_published_courses = partner_courses.filter(status_course=publish_status).count()     
-
-    # Get the current date
     # Get the current date
     today = timezone.now().date()
 
-    # Check if the user has any courses related to their university (partner)
-    if partner_courses.count() > 0:  # Check if there are partner_courses
-        # Filter courses created today based on the user's associated university/partner
+    # Filter courses created today
+    if partner_courses is not None and partner_courses.exists():
         courses_created_today = partner_courses.filter(
             created_at__date=today,
         ).order_by('created_at')
-
         # Pagination for courses created today
         courses_paginator = Paginator(courses_created_today, 5)  # 5 courses per page
         courses_created_today = courses_paginator.get_page(courses_page)
     else:
-        # If no courses are found, set an empty queryset for courses created today
-        courses_created_today = []  # Or you can handle it differently (e.g., show a message)
-
-
+        courses_created_today = []
 
     # Context for the template
     context = {
@@ -404,14 +448,12 @@ def dasbord(request):
         'total_courses': total_courses,
         'total_instructors': total_instructors,
         'total_learners': total_learners,
-        'total_partners': total_partners,  # Correct total_partners value
+        'total_partners': total_partners,
         'total_published_courses': total_published_courses,
         'courses_created_today': courses_created_today,
-        
     }
 
     return render(request, 'home/dasbord.html', context)
-
 
 #dashboard for student
 def dashbord(request):

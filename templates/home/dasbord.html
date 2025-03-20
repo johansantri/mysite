@@ -21,25 +21,20 @@
             </div>
         </div>
     </div>
-    {% if user.is_superuser %}
     <div class="col-lg-4 col-md-6 d-flex">
         <div class="card dash-info flex-fill">
             <div class="card-body">
                 <h5>Partner</h5>
-                <h2>{{ total_partners }}</h2>
+                {% if user.is_superuser %}
+                    <h2>{{ total_partners }}</h2>
+                {% elif user.is_partner %}
+                    <h2>1</h2> <!-- Partner only sees their own organization -->
+                {% else %}
+                    <h2>0</h2> <!-- Instructors or other users don't manage partners -->
+                {% endif %}
             </div>
         </div>
     </div>
-    {% else %}
-    <div class="col-lg-4 col-md-6 d-flex">
-        <div class="card dash-info flex-fill">
-            <div class="card-body">
-                <h5>Partner</h5>
-                <h2>1</h2>
-            </div>
-        </div>
-    </div>
-    {% endif %}
     <div class="col-lg-4 col-md-6 d-flex">
         <div class="card dash-info flex-fill">
             <div class="card-body">
@@ -59,8 +54,8 @@
     <div class="col-lg-4 col-md-6 d-flex">
         <div class="card dash-info flex-fill">
             <div class="card-body">
-                <h5>Total instructor</h5>
-                <h2>{{total_instructors}}</h2>
+                <h5>Total Instructors</h5>
+                <h2>{{ total_instructors }}</h2>
             </div>
         </div>
     </div>

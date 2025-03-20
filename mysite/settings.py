@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'authentication',
     'captcha',
     'courses',
+    'instructor',
     'import_export',
     'django_ckeditor_5',
     'django_ratelimit',
