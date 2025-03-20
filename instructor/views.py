@@ -118,7 +118,7 @@ def superuser_publish_course(request, course_id):
 
 @login_required
 def studios(request, id):
-    # Ambil kursus berdasarkan id
+       # Ambil kursus berdasarkan id
     course = get_object_or_404(Course.objects.select_related('status_course', 'org_partner', 'instructor', 'author', 'author__university'), id=id)
 
     # Ambil riwayat status kursus
@@ -146,9 +146,10 @@ def studios(request, id):
                 messages.error(request, "Course can only be submitted for curation from 'Draft' status.")
             elif not materials.exists() or not assessments.exists():
                 messages.error(request, "Course must have materials and assessments before submitting for curation.")
+            elif not message:
+                messages.error(request, "Please provide a message for your submission.")
             else:
-                # Simpan pesan murni dari pengguna
-                course.change_status('curation', user, message=message or "Submitted for curation by Instructor.")
+                course.change_status('curation', user, message=message)
                 messages.success(request, "Course has been submitted for curation.")
             return redirect('courses:studio', id=course.id)
 
@@ -160,11 +161,9 @@ def studios(request, id):
                 messages.error(request, "Please provide a message for your review.")
             else:
                 if action == 'partner_accept':
-                    # Simpan pesan murni dari pengguna
                     course.change_status('curation', user, message=message)
                     messages.success(request, "Course has been accepted and submitted for Superuser review.")
                 elif action == 'partner_reject':
-                    # Simpan pesan murni dari pengguna
                     course.change_status('draft', user, message=message)
                     messages.success(request, "Course has been rejected and returned to Instructor for revisions.")
             return redirect('courses:studio', id=course.id)
@@ -173,15 +172,13 @@ def studios(request, id):
         elif action in ['superuser_publish', 'superuser_reject'] and is_superuser:
             if course.status_course.status != 'curation':
                 messages.error(request, "Course can only be published from 'Curation' status.")
-            elif not message:
-                messages.error(request, "Please provide a message for your review.")
+            elif action == 'superuser_reject' and not message:
+                messages.error(request, "Please provide a message for your rejection.")
             else:
                 if action == 'superuser_publish':
-                    # Simpan pesan murni dari pengguna
-                    course.change_status('published', user, message=message)
+                    course.change_status('published', user, message=message or "Published by Superuser.")
                     messages.success(request, "Course has been published to the catalog.")
                 elif action == 'superuser_reject':
-                    # Simpan pesan murni dari pengguna
                     course.change_status('curation', user, message=message)
                     messages.success(request, "Course has been rejected and returned to Partner for revisions.")
             return redirect('courses:studio', id=course.id)

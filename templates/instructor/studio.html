@@ -3,160 +3,125 @@
 
 {% block content %}
 
-<!-- Dashboard Container -->
+<!-- Dashboard Grid -->
+<div class="row justify-content-center">
 <div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8 col-md-10 col-sm-12">
-            <h2 class="text-center mb-4">Course Studio: {{ course.course_name }}</h2>
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Current Status:</h5>
-                    <p><strong>{{ course.status_course.get_status_display }}</strong></p>
-                    <h5 class="card-title">Latest Message:</h5>
-                    <p><strong>{{ course.status_course.manual_message|default:"No message" }}</strong></p>
-                    <div class="text-center mb-4">
-                        <img src="{{ course.image.url }}" class="img-fluid" alt="Course Image">
-                    </div>
-                </div>
-            </div>
+    <h2>Course Studio: {{ course.course_name }}</h2>
+    <p><strong>Current Status:</strong> {{ course.status_course.get_status_display }}</p>
+    <p><strong>Latest Message:</strong> {{ course.status_course.manual_message|default:"No message" }}</p>
 
-            <!-- Author Information -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h4 class="card-title">Author Information</h4>
-                    <ul class="list-unstyled">
-                        <li><strong>Full Name:</strong> {{ author_full_name }}</li>
-                        <li><strong>Email:</strong> {{ author_email }}</li>
-                        <li><strong>University:</strong> {{ author_university }}</li>
-                        <li><strong>Gender:</strong> {{ author_gender|title }}</li>
-                    </ul>
-                </div>
-            </div>
+    <!-- Informasi Author -->
+    <h4>Author Information</h4>
+    <p><strong>Full Name:</strong> {{ author_full_name }}</p>
+    <p><strong>Email:</strong> {{ author_email }}</p>
+    <p><strong>University:</strong> {{ author_university }}</p>
+    <p><strong>Gender:</strong> {{ author_gender|title }}</p>
 
-            <!-- Course Details -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h4 class="card-title">Course Details</h4>
-                    <ul class="list-unstyled">
-                        <li><strong>Partner:</strong> {{ course.org_partner.name }}</li>
-                        <li><strong>Instructor:</strong> {{ course.instructor.user.username|default:"Not assigned" }}</li>
-                        <li><strong>Category:</strong> {{ course.category.name }}</li>
-                        <li><strong>Level:</strong> {{ course.level|title }}</li>
-                        <li><strong>Description:</strong> {{ course.description |safe}}</li>
-                        <li><strong>Language:</strong> {{ course.get_language_display }}</li>
-                        <li><strong>Start Date:</strong> {{ course.start_date|default:"N/A" }}</li>
-                        <li><strong>End Date:</strong> {{ course.end_date|default:"N/A" }}</li>
-                    </ul>
-                </div>
-            </div>
+    <!-- Detail Kursus -->
+    <h4>Course Details</h4>
+    <p><strong>Partner:</strong> {{ course.org_partner.name }}</p>
+    <p><strong>Instructor:</strong> {{ course.instructor.user.username|default:"Not assigned" }}</p>
+    <p><strong>Category:</strong> {{ course.category.name }}</p>
+    <p><strong>Level:</strong> {{ course.level|title }}</p>
+    <p><strong>Description:</strong> {{ course.description }}</p>
+    <p><strong>Language:</strong> {{ course.get_language_display }}</p>
+    <p><strong>Start Date:</strong> {{ course.start_date|default:"N/A" }}</p>
+    <p><strong>End Date:</strong> {{ course.end_date|default:"N/A" }}</p>
 
-            <!-- Materials Section -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h4 class="card-title">Materials</h4>
-                    {% if materials %}
-                    <ul class="list-group">
-                        {% for material in materials %}
-                        <li class="list-group-item">{{ material.title }}</li>
-                        {% endfor %}
-                    </ul>
+    <!-- Materi dan Assessment -->
+    <h4>Materials</h4>
+    {% if materials %}
+    <ul>
+        {% for material in materials %}
+        <li>{{ material.title }}</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No materials available.</p>
+    {% endif %}
+
+    <h4>Assessments</h4>
+    {% if assessments %}
+    <ul>
+        {% for assessment in assessments %}
+        <li>{{ assessment.name }}</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No assessments available.</p>
+    {% endif %}
+
+    <!-- Riwayat Status -->
+    <h4>Status History</h4>
+    {% if status_history %}
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Status</th>
+                <th>Action</th>
+                <th>Message</th>
+                <th>Changed By</th>
+                <th>Changed At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in status_history %}
+            <tr {% if "Rejected" in action %}class="table-danger"{% elif "Published" in action %}class="table-success"{% endif %}>
+                <td>{{ entry.get_status_display }}</td>
+                <td>
+                    {% if entry.status == 'curation' and entry.changed_by.is_instructor %}
+                        Submitted for Curation
+                    {% elif entry.status == 'curation' and entry.changed_by.is_partner %}
+                        Accepted by Partner
+                    {% elif entry.status == 'draft' and entry.changed_by.is_partner %}
+                        Rejected by Partner
+                    {% elif entry.status == 'published' and entry.changed_by.is_superuser %}
+                        Published by Superuser
+                    {% elif entry.status == 'curation' and entry.changed_by.is_superuser %}
+                        Rejected by Superuser
                     {% else %}
-                    <p>No materials available.</p>
+                        Updated
                     {% endif %}
-                </div>
-            </div>
+                </td>
+                <td>{{ entry.manual_message|default:"No message" }}</td>
+                <td>{{ entry.changed_by.username }}</td>
+                <td>{{ entry.changed_at|date:"Y-m-d H:i:s" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No status history available.</p>
+    {% endif %}
 
-            <!-- Assessments Section -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h4 class="card-title">Assessments</h4>
-                    {% if assessments %}
-                    <ul class="list-group">
-                        {% for assessment in assessments %}
-                        <li class="list-group-item">{{ assessment.name }}</li>
-                        {% endfor %}
-                    </ul>
-                    {% else %}
-                    <p>No assessments available.</p>
-                    {% endif %}
-                </div>
-            </div>
-
-            <!-- Riwayat Status -->
-                <h4>Status History</h4>
-                {% if status_history %}
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Status</th>
-                            <th>Action</th>
-                            <th>Message</th>
-                            <th>Changed By</th>
-                            <th>Changed At</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for entry in status_history %}
-                        <tr>
-                            <td>{{ entry.get_status_display }}</td>
-                            <td>
-                                {% if entry.status == 'curation' and entry.changed_by.is_instructor %}
-                                    Submitted for Curation
-                                {% elif entry.status == 'curation' and entry.changed_by.is_partner %}
-                                    Accepted by Partner
-                                {% elif entry.status == 'draft' and entry.changed_by.is_partner %}
-                                    Rejected by Partner
-                                {% elif entry.status == 'published' and entry.changed_by.is_superuser %}
-                                    Published by Superuser
-                                {% elif entry.status == 'curation' and entry.changed_by.is_superuser %}
-                                    Rejected by Superuser
-                                {% else %}
-                                    Updated
-                                {% endif %}
-                            </td>
-                            <td>{{ entry.manual_message|default:"No message" }}</td>
-                            <td>{{ entry.changed_by.username }}</td>
-                            <td>{{ entry.changed_at|date:"Y-m-d H:i:s" }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                {% else %}
-                <p>No status history available.</p>
-                {% endif %}
-
-                <!-- Aksi Berdasarkan Peran -->
-                <h4>Actions</h4>
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <label for="message">Message:</label>
-                        <textarea name="message" id="message" class="form-control" rows="5"></textarea>
-                    </div>
-
-                    <!-- Aksi untuk Instructor -->
-                    {% if is_instructor and course.status_course.status == 'draft' %}
-                    <button type="submit" name="action" value="submit_curation" class="btn btn-primary">Submit for Curation</button>
-                    {% endif %}
-
-                    <!-- Aksi untuk Partner -->
-                    {% if is_partner and course.status_course.status == 'curation' %}
-                    <button type="submit" name="action" value="partner_accept" class="btn btn-success">Accept and Submit to Superuser</button>
-                    <button type="submit" name="action" value="partner_reject" class="btn btn-danger">Reject and Return to Instructor</button>
-                    {% endif %}
-
-                    <!-- Aksi untuk Superuser -->
-                    {% if is_superuser and course.status_course.status == 'curation' %}
-                    <button type="submit" name="action" value="superuser_publish" class="btn btn-success">Publish to Catalog</button>
-                    <button type="submit" name="action" value="superuser_reject" class="btn btn-danger">Reject and Return to Partner</button>
-                    {% endif %}
-                </form>
-
-                    <a href="{% url 'courses:course_view' %}" class="btn btn-secondary btn-block mt-3">Back to Catalog</a>
-                </div>
-            </div>
+    <!-- Aksi Berdasarkan Peran -->
+    <h4>Actions</h4>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="message">Message:</label>
+            <textarea name="message" id="message" class="form-control" rows="5"></textarea>
         </div>
-    </div>
-</div>
 
+        <!-- Aksi untuk Instructor -->
+        {% if is_instructor and course.status_course.status == 'draft' %}
+        <button type="submit" name="action" value="submit_curation" class="btn btn-primary">Submit for Curation</button>
+        {% endif %}
+
+        <!-- Aksi untuk Partner -->
+        {% if is_partner and course.status_course.status == 'curation' %}
+        <button type="submit" name="action" value="partner_accept" class="btn btn-success">Accept and Submit to Superuser</button>
+        <button type="submit" name="action" value="partner_reject" class="btn btn-danger">Reject and Return to Instructor</button>
+        {% endif %}
+
+        <!-- Aksi untuk Superuser -->
+        {% if is_superuser and course.status_course.status == 'curation' %}
+        <button type="submit" name="action" value="superuser_publish" class="btn btn-success">Publish to Catalog</button>
+        <button type="submit" name="action" value="superuser_reject" class="btn btn-danger">Reject and Return to Partner</button>
+        {% endif %}
+    </form>
+
+    <a href="#" class="btn btn-secondary mt-3">Back to Catalog</a>
+</div>
+</div>
 {% endblock %}
