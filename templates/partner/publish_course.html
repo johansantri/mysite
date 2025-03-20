@@ -2,13 +2,12 @@
 {% load static %}
 
 {% block content %}
-
 <!-- Dashboard Grid -->
 <div class="row justify-content-center">
 <div class="container mt-5">
-    <h2>Publish Course: {{ course.course_name }}</h2>
-    <p>Current Status: {{ course.status_course.get_status_display }}</p>
-    <p>Latest Message: {{ course.status_course.manual_message }}</p>
+    <h2>{{ course.course_name }}</h2>
+    <p>Current Status: <strong>{{ course.status_course.get_status_display }}</strong></p>
+    <p>Latest Message: {{ course.status_course.manual_message|default:"No message" }}</p>
 
     <h4>Status History</h4>
     {% if history %}
@@ -16,6 +15,7 @@
         <thead>
             <tr>
                 <th>Status</th>
+                <th>Action</th>
                 <th>Message</th>
                 <th>Changed By</th>
                 <th>Changed At</th>
@@ -23,9 +23,30 @@
         </thead>
         <tbody>
             {% for entry in history %}
-            <tr>
+            <tr {% if entry.status == 'draft' and entry.changed_by.is_partner %}class="table-danger"{% elif entry.status == 'curation' and entry.changed_by.is_superuser %}class="table-danger"{% elif entry.status == 'published' and entry.changed_by.is_superuser %}class="table-success"{% elif entry.status == 'archived' %}class="table-secondary"{% endif %}>
                 <td>{{ entry.get_status_display }}</td>
-                <td>{{ entry.manual_message }}</td>
+                <td>
+                    {% if entry.status == 'curation' and entry.changed_by.is_instructor %}
+                        Submitted for Curation
+                    {% elif entry.status == 'curation' and entry.changed_by.is_partner %}
+                        Accepted by Partner
+                    {% elif entry.status == 'draft' and entry.changed_by.is_partner %}
+                        Rejected by Partner
+                    {% elif entry.status == 'published' and entry.changed_by.is_superuser %}
+                        Published by Superuser
+                    {% elif entry.status == 'curation' and entry.changed_by.is_superuser %}
+                        Rejected by Superuser
+                    {% elif entry.status == 'archived' and entry.changed_by.is_superuser %}
+                        Archived by Superuser
+                    {% elif entry.status == 'archived' %}
+                        Archived Automatically
+                    {% elif entry.status == 'draft' and entry.changed_by.is_superuser %}
+                        Rejected to Draft by Superuser
+                    {% else %}
+                        Updated
+                    {% endif %}
+                </td>
+                <td>{{ entry.manual_message|default:"No message" }}</td>
                 <td>{{ entry.changed_by.username }}</td>
                 <td>{{ entry.changed_at|date:"Y-m-d H:i:s" }}</td>
             </tr>
@@ -36,16 +57,27 @@
     <p>No status history available.</p>
     {% endif %}
 
-    <h4>Publish Course</h4>
+    <h4>Manage Course</h4>
     <form method="post">
         {% csrf_token %}
         <div class="form-group">
-            <label for="message">Review Message:</label>
-            <textarea name="message" id="message" class="form-control" rows="5" required></textarea>
+            <label for="message">Message:</label>
+            <textarea name="message" id="message" class="form-control" rows="5"></textarea>
         </div>
-        <button type="submit" name="action" value="publish" class="btn btn-success">Publish to Catalog</button>
-        <button type="submit" name="action" value="reject" class="btn btn-danger">Reject and Return to Partner</button>
-        <a href="#" class="btn btn-secondary">Cancel</a>
+        <!-- Tombol untuk status 'curation' -->
+        {% if course.status_course.status == 'curation' %}
+        <button type="submit" name="action" value="superuser_publish" class="btn btn-success">Publish to Catalog</button>
+        <button type="submit" name="action" value="superuser_reject" class="btn btn-danger">Reject and Return to Partner</button>
+        {% endif %}
+        <!-- Tombol untuk mengarsipkan (tampilkan jika bukan 'archived') -->
+        {% if course.status_course.status != 'archived' %}
+        <button type="submit" name="action" value="superuser_archive" class="btn btn-warning">Archive Course</button>
+        {% endif %}
+        <!-- Tombol untuk menolak ke 'draft' (tampilkan jika bukan 'draft') -->
+        {% if course.status_course.status != 'draft' %}
+        <button type="submit" name="action" value="superuser_reject_to_draft" class="btn btn-danger">Reject to Draft</button>
+        {% endif %}
+        <a href="{% url 'courses:studio' id=course.id %}" class="btn btn-secondary">Cancel</a>
     </form>
 </div>
 </div>

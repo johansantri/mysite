@@ -1,14 +1,10 @@
 {% extends 'home/tes.html' %}
 {% load static %}
-
 {% block content %}
-
-<!-- Dashboard Grid -->
-<div class="row justify-content-center">
 <div class="container mt-5">
-    <h2>Review Course: {{ course.course_name }}</h2>
+    <h2> {{ course.course_name }}</h2>
     <p>Current Status: {{ course.status_course.get_status_display }}</p>
-    <p>Latest Message: {{ course.status_course.manual_message }}</p>
+    <p>Latest Message: {{ course.status_course.manual_message|default:"No message" }}</p>
 
     <h4>Status History</h4>
     {% if history %}
@@ -16,6 +12,7 @@
         <thead>
             <tr>
                 <th>Status</th>
+                <th>Action</th>
                 <th>Message</th>
                 <th>Changed By</th>
                 <th>Changed At</th>
@@ -23,9 +20,30 @@
         </thead>
         <tbody>
             {% for entry in history %}
-            <tr>
+            <tr {% if entry.status == 'draft' and entry.changed_by.is_partner %}class="table-danger"{% elif entry.status == 'curation' and entry.changed_by.is_superuser %}class="table-danger"{% elif entry.status == 'published' and entry.changed_by.is_superuser %}class="table-success"{% elif entry.status == 'archived' %}class="table-secondary"{% endif %}>
                 <td>{{ entry.get_status_display }}</td>
-                <td>{{ entry.manual_message }}</td>
+                <td>
+                    {% if entry.status == 'curation' and entry.changed_by.is_instructor %}
+                        Submitted for Curation
+                    {% elif entry.status == 'curation' and entry.changed_by.is_partner %}
+                        Accepted by Partner
+                    {% elif entry.status == 'draft' and entry.changed_by.is_partner %}
+                        Rejected by Partner
+                    {% elif entry.status == 'published' and entry.changed_by.is_superuser %}
+                        Published by Superuser
+                    {% elif entry.status == 'curation' and entry.changed_by.is_superuser %}
+                        Rejected by Superuser
+                    {% elif entry.status == 'archived' and entry.changed_by.is_superuser %}
+                        Archived by Superuser
+                    {% elif entry.status == 'archived' %}
+                        Archived Automatically
+                    {% elif entry.status == 'draft' and entry.changed_by.is_superuser %}
+                        Rejected to Draft by Superuser
+                    {% else %}
+                        Updated
+                    {% endif %}
+                </td>
+                <td>{{ entry.manual_message|default:"No message" }}</td>
                 <td>{{ entry.changed_by.username }}</td>
                 <td>{{ entry.changed_at|date:"Y-m-d H:i:s" }}</td>
             </tr>
@@ -43,10 +61,13 @@
             <label for="message">Review Message:</label>
             <textarea name="message" id="message" class="form-control" rows="5" required></textarea>
         </div>
+        <!-- Tombol untuk mengajukan ke curation (hanya jika status 'curation') -->
+        {% if can_submit_to_curation %}
         <button type="submit" name="action" value="accept" class="btn btn-success">Accept and Submit to Superuser</button>
+        {% endif %}
+        <!-- Tombol untuk menolak ke draft (selalu ditampilkan) -->
         <button type="submit" name="action" value="reject" class="btn btn-danger">Reject and Return to Instructor</button>
-        <a href="#" class="btn btn-secondary">Cancel</a>
+        <a href="{% url 'courses:studio' id=course.id %}" class="btn btn-secondary">Cancel</a>
     </form>
-</div>
 </div>
 {% endblock %}

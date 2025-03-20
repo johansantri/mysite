@@ -1,3 +1,4 @@
+<!-- templates/instructor/submit_curation.html  -->
 {% extends 'home/tes.html' %}
 {% load static %}
 
@@ -5,15 +6,84 @@
 
 <!-- Dashboard Grid -->
 <div class="row justify-content-center">
-<div class="container mt-5">
-    <h2>Submit Course for Curation: {{ course.course_name }}</h2>
-    <p>Current Status: {{ course.status_course.get_status_display }}</p>
-    <p>Are you sure you want to submit this course for curation? Once submitted, the course will be reviewed by the Partner.</p>
-
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-primary">Submit for Curation</button>
-        <a href="{% url 'instructor:instructor_course_detail' course_id=course.id %}" class="btn btn-secondary">Cancel</a>
-    </form>
+    <div class="container mt-5">
+        <h2>Submit Course for Curation: {{ course.course_name }}</h2>
+        <p><strong>Current Status:</strong> {{ course.status_course.get_status_display }}</p>
+        <p><strong>Latest Message:</strong> {{ course.status_course.manual_message|default:"No message" }}</p>
+    
+        <!-- Pesan Informasi -->
+        {% if message %}
+        <div class="alert alert-info">
+            {{ message }}
+        </div>
+        {% endif %}
+    
+        <!-- Form untuk Mengajukan Kurasi -->
+        {% if can_submit %}
+        <!-- Tampilkan Alasan Penolakan Terakhir (Jika Ada) -->
+        {% if latest_rejection %}
+        <div class="alert alert-warning">
+            <strong>Latest Rejection Reason:</strong> {{ latest_rejection.manual_message }} (by {{ latest_rejection.changed_by.username }} on {{ latest_rejection.changed_at|date:"Y-m-d H:i:s" }})
+        </div>
+        {% endif %}
+        <p>Are you sure you want to submit this course for curation? Once submitted, the course will be reviewed by the Partner.</p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="message">Message:</label>
+                <textarea name="message" id="message" class="form-control" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit for Curation</button>
+            <a href="{% url 'courses:studio' id=course.id %}" class="btn btn-secondary">Cancel</a>
+        </form>
+        {% endif %}
+    
+        <!-- Riwayat Status -->
+        <h4>Status History</h4>
+        {% if history %}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Status</th>
+                    <th>Action</th>
+                    <th>Message</th>
+                    <th>Changed By</th>
+                    <th>Changed At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in history %}
+                <tr {% if entry.status == 'draft' and entry.changed_by.is_partner %}class="table-danger"{% elif entry.status == 'curation' and entry.changed_by.is_superuser %}class="table-danger"{% elif entry.status == 'published' and entry.changed_by.is_superuser %}class="table-success"{% elif entry.status == 'archived' %}class="table-secondary"{% endif %}>
+                    <td>{{ entry.get_status_display }}</td>
+                    <td>
+                        {% if entry.status == 'curation' and entry.changed_by.is_instructor %}
+                            Submitted for Curation
+                        {% elif entry.status == 'curation' and entry.changed_by.is_partner %}
+                            Accepted by Partner
+                        {% elif entry.status == 'draft' and entry.changed_by.is_partner %}
+                            Rejected by Partner
+                        {% elif entry.status == 'published' and entry.changed_by.is_superuser %}
+                            Published by Superuser
+                        {% elif entry.status == 'curation' and entry.changed_by.is_superuser %}
+                            Rejected by Superuser
+                        {% elif entry.status == 'archived' %}
+                            Archived Automatically
+                        {% else %}
+                            Updated
+                        {% endif %}
+                    </td>
+                    <td>{{ entry.manual_message|default:"No message" }}</td>
+                    <td>{{ entry.changed_by.username }}</td>
+                    <td>{{ entry.changed_at|date:"Y-m-d H:i:s" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No status history available.</p>
+        {% endif %}
+    
+        <a href="{% url 'courses:studio' id=course.id %}" class="btn btn-secondary mt-3">Back to Course Details</a>
+    </div>
 </div>
 {% endblock %}

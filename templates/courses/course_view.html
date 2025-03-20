@@ -67,19 +67,33 @@
                     <td>{{ course.org_partner_name }}</td>
                     <td>
                       <span class="
-                        {% if course.status_course == 'published' %}
-                            text-success
-                        {% elif course.status_course == 'draft' %}
-                            text-warning
-                        {% elif course.status_course == 'archived' %}
-                            text-danger
-                        {% elif course.status_course == 'curation' %}
-                            text-info
-                        {% else %}
-                            text-primary
-                        {% endif %}
+                          {% if course.status_course.status == 'published' %}
+                              text-success
+                          {% elif course.status_course.status == 'draft' %}
+                              text-warning
+                          {% elif course.status_course.status == 'archived' %}
+                              text-danger
+                          {% elif course.status_course.status == 'curation' %}
+                              text-info
+                          {% else %}
+                              text-primary
+                          {% endif %}
                       ">
-                        {{ course.status_course }}
+                          {% if request.user.is_instructor and course.instructor.user == request.user and course.status_course.status not in 'published archived' %}
+                              <a href="{% url 'instructor:instructor_submit_curation' course_id=course.id %}">
+                                  {{ course.status_course.get_status_display }}
+                              </a>
+                          {% elif request.user.is_partner and course.org_partner.user == request.user %}
+                              <a href="{% url 'instructor:partner_review_curation' course_id=course.id %}">
+                                  {{ course.status_course.get_status_display }}
+                              </a>
+                          {% elif request.user.is_superuser %}
+                              <a href="{% url 'instructor:superuser_publish_course' course_id=course.id %}">
+                                  {{ course.status_course.get_status_display }}
+                              </a>
+                          {% else %}
+                              {{ course.status_course.get_status_display }}
+                          {% endif %}
                       </span>
                     </td>
                     <td>{{ course.course_run }}</td>
