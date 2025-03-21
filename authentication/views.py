@@ -666,42 +666,38 @@ def popular_courses(request):
 
 # Home page
 def home(request):
-    try:
-        # Get the 'published' CourseStatus ID
-        published_status = CourseStatus.objects.get(status='published')
-    except CourseStatus.DoesNotExist:
-        # Handle case where 'published' status is missing
-        published_status = None
+    # Mendapatkan status 'published', hanya mengambil yang pertama
+    published_status = CourseStatus.objects.filter(status='published').first()
 
     if published_status:
-        # Get the popular categories with published courses
+        # Mendapatkan kategori populer dengan kursus yang sudah dipublikasikan
         popular_categories = Category.objects.annotate(
             num_courses=Count('category_courses', filter=Q(category_courses__status_course=published_status))
         ).order_by('-num_courses')[:6]
-        
-        # Get the active microcredentials
+
+        # Mendapatkan microcredential aktif
         popular_microcredentials = MicroCredential.objects.filter(
             status='active'
-        ).order_by('-created_at')[:6]  # Limit to 6 popular microcredentials
+        ).order_by('-created_at')[:6]
 
-        # Get all partners
-        partners = Partner.objects.all()  # Fetch all partners
+        # Mendapatkan semua mitra
+        partners = Partner.objects.all()
 
     else:
-        # If no 'published' status exists, handle gracefully
+        # Jika tidak ada status 'published', beri hasil kosong
         popular_categories = []
         popular_microcredentials = []
-        partners = []  # If no published courses, no partners are needed
+        partners = []
 
-    # Pagination: Show 6 partners per page
-    paginator = Paginator(partners, 6)  # You can adjust the number of partners per page
+    # Pagination: Menampilkan 6 mitra per halaman
+    paginator = Paginator(partners, 6)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
     return render(request, 'home/index.html', {
         'popular_categories': popular_categories,
         'popular_microcredentials': popular_microcredentials,
-        'partners': page_obj,  # Send the paginated partners to the template
+        'partners': page_obj,  # Kirim mitra yang sudah dipaginasi ke template
     })
 
 
