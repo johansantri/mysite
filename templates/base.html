@@ -1,1705 +1,440 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="id">
 <head>
-
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-	<title>Dreams LMS2</title>
-
-	<!-- Favicon -->
-	<link rel="shortcut icon" type="image/x-icon" href="{% static "assets/img/favicon.svg"%}">
-
-	<!-- Theme Settings Js -->
-	<script src="{% static "assets/js/theme-script.js"%}"></script>
-
-	<!-- Bootstrap CSS -->
-	<link rel="stylesheet" href="{% static "assets/css/bootstrap.min.css"%}">
-
-	<!-- Fontawesome CSS -->
-	<link rel="stylesheet" href="{% static "assets/plugins/fontawesome/css/fontawesome.min.css"%}">
-	<link rel="stylesheet" href="{% static "assets/plugins/fontawesome/css/all.min.css"%}">
-
-	<!-- Owl Carousel CSS -->
-	<link rel="stylesheet" href="{% static "assets/css/owl.carousel.min.css"%}">
-	<link rel="stylesheet" href="{% static "assets/css/owl.theme.default.min.css"%}">
-
-	<!-- Slick CSS -->
-	<link rel="stylesheet" href="{% static "assets/plugins/slick/slick.css"%}">
-	<link rel="stylesheet" href="{% static "assets/plugins/slick/slick-theme.css"%}">
-
-	<!-- Select2 CSS -->
-	<link rel="stylesheet" href="{% static "assets/plugins/select2/css/select2.min.css"%}">
-
-	<!-- Aos CSS -->
-	<link rel="stylesheet" href="{% static "assets/plugins/aos/aos.css"%}">
-
-	<!-- Main CSS -->
-	<link rel="stylesheet" href="{% static "assets/css/style.css"%}">
-	<!--htmx-->
-	<script src="https://unpkg.com/htmx.org@2.0.3"></script>
-	
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMS - Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .hero {
+            background: linear-gradient(135deg, #007bff, #00ddeb);
+            color: white;
+            padding: 100px 0;
+        }
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .card {
+            border: none;
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+        }
+        .btn-custom {
+            background-color: #007bff;
+            border: none;
+            padding: 10px 20px;
+        }
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+        .testimoni-card {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .partner-carousel .carousel-item img {
+            filter: grayscale(100%);
+            transition: filter 0.3s;
+            max-height: 60px;
+            margin: 0 20px;
+        }
+        .partner-carousel .carousel-item img:hover {
+            filter: grayscale(0%);
+        }
+        .blog-card {
+            background: linear-gradient(135deg, #ffffff, #e9ecef);
+            border-radius: 15px;
+        }
+        .instructor-card {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #007bff;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .instructor-card:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
+        }
+        .instructor-item {
+            text-align: center;
+        }
+        .stats-card {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+		.card-img-top {
+			width: 100%;  /* Mengatur lebar gambar agar mengikuti lebar kontainer */
+			height: 200px;  /* Tentukan tinggi tetap untuk gambar */
+			object-fit: cover;  /* Mengatur gambar agar tetap terpotong dengan proporsional */
+		}
+		
+        @media (max-width: 991px) {
+            .navbar-collapse .d-flex {
+                flex-direction: column;
+                width: 100%;
+            }
+            .navbar-collapse form {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            .navbar-collapse .btn-custom {
+                width: 100%;
+                text-align: center;
+            }
+        }
+		@media (max-width: 768px) {
+			.card-img-top {
+				height: 150px;  /* Sesuaikan tinggi gambar di layar kecil */
+			}
+		}
+		
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
-
 <body>
-
-	<!-- Main Wrapper -->
-	<div class="main-wrapper">
-
-		<!-- Header -->
-		<header class="header">
-			<div class="header-fixed">
-				<nav class="navbar navbar-expand-lg header-nav scroll-sticky">
-					<div class="container">
-						<div class="navbar-header">
-							<a id="mobile_btn" href="javascript:void(0);">
-								<span class="bar-icon">
-									<span></span>
-									<span></span>
-									<span></span>
-								</span>
-							</a>
-							<a href="index.html" class="navbar-brand logo">
-								<img src="{% static "assets/img/logo.svg"%}" class="img-fluid" alt="Logo">
-							</a>
-						</div>
-						<div class="main-menu-wrapper">
-							<div class="menu-header">
-								<a href="index.html" class="menu-logo">
-									<img src="{% static "assets/img/logo.svg"%}" class="img-fluid" alt="Logo">
-								</a>
-								<a id="menu_close" class="menu-close" href="javascript:void(0);">
-									<i class="fas fa-times"></i>
-								</a>
-							</div>
-							<ul class="main-nav">
-								<li class="has-submenu active">
-									<a class="" href="#">Home <i class="fas fa-chevron-down"></i></a>
-									<ul class="submenu">
-										<li class="active"><a href="index.html">Home</a></li>
-										<li><a href="index-two.html">Home Two</a></li>
-										<li><a href="index-three.html">Home Three</a></li>
-										<li><a href="index-four.html">Home Four</a></li>
-									</ul>
-								</li>
-								<li><a href="about.html">About</a></li>
-								<li><a href="about.html">News</a></li>
-								<li><a href="about.html">Contact</a></li>
-								<li class="has-submenu">
-									<a href="#">Pages <i class="fas fa-chevron-down"></i></a>
-									<ul class="submenu">
-										<li><a href="about.html">About</a></li>
-										<li><a href="about.html">News</a></li>
-										<li><a href="about.html">Contact</a></li>
-										<li><a href="about.html">FAQ</a></li>
-										<li><a href="about.html">Team</a></li>
-										<li><a href="about.html">Services</a></li>
-										<li><a href="about.html">Portfolio</a></li>
-										<li><a href="about.html">Blog</a></li>
-										<li><a href="about.html">Blog Single</a></li>
-									</ul>
-									</li>
-								<li class="login-link">
-									<a href="{% url 'authentication:login'%}">Login / Signup</a>
-								</li>
-							</ul>
-						</div>
-						<ul class="nav header-navbar-rht">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-white sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">LMSKu</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                   
+                    <li class="nav-item"><a class="nav-link" href="#">Kursus</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Tentang</a></li>
+                </ul>
+                <div class="d-flex align-items-center flex-column flex-lg-row mt-3 mt-lg-0">
+                    <form class="d-flex me-lg-2" role="search">
+                        <input class="form-control me-2" type="search" placeholder="Cari kursus..." aria-label="Search">
+                        <button class="btn btn-outline-primary" type="submit"><i class="bi bi-search"></i></button>
+                    </form>
+                    <ul class="navbar-nav">
+						{% if request.user.is_authenticated %}
 							<li class="nav-item">
-								<div>
-									<a href="javascript:void(0);" id="dark-mode-toggle" class="dark-mode-toggle  ">
-										<i class="fa-solid fa-moon"></i>
-									</a>
-									<a href="javascript:void(0);" id="light-mode-toggle" class="dark-mode-toggle ">
-										<i class="fa-solid fa-sun"></i>
-									</a>
-								</div>
+								<a class="nav-link btn btn-custom text-white" href="{% url 'authentication:dasbord'%}">Dashboard</a>
 							</li>
-							{% if request.user.is_authenticated and request.user.is_partner %}
+							
+						{% else %}
 							<li class="nav-item">
-								<a class="nav-link header-sign" href="{% url 'authentication:dasbord'%}">{{user.username}}</a>
-								
+								<a class="nav-link btn btn-custom text-white" href="{% url 'authentication:login' %}">Login</a>
 							</li>
-							{% elif request.user.is_authenticated and request.user.is_superuser %}
-							<li class="nav-item">
-								<a class="nav-link header-login" href="{% url 'authentication:dasbord'%}">{{user.username}}</a>
-							{% elif request.user.is_authenticated and request.user.is_instructor %}
-							<li class="nav-item">
-								<a class="nav-link header-login" href="{% url 'authentication:dasbord'%}">{{user.username}}</a>	
-							</li>
-							{% elif request.user.is_authenticated and request.user.is_learner %}
-							<li class="nav-item">
-								<a class="nav-link header-login" href="{% url 'authentication:dashbord'%}">{{user.username}}</a>	
-							</li>
-							{% elif request.user.is_authenticated %}
-							<li class="nav-item">
-								<a class="nav-link header-sign" href="{% url 'authentication:logout'%}">logout</a>
-							</li>
-							{% else %}
-							<li class="nav-item">
-								<a class="nav-link header-login" href="{% url 'authentication:login'%}">Login</a>
-							</li>
-							{% endif%}
-
-						</ul>
-					</div>
-				</nav>
-			</div>
-		</header>
-		<!-- /Header -->
-
-		<!-- Home Banner -->
-		<section class="home-slide d-flex align-items-center">
-			<div class="container">
-				<div class="row ">
-					<div class="col-md-7">
-						<div class="home-slide-face aos" data-aos="fade-up">
-							<div class="home-slide-text ">
-								<h5>The Leader in Online Learning</h5>
-								<h1>Engaging & Accessible Online Courses For All</h1>
-								<p>Own your future learning new skills online</p>
-							</div>
-							<div class="banner-content">
-								<form class="form" action="course-list.html">
-									<div class="form-inner">
-										<div class="input-group">
-											<i class="fa-solid fa-magnifying-glass search-icon"></i>
-											<input type="email" class="form-control"
-												placeholder="Search School, Online eductional centers, etc">
-											<span class="drop-detail">
-												<select class="form-select select">
-													<option>Category</option>
-													<option>Angular</option>
-													<option>Node Js</option>
-													<option>React</option>
-													<option>Python</option>
-												</select>
-											</span>
-											<button class="btn btn-primary sub-btn" type="submit"><i
-													class="fas fa-arrow-right"></i></button>
-										</div>
-									</div>
-								</form>
-							</div>
-							<div class="trust-user">
-								<p>Trusted by over 15K Users <br>worldwide since 2024</p>
-								<div class="trust-rating d-flex align-items-center">
-									<div class="rate-head">
-										<h2><span>1000</span>+</h2>
-									</div>
-									<div class="rating d-flex align-items-center">
-										<h2 class="d-inline-block average-rating">4.4</h2>
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star filled"></i>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-5 d-flex align-items-center">
-						<div class="girl-slide-img aos" data-aos="fade-up">
-							<img src="{% static "assets/img/object.png"%}" alt="Img">
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-		<!-- /Home Banner -->
-		<section class="section student-course">
-			<div class="container">
-				<div class="course-widget">
-					<div class="row">
-						<div class="col-lg-3 col-md-6">
-							<div class="course-full-width">
-								<div class="blur-border course-radius align-items-center aos" data-aos="fade-up">
-									<div class="online-course d-flex align-items-center">
-										<div class="course-img">
-											<img src="{% static "assets/img/pencil-icon.svg"%}" alt="Img">
-										</div>
-										<div class="course-inner-content">
-											<h4><span>10</span>K</h4>
-											<p>Online Courses</p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-3 col-md-6 d-flex">
-							<div class="course-full-width">
-								<div class="blur-border course-radius aos" data-aos="fade-up">
-									<div class="online-course d-flex align-items-center">
-										<div class="course-img">
-											<img src="{% static "assets/img/cources-icon.svg"%}" alt="Img">
-										</div>
-										<div class="course-inner-content">
-											<h4><span>200</span>+</h4>
-											<p>Expert Tutors</p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-3 col-md-6 d-flex">
-							<div class="course-full-width">
-								<div class="blur-border course-radius aos" data-aos="fade-up">
-									<div class="online-course d-flex align-items-center">
-										<div class="course-img">
-											<img src="{% static "assets/img/certificate-icon.svg"%}" alt="Img">
-										</div>
-										<div class="course-inner-content">
-											<h4><span>6</span>K+</h4>
-											<p>Ceritified Courses</p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-3 col-md-6 d-flex">
-							<div class="course-full-width">
-								<div class="blur-border course-radius aos" data-aos="fade-up">
-									<div class="online-course d-flex align-items-center">
-										<div class="course-img">
-											<img src="{% static "assets/img/gratuate-icon.svg"%}" alt="Img">
-										</div>
-										<div class="course-inner-content">
-											<h4><span>60</span>K +</h4>
-											<p>Online Students</p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-		<!-- Home Banner -->
-
-		<!-- Top Categories -->
-		<section class="section how-it-works">
-			<div class="container">
-				<div class="section-header aos" data-aos="fade-up">
-					<div class="section-sub-head">
-						<span>Favourite Course</span>
-						<h2>Top Category</h2>
-					</div>
-					<div class="all-btn all-category d-flex align-items-center">
-						<a href="{% url 'authentication:course_list'%}" class="btn btn-primary">All Categories</a>
-					</div>
-				</div>
-				<div class="section-text aos" data-aos="fade-up">
-					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eget aenean accumsan bibendum gravida
-						maecenas augue elementum et neque. Suspendisse imperdiet.</p>
-				</div>
-				<div class="owl-carousel mentoring-course owl-theme aos" data-aos="fade-up">
-					{% for category in popular_categories %}
-						<div class="feature-box text-center bg-{% cycle 'danger' 'success' 'primary' 'warning' 'info' 'dark' %} text-white">
-							<div class="feature-bg">
-								<div class="feature-header">
-									<div class="feature-cont">
-										<div class="feature-text">{{ category.name }}</div>
-									</div>
-								</div>
-								<p>{{ category.num_courses }} Courses</p>
-							</div>
-						</div>
-					{% endfor %}
+						{% endif %}
+					</ul>
 					
 					
-				</div>
-			</div>
-		</section>
-		<!-- /Top Categories -->
+                </div>
+            </div>
+        </div>
+    </nav>
 
-		<!-- Feature Course -->
-		<section class="section new-course">
-			<div class="container">
-				<div class="section-header aos" data-aos="fade-up">
-					<div class="section-sub-head">
-						<span>What’s New</span>
-						<h2>Featured Courses</h2>
-					</div>
-					<div class="all-btn all-category d-flex align-items-center">
-						<a href="course-list.html" class="btn btn-primary">All Courses</a>
-					</div>
-				</div>
-				<div class="section-text aos" data-aos="fade-up">
-					<p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eget aenean accumsan
-						bibendum gravida maecenas augue elementum et neque. Suspendisse imperdiet.</p>
-				</div>
-				<div class="course-feature">
-					<!--add data json populer course-->
-					<div class="row" id="courses-list">
-					
-						
-					</div>
-				</div>
-			</div>
-		</section>
-		<!-- /Feature Course -->
+    <!-- Hero Section -->
+    <section class="hero text-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold">Belajar Tanpa Batas</h1>
+            <p class="lead">Temukan kursus terbaik untuk meningkatkan skillmu kapan saja, di mana saja.</p>
+            <a href="#" class="btn btn-light btn-lg mt-3">Mulai Sekarang</a>
+        </div>
+    </section>
 
-		<!-- Master Skill -->
-		<section class="section master-skill">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-7 col-md-12">
-						<div class="section-header aos" data-aos="fade-up">
-							<div class="section-sub-head">
-								<span>What’s New</span>
-								<h2>Master the skills to drive your career</h2>
-							</div>
-						</div>
-						<div class="section-text aos" data-aos="fade-up">
-							<p>Get certified, master modern tech skills, and level up your career — whether you’re
-								starting out or a seasoned pro. 95% of eLearning learners report our hands-on content
-								directly helped their careers.</p>
-						</div>
-						<div class="career-group aos" data-aos="fade-up">
-							<div class="row">
-								<div class="col-lg-6 col-md-6 d-flex">
-									<div class="certified-group blur-border d-flex">
-										<div class="get-certified d-flex align-items-center">
-											<div class="blur-box">
-												<div class="certified-img ">
-													<img src="{% static "assets/img/icon/icon-1.svg"%}" alt="Img" class="img-fluid">
-												</div>
-											</div>
-											<p>Stay motivated with engaging instructors</p>
-										</div>
-									</div>
-								</div>
-								<div class="col-lg-6 col-md-6 d-flex">
-									<div class="certified-group blur-border d-flex">
-										<div class="get-certified d-flex align-items-center">
-											<div class="blur-box">
-												<div class="certified-img ">
-													<img src="{% static "assets/img/icon/icon-2.svg"%}" alt="Img" class="img-fluid">
-												</div>
-											</div>
-											<p>Keep up with in the latest in cloud</p>
-										</div>
-									</div>
-								</div>
-								<div class="col-lg-6 col-md-6 d-flex">
-									<div class="certified-group blur-border d-flex">
-										<div class="get-certified d-flex align-items-center">
-											<div class="blur-box">
-												<div class="certified-img ">
-													<img src="{% static "assets/img/icon/icon-3.svg"%}" alt="Img" class="img-fluid">
-												</div>
-											</div>
-											<p>Get certified with 100+ certification courses</p>
-										</div>
-									</div>
-								</div>
-								<div class="col-lg-6 col-md-6 d-flex">
-									<div class="certified-group blur-border d-flex">
-										<div class="get-certified d-flex align-items-center">
-											<div class="blur-box">
-												<div class="certified-img ">
-													<img src="{% static "assets/img/icon/icon-4.svg"%}" alt="Img" class="img-fluid">
-												</div>
-											</div>
-											<p>Build skills your way, from labs to courses</p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-5 col-md-12 d-flex align-items-end">
-						<div class="career-img aos" data-aos="fade-up">
-							<img src="{% static "assets/img/join.png"%}" alt="Img" class="img-fluid">
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-		<!-- /Master Skill -->
+    <!-- Stats Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-4 text-center">
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <h3 class="fw-bold text-primary">150+</h3>
+                        <p>Total Kursus</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <h3 class="fw-bold text-primary">50.000+</h3>
+                        <p>Total Pendaftar</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <h3 class="fw-bold text-primary">30.000+</h3>
+                        <p>Total Siswa</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <h3 class="fw-bold text-primary">20+</h3>
+                        <p>Total Mitra</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-		<!-- Trending Course -->
-		<section class="section trend-course">
-			<div class="container">
-				<div class="section-header aos" data-aos="fade-up">
-					<div class="section-sub-head">
-						<span>What’s New</span>
-						<h2>TRENDING PROFESIONAL COURSES</h2>
-					</div>
-					<div class="all-btn all-category d-flex align-items-center">
-						<a href="course-list.html" class="btn btn-primary">All Courses</a>
-					</div>
-				</div>
-				<div class="section-text aos" data-aos="fade-up">
-					<p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eget aenean accumsan
-						bibendum gravida maecenas augue elementum et neque. Suspendisse imperdiet.</p>
-				</div>
-				<div class="owl-carousel trending-course owl-theme aos" data-aos="fade-up">
-					 {% for microcredential in popular_microcredentials %}
-					<div class="course-box trend-box">
-						<div class="product trend-product">
-							<div class="product-img">
-								<a href="course-details.html">
-									<img class="img-fluid" alt="Img" src="{{ microcredential.image.url }}">
-								</a>
-								<div class="price">
-									<h3>$200 <span>$99.00</span></h3>
+	<section class="py-5">
+		<div class="container py-5">
+			<h2 class="text-left mb-5">Kategori populer</h2>
+			<div class="row g-4">
+				{% for category in popular_categories %}
+					<div class="col-md-4 col-lg-3">
+						<div class="card text-center bg-{% cycle 'danger' 'success' 'primary' 'warning' 'info' 'dark' %} text-white shadow-sm border-0 rounded-3">
+							<div class="card-body d-flex flex-column align-items-center justify-content-center">
+								<!-- Icon atau gambar kategori (opsional) -->
+								<i class="bi bi-bookmarks-fill mb-3" style="font-size: 3rem;"></i>
+								<div class="feature-text mb-3">
+									<h5 class="fw-bold">{{ category.name }}</h5>
 								</div>
-							</div>
-							<div class="product-content">
-								<div class="course-group d-flex">
-									<div class="course-group-img d-flex">
-										<a href="#"><img src="{% static "assets/img/user/user2.jpg"%}" alt="Img"
-												class="img-fluid"></a>
-										<div class="course-name">
-											<h4><a href="instructor-profile.html">John Michael</a></h4>
-											<p>Instructor</p>
-										</div>
-									</div>
-									<div class="course-share d-flex align-items-center justify-content-center">
-										<a href="#"><i class="fa-regular fa-heart"></i></a>
-									</div>
-								</div>
-								<h3 class="title"><a href="{% url 'courses:enroll_microcredential' microcredential.slug %}">{{ microcredential.title }}</a></h3>
-								<div class="course-info d-flex align-items-center">
-									<div class="rating-img d-flex align-items-center">
-										<img src="{% static "assets/img/icon/icon-01.svg"%}" alt="Img" class="img-fluid">
-										<p>13+ Lesson</p>
-									</div>
-									<div class="course-view d-flex align-items-center">
-										<img src="{% static "assets/img/icon/icon-02.svg"%}" alt="Img" class="img-fluid">
-										<p>10hr 30min</p>
-									</div>
-								</div>
-								<div class="d-flex align-items-center justify-content-between">
-									<div class="rating m-0">
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star"></i>
-										<span class="d-inline-block average-rating"><span>4.0</span> (15)</span>
-									</div>
-									<div class="all-btn all-category d-flex align-items-center">
-										<a href="checkout.html" class="btn btn-primary">BUY NOW</a>
-									</div>
-								</div>
+								<p class="card-text">{{ category.num_courses }} Courses</p>
 							</div>
 						</div>
 					</div>
+				{% endfor %}
+			</div>
+		</div>
+		
+	</section>
+
+    <!-- Features Section -->
+    <section class="py-5">
+        <div class="container">
+            <h2 class="text-left mb-5">Kenapa Memilih Kami?</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card p-4 text-center shadow-sm">
+                        <i class="bi bi-book fs-1 text-primary mb-3"></i>
+                        <h5>Kursus Berkualitas</h5>
+                        <p>Materi disusun oleh expert di bidangnya.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-4 text-center shadow-sm">
+                        <i class="bi bi-clock fs-1 text-primary mb-3"></i>
+                        <h5>Fleksibel</h5>
+                        <p>Belajar sesuai waktu dan kecepatanmu.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-4 text-center shadow-sm">
+                        <i class="bi bi-award fs-1 text-primary mb-3"></i>
+                        <h5>Sertifikat</h5>
+                        <p>Dapatkan sertifikat setelah selesai.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Courses Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-left mb-5">Kursus Populer</h2>
+            <div class="row g-4" id="courses-list" >
+               
+               
+            </div>
+        </div>
+    </section>
+
+    <!-- Partner Section (Carousel) -->
+    <section class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Mitra Kami</h2>
+            <div id="partnerCarousel" class="carousel slide partner-carousel" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <img src="https://via.placeholder.com/150x50?text=Google" alt="Google">
+                            <img src="https://via.placeholder.com/150x50?text=Microsoft" alt="Microsoft">
+                            <img src="https://via.placeholder.com/150x50?text=Amazon" alt="Amazon">
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <img src="https://via.placeholder.com/150x50?text=IBM" alt="IBM">
+                            <img src="https://via.placeholder.com/150x50?text=Adobe" alt="Adobe">
+                            <img src="https://via.placeholder.com/150x50?text=Cisco" alt="Cisco">
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#partnerCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#partnerCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+            <div class="text-center mt-4">
+                <p class="text-muted">"Jadilah mitra kami dan wujudkan potensi bersama!"</p>
+                <a href="#" class="btn btn-outline-primary">Gabung Jadi Mitra</a>
+            </div>
+        </div>
+    </section>
+
+	<!-- Micro Section -->
+		<section class="py-5 bg-light">
+			<div class="container">
+				<h2 class="text-center mb-5">Micro Courses</h2>
+				<div class="row g-4">
+					{% for microcredential in popular_microcredentials %}
+						<div class="col-md-6">
+							<div class="blog-card shadow-sm p-4 d-flex align-items-center rounded-3">
+								<div class="course-info">
+									<h5 class="fw-bold text-primary"><a href="{% url 'courses:enroll_microcredential' microcredential.slug %}" class="text-decoration-none">{{ microcredential.title }}</a></h5>
+									<p class="text-muted">Cara belajar pemrograman tanpa stres.</p>
+									<a href="{% url 'courses:enroll_microcredential' microcredential.slug %}" class="btn btn-primary mt-3">Baca Selengkapnya</a>
+								</div>
+							</div>
+						</div>
 					{% empty %}
-						<p>No popular micro-credentials found.</p>
+						<p class="text-center text-muted">No popular micro-credentials found.</p>
 					{% endfor %}
-					<div class="course-box trend-box">
-						<div class="product trend-product">
-							<div class="product-img">
-								<a href="course-details.html">
-									<img class="img-fluid" alt="Img" src="{% static "assets/img/course/course-08.jpg"%}">
-								</a>
-								<div class="price">
-									<h3>$300 <span>$99.00</span></h3>
-								</div>
-							</div>
-							<div class="product-content">
-								<div class="course-group d-flex">
-									<div class="course-group-img d-flex">
-										<a href="instructor-profile.html"><img src="{% static "assets/img/user/user2.jpg"%}" alt="Img"
-												class="img-fluid"></a>
-										<div class="course-name">
-											<h4><a href="instructor-profile.html">John Smith</a></h4>
-											<p>Instructor</p>
-										</div>
-									</div>
-									<div class="course-share d-flex align-items-center justify-content-center">
-										<a href="#"><i class="fa-regular fa-heart"></i></a>
-									</div>
-								</div>
-								<h3 class="title"><a href="course-details.html">Responsive Web Design Essentials HTML5
-										CSS3 and Bootstrap</a></h3>
-								<div class="course-info d-flex align-items-center">
-									<div class="rating-img d-flex align-items-center">
-										<img src="{% static "assets/img/icon/icon-01.svg"%}" alt="Img" class="img-fluid">
-										<p>10+ Lesson</p>
-									</div>
-									<div class="course-view d-flex align-items-center">
-										<img src="{% static "assets/img/icon/icon-02.svg"%}" alt="Img" class="img-fluid">
-										<p>11hr 30min</p>
-									</div>
-								</div>
-								<div class="d-flex align-items-center justify-content-between">
-									<div class="rating m-0">
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star"></i>
-										<span class="d-inline-block average-rating"><span>4.2</span> (15)</span>
-									</div>
-									<div class="all-btn all-category d-flex align-items-center">
-										<a href="checkout.html" class="btn btn-primary">BUY NOW</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="course-box trend-box">
-						<div class="product trend-product">
-							<div class="product-img">
-								<a href="course-details.html">
-									<img class="img-fluid" alt="Img" src="{% static "assets/img/course/course-05.jpg"%}">
-								</a>
-								<div class="price">
-									<h3>$100 <span>$99.00</span></h3>
-								</div>
-							</div>
-							<div class="product-content">
-								<div class="course-group d-flex">
-									<div class="course-group-img d-flex">
-										<a href="instructor-profile.html"><img src="{% static "assets/img/user/user3.jpg"%}" alt="Img"
-												class="img-fluid"></a>
-										<div class="course-name">
-											<h4><a href="instructor-profile.html">Lavern M.</a></h4>
-											<p>Instructor</p>
-										</div>
-									</div>
-									<div class="course-share d-flex align-items-center justify-content-center">
-										<a href="#"><i class="fa-regular fa-heart"></i></a>
-									</div>
-								</div>
-								<h3 class="title"><a href="course-details.html">The Complete App Design Course - UX, UI
-										and Design Thinking</a></h3>
-								<div class="course-info d-flex align-items-center">
-									<div class="rating-img d-flex align-items-center">
-										<img src="{% static "assets/img/icon/icon-01.svg"%}" alt="Img" class="img-fluid">
-										<p>8+ Lesson</p>
-									</div>
-									<div class="course-view d-flex align-items-center">
-										<img src="{% static "assets/img/icon/icon-02.svg"%}" alt="Img" class="img-fluid">
-										<p>8hr 30min</p>
-									</div>
-								</div>
-								<div class="d-flex align-items-center justify-content-between">
-									<div class="rating m-0">
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star"></i>
-										<span class="d-inline-block average-rating"><span>4.3</span> (15)</span>
-									</div>
-									<div class="all-btn all-category d-flex align-items-center">
-										<a href="checkout.html" class="btn btn-primary">BUY NOW</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="course-box trend-box">
-						<div class="product trend-product">
-							<div class="product-img">
-								<a href="course-details.html">
-									<img class="img-fluid" alt="Img" src="{% static "assets/img/course/course-08.jpg"%}">
-								</a>
-								<div class="price">
-									<h3>$200 <span>$99.00</span></h3>
-								</div>
-							</div>
-							<div class="product-content">
-								<div class="course-group d-flex">
-									<div class="course-group-img d-flex">
-										<a href="instructor-profile.html"><img src="{% static "assets/img/user/user5.jpg"%}" alt="Img"
-												class="img-fluid"></a>
-										<div class="course-name">
-											<h4><a href="instructor-profile.html">John Smith</a></h4>
-											<p>Instructor</p>
-										</div>
-									</div>
-									<div class="course-share d-flex align-items-center justify-content-center">
-										<a href="#"><i class="fa-regular fa-heart"></i></a>
-									</div>
-								</div>
-								<h3 class="title"><a href="course-details.html">Build Responsive Real World Websites
-										with HTML5 and CSS3</a></h3>
-								<div class="course-info d-flex align-items-center">
-									<div class="rating-img d-flex align-items-center">
-										<img src="{% static "assets/img/icon/icon-01.svg"%}" alt="Img" class="img-fluid">
-										<p>13+ Lesson</p>
-									</div>
-									<div class="course-view d-flex align-items-center">
-										<img src="{% static "assets/img/icon/icon-02.svg"%}" alt="Img" class="img-fluid">
-										<p>10hr 30min</p>
-									</div>
-								</div>
-								<div class="d-flex align-items-center justify-content-between">
-									<div class="rating m-0">
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star"></i>
-										<span class="d-inline-block average-rating"><span>4.0</span> (15)</span>
-									</div>
-									<div class="all-btn all-category d-flex align-items-center">
-										<a href="checkout.html" class="btn btn-primary">BUY NOW</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="course-box trend-box">
-						<div class="product trend-product">
-							<div class="product-img">
-								<a href="course-details.html">
-									<img class="img-fluid" alt="Img" src="{% static "assets/img/course/course-07.jpg"%}">
-								</a>
-								<div class="price">
-									<h3>$300 <span>$99.00</span></h3>
-								</div>
-							</div>
-							<div class="product-content">
-								<div class="course-group d-flex">
-									<div class="course-group-img d-flex">
-										<a href="instructor-profile.html"><img src="{% static "assets/img/user/user2.jpg"%}" alt="Img"
-												class="img-fluid"></a>
-										<div class="course-name">
-											<h4><a href="instructor-profile.html">John Smith</a></h4>
-											<p>Instructor</p>
-										</div>
-									</div>
-									<div class="course-share d-flex align-items-center justify-content-center">
-										<a href="#"><i class="fa-regular fa-heart"></i></a>
-									</div>
-								</div>
-								<h3 class="title"><a href="course-details.html">Responsive Web Design Essentials HTML5
-										CSS3 and Bootstrap</a></h3>
-								<div class="course-info d-flex align-items-center">
-									<div class="rating-img d-flex align-items-center">
-										<img src="{% static "assets/img/icon/icon-01.svg"%}" alt="Img" class="img-fluid">
-										<p>10+ Lesson</p>
-									</div>
-									<div class="course-view d-flex align-items-center">
-										<img src="{% static "assets/img/icon/icon-02.svg"%}" alt="Img" class="img-fluid">
-										<p>11hr 30min</p>
-									</div>
-								</div>
-								<div class="d-flex align-items-center justify-content-between">
-									<div class="rating m-0">
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star"></i>
-										<span class="d-inline-block average-rating"><span>4.5</span> (15)</span>
-									</div>
-									<div class="all-btn all-category d-flex align-items-center">
-										<a href="checkout.html" class="btn btn-primary">BUY NOW</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="course-box trend-box">
-						<div class="product trend-product">
-							<div class="product-img">
-								<a href="course-details.html">
-									<img class="img-fluid" alt="Img" src="{% static "assets/img/course/course-09.jpg"%}">
-								</a>
-								<div class="price">
-									<h3>$100 <span>$99.00</span></h3>
-								</div>
-							</div>
-							<div class="product-content">
-								<div class="course-group d-flex">
-									<div class="course-group-img d-flex">
-										<a href="instructor-profile.html"><img src="{% static "assets/img/user/user4.jpg"%}" alt="Img"
-												class="img-fluid"></a>
-										<div class="course-name">
-											<h4><a href="instructor-profile.html">Lavern M.</a></h4>
-											<p>Instructor</p>
-										</div>
-									</div>
-									<div class="course-share d-flex align-items-center justify-content-center">
-										<a href="#"><i class="fa-regular fa-heart"></i></a>
-									</div>
-								</div>
-								<h3 class="title"><a href="course-details.html">The Complete App Design Course - UX, UI
-										and Design Thinking</a></h3>
-								<div class="course-info d-flex align-items-center">
-									<div class="rating-img d-flex align-items-center">
-										<img src="{% static "assets/img/icon/icon-01.svg"%}" alt="Img" class="img-fluid">
-										<p>8+ Lesson</p>
-									</div>
-									<div class="course-view d-flex align-items-center">
-										<img src="{% static "assets/img/icon/icon-02.svg"%}" alt="Img" class="img-fluid">
-										<p>8hr 30min</p>
-									</div>
-								</div>
-								<div class="d-flex align-items-center justify-content-between">
-									<div class="rating m-0">
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star"></i>
-										<span class="d-inline-block average-rating"><span>4.0</span> (15)</span>
-									</div>
-									<div class="all-btn all-category d-flex align-items-center">
-										<a href="checkout.html" class="btn btn-primary">BUY NOW</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="course-box trend-box">
-						<div class="product trend-product">
-							<div class="product-img">
-								<a href="course-details.html">
-									<img class="img-fluid" alt="Img" src="{% static "assets/img/course/course-08.jpg"%}">
-								</a>
-								<div class="price">
-									<h3>$200 <span>$99.00</span></h3>
-								</div>
-							</div>
-							<div class="product-content">
-								<div class="course-group d-flex">
-									<div class="course-group-img d-flex">
-										<a href="instructor-profile.html"><img src="{% static "assets/img/user/user1.jpg"%}" alt="Img"
-												class="img-fluid"></a>
-										<div class="course-name">
-											<h4><a href="instructor-profile.html">John Michael</a></h4>
-											<p>Instructor</p>
-										</div>
-									</div>
-									<div class="course-share d-flex align-items-center justify-content-center">
-										<a href="#"><i class="fa-regular fa-heart"></i></a>
-									</div>
-								</div>
-								<h3 class="title"><a href="course-details.html">Learn JavaScript and Express to become a
-										professional JavaScript</a></h3>
-								<div class="course-info d-flex align-items-center">
-									<div class="rating-img d-flex align-items-center">
-										<img src="{% static "assets/img/icon/icon-01.svg"%}" alt="Img" class="img-fluid">
-										<p>13+ Lesson</p>
-									</div>
-									<div class="course-view d-flex align-items-center">
-										<img src="{% static "assets/img/icon/icon-02.svg"%}" alt="Img" class="img-fluid">
-										<p>10hr 30min</p>
-									</div>
-								</div>
-								<div class="d-flex align-items-center justify-content-between">
-									<div class="rating m-0">
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star"></i>
-										<span class="d-inline-block average-rating"><span>4.0</span> (15)</span>
-									</div>
-									<div class="all-btn all-category d-flex align-items-center">
-										<a href="checkout.html" class="btn btn-primary">BUY NOW</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="course-box trend-box">
-						<div class="product trend-product">
-							<div class="product-img">
-								<a href="course-details.html">
-									<img class="img-fluid" alt="Img" src="{% static "assets/img/course/course-09.jpg"%}">
-								</a>
-								<div class="price">
-									<h3>$300 <span>$99.00</span></h3>
-								</div>
-							</div>
-							<div class="product-content">
-								<div class="course-group d-flex">
-									<div class="course-group-img d-flex">
-										<a href="instructor-profile.html"><img src="{% static "assets/img/user/user3.jpg"%}" alt="Img"
-												class="img-fluid"></a>
-										<div class="course-name">
-											<h4><a href="instructor-profile.html">John Smith</a></h4>
-											<p>Instructor</p>
-										</div>
-									</div>
-									<div class="course-share d-flex align-items-center justify-content-center">
-										<a href="#"><i class="fa-regular fa-heart"></i></a>
-									</div>
-								</div>
-								<h3 class="title"><a href="course-details.html">Responsive Web Design Essentials HTML5
-										CSS3 and Bootstrap</a></h3>
-								<div class="course-info d-flex align-items-center">
-									<div class="rating-img d-flex align-items-center">
-										<img src="{% static "assets/img/icon/icon-01.svg"%}" alt="Img" class="img-fluid">
-										<p>10+ Lesson</p>
-									</div>
-									<div class="course-view d-flex align-items-center">
-										<img src="{% static "assets/img/icon/icon-02.svg"%}" alt="Img" class="img-fluid">
-										<p>11hr 30min</p>
-									</div>
-								</div>
-								<div class="d-flex align-items-center justify-content-between">
-									<div class="rating m-0">
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star filled"></i>
-										<i class="fas fa-star"></i>
-										<span class="d-inline-block average-rating"><span>4.0</span> (15)</span>
-									</div>
-									<div class="all-btn all-category d-flex align-items-center">
-										<a href="checkout.html" class="btn btn-primary">BUY NOW</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<!-- Feature Instructors -->
-				<div class="feature-instructors">
-					<div class="section-header aos" data-aos="fade-up">
-						<div class="section-sub-head feature-head text-center">
-							<h2>Featured Instructor</h2>
-							<div class="section-text aos" data-aos="fade-up">
-								<p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eget aenean
-									accumsan bibendum gravida maecenas augue elementum et neque. Suspendisse imperdiet.
-								</p>
-							</div>
-						</div>
-					</div>
-					<div class="owl-carousel instructors-course owl-theme aos" data-aos="fade-up">
-						<div class="instructors-widget">
-							<div class="instructors-img ">
-								<a href="instructor-list.html">
-									<img class="img-fluid" alt="Img" src="{% static "assets/img/user/user7.jpg"%}">
-								</a>
-							</div>
-							<div class="instructors-content text-center">
-								<h5><a href="instructor-profile.html">David Lee</a></h5>
-								<p>Web Developer</p>
-								<div class="student-count d-flex justify-content-center">
-									<i class="fa-solid fa-user-group"></i>
-									<span>50 Students</span>
-								</div>
-							</div>
-						</div>
-						<div class="instructors-widget">
-							<div class="instructors-img">
-								<a href="instructor-list.html">
-									<img class="img-fluid" alt="Img" src="{% static "assets/img/user/user8.jpg"%}">
-								</a>
-							</div>
-							<div class="instructors-content text-center">
-								<h5><a href="instructor-profile.html">Daziy Millar</a></h5>
-								<p>PHP Expert</p>
-								<div class="student-count d-flex justify-content-center">
-									<i class="fa-solid fa-user-group yellow"></i>
-									<span>50 Students</span>
-								</div>
-							</div>
-						</div>
-						<div class="instructors-widget">
-							<div class="instructors-img">
-								<a href="instructor-list.html">
-									<img class="img-fluid" alt="Img" src="{% static "assets/img/user/user9.jpg"%}">
-								</a>
-							</div>
-							<div class="instructors-content text-center">
-								<h5><a href="instructor-profile.html">Patricia Mendoza</a></h5>
-								<p>Web Developer</p>
-								<div class="student-count d-flex justify-content-center">
-									<i class="fa-solid fa-user-group violet"></i>
-									<span>50 Students</span>
-								</div>
-							</div>
-						</div>
-						<div class="instructors-widget">
-							<div class="instructors-img">
-								<a href="instructor-list.html">
-									<img class="img-fluid" alt="Img" src="{% static "assets/img/user/user10.jpg"%}">
-								</a>
-							</div>
-							<div class="instructors-content text-center">
-								<h5><a href="instructor-profile.html">Skyler Whites</a></h5>
-								<p>UI Designer</p>
-								<div class="student-count d-flex justify-content-center">
-									<i class="fa-solid fa-user-group orange"></i>
-									<span>50 Students</span>
-								</div>
-							</div>
-						</div>
-						<div class="instructors-widget">
-							<div class="instructors-img ">
-								<a href="instructor-list.html">
-									<img class="img-fluid" alt="Img" src="{% static "assets/img/user/user7.jpg"%}">
-								</a>
-							</div>
-							<div class="instructors-content text-center">
-								<h5><a href="instructor-profile.html">Patricia Mendoza</a></h5>
-								<p>Java Developer</p>
-								<div class="student-count d-flex justify-content-center">
-									<i class="fa-solid fa-user-group"></i>
-									<span>40 Students</span>
-								</div>
-							</div>
-						</div>
-						<div class="instructors-widget">
-							<div class="instructors-img">
-								<a href="instructor-list.html">
-									<img class="img-fluid" alt="Img" src="{% static "assets/img/user/user8.jpg"%}">
-								</a>
-							</div>
-							<div class="instructors-content text-center">
-								<h5><a href="instructor-profile.html">David Lee</a></h5>
-								<p>Web Developer</p>
-								<div class="student-count d-flex justify-content-center">
-									<i class="fa-solid fa-user-group"></i>
-									<span>50 Students</span>
-								</div>
-							</div>
-						</div>
-						<div class="instructors-widget">
-							<div class="instructors-img ">
-								<a href="instructor-list.html">
-									<img class="img-fluid" alt="Img" src="{% static "assets/img/user/user9.jpg"%}">
-								</a>
-							</div>
-							<div class="instructors-content text-center">
-								<h5><a href="instructor-profile.html">Daziy Millar</a></h5>
-								<p>PHP Expert</p>
-								<div class="student-count d-flex justify-content-center">
-									<i class="fa-solid fa-user-group"></i>
-									<span>40 Students</span>
-								</div>
-							</div>
-						</div>
-						<div class="instructors-widget">
-							<div class="instructors-img ">
-								<a href="instructor-list.html">
-									<img class="img-fluid" alt="Img" src="{% static "assets/img/user/user10.jpg"%}">
-								</a>
-							</div>
-							<div class="instructors-content text-center">
-								<h5><a href="instructor-profile.html">Patricia Mendoza</a></h5>
-								<p>Web Developer</p>
-								<div class="student-count d-flex justify-content-center">
-									<i class="fa-solid fa-user-group"></i>
-									<span>20 Students</span>
-								</div>
-							</div>
-						</div>
-						<div class="instructors-widget">
-							<div class="instructors-img ">
-								<a href="instructor-list.html">
-									<img class="img-fluid" alt="Img" src="{% static "assets/img/user/user7.jpg"%}">
-								</a>
-							</div>
-							<div class="instructors-content text-center">
-								<h5><a href="instructor-profile.html">Skyler Whites</a></h5>
-								<p>UI Designer</p>
-								<div class="student-count d-flex justify-content-center">
-									<i class="fa-solid fa-user-group"></i>
-									<span>30 Students</span>
-								</div>
-							</div>
-						</div>
-						<div class="instructors-widget">
-							<div class="instructors-img">
-								<a href="instructor-list.html">
-									<img class="img-fluid" alt="Img" src="{% static "assets/img/user/user8.jpg"%}">
-								</a>
-							</div>
-							<div class="instructors-content text-center">
-								<h5><a href="instructor-profile.html">Patricia Mendoza</a></h5>
-								<p>Java Developer</p>
-								<div class="student-count d-flex justify-content-center">
-									<i class="fa-solid fa-user-group"></i>
-									<span>40 Students</span>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- /Feature Instructors -->
-
-			</div>
-		</section>
-		<!-- /Trending Course -->
-
-		<!-- Leading Companies -->
-		<section class="section lead-companies">
-			<div class="container">
-				<div class="section-header aos" data-aos="fade-up">
-					<div class="section-sub-head feature-head text-center">
-						<span>Trusted By</span>
-						<h2>500+ Leading Universities And Companies</h2>
-					</div>
-				</div>
-
-				
-				
-			
-				<div class="lead-group aos" data-aos="fade-up">
-					<div class="lead-group-slider owl-carousel owl-theme">
-					
-						{% for partner in partners %}
-						<div class="item">
-							<div class="lead-img">
-								{% if partner.logo %}
-									<img src="{{ partner.logo.url }}" alt="{{ partner.name }}" class="img-fluid">
-								{% else %}
-									<img src="{% static "assets/img/lead-02.png"%}" alt="{{ partner.name }}" class="img-fluid">
-								{% endif %}
-							</div>
-						</div>
-						{% endfor %}
-						
-					</div>
-				</div>
-
-				
-			</div>
-		</section>
-		<!-- /Leading Companies -->
-
-		<!-- Share Knowledge -->
-		<section class="section share-knowledge">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-6">
-						<div class="knowledge-img aos" data-aos="fade-up">
-							<img src="{% static "assets/img/share.png"%}" alt="Img" class="img-fluid">
-						</div>
-					</div>
-					<div class="col-md-6 d-flex align-items-center">
-						<div class="join-mentor aos" data-aos="fade-up">
-							<h2>Want to share your knowledge? Join us a Mentor</h2>
-							<p>High-definition video is video of higher resolution and quality than standard-definition.
-								While there is no standardized meaning for high-definition, generally any video.</p>
-							<ul class="course-list">
-								<li><i class="fa-solid fa-circle-check"></i>Best Courses</li>
-								<li><i class="fa-solid fa-circle-check"></i>Top rated Instructors</li>
-							</ul>
-							<div class="all-btn all-category d-flex align-items-center">
-								<a href="instructor-list.html" class="btn btn-primary">Read More</a>
-							</div>
-						</div>
-					</div>
 				</div>
 			</div>
 		</section>
-		<!-- /Share Knowledge -->
 
-		<!-- Users Love -->
-		<section class="section user-love">
-			<div class="container">
-				<div class="section-header white-header aos" data-aos="fade-up">
-					<div class="section-sub-head feature-head text-center">
-						<span>Check out these real reviews</span>
-						<h2>Users-love-us Don't take it from us.</h2>
-					</div>
-				</div>
-			</div>
-		</section>
-		<!-- /Users Love -->
 
-		<!-- Say testimonial Four -->
-		<section class="testimonial-four">
-			<div class="review">
-				<div class="container">
-					<div class="testi-quotes">
-						<img src="{% static "assets/img/qute.png"%}" alt="Img">
-					</div>
-					<div class="mentor-testimonial lazy slider aos" data-aos="fade-up" data-sizes="50vw ">
-						<div class="d-flex justify-content-center">
-							<div class="testimonial-all d-flex justify-content-center">
-								<div class="testimonial-two-head text-center align-items-center d-flex">
-									<div class="testimonial-four-saying ">
-										<div class="testi-right">
-											<img src="{% static "assets/img/qute-01.png"%}" alt="Img">
-										</div>
-										<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-											Lorem Ipsum has been the industry's standard dummy text ever since the
-											1500s, when an unknown printer took a galley of type and scrambled it to
-											make a type specimen book.</p>
-										<div class="four-testimonial-founder">
-											<div class="fount-about-img">
-												<a href="instructor-profile.html"><img src="{% static "assets/img/user/user1.jpg"%}"
-														alt="Img" class="img-fluid"></a>
-											</div>
-											<h3><a href="instructor-profile.html">Daziy Millar</a></h3>
-											<span>Founder of Awesomeux Technology</span>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="d-flex justify-content-center">
-							<div class="testimonial-all d-flex justify-content-center">
-								<div class="testimonial-two-head text-center align-items-center d-flex">
-									<div class="testimonial-four-saying ">
-										<div class="testi-right">
-											<img src="{% static "assets/img/qute-01.png"%}" alt="Img">
-										</div>
-										<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-											Lorem Ipsum has been the industry's standard dummy text ever since the
-											1500s, when an unknown printer took a galley of type and scrambled it to
-											make a type specimen book.</p>
-										<div class="four-testimonial-founder">
-											<div class="fount-about-img">
-												<a href="instructor-profile.html"><img src="{% static "assets/img/user/user3.jpg"%}"
-														alt="Img" class="img-fluid"></a>
-											</div>
-											<h3><a href="instructor-profile.html">john smith</a></h3>
-											<span>Founder of Awesomeux Technology</span>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="d-flex justify-content-center">
-							<div class="testimonial-all d-flex justify-content-center">
-								<div class="testimonial-two-head text-center align-items-center d-flex">
-									<div class="testimonial-four-saying ">
-										<div class="testi-right">
-											<img src="{% static "assets/img/qute-01.png"%}" alt="Img">
-										</div>
-										<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-											Lorem Ipsum has been the industry's standard dummy text ever since the
-											1500s, when an unknown printer took a galley of type and scrambled it to
-											make a type specimen book.</p>
-										<div class="four-testimonial-founder">
-											<div class="fount-about-img">
-												<a href="instructor-profile.html"><img src="{% static "assets/img/user/user2.jpg"%}"
-														alt="Img" class="img-fluid"></a>
-											</div>
-											<h3><a href="instructor-profile.html">David Lee</a></h3>
-											<span>Founder of Awesomeux Technology</span>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-		<!-- /Say testimonial Four -->
+    <!-- Blog Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-left mb-5">Artikel Terbaru</h2>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="blog-card shadow-sm p-4 d-flex align-items-center">
+                        <div>
+                            <h5 class="fw-bold">Tips Belajar Coding Efektif</h5>
+                            <p>Cara belajar pemrograman tanpa stres.</p>
+                            <a href="#" class="btn btn-link p-0">Baca Selengkapnya</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="blog-card shadow-sm p-4 d-flex align-items-center">
+                        <div>
+                            <h5 class="fw-bold">Tren UI/UX 2025</h5>
+                            <p>Prediksi desain antarmuka tahun ini.</p>
+                            <a href="#" class="btn btn-link p-0">Baca Selengkapnya</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-		<!-- Become An Instructor -->
-		<section class="section become-instructors aos" data-aos="fade-up">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-6 col-md-6 d-flex">
-						<div class="student-mentor cube-instuctor ">
-							<h4>Become An Instructor</h4>
-							<div class="row">
-								<div class="col-lg-7 col-md-12">
-									<div class="top-instructors">
-										<p>Top instructors from around the world teach millions of students on
-											Mentoring.</p>
-									</div>
-								</div>
-								<div class="col-lg-5 col-md-12">
-									<div class="mentor-img">
-										<img class="img-fluid" alt="Img" src="{% static "assets/img/icon/become-02.svg"%}">
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-6 col-md-6 d-flex">
-						<div class="student-mentor yellow-mentor">
-							<h4>Transform Access To Education</h4>
-							<div class="row">
-								<div class="col-lg-8 col-md-12">
-									<div class="top-instructors">
-										<p>Create an account to receive our newsletter, course recommendations and
-											promotions.</p>
-									</div>
-								</div>
-								<div class="col-lg-4 col-md-12">
-									<div class="mentor-img">
-										<img class="img-fluid" alt="Img" src="{% static "assets/img/icon/become-01.svg"%}">
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-		<!-- /Become An Instructor -->
+    <!-- Instructors Section -->
+    <section class="py-5">
+        <div class="container">
+            <h2 class="text-left mb-5">Instruktur Unggulan Kami</h2>
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-4 instructor-item">
+                    <img src="https://via.placeholder.com/150?text=John" class="instructor-card mb-3" alt="John">
+                    <h5 class="fw-bold">John Doe</h5>
+                    <p>Expert Python & Data Science</p>
+                </div>
+                <div class="col-md-4 instructor-item">
+                    <img src="https://via.placeholder.com/150?text=Jane" class="instructor-card mb-3" alt="Jane">
+                    <h5 class="fw-bold">Jane Smith</h5>
+                    <p>Desainer UI/UX Senior</p>
+                </div>
+                <div class="col-md-4 instructor-item">
+                    <img src="https://via.placeholder.com/150?text=Alex" class="instructor-card mb-3" alt="Alex">
+                    <h5 class="fw-bold">Alex Tan</h5>
+                    <p>Spesialis Digital Marketing</p>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <p class="text-muted">"Punya keahlian? Bergabunglah sebagai instruktur kami!"</p>
+                <a href="#" class="btn btn-outline-primary">Jadi Instruktur</a>
+            </div>
+        </div>
+    </section>
 
-		<!-- Latest Blog -->
-		<section class="section latest-blog">
-			<div class="container">
-				<div class="section-header aos" data-aos="fade-up">
-					<div class="section-sub-head feature-head text-center mb-0">
-						<h2>Latest Blogs</h2>
-						<div class="section-text aos" data-aos="fade-up">
-							<p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eget aenean
-								accumsan bibendum gravida maecenas augue elementum et neque. Suspendisse imperdiet.</p>
-						</div>
-					</div>
-				</div>
-				<div class="owl-carousel blogs-slide owl-theme aos" data-aos="fade-up">
-					<div class="instructors-widget blog-widget">
-						<div class="instructors-img">
-							<a href="blog-list.html">
-								<img class="img-fluid" alt="Img" src="{% static "assets/img/blog/blog-01.jpg"%}">
-							</a>
-						</div>
-						<div class="instructors-content text-center">
-							<h5><a href="blog-list.html">Attract More Attention Sales And Profits</a></h5>
-							<p>Marketing</p>
-							<div class="student-count d-flex justify-content-center">
-								<i class="fa-solid fa-calendar-days"></i>
-								<span>Jun 15, 2024</span>
-							</div>
-						</div>
-					</div>
-					<div class="instructors-widget blog-widget">
-						<div class="instructors-img">
-							<a href="blog-list.html">
-								<img class="img-fluid" alt="Img" src="{% static "assets/img/blog/blog-02.jpg"%}">
-							</a>
-						</div>
-						<div class="instructors-content text-center">
-							<h5><a href="blog-list.html">11 Tips to Help You Get New Clients</a></h5>
-							<p>Sales Order</p>
-							<div class="student-count d-flex justify-content-center">
-								<i class="fa-solid fa-calendar-days"></i>
-								<span>May 20, 2024</span>
-							</div>
-						</div>
-					</div>
-					<div class="instructors-widget blog-widget">
-						<div class="instructors-img">
-							<a href="blog-list.html">
-								<img class="img-fluid" alt="Img" src="{% static "assets/img/blog/blog-03.jpg"%}">
-							</a>
-						</div>
-						<div class="instructors-content text-center">
-							<h5><a href="blog-list.html">An Overworked Newspaper Editor</a></h5>
-							<p>Design</p>
-							<div class="student-count d-flex justify-content-center">
-								<i class="fa-solid fa-calendar-days"></i>
-								<span>May 25, 2024</span>
-							</div>
-						</div>
-					</div>
-					<div class="instructors-widget blog-widget">
-						<div class="instructors-img">
-							<a href="blog-list.html">
-								<img class="img-fluid" alt="Img" src="{% static "assets/img/blog/blog-04.jpg"%}">
-							</a>
-						</div>
-						<div class="instructors-content text-center">
-							<h5><a href="blog-list.html">A Solution Built for Teachers</a></h5>
-							<p>Seo</p>
-							<div class="student-count d-flex justify-content-center">
-								<i class="fa-solid fa-calendar-days"></i>
-								<span>Jul 15, 2024</span>
-							</div>
-						</div>
-					</div>
-					<div class="instructors-widget blog-widget">
-						<div class="instructors-img">
-							<a href="blog-list.html">
-								<img class="img-fluid" alt="Img" src="{% static "assets/img/blog/blog-02.jpg"%}">
-							</a>
-						</div>
-						<div class="instructors-content text-center">
-							<h5><a href="blog-list.html">Attract More Attention Sales And Profits</a></h5>
-							<p>Marketing</p>
-							<div class="student-count d-flex justify-content-center">
-								<i class="fa-solid fa-calendar-days"></i>
-								<span>Sep 25, 2024</span>
-							</div>
-						</div>
-					</div>
-					<div class="instructors-widget blog-widget">
-						<div class="instructors-img">
-							<a href="blog-list.html">
-								<img class="img-fluid" alt="Img" src="{% static "assets/img/blog/blog-03.jpg"%}">
-							</a>
-						</div>
-						<div class="instructors-content text-center">
-							<h5><a href="blog-list.html">An Overworked Newspaper Editor</a></h5>
-							<p>Marketing</p>
-							<div class="student-count d-flex justify-content-center">
-								<i class="fa-solid fa-calendar-days"></i>
-								<span>May 25, 2024</span>
-							</div>
-						</div>
-					</div>
-					<div class="instructors-widget blog-widget">
-						<div class="instructors-img">
-							<a href="blog-list.html">
-								<img class="img-fluid" alt="Img" src="{% static "assets/img/blog/blog-04.jpg"%}">
-							</a>
-						</div>
-						<div class="instructors-content text-center">
-							<h5><a href="blog-list.html">A Solution Built for Teachers</a></h5>
-							<p>Analysis</p>
-							<div class="student-count d-flex justify-content-center">
-								<i class="fa-solid fa-calendar-days"></i>
-								<span>May 15, 2024</span>
-							</div>
-						</div>
-					</div>
-					<div class="instructors-widget blog-widget">
-						<div class="instructors-img">
-							<a href="blog-list.html">
-								<img class="img-fluid" alt="Img" src="{% static "assets/img/blog/blog-02.jpg"%}">
-							</a>
-						</div>
-						<div class="instructors-content text-center">
-							<h5><a href="blog-list.html">11 Tips to Help You Get New Clients</a></h5>
-							<p>Development</p>
-							<div class="student-count d-flex justify-content-center">
-								<i class="fa-solid fa-calendar-days"></i>
-								<span>Jun 20, 2024</span>
-							</div>
-						</div>
-					</div>
-					<div class="instructors-widget blog-widget">
-						<div class="instructors-img">
-							<a href="blog-list.html">
-								<img class="img-fluid" alt="Img" src="{% static "assets/img/blog/blog-03.jpg"%}">
-							</a>
-						</div>
-						<div class="instructors-content text-center">
-							<h5><a href="blog-list.html">An Overworked Newspaper Editor</a></h5>
-							<p>Sales</p>
-							<div class="student-count d-flex justify-content-center">
-								<i class="fa-solid fa-calendar-days"></i>
-								<span>May 25, 2024</span>
-							</div>
-						</div>
-					</div>
-					<div class="instructors-widget blog-widget">
-						<div class="instructors-img">
-							<a href="blog-list.html">
-								<img class="img-fluid" alt="Img" src="{% static "assets/img/blog/blog-04.jpg"%}">
-							</a>
-						</div>
-						<div class="instructors-content text-center">
-							<h5><a href="blog-list.html">A Solution Built for Teachers</a></h5>
-							<p>Marketing</p>
-							<div class="student-count d-flex justify-content-center">
-								<i class="fa-solid fa-calendar-days"></i>
-								<span>April 15, 2024</span>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="enroll-group aos" data-aos="fade-up">
-					<div class="row ">
-						<div class="col-lg-4 col-md-6">
-							<div class="total-course d-flex align-items-center">
-								<div class="blur-border">
-									<div class="enroll-img ">
-										<img src="{% static "assets/img/icon/icon-07.svg"%}" alt="Img" class="img-fluid">
-									</div>
-								</div>
-								<div class="course-count">
-									<h3><span class="counterUp">253,085</span></h3>
-									<p>STUDENTS ENROLLED</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-4 col-md-6">
-							<div class="total-course d-flex align-items-center">
-								<div class="blur-border">
-									<div class="enroll-img ">
-										<img src="{% static "assets/img/icon/icon-08.svg"%}" alt="Img" class="img-fluid">
-									</div>
-								</div>
-								<div class="course-count">
-									<h3><span class="counterUp">1,205</span></h3>
-									<p>TOTAL COURSES</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-4 col-md-6">
-							<div class="total-course d-flex align-items-center">
-								<div class="blur-border">
-									<div class="enroll-img ">
-										<img src="{% static "assets/img/icon/icon-09.svg"%}" alt="Img" class="img-fluid">
-									</div>
-								</div>
-								<div class="course-count">
-									<h3><span class="counterUp">127</span></h3>
-									<p>COUNTRIES</p>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="lab-course">
-					<div class="section-header aos" data-aos="fade-up">
-						<div class="section-sub-head feature-head text-center">
-							<h2>Unlimited access to 360+ courses <br>and 1,600+ hands-on labs</h2>
-						</div>
-					</div>
-					<div class="icon-group aos" data-aos="fade-up">
-						<div class="offset-lg-1 col-lg-12">
-							<div class="row">
-								<div class="col-lg-1 col-3">
-									<div class="total-course d-flex align-items-center">
-										<div class="blur-border">
-											<div class="enroll-img ">
-												<img src="{% static "assets/img/icon/icon-09.svg"%}" alt="Img" class="img-fluid">
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-lg-1 col-3">
-									<div class="total-course d-flex align-items-center">
-										<div class="blur-border">
-											<div class="enroll-img ">
-												<img src="{% static "assets/img/icon/icon-10.svg"%}" alt="Img" class="img-fluid">
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-lg-1 col-3">
-									<div class="total-course d-flex align-items-center">
-										<div class="blur-border">
-											<div class="enroll-img ">
-												<img src="{% static "assets/img/icon/icon-16.svg"%}" alt="Img" class="img-fluid">
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-lg-1 col-3">
-									<div class="total-course d-flex align-items-center">
-										<div class="blur-border">
-											<div class="enroll-img ">
-												<img src="{% static "assets/img/icon/icon-12.svg"%}" alt="Img" class="img-fluid">
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-lg-1 col-3">
-									<div class="total-course d-flex align-items-center">
-										<div class="blur-border">
-											<div class="enroll-img ">
-												<img src="{% static "assets/img/icon/icon-13.svg"%}" alt="Img" class="img-fluid">
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-lg-1 col-3">
-									<div class="total-course d-flex align-items-center">
-										<div class="blur-border">
-											<div class="enroll-img ">
-												<img src="{% static "assets/img/icon/icon-14.svg"%}" alt="Img" class="img-fluid">
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-lg-1 col-3">
-									<div class="total-course d-flex align-items-center">
-										<div class="blur-border">
-											<div class="enroll-img ">
-												<img src="{% static "assets/img/icon/icon-15.svg"%}" alt="Img" class="img-fluid">
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-lg-1 col-3">
-									<div class="total-course d-flex align-items-center">
-										<div class="blur-border">
-											<div class="enroll-img ">
-												<img src="{% static "assets/img/icon/icon-16.svg"%}" alt="Img" class="img-fluid">
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-lg-1 col-3">
-									<div class="total-course d-flex align-items-center">
-										<div class="blur-border">
-											<div class="enroll-img ">
-												<img src="{% static "assets/img/icon/icon-17.svg"%}" alt="Img" class="img-fluid">
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="col-lg-1 col-3">
-									<div class="total-course d-flex align-items-center">
-										<div class="blur-border">
-											<div class="enroll-img ">
-												<img src="{% static "assets/img/icon/icon-18.svg"%}" alt="Img" class="img-fluid">
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
-		<!-- /Latest Blog -->
+    <!-- Interesting Facts Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-left mb-5">Hal Menarik di LMSKu</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card p-4 text-center shadow-sm">
+                        <i class="bi bi-globe fs-1 text-primary mb-3"></i>
+                        <h5>Akses Global</h5>
+                        <p>Belajar dari mana saja di dunia.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-4 text-center shadow-sm">
+                        <i class="bi bi-chat-dots fs-1 text-primary mb-3"></i>
+                        <h5>Komunitas Aktif</h5>
+                        <p>Berdiskusi dengan ribuan pelajar lain.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-4 text-center shadow-sm">
+                        <i class="bi bi-rocket-takeoff fs-1 text-primary mb-3"></i>
+                        <h5>Karier Booster</h5>
+                        <p>Tingkatkan peluang kariermu.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-		<!-- Footer -->
-		<footer class="footer">
+    <!-- Testimonials Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-left mb-5">Apa Kata Mereka?</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="testimoni-card shadow-sm text-center">
+                        <p>"Kursusnya sangat membantu saya paham coding dari nol!"</p>
+                        <h6 class="fw-bold">Budi, Programmer</h6>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="testimoni-card shadow-sm text-center">
+                        <p>"Fleksibel banget, bisa belajar sambil kerja."</p>
+                        <h6 class="fw-bold">Siti, Freelancer</h6>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="testimoni-card shadow-sm text-center">
+                        <p>"Sertifikatnya bikin CV saya lebih menarik."</p>
+                        <h6 class="fw-bold">Andi, Mahasiswa</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-			<!-- Footer Top -->
-			<div class="footer-top aos" data-aos="fade-up">
-				<div class="container">
-					<div class="row">
-						<div class="col-lg-4 col-md-6">
+    <!-- CTA Section -->
+    <section class="py-5 text-center bg-primary text-white">
+        <div class="container">
+            <h2 class="fw-bold">Siap Upgrade Skillmu?</h2>
+            <p class="lead">Bergabung sekarang dan mulai perjalanan belajarmu!</p>
+            <a href="#" class="btn btn-light btn-lg mt-3">Daftar Sekarang</a>
+        </div>
+    </section>
 
-							<!-- Footer Widget -->
-							<div class="footer-widget footer-about">
-								<div class="footer-logo">
-									<img src="{% static "assets/img/logo.svg"%}" alt="logo">
-								</div>
-								<div class="footer-about-content">
-									<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut consequat mauris
-										Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut consequat mauris</p>
-								</div>
-							</div>
-							<!-- /Footer Widget -->
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3">
+        <p>© 2025 LMSKu. All rights reserved.</p>
+    </footer>
 
-						</div>
-
-						<div class="col-lg-2 col-md-6">
-
-							<!-- Footer Widget -->
-							<div class="footer-widget footer-menu">
-								<h2 class="footer-title">For Instructor</h2>
-								<ul>
-									<li><a href="instructor-profile.html">Profile</a></li>
-									<li><a href="login.html">Login</a></li>
-									<li><a href="register.html">Register</a></li>
-									<li><a href="instructor-list.html">Instructor</a></li>
-									<li><a href="instructor-dashboard.html"> Dashboard</a></li>
-								</ul>
-							</div>
-							<!-- /Footer Widget -->
-
-						</div>
-
-						<div class="col-lg-2 col-md-6">
-
-							<!-- Footer Widget -->
-							<div class="footer-widget footer-menu">
-								<h2 class="footer-title">For Student</h2>
-								<ul>
-									<li><a href="student-profile.html">Profile</a></li>
-									<li><a href="login.html">Login</a></li>
-									<li><a href="register.html">Register</a></li>
-									<li><a href="students-list.html">Student</a></li>
-									<li><a href="student-dashboard.html"> Dashboard</a></li>
-								</ul>
-							</div>
-							<!-- /Footer Widget -->
-
-						</div>
-
-						<div class="col-lg-4 col-md-6">
-
-							<!-- Footer Widget -->
-							<div class="footer-widget footer-contact">
-								<h2 class="footer-title">News letter</h2>
-								<div class="news-letter">
-									<form>
-										<input type="text" class="form-control" placeholder="Enter your email address"
-											name="email">
-									</form>
-								</div>
-								<div class="footer-contact-info">
-									<div class="footer-address">
-										<img src="{% static "assets/img/icon/icon-20.svg"%}" alt="Img" class="img-fluid">
-										<p> 3556 Beech Street, San Francisco,<br> California, CA 94108 </p>
-									</div>
-									<p>
-										<img src="{% static "assets/img/icon/icon-19.svg"%}" alt="Img" class="img-fluid">
-										dreamslms@example.com
-									</p>
-									<p class="mb-0">
-										<img src="{% static "assets/img/icon/icon-21.svg"%}" alt="Img" class="img-fluid">
-										+19 123-456-7890
-									</p>
-								</div>
-							</div>
-							<!-- /Footer Widget -->
-
-						</div>
-
-					</div>
-				</div>
-			</div>
-			<!-- /Footer Top -->
-
-			<!-- Footer Bottom -->
-			<div class="footer-bottom">
-				<div class="container">
-
-					<!-- Copyright -->
-					<div class="copyright">
-						<div class="row">
-							<div class="col-md-6">
-								<div class="privacy-policy">
-									<ul>
-										<li><a href="term-condition.html">Terms</a></li>
-										<li><a href="privacy-policy.html">Privacy</a></li>
-									</ul>
-								</div>
-							</div>
-							<div class="col-md-6">
-								<div class="copyright-text">
-									<p class="mb-0">&copy; 2024 DreamsLMS. All rights reserved.</p>
-								</div>
-							</div>
-						</div>
-					</div>
-					<!-- /Copyright -->
-
-				</div>
-			</div>
-			<!-- /Footer Bottom -->
-
-		</footer>
-		<!-- /Footer -->
-
-	</div>
-	<!-- /Main Wrapper -->
-
-	<!-- jQuery -->
-	<script src="{% static "assets/js/jquery-3.7.1.min.js"%}"></script>
-
-	<!-- Bootstrap Core JS -->
-	<script src="{% static "assets/js/bootstrap.bundle.min.js"%}"></script>
-
-	<!-- counterup JS -->
-	<script src="{% static "assets/js/jquery.waypoints.js"%}"></script>
-	<script src="{% static "assets/js/jquery.counterup.min.js"%}"></script>
-
-	<!-- Select2 JS -->
-	<script src="{% static "assets/plugins/select2/js/select2.min.js"%}"></script>
-
-	<!-- Owl Carousel -->
-	<script src="{% static "assets/js/owl.carousel.min.js"%}"></script>
-
-	<!-- Slick Slider -->
-	<script src="{% static "assets/plugins/slick/slick.js"%}"></script>
-
-	<!-- Aos -->
-	<script src="{% static "assets/plugins/aos/aos.js"%}"></script>
-
-	<!-- Custom JS -->
-	<script src="{% static "assets/js/script.js"%}"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<script>
 		$(document).ready(function(){
 			// Get CSRF token from the cookies (if you need to include it for any post requests)
@@ -1721,63 +456,47 @@
 						var university = '/org-partner/'+course.org_partner__name__slug+'/';
 						// Append course info dynamically to the courses list
 						$('#courses-list').append(`
-							<div class="col-lg-4 col-md-6 d-flex">
-								<div class="course-box d-flex aos" data-aos="fade-up">
-									<div class="product">
-										<div class="product-img">
-											<a href="${courseUrl}">
-												<img class="img-fluid" alt="Img" src="${course.image}">
-											</a>
-											<div class="price">
-												<h3>$300 <span>$99.00</span></h3>
-											</div>
-										</div>
-										<div class="product-content">
-											<div class="course-group d-flex">
-												<div class="course-group-img d-flex">
-													<a href="${instructor}">
-														<img src="${course.org_partner__logo}" alt="logo" class="img-fluid">
-													</a>
-													<div class="course-name">
-														
-														
-														<h4><a href="${university}">${course.org_partner__name__name}</a></h4>
-														<p><a href="${instructor}">${course.instructor__user__first_name} ${course.instructor__user__last_name}</a></p>
-													</div>
-												</div>
-												<div class="course-share d-flex align-items-center justify-content-center">
-													<a href="#"><i class="fa-regular fa-heart"></i></a>
-												</div>
-											</div>
-											<h3 class="title instructor-text"><a href="${courseUrl}">${course.course_name}</a></h3>
-											
-											<div class="course-info d-flex align-items-center">
-												<div class="rating-img d-flex align-items-center">
-													<img src="{% static "assets/img/icon/icon-01.svg"%}" alt="Img">
-													<p>${course.num_enrollments} Learners</p>
-												</div>
-												<div class="course-view d-flex align-items-center">
-													<img src="{% static "assets/img/icon/icon-02.svg"%}" alt="Img">
-													<p>9hr 30min</p>
-												</div>
-											</div>
-											<div class="d-flex align-items-center justify-content-between">
-												<div class="rating m-0">
-													<i class="fas fa-star filled"></i>
-													<i class="fas fa-star filled"></i>
-													<i class="fas fa-star filled"></i>
-													<i class="fas fa-star filled"></i>
-													<i class="fas fa-star"></i>
-													<span class="d-inline-block average-rating"><span>4.0</span> (15)</span>
-												</div>
-												<div class="all-btn all-category d-flex align-items-center">
-													<a href="checkout.html" class="btn btn-primary">BUY NOW</a>
-												</div>
-											</div>
+
+						<div class="col-md-4">
+							<div class="card shadow-sm">
+								<!-- Gambar Kursus -->
+								<img src="${course.image}" class="card-img-top" alt="Course Image">
+								<div class="card-body">
+									<!-- Nama Kursus -->
+									<h5 class="card-title">${course.course_name}</h5>
+									
+									<!-- Deskripsi Kursus -->
+									<p class="card-text">Kuasai dasar pemrograman dengan Python dalam 4 minggu.</p>
+									
+									<!-- Nama Instruktur dan Foto -->
+									<div class="d-flex align-items-center mb-3">
+										<img src="${course.org_partner__logo}" class="rounded-circle" alt="Instructor" style="width: 40px; height: 40px; object-fit: cover;">
+										<div class="ms-3">
+											<h5><a href="${university}">${course.org_partner__name__name}</a></h5>
+											<p class="mb-0">${course.instructor__user__first_name} ${course.instructor__user__last_name}</p>
 										</div>
 									</div>
+
+									<!-- Rating -->
+									<div class="d-flex align-items-center mb-3">
+										<div class="rating">
+											<!-- Menampilkan Bintang Rating -->
+											<i class="fas fa-star filled"></i>
+											<i class="fas fa-star filled"></i>
+											<i class="fas fa-star filled"></i>
+											<i class="fas fa-star filled"></i>
+											<i class="fas fa-star"></i>
+										</div>
+										<span class="ms-2">4.0 (15 Reviews)</span>
+									</div>
+
+									<!-- Tombol Lihat Kursus -->
+									<a href="${courseUrl}" class="btn btn-outline-primary">Lihat Kursus</a>
 								</div>
 							</div>
+						</div>
+
+
 						`);
 					});
 				},
@@ -1787,7 +506,5 @@
 			});
 		});
 		</script>
-
 </body>
-
 </html>
