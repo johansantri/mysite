@@ -9,7 +9,7 @@ import csv
 from django.core.mail import send_mail
 from decimal import Decimal
 from django.contrib import messages
-from courses.models import Course, Enrollment,Section,GradeRange,QuestionAnswer, CourseProgress, PeerReview,MaterialRead, AssessmentRead, AssessmentScore,Material,Assessment, Submission, CustomUser, Instructor
+from courses.models import Course, Enrollment,Section,GradeRange,CourseStatusHistory,QuestionAnswer, CourseProgress, PeerReview,MaterialRead, AssessmentRead, AssessmentScore,Material,Assessment, Submission, CustomUser, Instructor
 from authentication.models import CustomUser, Universiti
 # Create your views here.
 
@@ -164,6 +164,7 @@ def superuser_publish_course(request, course_id):
 
         # Aksi: Mempublikasikan kursus
         if action == 'superuser_publish':
+            # Hanya izinkan dari status 'Curation'
             if course.status_course.status != 'curation':
                 messages.error(request, "Course can only be published from 'Curation' status.")
                 return redirect('instructor:superuser_publish_course', course_id=course.id)
@@ -224,10 +225,12 @@ def superuser_publish_course(request, course_id):
 
         return redirect('courses:studio', id=course.id)
 
-    return render(request, 'partner/publish_course.html', {
+    return render(request, 'partner/superuser_publish_course.html', {
         'course': course,
         'history': course.status_history.all()
     })
+
+
 
 @login_required
 def studios(request, id):

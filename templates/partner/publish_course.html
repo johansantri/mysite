@@ -66,16 +66,16 @@
         </div>
         <!-- Tombol untuk status 'curation' -->
         {% if course.status_course.status == 'curation' %}
-        <button type="submit" name="action" value="superuser_publish" class="btn btn-success">Publish to Catalog</button>
-        <button type="submit" name="action" value="superuser_reject" class="btn btn-danger">Reject and Return to Partner</button>
+        <button type="submit" name="action" value="superuser_publish" class="btn btn-success" onclick="return confirm('Are you sure you want to publish this course to the catalog?')">Publish to Catalog</button>
+        <button type="submit" name="action" value="superuser_reject" class="btn btn-danger" onclick="return confirm('Are you sure you want to reject this course and return it to Partner?')">Reject and Return to Partner</button>
         {% endif %}
         <!-- Tombol untuk mengarsipkan (tampilkan jika bukan 'archived') -->
         {% if course.status_course.status != 'archived' %}
-        <button type="submit" name="action" value="superuser_archive" class="btn btn-warning">Archive Course</button>
+        <button type="submit" name="action" value="superuser_archive" class="btn btn-warning" onclick="return confirm('Are you sure you want to archive this course?')">Archive Course</button>
         {% endif %}
         <!-- Tombol untuk menolak ke 'draft' (tampilkan jika bukan 'draft') -->
         {% if course.status_course.status != 'draft' %}
-        <button type="submit" name="action" value="superuser_reject_to_draft" class="btn btn-danger">Reject to Draft</button>
+        <button type="submit" name="action" value="superuser_reject_to_draft" class="btn btn-danger" onclick="return confirm('Are you sure you want to reject this course to Draft?')">Reject to Draft</button>
         {% endif %}
         <a href="{% url 'courses:studio' id=course.id %}" class="btn btn-secondary">Cancel</a>
     </form>

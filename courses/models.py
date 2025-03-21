@@ -156,28 +156,54 @@ class Course(models.Model):
     start_enrol = models.DateField(null=True)
     end_enrol = models.DateField(null=True)
 
-    def __str__(self):
-        return f"{self.course_name}"
-    
-    def change_status(self, new_status, user, message=None):
+    def save(self, *args, **kwargs):
+        # Pastikan setiap kursus memiliki entri CourseStatus saat pertama kali dibuat
+        if not self.pk and not self.status_course:
+            self.status_course = CourseStatus.objects.create(
+                status='draft',
+                manual_message="Course created as Draft."
+            )
+        super().save(*args, **kwargs)
+
+    def change_status(self, new_status, changed_by, message=None):
         """
         Mengubah status kursus dan mencatat riwayat perubahan.
-        Args:
-            new_status (str): Status baru ('draft', 'curation', 'published', 'archived')
-            user (CustomUser): Pengguna yang melakukan perubahan
-            message (str, optional): Pesan terkait perubahan status
+        Hanya memperbarui entri CourseStatus yang sudah ada.
+        Hanya mencatat di CourseStatusHistory jika status benar-benar berubah.
         """
-        # Catat riwayat perubahan
+        # Ambil status baru dari CourseStatus berdasarkan status yang diinginkan
+        try:
+            status = CourseStatus.objects.get(status=new_status)  # Dapatkan status dari CourseStatus berdasarkan nama
+        except CourseStatus.DoesNotExist:
+            raise ValueError(f"Status {new_status} tidak ditemukan di CourseStatus")
+
+        # Periksa apakah status baru sama dengan status saat ini
+        if self.status_course == status:
+            # Jika status tidak berubah, hanya perbarui manual_message jika ada
+            if message and message != self.status_course.manual_message:
+                self.status_course.manual_message = message
+                self.status_course.save()
+            return  # Tidak perlu mencatat di CourseStatusHistory
+
+        # Perbarui status dan pesan pada entri CourseStatus yang sudah ada
+        self.status_course = status
+        if message:
+            self.status_course.manual_message = message
+        self.status_course.save()
+
+        # Simpan perubahan pada objek Course
+        self.save()  # Pastikan objek Course disimpan untuk memperbarui status_course
+
+        # Catat riwayat perubahan di CourseStatusHistory hanya jika status berubah
         CourseStatusHistory.objects.create(
             course=self,
             status=new_status,
             manual_message=message,
-            changed_by=user
+            changed_by=changed_by
         )
-        # Perbarui status kursus
-        self.status_course.status = new_status
-        self.status_course.manual_message = message
-        self.status_course.save()
+
+    def __str__(self):
+        return self.course_name 
 
     def delete_old_image(self):
         """Hapus gambar lama jika sudah diganti."""
