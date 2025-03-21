@@ -225,7 +225,7 @@ def superuser_publish_course(request, course_id):
 
         return redirect('courses:studio', id=course.id)
 
-    return render(request, 'partner/superuser_publish_course.html', {
+    return render(request, 'partner/publish_course.html', {
         'course': course,
         'history': course.status_history.all()
     })
