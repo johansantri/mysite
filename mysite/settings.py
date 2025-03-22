@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-*t=li&h7o=sj40!ic&)p+8!fy3p@*tfg+mz6!xuftigv_qa9yy
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True#False
 
 ALLOWED_HOSTS = ['127.0.0.1','localhost','ini.icei.ac.id','20.11.247.222']
 CSRF_COOKIE_SECURE = True
@@ -33,6 +33,7 @@ SESSION_COOKIE_SECURE = True
 X_FRAME_OPTIONS = 'DENY'
 SECURE_SSL_REDIRECT = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
+RATELIMIT_IP_META_KEY = 'HTTP_X_REAL_IP'
 
 
 # Application definition
@@ -100,7 +101,9 @@ DATABASES = {
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
-        'LOCATION': '127.0.0.1:11211',  # Pastikan Memcached berjalan pada IP dan port ini
+        'LOCATION': '127.0.0.1:11211',
+
+  # Pastikan Memcached berjalan pada IP dan port ini
     }
 }
 
