@@ -35,6 +35,7 @@ from django.views.decorators.csrf import csrf_protect
 from decimal import Decimal
 from django.urls import reverse
 from django_ratelimit.decorators import ratelimit
+from django.http import HttpResponseForbidden
 
 
 def mycourse(request):
@@ -177,8 +178,10 @@ def course_list(request):
 
 #detailuser
 @login_required
-@ratelimit(key='ip', rate='1000/h')
+@ratelimit(key='ip', rate='100/h', method='ALL', burst=True)
 def user_detail(request, user_id):
+    if getattr(request, 'limited', False):
+        return HttpResponseForbidden("Rate limit exceeded")
     # Pastikan pengguna yang mengakses adalah pengguna yang tepat
     user = get_object_or_404(CustomUser, id=user_id)  # Menggunakan user_id untuk mengambil pengguna
     
