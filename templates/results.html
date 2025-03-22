@@ -167,17 +167,45 @@
                     {% endif %}
 
                     <!-- Instructors -->
+                    <!-- Instructors -->
                     {% if results.instructors %}
-                        <h3 class="text-left mb-4 mt-5">Instruktur</h3>
-                        <div class="row g-4 justify-content-center">
-                            {% for instructor in results.instructors %}
-                                <div class="col-md-4 instructor-item">
-                                    <img src="https://via.placeholder.com/150?text=Instructor" class="instructor-card mb-3" alt="Instructor">
-                                    <h5 class="fw-bold">{{ instructor.user_email }}</h5>
-                                    <p>{{ instructor.bio|truncatewords:10 }}</p>
-                                </div>
-                            {% endfor %}
-                        </div>
+                    <h3 class="text-left mb-4 mt-5">Instruktur</h3>
+                    <div class="row g-4 justify-content-center">
+                        {% for instructor in results.instructors %}
+                            <div class="col-md-4 instructor-item">
+                                <!-- Gambar Instruktur -->
+                                <img src="{% if instructor.user.profile_picture %}{{ instructor.user.profile_picture.url }}{% else %}https://via.placeholder.com/150?text={{ instructor.user.email|truncatechars:1 }}{% endif %}" 
+                                    class="instructor-card mb-3" 
+                                    alt="{{ instructor.user.email }}">
+                                
+                                <!-- Nama Instruktur -->
+                                <h5 class="fw-bold">
+                                    {% if instructor.user.first_name %}
+                                        {{ instructor.user.first_name }} {{ instructor.user.last_name }}
+                                    {% else %}
+                                        {{ instructor.user.email }}
+                                    {% endif %}
+                                </h5>
+                                
+                                <!-- Keahlian dan Pengalaman -->
+                                <p class="text-muted mb-1">{{ instructor.expertise }} ({{ instructor.experience_years }} tahun)</p>
+                                
+                                <!-- Bio Singkat -->
+                                <p>{{ instructor.bio|truncatewords:10 }}</p>
+                                
+                                <!-- Teknologi -->
+                                <p class="text-primary"><i class="bi bi-gear"></i> {{ instructor.tech }}</p>
+                                
+                                <!-- Mitra (Provider) -->
+                                <p class="text-muted"><small>Mitra: {{ instructor.provider.name.name }}</small></p>
+                                
+                                <!-- Tautan Profil (Opsional) -->
+                                {% if instructor.status == 'Approved' %}
+                                <a href="{% url 'courses:instructor_profile' instructor.user.username %}" class="btn btn-outline-primary btn-sm">Lihat Profil</a>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
                     {% endif %}
 
                     <!-- Partners -->
