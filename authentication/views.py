@@ -669,6 +669,12 @@ def home(request):
     # Mendapatkan status 'published', hanya mengambil yang pertama
     published_status = CourseStatus.objects.filter(status='published').first()
 
+    # Inisialisasi variabel total
+    total_instructors = 0
+    total_partners = 0
+    total_users = 0
+    total_courses = 0
+
     if published_status:
         # Mendapatkan kategori populer dengan kursus yang sudah dipublikasikan
         popular_categories = Category.objects.annotate(
@@ -682,6 +688,12 @@ def home(request):
 
         # Mendapatkan semua mitra
         partners = Partner.objects.all()
+
+        # Menghitung total
+        total_instructors = Instructor.objects.count()  # Asumsi ada model Instructor
+        total_partners = Partner.objects.count()
+        total_users = CustomUser.objects.count()  # Asumsi menggunakan Django User model
+        total_courses = Course.objects.filter(status_course=published_status).count()  # Asumsi ada model Course
 
     else:
         # Jika tidak ada status 'published', beri hasil kosong
@@ -697,9 +709,45 @@ def home(request):
     return render(request, 'home/index.html', {
         'popular_categories': popular_categories,
         'popular_microcredentials': popular_microcredentials,
-        'partners': page_obj,  # Kirim mitra yang sudah dipaginasi ke template
+        'partners': page_obj,
+        'total_instructors': total_instructors,
+        'total_partners': total_partners,
+        'total_users': total_users,
+        'total_courses': total_courses,
     })
 
+def search(request):
+    query = request.GET.get('q', '').strip()
+    results = {
+        'courses': [],
+        'instructors': [],
+        'partners': [],
+    }
+    
+    if query:
+        # Pencarian Courses
+        results['courses'] = Course.objects.filter(
+            Q(course_name__icontains=query) | 
+            Q(description__icontains=query),
+            status_course__status='published'
+        ).select_related('instructor', 'org_partner')[:5]
+        
+        # Pencarian Instructors
+        results['instructors'] = Instructor.objects.filter(
+            Q(user__email__icontains=query) | 
+            Q(bio__icontains=query)
+        ).select_related('user')[:5]
+        
+        # Pencarian Partners
+        results['partners'] = Partner.objects.filter(
+            Q(name__name__icontains=query) | 
+            Q(description__icontains=query)
+        ).select_related('name')[:5]
+
+    return render(request, 'results.html', {
+        'query': query,
+        'results': results,
+    })
 
 # Logout view
 def logout_view(request):
