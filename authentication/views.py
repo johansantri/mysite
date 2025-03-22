@@ -673,7 +673,7 @@ def home(request):
         # Mendapatkan kategori populer dengan kursus yang sudah dipublikasikan
         popular_categories = Category.objects.annotate(
             num_courses=Count('category_courses', filter=Q(category_courses__status_course=published_status))
-        ).order_by('-num_courses')[:6]
+        ).order_by('-num_courses')[:4]
 
         # Mendapatkan microcredential aktif
         popular_microcredentials = MicroCredential.objects.filter(
