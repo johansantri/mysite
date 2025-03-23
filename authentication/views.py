@@ -876,7 +876,7 @@ def custom_password_reset(request):
         try:
             user = CustomUser.objects.get(email=email)  # Adjust if you're using a custom user model
         except CustomUser.DoesNotExist:
-            return render(request, 'x/password_reset_done.html')  # Optionally, handle this silently
+            return render(request, 'authentication/password_reset_done.html')  # Optionally, handle this silently
 
         # Generate UID and token for the user
         uid = urlsafe_base64_encode(str(user.pk).encode())  # Encode UID
@@ -892,15 +892,15 @@ def custom_password_reset(request):
 
         # Render the email content using the password_reset_email template
         email_subject = "Password Reset Request"
-        email_message = render_to_string('x/password_reset_email.html', context)
+        email_message = render_to_string('authentication/password_reset_email.html', context)
 
         # Send the email
         send_mail(email_subject, email_message, 'no-reply@yourdomain.com', [email])
 
         # Render password reset done page (without showing the reset link)
-        return render(request, 'x/password_reset_done.html')
+        return render(request, 'authentication/password_reset_done.html')
 
-    return render(request, 'x/password_reset_form.html', {'form': form})   
+    return render(request, 'authentication/password_reset.html', {'form': form})   
 
 
 

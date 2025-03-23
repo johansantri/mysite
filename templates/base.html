@@ -117,7 +117,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link" href="#">Kursus</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'authentication:course_list' %}">Kursus</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">Tentang</a></li>
             </ul>
 
@@ -164,7 +164,7 @@
             {% else %}
                 <!-- Jika pengguna belum login -->
                 
-                    <a class="btn btn-light btn-lg mt-3" href="{% url 'authentication:login' %}">Login</a>
+                    <a class="btn btn-light btn-lg mt-3" href="{% url 'authentication:register' %}">Daftar</a>
               
             {% endif %}
         </div>

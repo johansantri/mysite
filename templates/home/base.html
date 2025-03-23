@@ -1,201 +1,177 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="id">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-	<title>Dreams LMS1</title>
-
-	<!-- Favicon -->
-	<link rel="shortcut icon" type="image/x-icon" href="{% static 'assets/img/favicon.svg' %}">
-
-	<!-- Theme Settings JS -->
-	<script src="{% static 'assets/js/theme-script.js' %}"></script>
-
-	<!-- Bootstrap CSS -->
-	<link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
-
-	<!-- FontAwesome CSS -->
-	<link rel="stylesheet" href="{% static 'assets/plugins/fontawesome/css/fontawesome.min.css' %}">
-	<link rel="stylesheet" href="{% static 'assets/plugins/fontawesome/css/all.min.css' %}">
-
-	<!-- Feather CSS -->
-	<link rel="stylesheet" href="{% static 'assets/css/feather.css' %}">
-
-	<!-- Boxicons CSS -->
-	<link rel="stylesheet" href="{% static 'assets/plugins/boxicons/css/boxicons.min.css' %}">
-
-	<!-- Main CSS -->
-	<link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
-
-	<!-- jQuery -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMS - Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.full.min.js" integrity="sha512-RtZU3AyMVArmHLiW0suEZ9McadTdegwbgtiQl5Qqo9kunkVg1ofwueXD8/8wv3Af8jkME3DDe3yLfR8HSJfT2g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/2.0.4/htmx.min.js" integrity="sha512-2kIcAizYXhIn8TzUvqzEDZNuDZ+aW7yE/+f1HJHXFjQcGNfv1kqzJSTBRBSlOgp6B/KZsz1K0a3ZTqP9dnxioQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .hero {
+            background: linear-gradient(135deg, #007bff, #00ddeb);
+            color: white;
+            padding: 100px 0;
+        }
+        .navbar {
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+        .card {
+            border: none;
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+        }
+        .btn-custom {
+            background-color: #007bff;
+            border: none;
+            padding: 10px 20px;
+        }
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+        .testimoni-card {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .partner-carousel .carousel-item img {
+            filter: grayscale(100%);
+            transition: filter 0.3s;
+            max-height: 60px;
+            margin: 0 20px;
+        }
+        .partner-carousel .carousel-item img:hover {
+            filter: grayscale(0%);
+        }
+        .blog-card {
+            background: linear-gradient(135deg, #ffffff, #e9ecef);
+            border-radius: 15px;
+        }
+        .instructor-card {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #007bff;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .instructor-card:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
+        }
+        .instructor-item {
+            text-align: center;
+        }
+        .stats-card {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+		.card-img-top {
+			width: 100%;  /* Mengatur lebar gambar agar mengikuti lebar kontainer */
+			height: 200px;  /* Tentukan tinggi tetap untuk gambar */
+			object-fit: cover;  /* Mengatur gambar agar tetap terpotong dengan proporsional */
+		}
 		
-	<!-- htmx-->
-	<script src="https://unpkg.com/htmx.org@2.0.3"></script>
-	
-	<!--select2-->
-	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-	<!--htmx-->
-	<script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
-
-
-	<!--play video-->
-	<!-- Include Fancybox CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css" />
-
-<!-- Include Font Awesome for icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+        @media (max-width: 991px) {
+            .navbar-collapse .d-flex {
+                flex-direction: column;
+                width: 100%;
+            }
+            .navbar-collapse form {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            .navbar-collapse .btn-custom {
+                width: 100%;
+                text-align: center;
+            }
+        }
+		@media (max-width: 768px) {
+			.card-img-top {
+				height: 150px;  /* Sesuaikan tinggi gambar di layar kecil */
+			}
+		}
+		
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+   
 </head>
-
 <body>
+    <!-- Navbar -->
+    <!-- Navbar -->
+<nav class="navbar navbar-expand-lg bg-white sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="{% url 'authentication:home' %}">LMSKu</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="#">Kursus</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Tentang</a></li>
+            </ul>
 
-	<!-- Main Wrapper -->
-	<div class="main-wrapper">
+            <div class="d-flex align-items-center flex-column flex-lg-row mt-3 mt-lg-0">
+                <!-- Form pencarian (responsive) -->
+                <form class="d-flex me-lg-2 w-100 w-lg-75" role="search" action="{% url 'authentication:search' %}" method="get">
+                    {% csrf_token %}
+                    <input class="form-control me-2" type="search" name="q" placeholder="Cari kursus..." aria-label="Search">
+                    <button class="btn btn-outline-primary w-auto" type="submit"><i class="bi bi-search"></i></button>
+                </form>
 
-		<!-- Header -->
-		{% include 'home/header.html' %}
-		<!-- /Header -->
+                <!-- Menu navigasi login atau dashboard (responsive) -->
+                <ul class="navbar-nav w-100 w-lg-auto">
+                    {% if request.user.is_authenticated %}
+                        <li class="nav-item w-100">
+                            <a class="btn btn-outline-info w-100" href="{% url 'authentication:dasbord'%}">
+                                <i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item w-100">
+                            <a class="btn btn-outline-info w-100" href="{% url 'authentication:login' %}">Login</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
 
-		<!-- Breadcrumb -->
-		{% include 'home/bread.html' %}
-		<!-- /Breadcrumb -->
 
-		<!-- Page Content -->
-		{% block content %}{% endblock content %}
-		<!-- /Page Content -->
+  
 
-		<!-- Footer -->
-		<footer class="footer">
 
-			<!-- Footer Top -->
-			<div class="footer-top">
-				<div class="container">
-					<div class="row">
-						<div class="col-lg-4 col-md-6">
-							<!-- Footer Widget -->
-							<div class="footer-widget footer-about">
-								<div class="footer-logo">
-									<img src="{% static 'assets/img/logo.svg' %}" alt="Dreams LMS logo">
-								</div>
-								<div class="footer-about-content">
-									<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut consequat mauris lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut consequat mauris.</p>
-								</div>
-							</div>
-							<!-- /Footer Widget -->
-						</div>
 
-						<div class="col-lg-2 col-md-6">
-							<!-- Footer Widget -->
-							<div class="footer-widget footer-menu">
-								<h2 class="footer-title">For Instructor</h2>
-								<ul>
-									<li><a href="instructor-profile.html">Profile</a></li>
-									<li><a href="login.html">Login</a></li>
-									<li><a href="register.html">Register</a></li>
-									<li><a href="instructor-list.html">Instructor</a></li>
-									<li><a href="instructor-dashboard.html">Dashboard</a></li>
-								</ul>
-							</div>
-							<!-- /Footer Widget -->
-						</div>
 
-						<div class="col-lg-2 col-md-6">
-							<!-- Footer Widget -->
-							<div class="footer-widget footer-menu">
-								<h2 class="footer-title">For Student</h2>
-								<ul>
-									<li><a href="student-profile.html">Profile</a></li>
-									<li><a href="login.html">Login</a></li>
-									<li><a href="register.html">Register</a></li>
-									<li><a href="students-list.html">Student</a></li>
-									<li><a href="student-dashboard.html">Dashboard</a></li>
-								</ul>
-							</div>
-							<!-- /Footer Widget -->
-						</div>
 
-						<div class="col-lg-4 col-md-6">
-							<!-- Footer Widget -->
-							<div class="footer-widget footer-contact">
-								<h2 class="footer-title">Newsletter</h2>
-								<div class="news-letter">
-									<form>
-										<input type="text" class="form-control" placeholder="Enter your email address" name="email">
-									</form>
-								</div>
-								<div class="footer-contact-info">
-									<div class="footer-address">
-										<img src="{% static 'assets/img/icon/icon-20.svg' %}" alt="Location icon" class="img-fluid">
-										<p>3556 Beech Street, San Francisco,<br> California, CA 94108</p>
-									</div>
-									<p>
-										<img src="{% static 'assets/img/icon/icon-19.svg' %}" alt="Email icon" class="img-fluid">
-										dreamslms@example.com
-									</p>
-									<p class="mb-0">
-										<img src="{% static 'assets/img/icon/icon-21.svg' %}" alt="Phone icon" class="img-fluid">
-										+19 123-456-7890
-									</p>
-								</div>
-							</div>
-							<!-- /Footer Widget -->
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- /Footer Top -->
+  
+{% block content %}
+{% endblock %}
 
-			<!-- Footer Bottom -->
-			<div class="footer-bottom">
-				<div class="container">
-					<!-- Copyright -->
-					<div class="copyright">
-						<div class="row">
-							<div class="col-md-6">
-								<div class="privacy-policy">
-									<ul>
-										<li><a href="term-condition.html">Terms</a></li>
-										<li><a href="privacy-policy.html">Privacy</a></li>
-									</ul>
-								</div>
-							</div>
-							<div class="col-md-6">
-								<div class="copyright-text">
-									<p class="mb-0">&copy; 2024 DreamsLMS. All rights reserved.</p>
-								</div>
-							</div>
-						</div>
-					</div>
-					<!-- /Copyright -->
-				</div>
-			</div>
-			<!-- /Footer Bottom -->
+  
 
-		</footer>
-		<!-- /Footer -->
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3">
+        <p>© 2025 LMSKu. All rights reserved.</p>
+    </footer>
 
-	</div>
-	<!-- /Main Wrapper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-	
-	<!-- Bootstrap Core JS -->
-	<script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
-
-	<!-- Sticky Sidebar JS -->
-	<script src="{% static 'assets/plugins/theia-sticky-sidebar/ResizeSensor.js' %}"></script>
-	<script src="{% static 'assets/plugins/theia-sticky-sidebar/theia-sticky-sidebar.js' %}"></script>
-
-	<!-- Custom JS -->
-	<script src="{% static 'assets/js/script.js' %}"></script>
-	<script>
-		document.body.addEventListener('htmx:configRequest', function(evt) {
-			evt.detail.parameters['auth_token'] = getAuthToken(); // add a new parameter into the request
-			evt.detail.headers['X-CSRFToken'] = '{{ csrf_token }}'; // add a new header into the request
-		});
-	</script>
-	
+        
 </body>
 </html>

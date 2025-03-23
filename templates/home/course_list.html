@@ -1,104 +1,80 @@
 {% extends 'home/base.html' %}
 {% load static %}
 {% block content %}
-<!-- Course -->
-<section class="course-content">
+<!-- Course Section -->
+<section class="course-content py-5">
     <div class="container">
         <div class="row">
+            <!-- Main Content -->
             <div class="col-lg-9">
 
-                <!-- Filter -->
-                <div class="showing-list">
+                <!-- Filter Information -->
+                <div class="showing-list mb-4">
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="d-flex align-items-center">
                                 <div class="view-icons">
-                                    <a href="{% url 'authentication:course_list' %}" class="grid-view active"><i class="feather-grid"></i></a>
-                                    
+                                    <a href="{% url 'authentication:course_list' %}" class="grid-view active">
+                                        <i class="feather-grid"></i>
+                                    </a>
                                 </div>
                                 <div class="show-result">
                                     <h4>Showing {{ start_index }}-{{ end_index }} of {{ total_courses }} results</h4>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-6">
-                            <div class="show-filter add-course-info">
-                                <form method="GET" action="{% url 'authentication:course_list' %}">
-                                    <div class="row gx-2 align-items-center">
-                                        <div class="col-md-8 col-item">
-                                            <div class="search-group">
-                                                <i class="feather-search"></i>
-                                                <input type="text" name="search" class="form-control"
-                                                       placeholder="Search our courses" value="{{ search_query }}">
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="col-md-4 col-item">
-                                            <button type="submit" class="btn btn-primary ">Apply Filters</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
                     </div>
                 </div>
-                <!-- /Filter -->
 
+                <!-- Course Cards -->
                 <div class="row">
                     {% for course in courses %}
-                    <div class="col-lg-4 col-md-6 d-flex">
-                        <div class="course-box course-design d-flex ">
-                            <div class="product">
-                                <div class="product-img">
-                                    <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}">
-                                        <img class="img-fluid" alt="Img" src="{{ course.course_image }} ">
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card course-box shadow-sm h-100">
+                            <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}">
+                                <img class="card-img-top img-fluid rounded-3" alt="Course Image" src="{{ course.course_image }}">
+                            </a>
+                            <div class="card-body d-flex flex-column">
+                                <div class="d-flex align-items-center mb-2">
+                                    <a href="{% url 'courses:instructor_profile' course.instructor_username %}">
+                                        <!-- Adjust instructor photo size -->
+                                        <img src="{{ course.photo }}" alt="Instructor Image" class="img-fluid rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
                                     </a>
-                                    <div class="price">
-                                       
-                                    {% if course.course_price|default:0 == 0 %}
-                                    <h3 class="free-color">FREE</h3>
-                                    {% else %}
-                                        <h3>{{ course.course_price }}</h3>
-                                    {% endif %}
+                                    <div class="ms-2">
+                                        <h5 class="mb-0">
+                                            <a href="{% url 'courses:instructor_profile' course.instructor_username %}">{{ course.instructor }}</a>
+                                        </h5>
+                                        <p class="mb-0"><a href="{% url 'courses:org_partner' course.partner.slug %}">{{ course.partner.name }}</a></p>
                                     </div>
                                 </div>
-                                <div class="product-content">
-                                    <div class="course-group d-flex">
-                                        <div class="course-group-img d-flex">
-                                            <a href="{% url 'courses:instructor_profile' course.instructor_username %}">
-                                                <img src="{{ course.photo }}" alt="Img" class="img-fluid">
-                                            </a>
-                                            <div class="course-name">
-                                                <h4><a href="{% url 'courses:instructor_profile' course.instructor_username %}">{{ course.instructor }}</a></h4>
-                                                <p><a href="{% url 'courses:org_partner' course.partner.slug%}"> {{course.partner.name}}</a></p>
-                                            </div>
-                                        </div>
-                                        <div class="course-share d-flex align-items-center justify-content-center">
-                                            <a href="#rate"><i class="fa-regular fa-heart"></i></a>
-                                        </div>
+                                <h5 class="card-title mb-2">
+                                    <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}">{{ course.course_name }}</a>
+                                </h5>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <img src="{% static "assets/img/icon/icon-01.svg" %}" alt="Learners Icon" class="img-fluid" width="16">
+                                        <span class="ms-1">{{ course.num_enrollments }} Learners</span>
                                     </div>
-                                    <h3 class="title"><a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}">{{ course.course_name }}</a></h3>
-                                    <div class="course-info d-flex align-items-center">
-                                        <div class="rating-img d-flex align-items-center">
-                                            <img src="{% static "assets/img/icon/icon-01.svg" %}" alt="Img">
-                                            <p>{{course.num_enrollments}} Learners</p>
-                                        </div>
-                                        <div class="course-view d-flex align-items-center">
-                                            <img src="{% static "assets/img/icon/icon-02.svg" %}" alt="Img">
-                                            <p>9hr 30min</p>
-                                        </div>
+                                    <div class="d-flex align-items-center">
+                                        <img src="{% static "assets/img/icon/icon-02.svg" %}" alt="Duration Icon" class="img-fluid" width="16">
+                                        <span class="ms-1">9hr 30min</span>
                                     </div>
-                                    <div class="rating">
-                                        <i class="fas fa-star filled"></i>
-                                        <i class="fas fa-star filled"></i>
-                                        <i class="fas fa-star filled"></i>
-                                        <i class="fas fa-star filled"></i>
-                                        <i class="fas fa-star"></i>
-                                        <span class="d-inline-block average-rating"><span>4.0</span> (15)</span>
-                                    </div>
-                                    <div class="all-btn all-category d-flex align-items-center">
-                                        <a href="#" class="btn btn-primary">BUY NOW</a>
-                                    </div>
+                                </div>
+                                <div class="rating mb-3">
+                                    <i class="fas fa-star filled"></i>
+                                    <i class="fas fa-star filled"></i>
+                                    <i class="fas fa-star filled"></i>
+                                    <i class="fas fa-star filled"></i>
+                                    <i class="fas fa-star"></i>
+                                    <span class="d-inline-block average-rating">(4.0) (15)</span>
+                                </div>
+                                <div class="mt-auto">
+                                    {% if course.course_price|default:0 == 0 %}
+                                        <span class="badge bg-success">Free</span>
+                                    {% else %}
+                                        <span class="badge bg-primary">{{ course.course_price }}</span>
+                                    {% endif %}
+                                    <a href="#" class="btn btn-primary w-100 mt-3">Enroll Now</a>
                                 </div>
                             </div>
                         </div>
@@ -106,13 +82,11 @@
                     {% endfor %}
                 </div>
 
-              <!-- /pagination -->
-                <div class="row">
+                <!-- Pagination -->
+                <div class="row mt-4">
                     <div class="col-md-12">
-                        <ul class="pagination lms-page">
-                            <!-- Previous Button -->
-                            <!-- Previous Button -->
-                            <li class="page-item prev {% if not page_obj.has_previous %}disabled{% endif %}">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
                                 {% if page_obj.has_previous %}
                                     <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}">
                                         <i class="fas fa-angle-left"></i>
@@ -120,7 +94,6 @@
                                 {% endif %}
                             </li>
 
-                            <!-- Page Numbers -->
                             {% for page_num in page_obj.paginator.page_range %}
                                 <li class="page-item {% if page_obj.number == page_num %}active{% endif %}">
                                     <a class="page-link" href="?page={{ page_num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}">
@@ -129,78 +102,56 @@
                                 </li>
                             {% endfor %}
 
-                            <!-- Next Button -->
-                            <li class="page-item next {% if not page_obj.has_next %}disabled{% endif %}">
+                            <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
                                 {% if page_obj.has_next %}
                                     <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}">
                                         <i class="fas fa-angle-right"></i>
                                     </a>
                                 {% endif %}
                             </li>
-
                         </ul>
                     </div>
                 </div>
-                <!-- /pagination -->
-
-
 
             </div>
-            <div class="col-lg-3 theiaStickySidebar">
+
+            <!-- Sidebar -->
+            <div class="col-lg-3">
                 <!-- Category Filter -->
-                <div class="card search-filter">
+                <div class="card search-filter mb-4">
                     <div class="card-body">
-                        <div class="filter-widget mb-0">
-                            <div class="categories-head d-flex align-items-center">
-                                <h4>Course categories</h4>
-                                <i class="fas fa-angle-down"></i>
-                            </div>
+                        <div class="filter-widget">
+                            <h4 class="mb-4">Course Categories</h4>
                             <form method="GET" action="{% url 'authentication:course_list' %}">
                                 {% for category in categories %}
-                                <div>
-                                    <label class="custom_check">
-                                        <input type="checkbox" name="category" value="{{ category.id }}" {% if category.id in category_filter %}checked{% endif %}>
-                                        <span class="checkmark"></span> {{ category.name }} ({{ category.course_set.count }})
-                                    </label>
-                                </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="category" value="{{ category.id }}" {% if category.id in category_filter %}checked{% endif %}>
+                                        <label class="form-check-label">
+                                            {{ category.name }} ({{ category.course_set.count }})
+                                        </label>
+                                    </div>
                                 {% endfor %}
-                                <!-- Price Filter -->
-                                <div class="categories-head d-flex align-items-center mt-4">
-                                    <h4>Price</h4>
-                                    <i class="fas fa-angle-down"></i>
+                                <hr>
+                                <h4 class="mb-4">Price</h4>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="price" value="all" {% if not price_filter %}checked{% endif %}>
+                                    <label class="form-check-label">All</label>
                                 </div>
-                                <div>
-                                    <label class="custom_check custom_one">
-                                        <input type="radio" name="price" value="all" {% if not price_filter %}checked{% endif %}>
-                                        <span class="checkmark"></span> All
-                                    </label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="price" value="free" {% if price_filter == 'free' %}checked{% endif %}>
+                                    <label class="form-check-label">Free</label>
                                 </div>
-                                <div>
-                                    <label class="custom_check custom_one">
-                                        <input type="radio" name="price" value="free" {% if price_filter == 'free' %}checked{% endif %}>
-                                        <span class="checkmark"></span> Free
-                                    </label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="price" value="paid" {% if price_filter == 'paid' %}checked{% endif %}>
+                                    <label class="form-check-label">Paid</label>
                                 </div>
-                                <div>
-                                    <label class="custom_check custom_one mb-0">
-                                        <input type="radio" name="price" value="paid" {% if price_filter == 'paid' %}checked{% endif %}>
-                                        <span class="checkmark"></span> Paid
-                                    </label>
-                                </div>
-
-                                <!-- Submit button to apply the filters -->
-                                <div class="mt-4">
-                                    <button type="submit" class="btn btn-primary">Apply Filters</button>
-                                </div>
+                                <button type="submit" class="btn btn-primary w-100 mt-3">Apply Filters</button>
                             </form>
                         </div>
                     </div>
                 </div>
-                <!-- /Category Filter -->
-
             </div>
         </div>
     </div>
 </section>
-<!-- /Course -->
 {% endblock %}

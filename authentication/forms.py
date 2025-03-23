@@ -4,28 +4,39 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, Pass
 from authentication.models import CustomUser, Universiti
 import re
 from .models import CustomUser
+from django.core.exceptions import ValidationError
 
 class RegistrationForm(forms.ModelForm):
-    password1 = forms.CharField(widget=forms.PasswordInput)
-    password2 = forms.CharField(widget=forms.PasswordInput)
-    captcha = CaptchaField()
+    password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Enter your password'}))
+    password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm your password'}))
+    captcha = CaptchaField()  # This assumes you have django-recaptcha installed
 
     class Meta:
         model = CustomUser
-        fields = ['email', 'username', 'password1', 'password2']
+        fields = ['email', 'username', 'password1', 'password2', 'captcha']
+
+        widgets = {
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter your email'}),
+            'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your username'}),
+            # password widgets are already added above
+        }
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
         if password1 != password2:
-            raise forms.ValidationError("Passwords don't match.")
+            raise ValidationError("Passwords don't match.")
         return password2
 
 
 
 class LoginForm(forms.Form):
-    email = forms.EmailField()
-    password = forms.CharField(widget=forms.PasswordInput)
+    email = forms.EmailField(
+    widget=forms.EmailInput(attrs={'placeholder': 'Enter your email', 'class': 'form-control'})
+    )
+    password = forms.CharField(
+    widget=forms.PasswordInput(attrs={'placeholder': 'Enter your password', 'class': 'form-control'})
+    )
     captcha = CaptchaField()  # Add the captcha field here
 
 

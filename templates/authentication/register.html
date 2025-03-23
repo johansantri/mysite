@@ -1,148 +1,51 @@
-
-
-
+{% extends 'home/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
+{% block content %}
 
-<head>
+<!-- Main Wrapper -->
+<div class="container-fluid d-flex justify-content-center align-items-center min-vh-100">
 
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-	<title>Dreams LMS</title>
+    <div class="row w-100">
 
-	<!-- Favicon -->
-	<link rel="shortcut icon" type="image/x-icon" href="{% static "assets/img/favicon.svg"%}">
+        <!-- Login Banner Section -->
+        <div class="col-md-6 d-none d-md-flex justify-content-center align-items-center">
+            <div class="text-center">
+                <img src="{% static 'assets/img/login-img.png' %}" class="img-fluid mb-3" alt="Logo">
+                <h2>Welcome to <br>DreamsLMS Courses</h2>
+                <p class="text-muted">Start your learning journey with us. Unlock endless possibilities!</p>
+            </div>
+        </div>
 
-	<!-- Theme Settings Js -->
-	<script src="{% static "assets/js/theme-script.js"%}"></script>
+        <!-- Login Form Section -->
+        <div class="col-md-6 bg-light p-4 rounded-3 shadow-sm">
+            <div class="text-center mb-4">
+                
+                <div class="mt-2">
+                    <a href="{% url 'authentication:home' %}" class="text-decoration-none text-muted">Back to Home</a>
+                </div>
+            </div>
 
-	<!-- Bootstrap CSS -->
-	<link rel="stylesheet" href="{% static "assets/css/bootstrap.min.css"%}">
-
-	<!-- Fontawesome CSS -->
-	<link rel="stylesheet" href="{% static "assets/plugins/fontawesome/css/fontawesome.min.css"%}">
-	<link rel="stylesheet" href="{% static "assets/plugins/fontawesome/css/all.min.css"%}">
-
-	<!-- Owl Carousel CSS -->
-	<link rel="stylesheet" href="{% static "assets/css/owl.carousel.min.css"%}">
-	<link rel="stylesheet" href="{% static "assets/css/owl.theme.default.min.css"%}">
-
-	<!-- Feathericon CSS -->
-	<link rel="stylesheet" href="{% static "assets/plugins/feather/feather.css"%}">
-
-	<!-- Main CSS -->
-	<link rel="stylesheet" href="{% static "assets/css/style.css"%}">
-	<!--htmx-->
-	<script src="https://unpkg.com/htmx.org@2.0.3"></script>
-</head>
-
-<body>
-
-	<!-- Main Wrapper -->
-	<div class="main-wrapper log-wrap">
-
-		<div class="row">
-
-
-
-
-          {% if messages %}
-          <ul class="messages">
-            {% for message in messages %}
-              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-          </ul>
-          {% endif %}
-
-
-
-			<!-- Login Banner -->
-			<div class="col-md-6 login-bg">
-				<div class="owl-carousel login-slide owl-theme">
-					<div class="welcome-login">
-						<div class="login-banner">
-							<img src="{% static "assets/img/login-img.png"%}" class="img-fluid" alt="Logo">
-						</div>
-						<div class="mentor-course text-center">
-							<h2>Welcome to <br>DreamsLMS Courses.</h2>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-								ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
-						</div>
-					</div>
-					<div class="welcome-login">
-						<div class="login-banner">
-							<img src="{% static "assets/img/login-img.png"%}" class="img-fluid" alt="Logo">
-						</div>
-						<div class="mentor-course text-center">
-							<h2>Welcome to <br>DreamsLMS Courses.</h2>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-								ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
-						</div>
-					</div>
-					<div class="welcome-login">
-						<div class="login-banner">
-							<img src="{% static "assets/img/login-img.png"%}" class="img-fluid" alt="Logo">
-						</div>
-						<div class="mentor-course text-center">
-							<h2>Welcome to <br>DreamsLMS Courses.</h2>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-								ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- /Login Banner -->
-
-			<div class="col-md-6 login-wrap-bg">
-
-				<!-- Login -->
-				<div class="login-wrapper">
-					<div class="loginbox">
-						<div class="w-100">
-							<div class="img-logo">
-								<img src="{% static "assets/img/logo.svg"%}" class="img-fluid" alt="Logo">
-								<div class="back-home">
-									<a href="{% url 'authentication:home' %}">Back to Home</a>
-								</div>
-							</div>
-							<h1>Register into Your Account</h1>
-							<form method="post">
+            <h1 class="h4 text-center mb-3">Register to Your Account</h1>
+            
+            <form method="post">
                 {% csrf_token %}
-                {{ form }}
-                <br>
-								<div class="d-grid">
-									<button class="btn btn-primary btn-start" type="submit">Sign Up</button>
-								</div>
-							</form>
-						</div>
-					</div>
-					<div class="google-bg text-center">
-						
-						<p class="mb-0">login Now ? <a href="{% url 'authentication:login' %}">Login</a></p><p>Forgot Password?: <a href="{% url 'authentication:password_reset'%}">password_reset</a></p>
-					</div>
-				</div>
-				<!-- /Login -->
+                
+                <div class="form-group mb-3">
+                    {{ form }}
+                </div>
+                
+                <div class="d-grid">
+                    <button class="btn btn-primary btn-lg" type="submit">Sign Up</button>
+                </div>
+            </form>
 
-			</div>
+            <div class="text-center mt-3">
+                <p class="mb-0">Already have an account? <a href="{% url 'authentication:login' %}" class="text-primary">Login</a></p>
+                <p>Forgot Password? <a href="{% url 'authentication:password_reset' %}" class="text-primary">Reset Password</a></p>
+            </div>
+        </div>
+        
+    </div>
+</div>
 
-		</div>
-
-	</div>
-	<!-- /Main Wrapper -->
-
-	<!-- jQuery -->
-	<script src="{% static "assets/js/jquery-3.7.1.min.js"%}"></script>
-
-	<!-- Bootstrap Core JS -->
-	<script src="{% static "assets/js/bootstrap.bundle.min.js"%}"></script>
-
-	<!-- Owl Carousel -->
-	<script src="{% static "assets/js/owl.carousel.min.js"%}"></script>
-
-	<!-- Custom JS -->
-	<script src="{% static "assets/js/script.js"%}"></script>
-
-</body>
-
-</html>
+{% endblock %}
