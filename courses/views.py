@@ -43,6 +43,20 @@ from django.template.loader import render_to_string
 from django_ratelimit.decorators import ratelimit
 # views.py
 
+@ratelimit(key='ip', rate='100/h')
+def category_course_list(request, id):
+    category = get_object_or_404(Category, id=id)
+    courses = Course.objects.filter(category=category)
+    paginator = Paginator(courses, 10)  # 10 kursus per halaman
+    page = request.GET.get('page')
+    try:
+        courses_paginated = paginator.page(page)
+    except PageNotAnInteger:
+        courses_paginated = paginator.page(1)
+    except EmptyPage:
+        courses_paginated = paginator.page(paginator.num_pages)
+    return render(request, 'courses/course_list.html', {'category': category, 'courses': courses_paginated})
+
 def search_posts(request):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)

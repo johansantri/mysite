@@ -145,95 +145,64 @@
     </nav>
             <section class="py-5 bg-light">
                 <div class="container">
-                    <h2 class="text-left mb-5">Hasil Pencarian untuk "{{ query }}"</h2>
-
-                    <!-- Courses -->
-                    {% if results.courses %}
-                        <h3 class="text-left mb-4">Kursus</h3>
-                        <div class="row g-4">
-                            {% for course in results.courses %}
-                                <div class="col-md-4">
+                  
+                    <div class="container my-5">
+                        <h1 class="text-center mb-4">Kursus di Kategori <strong>{{ category.name }}</strong></h1>
+                
+                        <div class="row">
+                            {% for course in courses %}
+                                <div class="col-md-4 mb-4">
                                     <div class="card shadow-sm">
-                                        <img src="{{ course.image.url }}" class="card-img-top" alt="{{ course.course_name }}">
+                                        <img src="{{ course.image.url }}" class="card-img-top" alt="{{ course.title }}">
                                         <div class="card-body">
-                                            <h5 class="card-title">{{ course.course_name }}</h5>
-                                            <p class="card-text">{{ course.description|truncatewords:20 |safe }}</p>
-                                            <a href="{% url 'courses:course_lms_detail' course.id course.slug %}" class="btn btn-outline-primary">Lihat Kursus</a>
+                                            <h5 class="card-title">{{ course.title }}</h5>
+                                            <p class="card-text">{{ course.sort_description|default:"No description available." }}</p>
+                                            <a href="{% url 'courses:course_lms_detail' course.id course.slug %}" class="btn btn-primary">Lihat Kursus</a>
                                         </div>
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <div class="col-12">
+                                    <div class="alert alert-warning" role="alert">
+                                        Tidak ada kursus di kategori ini.
                                     </div>
                                 </div>
                             {% endfor %}
                         </div>
-                    {% endif %}
-
-                    <!-- Instructors -->
-                    <!-- Instructors -->
-                    {% if results.instructors %}
-                    <h3 class="text-left mb-4 mt-5">Instruktur</h3>
-                    <div class="row g-4 justify-content-center">
-                        {% for instructor in results.instructors %}
-                            <div class="col-md-4 instructor-item">
-                                <!-- Gambar Instruktur -->
-                                <img src="{% if instructor.user.profile_picture %}{{ instructor.user.profile_picture.url }}{% else %}https://via.placeholder.com/150?text={{ instructor.user.email|truncatechars:1 }}{% endif %}" 
-                                    class="instructor-card mb-3" 
-                                    alt="{{ instructor.user.email }}">
-                                
-                                <!-- Nama Instruktur -->
-                                <h5 class="fw-bold">
-                                    {% if instructor.user.first_name %}
-                                        {{ instructor.user.first_name }} {{ instructor.user.last_name }}
-                                    {% else %}
-                                        {{ instructor.user.email }}
+                
+                        {% if courses.has_other_pages %}
+                            <nav aria-label="Page navigation example" class="mt-5">
+                                <ul class="pagination justify-content-center">
+                                    {% if courses.has_previous %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ courses.previous_page_number }}" aria-label="Previous">
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </li>
                                     {% endif %}
-                                </h5>
-                                
-                                <!-- Keahlian dan Pengalaman -->
-                                <p class="text-muted mb-1">{{ instructor.expertise }} ({{ instructor.experience_years }} tahun)</p>
-                                
-                                <!-- Bio Singkat -->
-                                <p>{{ instructor.bio|truncatewords:10 }}</p>
-                                
-                                <!-- Teknologi -->
-                                <p class="text-primary"><i class="bi bi-gear"></i> {{ instructor.tech }}</p>
-                                
-                                <!-- Mitra (Provider) -->
-                                <p class="text-muted"><small>Mitra: {{ instructor.provider.name.name }}</small></p>
-                                
-                                <!-- Tautan Profil (Opsional) -->
-                                {% if instructor.status == 'Approved' %}
-                                <a href="{% url 'courses:instructor_profile' instructor.user.username %}" class="btn btn-outline-primary btn-sm">Lihat Profil</a>
-                                {% endif %}
-                            </div>
-                        {% endfor %}
+                                    {% for num in courses.paginator.page_range %}
+                                        <li class="page-item {% if courses.number == num %}active{% endif %}">
+                                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                        </li>
+                                    {% endfor %}
+                                    {% if courses.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ courses.next_page_number }}" aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        {% endif %}
                     </div>
-                    {% endif %}
+                 
 
-                    <!-- Partners -->
-                    {% if results.partners %}
-                        <h3 class="text-left mb-4 mt-5">Mitra</h3>
-                        <div class="row g-4">
-                            {% for partner in results.partners %}
-                                <div class="col-md-4">
-                                    <div class="card shadow-sm">
-                                        
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ partner.partner_name }}</h5>
-                                            <p class="card-text">{{ partner.description|truncatewords:20 |safe }}</p>
-                                            <a href="{% url 'courses:org_partner' partner.name.slug %}" class="btn btn-outline-primary">Lihat Mitra</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+                
 
-                    <!-- Jika Tidak Ada Hasil -->
-                    {% if not results.courses and not results.instructors and not results.partners %}
-                        <div class="text-center py-5">
-                            <p class="text-muted">Tidak ada hasil ditemukan untuk "{{ query }}".</p>
-                            <a href="/" class="btn btn-outline-primary">Kembali ke Beranda</a>
-                        </div>
-                    {% endif %}
+                 
+
+                  
                 </div>
             </section>
 

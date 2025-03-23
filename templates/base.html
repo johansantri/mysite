@@ -19,8 +19,8 @@
             padding: 100px 0;
         }
         .navbar {
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
         .card {
             border: none;
             transition: transform 0.3s;
@@ -108,49 +108,65 @@
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg bg-white sticky-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="#">LMSKu</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                   
-                    <li class="nav-item"><a class="nav-link" href="#">Kursus</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Tentang</a></li>
+    <!-- Navbar -->
+<nav class="navbar navbar-expand-lg bg-white sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="{% url 'authentication:home' %}">LMSKu</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" href="#">Kursus</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Tentang</a></li>
+            </ul>
+
+            <div class="d-flex align-items-center flex-column flex-lg-row mt-3 mt-lg-0">
+                <!-- Form pencarian (responsive) -->
+                <form class="d-flex me-lg-2 w-100 w-lg-75" role="search" action="{% url 'authentication:search' %}" method="get">
+                    {% csrf_token %}
+                    <input class="form-control me-2" type="search" name="q" placeholder="Cari kursus..." aria-label="Search">
+                    <button class="btn btn-outline-primary w-auto" type="submit"><i class="bi bi-search"></i></button>
+                </form>
+
+                <!-- Menu navigasi login atau dashboard (responsive) -->
+                <ul class="navbar-nav w-100 w-lg-auto">
+                    {% if request.user.is_authenticated %}
+                        <li class="nav-item w-100">
+                            <a class="btn btn-outline-info w-100" href="{% url 'authentication:dasbord'%}">
+                                <i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item w-100">
+                            <a class="btn btn-outline-info w-100" href="{% url 'authentication:login' %}">Login</a>
+                        </li>
+                    {% endif %}
                 </ul>
-                <div class="d-flex align-items-center flex-column flex-lg-row mt-3 mt-lg-0">
-                    <form class="d-flex me-lg-2" role="search"  action="{% url 'authentication:search' %}" method="get">
-                        {% csrf_token %}
-                        <input class="form-control me-2" type="search" name="q" placeholder="Cari kursus..." aria-label="Search">
-                        <button class="btn btn-outline-primary" type="submit"><i class="bi bi-search"></i></button>
-                    </form>
-                    <ul class="navbar-nav">
-						{% if request.user.is_authenticated %}
-							<li class="nav-item">
-								<a class="nav-link btn btn-custom text-white" href="{% url 'authentication:dasbord'%}">Dashboard</a>
-							</li>
-							
-						{% else %}
-							<li class="nav-item">
-								<a class="nav-link btn btn-custom text-white" href="{% url 'authentication:login' %}">Login</a>
-							</li>
-						{% endif %}
-					</ul>
-					
-					
-                </div>
             </div>
         </div>
-    </nav>
+    </div>
+</nav>
+
+
 
     <!-- Hero Section -->
     <section class="hero text-center">
         <div class="container">
             <h1 class="display-4 fw-bold">Belajar Tanpa Batas</h1>
             <p class="lead">Temukan kursus terbaik untuk meningkatkan skillmu kapan saja, di mana saja.</p>
-            <a href="#" class="btn btn-light btn-lg mt-3">Mulai Sekarang</a>
+           
+            {% if request.user.is_authenticated %}
+            <!-- Jika pengguna sudah login -->
+            
+                <a class="btn btn-light btn-lg mt-3" href="{% url 'authentication:course_list' %}">Explore</a>
+            
+            {% else %}
+                <!-- Jika pengguna belum login -->
+                
+                    <a class="btn btn-light btn-lg mt-3" href="{% url 'authentication:login' %}">Login</a>
+              
+            {% endif %}
         </div>
     </section>
 
@@ -190,39 +206,47 @@
         </div>
     </section>
     
+   
+
+    <section class="py-4 bg-light">
+        <div class="container py-3">
+            <h2 class="text-left mb-4 fw-bold">Kategori Populer</h2>
+            <div class="row g-3">
+                {% for category in popular_categories %}
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <a href="{% url 'courses:category_list' category.id %}" class="text-decoration-none">
+                            <div class="card text-center bg-{% cycle 'danger' 'success' 'primary' 'warning' 'info' 'dark' %} text-white shadow-sm border-0 rounded-4 h-100 transition-effect">
+                                <div class="card-body d-flex flex-column align-items-center justify-content-center p-3">
+                                    <i class="bi bi-bookmarks-fill mb-2" style="font-size: 2rem;"></i>
+                                    <h5 class="fw-bold mb-1">{{ category.name }}</h5>
+                                    <p class="card-text small">{{ category.num_courses }} Courses</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    
     <style>
-        .stats-card {
-            padding: 20px;
-            transition: all 0.3s ease;
+        .transition-effect {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .stats-card:hover {
+        .transition-effect:hover {
             transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .card-body {
+            min-height: 150px; /* Atur tinggi minimum agar seragam */
+        }
+        a.text-decoration-none .card {
+            cursor: pointer; /* Menunjukkan bahwa card bisa diklik */
+        }
+        a.text-decoration-none:hover .card {
+            text-decoration: none; /* Menghindari garis bawah pada teks saat hover */
         }
     </style>
-
-	<section class="py-5">
-		<div class="container py-5">
-			<h2 class="text-left mb-5">Kategori populer</h2>
-			<div class="row g-4">
-				{% for category in popular_categories %}
-					<div class="col-md-4 col-lg-3">
-						<div class="card text-center bg-{% cycle 'danger' 'success' 'primary' 'warning' 'info' 'dark' %} text-white shadow-sm border-0 rounded-3">
-							<div class="card-body d-flex flex-column align-items-center justify-content-center">
-								<!-- Icon atau gambar kategori (opsional) -->
-								<i class="bi bi-bookmarks-fill mb-3" style="font-size: 3rem;"></i>
-								<div class="feature-text mb-3">
-									<h5 class="fw-bold">{{ category.name }}</h5>
-								</div>
-								<p class="card-text">{{ category.num_courses }} Courses</p>
-							</div>
-						</div>
-					</div>
-				{% endfor %}
-			</div>
-		</div>
-		
-	</section>
 
     <!-- Features Section -->
     <section class="py-5">
@@ -311,7 +335,7 @@
 						<div class="col-md-6">
 							<div class="blog-card shadow-sm p-4 d-flex align-items-center rounded-3">
 								<div class="course-info">
-									<h5 class="fw-bold text-primary"><a href="{% url 'courses:enroll_microcredential' microcredential.slug %}" class="text-decoration-none">{{ microcredential.title }}</a></h5>
+									<h5 class="fw-bold text-primary"><a href="{% url 'courses:micro_detail' microcredential.id microcredential.slug %}" class="text-decoration-none">{{ microcredential.title }}</a></h5>
 									<p class="text-muted">Cara belajar pemrograman tanpa stres.</p>
 									<a href="{% url 'courses:micro_detail' microcredential.id microcredential.slug %}" class="btn btn-primary mt-3">Baca Selengkapnya</a>
 								</div>
