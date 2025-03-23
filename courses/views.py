@@ -324,7 +324,7 @@ def enroll_microcredential(request, slug):
     if microcredential.end_date and current_date > microcredential.end_date:
         messages.error(request, "Enrollment has closed for this MicroCredential.")
         return redirect('courses:microcredential_detail', slug=slug)
-
+    
     # Proses enrollment jika metode adalah POST
     if request.method == 'POST':
         enrollment, created = microcredential.enroll_user(request.user)

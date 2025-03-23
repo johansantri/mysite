@@ -79,6 +79,7 @@ urlpatterns = [
     path('microcredential/<int:id>/certificate/', views.generate_microcredential_certificate, name='generate_microcredential_certificate'),
     path('microcredential/<slug:slug>/enroll/', views.enroll_microcredential, name='enroll_microcredential'),
     #detail micro lms
+    path('microcredential/<int:id>/<slug:slug>/detail/', views.micro_detail, name='micro_detail'),
     path('sosial/', views.create_and_list_sos_posts, name='create_and_list_sos_posts'),
     path('sosial/create/', views.create_post, name='create_post'),
     path('sosial/like/<int:post_id>/', views.like_post, name='like_post'),

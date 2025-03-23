@@ -750,11 +750,12 @@ def home(request):
         'total_users': total_users,
         'total_courses': total_courses,
     })
-@csrf_protect
+#@csrf_protect
 @ratelimit(key='ip', rate='100/h')
 def search(request):
     
-    
+    if not request.headers.get('Referer', '').startswith('https://ini.icei.ac.id'):
+        return HttpResponseForbidden("Akses ditolak: sumber tidak sah")
      # Jika metode bukan GET, batalkan
     if request.method != 'GET':
         return HttpResponseNotAllowed("Metode tidak diperbolehkan")
