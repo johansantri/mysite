@@ -6,7 +6,7 @@ from io import BytesIO
 from django.core.files.base import ContentFile
 from django.contrib.auth import authenticate, login,logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse,HttpResponseNotAllowed
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
@@ -35,16 +35,20 @@ from django.views.decorators.csrf import csrf_protect
 from decimal import Decimal
 from django.urls import reverse
 from django_ratelimit.decorators import ratelimit
-from django.http import HttpResponseForbidden
 
 
 def mycourse(request):
     if request.user.is_authenticated:
         # Mengambil semua kursus yang diambil oleh user yang sedang login
         courses = Enrollment.objects.filter(user=request.user)
-
+    
+        # Jika metode bukan GET, batalkan
+        if request.method != 'GET':
+            return HttpResponseNotAllowed("Metode tidak diperbolehkan")
+        
         # Pencarian (Search)
         search_query = request.GET.get('search', '')
+        
         if search_query:
             # Menambahkan filter pencarian berdasarkan nama kursus
             courses = courses.filter(Q(course__course_name__icontains=search_query))
@@ -69,7 +73,10 @@ def microcredential_list(request):
     if request.user.is_authenticated:
         # Mengambil semua MicroCredential yang diambil oleh user yang sedang login
         microcredentials = MicroCredentialEnrollment.objects.filter(user=request.user)
-
+        # Jika metode bukan GET, batalkan
+        if request.method != 'GET':
+            return HttpResponseNotAllowed("Metode tidak diperbolehkan")
+        
         # Pencarian (Search)
         search_query = request.GET.get('search', '')
         if search_query:
@@ -96,8 +103,13 @@ def microcredential_list(request):
 
 
 #course_list lms
-
+@ratelimit(key='ip', rate='100/h')
 def course_list(request):
+   
+    # Jika metode bukan GET, batalkan
+    if request.method != 'GET':
+        return HttpResponseNotAllowed("Metode tidak diperbolehkan")
+    
     # Get the 'published' status from CourseStatus model
     published_status = CourseStatus.objects.get(status='published')  # Use 'status' field
 
@@ -178,10 +190,8 @@ def course_list(request):
 
 #detailuser
 @login_required
-@ratelimit(key='ip', rate='100/h', method='ALL', burst=True)
+@ratelimit(key='ip', rate='100/h')
 def user_detail(request, user_id):
-    if getattr(request, 'limited', False):
-        return HttpResponseForbidden("Rate limit exceeded")
     # Pastikan pengguna yang mengakses adalah pengguna yang tepat
     user = get_object_or_404(CustomUser, id=user_id)  # Menggunakan user_id untuk mengambil pengguna
     
@@ -252,6 +262,8 @@ def user_detail(request, user_id):
     
     return render(request, 'authentication/user_detail.html', context)
 
+@login_required
+@ratelimit(key='ip', rate='100/h')
 def all_user(request):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
@@ -325,7 +337,8 @@ def all_user(request):
     return render(request, 'authentication/all_user.html', context)
 
 
-
+@login_required
+@ratelimit(key='ip', rate='100/h')
 def dasbord(request):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
@@ -461,6 +474,8 @@ def dasbord(request):
 
     return render(request, 'home/dasbord.html', context)
 
+@login_required
+@ratelimit(key='ip', rate='100/h')
 #dashboard for student
 def dashbord(request):
     # Initialize variables
@@ -509,7 +524,8 @@ def dashbord(request):
         })
     return redirect("/login/?next=%s" % request.path)
 
-
+@login_required
+@ratelimit(key='ip', rate='100/h')
 def pro(request,username):
     if request.user.is_authenticated:
         username=CustomUser.objects.get(username=username)
@@ -552,6 +568,8 @@ def edit_profile(request, pk):
     
 
 #convert image before update
+@login_required
+@ratelimit(key='ip', rate='100/h')
 def process_image_to_webp(uploaded_photo):
     # Open the image using Pillow
     img = Image.open(uploaded_photo)
@@ -573,6 +591,8 @@ def process_image_to_webp(uploaded_photo):
     return ContentFile(buffer.read(), name='photo.webp')
 
 #update image
+@login_required
+@ratelimit(key='ip', rate='100/h')
 def edit_photo(request, pk):
     user = get_object_or_404(CustomUser, pk=pk)
 
@@ -604,6 +624,7 @@ def edit_photo(request, pk):
             return render(request, 'home/edit_photo.html', {'form': form}, status=400)
 
 @login_required
+@ratelimit(key='ip', rate='100/h')
 def edit_profile_save(request, pk):
     # Ensure the profile exists, fetching by pk
     profile = get_object_or_404(CustomUser, pk=pk)
@@ -624,7 +645,10 @@ def edit_profile_save(request, pk):
 
 
 #populercourse
+
+@ratelimit(key='ip', rate='100/h')
 def popular_courses(request):
+    
     # Get the current date
     now = timezone.now().date()
 
@@ -672,6 +696,11 @@ def popular_courses(request):
 
 # Home page
 def home(request):
+   
+    
+    if request.method != 'GET':
+        return HttpResponseNotAllowed("Metode tidak diperbolehkan")
+    
     # Mendapatkan status 'published', hanya mengambil yang pertama
     published_status = CourseStatus.objects.filter(status='published').first()
 
@@ -721,8 +750,15 @@ def home(request):
         'total_users': total_users,
         'total_courses': total_courses,
     })
-
+@csrf_protect
+@ratelimit(key='ip', rate='100/h')
 def search(request):
+    
+    
+     # Jika metode bukan GET, batalkan
+    if request.method != 'GET':
+        return HttpResponseNotAllowed("Metode tidak diperbolehkan")
+    
     query = request.GET.get('q', '').strip()
     results = {
         'courses': [],
