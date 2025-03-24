@@ -171,6 +171,77 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        
+    <script>
+		$(document).ready(function(){
+			// Get CSRF token from the cookies (if you need to include it for any post requests)
+			//var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+			
+			// Send an AJAX request to get popular courses
+			$.ajax({
+				url: '/popular_courses/',  // URL for the popular_courses view
+				type: 'GET',  // Use GET for fetching the data
+				dataType: 'json',  // Expect a JSON response
+			
+				success: function(response) {
+					var courses = response.courses;
+					
+					// Loop through each course in the response
+					courses.forEach(function(course) {
+						var courseUrl = '/course-detail/' + course.id + '/' + course.slug + '/'; 
+						var instructor = '/instructor-profile/'+course.instructor__user__username+'/';
+						var university = '/org-partner/'+course.org_partner__name__slug+'/';
+						// Append course info dynamically to the courses list
+						$('#courses-list').append(`
+
+						<div class="col-md-4">
+							<div class="card shadow-sm">
+								<!-- Gambar Kursus -->
+								<img src="${course.image}" class="card-img-top" alt="Course Image">
+								<div class="card-body">
+									<!-- Nama Kursus -->
+									<h5 class="card-title">${course.course_name}</h5>
+									
+									<!-- Deskripsi Kursus -->
+									<p class="card-text">Kuasai dasar pemrograman dengan Python dalam 4 minggu.</p>
+									
+									<!-- Nama Instruktur dan Foto -->
+									<div class="d-flex align-items-center mb-3">
+										<img src="${course.org_partner__logo}" class="rounded-circle" alt="Instructor" style="width: 40px; height: 40px; object-fit: cover;">
+										<div class="ms-3">
+											<h5><a href="${university}">${course.org_partner__name__name}</a></h5>
+											<p class="mb-0"><a href="${instructor}">${course.instructor__user__first_name} ${course.instructor__user__last_name}</a></p>
+										</div>
+									</div>
+
+									<!-- Rating -->
+									<div class="d-flex align-items-center mb-3">
+										<div class="rating">
+											<!-- Menampilkan Bintang Rating -->
+											<i class="fas fa-star filled"></i>
+											<i class="fas fa-star filled"></i>
+											<i class="fas fa-star filled"></i>
+											<i class="fas fa-star filled"></i>
+											<i class="fas fa-star"></i>
+										</div>
+										<span class="ms-2">4.0 (15 Reviews)</span>
+									</div>
+
+									<!-- Tombol Lihat Kursus -->
+									<a href="${courseUrl}" class="btn btn-outline-primary">Lihat Kursus</a>
+								</div>
+							</div>
+						</div>
+
+
+						`);
+					});
+				},
+				error: function(xhr, status, error) {
+					console.log("Error: " + error);
+				}
+			});
+		});
+       
+		</script>    
 </body>
 </html>
