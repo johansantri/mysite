@@ -35,6 +35,10 @@ from django.views.decorators.csrf import csrf_protect
 from decimal import Decimal
 from django.urls import reverse
 from django_ratelimit.decorators import ratelimit
+from django.http import HttpResponseNotAllowed, HttpResponseNotFound
+from django.core.cache import cache
+from django.views.decorators.cache import cache_page
+from django.db.models import Prefetch
 
 
 def mycourse(request):
@@ -104,22 +108,23 @@ def microcredential_list(request):
 
 #course_list lms
 @ratelimit(key='ip', rate='100/h')
+@cache_page(60 * 15)  # Cache the page for 15 minutes
 def course_list(request):
-   
     # Jika metode bukan GET, batalkan
     if request.method != 'GET':
         return HttpResponseNotAllowed("Metode tidak diperbolehkan")
     
     # Get the 'published' status from CourseStatus model
-    published_status = CourseStatus.objects.get(status='published')  # Use 'status' field
+    published_status = CourseStatus.objects.filter(status='published').first()
+    if not published_status:
+        return HttpResponseNotFound("Status 'published' tidak ditemukan")
 
     # Get all courses with 'published' status
-    courses = Course.objects.filter(status_course=published_status)
-
-    # Search functionality
-    search_query = request.GET.get('search', '')
-    if search_query:
-        courses = courses.filter(course_name__icontains=search_query)
+    courses = Course.objects.filter(status_course=published_status).select_related(
+        'category', 'instructor__user', 'org_partner'
+    ).prefetch_related(
+        Prefetch('enrollments')
+    )
 
     # Filter by category
     category_filter = request.GET.getlist('category')  # Get selected categories as a list
@@ -155,38 +160,36 @@ def course_list(request):
     # Prepare courses data for rendering in template
     courses_data = []
     for course in page_obj:
-        #course_price = 'FREE' if not course.org_partner.balance or course.org_partner.balance == 0 else course.org_partner.balance
+        # Count enrollments using annotate to avoid hitting the database repeatedly
+        course.num_enrollments = course.enrollments.count()  # Count enrollments
+        
         courses_data.append({
             'course_name': course.course_name,
             'course_id': course.id,
-            'num_enrollments': course.enrollments.count(), 
+            'num_enrollments': course.num_enrollments,  # Use pre-annotated value
             'course_slug': course.slug,
             'course_image': course.image.url if course.image else None,
-            #'course_price': course_price,  # Store 'FREE' or the actual balance
             'instructor': course.instructor.user.get_full_name() if course.instructor else None,
             'instructor_username': course.instructor.user.username if course.instructor else None,
             'photo': course.instructor.user.photo.url if course.instructor and course.instructor.user.photo else None,
-            'partner': course.org_partner.name if course.org_partner else None,  # Corrected access to partner name
-            'category': course.category.name if course.category else None,  # Corrected access to category name
-            #'universiti': course.org_partner.name.name if course.org_partner and course.org_partner.name else None  # Serialize Universiti's name
+            'partner': course.org_partner.name if course.org_partner else None,
+            'category': course.category.name if course.category else None,
         })
 
     # Prepare the context for rendering
     context = {
         'courses': courses_data,
-        'page_obj': page_obj, 
+        'page_obj': page_obj,
         'total_courses': courses.count(),
         'total_pages': paginator.num_pages,
         'current_page': page_obj.number,
         'start_index': start_index,
         'end_index': end_index,
-        'search_query': search_query,
         'category_filter': category_filter,
         'categories': list(categories.values('id', 'name')),  # Ensure categories are serializable
     }
 
     return render(request, 'home/course_list.html', context)
-
 
 #detailuser
 @login_required
@@ -568,60 +571,66 @@ def edit_profile(request, pk):
     
 
 #convert image before update
-@login_required
-@ratelimit(key='ip', rate='100/h')
+
+# Fungsi untuk memproses gambar menjadi format WebP
 def process_image_to_webp(uploaded_photo):
-    # Open the image using Pillow
+    # Menggunakan PIL untuk membuka gambar yang diunggah
     img = Image.open(uploaded_photo)
-
-    # Convert the image to RGB mode (if not already in RGB)
-    img = img.convert('RGB')
-
-    # Resize the image to 50% of its original size
-    width, height = img.size
-    new_size = (width // 2, height // 2)
-    img = img.resize(new_size, Image.Resampling.LANCZOS)  # Use LANCZOS for high-quality resizing
-
-    # Save the image to a BytesIO buffer in WebP format
+    
+    # Membuat buffer untuk menyimpan gambar dalam format WebP
     buffer = BytesIO()
-    img.save(buffer, format='WEBP', quality=85)  # Adjust quality as needed
-    buffer.seek(0)
+    img.save(buffer, format="WEBP")
+    webp_image = buffer.getvalue()  # Ambil data gambar dalam format WebP
+    
+    # Mengembalikan file gambar dalam format WebP
+    return ContentFile(webp_image, name=uploaded_photo.name.split('.')[0] + '.webp')
 
-    # Return the processed image as a ContentFile
-    return ContentFile(buffer.read(), name='photo.webp')
 
 #update image
 @login_required
 @ratelimit(key='ip', rate='100/h')
 def edit_photo(request, pk):
+    # Mendapatkan pengguna berdasarkan primary key (ID)
     user = get_object_or_404(CustomUser, pk=pk)
 
     if request.method == "GET":
+        # Menampilkan formulir pengeditan foto
         form = UserPhoto(instance=user)
         return render(request, 'home/edit_photo.html', {'form': form})
 
     elif request.method == "POST":
+        # Menyimpan jalur foto lama untuk penghapusan nanti
         old_photo_path = user.photo.path if user.photo else None
+        
+        # Membuat instance formulir dengan data POST dan file yang diunggah
         form = UserPhoto(request.POST, request.FILES, instance=user)
 
         if form.is_valid():
+            # Simpan perubahan formulir tanpa menyimpan langsung ke DB
             user_profile = form.save(commit=False)
 
+            # Cek jika ada file foto yang diunggah
             if 'photo' in request.FILES:
-                # Process the uploaded photo
                 uploaded_photo = request.FILES['photo']
+                # Proses gambar menjadi format WebP
                 processed_photo = process_image_to_webp(uploaded_photo)
+                # Update foto pengguna
                 user_profile.photo = processed_photo
 
+            # Simpan perubahan pengguna
             user_profile.save()
 
+            # Jika ada foto lama, hapus file lama tersebut
             if old_photo_path and os.path.exists(old_photo_path):
                 os.remove(old_photo_path)
 
+            # Redirect setelah berhasil menyimpan perubahan
             return redirect(reverse('authentication:edit-photo', args=[pk]))
 
         else:
+            # Jika form tidak valid, tampilkan kembali form dengan status 400
             return render(request, 'home/edit_photo.html', {'form': form}, status=400)
+
 
 @login_required
 @ratelimit(key='ip', rate='100/h')
@@ -787,7 +796,7 @@ def search(request):
             Q(description__icontains=query)
         ).select_related('name')[:5]
 
-    return render(request, 'results.html', {
+    return render(request, 'home/results.html', {
         'query': query,
         'results': results,
     })
