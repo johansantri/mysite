@@ -39,6 +39,8 @@ from django.http import HttpResponseNotAllowed, HttpResponseNotFound
 from django.core.cache import cache
 from django.views.decorators.cache import cache_page
 from django.db.models import Prefetch
+from django.core.mail import EmailMultiAlternatives,EmailMessage
+
 
 
 def mycourse(request):
@@ -833,23 +835,33 @@ def register_view(request):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            user.set_password(form.cleaned_data["password1"])  # Enkripsi password
-            user.is_active = False  # Deactivate account until email is verified
+            user.set_password(form.cleaned_data["password1"])
+            user.is_active = False
             user.save()
 
-            # Generate token and uid for email activation
             token = default_token_generator.make_token(user)
-            uid = urlsafe_base64_encode(str(user.pk).encode())  # No need for .decode()
+            uid = urlsafe_base64_encode(str(user.pk).encode())
 
             current_site = get_current_site(request)
             mail_subject = 'Activate your account'
-            message = render_to_string('authentication/activation_email.html', {
+            html_message = render_to_string('authentication/email_activation/activate_email_message.html', {
                 'user': user,
                 'domain': current_site.domain,
                 'uid': uid,
                 'token': token,
             })
-            send_mail(mail_subject, message, 'noreply@yourdomain.com', [user.email])
+            # Versi teks biasa sebagai fallback
+            plain_message = f"Hi {user.username},\nPlease activate your account by visiting: http://{current_site.domain}/activate/{uid}/{token}/"
+
+            # Menggunakan EmailMultiAlternatives
+            email = EmailMultiAlternatives(
+                subject=mail_subject,
+                body=plain_message,  # Teks biasa
+                from_email='noreply@yourdomain.com',
+                to=[user.email],
+            )
+            email.attach_alternative(html_message, "text/html")  # Menambahkan versi HTML
+            email.send()
 
             return HttpResponse('Registration successful! Please check your email to activate your account.')
     else:
@@ -882,37 +894,52 @@ def custom_password_reset(request):
     if request.method == "POST" and form.is_valid():
         email = form.cleaned_data['email']
 
+        # Cari pengguna berdasarkan email
         try:
-            user = CustomUser.objects.get(email=email)  # Adjust if you're using a custom user model
+            user = CustomUser.objects.get(email=email)  # Gunakan CustomUser langsung
+            uid = urlsafe_base64_encode(str(user.pk).encode())
+            token = default_token_generator.make_token(user)
         except CustomUser.DoesNotExist:
-            return render(request, 'authentication/password_reset_done.html')  # Optionally, handle this silently
+            # Tetap lanjutkan ke halaman done agar tidak membocorkan info
+            return render(request, 'authentication/password_reset_done.html')
 
-        # Generate UID and token for the user
-        uid = urlsafe_base64_encode(str(user.pk).encode())  # Encode UID
-        token = default_token_generator.make_token(user)  # Generate token
+        # Tentukan protokol secara dinamis
+        protocol = 'https' if request.is_secure() else 'http'
+        domain = get_current_site(request).domain
 
-        # Prepare the context for the email
+        # Siapkan konteks untuk email
         context = {
-            'protocol': 'http',  # You can change this to 'https' if needed
-            'domain': get_current_site(request).domain,
+            'protocol': protocol,
+            'domain': domain,
             'uid': uid,
             'token': token,
         }
 
-        # Render the email content using the password_reset_email template
+        # Render isi email dari template
         email_subject = "Password Reset Request"
         email_message = render_to_string('authentication/password_reset_email.html', context)
 
-        # Send the email
-        send_mail(email_subject, email_message, 'no-reply@yourdomain.com', [email])
+        # Kirim email sebagai HTML
+        email = EmailMessage(
+            subject=email_subject,
+            body=email_message,
+            from_email='no-reply@yourdomain.com',
+            to=[email],
+        )
+        email.content_subtype = 'html'  # Pastikan email dirender sebagai HTML
 
-        # Render password reset done page (without showing the reset link)
+        # Tangani error pengiriman email
+        try:
+            email.send()
+        except Exception as e:
+            # Log error jika perlu, tapi tetap tampilkan halaman sukses untuk UX
+            return HttpResponse("Terjadi kesalahan saat mengirim email. Silakan coba lagi nanti.")
+
+        # Tampilkan halaman konfirmasi
         return render(request, 'authentication/password_reset_done.html')
 
-    return render(request, 'authentication/password_reset.html', {'form': form})   
-
-
-
+    # Tampilkan form jika bukan POST atau form tidak valid
+    return render(request, 'authentication/password_reset.html', {'form': form})
 
 # Custom Password Reset Done View
 def custom_password_reset_done(request):
@@ -921,7 +948,7 @@ def custom_password_reset_done(request):
 # Custom Password Reset Confirm View
 def custom_password_reset_confirm(request, uidb64, token):
     try:
-        uid = urlsafe_base64_decode(uidb64).decode('utf-8')  # Decode user ID
+        uid = urlsafe_base64_decode(uidb64).decode('utf-8')
         user = CustomUser.objects.get(pk=uid)
     except (TypeError, ValueError, CustomUser.DoesNotExist):
         user = None
@@ -932,14 +959,15 @@ def custom_password_reset_confirm(request, uidb64, token):
             if form.is_valid():
                 form.save()
                 return redirect('authentication:password_reset_complete')
+            # Jika form tidak valid, tetap render form dengan error
         else:
             form = SetPasswordForm(user)
 
-        return render(request, 'x/password_reset_confirm.html', {'form': form})
+        return render(request, 'authentication/password_reset_confirm.html', {'form': form})
     
     else:
-        return render(request, 'x/password_reset_invalid.html')  # Show error if invalid token or user
+        return render(request, 'authentication/password_reset_invalid.html')
 
 # Custom Password Reset Complete View
 def custom_password_reset_complete(request):
-    return render(request, 'x/password_reset_complete.html')
+    return render(request, 'authentication/password_reset_complete.html')
