@@ -193,44 +193,54 @@
 						// Append course info dynamically to the courses list
 						$('#courses-list').append(`
 
-						<div class="col-md-4">
-							<div class="card shadow-sm">
-								<!-- Gambar Kursus -->
-								<img src="${course.image}" class="card-img-top" alt="Course Image">
-								<div class="card-body">
-									<!-- Nama Kursus -->
-									<h5 class="card-title">${course.course_name}</h5>
-									
-									<!-- Deskripsi Kursus -->
-									<p class="card-text">Kuasai dasar pemrograman dengan Python dalam 4 minggu.</p>
-									
-									<!-- Nama Instruktur dan Foto -->
-									<div class="d-flex align-items-center mb-3">
-										<img src="${course.org_partner__logo}" class="rounded-circle" alt="Instructor" style="width: 40px; height: 40px; object-fit: cover;">
-										<div class="ms-3">
-											<h5><a href="${university}">${course.org_partner__name__name}</a></h5>
-											<p class="mb-0"><a href="${instructor}">${course.instructor__user__first_name} ${course.instructor__user__last_name}</a></p>
-										</div>
-									</div>
+						
+                      <div class="col-6 col-md-4 col-lg-3">
+    <a href="${courseUrl}" class="text-decoration-none">
+        <div class="card border-{% cycle 'primary' 'success' 'danger' 'warning' 'info' 'dark' %} shadow-sm rounded-4 h-100 transition-effect">
+            <!-- Gambar Thumbnail Penuh di Atas -->
+            <img src="${course.image}" class="card-img-top rounded-top-4" alt="Course Image" style="object-fit: cover; height: 120px;">
 
-									<!-- Rating -->
-									<div class="d-flex align-items-center mb-3">
-										<div class="rating">
-											<!-- Menampilkan Bintang Rating -->
-											<i class="fas fa-star filled"></i>
-											<i class="fas fa-star filled"></i>
-											<i class="fas fa-star filled"></i>
-											<i class="fas fa-star filled"></i>
-											<i class="fas fa-star"></i>
-										</div>
-										<span class="ms-2">4.0 (15 Reviews)</span>
-									</div>
+            <!-- Konten Card -->
+            <div class="card-body p-3 d-flex flex-column align-items-center">
+                <!-- Konten Utama -->
+                <div class="w-100">
+                    <!-- Nama Kursus -->
+                    <h5 class="fw-bold mb-2 text-truncate" style="font-size: 1rem; max-width: 100%;">${course.course_name}</h5>
 
-									<!-- Tombol Lihat Kursus -->
-									<a href="${courseUrl}" class="btn btn-outline-primary">Lihat Kursus</a>
-								</div>
-							</div>
-						</div>
+                    <!-- Layout Desktop & Mobile: Logo di Kiri -->
+                    <div class="d-flex align-items-center mb-2">
+                        <img src="${course.org_partner__logo}" class="rounded-circle border border-white" alt="Instructor" style="width: 35px; height: 35px; object-fit: cover; border-width: 2px;">
+                        <div class="ms-2">
+                            <p class="small mb-0"><a href="${university}" class="text-dark">${course.org_partner__name__name}</a></p>
+                            <p class="text-muted" style="font-size: 0.75rem; margin-bottom: 0;"><a href="${instructor}" class="text-dark">${course.instructor__user__first_name} ${course.instructor__user__last_name}</a></p>
+                        </div>
+                    </div>
+
+                    <!-- Rating Bintang -->
+                    <div class="d-flex align-items-center justify-content-center mb-2">
+                        <span class="text-warning me-1">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-half"></i>
+                            <i class="bi bi-star"></i>
+                        </span>
+                        <span class="small">4.5 (200 Enrol)</span> <!-- Ganti dengan data dinamis -->
+                    </div>
+
+                    <!-- Harga -->
+                    <div class="d-flex justify-content-between w-100 mb-3 flex-wrap">
+                        <p class="mb-0 fw-bold" style="font-size: 1.1rem;">IDR. 100.000</p> <!-- Ganti dengan harga dinamis -->
+                        <span class="badge bg-success p-2">Diskon 20%</span> <!-- Opsional -->
+                    </div>
+
+                    <!-- Tombol Detail -->
+                    <a href="${courseUrl}" class="btn btn-outline-{% cycle 'primary' 'success' 'danger' 'warning' 'info' 'dark' %} btn-sm w-100">Detail</a>
+                </div>
+            </div>
+        </div>
+    </a>
+</div>
 
 
 						`);
