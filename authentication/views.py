@@ -156,8 +156,12 @@ def course_list(request):
     start_index = page_obj.start_index()
     end_index = page_obj.end_index()
 
-    # Get all available categories to display in the filter
-    categories = Category.objects.all()
+    # Get categories with count of published courses
+    categories = Category.objects.filter(
+        category_courses__status_course=published_status
+    ).annotate(
+        course_count=Count('category_courses')
+    ).distinct()
 
     # Prepare courses data for rendering in template
     courses_data = []
@@ -188,10 +192,11 @@ def course_list(request):
         'start_index': start_index,
         'end_index': end_index,
         'category_filter': category_filter,
-        'categories': list(categories.values('id', 'name')),  # Ensure categories are serializable
+        'categories': list(categories.values('id', 'name', 'course_count')),  # Include course_count
     }
 
     return render(request, 'home/course_list.html', context)
+
 
 #detailuser
 @login_required

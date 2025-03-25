@@ -3536,8 +3536,16 @@ def org_partner(request, slug):
         # Hanya ambil data yang diperlukan
         related_courses = related_courses.annotate(total_enrollments=Count('enrollments'))
 
+        # Ambil kategori yang terkait dengan kursus berstatus "publish" dari partner ini
+        categories = Category.objects.filter(
+            category_courses__org_partner_id=partner.id,
+            category_courses__status_course=published_status,
+            category_courses__end_date__gte=datetime.now()
+        ).distinct()
+
     else:
         related_courses = Course.objects.none()
+        categories = Category.objects.none()  # Jika tidak ada status published, kategori kosong
 
     # Pagination
     page_number = request.GET.get('page')
@@ -3547,7 +3555,7 @@ def org_partner(request, slug):
     # Hitung total peserta unik
     unique_learners = related_courses.aggregate(
         unique_users=Count('enrollments__user', distinct=True)
-    )['unique_users']
+    )['unique_users'] or 0
 
     context = {
         'partner': partner,
@@ -3556,11 +3564,12 @@ def org_partner(request, slug):
         'unique_learners': unique_learners,
         'search_query': search_query,
         'selected_category': selected_category,
-        'categories': Category.objects.all(),
+        'categories': categories,
         'sort_by': sort_by,
     }
 
     return render(request, 'partner/org_partner.html', context)
+
 
 def search_users(request):
     term = request.GET.get('q', '')
