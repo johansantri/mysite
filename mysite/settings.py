@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-*t=li&h7o=sj40!ic&)p+8!fy3p@*tfg+mz6!xuftigv_qa9yy
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True#False
+DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1','localhost','ini.icei.ac.id','20.11.247.222']
 CSRF_COOKIE_SECURE = True
@@ -35,6 +35,7 @@ SECURE_SSL_REDIRECT = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 RATELIMIT_IP_META_KEY = 'HTTP_X_REAL_IP'
 CSRF_TRUSTED_ORIGINS = ['https://ini.icei.ac.id']
+
 
 
 # Application definition

@@ -90,8 +90,23 @@ class Instructor(models.Model):
         return f"{self.user.email} "
     
 class Category(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)  # Add this line to associate partners with users
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)  # Relasi dengan pengguna
     name = models.CharField(max_length=250)
+    slug = models.SlugField(unique=True, blank=True, null=True)  # Kolom slug yang unik
+
+    def save(self, *args, **kwargs):
+        # Jika slug belum ada, buat slug dari nama kategori
+        if not self.slug:
+            self.slug = slugify(self.name)
+
+            # Pastikan slug unik
+            original_slug = self.slug
+            counter = 1
+            while Category.objects.filter(slug=self.slug).exists():
+                self.slug = f"{original_slug}-{counter}"
+                counter += 1
+
+        super().save(*args, **kwargs)  # Panggil metode save dari superclass
 
     def __str__(self):
         return self.name

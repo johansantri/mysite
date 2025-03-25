@@ -90,6 +90,6 @@ urlpatterns = [
     path('sosial/load-more/', views.load_more_posts, name='load_more_posts'),
     path('sosial/search/', views.search_posts, name='search_posts'),  # Rute baru
    #menuju home category
-    path('category/<int:id>/', views.category_course_list, name='category_list'),
+    path('category/<slug:slug>/', views.category_course_list, name='category_list'),
    
 ]

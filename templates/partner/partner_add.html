@@ -28,48 +28,39 @@
         </div>
  
 
-<script>
-  $(document).ready(function() {
-    $('.select2').select2({
-      //placeholder: 'Search for a user',
-      ajax: {
-        url: '{% url "courses:search_users" %}',  // This should be an endpoint that returns users based on a search term
-        dataType: 'json',
-        delay: 250,  // Delay in milliseconds to wait for the user to stop typing
-        data: function (params) {
-          return {
-            q: params.term  // Search term
-          };
-        },
-        processResults: function (data) {
-          return {
-            results: data.users  // Data structure should be { users: [{id, text}, ...] }
-          };
-        }
-      }
-    });
-  });
-</script>
-<script>
-  $(document).ready(function() {
-    $('.select1').select2({
-      //placeholder: 'Search for a user',
-      ajax: {
-        url: '{% url "courses:search_partner" %}',  // This should be an endpoint that returns users based on a search term
-        dataType: 'json',
-        delay: 250,  // Delay in milliseconds to wait for the user to stop typing
-        data: function (params) {
-          return {
-            q: params.term  // Search term
-          };
-        },
-        processResults: function (data) {
-          return {
-            results: data.partners  // Data structure should be { users: [{id, text}, ...] }
-          };
-        }
-      }
-    });
-  });
-</script>
+        <script>
+          $(document).ready(function() {
+              $('.pilihA').select2({
+                  placeholder: 'Pilih Universitas',
+                  ajax: {
+                      url: '{% url "courses:search_partner" %}',
+                      dataType: 'json',
+                      delay: 250,
+                      data: function(params) {
+                          return { q: params.term };
+                      },
+                      processResults: function(data) {
+                          console.log("PilihA data:", data);
+                          return { results: data.partners };
+                      }
+                  }
+              });
+      
+              $('.pilihB').select2({
+                  placeholder: 'Pilih Pengguna',
+                  ajax: {
+                      url: '{% url "courses:search_users" %}',
+                      dataType: 'json',
+                      delay: 250,
+                      data: function(params) {
+                          return { q: params.term };
+                      },
+                      processResults: function(data) {
+                          console.log("PilihB data:", data);
+                          return { results: data.users };
+                      }
+                  }
+              });
+          });
+      </script>
 {% endblock %}

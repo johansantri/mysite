@@ -35,7 +35,22 @@ class PartnerAdmin(admin.ModelAdmin):
     search_fields = ['name', 'abbreviation', 'user__username']
     list_per_page = 10
 admin.site.register(Partner, PartnerAdmin)
-admin.site.register(models.Category)
+
+class CategoryAdmin(admin.ModelAdmin):
+    # Mengatur jumlah item yang ditampilkan per halaman (pagination)
+    list_per_page = 10  # Atur jumlah kategori yang ingin ditampilkan per halaman
+
+    # Menambahkan fitur pencarian berdasarkan nama kategori dan slug
+    search_fields = ['name', 'slug']
+
+    # Menambahkan kolom yang akan ditampilkan di halaman daftar admin
+    list_display = ('name', 'slug', 'user')
+
+    # Menambahkan filter untuk memudahkan penyaringan data
+    list_filter = ('user',)
+
+# Daftarkan model Category di admin dengan konfigurasi yang sudah diatur
+admin.site.register(Category, CategoryAdmin)
 admin.site.register(models.Instructor)
 admin.site.register(models.TeamMember)
 admin.site.register(GradeRange)

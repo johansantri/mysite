@@ -44,18 +44,30 @@ from django_ratelimit.decorators import ratelimit
 # views.py
 
 @ratelimit(key='ip', rate='100/h')
-def category_course_list(request, id):
-    category = get_object_or_404(Category, id=id)
+def category_course_list(request, slug):
+    # Mengambil objek Category berdasarkan slug
+    category = get_object_or_404(Category, slug=slug)
+    
+    # Mengambil kursus yang terkait dengan kategori tersebut
     courses = Course.objects.filter(category=category)
-    paginator = Paginator(courses, 10)  # 10 kursus per halaman
+    
+    # Paginasi: menampilkan 10 kursus per halaman
+    paginator = Paginator(courses, 10)
     page = request.GET.get('page')
+    
     try:
         courses_paginated = paginator.page(page)
     except PageNotAnInteger:
+        # Jika halaman yang diminta bukan angka, tampilkan halaman pertama
         courses_paginated = paginator.page(1)
     except EmptyPage:
+        # Jika halaman lebih besar dari jumlah halaman, tampilkan halaman terakhir
         courses_paginated = paginator.page(paginator.num_pages)
-    return render(request, 'courses/course_list.html', {'category': category, 'courses': courses_paginated})
+    
+    return render(request, 'courses/course_list.html', {
+        'category': category, 
+        'courses': courses_paginated
+    })
 
 def search_posts(request):
     if not request.user.is_authenticated:
@@ -3324,39 +3336,58 @@ def convert_image_to_webp(uploaded_image):
 
 
 def update_partner(request, partner_id):
-    # Ambil partner dan pastikan user memiliki otoritas
     partner = get_object_or_404(Partner, pk=partner_id)
-
-    # Cek otoritas user
+    
+    # Pastikan pengguna yang mengakses adalah pemilik partner atau admin
     if not request.user.is_authenticated or (request.user != partner.user and not request.user.is_superuser):
         return redirect("/login/?next=%s" % request.path)
 
-    old_logo = partner.logo.path if partner.logo else None  # Simpan path logo lama
+    old_logo = partner.logo.path if partner.logo else None
+    old_user = partner.user  # Menyimpan user lama
 
     if request.method == "POST":
-        form = PartnerFormUpdate(request.POST, request.FILES, instance=partner, user=request.user)
+        form = PartnerForm(request.POST, request.FILES, instance=partner)
+        print("POST data:", request.POST)  # Debug data mentah
         if form.is_valid():
+            print("Cleaned data:", form.cleaned_data)  # Debug setelah validasi
             partner_instance = form.save(commit=False)
+            print("Instance before save:", partner_instance.__dict__)  # Debug sebelum simpan
 
-            # Jika ada logo baru yang diunggah, konversi ke WebP
+            # Jika ada logo yang di-upload, ganti dengan yang baru
             if 'logo' in request.FILES:
                 uploaded_logo = request.FILES['logo']
                 converted_logo = convert_image_to_webp(uploaded_logo)
                 partner_instance.logo = converted_logo
 
-            # Simpan perubahan ke instance Partner
+            # Simpan partner instance
             partner_instance.save()
+            print("Instance after save:", partner_instance.__dict__)  # Debug setelah simpan
 
-            # Hapus logo lama jika ada dan sudah diganti
+            # Jika ada perubahan user, update status is_partner
+            if old_user != partner_instance.user:  # Jika user lama berbeda dengan user baru
+                # Update status is_partner user lama menjadi False
+                old_user.is_partner = False
+                old_user.save()  # Simpan perubahan status user lama
+
+                # Pastikan user baru mendapatkan status is_partner=True
+                partner_instance.user.is_partner = True
+                partner_instance.user.save()  # Simpan perubahan status user baru
+
+            # Hapus logo lama jika sudah diganti
             if old_logo and old_logo != partner.logo.path:
                 if os.path.exists(old_logo):
                     os.remove(old_logo)
 
+            # Redirect ke detail partner setelah update
             return redirect('courses:partner_detail', partner_id=partner.id)
+        else:
+            print("Form errors:", form.errors)  # Debug jika form tidak valid
     else:
-        form = PartnerFormUpdate(instance=partner, user=request.user)
+        form = PartnerForm(instance=partner)
 
     return render(request, 'partner/update_partner.html', {'form': form, 'partner': partner})
+
+
 #partner view
 #@cache_page(60 * 5)
 
@@ -3531,55 +3562,17 @@ def org_partner(request, slug):
 
     return render(request, 'partner/org_partner.html', context)
 
-# search user optimized with index and pagination
 def search_users(request):
-    query = request.GET.get('q', '')
-    
-    if query:
-        users = CustomUser.objects.filter(
-            Q(email__icontains=query) & Q(is_active=True)
-        ).only('id', 'email')  # Ensure only necessary fields are fetched
-    else:
-        users = CustomUser.objects.filter(is_active=True).only('id', 'email')
+    term = request.GET.get('q', '')
+    users = CustomUser.objects.filter(username__icontains=term, is_active=True)[:20]  # Batasi hasil
+    results = [{"id": user.id, "text": user.username} for user in users]
+    return JsonResponse({"users": results})
 
-    # Apply pagination
-    paginator = Paginator(users, 20)  # Show 20 users per page
-    page_number = request.GET.get('page')  # Get the page number from the query params
-    page_obj = paginator.get_page(page_number)
-    
-    # Prepare data for response
-    users_data = [{'id': user.id, 'text': user.email} for user in page_obj]
-    
-    return JsonResponse({
-        'users': users_data,
-        'page': page_obj.number,
-        'total_pages': paginator.num_pages,
-        'total_users': paginator.count,
-    })
-
-# search partner optimized with pagination
-def search_partner(request):
-    query = request.GET.get('q', '')
-    
-    if query:
-        partners = Universiti.objects.filter(
-            Q(name__icontains=query) | Q(email__icontains=query)
-        ).only('id', 'name', 'email')
-    else:
-        partners = Universiti.objects.filter(Q(name__icontains=query)).only('id', 'name')
-
-    paginator = Paginator(partners, 20)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
-    partners_data = [{'id': universiti.id, 'text': universiti.name} for universiti in page_obj]
-
-    return JsonResponse({
-        'partners': partners_data,
-        'page': page_obj.number,
-        'total_pages': paginator.num_pages,
-        'total_partners': paginator.count,
-    })
+def search_partner(request):  # Dalam kasus ini, saya asumsikan mencari Universiti
+    term = request.GET.get('q', '')
+    universities = Universiti.objects.filter(name__icontains=term)[:20]  # Batasi hasil
+    results = [{"id": uni.id, "text": uni.name} for uni in universities]
+    return JsonResponse({"partners": results})
 
 
 
@@ -3587,24 +3580,21 @@ def search_partner(request):
 
 def partner_create_view(request):
     if not request.user.is_superuser:
-     return redirect('/')
+        return redirect('/')
 
     if request.method == 'POST':
-        form = PartnerForm(request.POST)  # Pass the logged-in user to the form
+        form = PartnerForm(request.POST)
         if form.is_valid():
-            form = form.save(commit=False)
-            form.author_id = request.user.id
-            form.save()  # Save the course with the selected partner
-                  # Now update the user's `is_partner` field to True
-            user = form.user  # Get the related User object
-
-            # Set is_partner to True
+            partner = form.save(commit=False)  # Simpan instance ke variabel terpisah
+            partner.author_id = request.user.id
+            partner.save()  # Simpan instance
+            # Update user's is_partner field
+            user = partner.user  # Ambil user dari instance
             user.is_partner = True
-            user.save()  # Save the user after the update
-            return redirect('/partner')  # Redirect to a course list page or success page
+            user.save()
+            return redirect('/partner')
     else:
-        form = PartnerForm()  # Pass the logged-in user to the form
-    #print(request.POST)
+        form = PartnerForm()
     return render(request, 'partner/partner_add.html', {'form': form})
 
 

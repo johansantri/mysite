@@ -524,71 +524,74 @@ class CourseForm(forms.ModelForm):
 
 class PartnerForm(forms.ModelForm):
     description = forms.CharField(widget=CKEditor5Widget())
+
     class Meta:
         model = Partner
-        fields = ['name','user','phone', 'tax', 'iceiprice', 'logo', 'address', 'description']
-       
+        fields = ['name', 'user', 'phone', 'tax', 'iceiprice', 'logo', 'address', 'description']
         widgets = {
-        "name": forms.Select(attrs={
-            "placeholder": "Full Stack Development",
-            "class": "form-control select1"
-        }),
-        "user": forms.Select(attrs={
-            "placeholder": "CS201",
-            "class": "form-control select2"
-        }),
-         "phone": forms.TextInput(attrs={
-            "placeholder": "Phone Number",
-            "class": "form-control"
-        }),
-        "address": forms.Textarea(attrs={
-            "placeholder": "Address",
-            "class": "form-control"
-        }),
-        "description": forms.Textarea(attrs={
-            "placeholder": "Description",
-            "class": "form-control"
-        }),
-        "tax": forms.NumberInput(attrs={
-            "placeholder": "Tax Number",
-            "class": "form-control"
-        }),
-        "iceiprice": forms.NumberInput(attrs={
-            "placeholder": "ice price %",
-            "class": "form-control"
-        }),
-        
-        "logo": forms.ClearableFileInput(attrs={
-            'class': 'form-control',  # Add Bootstrap styling
-            'accept': 'image/*',  # Allow only image files to be uploaded
-        })
-    }
-    
+            "name": forms.Select(
+                attrs={"class": "form-control pilihA", "data-placeholder": "Pilih Universitas"}
+            ),
+            "user": forms.Select(
+                attrs={"class": "form-control pilihB", "data-placeholder": "Pilih Pengguna"}
+            ),
+            "phone": forms.TextInput(attrs={"placeholder": "Phone Number", "class": "form-control"}),
+            "address": forms.Textarea(attrs={"placeholder": "Address", "class": "form-control"}),
+            "description": forms.Textarea(attrs={"placeholder": "Description", "class": "form-control"}),
+            "tax": forms.NumberInput(attrs={"placeholder": "Tax Number", "class": "form-control"}),
+            "iceiprice": forms.NumberInput(attrs={"placeholder": "Ice Price %", "class": "form-control"}),
+            "logo": forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
+        }
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # Set nilai awal untuk Select2 dari instance
+        if self.instance.pk:  # Jika ada instance (update)
+            if self.instance.name:
+                self.fields['name'].initial = self.instance.name.id
+            if self.instance.user:
+                self.fields['user'].initial = self.instance.user.id
 
-       
-            
-     
-         # Batasi jumlah universitas yang ditampilkan ke maksimum 10
-        self.fields['name'].queryset = Universiti.objects.only('id', 'name')[:10]
-        
-        # Batasi jumlah pengguna yang ditampilkan ke maksimum 10
-        self.fields['user'].queryset = CustomUser.objects.filter(is_active=True).only('id', 'username')[:10]    
-            
-
-
+        # Set queryset untuk 'name' dan 'user'
+        self.fields['name'].queryset = Universiti.objects.all()
+        self.fields['user'].queryset = CustomUser.objects.filter(is_active=True)
 
     def clean_user(self):
         user_value = self.cleaned_data.get('user')
+        
+        # Jika user tidak dipilih, beri error
         if not user_value:
             raise forms.ValidationError("This field is required.")
-        if Partner.objects.filter(user=user_value).exists():
-            raise forms.ValidationError("This user already exists. Please choose another.")
+        
+        # Jika partner dengan user yang sama sudah ada, beri error
+        if Partner.objects.filter(user=user_value).exists() and (not self.instance.pk or self.instance.user != user_value):
+            raise forms.ValidationError("This user already exists as a partner. Please choose another.")
+        
         return user_value
+
+    def save(self, commit=True):
+        # Simpan instance partner terlebih dahulu
+        partner = super().save(commit=False)
+
+        # Cek apakah ada perubahan user
+        if self.instance.pk and self.instance.user != partner.user:
+            # Jika ada perubahan user, update user lama
+            old_user = self.instance.user
+            if old_user:  # Pastikan old_user ada
+                old_user.is_partner = False
+                old_user.save()  # Simpan perubahan status old_user menjadi False
+
+        # Pastikan user baru mendapatkan status is_partner=True
+        if partner.user:
+            partner.user.is_partner = True
+            partner.user.save()  # Simpan perubahan status user baru menjadi True
+
+        # Simpan partner jika commit=True
+        if commit:
+            partner.save()
+
+        return partner
     
-
-
 class PartnerFormUpdate(forms.ModelForm):
     class Meta:
         model = Partner
