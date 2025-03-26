@@ -38,6 +38,8 @@ CSRF_TRUSTED_ORIGINS = ['https://ini.icei.ac.id']
 
 
 
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -51,6 +53,7 @@ INSTALLED_APPS = [
     'captcha',
     'courses',
     'instructor',
+    'partner',
     'import_export',
     'django_ckeditor_5',
     'django_ratelimit',
@@ -212,7 +215,9 @@ CKEDITOR_5_CONFIGS = {
             "numberedList",
             "blockQuote",
         ],
+        
     },
+   
     "comment": {
         "language": {"ui": "en", "content": "ar"},
         "toolbar": [
@@ -354,7 +359,18 @@ CKEDITOR_5_CONFIGS = {
                 "reversed": True,
             },
         },
-        "link": {"defaultProtocol": "https://"},
+         "link": {
+            "defaultProtocol": "https://",  # Menggunakan https:// sebagai default
+            "allowedProtocols": ["https"],  # Hanya mengizinkan http:// dan https://
+            "allowedDomains": [
+                "youtube.com",
+                "facebook.com",
+                "x.com.com",
+                "icei.ac.id",
+                "tiktok.com"
+            ],
+            "checkCurrentDocument": False,  # Tidak memeriksa URL dokumen saat ini
+        },
         "htmlSupport": {
             "allow": [
                 {"name": "/.*/", "attributes": True, "classes": True, "styles": True},
@@ -387,5 +403,5 @@ CKEDITOR_5_CONFIGS = {
 
 CKEDITOR_5_CUSTOM_CSS = "custom.css"
 CSRF_COOKIE_NAME = "new_csrf_cookie_name"
-CKEDITOR_5_FILE_UPLOAD_PERMISSION = "staff","is_partner",'authenticated'
+CKEDITOR_5_FILE_UPLOAD_PERMISSION = "staff","is_partner","is_instructor",'authenticated'
 

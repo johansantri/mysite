@@ -1,0 +1,32 @@
+{% extends 'home/tes.html' %}
+{% block content %}
+
+        <div class="support-wrap">
+          <div class="tile">
+            <h3 class="tile-title">update data</h3>
+            
+            <div class="tile-body">
+              <form  method="POST" action="" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{form}}
+                {{form.media}}
+                  &nbsp;
+                <div class="tile-footer">
+                  <button class="btn btn-primary" type="submit">
+                    <i class="bi bi-check-circle-fill me-2"></i>Create Now
+                  </button>
+                  <a class="btn btn-secondary" href="{% url 'courses:partner_view'%}">
+                    <i class="bi bi-x-circle-fill me-2"></i>Cancel
+                  </a>
+                </div>
+              </form>
+
+                
+
+            </div>
+          </div>
+        </div>
+ 
+
+     
+{% endblock %}

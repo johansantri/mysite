@@ -3315,7 +3315,7 @@ def studio(request, id):
 
 
 
-#update_partner
+
 
 def convert_image_to_webp(uploaded_image):
     """
@@ -3334,8 +3334,12 @@ def convert_image_to_webp(uploaded_image):
     # Kembalikan file dalam format ContentFile
     return ContentFile(buffer.read(), name='logo.webp')
 
-
+@login_required
 def update_partner(request, partner_id):
+       # Cek apakah user adalah superuser atau staf
+    if not request.user.is_superuser and not request.user.is_staff:
+        return redirect('/')  # Redirect ke halaman utama jika bukan superuser atau staf
+
     partner = get_object_or_404(Partner, pk=partner_id)
     
     # Pastikan pengguna yang mengakses adalah pemilik partner atau admin
@@ -3587,9 +3591,11 @@ def search_partner(request):  # Dalam kasus ini, saya asumsikan mencari Universi
 
 
 
+@login_required
 def partner_create_view(request):
-    if not request.user.is_superuser:
-        return redirect('/')
+    # Cek apakah user adalah superuser atau staf
+    if not request.user.is_superuser and not request.user.is_staff:
+        return redirect('/')  # Redirect ke halaman utama jika bukan superuser atau staf
 
     if request.method == 'POST':
         form = PartnerForm(request.POST)

@@ -43,7 +43,18 @@
                             <td>{{ partner.user.email }}</td>
                             <td>{{ partner.phone }}</td>
                             <td>{{ partner.created_ad }}</td>
-                            <td><a href="{% url 'courses:update_partner' partner.id %}"><span class="btn btn-sm btn-warning">update</span></a></td>
+                            <td>{% if request.user.is_superuser or request.user.is_staff %}
+                                <!-- Jika user adalah superuser atau staff -->
+                                <a href="{% url 'courses:update_partner' partner.id %}">
+                                    <span class="btn btn-sm btn-warning">Update</span>
+                                </a>
+                            {% elif request.user.is_authenticated and request.user.is_partner %}
+                                <!-- Jika user adalah partner dan partner-nya adalah yang sedang diperbarui -->
+                                <a href="{% url 'partner:partner_update' partner.id partner.name.slug  %}">
+                                    <span class="btn btn-sm btn-warning">Update</span>
+                                </a>
+                            {% endif %}
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>

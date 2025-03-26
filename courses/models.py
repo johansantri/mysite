@@ -16,6 +16,7 @@ from decimal import Decimal
 from django.core.validators import MinValueValidator
 import bleach
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 
 class UserProfile(models.Model):
@@ -41,11 +42,18 @@ class Partner(models.Model):
     iceiprice = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="share icei (%)", default=0.00)
     account_number = models.CharField(max_length=20, null=True, blank=True)  # Account number as a string
     account_holder_name = models.CharField(max_length=250,null=True, blank=True)
+    bank_name = models.CharField(max_length=250,null=True, blank=True)
     balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     logo = models.ImageField(upload_to='logos/',null=True, blank=True)
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="partner_author") 
     created_ad = models.DateTimeField(auto_now_add=True)  # Automatically set when the ad is created
     updated_ad = models.DateTimeField(auto_now=True) 
+    tiktok = models.CharField(_("tiktok"), max_length=200, blank=True,null=True)
+    youtube = models.CharField(_("youtube"), max_length=200, blank=True,null=True)
+    facebook = models.CharField(_("facebook"), max_length=200, blank=True,null=True)
+    instagram = models.CharField(_("instagram"), max_length=200, blank=True,null=True)
+    linkedin = models.CharField(_("linkedin"), max_length=200, blank=True,null=True)
+    twitter = models.CharField(_("twitter"), max_length=200, blank=True,null=True)
 
     def __str__(self):
         return f"{self.name}"

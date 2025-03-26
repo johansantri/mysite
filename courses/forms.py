@@ -592,70 +592,71 @@ class PartnerForm(forms.ModelForm):
 
         return partner
     
+
+#selfupdatepartner
 class PartnerFormUpdate(forms.ModelForm):
+    description = forms.CharField(widget=CKEditor5Widget())
     class Meta:
         model = Partner
-        fields = ['name', 'user', 'phone', 'tax', 'iceiprice', 'logo', 'address', 'description']
+        fields = [
+            'account_number', 'account_holder_name','bank_name','phone', 'tax','logo', 'address', 'description', 
+              
+            'tiktok', 'youtube', 'twitter', 'facebook'
+        ]
 
         widgets = {
-            "name": forms.Select(attrs={
-                "placeholder": "Full Stack Development",
-                "class": "form-control select1"
+            'phone': forms.TextInput(attrs={
+                'placeholder': 'Phone Number',
+                'class': 'form-control'
             }),
-            "user": forms.Select(attrs={
-                "placeholder": "CS201",
-                "class": "form-control select2"
+            'address': forms.Textarea(attrs={
+                'placeholder': 'Address',
+                'class': 'form-control',
+                'rows': 3
             }),
-            "phone": forms.TextInput(attrs={
-                "placeholder": "Phone Number",
-                "class": "form-control"
+            'description': CKEditor5Widget(attrs={
+                'class': 'form-control', 
+                'placeholder': 'Description'
             }),
-            "address": forms.Textarea(attrs={
-                "placeholder": "Address",
-                "class": "form-control",
-                "rows": 2
-            }),
-            "description": CKEditor5Widget(),  # Use CKEditor widget
-            "tax": forms.NumberInput(attrs={
-                "placeholder": "Tax Number",
-                "class": "form-control"
-            }),
-            "iceiprice": forms.NumberInput(attrs={
-                "placeholder": "ice share %",
-                "class": "form-control"
+            'tax': forms.NumberInput(attrs={
+                'placeholder': 'Tax Number',
+                'class': 'form-control'
             }),
             
-            "logo": forms.ClearableFileInput(attrs={
-                'class': 'form-control',
-                'accept': 'image/*',  # Allow only image files
-            })
+            'logo': forms.ClearableFileInput(attrs={
+                'class': 'form-control-file',
+                'accept': 'image/*',
+            }),
+            'account_number': forms.TextInput(attrs={
+                'placeholder': 'Account Number',
+                'class': 'form-control'
+            }),
+            'account_holder_name': forms.TextInput(attrs={
+                'placeholder': 'Account Holder Name',
+                'class': 'form-control'
+            }),
+             'bank_name': forms.TextInput(attrs={
+                'placeholder': 'bank_name',
+                'class': 'form-control'
+            }),
+            'tiktok': forms.URLInput(attrs={
+                'placeholder': 'TikTok URL',
+                'class': 'form-control'
+            }),
+            'youtube': forms.URLInput(attrs={
+                'placeholder': 'YouTube URL',
+                'class': 'form-control'
+            }),
+            'twitter': forms.URLInput(attrs={
+                'placeholder': 'Twitter URL',
+                'class': 'form-control'
+            }),
+            'facebook': forms.URLInput(attrs={
+                'placeholder': 'Facebook URL',
+                'class': 'form-control'
+            }),
         }
 
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)  # Ambil user dari kwargs
-        super().__init__(*args, **kwargs)  # Panggil constructor parent
-
-        if user:
-            if user.is_superuser:
-                 # Batasi jumlah universitas yang ditampilkan ke maksimum 10
-                self.fields['name'].queryset = Universiti.objects.only('id', 'name')[:10]
-                
-                # Batasi jumlah pengguna yang ditampilkan ke maksimum 10
-                self.fields['user'].queryset = CustomUser.objects.filter(is_active=True).only('id', 'username')[:10]
-            elif hasattr(user, 'partner_user'):  # Cek apakah user adalah partner
-                self.fields['user'].queryset = CustomUser.objects.filter(id=user.id)
-
-                # Filter field `name` untuk hanya menampilkan univer terkait dengan user tertentu
-                self.fields['name'].queryset = Universiti.objects.filter(partner_univ__user=user)
-
-                # Hapus field `tax` dan `balance` agar tidak bisa diakses oleh partner
-                self.fields.pop('tax')
-                self.fields.pop('balance')
-
-        # Alternatif: Anda juga bisa membuat field read-only
-        for field_name in ['tax', 'balance']:
-            if field_name in self.fields:
-                self.fields[field_name].widget.attrs['readonly'] = True
 
 #instructor
 class InstructorForm(forms.ModelForm):
