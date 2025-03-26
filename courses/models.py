@@ -17,6 +17,7 @@ from django.core.validators import MinValueValidator
 import bleach
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django.core.files.storage import default_storage
 
 
 class UserProfile(models.Model):
@@ -230,15 +231,19 @@ class Course(models.Model):
 
     def delete_old_image(self):
         """Hapus gambar lama jika sudah diganti."""
-        if self.pk:  # Pastikan instance ada di database
+        if self.pk:  # Pastikan instance sudah ada di database
             old_image = Course.objects.filter(pk=self.pk).values_list('image', flat=True).first()
             if old_image and old_image != self.image.name:
-                old_image_path = os.path.join(settings.MEDIA_ROOT, old_image)
-                if os.path.exists(old_image_path):
-                    os.remove(old_image_path)
+                # Gunakan default_storage untuk menangani file, ini bekerja dengan berbagai jenis penyimpanan (lokal, cloud, dsb)
+                old_image_path = old_image  # Path relatif terhadap MEDIA_ROOT (atau direktori penyimpanan Anda)
+
+                # Hapus file lama menggunakan default_storage
+                if default_storage.exists(old_image_path):  # Pastikan file lama ada
+                    default_storage.delete(old_image_path)  # Menghapus file lama
 
     def save(self, *args, **kwargs):
-        self.delete_old_image()  # Hapus gambar lama sebelum menyimpan data baru
+        # Hapus gambar lama sebelum menyimpan data baru
+        self.delete_old_image()
         super().save(*args, **kwargs)
 
     def is_enrollment_open(self):
