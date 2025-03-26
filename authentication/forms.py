@@ -7,8 +7,14 @@ from .models import CustomUser
 from django.core.exceptions import ValidationError
 
 class RegistrationForm(forms.ModelForm):
-    password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Enter your password'}))
-    password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm your password'}))
+    password1 = forms.CharField(
+        label="Password",  # Ubah label di sini
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Enter your password'})
+    )
+    password2 = forms.CharField(
+        label="Confirm Password",  # Ubah label di sini
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm your password'})
+    )
     captcha = CaptchaField()  # This assumes you have django-recaptcha installed
 
     class Meta:
