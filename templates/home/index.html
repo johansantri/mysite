@@ -152,41 +152,127 @@
     </section>
 
     <!-- Stats Section -->
-    <section class="py-5">
-        <div class="container">
-            <div class="row g-4 text-center">
-                <div class="col-md-3">
-                    <div class="stats-card">
-                        <i class="fas fa-book fa-2x text-primary mb-2"></i>
-                        <h3 class="fw-bold text-primary">{{ total_courses }}+</h3>
-                        <p>Total Kursus</p>
-                    </div>
+    <style>
+        /* Stats Section */
+.py-5 {
+    background-color: #f8f9fa; /* Latar belakang abu-abu muda untuk kontras */
+    padding: 60px 0; /* Padding vertikal */
+}
+
+/* Stats Card */
+.stats-card {
+    background: #fff; /* Latar belakang putih */
+    padding: 20px;
+    border-radius: 10px; /* Sudut membulat */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transisi halus */
+}
+
+/* Garis kotak warna di desktop */
+@media (min-width: 768px) {
+    .stats-card {
+        border: 2px solid #ff0000; /* Garis kotak biru di desktop */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Bayangan halus */
+    }
+
+    .stats-card:hover {
+        transform: translateY(-5px); /* Efek naik saat hover */
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        border-color: #00c4cc; /* Warna berubah saat hover */
+    }
+}
+
+/* Ikon */
+.stats-card i {
+    display: block;
+    margin-bottom: 15px;
+}
+
+/* Judul angka */
+.stats-card h3 {
+    font-size: 2rem; /* Ukuran angka besar */
+    margin-bottom: 10px;
+}
+
+/* Teks deskripsi */
+.stats-card p {
+    font-size: 1rem;
+    color: #6c757d; /* Abu-abu untuk deskripsi */
+    margin: 0;
+}
+
+/* Responsif untuk Mobile (2-2) */
+@media (max-width: 767px) {
+    .stats-card {
+        border: none; /* Hilangkan garis kotak di mobile */
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Bayangan ringan */
+    }
+
+    /* Ubah kolom menjadi 2-2 */
+    .col-md-3 {
+        flex: 0 0 50%; /* Lebar 50% untuk 2 kolom per baris */
+        max-width: 50%;
+    }
+
+    .stats-card h3 {
+        font-size: 1.5rem; /* Kecilkan angka di mobile */
+    }
+
+    .stats-card p {
+        font-size: 0.9rem; /* Kecilkan teks di mobile */
+    }
+}
+
+/* Penyesuaian untuk layar sangat kecil (opsional) */
+@media (max-width: 576px) {
+    .stats-card {
+        padding: 15px; /* Kurangi padding di layar kecil */
+    }
+
+    .stats-card h3 {
+        font-size: 1.25rem;
+    }
+
+    .stats-card p {
+        font-size: 0.85rem;
+    }
+}
+    </style>
+    <!-- Stats Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4 text-center">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <i class="fas fa-book fa-2x text-primary mb-2"></i>
+                    <h3 class="fw-bold text-primary">{{ total_courses }}+</h3>
+                    <p>Kursus</p>
                 </div>
-                <div class="col-md-3">
-                    <div class="stats-card">
-                        <i class="fas fa-users fa-2x text-primary mb-2"></i>
-                        <h3 class="fw-bold text-primary">{{ total_users }}+</h3>
-                        <p>Total Pengguna</p>
-                    </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <i class="fas fa-users fa-2x text-primary mb-2"></i>
+                    <h3 class="fw-bold text-primary">{{ total_users }}+</h3>
+                    <p>Pengguna</p>
                 </div>
-                <div class="col-md-3">
-                    <div class="stats-card">
-                        <i class="fas fa-chalkboard-teacher fa-2x text-primary mb-2"></i>
-                        <h3 class="fw-bold text-primary">{{ total_instructors }}+</h3>
-                        <p>Total Instruktur</p>
-                    </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <i class="fas fa-chalkboard-teacher fa-2x text-primary mb-2"></i>
+                    <h3 class="fw-bold text-primary">{{ total_instructors }}+</h3>
+                    <p>Instruktur</p>
                 </div>
-                <div class="col-md-3">
-                    <div class="stats-card">
-                        <i class="fas fa-handshake fa-2x text-primary mb-2"></i>
-                        <h3 class="fw-bold text-primary">{{ total_partners }}+</h3>
-                        <p>Total Mitra</p>
-                    </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <i class="fas fa-handshake fa-2x text-primary mb-2"></i>
+                    <h3 class="fw-bold text-primary">{{ total_partners }}+</h3>
+                    <p>Mitra</p>
                 </div>
             </div>
         </div>
-    </section>
-    
+    </div>
+</section>
+
     <section class="py-4 bg-light">
         <div class="container py-3">
             <h2 class="text-left mb-4 fw-bold">Kategori Populer</h2>
