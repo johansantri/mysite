@@ -11,7 +11,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
-      <!-- Scripts -->
+    
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
@@ -66,26 +67,6 @@
             background-color: #007bff;
         }
 
-        .sidebar-content {
-            flex-grow: 1;
-        }
-
-        .sidebar-footer {
-            padding: 1rem;
-            background-color: #343a40;
-            color: white;
-        }
-
-        .footer-link {
-            color: white;
-            text-decoration: none;
-            margin: 0 0.5rem;
-        }
-
-        .footer-link:hover {
-            color: #007bff;
-        }
-
         .main-content {
             margin-left: 250px;
             padding: 20px;
@@ -111,7 +92,7 @@
 
         @media (min-width: 992px) {
             .sidebar {
-                left: 0 !important; /* Override collapse behavior on desktop */
+                left: 0 !important;
             }
         }
     </style>
@@ -129,8 +110,33 @@
         </div>
 
         <!-- Sidebar Content -->
-        <div class="sidebar-content">
+        <div class="sidebar-content flex-grow-1 overflow-auto">
             {% if user.is_authenticated %}
+                <!-- User Profile -->
+                {% if not user.is_partner and not user.is_instructor and not user.is_superuser %}
+                    <div class="p-3 border-bottom border-secondary">
+                        <div class="d-flex align-items-center mb-3">
+                            <a href="{% url 'authentication:edit-photo' request.user.id %}">
+                                {% if request.user.photo %}
+                                    <img src="{{ request.user.photo.url }}" alt="User Avatar" class="rounded-circle me-3" style="width: 50px; height: 50px;">
+                                {% else %}
+                                    <img src="{% static 'assets/img/user/user1.jpg' %}" alt="User Image" class="rounded-circle me-3" style="width: 50px; height: 50px;">
+                                {% endif %}
+                            </a>
+                            <div>
+                                <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
+                                <p class="mb-1 text-muted">{{ request.user.hobby }}</p>
+                                {% if not user.university %}
+                                <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
+                                {% else %}
+                                    <p class="mb-1 text-primary">{{ user.university }}</p>
+                                    <a href="{% url 'courses:instructor_add' %}" class="btn btn-primary btn-sm">Become an instructor</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
                 <ul class="nav flex-column">
                     {% if user.is_partner %}
                         <li class="nav-item">
@@ -209,28 +215,267 @@
                             </a>
                         </li>
                     {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link active" href="{% url 'authentication:dashbord' %}">
-                                <i class="bi bi-speedometer me-2"></i> Dashboard
-                            </a>
-                        </li>
+                        <!-- Learner Menu -->
+                       
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                                <i class="bi bi-file-earmark me-2"></i> Pages
+                            <a class="nav-link dropdown-toggle" href="" data-bs-toggle="dropdown">
+                                <i class="bi bi-speedometer me-2"></i>  {{ request.user.username|capfirst }}
+
+
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="{% url 'authentication:mycourse' %}">My Course</a></li>
                                 <li><a class="dropdown-item" href="{% url 'authentication:microcredential' %}" target="_blank">Micro Credential</a></li>
-                                <li><a class="dropdown-item" href="blank-page.html">Blank Page</a></li>
+                                <li><a class="dropdown-item" href="{% url 'authentication:dashbord' %}">Dasbord</a></li>
                             </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="docs.html">
-                                <i class="bi bi-code-square me-2"></i> Docs
-                            </a>
-                        </li>
+                       
+
+                        <!-- Course Content -->
+                       <!-- Course Content -->
+                            <li class="nav-item">
+                                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="collapse" data-bs-target="#courseContent" aria-expanded="false">
+                                    <i class="bi bi-ui-checks me-2"></i> Course Content
+                                </a>
+                                <ul class="collapse nav flex-column ms-3" id="courseContent">
+                                    {% for i in sections %}
+                                        {% if not i.children.all and not i.materials.all and not i.assessments.all %}
+                                            <li class="nav-item">
+                                                <a class="nav-link text-white" href="#">
+                                                    <i class="bi bi-circle-fill me-2"></i> {{ i.title }} (No content available)
+                                                </a>
+                                            </li>
+                                        {% else %}
+                                            <li class="nav-item">
+                                                <a class="nav-link text-white collapsed" data-bs-toggle="collapse" href="#section-{{ i.id }}" aria-expanded="false">
+                                                    <i class="bi bi-folder-fill me-2"></i> {{ i.title }}
+                                                </a>
+                                                <ul class="collapse nav flex-column ms-3" id="section-{{ i.id }}">
+                                                    {% for obj in i.children.all %}
+                                                        {% if not obj.children.all %}
+                                                            <li class="nav-item">
+                                                                <a class="nav-link text-white collapsed" data-bs-toggle="collapse" href="#subsection-{{ obj.id }}" aria-expanded="false">
+                                                                    <i class="bi bi-folder me-2"></i> {{ obj.title }}
+                                                                </a>
+                                                                <ul class="collapse nav flex-column ms-3" id="subsection-{{ obj.id }}">
+                                                                    {% for material in obj.materials.all %}
+                                                                        <li class="nav-item">
+                                                                            <a class="nav-link text-white" href="?material_id={{ material.id }}">
+                                                                                <i class="bi bi-file-earmark-text me-2"></i> {{ material.title }}
+                                                                                <span>{{ material.duration }}</span>
+                                                                            </a>
+                                                                        </li>
+                                                                    {% empty %}
+                                                                        <li class="nav-item">
+                                                                            <a class="nav-link text-white" href="#">
+                                                                                <i class="bi bi-info-circle me-2"></i> No materials available
+                                                                            </a>
+                                                                        </li>
+                                                                    {% endfor %}
+                                                                    {% for assessment in obj.assessments.all %}
+                                                                        <li class="nav-item">
+                                                                            <a class="nav-link text-white" href="?assessment_id={{ assessment.id }}">
+                                                                                <i class="bi bi-check-square me-2"></i> {{ assessment.name | safe }}
+                                                                                <span>{{ assessment.weight }}%</span>
+                                                                            </a>
+                                                                        </li>
+                                                                    {% empty %}
+                                                                        <li class="nav-item">
+                                                                            <a class="nav-link text-white" href="#">
+                                                                                <i class="bi bi-info-circle me-2"></i> No assessments available
+                                                                            </a>
+                                                                        </li>
+                                                                    {% endfor %}
+                                                                </ul>
+                                                            </li>
+                                                        {% else %}
+                                                            <li class="nav-item">
+                                                                <a class="nav-link text-white collapsed" data-bs-toggle="collapse" href="#subsection-{{ obj.id }}" aria-expanded="false">
+                                                                    <i class="bi bi-folder me-2"></i> {{ obj.title }}
+                                                                </a>
+                                                                <ul class="collapse nav flex-column ms-3" id="subsection-{{ obj.id }}">
+                                                                    {% for subobj in obj.children.all %}
+                                                                        <li class="nav-item">
+                                                                            <a class="nav-link text-white" href="?section_id={{ subobj.id }}">
+                                                                                <i class="bi bi-play-circle me-2"></i> {{ subobj.title }}
+                                                                            </a>
+                                                                        </li>
+                                                                    {% endfor %}
+                                                                </ul>
+                                                            </li>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    {% for material in i.materials.all %}
+                                                        <li class="nav-item">
+                                                            <a class="nav-link text-white" href="?material_id={{ material.id }}">
+                                                                <i class="bi bi-file-earmark-text me-2"></i> {{ material.title }}
+                                                                <span>{{ material.duration }}</span>
+                                                            </a>
+                                                        </li>
+                                                    {% endfor %}
+                                                    {% for assessment in i.assessments.all %}
+                                                        <li class="nav-item">
+                                                            <a class="nav-link text-white" href="?assessment_id={{ assessment.id }}">
+                                                                <i class="bi bi-check-square me-2"></i> {{ assessment.name | safe }}
+                                                                <span>{{ assessment.weight }}%</span>
+                                                            </a>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </li>
                     {% endif %}
                 </ul>
+
+                <!-- Progress Section for Learner -->
+                {% if not user.is_partner and not user.is_instructor and not user.is_superuser %}
+                    <div class="p-3 border-top border-secondary">
+                        <p class="text-center text-white mb-2">Progress: {{ course_progress |floatformat:0 }}%</p>
+                        <div class="progress mb-3">
+                            <div class="progress-bar bg-success" 
+                                 role="progressbar" 
+                                 style="width: {{ course_progress|default:0 }}%" 
+                                 aria-valuenow="{{ course_progress|default:0 }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                            </div>
+                        </div>
+
+                        <div class="js-container position-relative">
+                            <p class="text-center text-white">
+                                {% if course_progress == 100 and status == 'Fail' %}
+                                    <div class="text-center mb-4">
+                                        <span class="text-danger fw-bold">Unfortunately, you did not pass the course, {{ request.user.username }}!</span>
+                                        <p class="text-white">Passing Threshold: <span class="fw-bold">{{ passing_threshold }}</span></p>
+                                        <p class="text-white">Your Score: <span class="fw-bold">{{ total_score | floatformat:2 }}</span>
+                                        <br>Maybe your final score is greater than the threshold, but you must pass all assessments</p>
+                                    </div>
+                                {% elif status == 'Pass' %}
+                                    <div class="text-center mb-4">
+                                        <span class="text-success fw-bold">Congratulations 🎈 {{ request.user.username }}! 🎉</span>
+                                        <p class="text-white">Threshold: <span class="fw-bold">{{ passing_threshold }}</span>
+                                        Score: <span class="fw-bold">{{ total_score | floatformat:2 }}</span></p>
+                                        <a href="{% url 'courses:generate_certificate' course.id %}" class="btn btn-success btn-sm">
+                                            <i class="bi bi-patch-check"></i> certificate
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </p>
+                        </div>
+
+                        <hr class="border-secondary">
+
+                        <div class="container px-0">
+                            <div class="table-responsive">
+                                <table class="table table-dark table-hover table-bordered table-sm">
+                                    <thead>
+                                        <tr class="text-center">
+                                            <th scope="col" class="py-1">Assessment</th>
+                                            <th scope="col" class="py-1">Grade</th>
+                                            <th scope="col" class="py-1">Score</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for result in assessment_results %}
+                                            <tr>
+                                                <td class="py-1">{{ result.name }}</td>
+                                                <td class="py-1 text-center">{{ result.max_score }}</td>
+                                                <td class="py-1 text-center">{{ result.score | floatformat:2 }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <style>
+                            .table-sm {
+                                font-size: 0.85rem;
+                            }
+                            .table-dark th,
+                            .table-dark td {
+                                border-color: #495057;
+                            }
+                            .table-dark.table-hover tbody tr:hover {
+                                background-color: #40474e;
+                            }
+                        </style>
+                    </div>
+
+                    <!-- Confetti Script -->
+                    <script>
+                        const status = "{{ status }}";
+                        if (status === 'Pass') {
+                            const Confettiful = function(el) {
+                                this.el = el;
+                                this.containerEl = null;
+                                this.confettiFrequency = 3;
+                                this.confettiColors = ['#EF2964', '#00C09D', '#2D87B0', '#48485E', '#EFFF1D'];
+                                this.confettiAnimations = ['slow', 'medium', 'fast'];
+                                this._setupElements();
+                                this._renderConfetti();
+                            };
+                            Confettiful.prototype._setupElements = function() {
+                                const containerEl = document.createElement('div');
+                                containerEl.classList.add('confetti-container');
+                                if (this.el.style.position !== 'relative' && this.el.style.position !== 'absolute') {
+                                    this.el.style.position = 'relative';
+                                }
+                                this.el.appendChild(containerEl);
+                                this.containerEl = containerEl;
+                            };
+                            Confettiful.prototype._renderConfetti = function() {
+                                this.confettiInterval = setInterval(() => {
+                                    const confettiEl = document.createElement('div');
+                                    const confettiSize = (Math.floor(Math.random() * 3) + 7) + 'px';
+                                    const confettiBackground = this.confettiColors[Math.floor(Math.random() * this.confettiColors.length)];
+                                    const confettiLeft = (Math.floor(Math.random() * this.el.offsetWidth)) + 'px';
+                                    const confettiAnimation = this.confettiAnimations[Math.floor(Math.random() * this.confettiAnimations.length)];
+                                    confettiEl.classList.add('confetti', 'confetti--animation-' + confettiAnimation);
+                                    confettiEl.style.left = confettiLeft;
+                                    confettiEl.style.width = confettiSize;
+                                    confettiEl.style.height = confettiSize;
+                                    confettiEl.style.backgroundColor = confettiBackground;
+                                    setTimeout(() => {
+                                        confettiEl.remove();
+                                    }, 1000);
+                                    this.containerEl.appendChild(confettiEl);
+                                }, 25);
+                                setTimeout(() => {
+                                    clearInterval(this.confettiInterval);
+                                }, 1000);
+                            };
+                            window.confettiful = new Confettiful(document.querySelector('.js-container'));
+                        }
+                    </script>
+                    <style>
+                        .confetti-container {
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            pointer-events: none;
+                        }
+                        .confetti {
+                            position: absolute;
+                            border-radius: 50%;
+                            opacity: 0.8;
+                        }
+                        .confetti--animation-slow { animation: fall 3s linear forwards; }
+                        .confetti--animation-medium { animation: fall 2s linear forwards; }
+                        .confetti--animation-fast { animation: fall 1s linear forwards; }
+                        @keyframes fall {
+                            to {
+                                transform: translateY(100vh);
+                                opacity: 0;
+                            }
+                        }
+                    </style>
+                {% endif %}
             {% endif %}
         </div>
 
@@ -253,9 +498,7 @@
         {% endblock %}
     </div>
 
-  
     <script>
-        // Ensure sidebar is visible on desktop by default
         document.addEventListener('DOMContentLoaded', function() {
             if (window.innerWidth >= 992) {
                 document.getElementById('sidebarMenu').classList.add('show');
