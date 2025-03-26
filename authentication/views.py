@@ -664,52 +664,48 @@ def edit_profile_save(request, pk):
 
 @ratelimit(key='ip', rate='100/h')
 def popular_courses(request):
+    cache_key = 'popular_courses'
+    courses_list = cache.get(cache_key)
     
-    # Get the current date
-    now = timezone.now().date()
+    if not courses_list:
+        now = timezone.now().date()
+        try:
+            published_status = CourseStatus.objects.get(status='published')
+        except CourseStatus.DoesNotExist:
+            return JsonResponse({'error': 'Published status not found.'}, status=404)
 
-    # Get the 'published' CourseStatus ID
-    try:
-        published_status = CourseStatus.objects.get(status='published')
-    except CourseStatus.DoesNotExist:
-        return JsonResponse({'error': 'Published status not found.'}, status=404)
+        courses = Course.objects.filter(
+            status_course=published_status,
+            end_date__gte=now
+        ).annotate(
+            num_enrollments=Count('enrollments')
+        ).order_by('-num_enrollments')[:6]
 
-    # Get popular courses filtered by the 'published' CourseStatus ID
-    courses = Course.objects.filter(
-        status_course=published_status,  # Use the 'published' CourseStatus object, not the string
-        end_date__gte=now
-    ).annotate(
-        num_enrollments=Count('enrollments')
-    ).order_by('-num_enrollments')[:6]
+        if not courses.exists():
+            return JsonResponse({'error': 'No popular courses found.'}, status=404)
 
-    # Check if there are no courses
-    if not courses.exists():
-        return JsonResponse({'error': 'No popular courses found.'}, status=404)
+        courses_list = list(courses.values(
+            'id', 'course_name', 'slug', 'image', 'num_enrollments',
+            'instructor__user__first_name',
+            'instructor__user__last_name',
+            'instructor__user__photo',
+            'instructor__user__username',
+            'org_partner__name__name',
+            'org_partner__name__slug',
+            'org_partner__logo',
+        ))
 
-    # Convert queryset to list of dictionaries
-    courses_list = list(courses.values(
-        'id', 'course_name', 'slug', 'image','num_enrollments',
-        'instructor__user__first_name',
-        'instructor__user__last_name', 
-        'instructor__user__photo',
-        'instructor__user__username',
-        'org_partner__name__name',
-        'org_partner__name__slug',
-        'org_partner__logo',
-    ))
-
-    # Update image URLs to be full URLs
-    for course in courses_list:
-        if course['image']:
-            course['image'] = settings.MEDIA_URL + course['image']
-        if course['instructor__user__photo']:
-            course['instructor__user__photo'] = settings.MEDIA_URL + course['instructor__user__photo']
-        if course['org_partner__logo']:
-            course['org_partner__logo'] = settings.MEDIA_URL + course['org_partner__logo']
+        for course in courses_list:
+            if course['image']:
+                course['image'] = settings.MEDIA_URL + course['image']
+            if course['instructor__user__photo']:
+                course['instructor__user__photo'] = settings.MEDIA_URL + course['instructor__user__photo']
+            if course['org_partner__logo']:
+                course['org_partner__logo'] = settings.MEDIA_URL + course['org_partner__logo']
+        
+        cache.set(cache_key, courses_list, timeout=3600)  # Cache selama 1 jam
     
-    # Return JSON response
     return JsonResponse({'courses': courses_list})
-
 # Home page
 def home(request):
    
