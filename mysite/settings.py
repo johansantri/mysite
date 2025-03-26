@@ -215,6 +215,18 @@ CKEDITOR_5_CONFIGS = {
             "numberedList",
             "blockQuote",
         ],
+        "link": {
+            "defaultProtocol": "https://",  # Menggunakan https:// sebagai default
+            "allowedProtocols": ["https"],  # Hanya mengizinkan http:// dan https://
+            "allowedDomains": [
+                "youtube.com",
+                "facebook.com",
+                "x.com",
+                "icei.ac.id",
+                "tiktok.com"
+            ],
+            "checkCurrentDocument": False,  # Tidak memeriksa URL dokumen saat ini
+        }
         
     },
    
@@ -365,7 +377,7 @@ CKEDITOR_5_CONFIGS = {
             "allowedDomains": [
                 "youtube.com",
                 "facebook.com",
-                "x.com.com",
+                "x.com",
                 "icei.ac.id",
                 "tiktok.com"
             ],
