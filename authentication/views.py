@@ -22,7 +22,7 @@ from django.urls import reverse
 from django.core.mail import send_mail
 from authentication.forms import  Userprofile, UserPhoto
 from .models import Profile
-from courses.models import Instructor,Partner,Assessment,GradeRange,Submission,AssessmentScore,QuestionAnswer,CourseStatus,Enrollment,MicroCredential, MicroCredentialEnrollment,Course, Enrollment, Category,CourseProgress
+from courses.models import Instructor,Partner,Assessment,GradeRange,AssessmentRead,Material, MaterialRead, Submission,AssessmentScore,QuestionAnswer,CourseStatus,Enrollment,MicroCredential, MicroCredentialEnrollment,Course, Enrollment, Category,CourseProgress
 from django.http import HttpResponse,JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseForbidden
@@ -488,50 +488,83 @@ def dasbord(request):
 @ratelimit(key='ip', rate='100/h')
 #dashboard for student
 def dashbord(request):
-    # Initialize variables
-    if request.user.is_authenticated:
-        enrollments = None
-        search_query = request.GET.get('search', '')  # Get search query from the request
-        enrollments_page = request.GET.get('enrollments_page', 1)  # Page number for enrollments
-        
-        # Fetch enrollments for the currently logged-in user and order by enrolled_at
-        enrollments = Enrollment.objects.filter(user=request.user).order_by('-enrolled_at')  # Order by enrolled_at field
+      # Initialize variables
+    search_query = request.GET.get('search', '')
+    enrollments_page = request.GET.get('enrollments_page', 1)
 
-        # Search logic for enrollments (by username or course name)
-        if search_query:
-            enrollments = enrollments.filter(
-                user__username__icontains=search_query
-            ) | enrollments.filter(
-                course__course_name__icontains=search_query
-            )  # Search by user username or course name
-        
-        # Count of total enrollments
-        total_enrollments = enrollments.count()
+    # Fetch enrollments for the currently logged-in user and order by enrolled_at
+    enrollments = Enrollment.objects.filter(user=request.user).order_by('-enrolled_at')
 
-        # Fetch active courses that the user is enrolled in with "published" status
-        active_courses = Course.objects.filter(
-            id__in=enrollments.values('course'),
-            status_course__status='published',
-            start_enrol__lte=timezone.now(),  # Enrolment start date is in the past
-            end_enrol__gte=timezone.now()     # Enrolment end date is in the future
+    # Search logic for enrollments (by username or course name)
+    if search_query:
+        enrollments = enrollments.filter(
+            user__username__icontains=search_query
+        ) | enrollments.filter(
+            course__course_name__icontains=search_query
         )
 
-        # Completed Courses (assuming the course has a boolean 'is_completed' field)
-        completed_courses = CourseProgress.objects.filter(user=request.user, progress_percentage=100)
+    # Count of total enrollments
+    total_enrollments = enrollments.count()
 
-        # Pagination for enrollments
-        enrollments_paginator = Paginator(enrollments, 5)  # Show 5 enrollments per page
-        enrollments = enrollments_paginator.get_page(enrollments_page)
+    # Fetch active courses that the user is enrolled in with "published" status
+    active_courses = Course.objects.filter(
+        id__in=enrollments.values('course'),
+        status_course__status='published',
+        start_enrol__lte=timezone.now(),
+        end_enrol__gte=timezone.now()
+    )
 
-        # Render the dashboard with the appropriate data
-        return render(request, 'learner/dashbord.html', {
-            'enrollments': enrollments,
-            'search_query': search_query,  # Pass the search query to the template
-            'enrollments_page': enrollments_page,
-            'total_enrollments': total_enrollments,  # Total enrollments count
-            'active_courses': active_courses,
-            'completed_courses':completed_courses
+    # Completed Courses (berdasarkan CourseProgress)
+    completed_courses = CourseProgress.objects.filter(user=request.user, progress_percentage=100)
+
+    # Prepare data for each enrollment with progress and certificate status
+    enrollments_data = []
+    for enrollment in enrollments:
+        course = enrollment.course
+
+        # Hitung progres (contoh sederhana: rata-rata progres materi dan penilaian)
+        materials = Material.objects.filter(section__courses=course)
+        total_materials = materials.count()
+        materials_read = MaterialRead.objects.filter(user=request.user, material__in=materials).count()
+        materials_read_percentage = (materials_read / total_materials * 100) if total_materials > 0 else 0
+
+        assessments = Assessment.objects.filter(section__courses=course)
+        total_assessments = assessments.count()
+        assessments_completed = AssessmentRead.objects.filter(user=request.user, assessment__in=assessments).count()
+        assessments_completed_percentage = (assessments_completed / total_assessments * 100) if total_assessments > 0 else 0
+
+        # Progres keseluruhan (misalnya, rata-rata materi dan penilaian)
+        progress = (materials_read_percentage + assessments_completed_percentage) / 2 if (total_materials + total_assessments) > 0 else 0
+
+        # Update progres di CourseProgress (opsional, jika ingin disimpan)
+        course_progress, created = CourseProgress.objects.get_or_create(user=request.user, course=course)
+        course_progress.progress_percentage = progress
+        course_progress.save()
+
+        # Status sertifikat
+        certificate_eligible = progress >= 100 and not hasattr(enrollment, 'certificate_issued') or not enrollment.certificate_issued
+        certificate_issued = hasattr(enrollment, 'certificate_issued') and enrollment.certificate_issued
+
+        enrollments_data.append({
+            'enrollment': enrollment,
+            'progress': progress,
+            'certificate_issued': certificate_issued,
+            'certificate_eligible': certificate_eligible,
         })
+
+    # Pagination for enrollments
+    enrollments_paginator = Paginator(enrollments_data, 5)  # Show 5 enrollments per page
+    enrollments_page_obj = enrollments_paginator.get_page(enrollments_page)
+
+    # Render the dashboard with the appropriate data
+    return render(request, 'learner/dashbord.html', {
+        'enrollments': enrollments_page_obj,
+        'search_query': search_query,
+        'enrollments_page': enrollments_page,
+        'total_enrollments': total_enrollments,
+        'active_courses': active_courses,
+        'completed_courses': completed_courses,
+    })
     return redirect("/login/?next=%s" % request.path)
 
 @login_required

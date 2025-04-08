@@ -3,7 +3,15 @@
 
 {% block content %}
 
-
+  <!-- Search Form -->
+        <form method="GET" action="{% url 'authentication:dashbord' %}" class="mb-4">
+            <div class="input-group">
+                <input type="text" name="search" class="form-control" placeholder="Cari berdasarkan username atau nama kursus" value="{{ search_query }}">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Cari
+                </button>
+            </div>
+        </form>
        
 
         <!-- Student Dashboard -->
@@ -42,25 +50,30 @@
             </div>
 
             {% if enrollments %}
-            <div class="row g-4">
-                {% for enrollment in enrollments %}
+                <!-- templates/learner/dashbord.html -->
+                {% for data in enrollments %}
                 <div class="col-xxl-4 col-md-6">
                     <div class="card h-100 shadow-sm">
-                        
                         <div class="card-body">
                             <h5 class="card-title">
-                                <a href="{% url 'courses:course_learn' enrollment.user.username enrollment.course.slug %}" class="text-decoration-none text-dark">
-                                    {{ enrollment.course.course_name }}
+                                <a href="{% url 'courses:course_learn' data.enrollment.user.username data.enrollment.course.slug %}" class="text-decoration-none text-dark">
+                                    {{ data.enrollment.course.course_name }}
                                 </a>
                             </h5>
-                            <p class="text-muted">Instructor: {{ enrollment.course.instructor.user.username }}</p>
+                            <p class="text-muted">Instructor: {{ data.enrollment.course.instructor.user.username }}</p>
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="badge bg-primary">{{ enrollment.user.username }}+ Lessons</span>
-                                <span class="text-muted">70hr 30min</span>
+                                {% if data.certificate_issued %}
+                                    <span class="badge bg-success">Certificate Issued</span>
+                                {% elif data.certificate_eligible %}
+                                    <a href="{% url 'courses:generate_certificate'  data.enrollment.course.id %}" class="badge bg-success text-white text-decoration-none">Claim Certificate</a>
+                                {% else %}
+                                    <span class="badge bg-secondary">Not Completed</span>
+                                {% endif %}
+                                <span class="badge bg-primary">Progress: {{ data.progress|floatformat:0 }}%</span>
                             </div>
                         </div>
                         <div class="card-footer bg-white d-flex justify-content-between align-items-center">
-                            <span class="fw-bold text-danger">{{ course.price }}</span>
+                            <span class="fw-bold text-danger">{{ data.enrollment.course.price }}</span>
                             <div class="text-warning">
                                 <i class="fas fa-star filled"></i>
                                 <i class="fas fa-star filled"></i>
@@ -73,42 +86,29 @@
                     </div>
                 </div>
                 {% endfor %}
-            </div>
 
-            <!-- Pagination -->
-            <nav class="mt-4">
-                <ul class="pagination justify-content-center">
-                    {% if enrollments.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?enrollments_page={{ enrollments.previous_page_number }}&search={{ search_query }}">
-                            <i class="bx bx-chevron-left"></i>
-                        </a>
-                    </li>
-                    {% else %}
-                    <li class="page-item disabled">
-                        <span class="page-link"><i class="bx bx-chevron-left"></i></span>
-                    </li>
-                    {% endif %}
-
-                    {% for page_num in enrollments.paginator.page_range %}
-                    <li class="page-item {% if enrollments.number == page_num %}active{% endif %}">
-                        <a class="page-link" href="?enrollments_page={{ page_num }}&search={{ search_query }}">{{ page_num }}</a>
-                    </li>
-                    {% endfor %}
-
-                    {% if enrollments.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?enrollments_page={{ enrollments.next_page_number }}&search={{ search_query }}">
-                            <i class="bx bx-chevron-right"></i>
-                        </a>
-                    </li>
-                    {% else %}
-                    <li class="page-item disabled">
-                        <span class="page-link"><i class="bx bx-chevron-right"></i></span>
-                    </li>
-                    {% endif %}
-                </ul>
-            </nav>
+                <!-- Pagination -->
+                {% if enrollments.has_other_pages %}
+                <nav aria-label="Enrollments pagination">
+                    <ul class="pagination justify-content-center mt-3">
+                        {% if enrollments.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?enrollments_page={{ enrollments.previous_page_number }}&search={{ search_query }}">Previous</a>
+                            </li>
+                        {% endif %}
+                        {% for num in enrollments.paginator.page_range %}
+                            <li class="page-item {% if enrollments.number == num %}active{% endif %}">
+                                <a class="page-link" href="?enrollments_page={{ num }}&search={{ search_query }}">{{ num }}</a>
+                            </li>
+                        {% endfor %}
+                        {% if enrollments.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?enrollments_page={{ enrollments.next_page_number }}&search={{ search_query }}">Next</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
             {% else %}
             <p class="text-center mt-3">No enrollments found.</p>
             {% endif %}
