@@ -139,28 +139,28 @@
                         {% if request.user.is_learner %}
                             <li class="nav-item w-100">
                                 <a class="btn btn-outline-info w-100" href="{% url 'authentication:dashbord' %}">
-                                    <i class="fa fa-tachometer" aria-hidden="true"></i> Learner Dashboard
+                                    <i class="fa fa-tachometer" aria-hidden="true"></i> {{request.user.username}} Dashboard
                                 </a>
                             </li>
                         <!-- Jika pengguna adalah instructor -->
                         {% elif request.user.is_instructor %}
                             <li class="nav-item w-100">
                                 <a class="btn btn-outline-info w-100" href="{% url 'authentication:dasbord' %}">
-                                    <i class="fa fa-tachometer" aria-hidden="true"></i> Instructor Dashboard
+                                    <i class="fa fa-tachometer" aria-hidden="true"></i> {{request.user.username}} Dashboard
                                 </a>
                             </li>
                         <!-- Jika pengguna adalah partner -->
                         {% elif request.user.is_partner %}
                             <li class="nav-item w-100">
                                 <a class="btn btn-outline-info w-100" href="{% url 'authentication:dasbord' %}">
-                                    <i class="fa fa-tachometer" aria-hidden="true"></i> Partner Dashboard
+                                    <i class="fa fa-tachometer" aria-hidden="true"></i> {{request.user.username}} Dashboard
                                 </a>
                             </li>
                         <!-- Jika pengguna adalah superuser -->
                         {% elif request.user.is_superuser %}
                             <li class="nav-item w-100">
                                 <a class="btn btn-outline-info w-100" href="{% url 'authentication:dasbord' %}">
-                                    <i class="fa fa-tachometer" aria-hidden="true"></i> Admin Dashboard
+                                    <i class="fa fa-tachometer" aria-hidden="true"></i> {{request.user.username}} Dashboard
                                 </a>
                             </li>
                         <!-- Jika pengguna adalah member biasa -->
