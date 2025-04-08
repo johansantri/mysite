@@ -6,7 +6,7 @@
   <!-- Search Form -->
         <form method="GET" action="{% url 'authentication:dashbord' %}" class="mb-4">
             <div class="input-group">
-                <input type="text" name="search" class="form-control" placeholder="Cari berdasarkan username atau nama kursus" value="{{ search_query }}">
+                <input type="text" name="search" class="form-control" placeholder="Search by course name" value="{{ search_query }}">
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-search"></i> Cari
                 </button>
@@ -112,7 +112,10 @@
             {% else %}
             <p class="text-center mt-3">No enrollments found.</p>
             {% endif %}
-            
+           <div class="d-flex justify-content-center align-items-center">
+                <a href="{% url 'authentication:course_list' %}" class="btn btn-info">Explore Course</a>
+            </div>
+
         
         <!-- /Student Dashboard -->
  

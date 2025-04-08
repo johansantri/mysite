@@ -133,19 +133,58 @@
                 </form>
 
                 <!-- Menu navigasi login atau dashboard (responsive) -->
-                <ul class="navbar-nav w-100 w-lg-auto">
+               <ul class="navbar-nav w-100 w-lg-auto">
                     {% if request.user.is_authenticated %}
-                        <li class="nav-item w-100">
-                            <a class="btn btn-outline-info w-100" href="{% url 'authentication:dasbord'%}">
-                                <i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard
-                            </a>
-                        </li>
+                        <!-- Jika pengguna adalah member -->
+                        {% if request.user.is_learner %}
+                            <li class="nav-item w-100">
+                                <a class="btn btn-outline-info w-100" href="{% url 'authentication:dashbord' %}">
+                                    <i class="fa fa-tachometer" aria-hidden="true"></i> Learner Dashboard
+                                </a>
+                            </li>
+                        <!-- Jika pengguna adalah instructor -->
+                        {% elif request.user.is_instructor %}
+                            <li class="nav-item w-100">
+                                <a class="btn btn-outline-info w-100" href="{% url 'authentication:dasbord' %}">
+                                    <i class="fa fa-tachometer" aria-hidden="true"></i> Instructor Dashboard
+                                </a>
+                            </li>
+                        <!-- Jika pengguna adalah partner -->
+                        {% elif request.user.is_partner %}
+                            <li class="nav-item w-100">
+                                <a class="btn btn-outline-info w-100" href="{% url 'authentication:dasbord' %}">
+                                    <i class="fa fa-tachometer" aria-hidden="true"></i> Partner Dashboard
+                                </a>
+                            </li>
+                        <!-- Jika pengguna adalah superuser -->
+                        {% elif request.user.is_superuser %}
+                            <li class="nav-item w-100">
+                                <a class="btn btn-outline-info w-100" href="{% url 'authentication:dasbord' %}">
+                                    <i class="fa fa-tachometer" aria-hidden="true"></i> Admin Dashboard
+                                </a>
+                            </li>
+                        <!-- Jika pengguna adalah member biasa -->
+                        {% elif request.user.is_member %}
+                            <li class="nav-item w-100">
+                                <a class="btn btn-outline-info w-100" href="#">
+                                    <i class="fa fa-tachometer" aria-hidden="true"></i> Member Dashboard
+                                </a>
+                            </li>
+                        {% else %}
+                            <!-- Default jika status lain -->
+                            <li class="nav-item w-100">
+                                <a class="btn btn-outline-info w-100" href="{% url 'authentication:default_dashboard' %}">
+                                    <i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard
+                                </a>
+                            </li>
+                        {% endif %}
                     {% else %}
                         <li class="nav-item w-100">
                             <a class="btn btn-outline-info w-100" href="{% url 'authentication:login' %}">Login</a>
                         </li>
                     {% endif %}
                 </ul>
+
             </div>
         </div>
     </div>
