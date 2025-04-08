@@ -129,8 +129,28 @@
                                 {% if not user.university %}
                                 <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
                                 {% else %}
-                                    <p class="mb-1 text-primary">{{ user.university }}</p>
-                                    <a href="{% url 'courses:instructor_add' %}" class="btn btn-primary btn-sm">Become an instructor</a>
+                                   
+                                     <span class="badge bg-warning text-dark"> 
+                                    {% if request.user.is_superuser %}
+                                        Superuser
+                                    {% elif request.user.is_partner %}
+                                        Partner
+                                    {% elif request.user.is_instructor %}
+                                        Instructor
+                                    {% elif request.user.is_member %}
+                                        Member
+                                    {% elif request.user.is_subscription %}
+                                        Subscription
+                                    {% elif request.user.is_audit %}
+                                        Audit
+                                    {% elif request.user.is_learner %}
+                                       
+                                        <a href="{% url 'courses:instructor_add' %}" class="btn btn-warning btn-sm">Become an instructor</a>
+                                    {% else %}
+                                        <a href="{% url 'courses:instructor_add' %}" class="btn btn-warning btn-sm">Become an instructor</a>
+                                    {% endif %}
+                                    
+                                  </span>
                                 {% endif %}
                             </div>
                         </div>
@@ -139,6 +159,47 @@
 
                 <ul class="nav flex-column">
                     {% if user.is_partner %}
+                           <div class="p-3 border-bottom border-secondary">
+                        <div class="d-flex align-items-center mb-3">
+                            <a href="{% url 'authentication:edit-photo' request.user.id %}">
+                                {% if request.user.photo %}
+                                    <img src="{{ request.user.photo.url }}" alt="User Avatar" class="rounded-circle me-3" style="width: 50px; height: 50px;">
+                                {% else %}
+                                    <img src="{% static 'assets/img/user/user1.jpg' %}" alt="User Image" class="rounded-circle me-3" style="width: 50px; height: 50px;">
+                                {% endif %}
+                            </a>
+                            <div>
+                                <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
+                                <p class="mb-1 text-muted">{{ request.user.hobby }}</p>
+                                {% if not user.university %}
+                                <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
+                                {% else %}
+                                    
+                                     <span class="badge bg-warning text-dark"> 
+                                    {% if request.user.is_superuser %}
+                                        Superuser
+                                    {% elif request.user.is_partner %}
+                                        Partner
+                                    {% elif request.user.is_instructor %}
+                                        Instructor
+                                    {% elif request.user.is_member %}
+                                        Member
+                                    {% elif request.user.is_subscription %}
+                                        Subscription
+                                    {% elif request.user.is_audit %}
+                                        Audit
+                                    {% elif request.user.is_learner %}
+                                        Learner
+                                    {% else %}
+                                        <a href="{% url 'courses:instructor_add' %}" class="btn btn-warning btn-sm">Become an instructor</a>
+                                    {% endif %}
+                                    
+                                  </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
                         <li class="nav-item">
                             <a class="nav-link active" href="{% url 'authentication:dasbord' %}">
                                 <i class="bi bi-speedometer me-2"></i> Dashboard
@@ -169,6 +230,47 @@
                             </a>
                         </li>
                     {% elif user.is_instructor %}
+                               <div class="p-3 border-bottom border-secondary">
+                        <div class="d-flex align-items-center mb-3">
+                            <a href="{% url 'authentication:edit-photo' request.user.id %}">
+                                {% if request.user.photo %}
+                                    <img src="{{ request.user.photo.url }}" alt="User Avatar" class="rounded-circle me-3" style="width: 50px; height: 50px;">
+                                {% else %}
+                                    <img src="{% static 'assets/img/user/user1.jpg' %}" alt="User Image" class="rounded-circle me-3" style="width: 50px; height: 50px;">
+                                {% endif %}
+                            </a>
+                            <div>
+                                <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
+                                <p class="mb-1 text-muted">{{ request.user.hobby }}</p>
+                                {% if not user.university %}
+                                <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
+                                {% else %}
+                                    
+                                     <span class="badge bg-warning text-dark"> 
+                                    {% if request.user.is_superuser %}
+                                        Superuser
+                                    {% elif request.user.is_partner %}
+                                        Partner
+                                    {% elif request.user.is_instructor %}
+                                        Instructor
+                                    {% elif request.user.is_member %}
+                                        Member
+                                    {% elif request.user.is_subscription %}
+                                        Subscription
+                                    {% elif request.user.is_audit %}
+                                        Audit
+                                    {% elif request.user.is_learner %}
+                                        Learner
+                                    {% else %}
+                                        <a href="{% url 'courses:instructor_add' %}" class="btn btn-warning btn-sm">Become an instructor</a>
+                                    {% endif %}
+                                    
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
                         <li class="nav-item">
                             <a class="nav-link active" href="{% url 'authentication:dasbord' %}">
                                 <i class="bi bi-speedometer me-2"></i> Dashboard
@@ -184,6 +286,49 @@
                             </ul>
                         </li>
                     {% elif user.is_superuser %}
+
+                               <div class="p-3 border-bottom border-secondary">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <a href="{% url 'authentication:edit-photo' request.user.id %}">
+                                            {% if request.user.photo %}
+                                                <img src="{{ request.user.photo.url }}" alt="User Avatar" class="rounded-circle me-3" style="width: 50px; height: 50px;">
+                                            {% else %}
+                                                <img src="{% static 'assets/img/user/user1.jpg' %}" alt="User Image" class="rounded-circle me-3" style="width: 50px; height: 50px;">
+                                            {% endif %}
+                                        </a>
+                                    <div>
+                                <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
+                                <p class="mb-1 text-muted">{{ request.user.hobby }}</p>
+                                {% if not user.university %}
+                                <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
+                                {% else %}
+                                      <span class="badge bg-warning text-dark"> 
+                                    {% if request.user.is_superuser %}
+                                        Superuser
+                                    {% elif request.user.is_partner %}
+                                        Partner
+                                    {% elif request.user.is_instructor %}
+                                        Instructor
+                                    {% elif request.user.is_member %}
+                                        Member
+                                    {% elif request.user.is_subscription %}
+                                        Subscription
+                                    {% elif request.user.is_audit %}
+                                        Audit
+                                    {% elif request.user.is_learner %}
+                                        Learner
+                                    {% else %}
+                                        <a href="{% url 'courses:instructor_add' %}" class="btn btn-warning btn-sm">Become an instructor</a>
+                                    {% endif %}
+                                    
+                                  </span>
+                                    
+                                    
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
                         <li class="nav-item">
                             <a class="nav-link active" href="{% url 'authentication:dasbord' %}">
                                 <i class="bi bi-speedometer me-2"></i> Dashboard
