@@ -3,9 +3,127 @@
 
 {% block content %}
 <style>
-    .tweet-card-post { position: sticky; top: 0; z-index: 100; }
-    .main-content { max-height: 100vh; overflow-y: auto; }
-    .alert-messages { position: fixed; top: 10px; right: 10px; z-index: 200; }
+    /* Gaya Umum */
+    .main-content {
+        max-height: 100vh;
+        overflow-y: auto;
+        padding: 20px;
+        background-color: #f8f9fa;
+    }
+
+    .tweet-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        background-color: #ffffff;
+        margin-bottom: 20px;
+        transition: transform 0.2s ease;
+    }
+
+    .tweet-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .tweet-card-post {
+        position: sticky;
+        top: 20px;
+        z-index: 100;
+        padding: 15px;
+    }
+
+    .form-control {
+        border-radius: 10px;
+        border: 1px solid #ced4da;
+        padding: 10px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+    }
+
+    .btn-primary {
+        border-radius: 25px;
+        padding: 8px 20px;
+        font-weight: 600;
+        background-color: #007bff;
+        border: none;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+    }
+
+    #charCount {
+        font-size: 0.9rem;
+        color: #6c757d;
+        text-align: right;
+        margin-top: 5px;
+    }
+
+    .alert-messages {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 200;
+    }
+
+    /* Sidebar Kanan */
+    .sidebar-right {
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        height: fit-content;
+        margin-top: 20px;
+    }
+
+    .sidebar-right h5 {
+        font-weight: 700;
+        color: #343a40;
+        margin-bottom: 15px;
+    }
+
+    .list-group-item {
+        border: none;
+        padding: 10px 15px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        margin-bottom: 8px;
+        transition: background-color 0.3s ease;
+    }
+
+    .list-group-item:hover {
+        background-color: #e9ecef;
+    }
+
+    .list-group-item a {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .list-group-item a:hover {
+        color: #0056b3;
+    }
+
+    /* Responsivitas */
+    @media (max-width: 767.98px) {
+        .tweet-card-post {
+            top: 10px;
+        }
+        .main-content {
+            padding: 10px;
+        }
+        .sidebar-right {
+            margin-top: 10px;
+            padding: 15px;
+        }
+    }
 </style>
 
 <div class="col-md-8 main-content">
@@ -16,7 +134,7 @@
         <div class="card-body">
             <form hx-post="{% url 'courses:create_post' %}" hx-target="#new-posts" hx-swap="prepend">
                 {% csrf_token %}
-                <textarea name="content" id="id_content" class="form-control" rows="3" placeholder="Apa yang Anda pikirkan?"></textarea>
+                <textarea name="content" id="id_content" class="form-control" rows="3" placeholder="What do you think?"></textarea>
                 <div id="charCount">0/150</div>
                 {{ form.captcha }}
                 <button type="submit" class="btn btn-primary mt-3">Tweet</button>
@@ -39,7 +157,7 @@
 </div>
 
 <div class="col-md-2 sidebar-right">
-    <h5>Pencarian</h5>
+    <h5>Searching</h5>
     <input type="text" 
            class="form-control mb-3" 
            placeholder="Cari di Twitter..." 
@@ -48,7 +166,7 @@
            hx-swap="innerHTML" 
            hx-trigger="keyup delay:500ms" 
            name="q">
-    <h5>Tren</h5>
+    <h5>Trend</h5>
     <ul class="list-group mb-3">
         {% for trend in trending %}
             <li class="list-group-item">
@@ -61,10 +179,9 @@
                 </a>
             </li>
         {% empty %}
-            <li class="list-group-item">Belum ada tren</li>
+            <li class="list-group-item">No trends available yet</li>
         {% endfor %}
     </ul>
-    
 </div>
 
 <script>
