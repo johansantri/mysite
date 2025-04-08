@@ -3,6 +3,7 @@ from courses.models import Partner
 from authentication.models import Universiti
 from courses.forms import PartnerFormUpdate
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 # Create your views here.
 @login_required
 def partner_update_view(request, partner_id, universiti_slug):
@@ -31,3 +32,18 @@ def partner_update_view(request, partner_id, universiti_slug):
         form = PartnerFormUpdate(instance=partner)
 
     return render(request, 'partner/partner_update.html', {'form': form, 'universiti': universiti})
+
+
+def explore(request):
+    # Ambil semua mitra dari database
+    partners_list = Partner.objects.all()
+    
+    # Tentukan jumlah mitra per halaman
+    paginator = Paginator(partners_list, 6)  # Tampilkan 6 mitra per halaman
+    
+    # Dapatkan halaman yang saat ini diminta
+    page_number = request.GET.get('page')  # Mendapatkan nomor halaman dari query parameter
+    page_obj = paginator.get_page(page_number)  # Dapatkan objek halaman sesuai nomor halaman
+    
+    # Render halaman dengan mitra yang ditemukan dan objek pagination
+    return render(request, 'partner/explore.html', {'page_obj': page_obj})

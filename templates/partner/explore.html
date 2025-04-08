@@ -1,0 +1,132 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- partners/templates/partners/explore.html -->
+<!-- partners/templates/partners/explore.html -->
+<div class="container mt-5 py-5">
+    <h2 class="text-center mb-5 fw-bold display-5 animate__animated animate__fadeIn">Eksplorasi Mitra</h2>
+    
+    <!-- Mitra Cards -->
+    <div class="row g-4">
+        {% for partner in page_obj %}
+        <div class="col-md-4 col-sm-6">
+            <div class="card h-100 shadow-lg border-0 rounded-3 overflow-hidden transition-hover">
+                <!-- Card Image -->
+                <div class="position-relative overflow-hidden bg-light" style="height: 200px;">
+                    <img src="{{ partner.logo.url }}" 
+                         class="card-img-top img-fluid transition-scale position-absolute top-50 start-50 translate-middle" 
+                         alt="{{ partner.name }} Logo" 
+                         style="max-height: 180px; max-width: 100%; object-fit: contain; transition: transform 0.3s ease;">
+                </div>
+                
+                <!-- Card Body -->
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <h5 class="card-title text-center fw-semibold my-3">{{ partner.name }}</h5>
+                    
+                    <!-- Lihat Detail Button -->
+                    <div class="text-center mb-3">
+                        <a href="{% url 'courses:org_partner' partner.name.slug %}" 
+                           class="btn btn-primary px-4 py-2 rounded-pill transition-btn">
+                            Lihat Detail
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="d-flex justify-content-center mt-5">
+        <nav aria-label="Pagination Mitra">
+            <ul class="pagination pagination-lg">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link rounded-circle mx-1" href="?page=1" aria-label="First">
+                            <span aria-hidden="true">««</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link rounded-circle mx-1" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                            <span aria-hidden="true">«</span>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link rounded-circle mx-1">««</span>
+                    </li>
+                    <li class="page-item disabled">
+                        <span class="page-link rounded-circle mx-1">«</span>
+                    </li>
+                {% endif %}
+                
+                <!-- Current Page Display -->
+                <li class="page-item disabled">
+                    <span class="page-link bg-primary text-white mx-1">
+                        {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+                    </span>
+                </li>
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link rounded-circle mx-1" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                            <span aria-hidden="true">»</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link rounded-circle mx-1" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                            <span aria-hidden="true">»»</span>
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link rounded-circle mx-1">»</span>
+                    </li>
+                    <li class="page-item disabled">
+                        <span class="page-link rounded-circle mx-1">»»</span>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<!-- Custom CSS -->
+<style>
+.transition-hover:hover {
+    transform: translateY(-5px);
+    transition: transform 0.3s ease;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+.transition-scale:hover {
+    transform: scale(1.05);
+}
+
+.transition-btn {
+    transition: all 0.3s ease;
+}
+
+.transition-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.page-link.rounded-circle {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+</style>
+
+<!-- Include Animate.css CDN for animations -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+{% endblock %}

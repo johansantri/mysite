@@ -120,15 +120,15 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link" href="{% url 'authentication:course_list' %}">Kursus</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Tentang</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'authentication:course_list' %}">Courses</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">About</a></li>
             </ul>
 
             <div class="d-flex align-items-center flex-column flex-lg-row mt-3 mt-lg-0">
                 <!-- Form pencarian (responsive) -->
                 <form class="d-flex me-lg-2 w-100 w-lg-75" role="search" action="{% url 'authentication:search' %}" method="get">
                     {% csrf_token %}
-                    <input class="form-control me-2" type="search" name="q" placeholder="Cari kursus..." aria-label="Search">
+                    <input class="form-control me-2" type="search" name="q" placeholder="Search..." aria-label="Search">
                     <button class="btn btn-outline-primary w-auto" type="submit"><i class="bi bi-search"></i></button>
                 </form>
 

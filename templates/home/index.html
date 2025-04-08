@@ -134,8 +134,9 @@
     <!-- Hero Section -->
     <section class="hero text-center">
         <div class="container">
-            <h1 class="display-4 fw-bold">Belajar Tanpa Batas</h1>
-            <p class="lead">Temukan kursus terbaik untuk meningkatkan skillmu kapan saja, di mana saja.</p>
+            <h1 class="display-4 fw-bold">Learn Without Limits</h1>
+            <p class="lead">Discover the best courses to enhance your skills anytime, anywhere.</p>
+
            
             {% if request.user.is_authenticated %}
             <!-- Jika pengguna sudah login -->
@@ -145,7 +146,7 @@
             {% else %}
                 <!-- Jika pengguna belum login -->
                 
-                    <a class="btn btn-light btn-lg mt-3" href="{% url 'authentication:register' %}">Daftar</a>
+                    <a class="btn btn-light btn-lg mt-3" href="{% url 'authentication:register' %}">Register</a>
               
             {% endif %}
         </div>
@@ -245,28 +246,28 @@
                 <div class="stats-card">
                     <i class="fas fa-book fa-2x text-primary mb-2"></i>
                     <h3 class="fw-bold text-primary">{{ total_courses }}+</h3>
-                    <p>Kursus</p>
+                    <p>Courses</p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="stats-card">
                     <i class="fas fa-users fa-2x text-primary mb-2"></i>
                     <h3 class="fw-bold text-primary">{{ total_users }}+</h3>
-                    <p>Pengguna</p>
+                    <p>User</p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="stats-card">
                     <i class="fas fa-chalkboard-teacher fa-2x text-primary mb-2"></i>
                     <h3 class="fw-bold text-primary">{{ total_instructors }}+</h3>
-                    <p>Instruktur</p>
+                    <p>Instructor</p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="stats-card">
                     <i class="fas fa-handshake fa-2x text-primary mb-2"></i>
                     <h3 class="fw-bold text-primary">{{ total_partners }}+</h3>
-                    <p>Mitra</p>
+                    <p>Partner</p>
                 </div>
             </div>
         </div>
@@ -275,7 +276,7 @@
 
     <section class="py-4 bg-light">
         <div class="container py-3">
-            <h2 class="text-left mb-4 fw-bold">Kategori Populer</h2>
+            <h2 class="text-left mb-4 fw-bold">Popular Categories</h2>
             <div class="row g-3">
                 {% for category in popular_categories %}
                     <div class="col-6 col-md-4 col-lg-3">
@@ -307,29 +308,31 @@
     <!-- Features Section -->
     <section class="py-5">
         <div class="container">
-            <h2 class="text-left mb-5">Kenapa Memilih Kami?</h2>
+            <h2 class="text-left mb-5">Why Choose Us?</h2>
             <div class="row g-4">
                 <div class="col-md-4">
                     <div class="card p-4 text-center shadow-sm">
                         <i class="bi bi-book fs-1 text-primary mb-3"></i>
-                        <h5>Kursus Berkualitas</h5>
-                        <p>Materi disusun oleh expert di bidangnya.</p>
+                        <h5>Quality Courses</h5>
+                        <p>The material is crafted by experts in the field.</p>
+
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="card p-4 text-center shadow-sm">
                         <i class="bi bi-clock fs-1 text-primary mb-3"></i>
-                        <h5>Fleksibel</h5>
-                        <p>Belajar sesuai waktu dan kecepatanmu.</p>
+                        <h5>Flexible</h5>
+                        <p>Learn at your own time and pace.</p>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="card p-4 text-center shadow-sm">
                         <i class="bi bi-award fs-1 text-primary mb-3"></i>
-                        <h5>Sertifikat</h5>
-                        <p>Dapatkan sertifikat setelah selesai.</p>
+                        <h5>Certificate</h5>
+                        <p>Earn a certificate upon completion.</p>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
@@ -337,7 +340,7 @@
     <!-- Popular Courses Section -->
     <section class="py-4 bg-light">
         <div class="container py-3">
-            <h2 class="text-left mb-4 fw-bold">Course Populer</h2>
+            <h2 class="text-left mb-4 fw-bold">Courses Populer</h2>
             <div class="row g-3" id="courses-list">
                 
                     
@@ -418,25 +421,25 @@
         </style>
 
     <!-- Partner Section (Carousel) -->
+   <!-- Partner Section (Carousel) -->
     <section class="py-5">
         <div class="container">
-            <h2 class="text-center mb-5">Mitra Kami</h2>
+            <h2 class="text-center mb-5">Our Partners</h2>
             <div id="partnerCarousel" class="carousel slide partner-carousel" data-bs-ride="carousel">
                 <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <div class="d-flex justify-content-center align-items-center">
-                            <img src="https://via.placeholder.com/150x50?text=Google" alt="Google">
-                            <img src="https://via.placeholder.com/150x50?text=Microsoft" alt="Microsoft">
-                            <img src="https://via.placeholder.com/150x50?text=Amazon" alt="Amazon">
+                    <!-- Loop melalui partners yang dikirimkan dari view -->
+                    {% for partner in partners %}
+                        <div class="carousel-item {% if forloop.first %} active {% endif %}">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <!-- Cek apakah ada gambar pada partner, jika ada tampilkan gambar -->
+                                {% if partner.logo %}
+                                    <img src="{{ partner.logo.url }}" alt="{{ partner.name }}" class="mx-2">
+                                {% else %}
+                                    <img src="https://via.placeholder.com/150x50?text={{ partner.name }}" alt="{{ partner.name }}" class="mx-2">
+                                {% endif %}
+                            </div>
                         </div>
-                    </div>
-                    <div class="carousel-item">
-                        <div class="d-flex justify-content-center align-items-center">
-                            <img src="https://via.placeholder.com/150x50?text=IBM" alt="IBM">
-                            <img src="https://via.placeholder.com/150x50?text=Adobe" alt="Adobe">
-                            <img src="https://via.placeholder.com/150x50?text=Cisco" alt="Cisco">
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
                 <button class="carousel-control-prev" type="button" data-bs-target="#partnerCarousel" data-bs-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -447,115 +450,135 @@
                     <span class="visually-hidden">Next</span>
                 </button>
             </div>
-            <div class="text-center mt-4">
-                <p class="text-muted">"Jadilah mitra kami dan wujudkan potensi bersama!"</p>
-                <a href="{% url 'authentication:register' %}" class="btn btn-outline-primary">Gabung Jadi Mitra</a>
+             <div class="text-center mt-4">
+                <p class="text-muted">"Become our partner and unlock potential together!"</p>
+                {% if user.is_authenticated %}
+                    <!-- Show the button if the user is logged in -->
+                    <a href="{% url 'partner:explore' %}" class="btn btn-outline-primary">Explore Partners</a>
+                {% else %}
+                    <!-- Show the button if the user is not logged in -->
+                    <a href="{% url 'authentication:register' %}" class="btn btn-outline-primary">Join as a Partner</a>
+                {% endif %}
             </div>
+
         </div>
     </section>
 
 	<!-- Micro Section -->
 		<section class="py-5 bg-light">
-			<div class="container">
-				<h2 class="text-center mb-5">Micro Courses</h2>
-				<div class="row g-4">
-					{% for microcredential in popular_microcredentials %}
-						<div class="col-md-6">
-							<div class="blog-card shadow-sm p-4 d-flex align-items-center rounded-3">
-								<div class="course-info">
-									<h5 class="fw-bold text-primary"><a href="{% url 'courses:micro_detail' microcredential.id microcredential.slug %}" class="text-decoration-none">{{ microcredential.title }}</a></h5>
-									<p class="text-muted">Cara belajar pemrograman tanpa stres.</p>
-									<a href="{% url 'courses:micro_detail' microcredential.id microcredential.slug %}" class="btn btn-primary mt-3">Baca Selengkapnya</a>
-								</div>
-							</div>
-						</div>
-					{% empty %}
-						<p class="text-center text-muted">No popular micro-credentials found.</p>
-					{% endfor %}
-				</div>
-			</div>
-		</section>
+            <div class="container">
+                <h2 class="text-center mb-5">Micro Courses</h2>
+                <div class="row g-4">
+                    {% for microcredential in popular_microcredentials %}
+                        <div class="col-md-6">
+                            <div class="blog-card shadow-sm p-4 d-flex align-items-center rounded-3">
+                                <div class="course-info">
+                                    <h5 class="fw-bold text-primary"><a href="{% url 'courses:micro_detail' microcredential.id microcredential.slug %}" class="text-decoration-none">{{ microcredential.title }}</a></h5>
+                                    <p class="text-muted">Learn programming stress-free.</p>
+                                    <a href="{% url 'courses:micro_detail' microcredential.id microcredential.slug %}" class="btn btn-primary mt-3">Read More</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p class="text-center text-muted">No popular micro-credentials found.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
 
 
     <!-- Blog Section -->
     <section class="py-5 bg-light">
         <div class="container">
-            <h2 class="text-left mb-5">Artikel Terbaru</h2>
+            <h2 class="text-left mb-5">Latest Articles</h2>
             <div class="row g-4">
                 <div class="col-md-6">
                     <div class="blog-card shadow-sm p-4 d-flex align-items-center">
                         <div>
-                            <h5 class="fw-bold">Tips Belajar Coding Efektif</h5>
-                            <p>Cara belajar pemrograman tanpa stres.</p>
-                            <a href="#" class="btn btn-link p-0">Baca Selengkapnya</a>
+                            <h5 class="fw-bold">Effective Coding Learning Tips</h5>
+                            <p>Learn programming stress-free.</p>
+                            <a href="#" class="btn btn-link p-0">Read More</a>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="blog-card shadow-sm p-4 d-flex align-items-center">
                         <div>
-                            <h5 class="fw-bold">Tren UI/UX 2025</h5>
-                            <p>Prediksi desain antarmuka tahun ini.</p>
-                            <a href="#" class="btn btn-link p-0">Baca Selengkapnya</a>
+                            <h5 class="fw-bold">UI/UX Trends 2025</h5>
+                            <p>This year's interface design predictions.</p>
+                            <a href="#" class="btn btn-link p-0">Read More</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
 
     <!-- Instructors Section -->
     <section class="py-5">
         <div class="container">
-            <h2 class="text-left mb-5">Instruktur Unggulan Kami</h2>
+            <h2 class="text-left mb-5">Our Featured Instructors</h2>
+            <p>Experts with years of experience in their fields, who not only possess recognized qualifications and certifications but also have a passion for teaching and a commitment to guiding every student toward success. With innovative teaching methods and a personalized approach, they create an inspiring and supportive learning environment.</p>
+
+            <!-- Menampilkan Instruktur -->
             <div class="row g-4 justify-content-center">
+                {% for instructor in instructors %}
                 <div class="col-md-4 instructor-item">
-                    <img src="https://via.placeholder.com/150?text=John" class="instructor-card mb-3" alt="John">
-                    <h5 class="fw-bold">John Doe</h5>
-                    <p>Expert Python & Data Science</p>
+                    <!-- Gunakan foto profil instruktur jika ada -->
+                    <a href="{% url 'courses:instructor_profile' username=instructor.user.username %}">
+                    <img src="{{ instructor.user.photo.url }}" class="instructor-card mb-3" alt="{{ instructor.user.first_name }}">
+                    <h5 class="fw-bold">{{ instructor.user.first_name }} {{ instructor.user.last_name }}</h5>
+                    </a>
                 </div>
-                <div class="col-md-4 instructor-item">
-                    <img src="https://via.placeholder.com/150?text=Jane" class="instructor-card mb-3" alt="Jane">
-                    <h5 class="fw-bold">Jane Smith</h5>
-                    <p>Desainer UI/UX Senior</p>
-                </div>
-                <div class="col-md-4 instructor-item">
-                    <img src="https://via.placeholder.com/150?text=Alex" class="instructor-card mb-3" alt="Alex">
-                    <h5 class="fw-bold">Alex Tan</h5>
-                    <p>Spesialis Digital Marketing</p>
-                </div>
+                {% empty %}
+                <p>No instructors found.</p>
+                {% endfor %}
             </div>
+
+            <!-- Tombol Ajakan untuk Bergabung -->
             <div class="text-center mt-4">
-                <p class="text-muted">"Punya keahlian? Bergabunglah sebagai instruktur kami!"</p>
-                <a href="#" class="btn btn-outline-primary">Jadi Instruktur</a>
+                <p class="text-muted">"Got skills? Join us as an instructor!"</p>
+
+                {% if user.is_authenticated %}
+                    <!-- Display the "Become an Instructor" button if logged in -->
+                    <a href="{% url 'courses:instructor_add' %}" class="btn btn-outline-primary">Become an Instructor</a>
+                {% else %}
+                    <!-- Display the "Join as an Instructor" button if not logged in -->
+                    <a href="{% url 'authentication:register' %}" class="btn btn-outline-primary">Join as an Instructor</a>
+                {% endif %}
             </div>
+
+
         </div>
     </section>
+
 
     <!-- Interesting Facts Section -->
     <section class="py-5 bg-light">
         <div class="container">
-            <h2 class="text-left mb-5">Hal Menarik di LMSKu</h2>
+            <h2 class="text-left mb-5">Interesting Facts on LMSKu</h2>
             <div class="row g-4">
                 <div class="col-md-4">
                     <div class="card p-4 text-center shadow-sm">
                         <i class="bi bi-globe fs-1 text-primary mb-3"></i>
-                        <h5>Akses Global</h5>
-                        <p>Belajar dari mana saja di dunia.</p>
+                        <h5>Global Access</h5>
+                        <p>Learn from anywhere in the world.</p>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="card p-4 text-center shadow-sm">
                         <i class="bi bi-chat-dots fs-1 text-primary mb-3"></i>
-                        <h5>Komunitas Aktif</h5>
-                        <p>Berdiskusi dengan ribuan pelajar lain.</p>
+                        <h5>Active Community</h5>
+                        <p>Engage with thousands of other learners.</p>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="card p-4 text-center shadow-sm">
                         <i class="bi bi-rocket-takeoff fs-1 text-primary mb-3"></i>
-                        <h5>Karier Booster</h5>
-                        <p>Tingkatkan peluang kariermu.</p>
+                        <h5>Career Booster</h5>
+                        <p>Enhance your career opportunities.</p>
                     </div>
                 </div>
             </div>
@@ -565,24 +588,24 @@
     <!-- Testimonials Section -->
     <section class="py-5 bg-light">
         <div class="container">
-            <h2 class="text-left mb-5">Apa Kata Mereka?</h2>
+            <h2 class="text-left mb-5">What Do They Say?</h2>
             <div class="row g-4">
                 <div class="col-md-4">
                     <div class="testimoni-card shadow-sm text-center">
-                        <p>"Kursusnya sangat membantu saya paham coding dari nol!"</p>
+                        <p>"The courses helped me understand coding from scratch!"</p>
                         <h6 class="fw-bold">Budi, Programmer</h6>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="testimoni-card shadow-sm text-center">
-                        <p>"Fleksibel banget, bisa belajar sambil kerja."</p>
+                        <p>"Super flexible, I can study while working."</p>
                         <h6 class="fw-bold">Siti, Freelancer</h6>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="testimoni-card shadow-sm text-center">
-                        <p>"Sertifikatnya bikin CV saya lebih menarik."</p>
-                        <h6 class="fw-bold">Andi, Mahasiswa</h6>
+                        <p>"The certificate made my CV more attractive."</p>
+                        <h6 class="fw-bold">Andi, Student</h6>
                     </div>
                 </div>
             </div>
@@ -590,13 +613,14 @@
     </section>
 
     <!-- CTA Section -->
-    <section class="py-5 text-center bg-primary text-white">
+   <section class="py-5 text-center bg-primary text-white">
         <div class="container">
-            <h2 class="fw-bold">Siap Upgrade Skillmu?</h2>
-            <p class="lead">Bergabung sekarang dan mulai perjalanan belajarmu!</p>
-            <a href="{% url 'authentication:register' %}" class="btn btn-light btn-lg mt-3">Daftar Sekarang</a>
+            <h2 class="fw-bold">Ready to Upgrade Your Skills?</h2>
+            <p class="lead">Join now and start your learning journey!</p>
+            <a href="{% url 'authentication:register' %}" class="btn btn-light btn-lg mt-3">Sign Up Now</a>
         </div>
     </section>
+
 
 
 {% endblock content %}

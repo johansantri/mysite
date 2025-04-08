@@ -1,136 +1,290 @@
-{% extends 'home/tes.html' %}
-
+{% extends 'home/base.html' %}
+{% load static %}
 {% block content %}
 <body class="bg-light">
-    <div class="container py-4">
+    <div class="container py-5">
         <!-- Logo and Description Section -->
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
-            <div class="d-flex align-items-center mb-4 mb-md-0 order-1 order-md-0">
-                {% if partner.logo %}
-                    <img src="{{ partner.logo.url }}" alt="{{ partner.slug }}" class="img-fluid" width="100" height="100"/>
-                {% else %}
-                    <img src="https://via.placeholder.com/100" alt="No Logo Available" class="img-fluid" width="100" height="100"/>
-                {% endif %}
-                <div class="ms-4">
-                    <h1 class="h3 fw-bold">{{ partner.name }}</h1>
-                    <p>Join: {{ partner.created_ad|date:"F j, Y" }}</p>
-                    <p class="text-dark">{{ partner.description | safe }}</p>
-                    <p class="text-dark">{{ partner.address | safe }} | {{ partner.phone | safe }} | {{ partner.email | safe }} | {{ partner.user.email | safe }}</p>
+        <div class="card shadow-sm border-0 rounded-3 p-4 mb-5 animate__animated animate__fadeIn">
+            <div class="row align-items-center">
+                <div class="col-12 col-md-8 d-flex align-items-center flex-column flex-md-row mb-3 mb-md-0">
+                    {% if partner.logo %}
+                        <img src="{{ partner.logo.url }}" alt="{{ partner.slug }}" 
+                             class="img-fluid rounded-circle me-md-4 mb-3 mb-md-0" 
+                             style="width: 100px; height: 100px; object-fit: cover;">
+                    {% else %}
+                        <img src="https://via.placeholder.com/100" alt="No Logo Available" 
+                             class="img-fluid rounded-circle me-md-4 mb-3 mb-md-0" 
+                             style="width: 100px; height: 100px;">
+                    {% endif %}
+                    <div>
+                        <h1 class="h3 fw-bold text-dark mb-2">{{ partner.name }}</h1>
+                        <p class="text-muted mb-2">Join: {{ partner.created_ad|date:"F j, Y" }}</p>
+                        <p class="text-dark mb-2">{{ partner.description | safe }}</p>
+                        <p class="text-dark small">
+                            <i class="fas fa-map-marker-alt me-2"></i>{{ partner.address | safe }} | 
+                            <i class="fas fa-phone me-2"></i>{{ partner.phone | safe }} | 
+                            <i class="fas fa-envelope me-2"></i>{{ partner.email | safe }} | 
+                            <i class="fas fa-user me-2"></i>{{ partner.user.email | safe }}
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Stats Section -->
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-4">
-            <div class="d-flex flex-row flex-wrap justify-content-between align-items-center gap-4">
-                <div class="text-center mb-4 mb-md-0">
-                    <p class="text-muted mb-1">Learners</p>
-                    <p class="h4 fw-bold">{{ unique_learners }}</p>
-                </div>
-                <div class="text-center mb-4 mb-md-0">
-                    <p class="text-muted mb-1">Reviews</p>
-                    <p class="h4 fw-bold">0</p>
-                </div>
-                <div class="text-center mb-4 mb-md-0">
-                    <p class="text-muted mb-1">Course</p>
-                    <p class="h4 fw-bold">{{ total_courses }}</p>
+        <div class="row g-4 mb-5 animate__animated animate__fadeInUp">
+            <div class="col-12 col-md-8">
+                <div class="d-flex flex-row flex-wrap justify-content-center justify-content-md-start gap-5">
+                    <div class="text-center">
+                        <p class="text-muted mb-1">Learners</p>
+                        <p class="h4 fw-bold text-primary">{{ unique_learners }}</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-muted mb-1">Reviews</p>
+                        <p class="h4 fw-bold text-primary">0</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-muted mb-1">Courses</p>
+                        <p class="h4 fw-bold text-primary">{{ total_courses }}</p>
+                    </div>
                 </div>
             </div>
-            
-            <div class="d-flex mt-3 mt-md-0">
-                <a href="#" class="text-danger me-2"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" class="text-danger me-2"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="text-danger me-2"><i class="fab fa-linkedin-in"></i></a>
-                <a href="#" class="text-danger"><i class="fab fa-instagram"></i></a>
+            <div class="col-12 col-md-4">
+                <div class="d-flex justify-content-center justify-content-md-end gap-3">
+                    <a href="#" class="text-danger transition-hover fs-5"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-danger transition-hover fs-5"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-danger transition-hover fs-5"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="text-danger transition-hover fs-5"><i class="fab fa-instagram"></i></a>
+                </div>
             </div>
         </div>
+        <hr class="my-5">
 
         <!-- Search and Category Section -->
-        <div class="row mt-4">
-            <div class="col-12 col-md-3 mb-4 mb-md-0">
-                <form method="get" action="{% url 'courses:org_partner' partner.name.slug %}">
-                    <div class="input-group mb-4">
-                        <input type="text" class="form-control" name="search" placeholder="Find courses..." value="{{ search_query }}">
-                        <span class="input-group-text" type="submit"><i class="fas fa-search text-muted"></i></span>
-                    </div>
-                </form>
-                <div class="bg-white p-4 rounded shadow-sm">
-                    <h2 class="h5 fw-bold mb-4">Categories</h2>
-                    <ul class="list-unstyled">
-                        <li class="mb-2">
-                            <a href="?category=" class="d-block p-2 {% if selected_category == '' %}bg-light{% endif %}">All</a>
-                        </li>
-                        {% for category in categories %}
+        <div class="row g-4">
+            <!-- Sidebar -->
+            <div class="col-12 col-md-3">
+                <div class="sticky-top" style="top: 20px;">
+                    <!-- Search Form -->
+                    <form method="get" action="{% url 'courses:org_partner' partner.name.slug %}">
+                        <div class="input-group mb-4 animate__animated animate__fadeIn">
+                            <input type="text" class="form-control rounded-start-pill" 
+                                   name="search" placeholder="Find courses..." 
+                                   value="{{ search_query }}" 
+                                   style="border-right: none;">
+                            <button class="btn btn-primary rounded-end-pill" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Categories -->
+                    <div class="card shadow-sm border-0 rounded-3 p-4 animate__animated animate__fadeInUp">
+                        <h2 class="h5 fw-bold mb-4 text-dark">Categories</h2>
+                        <ul class="list-unstyled">
                             <li class="mb-2">
-                                <a href="?category={{ category.name }}" class="d-block p-2 {% if selected_category == category.name %}bg-light{% endif %}">
+                                <a href="?category=" 
+                                   class="d-block p-2 rounded transition-hover {% if selected_category == '' %}bg-primary text-white{% else %}text-dark{% endif %}">
+                                    All
+                                </a>
+                            </li>
+                            {% for category in categories %}
+                            <li class="mb-2">
+                                <a href="?category={{ category.name }}" 
+                                   class="d-block p-2 rounded transition-hover {% if selected_category == category.name %}bg-primary text-white{% else %}text-dark{% endif %}">
                                     {{ category.name }}
                                 </a>
                             </li>
-                        {% endfor %}
-                    </ul>
+                            {% endfor %}
+                        </ul>
+                    </div>
                 </div>
             </div>
 
             <!-- Courses Section -->
             <div class="col-12 col-md-9">
                 <form method="get" action="{% url 'courses:org_partner' partner.name.slug %}">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2 class="h5 fw-bold">Courses</h2>
-                        <select class="form-select w-auto" name="sort_by" onchange="this.form.submit()">
+                    <div class="d-flex justify-content-between align-items-center mb-4 animate__animated animate__fadeIn">
+                        <h2 class="h5 fw-bold text-dark">Courses</h2>
+                        <select class="form-select w-auto rounded-pill shadow-sm" name="sort_by" onchange="this.form.submit()">
                             <option value="name" {% if sort_by == 'name' %}selected{% endif %}>Sort by Name</option>
                             <option value="date" {% if sort_by == 'date' %}selected{% endif %}>Sort by Date</option>
                             <option value="learners" {% if sort_by == 'learners' %}selected{% endif %}>Sort by Learners</option>
                         </select>
                     </div>
-                
-                    <!-- Hidden inputs to preserve search and category filter values -->
                     <input type="hidden" name="search" value="{{ search_query }}">
                     <input type="hidden" name="category" value="{{ selected_category }}">
                 </form>
-                <div class="row">
+
+                <div class="row g-4">
                     {% for course in page_obj %}
-                    <div class="col-12 col-md-4 mb-4">
+                    <div class="col-12 col-md-6 col-lg-4">
                         <a href="{% url 'courses:course_lms_detail' course.id course.slug %}" class="text-decoration-none">
-                        <div class="bg-white p-4 rounded shadow-sm">
-                           
-                            <img src="{{ course.image.url }}" alt="Course image" class="img-fluid rounded mb-4" width="300" height="200"/>
-                            <h3 class="h6 fw-bold">{{ course.course_name }}</h3>
-                            
-                            <p class="text-success fw-bold">Free</p>
-                            <p class="text-muted">{{ course.total_enrollments }} enrolled</p>
-                            
-                        </div>
-                    </a>
+                            <div class="card h-100 shadow-lg border-0 rounded-3 overflow-hidden transition-hover animate__animated animate__fadeInUp">
+                                <div class="position-relative overflow-hidden bg-light" style="height: 200px;">
+                                    <img src="{{ course.image.url }}" 
+                                         alt="{{ course.course_name }}" 
+                                         class="img-fluid transition-scale position-absolute top-50 start-50 translate-middle"
+                                         style="max-height: 180px; max-width: 100%; object-fit: cover; transition: transform 0.3s ease;">
+                                </div>
+                                <div class="card-body d-flex flex-column p-4">
+                                    <h3 class="h6 fw-bold mb-3 text-dark">{{ course.course_name }}</h3>
+                                    <p class="text-success fw-bold mb-2">Free</p>
+                                    <p class="text-muted small mb-0">{{ course.total_enrollments }} enrolled</p>
+                                </div>
+                            </div>
+                        </a>
                     </div>
                     {% empty %}
-                    <p>No related courses found.</p>
-                    {% endfor %}
-                    <!--pagination control-->
-                    <div class="pagination justify-content-center mt-4">
-                        {% if page_obj.has_previous %}
-                        <a href="?page=1&category={{ selected_category }}&search={{ search_query }}&sort_by={{ sort_by }}" class="page-link page-item me-2" aria-label="First">
-                            <span aria-hidden="true">&laquo;&laquo; First</span>
-                        </a>
-                        <a href="?page={{ page_obj.previous_page_number }}&category={{ selected_category }}&search={{ search_query }}&sort_by={{ sort_by }}" class="page-link page-item me-2" aria-label="Previous">
-                            <span aria-hidden="true">&laquo; Previous</span>
-                        </a>
-                        {% endif %}
-                        
-                        <span class="page-link page-item disabled">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-                        
-                        {% if page_obj.has_next %}
-                        <a href="?page={{ page_obj.next_page_number }}&category={{ selected_category }}&search={{ search_query }}&sort_by={{ sort_by }}" class="page-link page-item ms-2" aria-label="Next">
-                            <span aria-hidden="true">Next &raquo;</span>
-                        </a>
-                        <a href="?page={{ page_obj.paginator.num_pages }}&category={{ selected_category }}&search={{ search_query }}&sort_by={{ sort_by }}" class="page-link page-item ms-2" aria-label="Last">
-                            <span aria-hidden="true">Last &raquo;&raquo;</span>
-                        </a>
-                        {% endif %}
+                    <div class="col-12 text-center py-5">
+                        <p class="text-muted fs-5 animate__animated animate__fadeIn">No related courses found.</p>
                     </div>
-                    
+                    {% endfor %}
+                </div>
+
+                <!-- Pagination -->
+                <div class="d-flex justify-content-center mt-5">
+                    <nav aria-label="Course Pagination">
+                        <ul class="pagination pagination-lg">
+                            {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link rounded-circle mx-1" 
+                                   href="?page=1&category={{ selected_category }}&search={{ search_query }}&sort_by={{ sort_by }}" 
+                                   aria-label="First">
+                                    <span aria-hidden="true">««</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link rounded-circle mx-1" 
+                                   href="?page={{ page_obj.previous_page_number }}&category={{ selected_category }}&search={{ search_query }}&sort_by={{ sort_by }}" 
+                                   aria-label="Previous">
+                                    <span aria-hidden="true">«</span>
+                                </a>
+                            </li>
+                            {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link rounded-circle mx-1">««</span>
+                            </li>
+                            <li class="page-item disabled">
+                                <span class="page-link rounded-circle mx-1">«</span>
+                            </li>
+                            {% endif %}
+                            <li class="page-item disabled">
+                                <span class="page-link bg-primary text-white mx-1">
+                                    {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+                                </span>
+                            </li>
+                            {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link rounded-circle mx-1" 
+                                   href="?page={{ page_obj.next_page_number }}&category={{ selected_category }}&search={{ search_query }}&sort_by={{ sort_by }}" 
+                                   aria-label="Next">
+                                    <span aria-hidden="true">»</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link rounded-circle mx-1" 
+                                   href="?page={{ page_obj.paginator.num_pages }}&category={{ selected_category }}&search={{ search_query }}&sort_by={{ sort_by }}" 
+                                   aria-label="Last">
+                                    <span aria-hidden="true">»»</span>
+                                </a>
+                            </li>
+                            {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link rounded-circle mx-1">»</span>
+                            </li>
+                            <li class="page-item disabled">
+                                <span class="page-link rounded-circle mx-1">»»</span>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Custom CSS -->
+    <style>
+    .transition-hover:hover {
+        transform: translateY(-5px);
+        transition: transform 0.3s ease;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15) !important;
+    }
+
+    .transition-scale:hover {
+        transform: scale(1.05);
+    }
+
+    .page-link.rounded-circle {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .page-link.rounded-circle:hover {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .card {
+        transition: all 0.3s ease;
+        background-color: #fff;
+    }
+
+    .text-success { color: #28a745 !important; }
+    .text-primary { color: #007bff !important; }
+    .rounded-start-pill {
+        border-top-left-radius: 50rem !important;
+        border-bottom-left-radius: 50rem !important;
+    }
+
+    .rounded-end-pill {
+        border-top-right-radius: 50rem !important;
+        border-bottom-right-radius: 50rem !important;
+    }
+
+    .rounded-pill { border-radius: 50rem !important; }
+
+    @media (max-width: 767.98px) {
+        .container {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+        
+        .card.shadow-sm {
+            padding: 15px !important;
+        }
+        
+        .d-flex.align-items-center.flex-column.flex-md-row {
+            text-align: center;
+        }
+        
+        .me-md-4 {
+            margin-right: 0 !important;
+            margin-bottom: 1rem !important;
+        }
+        
+        .ms-4 {
+            margin-left: 0 !important;
+        }
+        
+        .h3.fw-bold {
+            font-size: 1.5rem !important;
+        }
+        
+        .stats-section .d-flex {
+            justify-content: center !important;
+            gap: 2rem !important;
+        }
+    }
+    </style>
+
+    <!-- Dependencies -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </body>
 {% endblock %}

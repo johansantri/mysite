@@ -735,7 +735,13 @@ def home(request):
 
         # Mendapatkan semua mitra
         partners = Partner.objects.all()
+         # Mengambil instruktur yang statusnya 'Approved'
+        instructors = Instructor.objects.filter(status='Approved')
 
+        # Pagination: Menampilkan 6 instruktur per halaman
+        paginator = Paginator(instructors, 6)
+        page_number = request.GET.get('page')
+        instructors_page = paginator.get_page(page_number)
         # Menghitung total
         total_instructors = Instructor.objects.count()  # Asumsi ada model Instructor
         total_partners = Partner.objects.count()
@@ -761,6 +767,7 @@ def home(request):
         'total_partners': total_partners,
         'total_users': total_users,
         'total_courses': total_courses,
+        'instructors': instructors_page,
     })
 #@csrf_protect
 @ratelimit(key='ip', rate='100/h')

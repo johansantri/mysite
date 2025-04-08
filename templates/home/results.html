@@ -3,11 +3,11 @@
 {% block content %}
             <section class="py-5 bg-light">
                 <div class="container">
-                    <h2 class="text-left mb-5">Hasil Pencarian untuk "{{ query }}"</h2>
+                    <h2 class="text-left mb-5">Search Results for "{{ query }}"</h2>
 
                     <!-- Courses -->
                     {% if results.courses %}
-                        <h3 class="text-left mb-4">Kursus</h3>
+                        <h3 class="text-left mb-4">Courses</h3>
                         <div class="row g-4">
                             {% for course in results.courses %}
                                 <div class="col-md-4">
@@ -16,7 +16,7 @@
                                         <div class="card-body">
                                             <h5 class="card-title">{{ course.course_name }}</h5>
                                             <p class="card-text">{{ course.description|truncatewords:20 |safe }}</p>
-                                            <a href="{% url 'courses:course_lms_detail' course.id course.slug %}" class="btn btn-outline-primary">Lihat Kursus</a>
+                                            <a href="{% url 'courses:course_lms_detail' course.id course.slug %}" class="btn btn-outline-primary">View Course</a>
                                         </div>
                                     </div>
                                 </div>
@@ -27,7 +27,7 @@
                     <!-- Instructors -->
                     <!-- Instructors -->
                     {% if results.instructors %}
-                    <h3 class="text-left mb-4 mt-5">Instruktur</h3>
+                    <h3 class="text-left mb-4 mt-5">Instructor</h3>
                     <div class="row g-4 justify-content-center">
                         {% for instructor in results.instructors %}
                             <div class="col-md-4 instructor-item">
@@ -46,7 +46,7 @@
                                 </h5>
                                 
                                 <!-- Keahlian dan Pengalaman -->
-                                <p class="text-muted mb-1">{{ instructor.expertise }} ({{ instructor.experience_years }} tahun)</p>
+                                <p class="text-muted mb-1">{{ instructor.expertise }} ({{ instructor.experience_years }} Year)</p>
                                 
                                 <!-- Bio Singkat -->
                                 <p>{{ instructor.bio|truncatewords:10 }}</p>
@@ -55,11 +55,11 @@
                                 <p class="text-primary"><i class="bi bi-gear"></i> {{ instructor.tech }}</p>
                                 
                                 <!-- Mitra (Provider) -->
-                                <p class="text-muted"><small>Mitra: {{ instructor.provider.name.name }}</small></p>
+                                <p class="text-muted"><small>Partner: {{ instructor.provider.name.name }}</small></p>
                                 
                                 <!-- Tautan Profil (Opsional) -->
                                 {% if instructor.status == 'Approved' %}
-                                <a href="{% url 'courses:instructor_profile' instructor.user.username %}" class="btn btn-outline-primary btn-sm">Lihat Profil</a>
+                                <a href="{% url 'courses:instructor_profile' instructor.user.username %}" class="btn btn-outline-primary btn-sm">View Profile</a>
                                 {% endif %}
                             </div>
                         {% endfor %}
@@ -68,7 +68,7 @@
 
                     <!-- Partners -->
                     {% if results.partners %}
-                        <h3 class="text-left mb-4 mt-5">Mitra</h3>
+                        <h3 class="text-left mb-4 mt-5">Partner</h3>
                         <div class="row g-4">
                             {% for partner in results.partners %}
                                 <div class="col-md-4">
@@ -77,7 +77,7 @@
                                         <div class="card-body">
                                             <h5 class="card-title">{{ partner.partner_name }}</h5>
                                             <p class="card-text">{{ partner.description|truncatewords:20 |safe }}</p>
-                                            <a href="{% url 'courses:org_partner' partner.name.slug %}" class="btn btn-outline-primary">Lihat Mitra</a>
+                                            <a href="{% url 'courses:org_partner' partner.name.slug %}" class="btn btn-outline-primary">See Partners</a>
                                         </div>
                                     </div>
                                 </div>
@@ -88,8 +88,8 @@
                     <!-- Jika Tidak Ada Hasil -->
                     {% if not results.courses and not results.instructors and not results.partners %}
                         <div class="text-center py-5">
-                            <p class="text-muted">Tidak ada hasil ditemukan untuk "{{ query }}".</p>
-                            <a href="/" class="btn btn-outline-primary">Kembali ke Beranda</a>
+                            <p class="text-muted">No results found for "{{ query }}".</p>
+                            <a href="/" class="btn btn-outline-primary">Back to Home</a>
                         </div>
                     {% endif %}
                 </div>

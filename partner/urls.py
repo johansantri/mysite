@@ -6,5 +6,6 @@ app_name = 'partner'
 
 urlpatterns = [
     path('partner/update/<int:partner_id>/<slug:universiti_slug>/', views.partner_update_view, name='partner_update'),
+    path('explore/', views.explore, name='explore'),
    
 ]
