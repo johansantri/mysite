@@ -2,517 +2,471 @@
 {% load static %}
 {% block content %}
 
-
-
-		
-			<!-- Course Content -->
-			<section class="page-content course-sec">
-		
-			
-				<div class="container">
-				
-					<div class="row">
-						<div class="col-lg-8">
-						
-							<!-- Overview -->
-<div class="card overview-sec border-0 shadow-sm">
-    <div class="card-body p-4">
-        <!-- Inner Banner Inside Overview -->
-        <div class="inner-banner bg-light rounded-3 p-4 mb-4">
-            <div class="row">
-                <div class="col-lg-12">
-					<div class="alert alert-secondary" role="alert">
-                    <h2 class="fw-bold text-dark mb-3">{{ course.course_name }}</h2>
-					</div>
-					<mark class="">{{ course.category }}</mark> 
-                    <p class="text-muted mb-4">{{ course.sort_description }}</p>
-                    <div class="course-info d-flex flex-wrap align-items-center bg-white border rounded-3 p-3 shadow-sm">
-                        <div class="cou-info d-flex align-items-center me-4 mb-2">
-                            <img src="{% static 'assets/img/icon/icon-01.svg' %}" alt="Lessons" class="me-2" style="width: 24px;">
-                            <span class="mb-0 text-dark fw-medium">{{ total_sections }} Lessons</span>
-                        </div>
-                        <div class="cou-info d-flex align-items-center me-4 mb-2">
-                            <img src="{% static 'assets/img/icon/timer-icon.svg' %}" alt="Duration" class="me-2" style="width: 24px;">
-                            <span class="mb-0 text-dark fw-medium">{{ total_effort_hours }}hr </span>
-                        </div>
-                        <div class="cou-info d-flex align-items-center mb-2">
-                            <img src="{% static 'assets/img/icon/people.svg' %}" alt="Students" class="me-2" style="width: 24px;">
-                            <span class="mb-0 text-dark fw-medium">{{ total_students }} Students Enrolled</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- /Inner Banner -->
-
-        <h5 class="subs-title fw-bold text-primary mb-3">Overview</h5>
-		<hr>
-        <h6 class="fw-semibold text-dark mb-3">Course Description</h6>
-        <p class="text-muted">{{ course.description | safe }}</p>
-    </div>
-</div>
-<!-- /Overview -->
-							
-
-							<!-- Course Content -->
-							<div class="card content-sec">
-								<div class="card-body">
-									<div class="row">
-										<div class="col-sm-6">
-											<h5 class="subs-title">Course Content</h5>
-										</div>
-										<div class="col-sm-6 text-sm-end">
-											<h6>note</h6>
-										</div>
-									</div>
-							
-									<!-- Accordion Container -->
-									<div class="accordion" id="courseAccordion">
-										{% for i in section_data %}
-											{% if not i.children.all %}
-												<!-- If the section is empty -->
-												<p>Jika section kosong mulai dari sini</p>
-											{% else %}
-												{% for obj in i.children.all %}
-													<div class="accordion-item">
-														<h6 class="accordion-header" id="heading-{{ obj.id }}">
-															<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#course-{{ obj.id }}" aria-expanded="false" aria-controls="course-{{ obj.id }}">
-																{{ obj.title }}
-															</button>
-														</h6>
-														<div id="course-{{ obj.id }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ obj.id }}" data-bs-parent="#courseAccordion">
-															<div class="accordion-body">
-																<ul class="list-unstyled">
-																	{% if not obj.children.all %}
-																		<!-- Materials -->
-																		{% for material in obj.materials.all %}
-																			<li class="d-flex justify-content-between align-items-center">
-																				<p class="mb-0"><i class="fa fa-file me-2" aria-hidden="true"></i>{{ material.title }}</p>
-																				<div>
-																					<a href="javascript:void(0);" class="me-2">Preview</a>
-																					<span>{{ material.duration }}</span>
-																				</div>
-																			</li>
-																		{% empty %}
-																			<li>No materials available for this section.</li>
-																		{% endfor %}
-							
-																		<!-- Assessments -->
-																		{% for assesment in obj.assessments.all %}
-																			<li class="d-flex justify-content-between align-items-center">
-																				<p class="mb-0"><i class="fa fa-check me-2" aria-hidden="true"></i>{{ assesment.name | safe }}</p>
-																				<span>{{ assesment.weight }} %</span>
-																			</li>
-																		{% empty %}
-																			<li>No assessment available for this section.</li>
-																		{% endfor %}
-																	{% else %}
-																		<!-- Sub-sections -->
-																		{% for subobj in obj.children.all %}
-																			<li>
-																				<p class="mb-0"><img src="{% static 'assets/img/icon/play.svg' %}" alt="Img" class="me-2">A.1.1 {{ subobj.title }}</p>
-																			</li>
-																		{% endfor %}
-																		<a href="javascript:void(0);" class="btn btn-primary mt-2">Add Article</a>
-																		<a href="javascript:void(0);" class="btn btn-secondary mt-2 me-0">Add Description</a>
-																	{% endif %}
-																</ul>
-															</div>
-														</div>
-													</div>
-												{% endfor %}
-											{% endif %}
-										{% endfor %}
-									</div>
-								</div>
-							</div>
-							<!-- /Course Content -->
-							<h2>Similar Courses with <strong>{{ course.instructor.user.first_name }}</strong></h2>
-
-								<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-									{% for similar_course in similar_courses %}
-										<div class="col">
-											<div class="card h-100 shadow-lg border-0 rounded-3">
-												{% if similar_course.image %}
-												<a href="{% url 'courses:course_lms_detail' similar_course.id similar_course.slug %}" class="text-decoration-none text-dark"><img src="{{ similar_course.image.url }}" class="card-img-top" alt="{{ similar_course.course_name }}"></a>
-												{% else %}
-													<img src="https://via.placeholder.com/150" class="card-img-top" alt="No Image Available">
-												{% endif %}
-												<div class="card-body">
-													<h5 class="card-title">
-														<a href="{% url 'courses:course_lms_detail' similar_course.id similar_course.slug %}" class="text-decoration-none text-dark">
-															{{ similar_course.course_name }}
-														</a>
-													</h5>
-													
-													
-												</div>
-											</div>
-										</div>
-									{% empty %}
-										<div class="col-12">
-											<div class="alert alert-warning" role="alert">
-												No similar courses available.
-											</div>
-										</div>
-									{% endfor %}
-								</div>
-								<br>
-						
-								<!-- Instructor -->
-								<div class="card instructor-sec border-0 shadow-sm mb-4">
-									<div class="card-body p-4">
-										<h5 class="subs-title fw-bold text-primary mb-4">About the Instructor</h5>
-										<div class="instructor-wrap d-flex flex-wrap align-items-center bg-white border rounded-3 p-3 shadow-sm mb-4">
-											<div class="about-instructor d-flex align-items-center">
-												<div class="abt-instructor-img me-3">
-													{% if course.instructor.user.photo %}
-														<a href="{% url 'courses:instructor_profile' course.instructor.user.username %}">
-															<img src="{{ course.instructor.user.photo.url }}" alt="Instructor" class="img-fluid rounded-circle border" style="width: 60px; height: 60px; object-fit: cover;">
-														</a>
-													{% else %}
-														<a href="{% url 'courses:instructor_profile' course.instructor.user.username %}">
-															<img src="{% static 'assets/img/user/user1.jpg' %}" alt="Instructor" class="img-fluid rounded-circle border" style="width: 60px; height: 60px; object-fit: cover;">
-														</a>
-													{% endif %}
-												</div>
-												<div class="instructor-detail">
-													<h5 class="mb-1">
-														<a href="{% url 'courses:instructor_profile' course.instructor.user.username %}" class="text-decoration-none text-dark fw-bold">
-															{{ course.instructor.user.first_name }} {{ course.instructor.user.last_name }}
-														</a>
-													</h5>
-													<p class="text-muted mb-0">{{ course.instructor.user.hobby }}</p>
-												</div>
-											</div>
-											<div class="rating ms-auto">
-												<i class="fas fa-star text-warning"></i>
-												<i class="fas fa-star text-warning"></i>
-												<i class="fas fa-star text-warning"></i>
-												<i class="fas fa-star text-warning"></i>
-												<i class="fas fa-star text-muted"></i>
-												<span class="d-inline-block average-rating ms-1 fw-bold">4.5 (Instructor Rating)</span>
-											</div>
-										</div>
-										<div class="course-info d-flex flex-wrap align-items-center bg-white border rounded-3 p-3 shadow-sm mb-4">
-											<div class="cou-info d-flex align-items-center me-4 mb-2">
-												<img src="{% static 'assets/img/icon/play.svg' %}" alt="Courses" class="me-2" style="width: 24px;">
-												<span class="mb-0 text-dark fw-medium">{{ instructor_total_courses }} Courses</span>
-											</div>
-											<div class="cou-info d-flex align-items-center me-4 mb-2">
-												<img src="{% static 'assets/img/icon/icon-01.svg' %}" alt="Sections" class="me-2" style="width: 24px;">
-												<span class="mb-0 text-dark fw-medium">{{ instructor_total_sections }} Sections ({{ instructor_total_materials }} Materials)</span>
-											</div>
-											<div class="cou-info d-flex align-items-center me-4 mb-2">
-												<img src="{% static 'assets/img/icon/icon-02.svg' %}" alt="Duration" class="me-2" style="width: 24px;">
-												<span class="mb-0 text-dark fw-medium">{{ instructor_total_effort_hours }} Hours Effort</span>
-											</div>
-											<div class="cou-info d-flex align-items-center mb-2">
-												<img src="{% static 'assets/img/icon/people.svg' %}" alt="Students" class="me-2" style="width: 24px;">
-												<span class="mb-0 text-dark fw-medium">{{ instructor_total_students }} Students Enrolled</span>
-											</div>
-										</div>
-										<p class="text-muted">{{ course.instructor.bio }}</p>
-									</div>
-								</div>
-								<!-- /Instructor -->
-
-<!-- Reviews -->
-<div class="card review-sec border-0 shadow-sm mb-4">
-    <div class="card-body p-4">
-        <h5 class="subs-title fw-bold text-primary mb-4">Reviews</h5>
-        <div class="instructor-wrap d-flex flex-wrap align-items-center bg-white border rounded-3 p-3 shadow-sm mb-4">
-            <div class="about-instructor d-flex align-items-center">
-                <div class="abt-instructor-img me-3">
-                    <a href="instructor-profile.html">
-                        <img src="{% static 'assets/img/user/user1.jpg' %}" alt="Reviewer" class="img-fluid rounded-circle border" style="width: 60px; height: 60px; object-fit: cover;">
-                    </a>
-                </div>
-                <div class="instructor-detail">
-                    <h5 class="mb-1"><a href="instructor-profile.html" class="text-decoration-none text-dark fw-bold">Nicole Brown</a></h5>
-                    <p class="text-muted mb-0">UX/UI Designer</p>
-                </div>
-            </div>
-            <div class="rating ms-auto">
-                <i class="fas fa-star text-warning"></i>
-                <i class="fas fa-star text-warning"></i>
-                <i class="fas fa-star text-warning"></i>
-                <i class="fas fa-star text-warning"></i>
-                <i class="fas fa-star text-muted"></i>
-                <span class="d-inline-block average-rating ms-1 fw-bold">4.5 (Instructor Rating)</span>
-            </div>
-        </div>
-        <p class="text-muted mb-3 rev-info">“This is the second Photoshop course I have completed with Cristian. Worth every penny and recommend it highly. To get the most out of this course, it’s best to take the Beginner to Advanced course first. The sound and video quality is of a good standard. Thank you Cristian.”</p>
-        <a href="javascript:void(0);" class="btn btn-outline-primary btn-sm"><i class="feather-corner-up-left me-1"></i>Reply</a>
-    </div>
-</div>
-<!-- /Reviews -->
-
-<!-- Comment Section -->
-<div class="card comment-sec border-0 shadow-sm mb-4">
-    <div class="card-body p-4">
-        <h5 class="subs-title fw-bold text-primary mb-4">Post a Comment</h5>
-        <form method="POST" action="{% url 'courses:add_comment_course' course_id=course.id %}">
-            {% csrf_token %}
-            {% if messages %}
-                <div class="alert-container mb-3">
-                    {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                            {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-            <div class="mb-3">
-                <textarea name="content" rows="4" class="form-control border rounded-3" placeholder="Your Comments" required></textarea>
-            </div>
-            <input type="hidden" name="parent_id" value="">
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-    </div>
-</div>
-
-<!-- Displaying Comments -->
-<div class="comments-section">
-    {% for comment in comments %}
-        <div class="comment-item bg-white border rounded-3 p-3 mb-3 shadow-sm">
-            <p class="mb-1"><strong class="text-dark">{{ comment.user.username }}</strong> <small class="text-muted">{{ comment.created_at|date:"F j, Y, g:i a" }}</small></p>
-            <p class="text-muted mb-2">{{ comment.content }}</p>
-            <!-- Form to reply to this comment -->
-            <div class="reply-section">
-                <form method="POST" action="{% url 'courses:add_comment_course' course_id=course.id %}">
-                    {% csrf_token %}
-                    {% if messages %}
-                        <div class="alert-container mb-3">
-                            {% for message in messages %}
-                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                                    {{ message }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                    <div class="input-group mb-2">
-                        <textarea name="content" class="form-control border rounded-3" rows="2" placeholder="Reply to this comment..." required></textarea>
-                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
-                        <button type="submit" class="btn btn-outline-secondary btn-sm">Reply</button>
-                    </div>
-                </form>
-            </div>
-            <!-- Display Replies to this Comment -->
-            {% for reply in comment.replies %}
-                <div class="reply-item bg-light border rounded-3 p-3 mt-3 ms-4 shadow-sm">
-                    <p class="mb-1"><strong class="text-dark">{{ reply.user.username }}</strong> <small class="text-muted">{{ reply.created_at|date:"F j, Y, g:i a" }}</small></p>
-                    <p class="text-muted mb-2">{{ reply.content }}</p>
-                    <!-- Display Sub-Replies to this Reply -->
-                    {% for sub_reply in reply.sub_replies %}
-                        <div class="sub-reply-item bg-secondary bg-opacity-10 border rounded-3 p-3 mt-3 ms-4 shadow-sm">
-                            <p class="mb-1"><strong class="text-dark">{{ sub_reply.user.username }}</strong> <small class="text-muted">{{ sub_reply.created_at|date:"F j, Y, g:i a" }}</small></p>
-                            <p class="text-muted mb-2">{{ sub_reply.content }}</p>
-                            <div class="reply-section">
-                                <form method="POST" action="{% url 'courses:add_comment_course' course_id=course.id %}">
-                                    {% csrf_token %}
-                                    {% if messages %}
-                                        <div class="alert-container mb-3">
-                                            {% for message in messages %}
-                                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                                                    {{ message }}
-                                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                                </div>
-                                            {% endfor %}
+<!-- Course Content -->
+<section class="page-content course-sec py-5">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <!-- Overview -->
+                <div class="card overview-sec border-0 shadow-lg rounded-4 overflow-hidden">
+                    <div class="card-body p-4">
+                        <!-- Inner Banner Inside Overview -->
+                        <div class="inner-banner bg-gradient-primary text-white rounded-3 p-4 mb-4">
+                            <div class="row align-items-center">
+                                <div class="col-lg-12">
+                                    <h2 class="fw-bold mb-3">{{ course.course_name }}</h2>
+                                    <span class="badge bg-dark text-light mb-3">{{ course.category }}</span>
+                                    <p class="text-light opacity-75 mb-4">{{ course.sort_description }}</p>
+                                    <div class="course-info d-flex flex-wrap gap-3 bg-white text-dark rounded-3 p-3 shadow-sm">
+                                        <div class="cou-info d-flex align-items-center">
+                                            <img src="{% static 'assets/img/icon/icon-01.svg' %}" alt="Lessons" class="me-2" style="width: 24px;">
+                                            <span class="fw-medium">{{ total_sections }} Lessons</span>
                                         </div>
-                                    {% endif %}
-                                    <div class="input-group mb-2">
-                                        <textarea name="content" class="form-control border rounded-3" rows="2" placeholder="Reply to this reply..." required></textarea>
-                                        <input type="hidden" name="parent_id" value="{{ reply.id }}">
-                                        <button type="submit" class="btn btn-outline-secondary btn-sm">Reply</button>
+                                        <div class="cou-info d-flex align-items-center">
+                                            <img src="{% static 'assets/img/icon/timer-icon.svg' %}" alt="Duration" class="me-2" style="width: 24px;">
+                                            <span class="fw-medium">{{ total_effort_hours }}hr</span>
+                                        </div>
+                                        <div class="cou-info d-flex align-items-center">
+                                            <img src="{% static 'assets/img/icon/people.svg' %}" alt="Students" class="me-2" style="width: 24px;">
+                                            <span class="fw-medium">{{ total_students }} Students</span>
+                                        </div>
                                     </div>
-                                </form>
+                                </div>
                             </div>
                         </div>
-                    {% endfor %}
-                    <!-- Form to reply to this reply -->
-                    <div class="reply-section">
+                        <!-- /Inner Banner -->
+
+                        <h5 class="subs-title fw-bold text-primary mb-3">Overview</h5>
+                        <hr class="border-primary border-2 opacity-50">
+                        <h6 class="fw-semibold text-dark mb-3">Course Description</h6>
+                        <p class="text-muted">{{ course.description | safe }}</p>
+                    </div>
+                </div>
+                <!-- /Overview -->
+
+                <!-- Course Content -->
+                <div class="card content-sec border-0 shadow-lg rounded-4 mt-4">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="subs-title fw-bold text-primary">Course Content</h5>
+                            <h6 class="text-muted">Note</h6>
+                        </div>
+                        <div class="accordion" id="courseAccordion">
+                            {% for i in section_data %}
+                                {% if not i.children.all %}
+                                    <div class="alert alert-info rounded-3">No sections available yet.</div>
+                                {% else %}
+                                    {% for obj in i.children.all %}
+                                        <div class="accordion-item border-0 rounded-3 mb-3 shadow-sm">
+                                            <h6 class="accordion-header" id="heading-{{ obj.id }}">
+                                                <button class="accordion-button collapsed bg-light rounded-3 fw-semibold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#course-{{ obj.id }}" aria-expanded="false" aria-controls="course-{{ obj.id }}">
+                                                    {{ obj.title }}
+                                                </button>
+                                            </h6>
+                                            <div id="course-{{ obj.id }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ obj.id }}" data-bs-parent="#courseAccordion">
+                                                <div class="accordion-body">
+                                                    <ul class="list-unstyled">
+                                                        {% if not obj.children.all %}
+                                                            <!-- Materials -->
+                                                            {% for material in obj.materials.all %}
+                                                                <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                                                                    <p class="mb-0"><i class="fa fa-file text-primary me-2" aria-hidden="true"></i>{{ material.title }}</p>
+                                                                    <div>
+                                                                        <a href="javascript:void(0);" class="text-primary me-2">Preview</a>
+                                                                        <span class="text-muted">{{ material.duration }}</span>
+                                                                    </div>
+                                                                </li>
+                                                            {% empty %}
+                                                                <li class="text-muted">No materials available.</li>
+                                                            {% endfor %}
+                                                            <!-- Assessments -->
+                                                            {% for assesment in obj.assessments.all %}
+                                                                <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                                                                    <p class="mb-0"><i class="fa fa-check text-success me-2" aria-hidden="true"></i>{{ assesment.name | safe }}</p>
+                                                                    <span class="badge bg-success">{{ assesment.weight }}%</span>
+                                                                </li>
+                                                            {% empty %}
+                                                                <li class="text-muted">No assessments available.</li>
+                                                            {% endfor %}
+                                                        {% else %}
+                                                            <!-- Sub-sections -->
+                                                            {% for subobj in obj.children.all %}
+                                                                <li class="py-2 border-bottom">
+                                                                    <p class="mb-0"><img src="{% static 'assets/img/icon/play.svg' %}" alt="Img" class="me-2" style="width: 16px;">A.1.1 {{ subobj.title }}</p>
+                                                                </li>
+                                                            {% endfor %}
+                                                            <div class="mt-3">
+                                                                <a href="javascript:void(0);" class="btn btn-primary btn-sm me-2">Add Article</a>
+                                                                <a href="javascript:void(0);" class="btn btn-outline-secondary btn-sm">Add Description</a>
+                                                            </div>
+                                                        {% endif %}
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <!-- /Course Content -->
+
+                <!-- Similar Courses -->
+                <div class="mt-5">
+                    <h2 class="fw-bold text-dark mb-4">Similar Courses with <strong>{{ course.instructor.user.first_name }}</strong></h2>
+                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+                        {% for similar_course in similar_courses %}
+                            <div class="col">
+                                <div class="card h-100 border-0 shadow-lg rounded-3 overflow-hidden transition-hover">
+                                    {% if similar_course.image %}
+                                        <a href="{% url 'courses:course_lms_detail' similar_course.id similar_course.slug %}">
+                                            <img src="{{ similar_course.image.url }}" class="card-img-top" alt="{{ similar_course.course_name }}" style="height: 150px; object-fit: cover;">
+                                        </a>
+                                    {% else %}
+                                        <img src="https://via.placeholder.com/150" class="card-img-top" alt="No Image" style="height: 150px; object-fit: cover;">
+                                    {% endif %}
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            <a href="{% url 'courses:course_lms_detail' similar_course.id similar_course.slug %}" class="text-decoration-none text-dark fw-semibold">{{ similar_course.course_name }}</a>
+                                        </h5>
+                                    </div>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="col-12">
+                                <div class="alert alert-warning rounded-3">No similar courses available.</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <!-- /Similar Courses -->
+
+                <!-- Instructor -->
+                <div class="card instructor-sec border-0 shadow-lg rounded-4 mt-4">
+                    <div class="card-body p-4">
+                        <h5 class="subs-title fw-bold text-primary mb-4">About the Instructor</h5>
+                        <div class="instructor-wrap d-flex flex-wrap align-items-center bg-white border rounded-3 p-3 shadow-sm mb-4">
+                            <div class="about-instructor d-flex align-items-center">
+                                <div class="abt-instructor-img me-3">
+                                    {% if course.instructor.user.photo %}
+                                        <a href="{% url 'courses:instructor_profile' course.instructor.user.username %}">
+                                            <img src="{{ course.instructor.user.photo.url }}" alt="Instructor" class="img-fluid rounded-circle border" style="width: 60px; height: 60px; object-fit: cover;">
+                                        </a>
+                                    {% else %}
+                                        <a href="{% url 'courses:instructor_profile' course.instructor.user.username %}">
+                                            <img src="{% static 'assets/img/user/user1.jpg' %}" alt="Instructor" class="img-fluid rounded-circle border" style="width: 60px; height: 60px; object-fit: cover;">
+                                        </a>
+                                    {% endif %}
+                                </div>
+                                <div class="instructor-detail">
+                                    <h5 class="mb-1">
+                                        <a href="{% url 'courses:instructor_profile' course.instructor.user.username %}" class="text-decoration-none text-dark fw-bold">{{ course.instructor.user.first_name }} {{ course.instructor.user.last_name }}</a>
+                                    </h5>
+                                    <p class="text-muted mb-0">{{ course.instructor.user.hobby }}</p>
+                                </div>
+                            </div>
+                            <div class="rating ms-auto">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-muted"></i>
+                                <span class="d-inline-block average-rating ms-1 fw-bold">4.5</span>
+                            </div>
+                        </div>
+                        <div class="course-info d-flex flex-wrap gap-3 bg-white border rounded-3 p-3 shadow-sm mb-4">
+                            <div class="cou-info d-flex align-items-center">
+                                <img src="{% static 'assets/img/icon/play.svg' %}" alt="Courses" class="me-2" style="width: 24px;">
+                                <span class="fw-medium">{{ instructor_total_courses }} Courses</span>
+                            </div>
+                            <div class="cou-info d-flex align-items-center">
+                                <img src="{% static 'assets/img/icon/icon-01.svg' %}" alt="Sections" class="me-2" style="width: 24px;">
+                                <span class="fw-medium">{{ instructor_total_sections }} Sections ({{ instructor_total_materials }} Materials)</span>
+                            </div>
+                            <div class="cou-info d-flex align-items-center">
+                                <img src="{% static 'assets/img/icon/icon-02.svg' %}" alt="Duration" class="me-2" style="width: 24px;">
+                                <span class="fw-medium">{{ instructor_total_effort_hours }} Hours</span>
+                            </div>
+                            <div class="cou-info d-flex align-items-center">
+                                <img src="{% static 'assets/img/icon/people.svg' %}" alt="Students" class="me-2" style="width: 24px;">
+                                <span class="fw-medium">{{ instructor_total_students }} Students</span>
+                            </div>
+                        </div>
+                        <p class="text-muted">{{ course.instructor.bio }}</p>
+                    </div>
+                </div>
+                <!-- /Instructor -->
+
+                <!-- Reviews -->
+                <div class="card review-sec border-0 shadow-lg rounded-4 mt-4">
+                    <div class="card-body p-4">
+                        <h5 class="subs-title fw-bold text-primary mb-4">Reviews</h5>
+                        <div class="instructor-wrap d-flex flex-wrap align-items-center bg-white border rounded-3 p-3 shadow-sm mb-4">
+                            <div class="about-instructor d-flex align-items-center">
+                                <div class="abt-instructor-img me-3">
+                                    <a href="instructor-profile.html">
+                                        <img src="{% static 'assets/img/user/user1.jpg' %}" alt="Reviewer" class="img-fluid rounded-circle border" style="width: 60px; height: 60px; object-fit: cover;">
+                                    </a>
+                                </div>
+                                <div class="instructor-detail">
+                                    <h5 class="mb-1"><a href="instructor-profile.html" class="text-decoration-none text-dark fw-bold">Nicole Brown</a></h5>
+                                    <p class="text-muted mb-0">UX/UI Designer</p>
+                                </div>
+                            </div>
+                            <div class="rating ms-auto">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-muted"></i>
+                                <span class="d-inline-block average-rating ms-1 fw-bold">4.5</span>
+                            </div>
+                        </div>
+                        <p class="text-muted mb-3">“This is the second Photoshop course I have completed with Cristian. Worth every penny and recommend it highly...”</p>
+                        <a href="javascript:void(0);" class="btn btn-outline-primary btn-sm transition-hover"><i class="feather-corner-up-left me-1"></i>Reply</a>
+                    </div>
+                </div>
+                <!-- /Reviews -->
+
+                <!-- Comment Section -->
+                <div class="card comment-sec border-0 shadow-lg rounded-4 mt-4">
+                    <div class="card-body p-4">
+                        <h5 class="subs-title fw-bold text-primary mb-4">Post a Comment</h5>
                         <form method="POST" action="{% url 'courses:add_comment_course' course_id=course.id %}">
                             {% csrf_token %}
                             {% if messages %}
                                 <div class="alert-container mb-3">
                                     {% for message in messages %}
-                                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show rounded-3" role="alert">
                                             {{ message }}
                                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                         </div>
                                     {% endfor %}
                                 </div>
                             {% endif %}
-                            <div class="input-group mb-2">
-                                <textarea name="content" class="form-control border rounded-3" rows="2" placeholder="Reply to this reply..." required></textarea>
-                                <input type="hidden" name="parent_id" value="{{ reply.id }}">
-                                <button type="submit" class="btn btn-outline-secondary btn-sm">Reply</button>
+                            <div class="mb-3">
+                                <textarea name="content" rows="4" class="form-control border rounded-3 shadow-sm" placeholder="Your Comments" required></textarea>
                             </div>
+                            <input type="hidden" name="parent_id" value="">
+                            <button type="submit" class="btn btn-primary transition-hover">Submit</button>
                         </form>
                     </div>
                 </div>
-            {% endfor %}
+
+                <!-- Displaying Comments -->
+                <div class="comments-section mt-4">
+                    {% for comment in comments %}
+                        <div class="comment-item bg-white border rounded-3 p-3 mb-3 shadow-sm transition-hover">
+                            <p class="mb-1"><strong class="text-dark">{{ comment.user.username }}</strong> <small class="text-muted">{{ comment.created_at|date:"F j, Y, g:i a" }}</small></p>
+                            <p class="text-muted mb-2">{{ comment.content }}</p>
+                            <div class="reply-section">
+                                <form method="POST" action="{% url 'courses:add_comment_course' course_id=course.id %}">
+                                    {% csrf_token %}
+                                    <div class="input-group mb-2">
+                                        <textarea name="content" class="form-control border rounded-3 shadow-sm" rows="2" placeholder="Reply to this comment..." required></textarea>
+                                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                        <button type="submit" class="btn btn-outline-secondary btn-sm transition-hover">Reply</button>
+                                    </div>
+                                </form>
+                            </div>
+                            {% for reply in comment.replies %}
+                                <div class="reply-item bg-light border rounded-3 p-3 mt-3 ms-4 shadow-sm">
+                                    <p class="mb-1"><strong class="text-dark">{{ reply.user.username }}</strong> <small class="text-muted">{{ reply.created_at|date:"F j, Y, g:i a" }}</small></p>
+                                    <p class="text-muted mb-2">{{ reply.content }}</p>
+                                    {% for sub_reply in reply.sub_replies %}
+                                        <div class="sub-reply-item bg-secondary bg-opacity-10 border rounded-3 p-3 mt-3 ms-4 shadow-sm">
+                                            <p class="mb-1"><strong class="text-dark">{{ sub_reply.user.username }}</strong> <small class="text-muted">{{ sub_reply.created_at|date:"F j, Y, g:i a" }}</small></p>
+                                            <p class="text-muted mb-2">{{ sub_reply.content }}</p>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% empty %}
+                        <p class="text-muted">No comments yet. Be the first to comment!</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="sidebar-sec sticky-top" style="top: 80px; z-index: 10;">
+                    <!-- Video -->
+                    <div class="video-sec vid-bg mb-4">
+                        <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                            <div class="card-body p-4">
+                                <div class="position-relative mb-3">
+                                    {% if course.link_video %}
+                                        <a href="{{ course.link_video }}" class="video-thumbnail d-block" data-fancybox="video-gallery">
+                                            {% if course.image %}
+                                                <img src="{{ course.image.url }}" alt="{{ course.name }} Image" class="img-fluid rounded-3 transition-hover" style="width: 100%; height: 200px; object-fit: cover;">
+                                            {% else %}
+                                                <img src="{% static 'assets/img/user/logo.5272a797c07c.png' %}" alt="Default Image" class="img-fluid rounded-3 transition-hover" style="width: 100%; height: 200px; object-fit: cover;">
+                                            {% endif %}
+                                            <div class="play-icon position-absolute top-50 start-50 translate-middle bg-primary bg-opacity-75 rounded-circle d-flex align-items-center justify-content-center transition-hover" style="width: 60px; height: 60px;">
+                                                <i class="fa-solid fa-play text-white fa-2x"></i>
+                                            </div>
+                                        </a>
+                                    {% else %}
+                                        <a href="https://www.youtube.com/watch?v=nc6m9WM3Gyw&t=1s" class="video-thumbnail d-block" data-fancybox="video-gallery">
+                                            <img src="{% static 'assets/img/user/logo.5272a797c07c.png' %}" alt="Default Image" class="img-fluid rounded-3 transition-hover" style="width: 100%; height: 200px; object-fit: cover;">
+                                            <div class="play-icon position-absolute top-50 start-50 translate-middle bg-primary bg-opacity-75 rounded-circle d-flex align-items-center justify-content-center transition-hover" style="width: 60px; height: 60px;">
+                                                <i class="fa-solid fa-play text-white fa-2x"></i>
+                                            </div>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                                <div class="video-details text-center">
+                                    <div class="course-fee mb-3">
+                                        <h2 class="fw-bold text-success mb-1">FREE</h2>
+                                        <p class="text-muted mb-0"><span class="text-decoration-line-through">$99.00</span> <span class="badge bg-success">50% off</span></p>
+                                    </div>
+                                    <div class="row gx-2 mb-3">
+                                        <div class="col-6">
+                                            <a href="course-wishlist.html" class="btn btn-outline-primary w-100 transition-hover"><i class="feather-heart me-1"></i> Wishlist</a>
+                                        </div>
+                                        <div class="col-6">
+                                            <a href="javascript:void(0);" class="btn btn-outline-secondary w-100 transition-hover"><i class="feather-share-2 me-1"></i> Share</a>
+                                        </div>
+                                    </div>
+                                    {% if request.user.is_authenticated %}
+                                        {% if is_enrolled %}
+                                            <a href="{% url 'courses:course_learn' request.user.username course.slug %}" class="btn btn-primary w-100 transition-hover">Start Course</a>
+                                        {% else %}
+                                            <form id="enrollForm" method="POST" action="{% url 'courses:enroll' course.id %}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-primary w-100 transition-hover">Enroll Now</button>
+                                            </form>
+                                        {% endif %}
+                                    {% else %}
+                                        <a href="{% url 'authentication:register' %}" class="btn btn-primary w-100 transition-hover">Join Now</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Video -->
+
+                    <!-- Features -->
+                    <div class="card feature-sec border-0 shadow-lg rounded-4">
+                        <div class="card-body p-4">
+                            <h4 class="fw-bold text-primary mb-3">Includes</h4>
+                            <ul class="course-details list-unstyled">
+                                <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                                    <span class="fw-medium text-dark">Course Number:</span>
+                                    <span class="text-muted">{{ course.course_number }}</span>
+                                </li>
+                                <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                                    <span class="fw-medium text-dark">Class Run:</span>
+                                    <span class="text-muted">{{ course.course_run }}</span>
+                                </li>
+                                <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                                    <span class="fw-medium text-dark">Class Start:</span>
+                                    <span class="text-muted">{{ course.start_date }}</span>
+                                </li>
+                                <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                                    <span class="fw-medium text-dark">Class End:</span>
+                                    <span class="text-muted">{{ course.end_date }}</span>
+                                </li>
+                                <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                                    <span class="fw-medium text-dark">Enroll Start:</span>
+                                    <span class="text-muted">{{ course.start_enrol }}</span>
+                                </li>
+                                <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                                    <span class="fw-medium text-dark">Enroll End:</span>
+                                    <span class="text-muted">{{ course.end_enrol }}</span>
+                                </li>
+                                <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                                    <span class="fw-medium text-dark">Hours Effort:</span>
+                                    <span class="text-muted">{{ course.hour }}</span>
+                                </li>
+                                <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                                    <span class="fw-medium text-dark">Language:</span>
+                                    <span class="text-muted">{{ course.language }}</span>
+                                </li>
+                                <li class="d-flex justify-content-between align-items-center py-2">
+                                    <span class="fw-medium text-dark">Level:</span>
+                                    <span class="text-muted">{{ course.level }}</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- /Features -->
+                </div>
+            </div>
         </div>
-    {% empty %}
-        <p class="text-muted">No comments yet. Be the first to comment!</p>
-    {% endfor %}
-</div>
+    </div>
+</section>
+<!-- /Course Content -->
 
+<!-- Scripts -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        Fancybox.bind('[data-fancybox="video-gallery"]', {
+            infinite: false,
+            arrows: true,
+            closeButton: "top",
+            dragToClose: true
+        });
+    });
 
+    function enrollCourse() {
+        fetch("{% url 'courses:enroll_course' course.id %}", {
+            method: "GET",
+            headers: { "X-Requested-With": "XMLHttpRequest" }
+        })
+        .then(response => response.json())
+        .then(data => alert(data.message));
+    }
+</script>
 
-							
-						</div>	
-						
-						<div class="col-lg-4">
-							<div class="sidebar-sec">
-								<!-- Video -->
-								<div class="video-sec vid-bg mb-4">
-									<div class="card border-0 shadow-sm">
-										<div class="card-body p-4">
-											<!-- Video Thumbnail with Centered Play Icon -->
-											<div class="position-relative mb-3">
-												{% if course.link_video %}
-													<a href="{{ course.link_video }}" class="video-thumbnail d-block" data-fancybox="video-gallery">
-														{% if course.image %}
-															<img src="{{ course.image.url }}" alt="{{ course.name }} Image" class="img-fluid rounded-3" style="width: 100%; height: 200px; object-fit: cover;">
-														{% else %}
-															<img src="{% static 'assets/img/user/logo.5272a797c07c.png' %}" alt="Default Image" class="img-fluid rounded-3" style="width: 100%; height: 200px; object-fit: cover;">
-														{% endif %}
-														<div class="play-icon position-absolute top-50 start-50 translate-middle bg-primary bg-opacity-75 rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-															<i class="fa-solid fa-play text-white fa-2x"></i>
-														</div>
-													</a>
-												{% else %}
-													<a href="https://www.youtube.com/watch?v=nc6m9WM3Gyw&t=1s" class="video-thumbnail d-block" data-fancybox="video-gallery">
-														<img src="{% static 'assets/img/user/logo.5272a797c07c.png' %}" alt="Default Image" class="img-fluid rounded-3" style="width: 100%; height: 200px; object-fit: cover;">
-														<div class="play-icon position-absolute top-50 start-50 translate-middle bg-primary bg-opacity-75 rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-															<i class="fa-solid fa-play text-white fa-2x"></i>
-														</div>
-													</a>
-												{% endif %}
-											</div>
-						
-											<!-- Video Details -->
-											<div class="video-details text-center">
-												<div class="course-fee mb-3">
-													<h2 class="fw-bold text-success mb-1">FREE</h2>
-													<p class="text-muted mb-0"><span class="text-decoration-line-through">$99.00</span> <span class="badge bg-success">50% off</span></p>
-												</div>
-												<div class="row gx-2 mb-3">
-													<div class="col-6">
-														<a href="course-wishlist.html" class="btn btn-outline-primary w-100"><i class="feather-heart me-1"></i> Add to Wishlist</a>
-													</div>
-													<div class="col-6">
-														<a href="javascript:void(0);" class="btn btn-outline-secondary w-100"><i class="feather-share-2 me-1"></i> Share</a>
-													</div>
-												</div>
-												{% if request.user.is_authenticated %}
-													{% if is_enrolled %}
-														<a href="{% url 'courses:course_learn' request.user.username course.slug %}" class="btn btn-primary w-100">Started Courses</a>
-													{% else %}
-														{% if messages %}
-															<div class="messages mb-3">
-																{% for message in messages %}
-																	<div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-																		{{ message }}
-																		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-																	</div>
-																{% endfor %}
-															</div>
-														{% endif %}
-														<form id="enrollForm" method="POST" action="{% url 'courses:enroll' course.id %}">
-															{% csrf_token %}
-															<button type="submit" class="btn btn-primary w-100">Enroll Now</button>
-														</form>
-													{% endif %}
-												{% else %}
-													<a href="{% url 'authentication:register' %}" class="btn btn-primary w-100">Join Now</a>
-												{% endif %}
-											</div>
-										</div>
-									</div>
-								</div>
-								<!-- /Video -->
-						
-								<!-- Include Fancybox JS (Updated to v5) -->
-								<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
-								<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
-								<script>
-									Fancybox.bind('[data-fancybox="video-gallery"]', {
-										infinite: false,
-										arrows: true,
-										closeButton: "top",
-										dragToClose: true
-									});
-								</script>
-						
-								<!-- Features (Normal Flow) -->
-								<div class="card feature-sec border-0 shadow-sm">
-									<div class="card-body p-4">
-										<div class="cat-title mb-3">
-											<h4 class="fw-bold text-primary">Includes</h4>
-										</div>
-										<ul class="course-details list-unstyled">
-											<li class="d-flex justify-content-between align-items-center py-2 border-bottom">
-												<span class="fw-medium text-dark">Course Number:</span>
-												<span class="text-muted">{{ course.course_number }}</span>
-											</li>
-											<li class="d-flex justify-content-between align-items-center py-2 border-bottom">
-												<span class="fw-medium text-dark">Class Run:</span>
-												<span class="text-muted">{{ course.course_run }}</span>
-											</li>
-											<li class="d-flex justify-content-between align-items-center py-2 border-bottom">
-												<span class="fw-medium text-dark">Class Start:</span>
-												<span class="text-muted">{{ course.start_date }}</span>
-											</li>
-											<li class="d-flex justify-content-between align-items-center py-2 border-bottom">
-												<span class="fw-medium text-dark">Class End:</span>
-												<span class="text-muted">{{ course.end_date }}</span>
-											</li>
-											<li class="d-flex justify-content-between align-items-center py-2 border-bottom">
-												<span class="fw-medium text-dark">Enroll Start:</span>
-												<span class="text-muted">{{ course.start_enrol }}</span>
-											</li>
-											<li class="d-flex justify-content-between align-items-center py-2 border-bottom">
-												<span class="fw-medium text-dark">Enroll End:</span>
-												<span class="text-muted">{{ course.end_enrol }}</span>
-											</li>
-											<li class="d-flex justify-content-between align-items-center py-2 border-bottom">
-												<span class="fw-medium text-dark">Hours Effort:</span>
-												<span class="text-muted">{{ course.hour }}</span>
-											</li>
-											<li class="d-flex justify-content-between align-items-center py-2 border-bottom">
-												<span class="fw-medium text-dark">Language:</span>
-												<span class="text-muted">{{ course.language }}</span>
-											</li>
-											<li class="d-flex justify-content-between align-items-center py-2">
-												<span class="fw-medium text-dark">Level:</span>
-												<span class="text-muted">{{ course.level }}</span>
-											</li>
-										</ul>
-									</div>
-								</div>
-								<!-- /Features -->
-							</div>
-						</div>
-					
-					</div>	
-				</div>
-			</section>
-			<!-- /Pricing Plan -->
-
-			<script>
-				function enrollCourse() {
-					fetch("{% url 'courses:enroll_course' course.id %}", {
-						method: "GET",
-						headers: { "X-Requested-With": "XMLHttpRequest" }
-					})
-					.then(response => response.json())
-					.then(data => alert(data.message));
-				}
-				</script>
-				
+<!-- Custom CSS -->
+<style>
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #007bff 0%, #00c4cc 100%);
+    }
+    .transition-hover {
+        transition: all 0.3s ease;
+    }
+    .transition-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15) !important;
+    }
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2) !important;
+    }
+    .accordion-button:not(.collapsed) {
+        background-color: #007bff !important;
+        color: white !important;
+    }
+    .accordion-button:focus {
+        box-shadow: none;
+    }
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+    /* Pastikan sidebar tidak menutupi menu */
+    .sidebar-sec {
+        z-index: 10; /* Lebih rendah dari navbar */
+    }
+    /* Navbar dari base.html diasumsikan memiliki class .navbar */
+    .navbar {
+        z-index: 1000 !important; /* Pastikan lebih tinggi dari semua konten */
+        position: sticky;
+        top: 0;
+    }
+</style>
 {% endblock %}

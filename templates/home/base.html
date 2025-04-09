@@ -22,8 +22,9 @@
             padding: 100px 0;
         }
         .navbar {
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            }
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000 !important; /* Pastikan navbar selalu di atas */
+        }
         .card {
             border: none;
             transition: transform 0.3s;
@@ -79,12 +80,11 @@
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-		.card-img-top {
-			width: 100%;  /* Mengatur lebar gambar agar mengikuti lebar kontainer */
-			height: 200px;  /* Tentukan tinggi tetap untuk gambar */
-			object-fit: cover;  /* Mengatur gambar agar tetap terpotong dengan proporsional */
-		}
-		
+        .card-img-top {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
         @media (max-width: 991px) {
             .navbar-collapse .d-flex {
                 flex-direction: column;
@@ -99,108 +99,85 @@
                 text-align: center;
             }
         }
-		@media (max-width: 768px) {
-			.card-img-top {
-				height: 150px;  /* Sesuaikan tinggi gambar di layar kecil */
-			}
-		}
-		
+        @media (max-width: 768px) {
+            .card-img-top {
+                height: 150px;
+            }
+        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-   
 </head>
 <body>
     <!-- Navbar -->
-    <!-- Navbar -->
-<nav class="navbar navbar-expand-lg bg-white sticky-top">
-    <div class="container">
-        <a class="navbar-brand fw-bold" href="{% url 'authentication:home' %}">LMSKu</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item"><a class="nav-link" href="{% url 'authentication:course_list' %}">Courses</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">About</a></li>
-            </ul>
-
-            <div class="d-flex align-items-center flex-column flex-lg-row mt-3 mt-lg-0">
-                <!-- Form pencarian (responsive) -->
-                <form class="d-flex me-lg-2 w-100 w-lg-75" role="search" action="{% url 'authentication:search' %}" method="get">
-                    {% csrf_token %}
-                    <input class="form-control me-2" type="search" name="q" placeholder="Search..." aria-label="Search">
-                    <button class="btn btn-outline-primary w-auto" type="submit"><i class="bi bi-search"></i></button>
-                </form>
-
-                <!-- Menu navigasi login atau dashboard (responsive) -->
-               <ul class="navbar-nav w-100 w-lg-auto">
-                    {% if request.user.is_authenticated %}
-                        <!-- Jika pengguna adalah member -->
-                        {% if request.user.is_learner %}
-                            <li class="nav-item w-100">
-                                <a class="btn btn-outline-info w-100" href="{% url 'authentication:dashbord' %}">
-                                    <i class="fa fa-tachometer" aria-hidden="true"></i> {{request.user.username}} Dashboard
-                                </a>
-                            </li>
-                        <!-- Jika pengguna adalah instructor -->
-                        {% elif request.user.is_instructor %}
-                            <li class="nav-item w-100">
-                                <a class="btn btn-outline-info w-100" href="{% url 'authentication:dasbord' %}">
-                                    <i class="fa fa-tachometer" aria-hidden="true"></i> {{request.user.username}} Dashboard
-                                </a>
-                            </li>
-                        <!-- Jika pengguna adalah partner -->
-                        {% elif request.user.is_partner %}
-                            <li class="nav-item w-100">
-                                <a class="btn btn-outline-info w-100" href="{% url 'authentication:dasbord' %}">
-                                    <i class="fa fa-tachometer" aria-hidden="true"></i> {{request.user.username}} Dashboard
-                                </a>
-                            </li>
-                        <!-- Jika pengguna adalah superuser -->
-                        {% elif request.user.is_superuser %}
-                            <li class="nav-item w-100">
-                                <a class="btn btn-outline-info w-100" href="{% url 'authentication:dasbord' %}">
-                                    <i class="fa fa-tachometer" aria-hidden="true"></i> {{request.user.username}} Dashboard
-                                </a>
-                            </li>
-                        <!-- Jika pengguna adalah member biasa -->
-                        {% elif request.user.is_member %}
-                            <li class="nav-item w-100">
-                                <a class="btn btn-outline-info w-100" href="#">
-                                    <i class="fa fa-tachometer" aria-hidden="true"></i> Member Dashboard
-                                </a>
-                            </li>
+    <nav class="navbar navbar-expand-lg bg-white sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{% url 'authentication:home' %}">LMSKu</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'authentication:course_list' %}">Courses</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+                </ul>
+                <div class="d-flex align-items-center flex-column flex-lg-row mt-3 mt-lg-0">
+                    <form class="d-flex me-lg-2 w-100 w-lg-75" role="search" action="{% url 'authentication:search' %}" method="get">
+                        {% csrf_token %}
+                        <input class="form-control me-2" type="search" name="q" placeholder="Search..." aria-label="Search">
+                        <button class="btn btn-outline-primary w-auto" type="submit"><i class="bi bi-search"></i></button>
+                    </form>
+                    <ul class="navbar-nav w-100 w-lg-auto">
+                        {% if request.user.is_authenticated %}
+                            {% if request.user.is_learner %}
+                                <li class="nav-item w-100">
+                                    <a class="btn btn-outline-info w-100" href="{% url 'authentication:dashbord' %}">
+                                        <i class="fa fa-tachometer" aria-hidden="true"></i> {{request.user.username}} Dashboard
+                                    </a>
+                                </li>
+                            {% elif request.user.is_instructor %}
+                                <li class="nav-item w-100">
+                                    <a class="btn btn-outline-info w-100" href="{% url 'authentication:dasbord' %}">
+                                        <i class="fa fa-tachometer" aria-hidden="true"></i> {{request.user.username}} Dashboard
+                                    </a>
+                                </li>
+                            {% elif request.user.is_partner %}
+                                <li class="nav-item w-100">
+                                    <a class="btn btn-outline-info w-100" href="{% url 'authentication:dasbord' %}">
+                                        <i class="fa fa-tachometer" aria-hidden="true"></i> {{request.user.username}} Dashboard
+                                    </a>
+                                </li>
+                            {% elif request.user.is_superuser %}
+                                <li class="nav-item w-100">
+                                    <a class="btn btn-outline-info w-100" href="{% url 'authentication:dasbord' %}">
+                                        <i class="fa fa-tachometer" aria-hidden="true"></i> {{request.user.username}} Dashboard
+                                    </a>
+                                </li>
+                            {% elif request.user.is_member %}
+                                <li class="nav-item w-100">
+                                    <a class="btn btn-outline-info w-100" href="#">
+                                        <i class="fa fa-tachometer" aria-hidden="true"></i> Member Dashboard
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="nav-item w-100">
+                                    <a class="btn btn-outline-info w-100" href="{% url 'authentication:default_dashboard' %}">
+                                        <i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard
+                                    </a>
+                                </li>
+                            {% endif %}
                         {% else %}
-                            <!-- Default jika status lain -->
                             <li class="nav-item w-100">
-                                <a class="btn btn-outline-info w-100" href="{% url 'authentication:default_dashboard' %}">
-                                    <i class="fa fa-tachometer" aria-hidden="true"></i> Dashboard
-                                </a>
+                                <a class="btn btn-outline-info w-100" href="{% url 'authentication:login' %}">Login</a>
                             </li>
                         {% endif %}
-                    {% else %}
-                        <li class="nav-item w-100">
-                            <a class="btn btn-outline-info w-100" href="{% url 'authentication:login' %}">Login</a>
-                        </li>
-                    {% endif %}
-                </ul>
-
+                    </ul>
+                </div>
             </div>
         </div>
-    </div>
-</nav>
+    </nav>
 
-  
-
-
-
-
-
-  
-{% block content %}
-{% endblock %}
-
-  
+    {% block content %}
+    {% endblock %}
 
     <!-- Footer -->
     <footer class="bg-dark text-white text-center py-3">
@@ -208,89 +185,59 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
-		$(document).ready(function(){
-			// Get CSRF token from the cookies (if you need to include it for any post requests)
-			//var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-			
-			// Send an AJAX request to get popular courses
-			$.ajax({
-				url: '/popular_courses/',  // URL for the popular_courses view
-				type: 'GET',  // Use GET for fetching the data
-				dataType: 'json',  // Expect a JSON response
-			
-				success: function(response) {
-					var courses = response.courses;
-					
-					// Loop through each course in the response
-					courses.forEach(function(course) {
-						var courseUrl = '/course-detail/' + course.id + '/' + course.slug + '/'; 
-						var instructor = '/instructor-profile/'+course.instructor__user__username+'/';
-						var university = '/org-partner/'+course.org_partner__name__slug+'/';
-						// Append course info dynamically to the courses list
-						$('#courses-list').append(`
-
-						
-                      <div class="col-6 col-md-4 col-lg-3">
-    <a href="${courseUrl}" class="text-decoration-none">
-        <div class="card border-{% cycle 'primary' 'success' 'danger' 'warning' 'info' 'dark' %} shadow-sm rounded-4 h-100 transition-effect">
-            <!-- Gambar Thumbnail Penuh di Atas -->
-            <img src="${course.image}" class="card-img-top rounded-top-4" alt="Course Image" style="object-fit: cover; height: 120px;">
-
-            <!-- Konten Card -->
-            <div class="card-body p-3 d-flex flex-column align-items-center">
-                <!-- Konten Utama -->
-                <div class="w-100">
-                    <!-- Nama Kursus -->
-                    <h5 class="fw-bold mb-2 text-truncate" style="font-size: 1rem; max-width: 100%;">${course.course_name}</h5>
-
-                    <!-- Layout Desktop & Mobile: Logo di Kiri -->
-                    <div class="d-flex align-items-center mb-2">
-                        <img src="${course.org_partner__logo}" class="rounded-circle border border-white" alt="Instructor" style="width: 35px; height: 35px; object-fit: cover; border-width: 2px;">
-                        <div class="ms-2">
-                            <p class="small mb-0"><a href="${university}" class="text-dark">${course.org_partner__name__name}</a></p>
-                            <p class="text-muted" style="font-size: 0.75rem; margin-bottom: 0;"><a href="${instructor}" class="text-dark">${course.instructor__user__first_name} ${course.instructor__user__last_name}</a></p>
-                        </div>
-                    </div>
-
-                    <!-- Rating Bintang -->
-                    <div class="d-flex align-items-center justify-content-center mb-2">
-                        <span class="text-warning me-1">
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-half"></i>
-                            <i class="bi bi-star"></i>
-                        </span>
-                        <span class="small">4.5 (${course.num_enrollments} )</span> <!-- Ganti dengan data dinamis -->
-                    </div>
-
-                    <!-- Harga -->
-                    <div class="d-flex justify-content-between w-100 mb-3 flex-wrap">
-                        <p class="mb-0 fw-bold" style="font-size: 1.1rem;">IDR. 100.000</p> <!-- Ganti dengan harga dinamis -->
-                        <span class="badge bg-success p-2">Diskon 20%</span> <!-- Opsional -->
-                    </div>
-
-                    <!-- Tombol Detail -->
-                    <a href="${courseUrl}" class="btn btn-outline-{% cycle 'primary' 'success' 'danger' 'warning' 'info' 'dark' %} btn-sm w-100">Detail</a>
-                </div>
-            </div>
-        </div>
-    </a>
-</div>
-
-
-						`);
-					});
-				},
-				error: function(xhr, status, error) {
-					console.log("Error: " + error);
-				}
-			});
-		});
-       
-		</script>    
+        $(document).ready(function(){
+            $.ajax({
+                url: '/popular_courses/',
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    var courses = response.courses;
+                    courses.forEach(function(course) {
+                        var courseUrl = '/course-detail/' + course.id + '/' + course.slug + '/'; 
+                        var instructor = '/instructor-profile/'+course.instructor__user__username+'/';
+                        var university = '/org-partner/'+course.org_partner__name__slug+'/';
+                        $('#courses-list').append(`
+                            <div class="col-6 col-md-4 col-lg-3">
+                                <a href="${courseUrl}" class="text-decoration-none">
+                                    <div class="card border-{% cycle 'primary' 'success' 'danger' 'warning' 'info' 'dark' %} shadow-sm rounded-4 h-100 transition-effect">
+                                        <img src="${course.image}" class="card-img-top rounded-top-4" alt="Course Image" style="object-fit: cover; height: 120px;">
+                                        <div class="card-body p-3 d-flex flex-column align-items-center">
+                                            <div class="w-100">
+                                                <h5 class="fw-bold mb-2 text-truncate" style="font-size: 1rem; max-width: 100%;">${course.course_name}</h5>
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <img src="${course.org_partner__logo}" class="rounded-circle border border-white" alt="Instructor" style="width: 35px; height: 35px; object-fit: cover; border-width: 2px;">
+                                                    <div class="ms-2">
+                                                        <p class="small mb-0"><a href="${university}" class="text-dark">${course.org_partner__name__name}</a></p>
+                                                        <p class="text-muted" style="font-size: 0.75rem; margin-bottom: 0;"><a href="${instructor}" class="text-dark">${course.instructor__user__first_name} ${course.instructor__user__last_name}</a></p>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex align-items-center justify-content-center mb-2">
+                                                    <span class="text-warning me-1">
+                                                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i><i class="bi bi-star"></i>
+                                                    </span>
+                                                    <span class="small">4.5 (${course.num_enrollments})</span>
+                                                </div>
+                                                <div class="d-flex justify-content-between w-100 mb-3 flex-wrap">
+                                                    <p class="mb-0 fw-bold" style="font-size: 1.1rem;">IDR. 100.000</p>
+                                                    <span class="badge bg-success p-2">Diskon 20%</span>
+                                                </div>
+                                                <a href="${courseUrl}" class="btn btn-outline-{% cycle 'primary' 'success' 'danger' 'warning' 'info' 'dark' %} btn-sm w-100">Detail</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        `);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.log("Error: " + error);
+                }
+            });
+        });
+    </script>    
 </body>
 </html>
