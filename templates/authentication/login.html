@@ -1,5 +1,7 @@
 {% extends 'home/base.html' %}
 {% load static %}
+{% load socialaccount %}
+
 {% block content %}
 
 <!-- Main Wrapper -->
@@ -7,21 +9,22 @@
     <div class="container">
         <div class="row shadow-lg rounded-3 overflow-hidden">
             <!-- Login Banner -->
-              <!-- Login Banner Section -->
-                <div class="col-md-6 d-none d-md-flex justify-content-center align-items-center">
-                    <div class="text-center">
-                        <img src="{% static 'assets/img/login-img.png' %}" class="img-fluid mb-3" alt="Logo">
-                        <h2>Welcome to <br>DreamsLMS Courses</h2>
-                        <p class="text-muted">Start your learning journey with us. Unlock endless possibilities!</p>
-                    </div>
+            <div class="col-md-6 d-none d-md-flex justify-content-center align-items-center bg-light">
+                <div class="text-center">
+                    <img src="{% static 'assets/img/login-img.png' %}" class="img-fluid mb-3" alt="Logo">
+                    <h2 class="fw-bold text-dark mb-3">Welcome to <br>DreamsLMS Courses</h2>
+                    <p class="text-muted">Start your learning journey with us. Unlock endless possibilities!</p>
                 </div>
+            </div>
             <!-- /Login Banner -->
 
             <!-- Login Form -->
-            <div class="col-md-6 login-wrap-bg bg-white p-5 d-flex align-items-center">
+            <div class="col-md-6 login-wrap-bg bg-white p-5 d-flex flex-column align-items-center">
                 <div class="login-wrapper w-100">
                     <div class="loginbox text-left">
                         <h1 class="fw-bold text-dark mb-4">Sign into Your Account</h1>
+                        
+                        <!-- Flash messages -->
                         {% if messages %}
                             <div class="messages mb-4">
                                 {% for message in messages %}
@@ -32,25 +35,33 @@
                                 {% endfor %}
                             </div>
                         {% endif %}
+                        
+                        <!-- Form -->
                         <form method="post">
                             {% csrf_token %}
+                            {{ form }}
                             
-                           
-                                {{ form }}
-                                
-                        
-                            <div class="d-grid">
-								<br>
-                                &nbsp;
-                                <button class="btn btn-primary btn-start fw-medium rounded-3 py-2" type="submit">Sign In</button>
+                            <!-- Submit Button -->
+                            <div class="d-grid mt-4">
+                                <button class="btn btn-primary btn-lg fw-medium rounded-pill py-2" type="submit">Sign In</button>
                             </div>
                         </form>
-                        <div class="google-bg mt-4">
+                        
+                        <!-- Google Login and Links -->
+                        <div class="google-login mt-4 text-center">
+                            <a href="{% provider_login_url 'google' %}" class="btn btn-outline-danger w-100">
+                                <i class="fab fa-google me-2"></i> Sign In with Google
+                            </a>
+                        </div>
+                        
+                        <div class="text-center mt-3">
                             <p class="mb-2 text-muted">New User? <a href="{% url 'authentication:register' %}" class="text-primary fw-medium">Create an Account</a></p>
                             <p class="mb-0 text-muted">Forgot Password? <a href="{% url 'authentication:password_reset' %}" class="text-primary fw-medium">Reset Password</a></p>
                         </div>
                     </div>
-                    <div class="back-home mt-3">
+                    
+                    <!-- Back to Home Link -->
+                    <div class="back-home mt-4 text-center">
                         <a href="{% url 'authentication:home' %}" class="btn btn-link text-muted"><i class="feather-arrow-left me-1"></i> Back to Home</a>
                     </div>
                 </div>
@@ -60,8 +71,5 @@
     </div>
 </div>
 <!-- /Main Wrapper -->
-
-
-
 
 {% endblock %}

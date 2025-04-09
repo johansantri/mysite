@@ -1,94 +1,92 @@
-
 {% extends 'home/tes.html' %}
-  
+{% load extra_filters %}
 
 {% block content %}
+<div class="container my-5 personal-address">
+    <!-- Header Section -->
+    <div class="resume-header text-center mb-5 bg-light p-4 rounded shadow-sm">
+        <h1 class="display-4 fw-bold text-dark">{{ user.first_name }} {{ user.last_name }}</h1>
+        <p class="lead text-muted mb-2">{{ user.hobby }}</p>
+        <p class="text-secondary">
+            <i class="fas fa-envelope me-2"></i><strong>Email:</strong> {{ user.email }} | 
+            <i class="fas fa-phone me-2"></i><strong>Phone:</strong> {{ user.phone }}
+        </p>
+    </div>
 
-
-
-    
-  	
-
-      
-
-       
-          <div class="container personal-address">
-            <!-- Header Section -->
-            <div class="resume-header text-center " >
-                <h1>{{user.first_name}} {{user.last_name}}</h1>
-                <p>{{user.hobby}}</p>
-                <p>Email: {{user.email}} | Phone: {{user.phone}} </p>
-            </div>
-        
+    <!-- Main Content -->
+    <div class="row g-4">
+        <!-- Left Column -->
+        <div class="col-lg-8">
             <!-- About Section -->
-            <div class="resume-section">
-                <h3>About Me</h3>
+            <div class="resume-section mb-4 bg-white p-4 rounded shadow-sm">
+                <h3 class="h4 text-primary mb-3 border-bottom pb-2">About Me</h3>
                 {% if instructor %}
-                <p>{{instructor.bio }}.</p>
+                    <p class="text-dark">{{ instructor.bio }}</p>
                 {% endif %}
             </div>
-        
+
             <!-- Experience Section -->
-            <div class="resume-section">
-                <h3>Experience</h3>
-                <div>
-                    <h6>{{user.hobby}}</h6>
-                    <p><strong>{{ instructor.experience_years }}.</strong> | Experience</p>
-                    <ul>
+            <div class="resume-section mb-4 bg-white p-4 rounded shadow-sm">
+                <h3 class="h4 text-primary mb-3 border-bottom pb-2">Experience</h3>
+                <div class="experience-item">
+                    <h6 class="text-muted fw-semibold">{{ user.hobby }}</h6>
+                    <p class="mb-2"><strong>{{ instructor.experience_years }} years</strong> | Experience</p>
+                    <ul class="list-group list-group-flush">
                         {% if instructor %}
-                        <li>{{ instructor.expertise }}</li>
+                            <li class="list-group-item border-0">{{ instructor.expertise }}</li>
                         {% endif %}
-                       
                     </ul>
                 </div>
-             
             </div>
-        
+
             <!-- Education Section -->
-            <div class="resume-section">
-                <h3>Education</h3>
-                <div>
-                    
-                    <p><strong>{{user.education}}</strong> | {{user.university}}</p>
-                    
-                </div>
-            </div>
-        
-            <!-- Skills Section -->
-            <div class="resume-section">
-                <h3>Skills</h3>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <p class="skill-item">{{ instructor.tech }}</p>
-                        
-                    </div>
-                   
-                </div>
-            </div>
-        
-            <!-- Contact Section -->
-            <div class="resume-section">
-                <h3>Contact</h3>
-                <p><strong>Email:</strong> {{user.email}}</p>
-                <p><strong>Phone:</strong> {{user.phone}}</p>
-                
-                <p><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/johndoe">linkedin.com/in/johndoe</a></p>
+            <div class="resume-section mb-4 bg-white p-4 rounded shadow-sm">
+                <h3 class="h4 text-primary mb-3 border-bottom pb-2">Education</h3>
+                <p class="text-dark">
+                    <strong>{{ user.education }}</strong> | 
+                    <span class="text-muted">{{ user.university }}</span>
+                </p>
             </div>
         </div>
 
-                  <h6 style="text-align:right">
-                    <a href="#" 
-                    hx-get="{% url "authentication:edit-profile" user.id %}" 
-                    hx-target=".personal-address" 
-                    hx-swap="innerHTML">
-                   <i class="fa fa-edit" aria-hidden="true"> Change</i>
-                 </a>
-                  </h6>
-           
-              
- 
+        <!-- Right Column -->
+        <div class="col-lg-4">
+            <!-- Skills Section -->
+            <div class="resume-section mb-4 bg-white p-4 rounded shadow-sm">
+                <h3 class="h4 text-primary mb-3 border-bottom pb-2">Skills</h3>
+                <div class="d-flex flex-wrap gap-2">
+                    {% if instructor.tech %}
+                        {% for skill in instructor.tech|split:"," %}
+                            <span class="badge bg-primary text-white p-2">{{ skill|trim }}</span>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
 
-    
+            <!-- Contact Section -->
+            <div class="resume-section mb-4 bg-white p-4 rounded shadow-sm">
+                <h3 class="h4 text-primary mb-3 border-bottom pb-2">Contact</h3>
+                <ul class="list-unstyled text-dark">
+                    <li><i class="fas fa-envelope me-2 text-primary"></i><strong>Email:</strong> {{ user.email }}</li>
+                    <li><i class="fas fa-phone me-2 text-primary"></i><strong>Phone:</strong> {{ user.phone }}</li>
+                    <li><i class="fab fa-linkedin me-2 text-primary"></i><strong>LinkedIn:</strong> 
+                        <a href="https://www.linkedin.com/in/johndoe" target="_blank" class="text-primary text-decoration-none">linkedin.com/in/johndoe</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Link -->
+    <div class="text-end mt-4">
+        <a href="#" class="btn btn-outline-primary btn-sm px-3 py-2"
+           hx-get="{% url 'authentication:edit-profile' user.id %}"
+           hx-target=".personal-address"
+           hx-swap="innerHTML">
+            <i class="fa fa-edit me-2" aria-hidden="true"></i> Edit Profile
+        </a>
+    </div>
+</div>
 
 <!-- Your scripts -->
 <script>

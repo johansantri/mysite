@@ -26,6 +26,7 @@ urlpatterns = [
     path('', include('instructor.urls', namespace='instructor')),
     path('admin/', admin.site.urls),
     path('captcha/', include('captcha.urls')),
+    path('accounts/',include("allauth.urls")),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += [
     path("ckeditor5/", include('django_ckeditor_5.urls')),

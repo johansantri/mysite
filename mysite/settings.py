@@ -26,15 +26,15 @@ SECRET_KEY = 'django-insecure-*t=li&h7o=sj40!ic&)p+8!fy3p@*tfg+mz6!xuftigv_qa9yy
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True #False
-
-ALLOWED_HOSTS = ['127.0.0.1','localhost','ini.icei.ac.id','20.11.247.222']
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
-X_FRAME_OPTIONS = 'DENY'
-SECURE_SSL_REDIRECT = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
-RATELIMIT_IP_META_KEY = 'HTTP_X_REAL_IP'
-CSRF_TRUSTED_ORIGINS = ['https://ini.icei.ac.id']
+ALLOWED_HOSTS = ['127.0.0.1','localhost']
+#ALLOWED_HOSTS = ['127.0.0.1','localhost','ini.icei.ac.id','20.11.247.222']
+#CSRF_COOKIE_SECURE = True
+#SESSION_COOKIE_SECURE = True
+#X_FRAME_OPTIONS = 'DENY'
+#SECURE_SSL_REDIRECT = True
+#SECURE_CONTENT_TYPE_NOSNIFF = True
+#RATELIMIT_IP_META_KEY = 'HTTP_X_REAL_IP'
+#CSRF_TRUSTED_ORIGINS = ['https://ini.icei.ac.id']
 
 
 
@@ -57,6 +57,11 @@ INSTALLED_APPS = [
     'import_export',
     'django_ckeditor_5',
     'django_ratelimit',
+    'django.contrib.sites',  # Required by django-allauth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',  # Google provider
     
 ]
 
@@ -68,6 +73,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'mysite.urls'
@@ -135,11 +141,27 @@ AUTH_USER_MODEL = 'authentication.CustomUser'
 
 LOGIN_URL = 'authentication:login'  # Ensure login page is properly redirected
 LOGIN_REDIRECT_URL = 'authentication:home'  # After login, redirect to home
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+SITE_ID = 1
+#SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['profile', 'email']
 
-
+SOCIALACCOUNT_PROVIDERS = {
+    'google':{
+        'APP':{
+            'client_id':'685028379285-6frcirokho5copovj8s61s33251bs8p6.apps.googleusercontent.com',
+            'secret':'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',
+            'key':''
+        }
+    }
+}
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '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'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '<your-client-secret>'
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
-
+SOCIALACCOUNT_LOGIN_ON_GET=True
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'

@@ -16,6 +16,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/2.0.4/htmx.min.js" integrity="sha512-2kIcAizYXhIn8TzUvqzEDZNuDZ+aW7yE/+f1HJHXFjQcGNfv1kqzJSTBRBSlOgp6B/KZsz1K0a3ZTqP9dnxioQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <style>
         body {
@@ -124,8 +125,8 @@
                                 {% endif %}
                             </a>
                             <div>
-                                <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
-                                <p class="mb-1 text-muted">{{ request.user.hobby }}</p>
+                                <p class="mb-0 text-white fw-bold"><a href="{% url 'authentication:profile' request.user.username %}">{{ request.user.first_name }} {{ request.user.last_name }}</a></p>
+                                <small class="text-white">{{ request.user.hobby }}</small>
                                 {% if not user.university %}
                                 <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
                                 {% else %}
@@ -145,9 +146,9 @@
                                         Audit
                                     {% elif request.user.is_learner %}
                                        
-                                        <a href="{% url 'courses:instructor_add' %}" class="btn btn-warning btn-sm">Become an instructor</a>
+                                        <a href="{% url 'courses:instructor_add' %}" >Become an instructor</a>
                                     {% else %}
-                                        <a href="{% url 'courses:instructor_add' %}" class="btn btn-warning btn-sm">Become an instructor</a>
+                                        <a href="{% url 'courses:instructor_add' %}" >Become an instructor</a>
                                     {% endif %}
                                     
                                   </span>
@@ -169,8 +170,8 @@
                                 {% endif %}
                             </a>
                             <div>
-                                <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
-                                <p class="mb-1 text-muted">{{ request.user.hobby }}</p>
+                                <p class="mb-0 text-white fw-bold"><a href="{% url 'authentication:profile' request.user.username %}">{{ request.user.first_name }} {{ request.user.last_name }}</a></p>
+                                <small class="mb-1 text-white">{{ request.user.hobby }}</small>
                                 {% if not user.university %}
                                 <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
                                 {% else %}
@@ -240,8 +241,8 @@
                                 {% endif %}
                             </a>
                             <div>
-                                <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
-                                <p class="mb-1 text-muted">{{ request.user.hobby }}</p>
+                                <p class="mb-0 text-white fw-bold"><a href="{% url 'authentication:profile' request.user.username %}">{{ request.user.first_name }} {{ request.user.last_name }}</a></p>
+                                <small class="mb-1 text-muted">{{ request.user.hobby }}</small>
                                 {% if not user.university %}
                                 <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
                                 {% else %}
@@ -297,8 +298,8 @@
                                             {% endif %}
                                         </a>
                                     <div>
-                                <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
-                                <p class="mb-1 text-muted">{{ request.user.hobby }}</p>
+                                <p class="mb-0 text-white fw-bold"><a href="{% url 'authentication:profile' request.user.username %}">{{ request.user.first_name }} {{ request.user.last_name }}</a></p>
+                                <small class="mb-1 text-white">{{ request.user.hobby }}</small>
                                 {% if not user.university %}
                                 <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
                                 {% else %}
