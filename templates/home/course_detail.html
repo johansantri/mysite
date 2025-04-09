@@ -29,15 +29,15 @@
                     <div class="course-info d-flex flex-wrap align-items-center bg-white border rounded-3 p-3 shadow-sm">
                         <div class="cou-info d-flex align-items-center me-4 mb-2">
                             <img src="{% static 'assets/img/icon/icon-01.svg' %}" alt="Lessons" class="me-2" style="width: 24px;">
-                            <span class="mb-0 text-dark fw-medium">12+ Lessons</span>
+                            <span class="mb-0 text-dark fw-medium">{{ total_sections }} Lessons</span>
                         </div>
                         <div class="cou-info d-flex align-items-center me-4 mb-2">
                             <img src="{% static 'assets/img/icon/timer-icon.svg' %}" alt="Duration" class="me-2" style="width: 24px;">
-                            <span class="mb-0 text-dark fw-medium">9hr 30min</span>
+                            <span class="mb-0 text-dark fw-medium">{{ total_effort_hours }}hr </span>
                         </div>
                         <div class="cou-info d-flex align-items-center mb-2">
                             <img src="{% static 'assets/img/icon/people.svg' %}" alt="Students" class="me-2" style="width: 24px;">
-                            <span class="mb-0 text-dark fw-medium">32 Students Enrolled</span>
+                            <span class="mb-0 text-dark fw-medium">{{ total_students }} Students Enrolled</span>
                         </div>
                     </div>
                 </div>
@@ -62,7 +62,7 @@
 											<h5 class="subs-title">Course Content</h5>
 										</div>
 										<div class="col-sm-6 text-sm-end">
-											<h6>92 Lectures 10:56:11</h6>
+											<h6>note</h6>
 										</div>
 									</div>
 							
@@ -160,62 +160,62 @@
 								<br>
 						
 								<!-- Instructor -->
-<div class="card instructor-sec border-0 shadow-sm mb-4">
-    <div class="card-body p-4">
-        <h5 class="subs-title fw-bold text-primary mb-4">About the Instructor</h5>
-        <div class="instructor-wrap d-flex flex-wrap align-items-center bg-white border rounded-3 p-3 shadow-sm mb-4">
-            <div class="about-instructor d-flex align-items-center">
-                <div class="abt-instructor-img me-3">
-                    {% if course.instructor.user.photo %}
-                        <a href="{% url 'courses:instructor_profile' course.instructor.user.username %}">
-                            <img src="{{ course.instructor.user.photo.url }}" alt="Instructor" class="img-fluid rounded-circle border" style="width: 60px; height: 60px; object-fit: cover;">
-                        </a>
-                    {% else %}
-                        <a href="{% url 'courses:instructor_profile' course.instructor.user.username %}">
-                            <img src="{% static 'assets/img/user/user1.jpg' %}" alt="Instructor" class="img-fluid rounded-circle border" style="width: 60px; height: 60px; object-fit: cover;">
-                        </a>
-                    {% endif %}
-                </div>
-                <div class="instructor-detail">
-                    <h5 class="mb-1">
-                        <a href="{% url 'courses:instructor_profile' course.instructor.user.username %}" class="text-decoration-none text-dark fw-bold">
-                            {{ course.instructor.user.first_name }} {{ course.instructor.user.last_name }}
-                        </a>
-                    </h5>
-                    <p class="text-muted mb-0">{{ course.instructor.user.hobby }}</p>
-                </div>
-            </div>
-            <div class="rating ms-auto">
-                <i class="fas fa-star text-warning"></i>
-                <i class="fas fa-star text-warning"></i>
-                <i class="fas fa-star text-warning"></i>
-                <i class="fas fa-star text-warning"></i>
-                <i class="fas fa-star text-muted"></i>
-                <span class="d-inline-block average-rating ms-1 fw-bold">4.5 (Instructor Rating)</span>
-            </div>
-        </div>
-        <div class="course-info d-flex flex-wrap align-items-center bg-white border rounded-3 p-3 shadow-sm mb-4">
-            <div class="cou-info d-flex align-items-center me-4 mb-2">
-                <img src="{% static 'assets/img/icon/play.svg' %}" alt="Courses" class="me-2" style="width: 24px;">
-                <span class="mb-0 text-dark fw-medium">5 Courses</span>
-            </div>
-            <div class="cou-info d-flex align-items-center me-4 mb-2">
-                <img src="{% static 'assets/img/icon/icon-01.svg' %}" alt="Lessons" class="me-2" style="width: 24px;">
-                <span class="mb-0 text-dark fw-medium">12+ Lessons</span>
-            </div>
-            <div class="cou-info d-flex align-items-center me-4 mb-2">
-                <img src="{% static 'assets/img/icon/icon-02.svg' %}" alt="Duration" class="me-2" style="width: 24px;">
-                <span class="mb-0 text-dark fw-medium">9hr 30min</span>
-            </div>
-            <div class="cou-info d-flex align-items-center mb-2">
-                <img src="{% static 'assets/img/icon/people.svg' %}" alt="Students" class="me-2" style="width: 24px;">
-                <span class="mb-0 text-dark fw-medium">270,866 Students Enrolled</span>
-            </div>
-        </div>
-        <p class="text-muted">{{ course.instructor.bio }}</p>
-    </div>
-</div>
-<!-- /Instructor -->
+								<div class="card instructor-sec border-0 shadow-sm mb-4">
+									<div class="card-body p-4">
+										<h5 class="subs-title fw-bold text-primary mb-4">About the Instructor</h5>
+										<div class="instructor-wrap d-flex flex-wrap align-items-center bg-white border rounded-3 p-3 shadow-sm mb-4">
+											<div class="about-instructor d-flex align-items-center">
+												<div class="abt-instructor-img me-3">
+													{% if course.instructor.user.photo %}
+														<a href="{% url 'courses:instructor_profile' course.instructor.user.username %}">
+															<img src="{{ course.instructor.user.photo.url }}" alt="Instructor" class="img-fluid rounded-circle border" style="width: 60px; height: 60px; object-fit: cover;">
+														</a>
+													{% else %}
+														<a href="{% url 'courses:instructor_profile' course.instructor.user.username %}">
+															<img src="{% static 'assets/img/user/user1.jpg' %}" alt="Instructor" class="img-fluid rounded-circle border" style="width: 60px; height: 60px; object-fit: cover;">
+														</a>
+													{% endif %}
+												</div>
+												<div class="instructor-detail">
+													<h5 class="mb-1">
+														<a href="{% url 'courses:instructor_profile' course.instructor.user.username %}" class="text-decoration-none text-dark fw-bold">
+															{{ course.instructor.user.first_name }} {{ course.instructor.user.last_name }}
+														</a>
+													</h5>
+													<p class="text-muted mb-0">{{ course.instructor.user.hobby }}</p>
+												</div>
+											</div>
+											<div class="rating ms-auto">
+												<i class="fas fa-star text-warning"></i>
+												<i class="fas fa-star text-warning"></i>
+												<i class="fas fa-star text-warning"></i>
+												<i class="fas fa-star text-warning"></i>
+												<i class="fas fa-star text-muted"></i>
+												<span class="d-inline-block average-rating ms-1 fw-bold">4.5 (Instructor Rating)</span>
+											</div>
+										</div>
+										<div class="course-info d-flex flex-wrap align-items-center bg-white border rounded-3 p-3 shadow-sm mb-4">
+											<div class="cou-info d-flex align-items-center me-4 mb-2">
+												<img src="{% static 'assets/img/icon/play.svg' %}" alt="Courses" class="me-2" style="width: 24px;">
+												<span class="mb-0 text-dark fw-medium">{{ instructor_total_courses }} Courses</span>
+											</div>
+											<div class="cou-info d-flex align-items-center me-4 mb-2">
+												<img src="{% static 'assets/img/icon/icon-01.svg' %}" alt="Sections" class="me-2" style="width: 24px;">
+												<span class="mb-0 text-dark fw-medium">{{ instructor_total_sections }} Sections ({{ instructor_total_materials }} Materials)</span>
+											</div>
+											<div class="cou-info d-flex align-items-center me-4 mb-2">
+												<img src="{% static 'assets/img/icon/icon-02.svg' %}" alt="Duration" class="me-2" style="width: 24px;">
+												<span class="mb-0 text-dark fw-medium">{{ instructor_total_effort_hours }} Hours Effort</span>
+											</div>
+											<div class="cou-info d-flex align-items-center mb-2">
+												<img src="{% static 'assets/img/icon/people.svg' %}" alt="Students" class="me-2" style="width: 24px;">
+												<span class="mb-0 text-dark fw-medium">{{ instructor_total_students }} Students Enrolled</span>
+											</div>
+										</div>
+										<p class="text-muted">{{ course.instructor.bio }}</p>
+									</div>
+								</div>
+								<!-- /Instructor -->
 
 <!-- Reviews -->
 <div class="card review-sec border-0 shadow-sm mb-4">

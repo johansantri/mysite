@@ -1940,21 +1940,57 @@ def course_lms_detail(request, id, slug):
         for reply in comment.replies:
             reply.sub_replies = CourseComment.objects.filter(parent=reply).order_by('-created_at')
 
+    # Fetch sections with related materials for the current course
     section_data = Section.objects.filter(
-            parent=None, courses=course
-        ).prefetch_related('materials', 'assessments')  # Add all necessary relationships
+        parent=None, courses=course
+    ).prefetch_related('materials')
 
+    # Perhitungan untuk kursus saat ini
+    total_sections = section_data.count()  # Jumlah section utama (parent=None)
+    total_materials = sum(section.materials.count() for section in section_data)  # Total material di semua section
+    total_students = course.enrollments.count()  # Jumlah peserta di kursus ini
+    total_effort_hours = course.hour if course.hour else "N/A"  # Effort dari field hour
+
+    # Perhitungan untuk semua kursus yang dimiliki instruktur
+    instructor = course.instructor
+    instructor_courses = Course.objects.filter(instructor=instructor, status_course=published_status)
     
+    # 1. Total Course milik instruktur
+    instructor_total_courses = instructor_courses.count()
 
-    # Render the course detail page with the similar courses, enrollment status, sections, materials, and assessments
+    # 2. Total Peserta dari semua kursus instruktur
+    instructor_total_students = sum(course.enrollments.count() for course in instructor_courses)
+
+    # 3. Total Jam (Effort) dari semua kursus instruktur
+    instructor_total_effort_hours = 0
+    for c in instructor_courses:
+        if c.hour and c.hour.isdigit():  # Pastikan hour adalah angka
+            instructor_total_effort_hours += int(c.hour)
+    
+    # 4. Total Section dan Material dari semua kursus instruktur
+    instructor_sections = Section.objects.filter(courses__in=instructor_courses, parent=None).prefetch_related('materials')
+    instructor_total_sections = instructor_sections.count()
+    instructor_total_materials = sum(section.materials.count() for section in instructor_sections)
+
+    # Render the course detail page with additional data
     return render(request, 'home/course_detail.html', {
         'course': course,
         'is_enrolled': is_enrolled,
         'similar_courses': similar_courses,
         'comments': comments,
-        'section_data': section_data,  # Pass sections, materials, and assessments
+        'section_data': section_data,
+        'total_sections': total_sections,
+        'total_materials': total_materials,
+        'total_students': total_students,
+        'total_effort_hours': total_effort_hours,
+        # Data instruktur
+        'instructor': instructor,
+        'instructor_total_courses': instructor_total_courses,
+        'instructor_total_students': instructor_total_students,
+        'instructor_total_effort_hours': instructor_total_effort_hours,
+        'instructor_total_sections': instructor_total_sections,
+        'instructor_total_materials': instructor_total_materials,
     })
-
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
