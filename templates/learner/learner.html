@@ -1,6 +1,7 @@
 <!-- templates/learner/learner_detail.html -->
 {% extends 'home/base.html' %}
 {% load static %}
+{% load custom_filters %}
 
 
 {% block content %}
@@ -35,10 +36,10 @@
                                     <li><i class="fas fa-globe me-2"></i><strong>Country:</strong> {{ learner.country }}</li>
                                 {% endif %}
                                 {% if learner.birth %}
-                                    <li><i class="fas fa-birthday-cake me-2"></i><strong>Birth Date:</strong> {{ learner.birth|date:"M d, Y" }}</li>
+                                    <li><i class="fas fa-birthday-cake me-2"></i><strong>Birth Date:</strong> {{ learner.birth|mask_year }}</li>
                                 {% endif %}
                                 {% if learner.phone %}
-                                    <li><i class="fas fa-phone me-2"></i><strong>Phone:</strong> {{ learner.phone }}</li>
+                                    <li><i class="fas fa-phone me-2"></i><strong>Phone:</strong> {{ learner.phone |mask_phone }}</li>
                                 {% endif %}
                                 {% if learner.hobby %}
                                     <li><i class="fas fa-heart me-2"></i><strong>Hobby:</strong> {{ learner.hobby }}</li>
@@ -157,7 +158,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #007bff 0%, #00d4ff 100%);
+    background: linear-gradient(135deg,rgb(255, 0, 0) 0%, #00d4ff 100%);
     opacity: 0.9;
     z-index: 0;
 }
@@ -243,7 +244,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, #007bff, #0056b3);
+    background: linear-gradient(135deg,rgb(255, 0, 0) 0%, #00d4ff 100%);
     opacity: 0.8;
     z-index: 0;
 }

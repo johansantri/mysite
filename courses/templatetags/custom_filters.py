@@ -1,5 +1,6 @@
 from django import template
 import random
+from datetime import datetime
 register = template.Library()
 
 @register.filter
@@ -17,3 +18,30 @@ def randomize(queryset):
 def split(value, delimiter=","):
     """Memisahkan string berdasarkan delimiter."""
     return value.split(delimiter)
+
+@register.filter
+def mask_phone(value):
+    """
+    Menyembunyikan semua angka kecuali 4 angka terakhir.
+    """
+    if not value or len(value) < 4:
+        return '****'
+    return '*' * (len(value) - 4) + value[-4:]
+
+@register.filter
+def mask_year(date_value):
+    """
+    Menampilkan bulan dan tanggal, menyembunyikan tahun (diganti ****).
+    Bisa terima date object atau string.
+    """
+    if not date_value:
+        return ''
+    
+    # Coba parsing kalau berupa string
+    if isinstance(date_value, str):
+        try:
+            date_value = datetime.strptime(date_value, '%Y-%m-%d')
+        except ValueError:
+            return 'Invalid date'
+
+    return date_value.strftime('%b %d, ****')
