@@ -1,0 +1,137 @@
+<!-- templates/courses/enrollments_list.html -->
+{% extends 'home/tes.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Course Title -->
+    <h1 class="display-5 fw-bold text-primary mb-4 text-center animate__animated animate__fadeIn">
+       <a href="?download=csv{% if search_query %}&search={{ search_query }}{% endif %}"> {{ course.course_name }} </a>
+ {{ course.course_name }} 
+    </h1>
+
+    <!-- Search Form -->
+    <form method="GET" class="mb-4 animate__animated animate__fadeInUp">
+        <div class="input-group">
+            <input type="text" class="form-control" name="search" placeholder="Search by Username" value="{{ search_query }}" aria-label="Search">
+            <button class="btn btn-primary" type="submit">
+                <i class="fas fa-search me-2"></i>Search
+            </button>
+        </div>
+    </form>
+
+    <!-- Enrollment List -->
+    <div class="card shadow-sm border-0 animate__animated animate__fadeIn">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>First</th>
+                            <th>Last</th>
+                            <th>Gender</th>
+                            <th>Birth</th>
+                            <th>Address</th>
+                            <th>Country</th>
+                            <th>Phone</th>
+                            <th>Education</th>
+                            <th>University</th>
+                            <th>Score</th>
+                            <th>Status</th>
+                            <th>Progress</th>
+                            <th>Overall %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for enrollment in enrollments %}
+                            <tr>
+                                <td>{{ enrollment.user.username }}</td>
+                                <td>{{ enrollment.user.email }}</td>
+                                <td>{{ enrollment.user.first_name }}</td>
+                                <td>{{ enrollment.user.last_name }}</td>
+                                <td>{{ enrollment.user.get_gender_display }}</td>
+                                <td>{{ enrollment.user.birth|date:"M d, Y" }}</td>
+                                <td>{{ enrollment.user.address }}</td>
+                                <td>{{ enrollment.user.country }}</td>
+                                <td>****{{ enrollment.user.phone|slice:"-4:" }}</td>
+                                <td>{{ enrollment.user.get_education_display }}</td>
+                                <td>{{ enrollment.user.university }}</td>
+                                <td>{{ enrollment.total_score }} / {{ enrollment.total_max_score }}</td>
+                                <td>
+                                    <span class="badge {% if enrollment.status == 'Pass' %}bg-success{% else %}bg-danger{% endif %}">
+                                        {{ enrollment.status }}
+                                    </span>
+                                </td>
+                                <td>{{ enrollment.progress_percentage|floatformat:0 }}%</td>
+                                <td>{{ enrollment.overall_percentage|floatformat:0 }}%</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="15" class="text-center text-muted py-3">No enrollments found.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation" class="mt-4 animate__animated animate__fadeInUp">
+        <ul class="pagination justify-content-center">
+            {% if enrollments.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}" aria-label="First">
+                        <span aria-hidden="true"><i class="fas fa-angle-double-left"></i></span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ enrollments.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}" aria-label="Previous">
+                        <span aria-hidden="true"><i class="fas fa-angle-left"></i></span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link"><i class="fas fa-angle-double-left"></i></span>
+                </li>
+                <li class="page-item disabled">
+                    <span class="page-link"><i class="fas fa-angle-left"></i></span>
+                </li>
+            {% endif %}
+
+            {% for num in enrollments.paginator.page_range %}
+                <li class="page-item {% if enrollments.number == num %}active{% endif %}">
+                    <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}">{{ num }}</a>
+                </li>
+            {% endfor %}
+
+            {% if enrollments.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ enrollments.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}" aria-label="Next">
+                        <span aria-hidden="true"><i class="fas fa-angle-right"></i></span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ enrollments.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}" aria-label="Last">
+                        <span aria-hidden="true"><i class="fas fa-angle-double-right"></i></span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link"><i class="fas fa-angle-right"></i></span>
+                </li>
+                <li class="page-item disabled">
+                    <span class="page-link"><i class="fas fa-angle-double-right"></i></span>
+                </li>
+            {% endif %}
+        </ul>
+        <div class="text-center mt-2">
+            <small class="text-muted">Page {{ enrollments.number }} of {{ enrollments.paginator.num_pages }}</small>
+        </div>
+    </nav>
+</div>
+
+<!-- Bootstrap 5 CSS dan JS sudah diasumsikan ada di base template -->
+{% endblock %}

@@ -1,4 +1,5 @@
 import os
+import csv
 from io import BytesIO
 from PIL import Image
 from django.conf import settings
@@ -44,6 +45,130 @@ from django.template.loader import render_to_string
 from django_ratelimit.decorators import ratelimit
 
 # views.py
+@login_required
+def course_list_enroll(request, id):
+    # Mencari course berdasarkan ID
+    course = get_object_or_404(Course, id=id)
+
+    # Mengambil daftar enrollments terkait kursus
+    enrollments = course.enrollments.all()
+
+    # Menyiapkan list untuk detail user dan statusnya
+    enrollment_details = []
+
+    # Pencarian berdasarkan username
+    search_query = request.GET.get('search', '')
+    if search_query:
+        enrollments = enrollments.filter(user__username__icontains=search_query)
+
+    for enrollment in enrollments:
+        user = enrollment.user
+
+        # Ambil total skor dan status dari setiap kursus
+        total_max_score = 0
+        total_score = 0
+        all_assessments_submitted = True  # Untuk memastikan semua asesmen diselesaikan
+
+        # Ambil grade range untuk kursus tersebut
+        grade_range = GradeRange.objects.filter(course=course).first()
+        passing_threshold = grade_range.min_grade if grade_range else 0
+
+        # Hitung skor dari asesmen
+        assessments = Assessment.objects.filter(section__courses=course)
+        for assessment in assessments:
+            score_value = Decimal(0)
+            total_correct_answers = 0
+            total_questions = assessment.questions.count()
+
+            if total_questions > 0:  # Multiple choice
+                answers_exist = False
+                for question in assessment.questions.all():
+                    answers = QuestionAnswer.objects.filter(question=question, user=user)
+                    if answers.exists():
+                        answers_exist = True
+                    total_correct_answers += answers.filter(choice__is_correct=True).count()
+                if not answers_exist:
+                    all_assessments_submitted = False
+                if total_questions > 0:
+                    score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
+            
+            total_max_score += assessment.weight
+            total_score += score_value
+
+        # Hitung persentase skor
+        overall_percentage = (total_score / total_max_score) * 100 if total_max_score > 0 else 0
+
+        # Ambil progress dari CourseProgress
+        course_progress = CourseProgress.objects.filter(user=user, course=course).first()
+        progress_percentage = course_progress.progress_percentage if course_progress else 0
+
+        # Tentukan status kelulusan
+        status = "Fail"  # Default status
+        if progress_percentage == 100 and all_assessments_submitted and overall_percentage >= passing_threshold:
+            status = "Pass"
+
+        # Tambahkan detail user ke daftar enrollment_details
+        enrollment_details.append({
+            'user': user,
+            'total_score': total_score,
+            'total_max_score': total_max_score,
+            'status': status,
+            'progress_percentage': progress_percentage,
+            'overall_percentage': overall_percentage,
+        })
+
+    # Pagination untuk hasil peserta
+    paginator = Paginator(enrollment_details, 10)  # 10 peserta per halaman
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # Cek apakah ada permintaan untuk mengunduh CSV
+    if request.GET.get('download') == 'csv':
+        return download_enrollment_data(course, enrollment_details)
+
+    # Menampilkan data dalam template
+    return render(request, 'courses/course_enroll_list.html', {
+        'course': course,
+        'enrollments': page_obj,
+        'search_query': search_query,
+    })
+
+def download_enrollment_data(course, enrollment_details):
+    # Menentukan nama file berdasarkan nama kursus dan tanggal saat ini
+    current_date = datetime.now().strftime('%Y-%m-%d')  # Format tanggal: YYYY-MM-DD
+    filename = f"{course.course_name.replace(' ', '_')}_{current_date}.csv"  # Mengganti spasi dengan _ pada nama kursus
+
+    # Membuat response HTTP untuk CSV
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+    # Menulis data ke file CSV
+    writer = csv.writer(response)
+    writer.writerow(['Username', 'Email', 'First Name', 'Last Name', 'Gender', 'Date of Birth', 'Address', 'Country', 'Phone', 'Education', 'University', 'Total Score', 'Status', 'Progress', 'Overall Percentage'])
+    
+    for enrollment in enrollment_details:
+        birth_date = enrollment['user'].birth
+        formatted_birth_date = birth_date.strftime('%b %d, %Y') if birth_date else 'Unknown'  # Cek apakah birth_date ada
+
+        writer.writerow([
+            enrollment['user'].username,
+            enrollment['user'].email,
+            enrollment['user'].first_name,
+            enrollment['user'].last_name,
+            enrollment['user'].get_gender_display(),
+            formatted_birth_date,  # Menambahkan pengecekan birth date
+            enrollment['user'].address,
+            enrollment['user'].country,
+            '********' + str(enrollment['user'].phone)[-4:],  # Show last 4 digits of phone
+            enrollment['user'].get_education_display(),
+            enrollment['user'].university,
+            f"{enrollment['total_score']} / {enrollment['total_max_score']}",
+            enrollment['status'],
+            f"{enrollment['progress_percentage']}%",
+            f"{enrollment['overall_percentage']}%"
+        ])
+
+    return response
 
 @login_required
 def submit_rating(request, id, slug):
@@ -3339,8 +3464,89 @@ def courseView(request):
     })
 
 
+@login_required
+def user_detail(request, user_id):
+    # Ambil pengguna berdasarkan user_id
+    user = get_object_or_404(CustomUser, id=user_id)
 
+    # Ambil daftar enrollment untuk pengguna ini
+    enrollments = Enrollment.objects.filter(user=user).select_related('course')
 
+    # Implementasi pencarian berdasarkan course_name
+    search_query = request.GET.get('search', '')
+    if search_query:
+        enrollments = enrollments.filter(course__course_name__icontains=search_query)
+
+    # Siapkan data untuk pagination
+    course_details = []
+    for enrollment in enrollments:
+        course = enrollment.course
+
+        # Ambil total skor dan status dari setiap kursus
+        total_max_score = Decimal(0)
+        total_score = Decimal(0)
+        all_assessments_submitted = True  # Untuk memastikan semua asesmen diselesaikan
+
+        # Ambil grade range untuk kursus tersebut
+        grade_range = GradeRange.objects.filter(course=course).first()
+        passing_threshold = grade_range.min_grade if grade_range else Decimal(50)  # Default jika tidak ada grade range
+
+        # Hitung skor dari asesmen
+        assessments = Assessment.objects.filter(section__courses=course)
+        for assessment in assessments:
+            score_value = Decimal(0)
+            total_correct_answers = 0
+            total_questions = assessment.questions.count()
+
+            if total_questions > 0:  # Multiple choice
+                answers_exist = False
+                for question in assessment.questions.all():
+                    answers = QuestionAnswer.objects.filter(question=question, user=user)
+                    if answers.exists():
+                        answers_exist = True
+                    total_correct_answers += answers.filter(choice__is_correct=True).count()
+                if not answers_exist:
+                    all_assessments_submitted = False
+                if total_questions > 0:
+                    score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
+
+            total_max_score += assessment.weight
+            total_score += score_value
+
+        # Hitung persentase skor
+        overall_percentage = (total_score / total_max_score) * 100 if total_max_score > 0 else 0
+
+        # Ambil progress dari CourseProgress
+        course_progress = CourseProgress.objects.filter(user=user, course=course).first()
+        progress_percentage = course_progress.progress_percentage if course_progress else Decimal(0)
+
+        # Tentukan status kelulusan
+        status = "Fail"  # Default status
+        if progress_percentage == 100 and all_assessments_submitted and overall_percentage >= passing_threshold:
+            status = "Pass"
+
+        # Tambahkan detail kursus ke daftar
+        course_details.append({
+            'course_name': course.course_name,
+            'total_score': total_score,
+            'total_max_score': total_max_score,
+            'status': status,
+            'progress_percentage': progress_percentage,  # Untuk debug atau tampilan
+            'overall_percentage': overall_percentage,    # Untuk debug atau tampilan
+        })
+
+    # Pagination untuk hasil kursus
+    paginator = Paginator(course_details, 5)  # 5 kursus per halaman
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'user': user,
+        'course_details': page_obj,
+        'search_query': search_query,
+    }
+    
+    return render(request, 'authentication/user_detail.html', context)
 
 
 def filter_courses_by_query(request, posts):
