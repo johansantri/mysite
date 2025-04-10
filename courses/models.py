@@ -467,6 +467,7 @@ class Enrollment(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='enrollments')
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='enrollments')
     enrolled_at = models.DateTimeField(auto_now_add=True)
+    certificate_issued = models.BooleanField(default=False)  
 
     def __str__(self):
         return f"{self.user.username} enrolled in {self.course.course_name}"

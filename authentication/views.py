@@ -488,7 +488,7 @@ def dasbord(request):
 @ratelimit(key='ip', rate='100/h')
 #dashboard for student
 def dashbord(request):
-      # Initialize variables
+    # Initialize variables
     search_query = request.GET.get('search', '')
     enrollments_page = request.GET.get('enrollments_page', 1)
 
@@ -514,7 +514,7 @@ def dashbord(request):
         end_enrol__gte=timezone.now()
     )
 
-    # Completed Courses (berdasarkan CourseProgress)
+    # Completed Courses (based on CourseProgress)
     completed_courses = CourseProgress.objects.filter(user=request.user, progress_percentage=100)
 
     # Prepare data for each enrollment with progress and certificate status
@@ -522,7 +522,7 @@ def dashbord(request):
     for enrollment in enrollments:
         course = enrollment.course
 
-        # Hitung progres (contoh sederhana: rata-rata progres materi dan penilaian)
+        # Calculate progress (simple example: average of material and assessment progress)
         materials = Material.objects.filter(section__courses=course)
         total_materials = materials.count()
         materials_read = MaterialRead.objects.filter(user=request.user, material__in=materials).count()
@@ -533,23 +533,55 @@ def dashbord(request):
         assessments_completed = AssessmentRead.objects.filter(user=request.user, assessment__in=assessments).count()
         assessments_completed_percentage = (assessments_completed / total_assessments * 100) if total_assessments > 0 else 0
 
-        # Progres keseluruhan (misalnya, rata-rata materi dan penilaian)
+        # Overall progress (e.g., average of material and assessment progress)
         progress = (materials_read_percentage + assessments_completed_percentage) / 2 if (total_materials + total_assessments) > 0 else 0
 
-        # Update progres di CourseProgress (opsional, jika ingin disimpan)
+        # Update progress in CourseProgress (optional, if you want to store it)
         course_progress, created = CourseProgress.objects.get_or_create(user=request.user, course=course)
         course_progress.progress_percentage = progress
         course_progress.save()
 
-        # Status sertifikat
-        certificate_eligible = progress >= 100 and not hasattr(enrollment, 'certificate_issued') or not enrollment.certificate_issued
-        certificate_issued = hasattr(enrollment, 'certificate_issued') and enrollment.certificate_issued
+        # Fetch grade range for course to check passing threshold
+        grade_range = GradeRange.objects.filter(course=course).first()
+        passing_threshold = grade_range.min_grade if grade_range else 0  # Default to 0 if no grade range is defined
+        max_grade = grade_range.max_grade if grade_range else 100  # Default to 100 if no max grade is defined
+
+        # Calculate total score and check if the user passed
+        total_score = 0
+        total_max_score = 0
+        assessments = Assessment.objects.filter(section__courses=course)
+        for assessment in assessments:
+            score_value = 0
+            total_correct_answers = 0
+            total_questions = assessment.questions.count()
+            if total_questions > 0:  # Multiple choice assessment
+                for question in assessment.questions.all():
+                    answers = QuestionAnswer.objects.filter(question=question, user=request.user)
+                    total_correct_answers += answers.filter(choice__is_correct=True).count()
+                score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
+            else:  # AskOra type assessment
+                askora_submissions = Submission.objects.filter(askora__assessment=assessment, user=request.user)
+                if askora_submissions.exists():
+                    latest_submission = askora_submissions.order_by('-submitted_at').first()
+                    assessment_score = AssessmentScore.objects.filter(submission=latest_submission).first()
+                    if assessment_score:
+                        score_value = Decimal(assessment_score.final_score)
+            total_score += score_value
+            total_max_score += assessment.weight
+
+        # Calculate percentage for passing
+        overall_percentage = (total_score / total_max_score) * 100 if total_max_score > 0 else 0
+
+        # Check if the user is eligible for certificate
+        certificate_eligible = progress == 100 and overall_percentage >= passing_threshold
+        certificate_issued = enrollment.certificate_issued if hasattr(enrollment, 'certificate_issued') else False
 
         enrollments_data.append({
             'enrollment': enrollment,
             'progress': progress,
             'certificate_issued': certificate_issued,
             'certificate_eligible': certificate_eligible,
+            'overall_percentage': overall_percentage,  # Include overall percentage for display
         })
 
     # Pagination for enrollments
@@ -565,7 +597,8 @@ def dashbord(request):
         'active_courses': active_courses,
         'completed_courses': completed_courses,
     })
-    return redirect("/login/?next=%s" % request.path)
+
+    
 
 @login_required
 @ratelimit(key='ip', rate='100/h')

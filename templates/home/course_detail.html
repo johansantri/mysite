@@ -386,7 +386,9 @@
                                             <a href="course-wishlist.html" class="btn btn-outline-primary w-100 transition-hover"><i class="feather-heart me-1"></i> Wishlist</a>
                                         </div>
                                         <div class="col-6">
-                                            <a href="javascript:void(0);" class="btn btn-outline-secondary w-100 transition-hover"><i class="feather-share-2 me-1"></i> Share</a>
+                                            <button class="btn btn-outline-secondary w-100 transition-hover" onclick="openShareWindow()">
+                                                <i class="feather-share-2 me-1"></i> Share
+                                            </button>
                                         </div>
                                     </div>
                                     {% if request.user.is_authenticated %}
@@ -402,10 +404,39 @@
                                         <a href="{% url 'authentication:register' %}" class="btn btn-primary w-100 transition-hover">Join Now</a>
                                     {% endif %}
                                 </div>
+
+                                <script>
+                                    // Fungsi untuk membuka jendela berbagi
+                                    function openShareWindow() {
+                                        var courseUrl = window.location.href;  // Ambil URL kursus saat ini
+                                        console.log('Course URL: ' + courseUrl);  // Debugging
+
+                                        var encodedUrl = encodeURIComponent(courseUrl);  // Encode URL
+
+                                        // URL untuk berbagai platform berbagi
+                                        var shareUrls = {
+                                            facebook: 'https://www.facebook.com/sharer/sharer.php?u=' + encodedUrl,
+                                            twitter: 'https://twitter.com/intent/tweet?url=' + encodedUrl + '&text=Check out this course!',
+                                            whatsapp: 'https://api.whatsapp.com/send?text=Check out this course: ' + encodedUrl
+                                        };
+
+                                        // Pilih platform (contoh: buka Facebook, bisa diganti atau ditambah opsi)
+                                        var platform = 'facebook';  // Ganti ke 'twitter' atau 'whatsapp' untuk menguji platform lain
+                                        var windowOptions = 'height=400,width=600,top=' + (window.innerHeight / 2 - 200) + ',left=' + (window.innerWidth / 2 - 300);
+
+                                        if (shareUrls[platform]) {
+                                            window.open(shareUrls[platform], '_blank', windowOptions);
+                                        } else {
+                                            console.error('Platform not supported');
+                                        }
+                                    }
+                                </script>
                             </div>
                         </div>
                     </div>
                     <!-- /Video -->
+
+                 
 
                     <!-- Features -->
                     <div class="card feature-sec border-0 shadow-lg rounded-4">

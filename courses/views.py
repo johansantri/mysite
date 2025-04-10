@@ -1557,7 +1557,9 @@ def generate_certificate(request, course_id):
         passing_threshold = grade_range.filter(name='Pass').first().min_grade
         max_grade = grade_range.filter(name='Pass').first().max_grade
     else:
-        return render(request, 'error_template.html', {'message': 'Grade range not found for this course.'})
+        # Jika tidak ada grade dengan nama 'Pass', kembalikan pesan error
+        messages.error(request, "Passing grade not found for this course. Certificate cannot be issued.")
+        return redirect('authentication:dashbord')
 
     for assessment in assessments:
         score_value = Decimal(0)
@@ -1601,6 +1603,12 @@ def generate_certificate(request, course_id):
     overall_percentage = (total_score / total_max_score) * 100 if total_max_score > 0 else 0
     passing_criteria_met = overall_percentage >= passing_threshold
     status = "Pass" if all_assessments_submitted and passing_criteria_met else "Fail"
+
+    # Jika statusnya "Fail", kembalikan error atau tidak izinkan klaim sertifikat
+    if status == "Fail":
+        # Jika tidak ada grade dengan nama 'Pass', kembalikan pesan error
+        messages.error(request, "Passing grade not found for this course. Certificate cannot be issued.")
+        return redirect('authentication:dashbord')
 
     # Format hasil nilai per asesmen dan totalnya
     assessment_results = [
