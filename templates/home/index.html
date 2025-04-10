@@ -433,7 +433,7 @@
                             <div class="d-flex justify-content-center align-items-center">
                                 <!-- Cek apakah ada gambar pada partner, jika ada tampilkan gambar -->
                                 {% if partner.logo %}
-                                    <img src="{{ partner.logo.url }}" alt="{{ partner.name }}" class="mx-2">
+                                    <a href="{% url 'courses:org_partner' partner.name.slug %}"><img src="{{ partner.logo.url }}" alt="{{ partner.name }}" class="mx-2"></a>
                                 {% else %}
                                     <img src="https://via.placeholder.com/150x50?text={{ partner.name }}" alt="{{ partner.name }}" class="mx-2">
                                 {% endif %}
