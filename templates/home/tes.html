@@ -362,7 +362,11 @@
                         </li>
                     {% else %}
                         <!-- Learner Menu -->
-                       
+                       <li class="nav-item">
+                            <a class="nav-link" href="{% url 'authentication:dashbord' %}">
+                                <i class="bi bi-file-earmark-spreadsheet me-2"></i> Dasbord
+                            </a>
+                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="" data-bs-toggle="dropdown">
                                 <i class="bi bi-speedometer me-2"></i>  {{ request.user.username|capfirst }}
@@ -372,7 +376,7 @@
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="{% url 'authentication:mycourse' %}">My Course</a></li>
                                 <li><a class="dropdown-item" href="{% url 'authentication:microcredential' %}" target="_blank">Micro Credential</a></li>
-                                <li><a class="dropdown-item" href="{% url 'authentication:dashbord' %}">Dasbord</a></li>
+                                
                             </ul>
                         </li>
                        
@@ -659,15 +663,15 @@
                     </div>
                 </nav>
                 {% if messages %}
-                    <div class="alert-container mb-3">
-                        {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show rounded-3" role="alert">
-                                {{ message }}
-                                <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
+                <div class="alert-container mb-3">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show rounded-3" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
                 <div class="text-center mt-3">
                     <p class="mb-0 text-white">© 2025 LMSKu. All rights reserved.</p>
                 </div>
