@@ -1,0 +1,75 @@
+{% extends 'home/tes.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Rating untuk {{ course.course_name }}</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        
+        <!-- Rating dengan bintang -->
+        <div class="mb-3">
+            <label for="id_rating" class="form-label">Beri Rating (1-5)</label>
+            <div class="rating ms-auto">
+                <i class="fas fa-star" data-value="1"></i>
+                <i class="fas fa-star" data-value="2"></i>
+                <i class="fas fa-star" data-value="3"></i>
+                <i class="fas fa-star" data-value="4"></i>
+                <i class="fas fa-star" data-value="5"></i>
+                <input type="hidden" name="rating" id="rating-input" value="0">
+            </div>
+        </div>
+
+        <!-- Komentar -->
+        <div class="mb-3">
+            <label for="id_comment" class="form-label">Komentar (opsional)</label>
+            {{ form.comment }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Kirim Rating</button>
+    </form>
+</div>
+<style>
+.rating i {
+    font-size: 30px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.rating i:hover, .rating i.selected {
+    color: #f39c12; /* Warna bintang yang dipilih */
+}
+
+.rating .fa-star {
+    color: #ddd; /* Warna bintang yang tidak dipilih */
+}
+
+</style>
+<!-- Tambahkan script JS untuk interaktivitas -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const stars = document.querySelectorAll('.rating i');
+    const ratingInput = document.getElementById('rating-input');
+    
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            const ratingValue = this.getAttribute('data-value');
+            
+            // Update the input field with the selected rating
+            ratingInput.value = ratingValue;
+            
+            // Remove the 'selected' class from all stars
+            stars.forEach(s => s.classList.remove('selected'));
+            
+            // Add the 'selected' class to the clicked star and all preceding stars
+            stars.forEach((s, index) => {
+                if (index < ratingValue) {
+                    s.classList.add('selected');
+                }
+            });
+        });
+    });
+});
+</script>
+
+{% endblock content %}

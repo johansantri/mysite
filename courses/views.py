@@ -9,9 +9,10 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from .forms import CoursePriceForm,SosPostForm,MicroCredentialForm,AskOraForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
+from .forms import CoursePriceForm,CourseRatingForm,SosPostForm,MicroCredentialForm,AskOraForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
+from .utils import user_has_passed_course,check_for_blacklisted_keywords,is_suspicious
 from django.http import JsonResponse
-from .models import Course,Like,SosPost,Hashtag,UserProfile,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
+from .models import Course,CourseRating,Like,SosPost,Hashtag,UserProfile,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
 from authentication.models import CustomUser, Universiti
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
@@ -41,7 +42,57 @@ from django.db.models import Prefetch
 from weasyprint import HTML
 from django.template.loader import render_to_string
 from django_ratelimit.decorators import ratelimit
+
 # views.py
+
+@login_required
+def submit_rating(request, id, slug):
+    # Fetch the course based on id and slug
+    course = get_object_or_404(Course, id=id, slug=slug)
+
+    # Check if the user has passed the course
+    if not user_has_passed_course(request.user, course):
+        messages.error(request, "Kamu hanya bisa memberi rating setelah lulus dari course ini.")
+        return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
+
+    # Check if the user has already rated the course
+    if CourseRating.objects.filter(user=request.user, course=course).exists():
+        messages.info(request, "Kamu sudah memberikan rating untuk course ini.")
+        return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
+
+    if request.method == 'POST':
+        form = CourseRatingForm(request.POST)
+        
+        # Check if the request is suspicious (e.g., bot detection)
+        if is_suspicious(request):
+            messages.warning(request, "Suspicious activity detected. Rating not posted.")
+            return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
+
+        if form.is_valid():
+            rating = form.save(commit=False)
+            comment = form.cleaned_data.get('comment')
+            rating.user = request.user
+            rating.course = course
+
+            # Check if the comment contains blacklisted keywords
+            if check_for_blacklisted_keywords(comment):
+                messages.warning(request, "Your comment contains blacklisted content.")
+                return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
+
+            # Optionally, check for spam (e.g., posting too frequently)
+            if rating.is_spam():
+                messages.warning(request, "You are posting too frequently. Please wait a moment before posting again.")
+                return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
+
+            # Save the rating if everything is valid
+            rating.save()
+
+            messages.success(request, "Terima kasih! Rating kamu sudah disimpan.")
+            return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
+    else:
+        form = CourseRatingForm()
+
+    return render(request, 'home/submit_rating.html', {'form': form, 'course': course})
 
 @ratelimit(key='ip', rate='100/h')
 def category_course_list(request, slug):
@@ -1972,6 +2023,31 @@ def course_lms_detail(request, id, slug):
     instructor_total_sections = instructor_sections.count()
     instructor_total_materials = sum(section.materials.count() for section in instructor_sections)
 
+
+
+    # Ambil semua rating untuk course ini
+    # Retrieve reviews for the course and paginate them
+    reviews = CourseRating.objects.filter(course=course).order_by('-created_at')
+    
+    paginator = Paginator(reviews, 5)  # Show 5 reviews per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    # If user is authenticated, check if they've already rated
+    if request.user.is_authenticated:
+        user_has_rated = CourseRating.objects.filter(user=request.user, course=course).exists()
+    else:
+        user_has_rated = False
+       
+    # In your view
+    average_rating = course.average_rating
+    full_stars = int(average_rating)  # Number of full stars
+    half_star = (average_rating % 1) >= 0.5  # Check if there's a half star
+    empty_stars = 5 - (full_stars + (1 if half_star else 0))  # Calculate empty stars
+
+    # Create ranges for full, half, and empty stars
+    full_star_range = range(full_stars)
+    empty_star_range = range(empty_stars)
     # Render the course detail page with additional data
     return render(request, 'home/course_detail.html', {
         'course': course,
@@ -1990,7 +2066,17 @@ def course_lms_detail(request, id, slug):
         'instructor_total_effort_hours': instructor_total_effort_hours,
         'instructor_total_sections': instructor_total_sections,
         'instructor_total_materials': instructor_total_materials,
+        #review
+        'reviews': page_obj, 
+        'user_has_rated': user_has_rated,
+        'range': range(1, 6),  # Pass range for looping stars
+
+        'full_star_range': full_star_range,
+        'half_star': half_star,
+        'empty_star_range': empty_star_range,
+        'average_rating': average_rating
     })
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 

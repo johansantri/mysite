@@ -1,7 +1,16 @@
 from django.contrib import admin
 from . import models 
-from .models import Submission,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
+from .models import Submission,CourseRating,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
 from import_export.admin import ImportExportModelAdmin
+
+@admin.register(CourseRating)
+class CourseRatingAdmin(admin.ModelAdmin):
+    list_display = ('user', 'course', 'rating', 'created_at')
+    search_fields = ('user__username', 'course__course_name')
+    
+    # Menentukan jumlah item per halaman
+    list_per_page = 20 
+
 admin.site.register(Hashtag)
 admin.site.register(BlacklistedKeyword)
 admin.site.register(UserProfile)

@@ -303,10 +303,19 @@ class Course(models.Model):
     
     
 
+    @property
+    def average_rating(self):
+        ratings = self.ratings.all()
+        if ratings.exists():
+            return round(sum(r.rating for r in ratings) / ratings.count(), 1)
+        return 0
 
 
-
-
+    @property
+    def total_reviews(self):
+        return self.ratings.count()
+    def has_been_rated_by(self, user):
+        return self.ratings.filter(user=user).exists()
 
     
 class PricingType(models.Model):
@@ -464,6 +473,20 @@ class Enrollment(models.Model):
     
     class Meta:
         unique_together = ('user', 'course')  # User hanya bisa mendaftar 1x ke tiap course
+
+class CourseRating(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='ratings')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='ratings')
+    rating = models.PositiveSmallIntegerField(choices=[(i, f"{i} ⭐") for i in range(1, 6)])
+    comment = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'course')
+
+    def __str__(self):
+        return f"{self.user.username} rated {self.course.course_name} - {self.rating}⭐"
+
 
 class TeamMember(models.Model):
 

@@ -2,7 +2,7 @@
 from django import forms
 from django.forms import inlineformset_factory
 from django.core.cache import cache
-from .models import Course,SosPost,CourseStatus,MicroCredential, AskOra,Partner,Category, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment,PricingType, CoursePrice
+from .models import Course,SosPost,CourseStatus,CourseRating,MicroCredential, AskOra,Partner,Category, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment,PricingType, CoursePrice
 from django_ckeditor_5.widgets import CKEditor5Widget
 
 from authentication.models import CustomUser, Universiti
@@ -15,6 +15,16 @@ from datetime import date
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from captcha.fields import CaptchaField
+
+
+class CourseRatingForm(forms.ModelForm):
+    class Meta:
+        model = CourseRating
+        fields = ['rating', 'comment']
+        widgets = {
+            'rating': forms.Select(attrs={'class': 'form-select'}),
+            'comment': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
 
 class SosPostForm(forms.ModelForm):
     #captcha = CaptchaField()

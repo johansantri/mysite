@@ -66,6 +66,8 @@
                                     <span class="badge bg-success">Certificate Issued</span>
                                 {% elif data.certificate_eligible %}
                                     <a href="{% url 'courses:generate_certificate'  data.enrollment.course.id %}" class="badge bg-success text-white text-decoration-none">Claim Certificate</a>
+                                     <a href="{% url 'courses:submit_rating' data.enrollment.course.id data.enrollment.course.slug %}" class="badge bg-warning text-white text-decoration-none">add review course</a>
+                                    
                                 {% else %}
                                     <span class="badge bg-secondary">Not Completed</span>
                                 {% endif %}

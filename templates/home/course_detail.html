@@ -2,6 +2,7 @@
 {% load static %}
 {% block content %}
 
+
 <!-- Course Content -->
 <section class="page-content course-sec py-5">
     <div class="container">
@@ -31,6 +32,36 @@
                                             <img src="{% static 'assets/img/icon/people.svg' %}" alt="Students" class="me-2" style="width: 24px;">
                                             <span class="fw-medium">{{ total_students }} Students</span>
                                         </div>
+                                        <div class="cou-info d-flex align-items-center">
+                                        <!-- Rating Stars -->
+                                        <div class="rating">
+                                            <!-- Full Stars -->
+                                            {% for i in full_star_range %}
+                                                <i class="fas fa-star text-warning"></i>
+                                            {% endfor %}
+                                            
+                                            <!-- Half Star (if applicable) -->
+                                            {% if half_star %}
+                                                <i class="fas fa-star-half-alt text-warning"></i>
+                                            {% endif %}
+                                            
+                                            <!-- Empty Stars -->
+                                            {% for i in empty_star_range %}
+                                                <i class="fas fa-star text-muted"></i>
+                                            {% endfor %}
+                                        </div>
+
+                                        <!-- Display Rating Text -->
+                                        <span class="fw-medium ms-2">{{ average_rating }} Rating</span>
+                                    </div>
+
+
+
+
+
+
+
+
                                     </div>
                                 </div>
                             </div>
@@ -199,53 +230,80 @@
                 </div>
                 <!-- /Instructor -->
 
-                <!-- Reviews -->
+               <!-- Reviews -->
                 <div class="card review-sec border-0 shadow-lg rounded-4 mt-4">
                     <div class="card-body p-4">
                         <h5 class="subs-title fw-bold text-primary mb-4">Reviews</h5>
-                        <div class="instructor-wrap d-flex flex-wrap align-items-center bg-white border rounded-3 p-3 shadow-sm mb-4">
-                            <div class="about-instructor d-flex align-items-center">
-                                <div class="abt-instructor-img me-3">
-                                    <a href="instructor-profile.html">
-                                        <img src="{% static 'assets/img/user/user1.jpg' %}" alt="Reviewer" class="img-fluid rounded-circle border" style="width: 60px; height: 60px; object-fit: cover;">
+
+                        {% for review in reviews %}
+                            <div class="instructor-wrap d-flex flex-wrap align-items-center bg-white border rounded-3 p-3 shadow-sm mb-4">
+                                <div class="about-instructor d-flex align-items-center">
+                                    <div class="abt-instructor-img me-3">
+                                        <a href="instructor-profile.html">
+                                            <!-- Gambar User -->
+                                            <img src="{{ review.user.photo.url }}" alt="Reviewer" class="img-fluid rounded-circle border" style="width: 60px; height: 60px; object-fit: cover;">
+                                        </a>
+                                    </div>
+                                    <div class="instructor-detail">
+                                        <h5 class="mb-1"><a href="instructor-profile.html" class="text-decoration-none text-dark fw-bold">{{ review.user.username }}</a></h5>
+                                        <p class="text-muted mb-0">{{ review.user.get_full_name }}</p>
+                                    </div>
+                                </div>
+                                <div class="rating ms-auto">
+                                    {% for i in range %}
+                                        <i class="fas fa-star {% if i <= review.rating %}text-warning{% else %}text-muted{% endif %}"></i>
+                                    {% endfor %}
+                                    <span class="d-inline-block average-rating ms-1 fw-bold">{{ review.rating }}</span>
+                                </div>
+                            </div>
+                            <p class="text-muted mb-3">“{{ review.comment }}”</p>
+                           
+                        {% empty %}
+                            <p class="text-muted">Belum ada review untuk kursus ini.</p>
+                        {% endfor %}
+
+                         <ul class="pagination justify-content-center">
+                            {% if reviews.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1" aria-label="First">
+                                        <span aria-hidden="true">&laquo;&laquo;</span>
                                     </a>
-                                </div>
-                                <div class="instructor-detail">
-                                    <h5 class="mb-1"><a href="instructor-profile.html" class="text-decoration-none text-dark fw-bold">Nicole Brown</a></h5>
-                                    <p class="text-muted mb-0">UX/UI Designer</p>
-                                </div>
-                            </div>
-                            <div class="rating ms-auto">
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-warning"></i>
-                                <i class="fas fa-star text-muted"></i>
-                                <span class="d-inline-block average-rating ms-1 fw-bold">4.5</span>
-                            </div>
-                        </div>
-                        <p class="text-muted mb-3">“This is the second Photoshop course I have completed with Cristian. Worth every penny and recommend it highly...”</p>
-                        <a href="javascript:void(0);" class="btn btn-outline-primary btn-sm transition-hover"><i class="feather-corner-up-left me-1"></i>Reply</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ reviews.previous_page_number }}" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li class="page-item disabled">
+                                <span class="page-link">Page {{ reviews.number }} of {{ reviews.paginator.num_pages }}</span>
+                            </li>
+                            {% if reviews.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ reviews.next_page_number }}" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ reviews.paginator.num_pages }}" aria-label="Last">
+                                        <span aria-hidden="true">&raquo;&raquo;</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
                     </div>
                 </div>
-                <!-- /Reviews -->
 
+
+                <!-- /Reviews -->
+                
                 <!-- Comment Section -->
                 <div class="card comment-sec border-0 shadow-lg rounded-4 mt-4">
                     <div class="card-body p-4">
                         <h5 class="subs-title fw-bold text-primary mb-4">Post a Comment</h5>
                         <form method="POST" action="{% url 'courses:add_comment_course' course_id=course.id %}">
                             {% csrf_token %}
-                            {% if messages %}
-                                <div class="alert-container mb-3">
-                                    {% for message in messages %}
-                                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show rounded-3" role="alert">
-                                            {{ message }}
-                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
+                           
                             <div class="mb-3">
                                 <textarea name="content" rows="4" class="form-control border rounded-3 shadow-sm" placeholder="Your Comments" required></textarea>
                             </div>

@@ -180,7 +180,18 @@
     {% endblock %}
 
     <!-- Footer -->
+    {% if messages %}
+        <div class="alert-container mb-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show rounded-3" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
     <footer class="bg-dark text-white text-center py-3">
+     
         <p>© 2025 LMSKu. All rights reserved.</p>
     </footer>
 
