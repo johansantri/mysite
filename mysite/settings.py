@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'captcha',
     'courses',
     'instructor',
+    'learner',
     'partner',
     'import_export',
     'django_ckeditor_5',

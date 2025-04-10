@@ -239,13 +239,13 @@
                             <div class="instructor-wrap d-flex flex-wrap align-items-center bg-white border rounded-3 p-3 shadow-sm mb-4">
                                 <div class="about-instructor d-flex align-items-center">
                                     <div class="abt-instructor-img me-3">
-                                        <a href="instructor-profile.html">
+                                        <a href="{% url 'learner:learner_detail' review.user.username %}" target="_blank"> 
                                             <!-- Gambar User -->
                                             <img src="{{ review.user.photo.url }}" alt="Reviewer" class="img-fluid rounded-circle border" style="width: 60px; height: 60px; object-fit: cover;">
                                         </a>
                                     </div>
                                     <div class="instructor-detail">
-                                        <h5 class="mb-1"><a href="instructor-profile.html" class="text-decoration-none text-dark fw-bold">{{ review.user.username }}</a></h5>
+                                        <h5 class="mb-1"><a href="{% url 'learner:learner_detail' review.user.username %}" target="_blank" class="text-decoration-none text-dark fw-bold">{{ review.user.username }}</a></h5>
                                         <p class="text-muted mb-0">{{ review.user.get_full_name }}</p>
                                     </div>
                                 </div>

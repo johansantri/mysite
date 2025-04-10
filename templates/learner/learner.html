@@ -1,0 +1,308 @@
+<!-- templates/learner/learner_detail.html -->
+{% extends 'home/base.html' %}
+{% load static %}
+
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <!-- Profil Learner -->
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0 profile-card transition-hover">
+                <div class="card-body p-4 position-relative overflow-hidden">
+                    <!-- Background Gradient -->
+                    <div class="profile-gradient"></div>
+                    
+                    <div class="row align-items-center position-relative">
+                        <div class="col-md-4 text-center">
+                            <div class="avatar-wrapper">
+                                <img src="{% if learner.photo %}{{ learner.photo.url }}{% else %}{% static 'img/default-avatar.png' %}{% endif %}" 
+                                     class="rounded-circle mb-3 avatar-img animate__animated animate__zoomIn" 
+                                     alt="Profile">
+                            </div>
+                            <h3 class="fw-bold text-white username mt-3 animate__animated animate__fadeInDown">{{ learner.username }}</h3>
+                        </div>
+                        <div class="col-md-8 text-white">
+                            <h5 class="fw-semibold mb-3 animate__animated animate__fadeInDown">Personal Information</h5>
+                            <ul class="list-unstyled info-list">
+                                {% if learner.gender %}
+                                    <li><i class="fas fa-venus-mars me-2"></i><strong>Gender:</strong> {{ learner.get_gender_display }}</li>
+                                {% endif %}
+                                {% if learner.education %}
+                                    <li><i class="fas fa-graduation-cap me-2"></i><strong>Education:</strong> {{ learner.get_education_display }}</li>
+                                {% endif %}
+                                {% if learner.country %}
+                                    <li><i class="fas fa-globe me-2"></i><strong>Country:</strong> {{ learner.country }}</li>
+                                {% endif %}
+                                {% if learner.birth %}
+                                    <li><i class="fas fa-birthday-cake me-2"></i><strong>Birth Date:</strong> {{ learner.birth|date:"M d, Y" }}</li>
+                                {% endif %}
+                                {% if learner.phone %}
+                                    <li><i class="fas fa-phone me-2"></i><strong>Phone:</strong> {{ learner.phone }}</li>
+                                {% endif %}
+                                {% if learner.hobby %}
+                                    <li><i class="fas fa-heart me-2"></i><strong>Hobby:</strong> {{ learner.hobby }}</li>
+                                {% endif %}
+                                {% if learner.university %}
+                                    <li><i class="fas fa-university me-2"></i><strong>University:</strong> {{ learner.university.name }}</li>
+                                {% endif %}
+                            </ul>
+
+                            <!-- Sosial Media -->
+                            {% if learner.tiktok or learner.youtube or learner.facebook or learner.instagram or learner.linkedin or learner.twitter %}
+                                <h5 class="fw-semibold mt-4 mb-3 animate__animated animate__fadeInUp">Connect With Me</h5>
+                                <div class="social-links d-flex gap-2 flex-wrap">
+                                    {% if learner.tiktok %}
+                                        <a href="{{ learner.tiktok }}" target="_blank" class="social-btn tiktok animate__animated animate__bounceIn"><i class="fab fa-tiktok"></i></a>
+                                    {% endif %}
+                                    {% if learner.youtube %}
+                                        <a href="{{ learner.youtube }}" target="_blank" class="social-btn youtube animate__animated animate__bounceIn"><i class="fab fa-youtube"></i></a>
+                                    {% endif %}
+                                    {% if learner.facebook %}
+                                        <a href="{{ learner.facebook }}" target="_blank" class="social-btn facebook animate__animated animate__bounceIn"><i class="fab fa-facebook"></i></a>
+                                    {% endif %}
+                                    {% if learner.instagram %}
+                                        <a href="{{ learner.instagram }}" target="_blank" class="social-btn instagram animate__animated animate__bounceIn"><i class="fab fa-instagram"></i></a>
+                                    {% endif %}
+                                    {% if learner.linkedin %}
+                                        <a href="{{ learner.linkedin }}" target="_blank" class="social-btn linkedin animate__animated animate__bounceIn"><i class="fab fa-linkedin"></i></a>
+                                    {% endif %}
+                                    {% if learner.twitter %}
+                                        <a href="{{ learner.twitter }}" target="_blank" class="social-btn twitter animate__animated animate__bounceIn"><i class="fab fa-twitter"></i></a>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Informasi Instructor -->
+                    {% if instructor %}
+                        <div class="instructor-section mt-4 p-3 rounded bg-white shadow-sm animate__animated animate__fadeIn">
+                            <h5 class="fw-semibold text-success mb-3">Instructor Profile</h5>
+                            <p class="text-muted">{{ instructor.bio }}</p>
+                            <ul class="list-unstyled text-muted">
+                                <li><i class="fas fa-laptop-code me-2"></i><strong>Technology:</strong> {{ instructor.tech }}</li>
+                                <li><i class="fas fa-brain me-2"></i><strong>Expertise:</strong> {{ instructor.expertise }}</li>
+                                <li><i class="fas fa-clock me-2"></i><strong>Experience:</strong> {{ instructor.experience_years }} years</li>
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Daftar Kursus dan Partner -->
+            <div class="card shadow-lg border-0 mt-4 course-card transition-hover">
+                <div class="card-header bg-gradient-primary text-white p-3 position-relative overflow-hidden">
+                    <h4 class="mb-0 animate__animated animate__fadeInLeft">Completed Courses</h4>
+                    <div class="header-gradient"></div>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-4">
+                        <!-- Kursus -->
+                        <div class="col-md-{% if instructor %}8{% else %}12{% endif %}">
+                            {% if completed_courses %}
+                                <div class="row g-3">
+                                    {% for course_data in completed_courses %}
+                                        <div class="col-md-6">
+                                            <a href="{% url 'courses:course_lms_detail' course_data.enrollment.course.id course_data.enrollment.course.slug %}" 
+                                               class="course-item d-flex align-items-center text-decoration-none text-dark p-3 rounded bg-light shadow-sm transition-hover animate__animated animate__fadeInUp">
+                                                <i class="fas fa-certificate text-success me-2"></i>
+                                                <h6 class="fw-semibold mb-0 flex-grow-1">{{ course_data.enrollment.course.course_name }}</h6>
+                                                <span class="badge bg-success ms-2">{{ course_data.overall_percentage|floatformat:0 }}%</span>
+                                            </a>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <p class="text-muted text-center animate__animated animate__fadeIn">
+                                    <i class="fas fa-exclamation-circle me-2"></i>No completed courses yet.
+                                </p>
+                            {% endif %}
+                        </div>
+
+                        <!-- Partner (jika ada instructor) -->
+                        {% if instructor %}
+                            <div class="col-md-4">
+                                <div class="partner-section p-3 bg-light rounded shadow-sm animate__animated animate__fadeInRight transition-hover">
+                                    <h5 class="fw-semibold text-primary mb-3">Partner Organization</h5>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-building text-primary me-2 fs-4"></i>
+                                        <p class="text-muted mb-0">
+                                            <strong>{{ instructor.provider.name }}</strong>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+/* static/css/learner.css */
+.profile-card {
+    background: #ffffff;
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+}
+
+.profile-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #007bff 0%, #00d4ff 100%);
+    opacity: 0.9;
+    z-index: 0;
+}
+
+.profile-card .card-body {
+    z-index: 1;
+}
+
+.avatar-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.avatar-img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border: 5px solid #fff;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.avatar-wrapper:hover .avatar-img {
+    transform: scale(1.1);
+}
+
+.username {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.info-list li {
+    margin-bottom: 10px;
+    padding: 5px 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.info-list li:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(5px);
+}
+
+.social-btn {
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    border-radius: 50%;
+    font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+.social-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.tiktok { background: #000; color: #fff; border: none; }
+.youtube { background: #ff0000; color: #fff; border: none; }
+.facebook { background: #3b5998; color: #fff; border: none; }
+.instagram { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: #fff; border: none; }
+.linkedin { background: #0077b5; color: #fff; border: none; }
+.twitter { background: #1da1f2; color: #fff; border: none; }
+
+.instructor-section {
+    position: relative;
+    z-index: 1;
+}
+
+.course-card {
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(90deg, #007bff, #0056b3);
+}
+
+.header-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #007bff, #0056b3);
+    opacity: 0.8;
+    z-index: 0;
+}
+
+.course-card .card-header {
+    z-index: 1;
+}
+
+.course-item {
+    transition: all 0.3s ease;
+    background: #f8f9fa !important;
+}
+
+.course-item:hover {
+    background: #e9ecef !important;
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+.partner-section {
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+}
+
+.partner-section:hover {
+    background: #e9ecef;
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.transition-hover {
+    transition: all 0.3s ease;
+}
+
+.transition-hover:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15) !important;
+}
+
+@media (max-width: 768px) {
+    .avatar-img {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .social-btn {
+        width: 35px;
+        height: 35px;
+        line-height: 35px;
+        font-size: 16px;
+    }
+    
+    .course-item {
+        padding: 1.5rem !important;
+    }
+
+    .partner-section {
+        margin-top: 1.5rem;
+    }
+}
+</style>
+{% endblock %}
