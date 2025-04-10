@@ -42,7 +42,8 @@ from django.db.models import Prefetch
 from django.core.mail import EmailMultiAlternatives,EmailMessage
 
 
-
+def about(request):
+    return render(request, 'home/about.html')
 def mycourse(request):
     if request.user.is_authenticated:
         # Mengambil semua kursus yang diambil oleh user yang sedang login
