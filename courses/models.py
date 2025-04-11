@@ -510,7 +510,9 @@ class Section(models.Model):
     slug = AutoSlugField(populate_from='title', unique=True, null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     courses=models.ForeignKey(Course,on_delete=models.CASCADE,related_name='sections')
+    order = models.PositiveIntegerField(default=0)  # Field untuk menyimpan urutan
 
+   
     def __str__(self):
         return self.title
 
@@ -518,7 +520,7 @@ class Section(models.Model):
         #enforcing that there can not be two categories under a parent with same slug
         
         # __str__ method elaborated later in post.  use __unicode__ in place of
-
+        ordering = ['order']
         unique_together = ('slug', 'parent',)    
         verbose_name_plural = "section"     
 

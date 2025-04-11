@@ -43,7 +43,40 @@ from django.db.models import Prefetch
 from weasyprint import HTML
 from django.template.loader import render_to_string
 from django_ratelimit.decorators import ratelimit
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+import json
 
+
+@csrf_exempt
+@require_POST
+def reorder_section(request):
+    try:
+        sections_data = json.loads(request.POST.get('sections', '[]'))
+        subsections_data = json.loads(request.POST.get('subsections', '[]'))
+
+        if not sections_data and not subsections_data:
+            return JsonResponse({'status': 'error', 'message': 'No data provided for reordering'}, status=400)
+
+        # Update sections
+        for item in sections_data:
+            section = Section.objects.get(id=item['id'])
+            section.order = item['order']
+            section.save()
+
+        # Update subsections
+        for item in subsections_data:
+            subsection = Section.objects.get(id=item['id'])
+            subsection.order = item['order']
+            subsection.parent_id = item.get('parent_id') or None
+            subsection.save()
+
+        return JsonResponse({'status': 'success', 'message': 'Order updated successfully'})
+    except Section.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'One or more sections/subsections not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': f'Error: {str(e)}'}, status=500)
+    
 # views.py
 @login_required
 def course_list_enroll(request, id):

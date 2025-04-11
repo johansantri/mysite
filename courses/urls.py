@@ -14,6 +14,7 @@ urlpatterns = [
     path('instructor/<int:id>/', views.instructor_detail, name='instructor_detail'),
     path('instructor-profile/<slug:username>/', views.instructor_profile, name='instructor_profile'),
     path("studio/<str:id>", views.studio, name= "studio"),
+    path('reorder-section/', views.reorder_section, name='reorder_section'),
     path("partner/", views.partnerView, name= "partner_view"),
     path('partner/<int:partner_id>/', views.partner_detail, name='partner_detail'),
     path('partner/<int:partner_id>/update/', views.update_partner, name='update_partner'),
