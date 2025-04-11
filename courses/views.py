@@ -172,44 +172,43 @@ def download_enrollment_data(course, enrollment_details):
 
 @login_required
 def submit_rating(request, id, slug):
-    # Fetch the course based on id and slug
     course = get_object_or_404(Course, id=id, slug=slug)
 
-    # Check if the user has passed the course
+    # Cek apakah user sudah lulus
     if not user_has_passed_course(request.user, course):
         messages.error(request, "Kamu hanya bisa memberi rating setelah lulus dari course ini.")
         return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
 
-    # Check if the user has already rated the course
+    # Cek apakah user sudah memberi rating sebelumnya
     if CourseRating.objects.filter(user=request.user, course=course).exists():
         messages.info(request, "Kamu sudah memberikan rating untuk course ini.")
         return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
 
     if request.method == 'POST':
         form = CourseRatingForm(request.POST)
-        
-        # Check if the request is suspicious (e.g., bot detection)
+
+        # Deteksi aktivitas mencurigakan
         if is_suspicious(request):
-            messages.warning(request, "Suspicious activity detected. Rating not posted.")
+            messages.warning(request, "Aktivitas mencurigakan terdeteksi. Rating tidak disimpan.")
             return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
 
         if form.is_valid():
             rating = form.save(commit=False)
             comment = form.cleaned_data.get('comment')
+
+            # Validasi isi komentar
+            blacklisted = check_for_blacklisted_keywords(comment)
+            if blacklisted:
+                messages.warning(request, f"Komentarmu mengandung kata yang dilarang: '{blacklisted}'")
+                return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
+
+            # Cek spam (opsional)
+            if hasattr(rating, 'is_spam') and rating.is_spam():
+                messages.warning(request, "Terlalu sering mengirim rating. Coba lagi nanti.")
+                return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
+
             rating.user = request.user
             rating.course = course
-
-            # Check if the comment contains blacklisted keywords
-            if check_for_blacklisted_keywords(comment):
-                messages.warning(request, "Your comment contains blacklisted content.")
-                return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
-
-            # Optionally, check for spam (e.g., posting too frequently)
-            if rating.is_spam():
-                messages.warning(request, "You are posting too frequently. Please wait a moment before posting again.")
-                return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
-
-            # Save the rating if everything is valid
             rating.save()
 
             messages.success(request, "Terima kasih! Rating kamu sudah disimpan.")

@@ -22,12 +22,12 @@ from django.urls import reverse
 from django.core.mail import send_mail
 from authentication.forms import  Userprofile, UserPhoto
 from .models import Profile
-from courses.models import Instructor,Partner,Assessment,GradeRange,AssessmentRead,Material, MaterialRead, Submission,AssessmentScore,QuestionAnswer,CourseStatus,Enrollment,MicroCredential, MicroCredentialEnrollment,Course, Enrollment, Category,CourseProgress
+from courses.models import Instructor,CourseRating,Partner,Assessment,GradeRange,AssessmentRead,Material, MaterialRead, Submission,AssessmentScore,QuestionAnswer,CourseStatus,Enrollment,MicroCredential, MicroCredentialEnrollment,Course, Enrollment, Category,CourseProgress
 from django.http import HttpResponse,JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseForbidden
 from django.core.cache import cache
-from django.db.models import Q
+from django.db.models import Avg, Count,Q
 from django.core import serializers
 from django.db.models import Count
 from django.utils import timezone
@@ -197,6 +197,97 @@ def course_list(request):
     }
 
     return render(request, 'home/course_list.html', context)
+
+
+
+@ratelimit(key='ip', rate='100/h')
+@cache_page(60 * 15)  # Cache selama 15 menit
+def course_list_api(request):
+    if request.method != 'GET':
+        return JsonResponse({'error': 'Metode tidak diperbolehkan'}, status=405)
+
+    # Dapatkan status 'published'
+    published_status = CourseStatus.objects.filter(status='published').first()
+    if not published_status:
+        return JsonResponse({'error': 'Status "published" tidak ditemukan'}, status=404)
+
+    # Query dasar untuk kursus dengan relasi dan anotasi
+    courses = Course.objects.filter(status_course=published_status).select_related(
+        'category', 'instructor__user', 'org_partner'
+    ).annotate(
+        num_enrollments=Count('enrollments'),  # Total enrollments
+        num_ratings=Count('ratings'),          # Total ratings
+        avg_rating=Avg('ratings__rating')      # Rata-rata rating (opsional)
+    )
+
+    # Filter berdasarkan kategori
+    category_filter = request.GET.getlist('category')
+    if category_filter:
+        courses = courses.filter(category__in=category_filter)
+
+    # Pagination
+    paginator = Paginator(courses, 9)  # 9 kursus per halaman
+    page_number = request.GET.get('page', 1)
+
+    try:
+        page_number = int(page_number) if int(page_number) >= 1 else 1
+    except ValueError:
+        page_number = 1
+
+    try:
+        page_obj = paginator.get_page(page_number)
+    except PageNotAnInteger:
+        page_obj = paginator.get_page(1)
+    except EmptyPage:
+        page_obj = paginator.get_page(paginator.num_pages)
+
+    # Data kursus untuk JSON
+    courses_data = []
+    for course in page_obj:
+        courses_data.append({
+            'course_id': course.id,
+            'course_name': course.course_name,
+            'course_slug': course.slug,
+            'course_image': course.image.url if course.image else None,
+            'instructor': course.instructor.user.get_full_name() if course.instructor else None,
+            'instructor_username': course.instructor.user.username if course.instructor else None,
+            'photo': course.instructor.user.photo.url if course.instructor and course.instructor.user.photo else None,
+            'partner': course.org_partner.name.name if course.org_partner else None,  # Pastikan ini string
+            'category': course.category.name if course.category else None,
+            'num_enrollments': course.num_enrollments,
+            'num_ratings': course.num_ratings,
+            'avg_rating': float(course.avg_rating) if course.avg_rating else 0.0,
+        })
+
+    # Kategori untuk filter
+    categories = Category.objects.filter(
+        category_courses__status_course=published_status
+    ).annotate(
+        course_count=Count('category_courses')
+    ).distinct()
+
+    # Konversi kategori ke format yang bisa di-serialize
+    categories_data = [
+        {
+            'id': category.id,
+            'name': category.name,
+            'course_count': category.course_count
+        } for category in categories
+    ]
+
+    # Response JSON
+    response_data = {
+        'courses': courses_data,
+        'total_courses': courses.count(),
+        'total_pages': paginator.num_pages,
+        'current_page': page_obj.number,
+        'start_index': page_obj.start_index(),
+        'end_index': page_obj.end_index(),
+        'category_filter': category_filter,
+        'categories': categories_data,  # Gunakan list dict, bukan queryset
+    }
+
+    return JsonResponse(response_data)
 
 
 #detailuser
@@ -746,46 +837,60 @@ def edit_profile_save(request, pk):
 def popular_courses(request):
     cache_key = 'popular_courses'
     courses_list = cache.get(cache_key)
-    
-    if not courses_list:
-        now = timezone.now().date()
-        try:
-            published_status = CourseStatus.objects.get(status='published')
-        except CourseStatus.DoesNotExist:
-            return JsonResponse({'error': 'Published status not found.'}, status=404)
+    now = timezone.now().date()
+    try:
+        published_status = CourseStatus.objects.get(status='published')
+    except CourseStatus.DoesNotExist:
+        return JsonResponse({'error': 'Published status not found.'}, status=404)
 
-        courses = Course.objects.filter(
-            status_course=published_status,
-            end_date__gte=now
-        ).annotate(
-            num_enrollments=Count('enrollments')
-        ).order_by('-num_enrollments')[:6]
+    courses = Course.objects.filter(
+        status_course=published_status,
+        end_date__gte=now
+    ).annotate(
+        num_enrollments=Count('enrollments'),
+        avg_rating=Avg('ratings__rating'),
+        num_ratings=Count('ratings')
+    ).order_by('-num_enrollments')[:6]
 
-        if not courses.exists():
-            return JsonResponse({'error': 'No popular courses found.'}, status=404)
-
-        courses_list = list(courses.values(
-            'id', 'course_name', 'slug', 'image', 'num_enrollments',
-            'instructor__user__first_name',
-            'instructor__user__last_name',
-            'instructor__user__photo',
-            'instructor__user__username',
-            'org_partner__name__name',
-            'org_partner__name__slug',
-            'org_partner__logo',
-        ))
-
-        for course in courses_list:
-            if course['image']:
-                course['image'] = settings.MEDIA_URL + course['image']
-            if course['instructor__user__photo']:
-                course['instructor__user__photo'] = settings.MEDIA_URL + course['instructor__user__photo']
-            if course['org_partner__logo']:
-                course['org_partner__logo'] = settings.MEDIA_URL + course['org_partner__logo']
+    for course in courses:
         
-        cache.set(cache_key, courses_list, timeout=3600)  # Cache selama 1 jam
+        ratings = CourseRating.objects.filter(course=course)
+       
+        
+
+    if not courses.exists():
+        return JsonResponse({'error': 'No popular courses found.'}, status=404)
+
+    courses_list = []
+    for course in courses:
+        avg_rating = course.avg_rating if course.avg_rating else 0
+        full_stars = int(avg_rating)
+        half_star = (avg_rating % 1) >= 0.5
+        empty_stars = 5 - (full_stars + (1 if half_star else 0))
+
+        course_data = {
+            'id': course.id,
+            'course_name': course.course_name,
+            'slug': course.slug,
+            'image': settings.MEDIA_URL + course.image.name if course.image else '',
+            'instructor__user__first_name': course.instructor.user.first_name,
+            'instructor__user__last_name': course.instructor.user.last_name,
+            'instructor__user__photo': settings.MEDIA_URL + course.instructor.user.photo.name if course.instructor.user.photo else '',
+            'instructor__user__username': course.instructor.user.username,
+            'org_partner__name__name': course.org_partner.name.name,
+            'org_partner__name__slug': course.org_partner.name.slug,
+            'org_partner__logo': settings.MEDIA_URL + course.org_partner.logo.name if course.org_partner.logo else '',
+            'num_enrollments': course.num_enrollments,
+            'avg_rating': float(avg_rating),
+            'num_ratings': course.num_ratings,
+            'full_stars': full_stars,
+            'half_star': half_star,
+            'empty_stars': empty_stars
+        }
+        courses_list.append(course_data)
     
     return JsonResponse({'courses': courses_list})
+
 # Home page
 def home(request):
    

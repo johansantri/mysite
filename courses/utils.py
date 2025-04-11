@@ -53,15 +53,14 @@ def user_has_passed_course(user, course):
 
 
 def check_for_blacklisted_keywords(comment):
-    # Retrieve all blacklisted keywords from the database
     blacklisted_keywords = BlacklistedKeyword.objects.all()
     
     for keyword in blacklisted_keywords:
-        # If a blacklisted keyword is found in the comment (case-insensitive)
         if keyword.keyword.lower() in comment.lower():
-            raise ValidationError(f"Your comment contains a blacklisted keyword: {keyword.keyword}")
-    
-    return True
+            return keyword.keyword  # Return kata yang dilanggar
+
+    return None
+
 
 def is_suspicious(request, threshold=5, time_window=60):
     """
