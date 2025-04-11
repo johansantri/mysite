@@ -19,81 +19,350 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/2.0.4/htmx.min.js" integrity="sha512-2kIcAizYXhIn8TzUvqzEDZNuDZ+aW7yE/+f1HJHXFjQcGNfv1kqzJSTBRBSlOgp6B/KZsz1K0a3ZTqP9dnxioQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <style>
+        /* General Styling */
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --sidebar-bg: #2c3034;
+            --sidebar-hover: #007bff;
+            --text-light: #ffffff;
+            --text-muted: #adb5bd;
+            --border-color: #495057;
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
             min-height: 100vh;
-            background-color: #f8f9fa;
+            background-color: #f5f7fa;
+            overflow-x: hidden;
         }
 
+        /* Sidebar Styling */
         .sidebar {
             height: 100vh;
             position: fixed;
             top: 0;
             left: 0;
             width: 250px;
-            background-color: #343a40;
+            background-color: var(--sidebar-bg);
             padding-top: 1rem;
             display: flex;
             flex-direction: column;
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease;
             z-index: 1030;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar.show {
+            transform: translateX(0);
         }
 
         .sidebar .nav-link {
-            color: white;
-            padding: 0.75rem 1rem;
-            transition: background-color 0.3s;
+            color: var(--text-light);
+            padding: 0.75rem 1.5rem;
+            transition: background-color 0.3s, padding-left 0.3s;
+            display: flex;
+            align-items: center;
+            font-size: 0.95rem;
         }
 
         .sidebar .nav-link:hover {
-            background-color: #007bff;
+            background-color: var(--sidebar-hover);
+            padding-left: 2rem;
         }
 
         .sidebar .nav-link.active {
-            background-color: #007bff;
+            background-color: var(--sidebar-hover);
+            font-weight: 600;
         }
 
         .sidebar .dropdown-menu {
-            background-color: #495057;
+            background-color: #3a4045;
             border: none;
             width: 100%;
+            padding: 0.5rem 0;
+            margin-left: 1rem;
         }
 
         .sidebar .dropdown-item {
-            color: white;
-            padding: 0.5rem 1.5rem;
+            color: var(--text-light);
+            padding: 0.5rem 2rem;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
         }
 
         .sidebar .dropdown-item:hover {
-            background-color: #007bff;
+            background-color: var(--sidebar-hover);
         }
 
+        /* User Profile Section */
+        .sidebar .user-profile {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.3s;
+        }
+
+        .sidebar .user-profile:hover {
+            background-color: #343a40;
+        }
+
+        .sidebar .user-profile img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border: 2px solid var(--primary-color);
+            transition: transform 0.3s;
+        }
+
+        .sidebar .user-profile img:hover {
+            transform: scale(1.1);
+        }
+
+        .sidebar .user-profile .badge {
+            font-size: 0.75rem;
+            padding: 0.4em 0.8em;
+            border-radius: 12px;
+        }
+
+        /* Sidebar Content */
+        .sidebar-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) #3a4045;
+        }
+
+        .sidebar-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar-content::-webkit-scrollbar-track {
+            background: #3a4045;
+        }
+
+        .sidebar-content::-webkit-scrollbar-thumb {
+            background-color: var(--primary-color);
+            border-radius: 10px;
+        }
+
+        /* Course Content Section */
+        .sidebar .course-content .nav-link {
+            font-size: 0.9rem;
+            padding: 0.5rem 1.5rem;
+        }
+
+        .sidebar .course-content .nav-link i {
+            font-size: 1rem;
+            margin-right: 0.75rem;
+        }
+
+        .sidebar .course-content .collapse .nav-link {
+            padding-left: 2.5rem;
+            font-size: 0.85rem;
+        }
+
+        .sidebar .course-content .collapse .collapse .nav-link {
+            padding-left: 3.5rem;
+            font-size: 0.8rem;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            padding: 1.5rem;
+            background-color: #343a40;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .progress-section .progress {
+            height: 8px;
+            border-radius: 10px;
+            background-color: #495057;
+        }
+
+        .progress-section .progress-bar {
+            transition: width 0.5s ease-in-out;
+        }
+
+        .progress-section .table {
+            font-size: 0.85rem;
+            margin-bottom: 0;
+        }
+
+        .progress-section .table th,
+        .progress-section .table td {
+            padding: 0.5rem;
+            vertical-align: middle;
+        }
+
+        /* Main Content */
         .main-content {
             margin-left: 250px;
-            padding: 20px;
+            padding: 2rem;
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
         }
 
+        /* Navbar Toggler */
+        .navbar-toggler {
+            z-index: 1040;
+            border: none;
+            padding: 0.5rem;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            transition: color 0.3s;
+        }
+
+        .navbar-toggler:hover {
+            color: #0056b3;
+        }
+
+        /* Footer Styling */
+        .sidebar-footer {
+            background-color: #2c3034;
+            padding: 1.5rem 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-link {
+            color: var(--text-light);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            background-color: #495057;
+            border-radius: 0.375rem;
+            padding: 0.5rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .footer-link:hover {
+            background-color: var(--sidebar-hover);
+            transform: translateY(-2px);
+        }
+
+        .footer-link.bg-danger {
+            background-color: #dc3545;
+        }
+
+        .footer-link.bg-danger:hover {
+            background-color: #c82333;
+        }
+
+        /* Confetti Animation */
+        .confetti-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .confetti {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.8;
+        }
+
+        .confetti--animation-slow { animation: fall 3s linear forwards; }
+        .confetti--animation-medium { animation: fall 2s linear forwards; }
+        .confetti--animation-fast { animation: fall 1s linear forwards; }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive Design */
         @media (max-width: 991px) {
             .sidebar {
-                left: -250px;
+                transform: translateX(-250px);
             }
 
             .sidebar.show {
-                left: 0;
+                transform: translateX(0);
             }
 
             .main-content {
                 margin-left: 0;
+                padding: 1rem;
             }
 
             .navbar-toggler {
-                z-index: 1040;
+                display: block;
+            }
+
+            .sidebar .user-profile {
+                padding: 1rem;
+            }
+
+            .sidebar .user-profile img {
+                width: 40px;
+                height: 40px;
+            }
+
+            .sidebar .nav-link {
+                font-size: 0.9rem;
+                padding: 0.5rem 1rem;
+            }
+
+            .sidebar .dropdown-menu {
+                margin-left: 0.5rem;
+            }
+
+            .sidebar .dropdown-item {
+                padding: 0.5rem 1.5rem;
+                font-size: 0.85rem;
+            }
+
+            .progress-section {
+                padding: 1rem;
+            }
+
+            .progress-section .table {
+                font-size: 0.75rem;
+            }
+
+            .footer-link {
+                font-size: 0.85rem;
+                padding: 0.5rem;
             }
         }
 
         @media (min-width: 992px) {
             .sidebar {
-                left: 0 !important;
+                transform: translateX(0) !important;
+            }
+
+            .navbar-toggler {
+                display: none;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .sidebar-footer .navbar-nav {
+                flex-direction: column !important;
+                gap: 0.5rem !important;
+            }
+
+            .sidebar-footer .d-flex {
+                flex-direction: column !important;
+                gap: 0.5rem !important;
+            }
+        }
+
+        @media (min-width: 576px) {
+            .sidebar-footer .navbar-nav {
+                flex-direction: row !important;
+                gap: 1rem !important;
+            }
+
+            .sidebar-footer .d-flex {
+                flex-direction: column !important;
+                gap: 1rem !important;
             }
         }
     </style>
@@ -111,47 +380,44 @@
         </div>
 
         <!-- Sidebar Content -->
-        <div class="sidebar-content flex-grow-1 overflow-auto">
+        <div class="sidebar-content">
             {% if user.is_authenticated %}
                 <!-- User Profile -->
                 {% if not user.is_partner and not user.is_instructor and not user.is_superuser %}
-                    <div class="p-3 border-bottom border-secondary">
+                    <div class="user-profile">
                         <div class="d-flex align-items-center mb-3">
                             <a href="{% url 'authentication:edit-photo' request.user.id %}">
                                 {% if request.user.photo %}
-                                    <img src="{{ request.user.photo.url }}" alt="User Avatar" class="rounded-circle me-3" style="width: 50px; height: 50px;">
+                                    <img src="{{ request.user.photo.url }}" alt="User Avatar" class="rounded-circle me-3">
                                 {% else %}
-                                    <img src="{% static 'assets/img/user/user1.jpg' %}" alt="User Image" class="rounded-circle me-3" style="width: 50px; height: 50px;">
+                                    <img src="{% static 'assets/img/user/user1.jpg' %}" alt="User Image" class="rounded-circle me-3">
                                 {% endif %}
                             </a>
                             <div>
-                                <p class="mb-0 text-white fw-bold"><a href="{% url 'authentication:profile' request.user.username %}">{{ request.user.first_name }} {{ request.user.last_name }}</a></p>
-                                <small class="text-white">{{ request.user.hobby }}</small>
+                                <p class="mb-0 text-white fw-bold"><a href="{% url 'authentication:profile' request.user.username %}" class="text-white text-decoration-none">{{ request.user.first_name }} {{ request.user.last_name }}</a></p>
+                                <small class="text-muted">{{ request.user.hobby }}</small>
                                 {% if not user.university %}
-                                <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
+                                    <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
                                 {% else %}
-                                   
-                                     <span class="badge bg-warning text-dark"> 
-                                    {% if request.user.is_superuser %}
-                                        Superuser
-                                    {% elif request.user.is_partner %}
-                                        Partner
-                                    {% elif request.user.is_instructor %}
-                                        Instructor
-                                    {% elif request.user.is_member %}
-                                        Member
-                                    {% elif request.user.is_subscription %}
-                                        Subscription
-                                    {% elif request.user.is_audit %}
-                                        Audit
-                                    {% elif request.user.is_learner %}
-                                       
-                                        <a href="{% url 'courses:instructor_add' %}" >Become an instructor</a>
-                                    {% else %}
-                                        <a href="{% url 'courses:instructor_add' %}" >Become an instructor</a>
-                                    {% endif %}
-                                    
-                                  </span>
+                                    <span class="badge bg-warning text-dark mt-1 d-inline-block">
+                                        {% if request.user.is_superuser %}
+                                            Superuser
+                                        {% elif request.user.is_partner %}
+                                            Partner
+                                        {% elif request.user.is_instructor %}
+                                            Instructor
+                                        {% elif request.user.is_member %}
+                                            Member
+                                        {% elif request.user.is_subscription %}
+                                            Subscription
+                                        {% elif request.user.is_audit %}
+                                            Audit
+                                        {% elif request.user.is_learner %}
+                                            <a href="{% url 'courses:instructor_add' %}" class="text-dark text-decoration-none">Become an instructor</a>
+                                        {% else %}
+                                            <a href="{% url 'courses:instructor_add' %}" class="text-dark text-decoration-none">Become an instructor</a>
+                                        {% endif %}
+                                    </span>
                                 {% endif %}
                             </div>
                         </div>
@@ -160,46 +426,44 @@
 
                 <ul class="nav flex-column">
                     {% if user.is_partner %}
-                           <div class="p-3 border-bottom border-secondary">
-                        <div class="d-flex align-items-center mb-3">
-                            <a href="{% url 'authentication:edit-photo' request.user.id %}">
-                                {% if request.user.photo %}
-                                    <img src="{{ request.user.photo.url }}" alt="User Avatar" class="rounded-circle me-3" style="width: 50px; height: 50px;">
-                                {% else %}
-                                    <img src="{% static 'assets/img/user/user1.jpg' %}" alt="User Image" class="rounded-circle me-3" style="width: 50px; height: 50px;">
-                                {% endif %}
-                            </a>
-                            <div>
-                                <p class="mb-0 text-white fw-bold"><a href="{% url 'authentication:profile' request.user.username %}">{{ request.user.first_name }} {{ request.user.last_name }}</a></p>
-                                <small class="mb-1 text-white">{{ request.user.hobby }}</small>
-                                {% if not user.university %}
-                                <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
-                                {% else %}
-                                    
-                                     <span class="badge bg-warning text-dark"> 
-                                    {% if request.user.is_superuser %}
-                                        Superuser
-                                    {% elif request.user.is_partner %}
-                                        Partner
-                                    {% elif request.user.is_instructor %}
-                                        Instructor
-                                    {% elif request.user.is_member %}
-                                        Member
-                                    {% elif request.user.is_subscription %}
-                                        Subscription
-                                    {% elif request.user.is_audit %}
-                                        Audit
-                                    {% elif request.user.is_learner %}
-                                        Learner
+                        <div class="user-profile">
+                            <div class="d-flex align-items-center mb-3">
+                                <a href="{% url 'authentication:edit-photo' request.user.id %}">
+                                    {% if request.user.photo %}
+                                        <img src="{{ request.user.photo.url }}" alt="User Avatar" class="rounded-circle me-3">
                                     {% else %}
-                                        <a href="{% url 'courses:instructor_add' %}" class="btn btn-warning btn-sm">Become an instructor</a>
+                                        <img src="{% static 'assets/img/user/user1.jpg' %}" alt="User Image" class="rounded-circle me-3">
                                     {% endif %}
-                                    
-                                  </span>
-                                {% endif %}
+                                </a>
+                                <div>
+                                    <p class="mb-0 text-white fw-bold"><a href="{% url 'authentication:profile' request.user.username %}" class="text-white text-decoration-none">{{ request.user.first_name }} {{ request.user.last_name }}</a></p>
+                                    <small class="text-muted">{{ request.user.hobby }}</small>
+                                    {% if not user.university %}
+                                        <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark mt-1 d-inline-block">
+                                            {% if request.user.is_superuser %}
+                                                Superuser
+                                            {% elif request.user.is_partner %}
+                                                Partner
+                                            {% elif request.user.is_instructor %}
+                                                Instructor
+                                            {% elif request.user.is_member %}
+                                                Member
+                                            {% elif request.user.is_subscription %}
+                                                Subscription
+                                            {% elif request.user.is_audit %}
+                                                Audit
+                                            {% elif request.user.is_learner %}
+                                                Learner
+                                            {% else %}
+                                                <a href="{% url 'courses:instructor_add' %}" class="text-dark text-decoration-none">Become an instructor</a>
+                                            {% endif %}
+                                        </span>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
-                    </div>
 
                         <li class="nav-item">
                             <a class="nav-link active" href="{% url 'authentication:dasbord' %}">
@@ -231,46 +495,44 @@
                             </a>
                         </li>
                     {% elif user.is_instructor %}
-                               <div class="p-3 border-bottom border-secondary">
-                        <div class="d-flex align-items-center mb-3">
-                            <a href="{% url 'authentication:edit-photo' request.user.id %}">
-                                {% if request.user.photo %}
-                                    <img src="{{ request.user.photo.url }}" alt="User Avatar" class="rounded-circle me-3" style="width: 50px; height: 50px;">
-                                {% else %}
-                                    <img src="{% static 'assets/img/user/user1.jpg' %}" alt="User Image" class="rounded-circle me-3" style="width: 50px; height: 50px;">
-                                {% endif %}
-                            </a>
-                            <div>
-                                <p class="mb-0 text-white fw-bold"><a href="{% url 'authentication:profile' request.user.username %}">{{ request.user.first_name }} {{ request.user.last_name }}</a></p>
-                                <small class="mb-1 text-muted">{{ request.user.hobby }}</small>
-                                {% if not user.university %}
-                                <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
-                                {% else %}
-                                    
-                                     <span class="badge bg-warning text-dark"> 
-                                    {% if request.user.is_superuser %}
-                                        Superuser
-                                    {% elif request.user.is_partner %}
-                                        Partner
-                                    {% elif request.user.is_instructor %}
-                                        Instructor
-                                    {% elif request.user.is_member %}
-                                        Member
-                                    {% elif request.user.is_subscription %}
-                                        Subscription
-                                    {% elif request.user.is_audit %}
-                                        Audit
-                                    {% elif request.user.is_learner %}
-                                        Learner
+                        <div class="user-profile">
+                            <div class="d-flex align-items-center mb-3">
+                                <a href="{% url 'authentication:edit-photo' request.user.id %}">
+                                    {% if request.user.photo %}
+                                        <img src="{{ request.user.photo.url }}" alt="User Avatar" class="rounded-circle me-3">
                                     {% else %}
-                                        <a href="{% url 'courses:instructor_add' %}" class="btn btn-warning btn-sm">Become an instructor</a>
+                                        <img src="{% static 'assets/img/user/user1.jpg' %}" alt="User Image" class="rounded-circle me-3">
                                     {% endif %}
-                                    
-                                    </span>
-                                {% endif %}
+                                </a>
+                                <div>
+                                    <p class="mb-0 text-white fw-bold"><a href="{% url 'authentication:profile' request.user.username %}" class="text-white text-decoration-none">{{ request.user.first_name }} {{ request.user.last_name }}</a></p>
+                                    <small class="text-muted">{{ request.user.hobby }}</small>
+                                    {% if not user.university %}
+                                        <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark mt-1 d-inline-block">
+                                            {% if request.user.is_superuser %}
+                                                Superuser
+                                            {% elif request.user.is_partner %}
+                                                Partner
+                                            {% elif request.user.is_instructor %}
+                                                Instructor
+                                            {% elif request.user.is_member %}
+                                                Member
+                                            {% elif request.user.is_subscription %}
+                                                Subscription
+                                            {% elif request.user.is_audit %}
+                                                Audit
+                                            {% elif request.user.is_learner %}
+                                                Learner
+                                            {% else %}
+                                                <a href="{% url 'courses:instructor_add' %}" class="text-dark text-decoration-none">Become an instructor</a>
+                                            {% endif %}
+                                        </span>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
-                    </div>
 
                         <li class="nav-item">
                             <a class="nav-link active" href="{% url 'authentication:dasbord' %}">
@@ -287,48 +549,44 @@
                             </ul>
                         </li>
                     {% elif user.is_superuser %}
-
-                               <div class="p-3 border-bottom border-secondary">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <a href="{% url 'authentication:edit-photo' request.user.id %}">
-                                            {% if request.user.photo %}
-                                                <img src="{{ request.user.photo.url }}" alt="User Avatar" class="rounded-circle me-3" style="width: 50px; height: 50px;">
-                                            {% else %}
-                                                <img src="{% static 'assets/img/user/user1.jpg' %}" alt="User Image" class="rounded-circle me-3" style="width: 50px; height: 50px;">
-                                            {% endif %}
-                                        </a>
-                                    <div>
-                                <p class="mb-0 text-white fw-bold"><a href="{% url 'authentication:profile' request.user.username %}">{{ request.user.first_name }} {{ request.user.last_name }}</a></p>
-                                <small class="mb-1 text-white">{{ request.user.hobby }}</small>
-                                {% if not user.university %}
-                                <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
-                                {% else %}
-                                      <span class="badge bg-warning text-dark"> 
-                                    {% if request.user.is_superuser %}
-                                        Superuser
-                                    {% elif request.user.is_partner %}
-                                        Partner
-                                    {% elif request.user.is_instructor %}
-                                        Instructor
-                                    {% elif request.user.is_member %}
-                                        Member
-                                    {% elif request.user.is_subscription %}
-                                        Subscription
-                                    {% elif request.user.is_audit %}
-                                        Audit
-                                    {% elif request.user.is_learner %}
-                                        Learner
+                        <div class="user-profile">
+                            <div class="d-flex align-items-center mb-3">
+                                <a href="{% url 'authentication:edit-photo' request.user.id %}">
+                                    {% if request.user.photo %}
+                                        <img src="{{ request.user.photo.url }}" alt="User Avatar" class="rounded-circle me-3">
                                     {% else %}
-                                        <a href="{% url 'courses:instructor_add' %}" class="btn btn-warning btn-sm">Become an instructor</a>
+                                        <img src="{% static 'assets/img/user/user1.jpg' %}" alt="User Image" class="rounded-circle me-3">
                                     {% endif %}
-                                    
-                                  </span>
-                                    
-                                    
-                                {% endif %}
+                                </a>
+                                <div>
+                                    <p class="mb-0 text-white fw-bold"><a href="{% url 'authentication:profile' request.user.username %}" class="text-white text-decoration-none">{{ request.user.first_name }} {{ request.user.last_name }}</a></p>
+                                    <small class="text-muted">{{ request.user.hobby }}</small>
+                                    {% if not user.university %}
+                                        <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark mt-1 d-inline-block">
+                                            {% if request.user.is_superuser %}
+                                                Superuser
+                                            {% elif request.user.is_partner %}
+                                                Partner
+                                            {% elif request.user.is_instructor %}
+                                                Instructor
+                                            {% elif request.user.is_member %}
+                                                Member
+                                            {% elif request.user.is_subscription %}
+                                                Subscription
+                                            {% elif request.user.is_audit %}
+                                                Audit
+                                            {% elif request.user.is_learner %}
+                                                Learner
+                                            {% else %}
+                                                <a href="{% url 'courses:instructor_add' %}" class="text-dark text-decoration-none">Become an instructor</a>
+                                            {% endif %}
+                                        </span>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
-                    </div>
 
                         <li class="nav-item">
                             <a class="nav-link active" href="{% url 'authentication:dasbord' %}">
@@ -362,33 +620,26 @@
                         </li>
                     {% else %}
                         <!-- Learner Menu -->
-                       <li class="nav-item">
+                        <li class="nav-item">
                             <a class="nav-link" href="{% url 'authentication:dashbord' %}">
-                                <i class="bi bi-file-earmark-spreadsheet me-2"></i> Dasbord
+                                <i class="bi bi-file-earmark-spreadsheet me-2"></i> Dashboard
                             </a>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="" data-bs-toggle="dropdown">
-                                <i class="bi bi-speedometer me-2"></i>  {{ request.user.username|capfirst }}
-
-
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                <i class="bi bi-speedometer me-2"></i> {{ request.user.username|capfirst }}
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="{% url 'authentication:mycourse' %}">My Course</a></li>
                                 <li><a class="dropdown-item" href="{% url 'authentication:microcredential' %}" target="_blank">Micro Credential</a></li>
-                                
                             </ul>
                         </li>
-                       
-
-                        <!-- Course Content -->
-                       <!-- Course Content -->
-         
                     {% endif %}
                 </ul>
-              <!-- templates/courses/course_learn.html -->
+
+                <!-- Course Content -->
                 {% if not request.user.is_partner and not request.user.is_instructor and not request.user.is_superuser and request.resolver_match.url_name == 'course_learn' %}
-                <ul class="nav flex-column">
+                <ul class="nav flex-column course-content">
                     <li class="nav-item">
                         <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="collapse" data-bs-target="#courseContent" aria-expanded="false">
                             <i class="bi bi-ui-checks me-2"></i> Course Content
@@ -485,7 +736,7 @@
                     </li>
 
                     <!-- Progress Section for Learner -->
-                    <div class="p-3 border-top border-secondary bg-dark">
+                    <div class="progress-section">
                         <p class="text-center text-white mb-2">Progress: {{ course_progress|floatformat:0 }}%</p>
                         <div class="progress mb-3">
                             <div class="progress-bar bg-success" 
@@ -595,74 +846,33 @@
                     {% endif %}
                 </ul>
                 {% endif %}
-
-                <!-- CSS -->
-                <style>
-                    .confetti-container {
-                        position: absolute;
-                        top: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 100%;
-                        pointer-events: none;
-                    }
-                    .confetti {
-                        position: absolute;
-                        border-radius: 50%;
-                        opacity: 0.8;
-                    }
-                    .confetti--animation-slow { animation: fall 3s linear forwards; }
-                    .confetti--animation-medium { animation: fall 2s linear forwards; }
-                    .confetti--animation-fast { animation: fall 1s linear forwards; }
-                    @keyframes fall {
-                        to {
-                            transform: translateY(100vh);
-                            opacity: 0;
-                        }
-                    }
-                    .table-sm {
-                        font-size: 0.85rem;
-                    }
-                    .table-dark th,
-                    .table-dark td {
-                        border-color: #495057;
-                    }
-                    .table-dark.table-hover tbody tr:hover {
-                        background-color: #40474e;
-                    }
-                </style>
             {% endif %}
         </div>
 
-       <!-- Footer inside sidebar -->
-         <!-- Footer inside sidebar -->
-          <!-- Footer inside sidebar -->
-           <!-- Footer inside sidebar -->
-            <footer class="sidebar-footer mt-auto py-4 bg-dark text-white border-top border-secondary">
-                <nav class="navbar navbar-expand navbar-light justify-content-center">
-                    <div class="d-flex flex-column align-items-center gap-2">
-                        <!-- Wadah untuk HOME dan SOSIAL -->
-                        <ul class="navbar-nav flex-column flex-sm-row gap-2 text-center">
-                            <li class="nav-item">
-                                <a href="{% url 'authentication:home' %}" class="nav-link footer-link d-flex align-items-center justify-content-center px-3 py-2 transition-hover">
-                                    <i class="bi bi-house-fill me-2"></i> HOME
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{% url 'courses:create_and_list_sos_posts' %}" class="nav-link footer-link d-flex align-items-center justify-content-center px-3 py-2 transition-hover">
-                                    <i class="bi bi-chat-dots-fill me-2"></i> SOSIAL
-                                </a>
-                            </li>
-                        </ul>
-                        <!-- Tombol LOGOUT di luar wadah HOME-SOSIAL -->
-                        <div class="nav-item">
-                            <a href="{% url 'authentication:logout' %}" class="nav-link footer-link d-flex align-items-center justify-content-center px-3 py-2 transition-hover bg-danger text-white">
-                                <i class="bi bi-box-arrow-right me-2"></i> LOGOUT
+        <!-- Footer inside sidebar -->
+        <footer class="sidebar-footer mt-auto py-4 text-white border-top border-secondary">
+            <nav class="navbar navbar-expand navbar-light justify-content-center">
+                <div class="d-flex flex-column align-items-center gap-2">
+                    <ul class="navbar-nav flex-column flex-sm-row gap-2 text-center">
+                        <li class="nav-item">
+                            <a href="{% url 'authentication:home' %}" class="nav-link footer-link d-flex align-items-center justify-content-center transition-hover">
+                                <i class="bi bi-house-fill me-2"></i> HOME
                             </a>
-                        </div>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'courses:create_and_list_sos_posts' %}" class="nav-link footer-link d-flex align-items-center justify-content-center transition-hover">
+                                <i class="bi bi-chat-dots-fill me-2"></i> SOSIAL
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="nav-item">
+                        <a href="{% url 'authentication:logout' %}" class="nav-link footer-link d-flex align-items-center justify-content-center transition-hover bg-danger text-white">
+                            <i class="bi bi-box-arrow-right me-2"></i> LOGOUT
+                        </a>
                     </div>
-                </nav>
-                {% if messages %}
+                </div>
+            </nav>
+            {% if messages %}
                 <div class="alert-container mb-3">
                     {% for message in messages %}
                         <div class="alert alert-{{ message.tags }} alert-dismissible fade show rounded-3" role="alert">
@@ -672,81 +882,10 @@
                     {% endfor %}
                 </div>
             {% endif %}
-                <div class="text-center mt-3">
-                    <p class="mb-0 text-white">© 2025 LMSKu. All rights reserved.</p>
-                </div>
-            </footer>
-
-            <!-- Custom CSS untuk Footer -->
-            <style>
-                .sidebar-footer {
-                    background-color: #2c3034;
-                    padding: 1.5rem 1rem;
-                    border-top: 1px solid #495057;
-                }
-
-                .footer-link {
-                    color: #ffffff;
-                    font-weight: 600;
-                    text-decoration: none;
-                    transition: all 0.3s ease;
-                    background-color: #495057;
-                    border-radius: 0.375rem; /* Sudut default Bootstrap */
-                }
-
-                .footer-link:hover {
-                    color: #ffffff;
-                    background-color: #007bff;
-                    transform: translateY(-2px);
-                }
-
-                .transition-hover {
-                    transition: transform 0.3s ease, background-color 0.3s ease;
-                }
-
-                .sidebar-footer .text-white {
-                    color: #ffffff !important;
-                    font-size: 0.9rem;
-                }
-
-                .sidebar-content {
-                    max-height: calc(100vh - 120px);
-                }
-
-                /* Styling khusus untuk tombol logout */
-                .footer-link.bg-danger {
-                    background-color: #dc3545;
-                }
-
-                .footer-link.bg-danger:hover {
-                    background-color: #c82333;
-                    transform: translateY(-2px);
-                }
-
-                /* Tata letak di mobile (vertikal semua) */
-                @media (max-width: 575.98px) {
-                    .navbar-nav {
-                        flex-direction: column !important;
-                        gap: 0.5rem !important;
-                    }
-                    .sidebar-footer .d-flex {
-                        flex-direction: column !important;
-                        gap: 0.5rem !important;
-                    }
-                }
-
-                /* Tata letak di PC (HOME-SOSIAL horizontal, LOGOUT di bawah) */
-                @media (min-width: 576px) {
-                    .navbar-nav {
-                        flex-direction: row !important;
-                        gap: 1rem !important;
-                    }
-                    .sidebar-footer .d-flex {
-                        flex-direction: column !important;
-                        gap: 1rem !important;
-                    }
-                }
-            </style>
+            <div class="text-center mt-3">
+                <p class="mb-0 text-white">© 2025 LMSKu. All rights reserved.</p>
+            </div>
+        </footer>
     </nav>
 
     <!-- Main Content -->

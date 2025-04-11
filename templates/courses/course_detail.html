@@ -37,9 +37,9 @@
             <div class="curriculum-grid mb-3" data-id="{{ i.id }}">
               <div class="curriculum-head d-flex align-items-center bg-light p-3 rounded">
                 <i class="bi bi-grip-vertical me-2 drag-handle" style="cursor: grab;"></i>
-                <input name="titleupsection" id="titleupsection-{{i.id}}" autocomplete="off" value="{{i.title}}" type="text" class="form-control modern-input me-2"/>
-                <input name="idupsection" id="idupsection-{{i.id}}" value="{{i.id}}" type="hidden" class="form-control"/>
-                <input name="courses_id" id="courses_id-{{i.id}}" value="{{i.courses_id}}" type="hidden" class="form-control"/>
+                <input name="titleupsection" id="titleupsection-{{i.id}}" autocomplete="off" value="{{i.title}}" type="text" class="form-control modern-input me-2" />
+                <input name="idupsection" id="idupsection-{{i.id}}" value="{{i.id}}" type="hidden" class="form-control" />
+                <input name="courses_id" id="courses_id-{{i.id}}" value="{{i.courses_id}}" type="hidden" class="form-control" />
                 <a href="javascript:void(0);" class="btn btn-danger delete-btn-section me-2" data-id="{{ i.id }}"><i class="bi bi-trash"></i></a>
                 <a href="javascript:void(0);" class="btn btn-success" data-id="{{i.id}}" data-bs-toggle="modal" data-bs-target="#exampleModal-{{i.id}}"><i class="bi bi-plus"></i></a>
               </div>
@@ -61,9 +61,9 @@
                   </div>
                   <div class="modal-body p-4">
                     {% csrf_token %}
-                    <input type="text" class="form-control modern-input" autocomplete="off" id="title-{{i.id}}" name="title" placeholder="Subsection">
-                    <input type="hidden" class="form-control" id="courses-{{i.id}}" name="courses" value="{{course.id}}">
-                    <input type="hidden" class="form-control" id="parent-{{i.id}}" name="parent" value="{{i.id}}">
+                    <input type="text" class="form-control modern-input" autocomplete="off" id="title-{{i.id}}" name="title" placeholder="Subsection" />
+                    <input type="hidden" class="form-control" id="courses-{{i.id}}" name="courses" value="{{course.id}}" />
+                    <input type="hidden" class="form-control" id="parent-{{i.id}}" name="parent" value="{{i.id}}" />
                     <div id="error-message-{{i.id}}" class="error-message mt-2"></div>
                   </div>
                   <div class="modal-footer">
@@ -85,9 +85,9 @@
                   </div>
                   <div class="modal-body p-4">
                     {% csrf_token %}
-                    <input type="text" class="form-control modern-input" autocomplete="off" id="title-{{i.id}}" name="title" placeholder="Subsection">
-                    <input type="hidden" class="form-control" id="courses-{{i.id}}" name="courses" value="{{course.id}}">
-                    <input type="hidden" class="form-control" id="parent-{{i.id}}" name="parent" value="{{i.id}}">
+                    <input type="text" class="form-control modern-input" autocomplete="off" id="title-{{i.id}}" name="title" placeholder="Subsection" />
+                    <input type="hidden" class="form-control" id="courses-{{i.id}}" name="courses" value="{{course.id}}" />
+                    <input type="hidden" class="form-control" id="parent-{{i.id}}" name="parent" value="{{i.id}}" />
                     <div id="error-message-{{i.id}}" class="error-message mt-2"></div>
                   </div>
                   <div class="modal-footer">
@@ -102,9 +102,9 @@
             <div class="curriculum-grid mb-3" data-id="{{ i.id }}">
               <div class="curriculum-head d-flex align-items-center bg-light p-3 rounded">
                 <i class="bi bi-grip-vertical me-2 drag-handle" style="cursor: grab;"></i>
-                <input name="titleupsection" value="{{i.title}}" id="titleupsection-{{i.id}}" type="text" class="form-control modern-input me-2"/>
-                <input name="idupsection" id="idupsection-{{i.id}}" value="{{i.id}}" type="hidden" class="form-control ada"/>
-                <input name="courses_id" id="courses_id-{{i.id}}" value="{{i.courses_id}}" type="hidden" class="form-control ada"/>
+                <input name="titleupsection" value="{{i.title}}" id="titleupsection-{{i.id}}" type="text" class="form-control modern-input me-2" />
+                <input name="idupsection" id="idupsection-{{i.id}}" value="{{i.id}}" type="hidden" class="form-control ada" />
+                <input name="courses_id" id="courses_id-{{i.id}}" value="{{i.courses_id}}" type="hidden" class="form-control ada" />
                 <a href="javascript:void(0);" class="btn btn-danger delete-btn-section me-2 btn-sm" data-id="{{ i.id }}"><i class="bi bi-trash"></i></a>
                 <a href="javascript:void(0);" class="btn btn-success btn-sm" data-id="{{i.id}}" data-bs-toggle="modal" data-bs-target="#newModal-{{i.id}}"><i class="bi bi-plus"></i></a>
               </div>
@@ -121,9 +121,9 @@
                             <i class="bi bi-grip-vertical me-2 drag-handle" style="cursor: grab;"></i>
                             <a class="collapsed faq-collapse flex-grow-1 d-flex align-items-center" data-bs-toggle="collapse" href="#collapse-{{obj.id}}" aria-expanded="false">
                               <i class="bi bi-list me-2"></i>
-                              <input name="titlepusection" value="{{obj.title}}" id="titlepusection-{{obj.id}}" type="text" class="form-control modern-input"/>
-                              <input name="parent_id" id="parent_id-{{obj.id}}" value="{{obj.parent_id}}" type="hidden" class="form-control"/>
-                              <input name="courses_id" id="courses_id-{{obj.id}}" value="{{obj.courses_id}}" type="hidden" class="form-control"/>
+                              <input name="titlepusection" value="{{obj.title}}" id="titlepusection-{{obj.id}}" type="text" class="form-control modern-input" />
+                              <input name="parent_id" id="parent_id-{{obj.id}}" value="{{obj.parent_id}}" type="hidden" class="form-control" />
+                              <input name="courses_id" id="courses_id-{{obj.id}}" value="{{obj.courses_id}}" type="hidden" class="form-control" />
                             </a>
                             <div class="faq-right d-flex">
                               <a href="javascript:void(0);" class="btn btn-danger delete-btn-section btn-sm" data-id="{{ obj.id }}"><i class="bi bi-trash"></i></a>
@@ -163,9 +163,9 @@
                             <i class="bi bi-grip-vertical me-2 drag-handle" style="cursor: grab;"></i>
                             <a class="collapsed faq-collapse flex-grow-1 d-flex align-items-center" data-bs-toggle="collapse" href="#collapse-{{obj.id}}" aria-expanded="false">
                               <i class="bi bi-list me-2"></i>
-                              <input name="titlepusection" value="{{obj.title}}" id="titlepusection-{{obj.id}}" type="text" class="form-control modern-input"/>
-                              <input name="parent_id" id="parent_id-{{obj.id}}" value="{{obj.parent_id}}" type="hidden" class="form-control"/>
-                              <input name="courses_id" id="courses_id-{{obj.id}}" value="{{obj.courses_id}}" type="hidden" class="form-control"/>
+                              <input name="titlepusection" value="{{obj.title}}" id="titlepusection-{{obj.id}}" type="text" class="form-control modern-input" />
+                              <input name="parent_id" id="parent_id-{{obj.id}}" value="{{obj.parent_id}}" type="hidden" class="form-control" />
+                              <input name="courses_id" id="courses_id-{{obj.id}}" value="{{obj.courses_id}}" type="hidden" class="form-control" />
                             </a>
                             <div class="faq-right d-flex">
                               <a href="javascript:void(0);" class="btn btn-success me-2 btn-sm" onclick="document.getElementById('titlepusection-{{obj.id}}').focus();"><i class="bi bi-plus"></i></a>
@@ -432,8 +432,8 @@
     /* Responsive Design - Penyesuaian untuk Mobile */
     @media (max-width: 768px) {
       .curriculum-grid, .faq-grid {
-        margin-left: -25px; /* Geser ke kiri */
-        margin-right: -25px; /* Sesuaikan margin kanan agar seimbang */
+        margin-left: -30px; /* Geser ke kiri */
+        margin-right: -30px; /* Sesuaikan margin kanan agar seimbang */
       }
 
       .curriculum-head, .faq-header {
@@ -478,7 +478,17 @@
       .faq-right {
         display: flex;
         align-items: center;
-        margin-left: 5px; /* Jarak ke elemen sebelumnya */
+        margin-left: 2px; /* Kurangi jarak container tombol */
+      }
+
+      /* Mengurangi jarak antar tombol delete dan add di mobile */
+      .curriculum-head .btn-danger,
+      .curriculum-head .btn-success,
+      .faq-header .btn-danger,
+      .faq-header .btn-success {
+        margin-left: 2px; /* Kurangi jarak antar tombol */
+        padding: 4px 8px; /* Kurangi padding tombol agar lebih kecil */
+        min-width: 32px; /* Kurangi lebar minimum tombol */
       }
 
       .add-article-btns {

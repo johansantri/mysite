@@ -43,10 +43,117 @@
           </ul>
         </li>
       </ul>
-
-      <!-- Re-Runs Button Section -->
-    
     </div>
   </div>
-</nav>
 
+  <!-- CSS Tambahan untuk Navbar -->
+  <style>
+    /* Navbar Styling */
+    .navbar {
+      padding: 10px 15px;
+      background-color: #fff !important;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .navbar-brand {
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: #333 !important;
+      transition: color 0.3s ease;
+    }
+
+    .navbar-brand:hover {
+      color: #007bff !important;
+    }
+
+    .navbar-toggler {
+      border: none;
+      padding: 8px;
+      transition: transform 0.3s ease;
+    }
+
+    .navbar-toggler:focus {
+      outline: none;
+      box-shadow: none;
+    }
+
+    .navbar-toggler:hover {
+      transform: scale(1.1);
+    }
+
+    .navbar-toggler-icon {
+      width: 24px;
+      height: 24px;
+    }
+
+    .nav-link {
+      font-size: 1rem;
+      color: #555 !important;
+      transition: color 0.3s ease;
+    }
+
+    .nav-link:hover {
+      color: #007bff !important;
+    }
+
+    .dropdown-menu {
+      border: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+
+    .dropdown-item {
+      font-size: 0.9rem;
+      color: #333;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .dropdown-item:hover {
+      background-color: #f8f9fa;
+      color: #007bff;
+    }
+
+    .dropdown-divider {
+      border-top: 1px solid #e9ecef;
+    }
+
+    /* Responsive Design untuk Mobile */
+    @media (max-width: 768px) {
+      .navbar .container-fluid {
+        display: flex;
+        align-items: center;
+        justify-content: space-between; /* Sejajarkan elemen dengan ruang di antara */
+        padding: 0 10px; /* Kurangi padding agar lebih kompak */
+      }
+
+      .navbar-brand {
+        font-size: 1rem; /* Kurangi ukuran font di mobile */
+        padding: 8px 12px; /* Sesuaikan padding */
+        margin: 0; /* Hilangkan margin yang tidak perlu */
+        max-width: 70%; /* Batasi lebar agar tidak terlalu panjang */
+        white-space: nowrap; /* Cegah teks membungkus */
+        overflow: hidden; /* Sembunyikan teks yang terlalu panjang */
+        text-overflow: ellipsis; /* Tambahkan elipsis jika teks terlalu panjang */
+      }
+
+      .navbar-toggler {
+        padding: 6px; /* Kurangi padding tombol toggle */
+        margin: 0; /* Hilangkan margin yang tidak perlu */
+      }
+
+      .navbar-toggler-icon {
+        width: 20px; /* Sesuaikan ukuran ikon */
+        height: 20px;
+      }
+
+      .navbar-collapse {
+        margin-top: 10px; /* Beri jarak saat collapse terbuka */
+      }
+
+      .nav-link {
+        font-size: 0.9rem; /* Kurangi ukuran font di mobile */
+        padding: 8px 15px; /* Sesuaikan padding */
+      }
+    }
+  </style>
+</nav>
