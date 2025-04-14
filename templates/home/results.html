@@ -32,7 +32,7 @@
                         {% for instructor in results.instructors %}
                             <div class="col-md-4 instructor-item">
                                 <!-- Gambar Instruktur -->
-                                <img src="{% if instructor.user.profile_picture %}{{ instructor.user.profile_picture.url }}{% else %}https://via.placeholder.com/150?text={{ instructor.user.email|truncatechars:1 }}{% endif %}" 
+                                <img src="{% if instructor.user.photo %}{{ instructor.user.photo.url }}{% else %}https://via.placeholder.com/150?text={{ instructor.user.email|truncatechars:1 }}{% endif %}" 
                                     class="instructor-card mb-3" 
                                     alt="{{ instructor.user.email }}">
                                 

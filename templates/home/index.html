@@ -724,90 +724,74 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const coursesList = document.getElementById('courses-list');
+        
         if (coursesList) {
-            coursesList.style.minHeight = '300px'; // Cegah CLS
+            coursesList.style.minHeight = '300px';
         }
 
         $.ajax({
-            url: '/popular_courses/',
+            url: '/popular_courses/',  // Endpoint untuk mengambil data kursus
             type: 'GET',
             dataType: 'json',
             success: function(response) {
                 var courses = response.courses;
+
                 courses.forEach(function(course) {
-                    var courseUrl = '/course-detail/' + course.id + '/' + course.slug + '/'; 
-                    var instructor = '/instructor-profile/' + course.instructor__user__username + '/';
-                    var university = '/org-partner/' + course.org_partner__name__slug + '/';
+                    var courseUrl = '/course-detail/' + course.id + '/' + course.slug + '/';
+                    var instructorUrl = '/instructor-profile/' + course.instructor__user__username + '/';
+                    var universityUrl = '/org-partner/' + course.org_partner__name__slug + '/';
 
-                    // Generate star rating
+                    // Membuat rating bintang
                     var stars = '';
-                    if (course.num_ratings > 0) {
-                        var fullStars = Math.floor(course.avg_rating); // Jumlah bintang penuh
-                        var halfStar = (course.avg_rating % 1) >= 0.5 ? 1 : 0; // Apakah ada bintang setengah
-                        var emptyStars = 5 - fullStars - halfStar; // Jumlah bintang kosong
-
-                        // Menambahkan bintang penuh
-                        for (var i = 0; i < fullStars; i++) {
-                            stars += '<i class="bi bi-star-fill"></i>';
-                        }
-
-                        // Menambahkan bintang setengah
-                        if (halfStar) {
-                            stars += '<i class="bi bi-star-half"></i>';
-                        }
-
-                        // Menambahkan bintang kosong
-                        for (var i = 0; i < emptyStars; i++) {
-                            stars += '<i class="bi bi-star"></i>';
-                        }
-                    } else {
-                        stars = '<span class="text-muted"></span>';
+                    for (var i = 0; i < course.full_stars; i++) {
+                        stars += '<i class="bi bi-star-fill text-warning"></i>';
                     }
 
-                    $('#courses-list').append(`
-                        <div class="col-6 col-md-4 col-lg-3">
-                            <div class="card border-primary shadow-sm rounded-4 h-100 transition-effect">
-                                <!-- Gambar dengan ukuran tepat dan responsif menggunakan srcset -->
-                                <img src="${course.image}"
-                                    srcset="${course.image}?w=400 400w, ${course.image}?w=800 800w, ${course.image}?w=1200 1200w"
-                                    sizes="(max-width: 576px) 400px, (max-width: 768px) 800px, 1200px"
-                                    class="card-img-top rounded-top-4"
-                                    alt="${course.course_name}"
-                                    loading="lazy"
-                                    width="100%" height="auto"
-                                    style="object-fit: cover;">
-                                <div class="card-body p-3 d-flex flex-column align-items-center">
-                                    <div class="w-100">
-                                        <h5 class="fw-bold mb-2 text-truncate" style="font-size: 1rem; max-width: 100%;">${course.course_name}</h5>
-                                        <div class="d-flex align-items-center mb-2">
-                                            <img src="${course.org_partner__logo}" class="rounded-circle border border-white" alt="Logo ${course.org_partner__name__name}" loading="lazy" width="35" height="35" style="object-fit: cover; border-width: 2px;">
-                                            <div class="ms-2 d-flex flex-column">
-                                                <p class="small mb-0">
-                                                    <a href="${university}" class="text-dark py-1 px-2" title="Profil Partner ${course.org_partner__name__name}" rel="nofollow" aria-label="Visit ${course.org_partner__name__name} profile">
-                                                        <strong>${course.org_partner__name__name}</strong>
-                                                    </a>
-                                                </p>
-                                                <p class="text-muted" style="font-size: 0.75rem; margin-bottom: 0;">
-                                                    <a href="${instructor}" class="text-dark py-1 px-2" title="Profil Instruktur ${course.instructor__user__first_name} ${course.instructor__user__last_name}" rel="author" aria-label="Visit ${course.instructor__user__first_name} profile">
-                                                        ${course.instructor__user__first_name} ${course.instructor__user__last_name}
-                                                    </a>
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex justify-content-between align-items-center mb-2 w-100">
-                                            <div class="d-flex align-items-center">
-                                                <span class="text-warning me-1">${stars}</span>
-                                                <span class="small">${course.avg_rating.toFixed(1)} (${course.num_ratings})</span>
-                                            </div>
-                                            <span class="small text-muted">Enrolled: ${course.num_enrollments}</span>
-                                        </div>
+                    if (course.half_star) {
+                        stars += '<i class="bi bi-star-half text-warning"></i>';
+                    }
 
-                                        <div class="d-flex justify-content-between w-100 mb-3 flex-wrap">
-                                            <p class="mb-0 fw-bold" style="font-size: 1.1rem;">IDR. 100.000</p>
-                                            <span class="badge bg-success p-2">Diskon 20%</span>
+                    for (var i = 0; i < course.empty_stars; i++) {
+                        stars += '<i class="bi bi-star text-muted"></i>';
+                    }
+
+                    // Menambahkan elemen kursus ke dalam daftar
+                    $('#courses-list').append(`
+                        <div class="col-6 col-md-4 col-lg-3 mb-4">
+                            <div class="card border-primary shadow-sm rounded-4 h-100 transition-effect">
+                                <img src="${course.image}"
+                                    class="card-img-top rounded-top-4"
+                                    alt="${course.course_name}" loading="lazy">
+                                <div class="card-body p-3">
+                                    <h5 class="fw-bold mb-2">${course.course_name}</h5>
+                                    <div class="d-flex align-items-center mb-2">
+                                        <img src="${course.org_partner__logo}" class="rounded-circle" alt="Logo ${course.org_partner__name__name}" width="35" height="35">
+                                        <div class="ms-2">
+                                            <p class="small mb-0">
+                                                <a href="${universityUrl}" class="text-dark py-1 px-2">
+                                                    <strong>${course.org_partner__name__name}</strong>
+                                                </a>
+                                            </p>
+                                            <p class="text-muted" style="font-size: 0.75rem;">
+                                                <a href="${instructorUrl}" class="text-dark py-1 px-2">
+                                                    ${course.instructor__user__first_name} ${course.instructor__user__last_name}
+                                                </a>
+                                            </p>
                                         </div>
-                                        <a href="${courseUrl}" class="btn btn-outline-primary btn-sm w-100" aria-label="View course details">Detail</a>
                                     </div>
+
+                                    <div class="rating mb-3">
+                                        ${stars} <!-- Rating bintang -->
+                                        <small class="text-muted ms-1">(${course.avg_rating.toFixed(1)}) (${course.num_ratings} reviews)</small>
+                                    </div>
+
+                                    <!-- Menambahkan Total Enrollment -->
+                                    <div class="enrollment-count mb-3">
+                                        <small class="text-muted">Enrolled: ${course.num_enrollments} students</small>
+                                    </div>
+
+                                    <p class="mb-0 fw-bold" style="font-size: 1.1rem;">IDR. 100.000</p>
+                                    <a href="${courseUrl}" class="btn btn-outline-primary btn-sm w-100">Detail</a>
                                 </div>
                             </div>
                         </div>

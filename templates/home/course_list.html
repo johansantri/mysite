@@ -56,12 +56,23 @@
                                     </div>
                                 </div>
                                 <div class="rating mb-3">
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-muted"></i>
-                                    <small class="average-rating ms-1 text-muted">(4.0) (15)</small>
+                                    {% for _ in course.full_star_range %}
+                                        <i class="fas fa-star text-warning"></i>
+                                    {% endfor %}
+                                    {% if course.half_star %}
+                                        <i class="fas fa-star-half-alt text-warning"></i>
+                                    {% endif %}
+                                    {% for _ in course.empty_star_range %}
+                                        <i class="fas fa-star text-muted"></i>
+                                    {% endfor %}
+                                    <small class="average-rating ms-1 text-muted">
+                                        ({{ course.average_rating|floatformat:1 }}) ({{ course.review_count }})
+                                    </small>
+                                </div>
+
+                                <div class="total-enrollments">
+                                    
+                                    <p>Enrolled: {{ course.num_enrollments }} students</p>
                                 </div>
                                 <div class="mt-auto">
                                     {% if course.course_price|default:0 == 0 %}

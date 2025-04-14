@@ -2242,6 +2242,7 @@ def course_lms_detail(request, id, slug):
         'empty_star_range': empty_star_range,
         'average_rating': average_rating
     })
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 

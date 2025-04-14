@@ -10584,3 +10584,217 @@ Not Found: /index.php
 Not Found: /containers/json
 Not Found: /robots.txt
 Not Found: /robots.txt
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /console/css/%2e%2e%2fconsole.portal
+Not Found: /cgi-bin/login.cgi
+Not Found: /ajax/api/content_infraction/getIndexableContent
+Not Found: /backupsettings.dat
+Not Found: /pandora_console/ajax.php
+Not Found: /console/images/%2e%2e%2fconsole.portal
+Not Found: /mifs/.;/services/LogService
+Not Found: /v2/api/product/manger/getInfo
+Not Found: /module/
+Not Found: /wp-content/plugins/chopslider/get_script/index.php
+Not Found: /module/
+Not Found: /mailingupgrade.php
+Not Found: /module/
+Not Found: /context.json
+Not Found: /user/login
+Not Found: /user/login
+Not Found: /include/exportUser.php
+Not Found: /webadmin/tools/unixlogin.php
+Not Found: /wp-admin/admin-ajax.php
+Not Found: /include/idib.txt
+Not Found: /webadmin/out
+Not Found: /wp-content/uploads/wp_dndcf7_uploads/wpcf7-files/2vJ73BBJJEaGcCbAyqG15hxLhCY.txt
+Internal Server Error: /popular_courses/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django_ratelimit/decorators.py", line 27, in _wrapped
+    return fn(request, *args, **kw)
+  File "/home/TIM/mysite/authentication/views.py", line 855, in popular_courses
+    avg_rating=Coalesce(Avg('ratings__rating'), 0),  # Menjamin avg_rating tidak None, set ke 0 jika kosong
+NameError: name 'Coalesce' is not defined
+Not Found: /favicon.ico
+Internal Server Error: /popular_courses/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django_ratelimit/decorators.py", line 27, in _wrapped
+    return fn(request, *args, **kw)
+  File "/home/TIM/mysite/authentication/views.py", line 855, in popular_courses
+    avg_rating=Coalesce(Avg('ratings__rating'), 0),  # Menjamin avg_rating tidak None, set ke 0 jika kosong
+NameError: name 'Coalesce' is not defined
+Internal Server Error: /popular_courses/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django_ratelimit/decorators.py", line 27, in _wrapped
+    return fn(request, *args, **kw)
+  File "/home/TIM/mysite/authentication/views.py", line 855, in popular_courses
+    avg_rating=Coalesce(Avg('ratings__rating'), 0),  # Menjamin avg_rating tidak None, set ke 0 jika kosong
+NameError: name 'Coalesce' is not defined
+Internal Server Error: /popular_courses/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django_ratelimit/decorators.py", line 27, in _wrapped
+    return fn(request, *args, **kw)
+  File "/home/TIM/mysite/authentication/views.py", line 863, in popular_courses
+    for course in courses:
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 400, in __iter__
+    self._fetch_all()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1928, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1561, in execute_sql
+    sql, params = self.as_sql()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 747, in as_sql
+    extra_select, order_by, group_by = self.pre_sql_setup(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 84, in pre_sql_setup
+    self.setup_query(with_col_aliases=with_col_aliases)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 73, in setup_query
+    self.select, self.klass_info, self.annotation_col_map = self.get_select(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 309, in get_select
+    sql, params = col.select_format(self, sql, params)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/expressions.py", line 485, in select_format
+    if hasattr(self.output_field, "select_format"):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/expressions.py", line 314, in output_field
+    output_field = self._resolve_output_field()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/expressions.py", line 352, in _resolve_output_field
+    raise FieldError(
+django.core.exceptions.FieldError: Expression contains mixed types: FloatField, IntegerField. You must set output_field.
+Internal Server Error: /popular_courses/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django_ratelimit/decorators.py", line 27, in _wrapped
+    return fn(request, *args, **kw)
+  File "/home/TIM/mysite/authentication/views.py", line 872, in popular_courses
+    for course in courses:
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 400, in __iter__
+    self._fetch_all()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1928, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1561, in execute_sql
+    sql, params = self.as_sql()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 747, in as_sql
+    extra_select, order_by, group_by = self.pre_sql_setup(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 84, in pre_sql_setup
+    self.setup_query(with_col_aliases=with_col_aliases)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 73, in setup_query
+    self.select, self.klass_info, self.annotation_col_map = self.get_select(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 309, in get_select
+    sql, params = col.select_format(self, sql, params)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/expressions.py", line 485, in select_format
+    if hasattr(self.output_field, "select_format"):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/expressions.py", line 314, in output_field
+    output_field = self._resolve_output_field()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/expressions.py", line 352, in _resolve_output_field
+    raise FieldError(
+django.core.exceptions.FieldError: Expression contains mixed types: FloatField, IntegerField. You must set output_field.
+Internal Server Error: /popular_courses/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django_ratelimit/decorators.py", line 27, in _wrapped
+    return fn(request, *args, **kw)
+  File "/home/TIM/mysite/authentication/views.py", line 872, in popular_courses
+    for course in courses:
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 400, in __iter__
+    self._fetch_all()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1928, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1561, in execute_sql
+    sql, params = self.as_sql()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 747, in as_sql
+    extra_select, order_by, group_by = self.pre_sql_setup(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 84, in pre_sql_setup
+    self.setup_query(with_col_aliases=with_col_aliases)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 73, in setup_query
+    self.select, self.klass_info, self.annotation_col_map = self.get_select(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 309, in get_select
+    sql, params = col.select_format(self, sql, params)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/expressions.py", line 485, in select_format
+    if hasattr(self.output_field, "select_format"):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/expressions.py", line 314, in output_field
+    output_field = self._resolve_output_field()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/expressions.py", line 352, in _resolve_output_field
+    raise FieldError(
+django.core.exceptions.FieldError: Expression contains mixed types: FloatField, IntegerField. You must set output_field.
+Internal Server Error: /popular_courses/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django_ratelimit/decorators.py", line 27, in _wrapped
+    return fn(request, *args, **kw)
+  File "/home/TIM/mysite/authentication/views.py", line 872, in popular_courses
+    for course in courses:
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 400, in __iter__
+    self._fetch_all()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1928, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1561, in execute_sql
+    sql, params = self.as_sql()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 747, in as_sql
+    extra_select, order_by, group_by = self.pre_sql_setup(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 84, in pre_sql_setup
+    self.setup_query(with_col_aliases=with_col_aliases)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 73, in setup_query
+    self.select, self.klass_info, self.annotation_col_map = self.get_select(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 309, in get_select
+    sql, params = col.select_format(self, sql, params)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/expressions.py", line 485, in select_format
+    if hasattr(self.output_field, "select_format"):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/expressions.py", line 314, in output_field
+    output_field = self._resolve_output_field()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/expressions.py", line 352, in _resolve_output_field
+    raise FieldError(
+django.core.exceptions.FieldError: Expression contains mixed types: FloatField, IntegerField. You must set output_field.
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico

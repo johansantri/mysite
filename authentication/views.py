@@ -27,7 +27,7 @@ from django.http import HttpResponse,JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseForbidden
 from django.core.cache import cache
-from django.db.models import Avg, Count,Q
+from django.db.models import Avg, Count,Q,FloatField
 from django.core import serializers
 from django.db.models import Count
 from django.utils import timezone
@@ -40,7 +40,7 @@ from django.core.cache import cache
 from django.views.decorators.cache import cache_page
 from django.db.models import Prefetch
 from django.core.mail import EmailMultiAlternatives,EmailMessage
-
+from django.db.models.functions import Coalesce
 
 def about(request):
     return render(request, 'home/about.html')
@@ -111,18 +111,15 @@ def microcredential_list(request):
 
 #course_list lms
 @ratelimit(key='ip', rate='100/h')
-@cache_page(60 * 15)  # Cache the page for 15 minutes
+#@cache_page(60 * 15)  # Cache the page for 15 minutes
 def course_list(request):
-    # Jika metode bukan GET, batalkan
     if request.method != 'GET':
         return HttpResponseNotAllowed("Metode tidak diperbolehkan")
     
-    # Get the 'published' status from CourseStatus model
     published_status = CourseStatus.objects.filter(status='published').first()
     if not published_status:
         return HttpResponseNotFound("Status 'published' tidak ditemukan")
 
-    # Get all courses with 'published' status and active enrollment period
     courses = Course.objects.filter(
         status_course=published_status,
         end_enrol__gte=timezone.now()
@@ -132,35 +129,26 @@ def course_list(request):
         Prefetch('enrollments')
     )
 
-    # Filter by category
-    category_filter = request.GET.getlist('category')  # Get selected categories as a list
+    category_filter = request.GET.getlist('category')
     if category_filter:
         courses = courses.filter(category__in=category_filter)
 
-    # Pagination setup
-    paginator = Paginator(courses, 9)  # Show 9 courses per page
-    page_number = request.GET.get('page', 1)  # Default to page 1 if no page is provided
+    paginator = Paginator(courses, 9)
+    page_number = request.GET.get('page', 1)
     
-    # Validate page_number: if it's invalid or empty, default to page 1
     try:
         page_number = int(page_number) if int(page_number) >= 1 else 1
     except ValueError:
-        page_number = 1  # If it's not a valid integer, default to 1
-    
-    try:
-        page_obj = paginator.get_page(page_number)  # Get the page object for pagination
-    except PageNotAnInteger:
-        # If the page is not an integer, return the first page
-        page_obj = paginator.get_page(1)
-    except EmptyPage:
-        # If the page number is out of range (e.g., 9999), return the last page
-        page_obj = paginator.get_page(paginator.num_pages)
+        page_number = 1
 
-    # Prepare pagination info for the template
+    try:
+        page_obj = paginator.get_page(page_number)
+    except (PageNotAnInteger, EmptyPage):
+        page_obj = paginator.get_page(1)
+
     start_index = page_obj.start_index()
     end_index = page_obj.end_index()
 
-    # Get categories with count of published and active courses
     categories = Category.objects.filter(
         category_courses__status_course=published_status,
         category_courses__end_enrol__gte=timezone.now()
@@ -168,16 +156,25 @@ def course_list(request):
         course_count=Count('category_courses')
     ).distinct()
 
-    # Prepare courses data for rendering in template
     courses_data = []
+    total_enrollments = 0  # Total enrollments across all courses
+    
     for course in page_obj:
-        # Count enrollments using annotate to avoid hitting the database repeatedly
-        course.num_enrollments = course.enrollments.count()  # Count enrollments
+        course.num_enrollments = course.enrollments.count()
+        total_enrollments += course.num_enrollments  # Accumulate total enrollments
         
+        review_qs = CourseRating.objects.filter(course=course)
+        review_count = review_qs.count()
+        average_rating = round(review_qs.aggregate(avg=Avg('rating'))['avg'] or 0, 1)
+
+        full_stars = int(average_rating)
+        half_star = (average_rating % 1) >= 0.5
+        empty_stars = 5 - full_stars - (1 if half_star else 0)
+
         courses_data.append({
             'course_name': course.course_name,
             'course_id': course.id,
-            'num_enrollments': course.num_enrollments,  # Use pre-annotated value
+            'num_enrollments': course.num_enrollments,
             'course_slug': course.slug,
             'course_image': course.image.url if course.image else None,
             'instructor': course.instructor.user.get_full_name() if course.instructor else None,
@@ -185,19 +182,26 @@ def course_list(request):
             'photo': course.instructor.user.photo.url if course.instructor and course.instructor.user.photo else None,
             'partner': course.org_partner.name if course.org_partner else None,
             'category': course.category.name if course.category else None,
+
+            # Rating data
+            'average_rating': average_rating,
+            'review_count': review_count,
+            'full_star_range': range(full_stars),
+            'half_star': half_star,
+            'empty_star_range': range(empty_stars),
         })
 
-    # Prepare the context for rendering
     context = {
         'courses': courses_data,
         'page_obj': page_obj,
-        'total_courses': courses.count(),  # Total courses already reflects active courses
+        'total_courses': courses.count(),
+        'total_enrollments': total_enrollments,  # Add the total enrollments here
         'total_pages': paginator.num_pages,
         'current_page': page_obj.number,
         'start_index': start_index,
         'end_index': end_index,
         'category_filter': category_filter,
-        'categories': list(categories.values('id', 'name', 'course_count')),  # Include course_count
+        'categories': list(categories.values('id', 'name', 'course_count')),
     }
 
     return render(request, 'home/course_list.html', context)
@@ -835,41 +839,44 @@ def edit_profile_save(request, pk):
 
 
 #populercourse
-
 @ratelimit(key='ip', rate='100/h')
 def popular_courses(request):
-    cache_key = 'popular_courses'
-    courses_list = cache.get(cache_key)
     now = timezone.now().date()
+
     try:
         published_status = CourseStatus.objects.get(status='published')
     except CourseStatus.DoesNotExist:
         return JsonResponse({'error': 'Published status not found.'}, status=404)
 
+    # Mendapatkan kursus yang sudah diterbitkan dan belum berakhir
     courses = Course.objects.filter(
         status_course=published_status,
         end_date__gte=now
     ).annotate(
-        num_enrollments=Count('enrollments'),
-        avg_rating=Avg('ratings__rating'),
-        num_ratings=Count('ratings')
-    ).order_by('-num_enrollments')[:6]
+        num_enrollments=Count('enrollments'),  # Hitung jumlah enrollments
+        avg_rating=Coalesce(Avg('ratings__rating'), 0.0, output_field=FloatField()),  # Hitung rata-rata rating
+        num_ratings=Count('ratings')  # Hitung jumlah rating
+    ).order_by('-num_enrollments')  # Urutkan berdasarkan jumlah enrollments
 
-    for course in courses:
-        
-        ratings = CourseRating.objects.filter(course=course)
-       
-        
+    # Hitung unique users yang memberikan rating
+    courses = courses.annotate(
+        unique_raters=Count('ratings__user', distinct=True)
+    )
 
-    if not courses.exists():
-        return JsonResponse({'error': 'No popular courses found.'}, status=404)
+    # Pagination
+    page_number = request.GET.get('page', 1)
+    paginator = Paginator(courses, 6)  # 6 kursus per halaman
+    try:
+        page_obj = paginator.get_page(page_number)
+    except (PageNotAnInteger, EmptyPage):
+        page_obj = paginator.get_page(1)
 
     courses_list = []
-    for course in courses:
-        avg_rating = course.avg_rating if course.avg_rating else 0
+    for course in page_obj:
+        avg_rating = course.avg_rating
         full_stars = int(avg_rating)
         half_star = (avg_rating % 1) >= 0.5
-        empty_stars = 5 - (full_stars + (1 if half_star else 0))
+        empty_stars = 5 - full_stars - (1 if half_star else 0)
 
         course_data = {
             'id': course.id,
@@ -883,16 +890,18 @@ def popular_courses(request):
             'org_partner__name__name': course.org_partner.name.name,
             'org_partner__name__slug': course.org_partner.name.slug,
             'org_partner__logo': settings.MEDIA_URL + course.org_partner.logo.name if course.org_partner.logo else '',
-            'num_enrollments': course.num_enrollments,
+            'num_enrollments': course.num_enrollments,  # Menambahkan jumlah enrollments
             'avg_rating': float(avg_rating),
-            'num_ratings': course.num_ratings,
+            'num_ratings': course.unique_raters,  # Menghitung unique raters, bukan hanya jumlah rating
             'full_stars': full_stars,
             'half_star': half_star,
             'empty_stars': empty_stars
         }
+
         courses_list.append(course_data)
-    
+
     return JsonResponse({'courses': courses_list})
+
 
 # Home page
 def home(request):
