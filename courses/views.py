@@ -2130,9 +2130,9 @@ def course_lms_detail(request, id, slug):
     except CourseStatus.DoesNotExist:
         return redirect('/')  # Redirect if the 'published' status doesn't exist
     
-    # Check if the course's status is 'published'
-    if course.status_course != published_status:
-        return redirect('/')  # Redirect to homepage if not published
+    # Check if the course's status is 'published' and still active
+    if course.status_course != published_status or course.end_enrol < timezone.now().date():
+        return redirect('/')  # Redirect to homepage if not published or not active
     
     # Check if the user is enrolled in the course
     if request.user.is_authenticated:
@@ -2140,11 +2140,11 @@ def course_lms_detail(request, id, slug):
     else:
         is_enrolled = False
 
-    # Get similar courses based on the category and level (only published courses with future end_date)
+    # Get similar courses based on the category and level (only published and active courses)
     similar_courses = Course.objects.filter(
         category=course.category,
         status_course=published_status,
-        end_date__gte=timezone.now()
+        end_enrol__gte=timezone.now().date()  # Gunakan date untuk DateField
     ).exclude(id=course.id)[:5]
 
     # Get all comments for the course, excluding replies (parent is None)
@@ -2169,7 +2169,11 @@ def course_lms_detail(request, id, slug):
 
     # Perhitungan untuk semua kursus yang dimiliki instruktur
     instructor = course.instructor
-    instructor_courses = Course.objects.filter(instructor=instructor, status_course=published_status)
+    instructor_courses = Course.objects.filter(
+        instructor=instructor,
+        status_course=published_status,
+        end_enrol__gte=timezone.now().date()  # Gunakan date untuk DateField
+    )
     
     # 1. Total Course milik instruktur
     instructor_total_courses = instructor_courses.count()
@@ -2188,9 +2192,6 @@ def course_lms_detail(request, id, slug):
     instructor_total_sections = instructor_sections.count()
     instructor_total_materials = sum(section.materials.count() for section in instructor_sections)
 
-
-
-    # Ambil semua rating untuk course ini
     # Retrieve reviews for the course and paginate them
     reviews = CourseRating.objects.filter(course=course).order_by('-created_at')
     
@@ -2204,7 +2205,7 @@ def course_lms_detail(request, id, slug):
     else:
         user_has_rated = False
        
-    # In your view
+    # Calculate star ratings
     average_rating = course.average_rating
     full_stars = int(average_rating)  # Number of full stars
     half_star = (average_rating % 1) >= 0.5  # Check if there's a half star
@@ -2213,6 +2214,7 @@ def course_lms_detail(request, id, slug):
     # Create ranges for full, half, and empty stars
     full_star_range = range(full_stars)
     empty_star_range = range(empty_stars)
+
     # Render the course detail page with additional data
     return render(request, 'home/course_detail.html', {
         'course': course,
@@ -2231,17 +2233,15 @@ def course_lms_detail(request, id, slug):
         'instructor_total_effort_hours': instructor_total_effort_hours,
         'instructor_total_sections': instructor_total_sections,
         'instructor_total_materials': instructor_total_materials,
-        #review
+        # Review
         'reviews': page_obj, 
         'user_has_rated': user_has_rated,
         'range': range(1, 6),  # Pass range for looping stars
-
         'full_star_range': full_star_range,
         'half_star': half_star,
         'empty_star_range': empty_star_range,
         'average_rating': average_rating
     })
-
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 

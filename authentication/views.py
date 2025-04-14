@@ -122,8 +122,11 @@ def course_list(request):
     if not published_status:
         return HttpResponseNotFound("Status 'published' tidak ditemukan")
 
-    # Get all courses with 'published' status
-    courses = Course.objects.filter(status_course=published_status).select_related(
+    # Get all courses with 'published' status and active enrollment period
+    courses = Course.objects.filter(
+        status_course=published_status,
+        end_enrol__gte=timezone.now()
+    ).select_related(
         'category', 'instructor__user', 'org_partner'
     ).prefetch_related(
         Prefetch('enrollments')
@@ -157,9 +160,10 @@ def course_list(request):
     start_index = page_obj.start_index()
     end_index = page_obj.end_index()
 
-    # Get categories with count of published courses
+    # Get categories with count of published and active courses
     categories = Category.objects.filter(
-        category_courses__status_course=published_status
+        category_courses__status_course=published_status,
+        category_courses__end_enrol__gte=timezone.now()
     ).annotate(
         course_count=Count('category_courses')
     ).distinct()
@@ -187,7 +191,7 @@ def course_list(request):
     context = {
         'courses': courses_data,
         'page_obj': page_obj,
-        'total_courses': courses.count(),
+        'total_courses': courses.count(),  # Total courses already reflects active courses
         'total_pages': paginator.num_pages,
         'current_page': page_obj.number,
         'start_index': start_index,
@@ -197,7 +201,6 @@ def course_list(request):
     }
 
     return render(request, 'home/course_list.html', context)
-
 
 
 @ratelimit(key='ip', rate='100/h')
@@ -910,7 +913,13 @@ def home(request):
     if published_status:
         # Mendapatkan kategori populer dengan kursus yang sudah dipublikasikan
         popular_categories = Category.objects.annotate(
-            num_courses=Count('category_courses', filter=Q(category_courses__status_course=published_status))
+            num_courses=Count(
+                'category_courses',
+                filter=Q(
+                    category_courses__status_course=published_status,
+                    category_courses__end_enrol__gte=timezone.now()
+                )
+            )
         ).order_by('-num_courses')[:4]
 
         # Mendapatkan microcredential aktif
@@ -931,7 +940,10 @@ def home(request):
         total_instructors = Instructor.objects.count()  # Asumsi ada model Instructor
         total_partners = Partner.objects.count()
         total_users = CustomUser.objects.count()  # Asumsi menggunakan Django User model
-        total_courses = Course.objects.filter(status_course=published_status).count()  # Asumsi ada model Course
+        total_courses = Course.objects.filter(
+            status_course=published_status,
+            end_enrol__gte=timezone.now()
+        ).count()  # Hanya menghitung kursus yang dipublikasikan dan masih aktif
 
     else:
         # Jika tidak ada status 'published', beri hasil kosong
@@ -954,13 +966,14 @@ def home(request):
         'total_courses': total_courses,
         'instructors': instructors_page,
     })
+
 #@csrf_protect
 @ratelimit(key='ip', rate='100/h')
 def search(request):
-    
     if not request.headers.get('Referer', '').startswith('https://ini.icei.ac.id'):
         return HttpResponseForbidden("Akses ditolak: sumber tidak sah")
-     # Jika metode bukan GET, batalkan
+    
+    # Jika metode bukan GET, batalkan
     if request.method != 'GET':
         return HttpResponseNotAllowed("Metode tidak diperbolehkan")
     
@@ -976,7 +989,8 @@ def search(request):
         results['courses'] = Course.objects.filter(
             Q(course_name__icontains=query) | 
             Q(description__icontains=query),
-            status_course__status='published'
+            status_course__status='published',
+            end_enrol__gte=timezone.now()  # Hanya kursus aktif
         ).select_related('instructor', 'org_partner')[:5]
         
         # Pencarian Instructors
