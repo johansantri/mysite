@@ -3404,7 +3404,6 @@ def delete_matrial(request, pk):
 
 
 
-
 def courseView(request):
     # Check if the user is authenticated
     if not request.user.is_authenticated:
@@ -3412,6 +3411,20 @@ def courseView(request):
 
     user = request.user
     course_filter = request.GET.get('filter', 'all')  # Get filter from query string
+
+    # Update status for published courses that have passed end_enrol
+    try:
+        published_status = CourseStatus.objects.get(status='published')
+        archive_status = CourseStatus.objects.get(status='archived')
+        
+        # Find published courses where end_enrol has passed and update to archived
+        Course.objects.filter(
+            status_course=published_status,
+            end_enrol__lt=timezone.now().date()  # Gunakan date untuk DateField
+        ).update(status_course=archive_status)
+    except CourseStatus.DoesNotExist:
+        # Jika status tidak ditemukan, lanjutkan tanpa pembaruan
+        pass
 
     # Filter courses based on the user's role and selected filter
     if user.is_superuser:
@@ -3444,9 +3457,9 @@ def courseView(request):
         org_partner_name=F('org_partner__name__name')
     )
 
-    # Correctly annotate the enrolment count based on the relationship (e.g., 'enrollments')
+    # Correctly annotate the enrolment count based on the relationship
     courses = courses.annotate(
-        enrolment_count=Count('enrollments')  # This counts related 'enrollments' (adjust based on your model)
+        enrolment_count=Count('enrollments')  # Adjust based on your model
     )
 
     # Paginate the courses
@@ -3459,7 +3472,7 @@ def courseView(request):
     except EmptyPage:
         page_obj = paginator.page(paginator.num_pages)
 
-    # Handle DoesNotExist gracefully and fetch CourseStatus
+    # Fetch CourseStatus for counts
     try:
         draft_status = CourseStatus.objects.get(status='draft')
         published_status = CourseStatus.objects.get(status='published')
@@ -3467,17 +3480,14 @@ def courseView(request):
         curation_status = CourseStatus.objects.get(status='curation')
     except ObjectDoesNotExist:
         draft_status = published_status = archive_status = curation_status = None
-        # Handle the case where CourseStatus entries are missing
-        # You could redirect the user or show a message in the template
 
-    # Filter courses based on status_course IDs (only if the CourseStatus objects exist)
-    # Ensure these counts are based on the filtered courses, not the whole set.
+    # Calculate counts based on filtered courses
     draft_count = courses.filter(status_course=draft_status).count() if draft_status else 0
     published_count = courses.filter(status_course=published_status).count() if published_status else 0
     archive_count = courses.filter(status_course=archive_status).count() if archive_status else 0
     curation_count = courses.filter(status_course=curation_status).count() if curation_status else 0
 
-    # If there's a search query, update the counts to reflect only the filtered (search) results
+    # If there's a search query, update the counts to reflect only the filtered results
     if search_query:
         draft_count = courses.filter(status_course=draft_status).count() if draft_status else 0
         published_count = courses.filter(status_course=published_status).count() if published_status else 0
@@ -3494,7 +3504,6 @@ def courseView(request):
         'archive_count': archive_count,
         'curation_count': curation_count
     })
-
 
 @login_required
 def user_detail(request, user_id):
