@@ -67,7 +67,7 @@ class Userprofile(forms.ModelForm):
             'hobby': forms.TextInput(attrs={'class': 'form-control', 'type': 'text'}),     
             'birth': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'address': forms.Textarea(attrs={'class': 'form-control', 'type': 'text','rows':4}),
-            'country': forms.TextInput(attrs={'class': 'form-control', 'type': 'text'}),
+            'country': forms.Select(attrs={'class': 'form-control', 'type': 'text'}),
             'phone': forms.TextInput(attrs={'class': 'form-control', 'type': 'text'}), 
             'gender': forms.Select(attrs={'class': 'form-control', 'type': 'text'}), 
             'education': forms.Select(attrs={'class': 'form-control', 'type': 'text'}), 
