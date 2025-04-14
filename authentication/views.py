@@ -598,7 +598,6 @@ def dasbord(request):
 
 @login_required
 @ratelimit(key='ip', rate='100/h')
-#dashboard for student
 def dashbord(request):
     # Initialize variables
     search_query = request.GET.get('search', '')
@@ -709,8 +708,6 @@ def dashbord(request):
         'active_courses': active_courses,
         'completed_courses': completed_courses,
     })
-
-    
 
 @login_required
 @ratelimit(key='ip', rate='100/h')
