@@ -87,16 +87,12 @@
                         <tr>
                             <td><a href="{% url 'courses:course_lms_detail' course.id course.slug %}">{{ course.course_name }}</a></td>
                             <td>
-                              <img src="{% if course.image %}{{ course.image.url }}{% else %}{{ '/path/to/default/image.jpg' }}{% endif %}" alt="{{ course.course_name }}" class="img-fluid" style="max-width: 100px;">
+                              <img src="{% if course.image %}{{ course.image.url }}{% else %}{{ '/path/to/default/image.jpg' }}{% endif %}" alt="{{ course.course_name }}" class="img-fluid" style="max-width: 50px;">
 
                             </td>
                             <td>{{ course.end_date }}</td>
                             <td>{{ course.participants_count }}</td>
-                            <td>{% if course.status_course.status == 'published' %}
-                              Published
-                          {% else %}
-                              Unpublished
-                          {% endif %}</td>
+                            <td>{{ course.status_course.status|title }}</td>
                            
                         </tr>
                     {% empty %}

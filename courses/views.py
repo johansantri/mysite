@@ -2908,6 +2908,7 @@ def instructor_detail(request, id):
 
     # Render the instructor_detail template with the context
     return render(request, 'instructor/instructor_detail.html', context)
+
 #view instructor
 #@login_required
 
