@@ -115,66 +115,65 @@ def microcredential_list(request):
 def course_list(request):
     if request.method != 'GET':
         return HttpResponseNotAllowed("Metode tidak diperbolehkan")
-    
+
     published_status = CourseStatus.objects.filter(status='published').first()
     if not published_status:
         return HttpResponseNotFound("Status 'published' tidak ditemukan")
 
+    # Ambil courses dengan select_related dan prefetch_related untuk optimasi query
     courses = Course.objects.filter(
         status_course=published_status,
         end_enrol__gte=timezone.now()
     ).select_related(
         'category', 'instructor__user', 'org_partner'
-    ).prefetch_related(
-        Prefetch('enrollments')
-    )
+    ).prefetch_related('enrollments')
 
     category_filter = request.GET.getlist('category')
+    language_filter = request.GET.get('language')
+
     if category_filter:
         courses = courses.filter(category__in=category_filter)
+    if language_filter:
+        courses = courses.filter(language=language_filter)
 
     paginator = Paginator(courses, 9)
     page_number = request.GET.get('page', 1)
-    
-    try:
-        page_number = int(page_number) if int(page_number) >= 1 else 1
-    except ValueError:
-        page_number = 1
 
     try:
         page_obj = paginator.get_page(page_number)
     except (PageNotAnInteger, EmptyPage):
         page_obj = paginator.get_page(1)
 
-    start_index = page_obj.start_index()
-    end_index = page_obj.end_index()
-
+    # Kategori dengan jumlah course
     categories = Category.objects.filter(
         category_courses__status_course=published_status,
         category_courses__end_enrol__gte=timezone.now()
-    ).annotate(
-        course_count=Count('category_courses')
-    ).distinct()
+    ).annotate(course_count=Count('category_courses')).distinct()
 
+    # Daftar bahasa unik dari hasil courses terfilter
+    language_codes = courses.values_list('language', flat=True).distinct()
+    all_languages = dict(Course.choice_language)
+    language_options = [{'code': code, 'name': all_languages.get(code, code)} for code in language_codes]
+
+    # Siapkan data untuk ditampilkan
     courses_data = []
-    total_enrollments = 0  # Total enrollments across all courses
-    
-    for course in page_obj:
-        course.num_enrollments = course.enrollments.count()
-        total_enrollments += course.num_enrollments  # Accumulate total enrollments
-        
-        review_qs = CourseRating.objects.filter(course=course)
-        review_count = review_qs.count()
-        average_rating = round(review_qs.aggregate(avg=Avg('rating'))['avg'] or 0, 1)
+    total_enrollments = 0
 
+    # Ambil ratings dan enrollments terkait
+    for course in page_obj:
+        review_qs = CourseRating.objects.filter(course=course)
+        average_rating = round(review_qs.aggregate(avg=Avg('rating'))['avg'] or 0, 1)
         full_stars = int(average_rating)
         half_star = (average_rating % 1) >= 0.5
         empty_stars = 5 - full_stars - (1 if half_star else 0)
 
+        num_enrollments = course.enrollments.count()
+        total_enrollments += num_enrollments
+
         courses_data.append({
             'course_name': course.course_name,
             'course_id': course.id,
-            'num_enrollments': course.num_enrollments,
+            'num_enrollments': num_enrollments,
             'course_slug': course.slug,
             'course_image': course.image.url if course.image else None,
             'instructor': course.instructor.user.get_full_name() if course.instructor else None,
@@ -182,10 +181,9 @@ def course_list(request):
             'photo': course.instructor.user.photo.url if course.instructor and course.instructor.user.photo else None,
             'partner': course.org_partner.name if course.org_partner else None,
             'category': course.category.name if course.category else None,
-
-            # Rating data
+            'language': course.language,
             'average_rating': average_rating,
-            'review_count': review_count,
+            'review_count': review_qs.count(),
             'full_star_range': range(full_stars),
             'half_star': half_star,
             'empty_star_range': range(empty_stars),
@@ -195,16 +193,19 @@ def course_list(request):
         'courses': courses_data,
         'page_obj': page_obj,
         'total_courses': courses.count(),
-        'total_enrollments': total_enrollments,  # Add the total enrollments here
+        'total_enrollments': total_enrollments,
         'total_pages': paginator.num_pages,
         'current_page': page_obj.number,
-        'start_index': start_index,
-        'end_index': end_index,
+        'start_index': page_obj.start_index(),
+        'end_index': page_obj.end_index(),
         'category_filter': category_filter,
+        'language_filter': language_filter,
         'categories': list(categories.values('id', 'name', 'course_count')),
+        'language_options': language_options,
     }
 
     return render(request, 'home/course_list.html', context)
+
 
 
 @ratelimit(key='ip', rate='100/h')

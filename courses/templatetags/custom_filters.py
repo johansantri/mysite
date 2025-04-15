@@ -1,6 +1,7 @@
 from django import template
 import random
 from datetime import datetime
+from courses.models import Course  # ✅ Tambahkan ini
 register = template.Library()
 
 @register.filter
@@ -45,3 +46,15 @@ def mask_year(date_value):
             return 'Invalid date'
 
     return date_value.strftime('%b %d, ****')
+
+
+#untuk filter course bahasa
+@register.filter
+def get_language_name(language_code):
+    """Mengembalikan nama bahasa berdasarkan kode bahasa."""
+    choice_language = dict(Course.choice_language)
+    return choice_language.get(language_code, language_code)  # Mengembalikan kode bahasa jika tidak ditemukan
+#dan juga ini
+@register.filter
+def dict_get(dictionary, key):
+    return dictionary.get(key, '')

@@ -67,13 +67,14 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',  # Google provider
-
+    'csp',
     'mathfilters',
     
 ]
 
 MIDDLEWARE = [
     #'django.middleware.security.SecurityMiddleware',
+    'csp.middleware.CSPMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -465,3 +466,49 @@ LOGGING = {
         },
     },
 }
+
+
+# Default source: hanya boleh ambil resource dari domain sendiri
+CSP_DEFAULT_SRC = ("'self'",)
+
+# Script source: allow dari cdnjs dan jsDelivr, plus 'self'
+CSP_SCRIPT_SRC = (
+    "'self'",
+    "'unsafe-inline'",
+    'https://cdn.jsdelivr.net',
+    'https://cdnjs.cloudflare.com',
+)
+
+# Style source: allow CDN CSS
+CSP_STYLE_SRC = (
+    "'self'",
+    'https://cdn.jsdelivr.net',
+    'https://cdnjs.cloudflare.com',
+)
+
+# Font source: allow fonts dari jsDelivr, cdnjs, dan Google Fonts
+CSP_FONT_SRC = (
+    "'self'",
+    'https://cdnjs.cloudflare.com',
+    'https://cdn.jsdelivr.net',
+    'https://fonts.googleapis.com',
+    'https://fonts.gstatic.com',
+)
+
+# Image source: dari domain sendiri + data URI (misalnya icon inline)
+CSP_IMG_SRC = ("'self'", "data:")
+
+# Object source: none = blokir Flash/old plugin
+CSP_OBJECT_SRC = ("'none'",)
+
+# Optional: allow Ajax/HTMX/XHR ke domain sendiri
+CSP_CONNECT_SRC = ("'self'",)
+
+# Optional: allow form action ke domain sendiri
+CSP_FORM_ACTION = ("'self'",)
+
+# Optional: frame/iframe control
+CSP_FRAME_SRC = ("'self'",)
+
+# Optional: base-uri untuk <base> tag
+CSP_BASE_URI = ("'self'",)

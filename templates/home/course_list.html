@@ -1,14 +1,13 @@
 {% extends 'home/base.html' %}
 {% load static %}
+{% load custom_filters %}
 
 {% block content %}
-<!-- Course Section -->
 <section class="course-content py-5 bg-light">
     <div class="container">
         <div class="row">
             <!-- Main Content -->
             <div class="col-lg-9 col-12">
-                <!-- Filter Information -->
                 <div class="showing-list mb-4 d-flex justify-content-between align-items-center flex-wrap">
                     <div class="d-flex align-items-center flex-wrap">
                         <div class="view-icons me-3">
@@ -22,7 +21,6 @@
                     </div>
                 </div>
 
-                <!-- Course Cards -->
                 <div class="row">
                     {% for course in courses %}
                     <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -69,17 +67,11 @@
                                         ({{ course.average_rating|floatformat:1 }}) ({{ course.review_count }})
                                     </small>
                                 </div>
-
                                 <div class="total-enrollments">
-                                    
                                     <p>Enrolled: {{ course.num_enrollments }} students</p>
+                                    <p><strong>Language:</strong> {{ course.language|get_language_name }}</p>
                                 </div>
                                 <div class="mt-auto">
-                                    {% if course.course_price|default:0 == 0 %}
-                                        <span class="badge bg-success px-2 py-1">Free</span>
-                                    {% else %}
-                                        <span class="badge bg-primary px-2 py-1">{{ course.course_price }}</span>
-                                    {% endif %}
                                     <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}" class="btn btn-primary w-100 mt-3 transition-hover">More</a>
                                 </div>
                             </div>
@@ -93,7 +85,7 @@
                     <ul class="pagination justify-content-center flex-wrap">
                         <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
                             {% if page_obj.has_previous %}
-                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}{% if language_filter %}&language={{ language_filter }}{% endif %}">
                                     <i class="fas fa-angle-left"></i>
                                 </a>
                             {% else %}
@@ -102,14 +94,14 @@
                         </li>
                         {% for page_num in page_obj.paginator.page_range %}
                             <li class="page-item {% if page_obj.number == page_num %}active{% endif %}">
-                                <a class="page-link" href="?page={{ page_num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}">
+                                <a class="page-link" href="?page={{ page_num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}{% if language_filter %}&language={{ language_filter }}{% endif %}">
                                     {{ page_num }}
                                 </a>
                             </li>
                         {% endfor %}
                         <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
                             {% if page_obj.has_next %}
-                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}{% if language_filter %}&language={{ language_filter }}{% endif %}">
                                     <i class="fas fa-angle-right"></i>
                                 </a>
                             {% else %}
@@ -122,7 +114,6 @@
 
             <!-- Sidebar -->
             <div class="col-lg-3 col-12 mt-4 mt-lg-0">
-                <!-- Category Filter -->
                 <div class="card search-filter shadow-sm border-0">
                     <div class="card-body">
                         <h4 class="mb-4 fw-bold">Course Categories</h4>
@@ -138,20 +129,16 @@
                                 {% endfor %}
                             </div>
                             <hr>
-                            <h4 class="mb-4 fw-bold">Price</h4>
-                            <div class="filter-widget">
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="price" value="all" {% if not price_filter %}checked{% endif %}>
-                                    <label class="form-check-label">All</label>
-                                </div>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="price" value="free" {% if price_filter == 'free' %}checked{% endif %}>
-                                    <label class="form-check-label">Free</label>
-                                </div>
-                                <div class="form-check mb-3">
-                                    <input class="form-check-input" type="radio" name="price" value="paid" {% if price_filter == 'paid' %}checked{% endif %}>
-                                    <label class="form-check-label">Paid</label>
-                                </div>
+                            <h4 class="mb-4 fw-bold">Languages</h4>
+                            <div class="filter-widget mb-4">
+                                <select name="language" class="form-select mb-3">
+                                    <option value="">Choose Language</option>
+                                    {% for lang in language_options %}
+                                        <option value="{{ lang.code }}" {% if lang.code == language_filter %}selected{% endif %}>
+                                            {{ lang.name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
                             </div>
                             <button type="submit" class="btn btn-primary w-100 transition-hover">Apply Filters</button>
                         </form>
@@ -162,7 +149,6 @@
     </div>
 </section>
 
-<!-- Custom CSS -->
 <style>
     .transition-hover {
         transition: all 0.3s ease;
