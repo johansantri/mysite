@@ -111,7 +111,7 @@ def microcredential_list(request):
 
 #course_list lms
 @ratelimit(key='ip', rate='100/h')
-#@cache_page(60 * 15)  # Cache the page for 15 minutes
+@cache_page(60 * 15)  # Cache the page for 15 minutes
 def course_list(request):
     if request.method != 'GET':
         return HttpResponseNotAllowed("Metode tidak diperbolehkan")
