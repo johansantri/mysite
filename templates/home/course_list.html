@@ -5,107 +5,136 @@
 {% block content %}
 <section class="course-content py-5 bg-light">
     <div class="container">
+        <!-- Filter Toggle untuk Mobile -->
+        <div class="filter-toggle d-lg-none text-center mb-4">
+            <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterSidebar" aria-expanded="false" aria-controls="filterSidebar">
+                <i class="fas fa-filter me-1"></i> Show Filters
+            </button>
+        </div>
+
         <div class="row">
             <!-- Main Content -->
             <div class="col-lg-9 col-12">
                 <div class="showing-list mb-4 d-flex justify-content-between align-items-center flex-wrap">
                     <div class="d-flex align-items-center flex-wrap">
                         <div class="view-icons me-3">
-                            <a href="{% url 'authentication:course_list' %}" class="grid-view active btn btn-outline-primary p-2">
+                            <a href="{% url 'authentication:course_list' %}" class="grid-view active btn btn-outline-primary p-2" aria-label="Grid view">
                                 <i class="feather-grid"></i>
                             </a>
                         </div>
                         <div class="show-result">
-                            <h4 class="mb-0">Showing {{ start_index }}-{{ end_index }} of {{ total_courses }} results</h4>
+                            <h2 class="mb-0">Showing {{ start_index }}-{{ end_index }} of {{ total_courses }} results</h2>
                         </div>
                     </div>
                 </div>
 
                 <div class="row">
                     {% for course in courses %}
-                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                    <article class="col-lg-4 col-md-6 col-sm-12 mb-4" style="--i: {{ forloop.counter }};">
                         <div class="card course-box shadow-sm h-100 border-0 transition-hover">
-                            <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}">
-                                <img class="card-img-top img-fluid rounded-top" alt="Course Image" src="{{ course.course_image }}" style="object-fit: cover; height: 200px;">
+                            <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}" aria-label="View details for {{ course.course_name }}">
+                                <img class="card-img-top img-fluid rounded-top" 
+                                     alt="{{ course.course_name }} - {{ course.instructor }} Course" 
+                                     src="{{ course.course_image }}" 
+                                     srcset="{{ course.course_image_small|default:course.course_image }} 480w, 
+                                             {{ course.course_image_medium|default:course.course_image }} 768w, 
+                                             {{ course.course_image }} 1200w"
+                                     sizes="(max-width: 576px) 480px, (max-width: 768px) 768px, 1200px"
+                                     loading="lazy" 
+                                     style="object-fit: cover; height: 200px;">
                             </a>
                             <div class="card-body d-flex flex-column p-3">
                                 <div class="d-flex align-items-center mb-3">
-                                    <a href="{% url 'courses:instructor_profile' course.instructor_username %}">
-                                        <img src="{{ course.photo }}" alt="Instructor Image" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                                    <a href="{% url 'courses:instructor_profile' course.instructor_username %}" aria-label="View profile of {{ course.instructor }}">
+                                        <img src="{{ course.photo }}" 
+                                             alt="Instructor {{ course.instructor }} profile picture" 
+                                             class="rounded-circle" 
+                                             loading="lazy" 
+                                             style="width: 40px; height: 40px; object-fit: cover;">
                                     </a>
                                     <div class="ms-2">
-                                        <h6 class="mb-0">
+                                        <h3 class="mb-0 h6">
                                             <a href="{% url 'courses:instructor_profile' course.instructor_username %}" class="text-dark text-decoration-none">{{ course.instructor }}</a>
-                                        </h6>
-                                        <small class="text-muted"><a href="{% url 'courses:org_partner' course.partner.slug %}" class="text-muted text-decoration-none">{{ course.partner }}</a></small>
+                                        </h3>
+                                        <small class="text-muted">
+                                            <a href="{% url 'courses:org_partner' course.partner.slug %}" class="text-muted text-decoration-none">{{ course.partner }}</a>
+                                        </small>
                                     </div>
                                 </div>
-                                <h5 class="card-title mb-3">
+                                <h4 class="card-title mb-3">
                                     <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}" class="text-dark text-decoration-none fw-bold">{{ course.course_name }}</a>
-                                </h5>
+                                </h4>
                                 <div class="d-flex justify-content-between align-items-center mb-3 text-muted">
                                     <div class="d-flex align-items-center">
-                                        <img src="{% static "assets/img/icon/icon-01.svg" %}" alt="Learners Icon" width="16">
+                                        <img src="{% static 'assets/img/icon/icon-01.svg' %}" alt="Learners Icon" width="16" loading="lazy">
                                         <small class="ms-1">{{ course.num_enrollments }} Learners</small>
                                     </div>
                                     <div class="d-flex align-items-center">
-                                        <img src="{% static "assets/img/icon/icon-02.svg" %}" alt="Duration Icon" width="16">
+                                        <img src="{% static 'assets/img/icon/icon-02.svg' %}" alt="Duration Icon" width="16" loading="lazy">
                                         <small class="ms-1">9hr 30min</small>
                                     </div>
                                 </div>
                                 <div class="rating mb-3">
                                     {% for _ in course.full_star_range %}
-                                        <i class="fas fa-star text-warning"></i>
+                                        <i class="fas fa-star text-warning" aria-hidden="true"></i>
                                     {% endfor %}
                                     {% if course.half_star %}
-                                        <i class="fas fa-star-half-alt text-warning"></i>
+                                        <i class="fas fa-star-half-alt text-warning" aria-hidden="true"></i>
                                     {% endif %}
                                     {% for _ in course.empty_star_range %}
-                                        <i class="fas fa-star text-muted"></i>
+                                        <i class="fas fa-star text-muted" aria-hidden="true"></i>
                                     {% endfor %}
                                     <small class="average-rating ms-1 text-muted">
                                         ({{ course.average_rating|floatformat:1 }}) ({{ course.review_count }})
                                     </small>
                                 </div>
                                 <div class="total-enrollments">
-                                    <p>Enrolled: {{ course.num_enrollments }} students</p>
-                                    <p><strong>Language:</strong> {{ course.language|get_language_name }}</p>
+                                    <p class="mb-1">Enrolled: {{ course.num_enrollments }} students</p>
+                                    <p class="mb-0"><strong>Language:</strong> {{ course.language|get_language_name }}</p>
                                 </div>
                                 <div class="mt-auto">
-                                    <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}" class="btn btn-primary w-100 mt-3 transition-hover">More</a>
+                                    <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}" 
+                                       class="btn btn-primary w-100 mt-3 transition-hover" 
+                                       aria-label="Learn more about {{ course.course_name }}">More</a>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </article>
                     {% endfor %}
                 </div>
 
                 <!-- Pagination -->
-                <nav aria-label="Page navigation" class="mt-4">
+                <nav aria-label="Course pagination" role="navigation" class="mt-4">
                     <ul class="pagination justify-content-center flex-wrap">
                         <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
                             {% if page_obj.has_previous %}
-                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}{% if language_filter %}&language={{ language_filter }}{% endif %}">
+                                <a class="page-link" 
+                                   href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}{% if language_filter %}&language={{ language_filter }}{% endif %}" 
+                                   aria-label="Previous page">
                                     <i class="fas fa-angle-left"></i>
                                 </a>
                             {% else %}
-                                <span class="page-link"><i class="fas fa-angle-left"></i></span>
+                                <span class="page-link" aria-hidden="true"><i class="fas fa-angle-left"></i></span>
                             {% endif %}
                         </li>
                         {% for page_num in page_obj.paginator.page_range %}
                             <li class="page-item {% if page_obj.number == page_num %}active{% endif %}">
-                                <a class="page-link" href="?page={{ page_num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}{% if language_filter %}&language={{ language_filter }}{% endif %}">
+                                <a class="page-link" 
+                                   href="?page={{ page_num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}{% if language_filter %}&language={{ language_filter }}{% endif %}" 
+                                   {% if page_obj.number == page_num %}aria-current="page"{% endif %}>
                                     {{ page_num }}
                                 </a>
                             </li>
                         {% endfor %}
                         <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
                             {% if page_obj.has_next %}
-                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}{% if language_filter %}&language={{ language_filter }}{% endif %}">
+                                <a class="page-link" 
+                                   href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}{% if language_filter %}&language={{ language_filter }}{% endif %}" 
+                                   aria-label="Next page">
                                     <i class="fas fa-angle-right"></i>
                                 </a>
                             {% else %}
-                                <span class="page-link"><i class="fas fa-angle-right"></i></span>
+                                <span class="page-link" aria-hidden="true"><i class="fas fa-angle-right"></i></span>
                             {% endif %}
                         </li>
                     </ul>
@@ -113,25 +142,30 @@
             </div>
 
             <!-- Sidebar -->
-            <div class="col-lg-3 col-12 mt-4 mt-lg-0">
+            <div class="col-lg-3 col-12 mt-4 mt-lg-0 collapse d-lg-block" id="filterSidebar">
                 <div class="card search-filter shadow-sm border-0">
                     <div class="card-body">
-                        <h4 class="mb-4 fw-bold">Course Categories</h4>
-                        <form method="GET" action="{% url 'authentication:course_list' %}">
+                        <h3 class="mb-4 fw-bold">Course Categories</h3>
+                        <form method="GET" action="{% url 'authentication:course_list' %}" aria-label="Course filter form">
                             <div class="filter-widget mb-4">
                                 {% for category in categories %}
                                     <div class="form-check mb-2">
-                                        <input class="form-check-input" type="checkbox" name="category" value="{{ category.id }}" {% if category.id|stringformat:"s" in category_filter %}checked{% endif %}>
-                                        <label class="form-check-label">
+                                        <input class="form-check-input" 
+                                               type="checkbox" 
+                                               name="category" 
+                                               id="category-{{ category.id }}" 
+                                               value="{{ category.id }}" 
+                                               {% if category.id|stringformat:"s" in category_filter %}checked{% endif %}>
+                                        <label class="form-check-label" for="category-{{ category.id }}">
                                             {{ category.name }} <span class="text-muted">({{ category.course_count }})</span>
                                         </label>
                                     </div>
                                 {% endfor %}
                             </div>
                             <hr>
-                            <h4 class="mb-4 fw-bold">Languages</h4>
+                            <h3 class="mb-4 fw-bold">Languages</h3>
                             <div class="filter-widget mb-4">
-                                <select name="language" class="form-select mb-3">
+                                <select name="language" class="form-select mb-3" aria-label="Select course language">
                                     <option value="">Choose Language</option>
                                     {% for lang in language_options %}
                                         <option value="{{ lang.code }}" {% if lang.code == language_filter %}selected{% endif %}>
@@ -149,41 +183,127 @@
     </div>
 </section>
 
+<!-- Schema Markup untuk SEO -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "itemListElement": [
+        {% for course in courses %}
+        {
+            "@type": "Course",
+            "name": "{{ course.course_name|escapejs }}",
+            "description": "{{ course.course_description|truncatewords:30|escapejs }}",
+            "provider": {
+                "@type": "Organization",
+                "name": "{{ course.partner|escapejs }}"
+            },
+            "image": "{{ course.course_image|escapejs }}",
+            "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "{{ course.average_rating }}",
+                "reviewCount": "{{ course.review_count }}"
+            },
+            "url": "{% url 'courses:course_lms_detail' course.course_id course.course_slug %}"
+        }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ]
+}
+</script>
+
 <style>
-    .transition-hover {
-        transition: all 0.3s ease;
+    /* Font dan Warna */
+    body {
+        font-family: 'Poppins', sans-serif;
     }
-    .transition-hover:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1) !important;
+
+    /* Animasi Fade-In */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
+
+    /* Kartu Kursus */
     .course-box {
-        border-radius: 10px;
-        overflow: hidden;
+        border-radius: 15px;
+        background: #ffffff;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        animation: fadeInUp 0.5s ease forwards;
+        animation-delay: calc(0.1s * var(--i));
+    }
+    .course-box:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
+    }
+    .card-img-top {
+        border-radius: 15px 15px 0 0;
+        transition: opacity 0.3s ease;
+    }
+    .card-img-top:hover {
+        opacity: 0.9;
     }
     .card-title a:hover {
         color: #007bff !important;
     }
+
+    /* Tombol */
+    .btn-primary {
+        background: linear-gradient(45deg, #007bff, #00b7eb);
+        border: none;
+        padding: 12px;
+        border-radius: 8px;
+        font-weight: 600;
+        min-height: 48px;
+    }
+    .btn-primary:hover {
+        background: linear-gradient(45deg, #0056b3, #0098c7);
+    }
+
+    /* Pagination */
     .pagination .page-link {
         border-radius: 5px;
         margin: 0 5px;
+        color: #007bff;
     }
     .pagination .page-item.active .page-link {
         background-color: #007bff;
         border-color: #007bff;
+        color: #ffffff;
     }
+    .pagination .page-item.disabled .page-link {
+        color: #6c757d;
+    }
+
+    /* Responsivitas */
     @media (max-width: 991px) {
         .course-box {
             margin-bottom: 20px;
         }
         .showing-list {
             text-align: center;
+            justify-content: center;
         }
-        .show-result h4 {
-            font-size: 1rem;
+        .show-result h2 {
+            font-size: 1.2rem;
+        }
+        .filter-toggle {
+            display: block;
         }
     }
+
     @media (max-width: 576px) {
+        .card-img-top {
+            height: 150px;
+        }
+        .card-title {
+            font-size: 1.1rem;
+        }
         .card-body {
             padding: 15px !important;
         }
@@ -191,7 +311,8 @@
             font-size: 0.9rem;
         }
         .pagination .page-link {
-            padding: 5px 10px;
+            padding: 8px 12px;
+            font-size: 0.9rem;
         }
     }
 </style>
