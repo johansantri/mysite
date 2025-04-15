@@ -15180,3 +15180,47 @@ Traceback (most recent call last):
   File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
     raise NoReverseMatch(msg)
 django.urls.exceptions.NoReverseMatch: Reverse for 'create_lti' with keyword arguments '{'idcourse': 1, 'idsection': 5, 'idassessment': 1}' not found. 1 pattern(s) tried: ['course/(?P<idcourse>[0-9]+)/section/(?P<idsection>[0-9]+)/lti/(?P<idlti>[0-9]+)/create/\\Z']
+Internal Server Error: /add-price/1/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/courses/forms.py", line 178, in __init__
+    regular_type = PricingType.objects.get(name="Beli Langsung")
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 649, in get
+    raise self.model.DoesNotExist(
+courses.models.PricingType.DoesNotExist: PricingType matching query does not exist.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 2064, in add_course_price
+    form = CoursePriceForm(user=request.user, course=course, instance=existing_price)
+  File "/home/TIM/mysite/courses/forms.py", line 185, in __init__
+    raise forms.ValidationError("Tipe harga 'Beli Langsung' tidak ditemukan! Tambahkan di database.")
+django.core.exceptions.ValidationError: ["Tipe harga 'Beli Langsung' tidak ditemukan! Tambahkan di database."]
+Internal Server Error: /add-price/1/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/courses/forms.py", line 178, in __init__
+    regular_type = PricingType.objects.get(name="Beli Langsung")
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 649, in get
+    raise self.model.DoesNotExist(
+courses.models.PricingType.DoesNotExist: PricingType matching query does not exist.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 2064, in add_course_price
+    form = CoursePriceForm(user=request.user, course=course, instance=existing_price)
+  File "/home/TIM/mysite/courses/forms.py", line 185, in __init__
+    raise forms.ValidationError("Tipe harga 'Beli Langsung' tidak ditemukan! Tambahkan di database.")
+django.core.exceptions.ValidationError: ["Tipe harga 'Beli Langsung' tidak ditemukan! Tambahkan di database."]
