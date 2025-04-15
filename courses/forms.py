@@ -2,7 +2,7 @@
 from django import forms
 from django.forms import inlineformset_factory
 from django.core.cache import cache
-from .models import Course,SosPost,CourseStatus,CourseRating,MicroCredential, AskOra,Partner,Category, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment,PricingType, CoursePrice
+from .models import LTIExternalTool, LTIPlatformConfiguration,Course,SosPost,CourseStatus,CourseRating,MicroCredential, AskOra,Partner,Category, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment,PricingType, CoursePrice
 from django_ckeditor_5.widgets import CKEditor5Widget
 
 from authentication.models import CustomUser, Universiti
@@ -16,6 +16,35 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from captcha.fields import CaptchaField
 
+
+class LTIExternalToolForm(forms.ModelForm):
+    class Meta:
+        model = LTIExternalTool
+        fields = ['name', 'launch_url', 'platform_config', 'has_grade', 'max_grade']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Misalnya: Kuis Moodle'}),
+            'launch_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://moodle.example.com/mod/lti/launch.php'}),
+            'platform_config': forms.Select(attrs={'class': 'form-select'}),
+            'has_grade': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'max_grade': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Misalnya: 50', 'min': 0, 'max': 100}),
+        }
+        labels = {
+            'name': 'Nama Alat',
+            'launch_url': 'Link Peluncuran',
+            'platform_config': 'Platform LTI',
+            'has_grade': 'Mengembalikan Nilai',
+            'max_grade': 'Nilai Maksimum',
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        has_grade = cleaned_data.get('has_grade')
+        max_grade = cleaned_data.get('max_grade')
+        if has_grade and not max_grade:
+            raise forms.ValidationError("Harap masukkan nilai maksimum jika LTI mengembalikan nilai.")
+        if max_grade and max_grade <= 0:
+            raise forms.ValidationError("Nilai maksimum harus lebih dari 0.")
+        return cleaned_data
 
 class CourseRatingForm(forms.ModelForm):
     class Meta:

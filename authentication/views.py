@@ -466,6 +466,22 @@ def dasbord(request):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
 
+
+    user = request.user
+    required_fields = {
+        'first_name': 'Nama Depan',
+        'last_name': 'Nama Belakang',
+        'email': 'Email',
+        'phone': 'Nomor Telepon',
+        'gender': 'Jenis Kelamin',
+        'birth': 'Tanggal Lahir',
+    }
+    missing_fields = [label for field, label in required_fields.items() if not getattr(user, field)]
+
+    if missing_fields:
+        messages.warning(request, f"Harap lengkapi data berikut: {', '.join(missing_fields)}")
+        return redirect('authentication:edit-profile', pk=user.pk)
+
     # Get page number from GET parameters
     courses_page = request.GET.get('courses_page', 1)
 
@@ -600,6 +616,22 @@ def dasbord(request):
 @login_required
 @ratelimit(key='ip', rate='100/h')
 def dashbord(request):
+    # Cek kelengkapan data pribadi
+    user = request.user
+    required_fields = {
+        'first_name': 'Nama Depan',
+        'last_name': 'Nama Belakang',
+        'email': 'Email',
+        'phone': 'Nomor Telepon',
+        'gender': 'Jenis Kelamin',
+        'birth': 'Tanggal Lahir',
+    }
+    missing_fields = [label for field, label in required_fields.items() if not getattr(user, field)]
+
+    if missing_fields:
+        messages.warning(request, f"Harap lengkapi data berikut: {', '.join(missing_fields)}")
+        return redirect('authentication:edit-profile', pk=user.pk)
+
     # Initialize variables
     search_query = request.GET.get('search', '')
     enrollments_page = request.GET.get('enrollments_page', 1)
@@ -610,9 +642,8 @@ def dashbord(request):
     # Search logic for enrollments (by username or course name)
     if search_query:
         enrollments = enrollments.filter(
-            user__username__icontains=search_query
-        ) | enrollments.filter(
-            course__course_name__icontains=search_query
+            Q(user__username__icontains=search_query) |
+            Q(course__course_name__icontains=search_query)
         )
 
     # Count of total enrollments
@@ -634,7 +665,7 @@ def dashbord(request):
     for enrollment in enrollments:
         course = enrollment.course
 
-        # Calculate progress (simple example: average of material and assessment progress)
+        # Calculate progress
         materials = Material.objects.filter(section__courses=course)
         total_materials = materials.count()
         materials_read = MaterialRead.objects.filter(user=request.user, material__in=materials).count()
@@ -645,20 +676,19 @@ def dashbord(request):
         assessments_completed = AssessmentRead.objects.filter(user=request.user, assessment__in=assessments).count()
         assessments_completed_percentage = (assessments_completed / total_assessments * 100) if total_assessments > 0 else 0
 
-        # Overall progress (e.g., average of material and assessment progress)
         progress = (materials_read_percentage + assessments_completed_percentage) / 2 if (total_materials + total_assessments) > 0 else 0
 
-        # Update progress in CourseProgress (optional, if you want to store it)
+        # Update progress in CourseProgress
         course_progress, created = CourseProgress.objects.get_or_create(user=request.user, course=course)
         course_progress.progress_percentage = progress
         course_progress.save()
 
-        # Fetch grade range for course to check passing threshold
+        # Fetch grade range
         grade_range = GradeRange.objects.filter(course=course).first()
-        passing_threshold = grade_range.min_grade if grade_range else 0  # Default to 0 if no grade range is defined
-        max_grade = grade_range.max_grade if grade_range else 100  # Default to 100 if no max grade is defined
+        passing_threshold = grade_range.min_grade if grade_range else 0
+        max_grade = grade_range.max_grade if grade_range else 100
 
-        # Calculate total score and check if the user passed
+        # Calculate total score
         total_score = 0
         total_max_score = 0
         assessments = Assessment.objects.filter(section__courses=course)
@@ -666,12 +696,12 @@ def dashbord(request):
             score_value = 0
             total_correct_answers = 0
             total_questions = assessment.questions.count()
-            if total_questions > 0:  # Multiple choice assessment
+            if total_questions > 0:
                 for question in assessment.questions.all():
                     answers = QuestionAnswer.objects.filter(question=question, user=request.user)
                     total_correct_answers += answers.filter(choice__is_correct=True).count()
                 score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
-            else:  # AskOra type assessment
+            else:
                 askora_submissions = Submission.objects.filter(askora__assessment=assessment, user=request.user)
                 if askora_submissions.exists():
                     latest_submission = askora_submissions.order_by('-submitted_at').first()
@@ -681,10 +711,8 @@ def dashbord(request):
             total_score += score_value
             total_max_score += assessment.weight
 
-        # Calculate percentage for passing
         overall_percentage = (total_score / total_max_score) * 100 if total_max_score > 0 else 0
 
-        # Check if the user is eligible for certificate
         certificate_eligible = progress == 100 and overall_percentage >= passing_threshold
         certificate_issued = enrollment.certificate_issued if hasattr(enrollment, 'certificate_issued') else False
 
@@ -693,14 +721,13 @@ def dashbord(request):
             'progress': progress,
             'certificate_issued': certificate_issued,
             'certificate_eligible': certificate_eligible,
-            'overall_percentage': overall_percentage,  # Include overall percentage for display
+            'overall_percentage': overall_percentage,
         })
 
-    # Pagination for enrollments
-    enrollments_paginator = Paginator(enrollments_data, 5)  # Show 5 enrollments per page
+    # Pagination
+    enrollments_paginator = Paginator(enrollments_data, 5)
     enrollments_page_obj = enrollments_paginator.get_page(enrollments_page)
 
-    # Render the dashboard with the appropriate data
     return render(request, 'learner/dashbord.html', {
         'enrollments': enrollments_page_obj,
         'search_query': search_query,
@@ -728,31 +755,36 @@ def pro(request,username):
 
 @login_required
 def edit_profile(request, pk):
-    # Retrieve the user instance based on the primary key
+    # Pastikan hanya pengguna sendiri yang bisa edit
     user = get_object_or_404(CustomUser, pk=pk)
+    if user != request.user:
+        messages.error(request, "Anda tidak memiliki izin untuk mengedit profil ini.")
+        return redirect('authentication:dashbord')
 
     if request.method == "GET":
-        # Render the form with the user's current data
         form = Userprofile(instance=user)
         return render(request, 'home/edit_profile_form.html', {'form': form})
 
     elif request.method == "POST":
-        # Populate the form with POST data and the user instance
-        form = Userprofile(request.POST,request.FILES, instance=user)
+        form = Userprofile(request.POST, request.FILES, instance=user)
         if form.is_valid():
-            form = form.save(commit=False)
+            form_instance = form.save(commit=False)
+            # Pertahankan foto jika tidak ada file baru
             if not request.FILES.get('photo'):
-
-            # If no new photo, keep the existing one
-
-                form.photo = request.user.photo 
-            form.save()
-            return JsonResponse({'success': True, 'message': 'Profile updated successfully!'})
+                form_instance.photo = user.photo
+            form_instance.save()
+            # Cek apakah request adalah AJAX
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': True, 'message': 'Profil berhasil diperbarui!'})
+            else:
+                messages.success(request, "Profil Anda berhasil diperbarui.")
+                return redirect('authentication:dashbord')
         else:
-            # If the form is invalid, re-render the form with errors
-            return render(request, 'home/edit_profile_form.html', {'form': form}, status=400)
-    
-
+            # Untuk AJAX, kembalikan error sebagai JSON
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': False, 'errors': form.errors}, status=400)
+            # Untuk non-AJAX, render ulang form
+            return render(request, 'home/edit_profile_form.html', {'form': form})
 #convert image before update
 
 # Fungsi untuk memproses gambar menjadi format WebP
@@ -903,8 +935,6 @@ def popular_courses(request):
 
 # Home page
 def home(request):
-   
-    
     if request.method != 'GET':
         return HttpResponseNotAllowed("Metode tidak diperbolehkan")
     
@@ -916,6 +946,7 @@ def home(request):
     total_partners = 0
     total_users = 0
     total_courses = 0
+    instructors_page = None  # Inisialisasi variabel instructors_page
 
     if published_status:
         # Mendapatkan kategori populer dengan kursus yang sudah dipublikasikan
@@ -936,13 +967,16 @@ def home(request):
 
         # Mendapatkan semua mitra
         partners = Partner.objects.all()
-         # Mengambil instruktur yang statusnya 'Approved'
+
+        # Mengambil instruktur yang statusnya 'Approved'
         instructors = Instructor.objects.filter(status='Approved')
 
         # Pagination: Menampilkan 6 instruktur per halaman
-        paginator = Paginator(instructors, 6)
-        page_number = request.GET.get('page')
-        instructors_page = paginator.get_page(page_number)
+        if instructors.exists():  # Cek apakah ada instruktur
+            paginator = Paginator(instructors, 6)
+            page_number = request.GET.get('page')
+            instructors_page = paginator.get_page(page_number)
+        
         # Menghitung total
         total_instructors = Instructor.objects.count()  # Asumsi ada model Instructor
         total_partners = Partner.objects.count()

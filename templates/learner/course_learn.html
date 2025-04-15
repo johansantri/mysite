@@ -311,6 +311,9 @@
 
         <!-- Timer Script (khusus Multiple Choice) -->
         {% if current_content.0 == 'assessment' and current_content.1.questions.exists %}
+
+         
+          {% block scripts %}
             <!-- Script Timer -->
             <script>
               let remainingTime = {{ remaining_time }};
@@ -352,6 +355,8 @@
               timerInterval = setInterval(updateTimer, 1000);
               updateTimer();
             </script>
+
+          {% endblock %}
         {% endif %}
 
         <style>
@@ -362,7 +367,6 @@
           }
         </style>
     
-
 
 
 

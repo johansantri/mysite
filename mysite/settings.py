@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-*t=li&h7o=sj40!ic&)p+8!fy3p@*tfg+mz6!xuftigv_qa9yy
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True #False
 #ALLOWED_HOSTS = ['127.0.0.1','localhost']
 ALLOWED_HOSTS = ['127.0.0.1','localhost','ini.icei.ac.id','20.11.247.222']
 SESSION_COOKIE_SECURE = True
@@ -468,47 +468,74 @@ LOGGING = {
 }
 
 
-# Default source: hanya boleh ambil resource dari domain sendiri
-CSP_DEFAULT_SRC = ("'self'",)
+CONTENT_SECURITY_POLICY = {
+    'DIRECTIVES': {
+        # Hanya izinkan <base> tag mengarah ke domain sendiri
+        'base-uri': ("'self'",),
 
-# Script source: allow dari cdnjs dan jsDelivr, plus 'self'
-CSP_SCRIPT_SRC = (
-    "'self'",
-    "'unsafe-inline'",
-    'https://cdn.jsdelivr.net',
-    'https://cdnjs.cloudflare.com',
-)
+        # Izinkan permintaan (AJAX, WebSocket, fetch, dsb) hanya ke domain sendiri dan ke Moodle
+        'connect-src': (
+            "'self'",  # domain aplikasi ini sendiri
+            "https://idols.ui.ac.id",  # domain Moodle untuk integrasi LTI
+        ),
 
-# Style source: allow CDN CSS
-CSP_STYLE_SRC = (
-    "'self'",
-    'https://cdn.jsdelivr.net',
-    'https://cdnjs.cloudflare.com',
-)
+        # Default untuk semua jenis resource, kecuali yang punya aturan khusus di bawah
+        'default-src': ("'self'",),  # semua resource hanya boleh dari domain sendiri
 
-# Font source: allow fonts dari jsDelivr, cdnjs, dan Google Fonts
-CSP_FONT_SRC = (
-    "'self'",
-    'https://cdnjs.cloudflare.com',
-    'https://cdn.jsdelivr.net',
-    'https://fonts.googleapis.com',
-    'https://fonts.gstatic.com',
-)
+        # Izinkan font (woff, woff2, ttf) dari domain berikut
+        'font-src': (
+            "'self'",  # dari domain sendiri
+            'https://cdnjs.cloudflare.com',  # CDN umum
+            'https://cdn.jsdelivr.net',  # CDN umum
+            'https://fonts.googleapis.com',  # stylesheet Google Fonts (kadang diminta juga)
+            'https://fonts.gstatic.com',  # tempat file font Google Fonts di-host
+        ),
 
-# Image source: dari domain sendiri + data URI (misalnya icon inline)
-CSP_IMG_SRC = ("'self'", "data:")
+        # Form hanya bisa dikirim (POST) ke domain sendiri
+        'form-action': ("'self'",),
 
-# Object source: none = blokir Flash/old plugin
-CSP_OBJECT_SRC = ("'none'",)
+        # Izinkan iframe atau konten embedded hanya dari domain sendiri dan Moodle (untuk LTI)
+        'frame-src': (
+            "'self'",
+            "https://idols.ui.ac.id",  # Moodle iframe
+        ),
 
-# Optional: allow Ajax/HTMX/XHR ke domain sendiri
-CSP_CONNECT_SRC = ("'self'",)
+        # Izinkan gambar dari domain sendiri dan dari inline base64 (data:)
+        'img-src': (
+            "'self'",
+            "data:",  # misalnya untuk gambar yang di-embed sebagai base64
+        ),
 
-# Optional: allow form action ke domain sendiri
-CSP_FORM_ACTION = ("'self'",)
+        # Blokir plugin seperti Flash, Java Applet, dll — demi keamanan
+        'object-src': ("'none'",),
 
-# Optional: frame/iframe control
-CSP_FRAME_SRC = ("'self'",)
+        # Izinkan file JavaScript dari domain sendiri dan CDN berikut
+        'script-src': (
+            "'self'",  # dari server sendiri
+            'https://cdn.jsdelivr.net',  # CDN umum
+            'https://cdnjs.cloudflare.com',  # CDN umum
+            "'unsafe-inline'",  # mengizinkan <script> inline — sebaiknya dihindari untuk keamanan
+        ),
 
-# Optional: base-uri untuk <base> tag
-CSP_BASE_URI = ("'self'",)
+        # Izinkan file CSS dari domain sendiri dan CDN berikut
+        'style-src': (
+            "'self'",  # dari server sendiri
+            'https://cdn.jsdelivr.net',  # CDN umum
+            'https://cdnjs.cloudflare.com',  # CDN umum
+            'https://fonts.googleapis.com',  # stylesheet dari Google Fonts
+            "'unsafe-inline'",  # mengizinkan <style> inline — sebaiknya dihindari jika memungkinkan
+        ),
+
+        # Izinkan tag <link rel="stylesheet"> yang diarahkan ke sumber eksternal tertentu (Google Fonts)
+        # ini diperlukan di browser modern yang memisahkan style-src untuk elemen
+        'style-src-elem': (
+            "'self'",
+            'https://cdn.jsdelivr.net',
+            'https://cdnjs.cloudflare.com',
+            'https://fonts.googleapis.com',
+            "'unsafe-inline'",
+        ),
+    }
+}
+
+

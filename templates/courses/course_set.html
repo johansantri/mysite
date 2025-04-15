@@ -1,24 +1,24 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm custom-navbar">
   <div class="container-fluid">
-    <!-- Logo atau nama kursus -->
-    <a class="navbar-brand shadow-sm p-3 mb-2 bg-light rounded text-dark text-decoration-none hover-text-dark" href="{% url 'courses:studio' course.id %}">
+    <a class="navbar-brand fw-bold text-dark" href="{% url 'courses:studio' course.id %}">
       {{ course.course_name }}
     </a>
-    
-    <!-- Toggle button untuk tampilan mobile -->
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+      aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <!-- Navbar Collapse Content -->
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <!-- Dropdown Content Menu -->
+        <!-- Content Dropdown -->
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+            data-bs-toggle="dropdown" aria-expanded="false">
             Content
           </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <ul class="dropdown-menu shadow" aria-labelledby="navbarDropdown">
             <li><a class="dropdown-item" href="{% url 'courses:studio' course.id %}">Outline</a></li>
             <li><a class="dropdown-item" href="{% url 'instructor:studios' course.id %}">Status Curation</a></li>
             <li><hr class="dropdown-divider"></li>
@@ -26,12 +26,13 @@
           </ul>
         </li>
 
-        <!-- Dropdown Settings Menu -->
+        <!-- Settings Dropdown -->
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownSetting" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownSetting" role="button"
+            data-bs-toggle="dropdown" aria-expanded="false">
             Settings
           </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdownSetting">
+          <ul class="dropdown-menu shadow" aria-labelledby="navbarDropdownSetting">
             <li><a class="dropdown-item" href="{% url 'courses:course_profile' course.id %}">Schedule</a></li>
             <li><a class="dropdown-item" href="{% url 'courses:course_grade' course.id %}">Grading</a></li>
             <li><a class="dropdown-item" href="{% url 'courses:course_team' course.id %}">Team</a></li>
@@ -45,115 +46,29 @@
       </ul>
     </div>
   </div>
-
-  <!-- CSS Tambahan untuk Navbar -->
-  <style>
-    /* Navbar Styling */
-    .navbar {
-      padding: 10px 15px;
-      background-color: #fff !important;
-      border-bottom: 1px solid #e9ecef;
-    }
-
-    .navbar-brand {
-      font-size: 1.25rem;
-      font-weight: 500;
-      color: #333 !important;
-      transition: color 0.3s ease;
-    }
-
-    .navbar-brand:hover {
-      color: #007bff !important;
-    }
-
-    .navbar-toggler {
-      border: none;
-      padding: 8px;
-      transition: transform 0.3s ease;
-    }
-
-    .navbar-toggler:focus {
-      outline: none;
-      box-shadow: none;
-    }
-
-    .navbar-toggler:hover {
-      transform: scale(1.1);
-    }
-
-    .navbar-toggler-icon {
-      width: 24px;
-      height: 24px;
-    }
-
-    .nav-link {
-      font-size: 1rem;
-      color: #555 !important;
-      transition: color 0.3s ease;
-    }
-
-    .nav-link:hover {
-      color: #007bff !important;
-    }
-
-    .dropdown-menu {
-      border: none;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-    }
-
-    .dropdown-item {
-      font-size: 0.9rem;
-      color: #333;
-      transition: background-color 0.3s ease, color 0.3s ease;
-    }
-
-    .dropdown-item:hover {
-      background-color: #f8f9fa;
-      color: #007bff;
-    }
-
-    .dropdown-divider {
-      border-top: 1px solid #e9ecef;
-    }
-
-    /* Responsive Design untuk Mobile */
-    @media (max-width: 768px) {
-      .navbar .container-fluid {
-        display: flex;
-        align-items: center;
-        justify-content: space-between; /* Sejajarkan elemen dengan ruang di antara */
-        padding: 0 10px; /* Kurangi padding agar lebih kompak */
-      }
-
-      .navbar-brand {
-        font-size: 1rem; /* Kurangi ukuran font di mobile */
-        padding: 8px 12px; /* Sesuaikan padding */
-        margin: 0; /* Hilangkan margin yang tidak perlu */
-        max-width: 70%; /* Batasi lebar agar tidak terlalu panjang */
-        white-space: nowrap; /* Cegah teks membungkus */
-        overflow: hidden; /* Sembunyikan teks yang terlalu panjang */
-        text-overflow: ellipsis; /* Tambahkan elipsis jika teks terlalu panjang */
-      }
-
-      .navbar-toggler {
-        padding: 6px; /* Kurangi padding tombol toggle */
-        margin: 0; /* Hilangkan margin yang tidak perlu */
-      }
-
-      .navbar-toggler-icon {
-        width: 20px; /* Sesuaikan ukuran ikon */
-        height: 20px;
-      }
-
-      .navbar-collapse {
-        margin-top: 10px; /* Beri jarak saat collapse terbuka */
-      }
-
-      .nav-link {
-        font-size: 0.9rem; /* Kurangi ukuran font di mobile */
-        padding: 8px 15px; /* Sesuaikan padding */
-      }
-    }
-  </style>
 </nav>
+
+<style>
+  /* Scoped only to this navbar */
+  .custom-navbar .nav-item .nav-link {
+    color: #343a40 !important;
+    font-weight: 600;
+    transition: color 0.2s ease;
+  }
+
+  .custom-navbar .nav-item .nav-link:hover,
+  .custom-navbar .nav-item .nav-link:focus {
+    color: #0d6efd !important; /* Bootstrap primary blue */
+    text-decoration: none;
+  }
+
+  .custom-navbar .dropdown-menu .dropdown-item {
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .custom-navbar .dropdown-menu .dropdown-item:hover {
+    background-color: #f8f9fa;
+    color: #0d6efd;
+  }
+</style>

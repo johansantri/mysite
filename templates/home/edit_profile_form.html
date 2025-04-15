@@ -1,102 +1,298 @@
-<div class="support-wrap">
-<form method="POST" enctype="multipart/form-data" hx-post="{% url 'authentication:edit-profile-save' user.id %}" hx-target=".personal-address" hx-swap="innerHTML">
-    {% csrf_token %}
-    <div class="row">
-        <div class="col-sm-6">
-            <div class="form-group">
-                <label for="id_first_name">First Name</label>
-                {{ form.first_name }}
+<!-- templates/home/edit_profile_form.html -->
+{% extends 'home/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8">
+            <div class="card shadow-lg border-0 animate__animated animate__fadeIn">
+                <div class="card-body p-4 p-md-5">
+                    <h2 class="text-center mb-3">Lengkapi Profil Anda</h2>
+                    <p class="text-center text-muted mb-4">Silakan lengkapi data pribadi Anda untuk melanjutkan ke dashboard.</p>
+
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'warning' %}alert-warning{% else %}alert-danger{% endif %} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="POST" enctype="multipart/form-data" id="profile-form" novalidate>
+                        {% csrf_token %}
+                        <div class="row g-4">
+                            <div class="col-12 col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.first_name.id_for_label }}" class="form-label">{{ form.first_name.label }} <span class="text-danger">*</span></label>
+                                    {{ form.first_name }}
+                                    {% if form.first_name.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.first_name.errors|join:", " }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="mb-3">
+                                    <label for="{{ form.last_name.id_for_label }}" class="form-label">{{ form.last_name.label }} <span class="text-danger">*</span></label>
+                                    {{ form.last_name }}
+                                    {% if form.last_name.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.last_name.errors|join:", " }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="mb-3">
+                                    <label for="{{ form.email.id_for_label }}" class="form-label">{{ form.email.label }} <span class="text-danger">*</span></label>
+                                    {{ form.email }}
+                                    {% if form.email.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.email.errors|join:", " }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="mb-3">
+                                    <label for="{{ form.phone.id_for_label }}" class="form-label">{{ form.phone.label }} <span class="text-danger">*</span></label>
+                                    {{ form.phone }}
+                                    {% if form.phone.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.phone.errors|join:", " }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="mb-3">
+                                    <label for="{{ form.gender.id_for_label }}" class="form-label">{{ form.gender.label }} <span class="text-danger">*</span></label>
+                                    {{ form.gender }}
+                                    {% if form.gender.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.gender.errors|join:", " }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="mb-3">
+                                    <label for="{{ form.birth.id_for_label }}" class="form-label">{{ form.birth.label }} <span class="text-danger">*</span></label>
+                                    {{ form.birth }}
+                                    {% if form.birth.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.birth.errors|join:", " }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ form.country.id_for_label }}" class="form-label">{{ form.country.label }}</label>
+                                    {{ form.country }}
+                                    {% if form.country.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.country.errors|join:", " }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="mb-3">
+                                    <label for="{{ form.photo.id_for_label }}" class="form-label">{{ form.photo.label }}</label>
+                                    <div class="input-group">
+                                        {{ form.photo }}
+                                        {% if request.user.photo %}
+                                            <img src="{{ request.user.photo.url }}" alt="Foto Profil" class="img-fluid rounded-circle ms-3" style="max-width: 60px; height: auto;">
+                                        {% endif %}
+                                    </div>
+                                    {% if form.photo.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.photo.errors|join:", " }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="mb-3">
+                                    <label for="{{ form.address.id_for_label }}" class="form-label">{{ form.address.label }}</label>
+                                    {{ form.address }}
+                                    {% if form.address.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.address.errors|join:", " }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="mb-3">
+                                    <label for="{{ form.hobby.id_for_label }}" class="form-label">{{ form.hobby.label }}</label>
+                                    {{ form.hobby }}
+                                    {% if form.hobby.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.hobby.errors|join:", " }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="mb-3">
+                                    <label for="{{ form.education.id_for_label }}" class="form-label">{{ form.education.label }}</label>
+                                    {{ form.education }}
+                                    {% if form.education.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.education.errors|join:", " }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="mb-3">
+                                    <label for="{{ form.university.id_for_label }}" class="form-label">{{ form.university.label }}</label>
+                                    {{ form.university }}
+                                    {% if form.university.errors %}
+                                        <div class="invalid-feedback d-block">{{ form.university.errors|join:", " }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg px-5 me-2" id="submit-btn" disabled>
+                                <span class="spinner-border spinner-border-sm me-2 d-none" role="status" aria-hidden="true"></span>
+                                Simpan
+                            </button>
+                            <a href="{% url 'authentication:dashbord' %}" class="btn btn-outline-secondary btn-lg px-5">Batal</a>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-        <div class="col-sm-6">
-            <div class="form-group">
-                <label for="id_last_name">Last Name</label>
-                {{ form.last_name }}
-            </div>
-        </div>
-        <div class="col-sm-6">
-            <div class="form-group">
-                <label for="id_email">Email</label>
-                {{ form.email }}
-            </div>
-        </div>
-        <div class="col-sm-6">
-            <div class="form-group">
-                <label for="id_phone">Phone</label>
-                {{ form.phone }}
-            </div>
-        </div>
-        <div class="col-sm-12">
-            <div class="form-group">
-                <label for="id_hobby">Hobby</label>
-                {{ form.hobby }}
-            </div>
-        </div>
-        <div class="col-sm-12">
-            <div class="form-group">
-                <label for="id_address">address</label>
-                {{ form.address }}
-            </div>
-        </div>
-        <div class="col-sm-12">
-            <div class="form-group">
-                <label for="id_country">country</label>
-                {{ form.country }}
-            </div>
-        </div>
-        <div class="col-sm-12">
-            <div class="form-group">
-                <label for="id_gender">gender</label>
-                {{ form.gender }}
-            </div>
-        </div>
-        <div class="col-sm-12">
-            <div class="form-group">
-                <label for="id_education">education</label>
-                {{ form.education }}
-            </div>
-        </div>
-        <div class="col-sm-12">
-            <div class="form-group">
-                <label for="id_birth">birth</label>
-                {{ form.birth }}
-            </div>
-        </div>
-        <div class="col-sm-12">
-            <div class="form-group">
-                <label for="id_org">org </label>
-                {{ form.university }}
-                <label for="id_org"> *if you org canot on list, your choice other</label>
-            </div>
-        </div>
-        
     </div>
-    &nbsp;
-    <div style="text-align:right">
-        <button type="submit" class="btn btn-primary">Save Changes</button>
-    </div>
-</form>
 </div>
 
+<!-- CSS Kustom -->
+<style>
+body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+}
+
+.card {
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.form-control, .form-select {
+    border-radius: 0.5rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #0d6efd, #6610f2);
+    border: none;
+    border-radius: 0.5rem;
+    transition: transform 0.2s ease;
+}
+
+.btn-primary:hover {
+    transform: scale(1.05);
+}
+
+.btn-outline-secondary {
+    border-radius: 0.5rem;
+    transition: transform 0.2s ease;
+}
+
+.btn-outline-secondary:hover {
+    transform: scale(1.05);
+    background: #f8f9fa;
+}
+
+.invalid-feedback {
+    font-size: 0.875rem;
+    color: #dc3545;
+}
+
+@media (max-width: 576px) {
+    .btn-lg {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .form-control, .form-select {
+        font-size: 0.9rem;
+    }
+}
+</style>
+
+<!-- JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    $(document).ready(function() {
-      $('.select1').select2({
-        //placeholder: 'Search for a user',
-        ajax: {
-          url: '{% url "courses:search_partner" %}',  // This should be an endpoint that returns users based on a search term
-          dataType: 'json',
-          delay: 250,  // Delay in milliseconds to wait for the user to stop typing
-          data: function (params) {
-            return {
-              q: params.term  // Search term
-            };
-          },
-          processResults: function (data) {
-            return {
-              results: data.partners  // Data structure should be { users: [{id, text}, ...] }
-            };
-          }
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
         }
-      });
+    }
+    return cookieValue;
+}
+
+// Validasi sisi klien
+function validateForm() {
+    const form = document.getElementById('profile-form');
+    const requiredInputs = form.querySelectorAll('input[required], select[required]');
+    let isValid = true;
+
+    requiredInputs.forEach(input => {
+        if (!input.value.trim()) {
+            input.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            input.classList.remove('is-invalid');
+        }
     });
-  </script>
+
+    form.querySelector('#submit-btn').disabled = !isValid;
+}
+
+document.getElementById('profile-form').addEventListener('input', validateForm);
+
+document.getElementById('profile-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const submitBtn = document.getElementById('submit-btn');
+    const spinner = submitBtn.querySelector('.spinner-border');
+
+    // Tampilkan loading
+    submitBtn.disabled = true;
+    spinner.classList.remove('d-none');
+
+    let formData = new FormData(this);
+    fetch(this.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        submitBtn.disabled = false;
+        spinner.classList.add('d-none');
+
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Sukses',
+                text: data.message,
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => {
+                window.location.href = "{% url 'authentication:dashbord' %}";
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Ada kesalahan dalam formulir: ' + Object.values(data.errors).join(', '),
+            });
+        }
+    })
+    .catch(error => {
+        submitBtn.disabled = false;
+        spinner.classList.add('d-none');
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Terjadi kesalahan saat menyimpan profil.',
+        });
+        console.error('Error:', error);
+    });
+});
+
+// Inisialisasi validasi saat halaman dimuat
+validateForm();
+</script>
+{% endblock %}

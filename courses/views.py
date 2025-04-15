@@ -10,10 +10,10 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from .forms import CoursePriceForm,CourseRatingForm,SosPostForm,MicroCredentialForm,AskOraForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
+from .forms import LTIExternalToolForm,CoursePriceForm,CourseRatingForm,SosPostForm,MicroCredentialForm,AskOraForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from .utils import user_has_passed_course,check_for_blacklisted_keywords,is_suspicious
 from django.http import JsonResponse
-from .models import Course,CourseRating,Like,SosPost,Hashtag,UserProfile,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
+from .models import LTIExternalTool, LTIPlatformConfiguration,Course,CourseRating,Like,SosPost,Hashtag,UserProfile,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
 from authentication.models import CustomUser, Universiti
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
@@ -47,6 +47,50 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 import json
 
+
+@login_required
+def create_lti(request, idcourse, idsection, idlti):
+    # Cek apakah pengguna sudah login
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+
+    # Tentukan course berdasarkan peran pengguna
+    if request.user.is_superuser:
+        course = get_object_or_404(Course, id=idcourse)
+    elif request.user.is_partner:
+        course = get_object_or_404(Course, id=idcourse, org_partner__user_id=request.user.id)
+    elif request.user.is_instructor:
+        course = get_object_or_404(Course, id=idcourse, instructor__user_id=request.user.id)
+    else:
+        messages.error(request, "Anda tidak memiliki izin untuk membuat alat LTI di kursus ini.")
+        return redirect('courses:home')
+
+    # Pastikan section milik course
+    section = get_object_or_404(Section, id=idsection, courses=course)
+
+    # Pastikan assessment milik section
+    assessment = get_object_or_404(Assessment, id=idlti, section=section)
+
+    # Menangani form
+    if request.method == 'POST':
+        form = LTIExternalToolForm(request.POST)
+        if form.is_valid():
+            lti_tool = form.save(commit=False)
+            lti_tool.assessment = assessment
+            lti_tool.save()  # Validasi max_grade di model
+            messages.success(request, "Alat LTI berhasil ditambahkan ke asesmen.")
+            return redirect('courses:view-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
+        else:
+            messages.error(request, "Ada kesalahan dalam formulir. Silakan periksa kembali.")
+    else:
+        form = LTIExternalToolForm()
+
+    return render(request, 'courses/lti_tool_form.html', {
+        'course': course,
+        'section': section,
+        'assessment': assessment,
+        'form': form,
+    })
 
 @csrf_exempt
 @require_POST

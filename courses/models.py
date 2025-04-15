@@ -18,6 +18,7 @@ import bleach
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.core.files.storage import default_storage
+import uuid
 
 
 class UserProfile(models.Model):
@@ -1119,3 +1120,62 @@ class Like(models.Model):
 
     class Meta:
         unique_together = ('user', 'post')  # Memastikan kombinasi user dan post unik
+
+
+#untuk lti consume
+class LTIPlatformConfiguration(models.Model):
+    issuer = models.URLField(unique=True, help_text="Issuer dari Tool Provider, misalnya https://moodle.example.com")
+    client_id = models.CharField(max_length=255, unique=True, help_text="Client ID dari Tool Provider")
+    auth_login_url = models.URLField(help_text="OIDC Authentication Endpoint")
+    auth_token_url = models.URLField(help_text="OAuth 2.0 Token Endpoint")
+    key_set_url = models.URLField(help_text="JWKS Endpoint")
+    private_key = models.TextField(help_text="Kunci privat RSA untuk LMS")
+    public_key = models.TextField(help_text="Kunci publik RSA untuk LMS")
+    deployment_id = models.CharField(max_length=255, help_text="Deployment ID")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"LTI Platform: {self.issuer}"
+
+class LTIExternalTool(models.Model):
+    assessment = models.ForeignKey('Assessment', on_delete=models.CASCADE, related_name='lti_tools')
+    name = models.CharField(max_length=255, help_text="Nama alat, misalnya 'Kuis Moodle'")
+    launch_url = models.URLField(help_text="URL peluncuran LTI, misalnya https://moodle.example.com/mod/lti/launch.php")
+    platform_config = models.ForeignKey(
+        LTIPlatformConfiguration,
+        on_delete=models.CASCADE,
+        related_name='tools',
+        help_text="Konfigurasi platform LTI yang digunakan"
+    )
+    has_grade = models.BooleanField(default=False, help_text="Apakah LTI ini mengembalikan nilai")
+    max_grade = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        help_text="Nilai maksimum, max 100"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if self.has_grade and self.max_grade is not None:
+            if self.max_grade <= 0 or self.max_grade > 100:
+                raise ValueError("Nilai maksimum harus antara 0 dan 100.")
+            if self.assessment_id:
+                total_grade = sum(
+                    tool.max_grade or 0
+                    for tool in self.assessment.lti_tools.exclude(id=self.id)
+                    if tool.has_grade
+                ) + (self.max_grade or 0)
+                if total_grade > 100:
+                    raise ValueError(f"Total nilai maksimum untuk asesmen ini melebihi 100 (saat ini: {total_grade}).")
+        super().save(*args, **kwargs)
+        Question.objects.get_or_create(
+            assessment=self.assessment,
+            question_type='LTI',
+            lti_tool=self,
+            defaults={'text': f"LTI: {self.name}"}
+        )

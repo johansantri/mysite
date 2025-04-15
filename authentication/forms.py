@@ -49,48 +49,80 @@ class LoginForm(forms.Form):
 
 
 class Userprofile(forms.ModelForm):
-    
     class Meta:
         model = CustomUser
         fields = [
-        'first_name', 'last_name', 'email', 
-        'hobby', 'birth', 'address', 'country', 
-        'phone', 'gender', 'education','university','photo'
+            'first_name', 'last_name', 'email', 'phone', 'gender', 'birth',
+            'country', 'photo', 'address', 'hobby', 'education', 'university',
+            'tiktok', 'youtube', 'facebook', 'instagram', 'linkedin', 'twitter'
         ]
-
-        
         widgets = {
-            
-            'first_name': forms.TextInput(attrs={'class': 'form-control', 'type': 'text'}),  
-            'last_name': forms.TextInput(attrs={'class': 'form-control', 'type': 'text'}), 
-            'email': forms.EmailInput(attrs={'class': 'form-control', 'type': 'email'}),   
-            'hobby': forms.TextInput(attrs={'class': 'form-control', 'type': 'text'}),     
-            'birth': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'address': forms.Textarea(attrs={'class': 'form-control', 'type': 'text','rows':4}),
-            'country': forms.Select(attrs={'class': 'form-control', 'type': 'text'}),
-            'phone': forms.TextInput(attrs={'class': 'form-control', 'type': 'text'}), 
-            'gender': forms.Select(attrs={'class': 'form-control', 'type': 'text'}), 
-            'education': forms.Select(attrs={'class': 'form-control', 'type': 'text'}), 
-            'university': forms.Select(attrs={'class': 'form-control', 'type': 'text'}),
-            
-            
+            'first_name': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'required': True}),
+            'phone': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+            'gender': forms.Select(attrs={'class': 'form-select', 'required': True}),
+            'birth': forms.DateInput(attrs={'class': 'form-control', 'type': 'date', 'required': True}),
+            'country': forms.Select(attrs={'class': 'form-select'}),
+            'photo': forms.FileInput(attrs={'class': 'form-control'}),
+            'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'hobby': forms.TextInput(attrs={'class': 'form-control'}),
+            'education': forms.Select(attrs={'class': 'form-select'}),
+            'university': forms.Select(attrs={'class': 'form-select'}),
+            'tiktok': forms.URLInput(attrs={'class': 'form-control'}),
+            'youtube': forms.URLInput(attrs={'class': 'form-control'}),
+            'facebook': forms.URLInput(attrs={'class': 'form-control'}),
+            'instagram': forms.URLInput(attrs={'class': 'form-control'}),
+            'linkedin': forms.URLInput(attrs={'class': 'form-control'}),
+            'twitter': forms.URLInput(attrs={'class': 'form-control'}),
         }
-        def clean_phone(self):
+        labels = {
+            'first_name': 'Nama Depan',
+            'last_name': 'Nama Belakang',
+            'email': 'Email',
+            'phone': 'Nomor Telepon',
+            'gender': 'Jenis Kelamin',
+            'birth': 'Tanggal Lahir',
+            'country': 'Negara',
+            'photo': 'Foto Profil',
+            'address': 'Alamat',
+            'hobby': 'Hobi',
+            'education': 'Pendidikan',
+            'university': 'Universitas',
+            'tiktok': 'TikTok',
+            'youtube': 'YouTube',
+            'facebook': 'Facebook',
+            'instagram': 'Instagram',
+            'linkedin': 'LinkedIn',
+            'twitter': 'Twitter',
+        }
 
-            phone = self.cleaned_data.get('phone')
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if CustomUser.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError("Email ini sudah digunakan.")
+        return email
 
-            if phone:
+    def clean_phone(self):
+        phone = self.cleaned_data.get('phone')
+        if not phone:
+            raise forms.ValidationError("Nomor telepon wajib diisi.")
+        import re
+        if not re.match(r'^\+?\d{8,15}$', phone):
+            raise forms.ValidationError("Nomor telepon tidak valid.")
+        return phone
 
-                # Example regex for validating phone numbers (adjust as needed)
+    def clean_birth(self):
+        birth = self.cleaned_data.get('birth')
+        if not birth:
+            raise forms.ValidationError("Tanggal lahir wajib diisi.")
+        return birth
 
-                if not re.match(r'^\+?1?\d{9,15}$', phone):
-
-                    raise forms.ValidationError("Invalid phone number format. Please enter a valid phone number.")
-
-            return phone
-        
-    def __init__(self, *args, **kwargs):
-        super(Userprofile, self).__init__(*args, **kwargs)
+    def clean_gender(self):
+        gender = self.cleaned_data.get('gender')
+        if not gender:
+            raise forms.ValidationError("Jenis kelamin wajib diisi.")
+        return gender
 
 
        

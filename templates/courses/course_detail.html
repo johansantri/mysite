@@ -505,9 +505,10 @@
       }
     }
   </style>
-
+{% endblock %}
   <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+  
+  {% block scripts %}
   <script>
     $(document).ready(function() {
       // Inisialisasi Sortable untuk Sections
@@ -842,4 +843,5 @@
       });
     });
   </script>
-{% endblock %}
+
+    {% endblock %}

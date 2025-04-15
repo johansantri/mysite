@@ -1,7 +1,38 @@
 from django.contrib import admin
 from . import models 
-from .models import Submission,CourseRating,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
+from .models import LTIPlatformConfiguration, LTIExternalTool,Submission,CourseRating,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
 from import_export.admin import ImportExportModelAdmin
+
+
+
+@admin.register(LTIPlatformConfiguration)
+class LTIPlatformConfigurationAdmin(admin.ModelAdmin):
+    list_display = ['issuer', 'client_id', 'deployment_id', 'created_at']
+    readonly_fields = ['created_at']
+    search_fields = ['issuer', 'client_id', 'deployment_id']
+    list_filter = ['created_at']
+    fields = [
+        'issuer', 'client_id', 'auth_login_url', 'auth_token_url',
+        'key_set_url', 'private_key', 'public_key', 'deployment_id', 'created_at'
+    ]
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return self.readonly_fields + ['private_key', 'public_key', 'client_id', 'issuer']
+        return self.readonly_fields
+
+@admin.register(LTIExternalTool)
+class LTIExternalToolAdmin(admin.ModelAdmin):
+    list_display = ['name', 'launch_url', 'platform_config', 'has_grade', 'max_grade', 'created_at']
+    readonly_fields = ['created_at']
+    search_fields = ['name', 'launch_url']
+    list_filter = ['has_grade', 'created_at']
+    fields = ['name', 'launch_url', 'platform_config', 'has_grade', 'max_grade', 'assessment', 'created_at']
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return self.readonly_fields + ['platform_config']
+        return self.readonly_fields
 
 @admin.register(CourseRating)
 class CourseRatingAdmin(admin.ModelAdmin):

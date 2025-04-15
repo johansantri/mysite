@@ -50,7 +50,15 @@
                     <a class="btn btn-danger btn-sm" href="{% url "courses:view-question" course.id section.id assessment.id %}">Cancel <i class="fa fa-close"></i></a>
                 </form>
                 
+          
                 
+                
+            
+            </div>
+                
+        {% endblock %}
+             
+       {% block scripts %}
                 <script>
                     document.addEventListener("DOMContentLoaded", function () {
                         const formsetTable = document.getElementById("choice-formset");
@@ -102,14 +110,6 @@
                         });
                     });
                 </script>
-
-                
-                
-            
-            </div>
-                
-        
-             
 
 
  
