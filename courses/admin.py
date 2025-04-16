@@ -5,34 +5,11 @@ from import_export.admin import ImportExportModelAdmin
 
 
 
-@admin.register(LTIPlatformConfiguration)
-class LTIPlatformConfigurationAdmin(admin.ModelAdmin):
-    list_display = ['issuer', 'client_id', 'deployment_id', 'created_at']
-    readonly_fields = ['created_at']
-    search_fields = ['issuer', 'client_id', 'deployment_id']
-    list_filter = ['created_at']
-    fields = [
-        'issuer', 'client_id', 'auth_login_url', 'auth_token_url',
-        'key_set_url', 'private_key', 'public_key', 'deployment_id', 'created_at'
-    ]
-
-    def get_readonly_fields(self, request, obj=None):
-        if obj:
-            return self.readonly_fields + ['private_key', 'public_key', 'client_id', 'issuer']
-        return self.readonly_fields
-
 @admin.register(LTIExternalTool)
 class LTIExternalToolAdmin(admin.ModelAdmin):
-    list_display = ['name', 'launch_url', 'platform_config', 'has_grade', 'max_grade', 'created_at']
-    readonly_fields = ['created_at']
-    search_fields = ['name', 'launch_url']
-    list_filter = ['has_grade', 'created_at']
-    fields = ['name', 'launch_url', 'platform_config', 'has_grade', 'max_grade', 'assessment', 'created_at']
-
-    def get_readonly_fields(self, request, obj=None):
-        if obj:
-            return self.readonly_fields + ['platform_config']
-        return self.readonly_fields
+    list_display = ('name', 'assessment', 'has_grade', 'created_at')
+    list_filter = ('has_grade', 'created_at')
+    search_fields = ('name', 'assessment__title')
 
 @admin.register(CourseRating)
 class CourseRatingAdmin(admin.ModelAdmin):

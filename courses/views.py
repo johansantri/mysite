@@ -10,7 +10,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from .forms import LTIExternalToolForm,CoursePriceForm,CourseRatingForm,SosPostForm,MicroCredentialForm,AskOraForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
+from .forms import LTI1ExternalToolForm,CoursePriceForm,CourseRatingForm,SosPostForm,MicroCredentialForm,AskOraForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from .utils import user_has_passed_course,check_for_blacklisted_keywords,is_suspicious
 from django.http import JsonResponse
 from .models import LTIExternalTool, LTIPlatformConfiguration,Course,CourseRating,Like,SosPost,Hashtag,UserProfile,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
@@ -46,14 +46,16 @@ from django_ratelimit.decorators import ratelimit
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 import json
+from oauthlib.oauth1 import Client
+from urllib.parse import urlencode,parse_qs
+import uuid
+
+
+
 
 
 @login_required
 def create_lti(request, idcourse, idsection, idlti):
-    # Cek apakah pengguna sudah login
-    if not request.user.is_authenticated:
-        return redirect("/login/?next=%s" % request.path)
-
     # Tentukan course berdasarkan peran pengguna
     if request.user.is_superuser:
         course = get_object_or_404(Course, id=idcourse)
@@ -62,6 +64,8 @@ def create_lti(request, idcourse, idsection, idlti):
     elif request.user.is_instructor:
         course = get_object_or_404(Course, id=idcourse, instructor__user_id=request.user.id)
     else:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': False, 'errors': 'Anda tidak memiliki izin untuk membuat alat LTI di kursus ini.'}, status=403)
         messages.error(request, "Anda tidak memiliki izin untuk membuat alat LTI di kursus ini.")
         return redirect('courses:home')
 
@@ -73,17 +77,34 @@ def create_lti(request, idcourse, idsection, idlti):
 
     # Menangani form
     if request.method == 'POST':
-        form = LTIExternalToolForm(request.POST)
+        form = LTI1ExternalToolForm(request.POST)
         if form.is_valid():
             lti_tool = form.save(commit=False)
             lti_tool.assessment = assessment
-            lti_tool.save()  # Validasi max_grade di model
-            messages.success(request, "Alat LTI berhasil ditambahkan ke asesmen.")
-            return redirect('courses:view-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
+            try:
+                lti_tool.save()
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'success': True,
+                        'message': 'Alat LTI berhasil ditambahkan ke asesmen.',
+                        'redirect_url': reverse('courses:view-question', kwargs={
+                            'idcourse': course.id,
+                            'idsection': section.id,
+                            'idassessment': assessment.id
+                        })
+                    })
+                messages.success(request, "Alat LTI berhasil ditambahkan ke asesmen.")
+                return redirect('courses:view-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
+            except ValueError as e:
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({'success': False, 'errors': str(e)}, status=400)
+                messages.error(request, str(e))
         else:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': False, 'errors': form.errors}, status=400)
             messages.error(request, "Ada kesalahan dalam formulir. Silakan periksa kembali.")
     else:
-        form = LTIExternalToolForm()
+        form = LTI1ExternalToolForm()
 
     return render(request, 'courses/lti_tool_form.html', {
         'course': course,
@@ -91,6 +112,116 @@ def create_lti(request, idcourse, idsection, idlti):
         'assessment': assessment,
         'form': form,
     })
+@login_required
+def edit_lti(request, idcourse, idsection, idlti, id_lti_tool):
+    # Tentukan course berdasarkan peran pengguna
+    if request.user.is_superuser:
+        course = get_object_or_404(Course, id=idcourse)
+    elif request.user.is_partner:
+        course = get_object_or_404(Course, id=idcourse, org_partner__user_id=request.user.id)
+    elif request.user.is_instructor:
+        course = get_object_or_404(Course, id=idcourse, instructor__user_id=request.user.id)
+    else:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': False, 'errors': 'Anda tidak memiliki izin untuk mengedit alat LTI di kursus ini.'}, status=403)
+        messages.error(request, "Anda tidak memiliki izin untuk mengedit alat LTI di kursus ini.")
+        return redirect('courses:home')
+
+    # Pastikan section milik course
+    section = get_object_or_404(Section, id=idsection, courses=course)
+
+    # Pastikan assessment milik section
+    assessment = get_object_or_404(Assessment, id=idlti, section=section)
+
+    # Pastikan LTI tool milik assessment
+    lti_tool = get_object_or_404(LTIExternalTool, id=id_lti_tool, assessment=assessment)
+
+    # Menangani form
+    if request.method == 'POST':
+        form = LTI1ExternalToolForm(request.POST, instance=lti_tool)
+        if form.is_valid():
+            lti_tool = form.save(commit=False)
+            lti_tool.assessment = assessment
+            try:
+                lti_tool.save()
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'success': True,
+                        'message': 'Alat LTI berhasil diperbarui.',
+                        'redirect_url': reverse('courses:view-question', kwargs={
+                            'idcourse': course.id,
+                            'idsection': section.id,
+                            'idassessment': assessment.id
+                        })
+                    })
+                messages.success(request, "Alat LTI berhasil diperbarui.")
+                return redirect('courses:view-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
+            except ValueError as e:
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({'success': False, 'errors': str(e)}, status=400)
+                messages.error(request, str(e))
+        else:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': False, 'errors': form.errors}, status=400)
+            messages.error(request, "Ada kesalahan dalam formulir. Silakan periksa kembali.")
+    else:
+        form = LTI1ExternalToolForm(instance=lti_tool)
+
+    return render(request, 'courses/edit_lti_tool_form.html', {
+        'course': course,
+        'section': section,
+        'assessment': assessment,
+        'form': form,
+    })
+
+
+@login_required
+def delete_lti(request, idcourse, idsection, idlti, id_lti_tool):
+    # Tentukan course berdasarkan peran pengguna
+    if request.user.is_superuser:
+        course = get_object_or_404(Course, id=idcourse)
+    elif request.user.is_partner:
+        course = get_object_or_404(Course, id=idcourse, org_partner__user_id=request.user.id)
+    elif request.user.is_instructor:
+        course = get_object_or_404(Course, id=idcourse, instructor__user_id=request.user.id)
+    else:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': False, 'errors': 'Anda tidak memiliki izin untuk menghapus alat LTI di kursus ini.'}, status=403)
+        messages.error(request, "Anda tidak memiliki izin untuk menghapus alat LTI di kursus ini.")
+        return redirect('courses:home')
+
+    # Pastikan section milik course
+    section = get_object_or_404(Section, id=idsection, courses=course)
+
+    # Pastikan assessment milik section
+    assessment = get_object_or_404(Assessment, id=idlti, section=section)
+
+    # Pastikan LTI tool milik assessment
+    lti_tool = get_object_or_404(LTIExternalTool, id=id_lti_tool, assessment=assessment)
+
+    if request.method == 'POST':
+        try:
+            lti_tool.delete()
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': True,
+                    'message': 'Alat LTI berhasil dihapus.',
+                    'redirect_url': reverse('courses:view-question', kwargs={
+                        'idcourse': course.id,
+                        'idsection': section.id,
+                        'idassessment': assessment.id
+                    })
+                })
+            messages.success(request, "Alat LTI berhasil dihapus.")
+            return redirect('courses:view-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
+        except Exception as e:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': False, 'errors': str(e)}, status=400)
+            messages.error(request, f"Gagal menghapus alat LTI: {str(e)}")
+            return redirect('courses:view-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
+
+    # Jika bukan POST, arahkan kembali ke halaman view-question
+    return redirect('courses:view-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
 
 @csrf_exempt
 @require_POST
@@ -2837,7 +2968,8 @@ def question_view(request, idcourse, idsection, idassessment):
     assessment = get_object_or_404(
         Assessment.objects.prefetch_related(
             'questions__choices',  # prefetch related choices for multiple-choice questions
-            'ask_oras'  # prefetch related ask_oras for open-response questions
+            'ask_oras', #prefetch related ask_oras for open-response questions
+            'lti_tools'  # prefetch related lti for lti_tools
         ),
         id=idassessment,
         section=section

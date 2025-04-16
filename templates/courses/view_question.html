@@ -65,6 +65,31 @@
                     <td colspan="3">No open-response questions available.</td>
                   </tr>
                 {% endfor %}
+
+                 {% for lti in assessment.lti_tools.all %}
+                  <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>
+                   
+                      <a href="{% url 'courses:edit_lti' idcourse=course.id idsection=section.id idlti=assessment.id id_lti_tool=lti.id %}">
+                        {{ lti.name | truncatechars:75 | safe }}  <i class="bi bi-pencil-square"></i>
+                      </a>
+                    </td>
+                    <td>
+                      <form method="POST" action="{% url 'courses:delete_lti' idcourse=course.id idsection=section.id idlti=assessment.id id_lti_tool=lti.id %}"  style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">
+                          <i class="bi bi-trash"></i>
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                {% empty %}
+                  <tr>
+                    <td colspan="3">No lti consume available.</td>
+                  </tr>
+                {% endfor %}
+
               </tbody>
             </table>
   

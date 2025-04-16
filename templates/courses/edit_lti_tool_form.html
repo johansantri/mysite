@@ -1,5 +1,4 @@
-
-<!-- templates/courses/lti_tool_form.html -->
+<!-- templates/courses/edit_lti_tool_form.html -->
 {% extends 'home/tes.html' %}
 {% load static %}
 {% block content %}
@@ -8,8 +7,8 @@
         <div class="col-12 col-md-8">
             <div class="card shadow-lg border-0 animate__animated animate__fadeIn">
                 <div class="card-body p-4 p-md-5">
-                    <h2 class="text-center mb-4">Tambah Alat LTI</h2>
-                    <p class="text-center text-muted mb-4">Tambahkan alat LTI untuk asesmen di "{{ assessment.name }}".</p>
+                    <h2 class="text-center mb-4">Edit Alat LTI</h2>
+                    <p class="text-center text-muted mb-4">Edit alat LTI untuk asesmen di "{{ assessment.name }}".</p>
 
                     {% if messages %}
                         {% for message in messages %}
@@ -43,8 +42,6 @@
                                 <div class="invalid-feedback d-block">{{ form.cartridge_url.errors|join:", " }}</div>
                             {% endif %}
                         </div>
-                        
-                        
                         <div class="mb-3">
                             <label for="{{ form.launch_url.id_for_label }}" class="form-label">{{ form.launch_url.label }} <span class="text-muted">(opsional, diambil dari cartridge jika kosong)</span></label>
                             {{ form.launch_url }}
@@ -59,11 +56,10 @@
                                 <div class="invalid-feedback d-block">{{ form.has_grade.errors|join:", " }}</div>
                             {% endif %}
                         </div>
-                        
                         <div class="d-flex justify-content-center mt-4">
                             <button type="submit" class="btn btn-primary btn-lg px-5 me-2" id="submit-btn">
                                 <span class="spinner-border spinner-border-sm me-2 d-none" role="status" aria-hidden="true"></span>
-                                Simpan
+                                Perbarui
                             </button>
                             <a href="{% url 'courses:view-question' idcourse=course.id idsection=section.id idassessment=assessment.id %}" class="btn btn-outline-secondary btn-lg px-5">Batal</a>
                         </div>
@@ -145,11 +141,8 @@ body {
 }
 </style>
 {% endblock %}
-<!-- JavaScript -->
- <!-- SweetAlert2 CDN -->
 
-
- {% block scripts %}
+{% block scripts %}
 <script>
 function getCookie(name) {
     let cookieValue = null;

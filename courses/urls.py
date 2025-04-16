@@ -68,7 +68,9 @@ urlpatterns = [
     path('course/<int:idcourse>/section/<int:idsection>/assessment/<int:idassessment>/create/', views.create_askora, name='create_askora'),
     #add lti
     path('course/<int:idcourse>/section/<int:idsection>/lti/<int:idlti>/create/', views.create_lti, name='create_lti'),
-
+    path('course/<int:idcourse>/section/<int:idsection>/lti/<int:idlti>/edit/<int:id_lti_tool>/', views.edit_lti, name='edit_lti'),
+    path('course/<int:idcourse>/section/<int:idsection>/lti/<int:idlti>/delete/<int:id_lti_tool>/', views.delete_lti, name='delete_lti'),
+    
     path('edit-askora/<int:idcourse>/<int:idaskora>/<int:idsection>/<int:idassessment>/', views.edit_askora, name='edit_askora'),
     path('delete-askora/<int:idcourse>/<int:idaskora>/<int:idsection>/<int:idassessment>/', views.delete_askora, name='delete_askora'),
     #sertifikat

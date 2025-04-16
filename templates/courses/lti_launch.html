@@ -1,0 +1,14 @@
+{% extends 'home/tes.html' %}
+{% block content %}
+
+            {% include "courses/course_set.html"%}
+           
+     <form id="lti_launch_form" action="{{ launch_url }}" method="POST">
+        {% for key, value in lti_params.items %}
+            <input type="hidden" name="{{ key }}" value="{{ value }}">
+        {% endfor %}
+    </form>
+    <p>Mengalihkan ke alat LTI...</p>
+  
+ 
+  {% endblock %}

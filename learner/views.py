@@ -17,6 +17,7 @@ import csv
 from django.db.models import Avg, Prefetch
 
 
+
 def learner_detail(request, username):
     """
     Menampilkan nama, foto, daftar kursus yang lulus, informasi instructor, dan detail pengguna untuk akses publik

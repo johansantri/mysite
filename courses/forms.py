@@ -1,4 +1,6 @@
 # forms.py
+import requests
+import xml.etree.ElementTree as ET
 from django import forms
 from django.forms import inlineformset_factory
 from django.core.cache import cache
@@ -17,34 +19,93 @@ from django.utils import timezone
 from captcha.fields import CaptchaField
 
 
-class LTIExternalToolForm(forms.ModelForm):
+class LTI1ExternalToolForm(forms.ModelForm):
+    shared_secret = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Masukkan shared secret'}),
+        label='Shared Secret'
+    )
+
     class Meta:
         model = LTIExternalTool
-        fields = ['name', 'launch_url', 'platform_config', 'has_grade', 'max_grade']
+        fields = ['name', 'launch_url', 'has_grade', 'cartridge_url']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Misalnya: Kuis Moodle'}),
             'launch_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'https://moodle.example.com/mod/lti/launch.php'}),
-            'platform_config': forms.Select(attrs={'class': 'form-select'}),
             'has_grade': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'max_grade': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Misalnya: 50', 'min': 0, 'max': 100}),
+            'cartridge_url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Misalnya: https://moodle.example.com/enrol/lti/cartridge.php'}),
         }
         labels = {
             'name': 'Nama Alat',
             'launch_url': 'Link Peluncuran',
-            'platform_config': 'Platform LTI',
             'has_grade': 'Mengembalikan Nilai',
-            'max_grade': 'Nilai Maksimum',
+            'cartridge_url': 'Cartridge URL',
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Jika ada instance (untuk edit), isi nilai awal untuk shared_secret
+        if self.instance and self.instance.pk:
+            if self.instance.platform_config:
+                self.initial['shared_secret'] = self.instance.platform_config.shared_secret
+            # Tidak perlu mengatur initial untuk cartridge_url karena sekarang ada di model
 
     def clean(self):
         cleaned_data = super().clean()
         has_grade = cleaned_data.get('has_grade')
-        max_grade = cleaned_data.get('max_grade')
-        if has_grade and not max_grade:
-            raise forms.ValidationError("Harap masukkan nilai maksimum jika LTI mengembalikan nilai.")
-        if max_grade and max_grade <= 0:
-            raise forms.ValidationError("Nilai maksimum harus lebih dari 0.")
+        cartridge_url = cleaned_data.get('cartridge_url')
+        shared_secret = cleaned_data.get('shared_secret')
+        launch_url = cleaned_data.get('launch_url')
+        name = cleaned_data.get('name')
+
+        # Ambil metadata dari cartridge_url jika diisi
+        if cartridge_url:
+            try:
+                response = requests.get(cartridge_url, timeout=5)
+                response.raise_for_status()
+                # Parse XML
+                root = ET.fromstring(response.content)
+                ns = {'blti': 'http://www.imsglobal.org/xsd/imsbasiclti_v1p0'}
+                
+                # Ambil title sebagai nama default
+                title = root.find('.//blti:title', ns)
+                if title is not None and not name:
+                    cleaned_data['name'] = title.text or 'Alat LTI'
+
+                # Ambil launch_url dari cartridge jika tidak diisi
+                cartridge_launch_url = root.find('.//blti:launch_url', ns)
+                if cartridge_launch_url is not None and not launch_url:
+                    cleaned_data['launch_url'] = cartridge_launch_url.text
+
+                # Ambil consumer_key (opsional, bisa dibuat acak jika tidak ada)
+                consumer_key = root.find('.//blti:custom/blti:property[@name="key"]', ns)
+                consumer_key = consumer_key.text if consumer_key is not None else f"key-{hash(shared_secret)}"
+
+            except (requests.RequestException, ET.ParseError):
+                raise ValidationError("Tidak dapat mengambil metadata dari Cartridge URL yang diberikan.")
+
+            # Buat atau ambil LTIPlatformConfiguration
+            platform_config, created = LTIPlatformConfiguration.objects.get_or_create(
+                consumer_key=consumer_key,
+                defaults={
+                    'shared_secret': shared_secret,
+                    'platform_name': cleaned_data.get('name', 'Moodle'),
+                }
+            )
+            # Jika platform_config sudah ada, perbarui shared_secret jika berubah
+            if not created and platform_config.shared_secret != shared_secret:
+                platform_config.shared_secret = shared_secret
+                platform_config.save()
+
+            cleaned_data['platform_config'] = platform_config
+
         return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.platform_config = self.cleaned_data['platform_config']
+        if commit:
+            instance.save()
+        return instance
 
 class CourseRatingForm(forms.ModelForm):
     class Meta:
