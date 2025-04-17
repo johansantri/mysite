@@ -3,11 +3,11 @@
 {% load custom_filters %}
 
 {% block content %}
-<section class="course-content py-5 bg-light">
+<section class="course-content py-5 bg-white">
     <div class="container">
         <!-- Filter Toggle untuk Mobile -->
         <div class="filter-toggle d-lg-none text-center mb-4">
-            <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterSidebar" aria-expanded="false" aria-controls="filterSidebar">
+            <button class="btn btn-outline-danger rounded-3 transition-hover" type="button" data-bs-toggle="collapse" data-bs-target="#filterSidebar" aria-expanded="false" aria-controls="filterSidebar">
                 <i class="fas fa-filter me-1"></i> Show Filters
             </button>
         </div>
@@ -18,19 +18,19 @@
                 <div class="showing-list mb-4 d-flex justify-content-between align-items-center flex-wrap">
                     <div class="d-flex align-items-center flex-wrap">
                         <div class="view-icons me-3">
-                            <a href="{% url 'authentication:course_list' %}" class="grid-view active btn btn-outline-primary p-2" aria-label="Grid view">
-                                <i class="feather-grid"></i>
+                            <a href="{% url 'authentication:course_list' %}" class="grid-view active btn btn-outline-danger p-2 rounded-3 transition-hover" aria-label="Grid view">
+                                <i class="fas fa-th"></i>
                             </a>
                         </div>
                         <div class="show-result">
-                            <h2 class="mb-0">Showing {{ start_index }}-{{ end_index }} of {{ total_courses }} results</h2>
+                            <h1 class="mb-0 fs-4">Showing {{ start_index }}-{{ end_index }} of {{ total_courses }} results</h1>
                         </div>
                     </div>
                 </div>
 
                 <div class="row">
                     {% for course in courses %}
-                    <article class="col-lg-4 col-md-6 col-sm-12 mb-4" style="--i: {{ forloop.counter }};">
+                    <article class="col-lg-4 col-md-6 col-sm-12 mb-4">
                         <div class="card course-box shadow-sm h-100 border-0 transition-hover">
                             <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}" aria-label="View details for {{ course.course_name }}">
                                 <img class="card-img-top img-fluid rounded-top" 
@@ -53,24 +53,24 @@
                                              style="width: 40px; height: 40px; object-fit: cover;">
                                     </a>
                                     <div class="ms-2">
-                                        <h3 class="mb-0 h6">
-                                            <a href="{% url 'courses:instructor_profile' course.instructor_username %}" class="text-dark text-decoration-none">{{ course.instructor }}</a>
-                                        </h3>
+                                        <h2 class="mb-0 h6">
+                                            <a href="{% url 'courses:instructor_profile' course.instructor_username %}" class="text-dark text-decoration-none transition-hover">{{ course.instructor }}</a>
+                                        </h2>
                                         <small class="text-muted">
-                                            <a href="{% url 'courses:org_partner' course.partner.slug %}" class="text-muted text-decoration-none">{{ course.partner }}</a>
+                                            <a href="{% url 'courses:org_partner' course.partner.slug %}" class="text-muted text-decoration-none transition-hover">{{ course.partner }}</a>
                                         </small>
                                     </div>
                                 </div>
-                                <h4 class="card-title mb-3">
-                                    <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}" class="text-dark text-decoration-none fw-bold">{{ course.course_name }}</a>
-                                </h4>
+                                <h3 class="card-title mb-3">
+                                    <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}" class="text-dark text-decoration-none fw-bold transition-hover">{{ course.course_name }}</a>
+                                </h3>
                                 <div class="d-flex justify-content-between align-items-center mb-3 text-muted">
                                     <div class="d-flex align-items-center">
-                                        <img src="{% static 'assets/img/icon/icon-01.svg' %}" alt="Learners Icon" width="16" loading="lazy">
+                                        <i class="fas fa-users me-1 text-danger"></i>
                                         <small class="ms-1">{{ course.num_enrollments }} Learners</small>
                                     </div>
                                     <div class="d-flex align-items-center">
-                                        <img src="{% static 'assets/img/icon/icon-02.svg' %}" alt="Duration Icon" width="16" loading="lazy">
+                                        <i class="fas fa-clock me-1 text-danger"></i>
                                         <small class="ms-1">9hr 30min</small>
                                     </div>
                                 </div>
@@ -82,7 +82,7 @@
                                         <i class="fas fa-star-half-alt text-warning" aria-hidden="true"></i>
                                     {% endif %}
                                     {% for _ in course.empty_star_range %}
-                                        <i class="fas fa-star text-muted" aria-hidden="true"></i>
+                                        <i class="far fa-star text-muted" aria-hidden="true"></i>
                                     {% endfor %}
                                     <small class="average-rating ms-1 text-muted">
                                         ({{ course.average_rating|floatformat:1 }}) ({{ course.review_count }})
@@ -94,32 +94,36 @@
                                 </div>
                                 <div class="mt-auto">
                                     <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}" 
-                                       class="btn btn-primary w-100 mt-3 transition-hover" 
+                                       class="btn btn-danger w-100 mt-3 rounded-3 transition-hover" 
                                        aria-label="Learn more about {{ course.course_name }}">More</a>
                                 </div>
                             </div>
                         </div>
                     </article>
+                    {% empty %}
+                    <div class="col-12">
+                        <div class="alert alert-info rounded-3">No courses found.</div>
+                    </div>
                     {% endfor %}
                 </div>
 
                 <!-- Pagination -->
                 <nav aria-label="Course pagination" role="navigation" class="mt-4">
-                    <ul class="pagination justify-content-center flex-wrap">
+                    <ul class="pagination justify-content-center gap-2">
                         <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
                             {% if page_obj.has_previous %}
-                                <a class="page-link" 
+                                <a class="page-link rounded-3 shadow-sm px-3 py-1 transition-hover text-danger border-light"
                                    href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}{% if language_filter %}&language={{ language_filter }}{% endif %}" 
                                    aria-label="Previous page">
                                     <i class="fas fa-angle-left"></i>
                                 </a>
                             {% else %}
-                                <span class="page-link" aria-hidden="true"><i class="fas fa-angle-left"></i></span>
+                                <span class="page-link rounded-3 shadow-sm px-3 py-1 text-muted border-light"><i class="fas fa-angle-left"></i></span>
                             {% endif %}
                         </li>
                         {% for page_num in page_obj.paginator.page_range %}
                             <li class="page-item {% if page_obj.number == page_num %}active{% endif %}">
-                                <a class="page-link" 
+                                <a class="page-link rounded-3 shadow-sm px-3 py-1 transition-hover {% if page_obj.number == page_num %}bg-danger text-white{% else %}text-danger border-light{% endif %}"
                                    href="?page={{ page_num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}{% if language_filter %}&language={{ language_filter }}{% endif %}" 
                                    {% if page_obj.number == page_num %}aria-current="page"{% endif %}>
                                     {{ page_num }}
@@ -128,13 +132,13 @@
                         {% endfor %}
                         <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
                             {% if page_obj.has_next %}
-                                <a class="page-link" 
+                                <a class="page-link rounded-3 shadow-sm px-3 py-1 transition-hover text-danger border-light"
                                    href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}{% if language_filter %}&language={{ language_filter }}{% endif %}" 
                                    aria-label="Next page">
                                     <i class="fas fa-angle-right"></i>
                                 </a>
                             {% else %}
-                                <span class="page-link" aria-hidden="true"><i class="fas fa-angle-right"></i></span>
+                                <span class="page-link rounded-3 shadow-sm px-3 py-1 text-muted border-light"><i class="fas fa-angle-right"></i></span>
                             {% endif %}
                         </li>
                     </ul>
@@ -143,9 +147,9 @@
 
             <!-- Sidebar -->
             <div class="col-lg-3 col-12 mt-4 mt-lg-0 collapse d-lg-block" id="filterSidebar">
-                <div class="card search-filter shadow-sm border-0">
-                    <div class="card-body">
-                        <h3 class="mb-4 fw-bold">Course Categories</h3>
+                <div class="card search-filter shadow-sm border-0 rounded-3">
+                    <div class="card-body p-4">
+                        <h2 class="mb-4 fw-bold text-dark">Course Categories</h2>
                         <form method="GET" action="{% url 'authentication:course_list' %}" aria-label="Course filter form">
                             <div class="filter-widget mb-4">
                                 {% for category in categories %}
@@ -162,10 +166,10 @@
                                     </div>
                                 {% endfor %}
                             </div>
-                            <hr>
-                            <h3 class="mb-4 fw-bold">Languages</h3>
+                            <hr class="border-dark border-2 opacity-25">
+                            <h2 class="mb-4 fw-bold text-dark">Languages</h2>
                             <div class="filter-widget mb-4">
-                                <select name="language" class="form-select mb-3" aria-label="Select course language">
+                                <select name="language" class="form-select mb-3 rounded-3 shadow-sm" aria-label="Select course language">
                                     <option value="">Choose Language</option>
                                     {% for lang in language_options %}
                                         <option value="{{ lang.code }}" {% if lang.code == language_filter %}selected{% endif %}>
@@ -174,7 +178,7 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100 transition-hover">Apply Filters</button>
+                            <button type="submit" class="btn btn-danger w-100 rounded-3 transition-hover">Apply Filters</button>
                         </form>
                     </div>
                 </div>
@@ -188,6 +192,8 @@
 {
     "@context": "https://schema.org",
     "@type": "ItemList",
+    "name": "Course List",
+    "description": "A list of available courses on the platform.",
     "itemListElement": [
         {% for course in courses %}
         {
@@ -204,115 +210,159 @@
                 "ratingValue": "{{ course.average_rating }}",
                 "reviewCount": "{{ course.review_count }}"
             },
-            "url": "{% url 'courses:course_lms_detail' course.course_id course.course_slug %}"
+            "url": "{{ request.build_absolute_uri|escapejs }}{% url 'courses:course_lms_detail' course.course_id course.course_slug %}"
         }{% if not forloop.last %},{% endif %}
         {% endfor %}
     ]
 }
 </script>
 
+<!-- Custom CSS -->
 <style>
-    /* Font dan Warna */
-    body {
-        font-family: 'Poppins', sans-serif;
+    /* General Styles */
+    .course-content {
+        background-color: #ffffff;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     }
 
-    /* Animasi Fade-In */
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    .container {
+        max-width: 1200px;
     }
 
-    /* Kartu Kursus */
+    /* Card Styles */
     .course-box {
-        border-radius: 15px;
+        border-radius: 8px !important;
         background: #ffffff;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        animation: fadeInUp 0.5s ease forwards;
-        animation-delay: calc(0.1s * var(--i));
+        transition: box-shadow 0.3s ease, transform 0.3s ease;
     }
+
     .course-box:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1) !important;
     }
+
     .card-img-top {
-        border-radius: 15px 15px 0 0;
+        border-radius: 8px 8px 0 0;
         transition: opacity 0.3s ease;
     }
+
     .card-img-top:hover {
-        opacity: 0.9;
-    }
-    .card-title a:hover {
-        color: #007bff !important;
+        opacity: 0.95;
     }
 
-    /* Tombol */
-    .btn-primary {
-        background: linear-gradient(45deg, #007bff, #00b7eb);
-        border: none;
-        padding: 12px;
-        border-radius: 8px;
-        font-weight: 600;
-        min-height: 48px;
+    /* Transition Hover */
+    .transition-hover {
+        transition: all 0.3s ease;
     }
-    .btn-primary:hover {
-        background: linear-gradient(45deg, #0056b3, #0098c7);
+
+    .transition-hover:hover {
+        color: #b02a37 !important;
+    }
+
+    /* Buttons */
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    .btn-danger:hover {
+        background-color: #b02a37;
+        border-color: #b02a37;
+    }
+
+    .btn-outline-danger {
+        border-color: #dc3545;
+        color: #dc3545;
+    }
+
+    .btn-outline-danger:hover {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    /* Form Controls */
+    .form-control, .form-select {
+        border: 1px solid #e9ecef;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.1);
     }
 
     /* Pagination */
     .pagination .page-link {
-        border-radius: 5px;
-        margin: 0 5px;
-        color: #007bff;
-    }
-    .pagination .page-item.active .page-link {
-        background-color: #007bff;
-        border-color: #007bff;
-        color: #ffffff;
-    }
-    .pagination .page-item.disabled .page-link {
-        color: #6c757d;
+        border: none;
+        color: #dc3545;
+        font-weight: 500;
     }
 
-    /* Responsivitas */
+    .pagination .page-link:hover {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .pagination .page-link.disabled {
+        color: #6c757d;
+        background-color: transparent;
+    }
+
+    /* Sidebar */
+    .search-filter {
+        background-color: #ffffff;
+    }
+
+    /* Responsive Adjustments */
     @media (max-width: 991px) {
-        .course-box {
-            margin-bottom: 20px;
-        }
         .showing-list {
-            text-align: center;
             justify-content: center;
+            text-align: center;
         }
-        .show-result h2 {
-            font-size: 1.2rem;
+
+        .show-result h1 {
+            font-size: 1.25rem;
         }
+
         .filter-toggle {
             display: block;
+        }
+
+        .course-box {
+            margin-bottom: 20px;
         }
     }
 
     @media (max-width: 576px) {
+        .container {
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+
         .card-img-top {
             height: 150px;
         }
+
         .card-title {
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
+
         .card-body {
-            padding: 15px !important;
+            padding: 12px !important;
         }
+
         .btn {
-            font-size: 0.9rem;
-        }
-        .pagination .page-link {
+            font-size: 0.85rem;
             padding: 8px 12px;
-            font-size: 0.9rem;
+        }
+
+        .pagination .page-link {
+            padding: 6px 10px;
+            font-size: 0.85rem;
+        }
+
+        .show-result h1 {
+            font-size: 1rem;
         }
     }
 </style>

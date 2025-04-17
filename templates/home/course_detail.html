@@ -2,74 +2,58 @@
 {% load static %}
 {% block content %}
 
-
 <!-- Course Content -->
-<section class="page-content course-sec py-5">
+<section class="page-content course-sec py-5 bg-white">
     <div class="container">
         <div class="row g-4">
             <!-- Main Content -->
             <div class="col-lg-8">
                 <!-- Overview -->
-                <div class="card overview-sec border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="card overview-sec border-0 shadow-sm rounded-3">
                     <div class="card-body p-4">
                         <!-- Inner Banner Inside Overview -->
-                        <div class="inner-banner bg-gradient-primary text-white rounded-3 p-4 mb-4">
+                        <div class="inner-banner bg-light border rounded-3 p-4 mb-4">
                             <div class="row align-items-center">
                                 <div class="col-lg-12">
-                                    <h2 class="fw-bold mb-3">{{ course.course_name }}</h2>
-                                    <span class="badge bg-dark text-light mb-3">{{ course.category }}</span>
-                                    <p class="text-light opacity-75 mb-4">{{ course.sort_description }}</p>
-                                    <div class="course-info d-flex flex-wrap gap-3 bg-white text-dark rounded-3 p-3 shadow-sm">
+                                    <h2 class="fw-bold mb-3 text-dark">{{ course.course_name }}</h2>
+                                    <span class="badge bg-danger text-white rounded-3 mb-3">{{ course.category }}</span>
+                                    <p class="text-muted mb-4">{{ course.sort_description }}</p>
+                                    <div class="course-info d-flex flex-wrap gap-3 bg-white border rounded-3 p-3 shadow-sm">
                                         <div class="cou-info d-flex align-items-center">
-                                            <img src="{% static 'assets/img/icon/icon-01.svg' %}" alt="Lessons" class="me-2" style="width: 24px;">
+                                            <i class="fas fa-book me-2 text-danger"></i>
                                             <span class="fw-medium">{{ total_sections }} Lessons</span>
                                         </div>
                                         <div class="cou-info d-flex align-items-center">
-                                            <img src="{% static 'assets/img/icon/timer-icon.svg' %}" alt="Duration" class="me-2" style="width: 24px;">
+                                            <i class="fas fa-clock me-2 text-danger"></i>
                                             <span class="fw-medium">{{ total_effort_hours }}hr</span>
                                         </div>
                                         <div class="cou-info d-flex align-items-center">
-                                            <img src="{% static 'assets/img/icon/people.svg' %}" alt="Students" class="me-2" style="width: 24px;">
+                                            <i class="fas fa-users me-2 text-danger"></i>
                                             <span class="fw-medium">{{ total_students }} Students</span>
                                         </div>
                                         <div class="cou-info d-flex align-items-center">
-                                        <!-- Rating Stars -->
-                                        <div class="rating">
-                                            <!-- Full Stars -->
-                                            {% for i in full_star_range %}
-                                                <i class="fas fa-star text-warning"></i>
-                                            {% endfor %}
-                                            
-                                            <!-- Half Star (if applicable) -->
-                                            {% if half_star %}
-                                                <i class="fas fa-star-half-alt text-warning"></i>
-                                            {% endif %}
-                                            
-                                            <!-- Empty Stars -->
-                                            {% for i in empty_star_range %}
-                                                <i class="fas fa-star text-muted"></i>
-                                            {% endfor %}
+                                            <!-- Rating Stars -->
+                                            <div class="rating">
+                                                {% for i in full_star_range %}
+                                                    <i class="fas fa-star text-warning"></i>
+                                                {% endfor %}
+                                                {% if half_star %}
+                                                    <i class="fas fa-star-half-alt text-warning"></i>
+                                                {% endif %}
+                                                {% for i in empty_star_range %}
+                                                    <i class="far fa-star text-muted"></i>
+                                                {% endfor %}
+                                            </div>
+                                            <span class="fw-medium ms-2">{{ average_rating }} Rating</span>
                                         </div>
-
-                                        <!-- Display Rating Text -->
-                                        <span class="fw-medium ms-2">{{ average_rating }} Rating</span>
-                                    </div>
-
-
-
-
-
-
-
-
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <!-- /Inner Banner -->
 
-                        <h5 class="subs-title fw-bold text-primary mb-3">Overview</h5>
-                        <hr class="border-primary border-2 opacity-50">
+                        <h5 class="subs-title fw-bold text-dark mb-3">Overview</h5>
+                        <hr class="border-dark border-2 opacity-25">
                         <h6 class="fw-semibold text-dark mb-3">Course Description</h6>
                         <p class="text-muted">{{ course.description | safe }}</p>
                     </div>
@@ -77,10 +61,10 @@
                 <!-- /Overview -->
 
                 <!-- Course Content -->
-                <div class="card content-sec border-0 shadow-lg rounded-4 mt-4">
+                <div class="card content-sec border-0 shadow-sm rounded-3 mt-4">
                     <div class="card-body p-4">
                         <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h5 class="subs-title fw-bold text-primary">Course Content</h5>
+                            <h5 class="subs-title fw-bold text-dark">Course Content</h5>
                             <h6 class="text-muted">Note</h6>
                         </div>
                         <div class="accordion" id="courseAccordion">
@@ -102,9 +86,9 @@
                                                             <!-- Materials -->
                                                             {% for material in obj.materials.all %}
                                                                 <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                                                                    <p class="mb-0"><i class="fa fa-file text-primary me-2" aria-hidden="true"></i>{{ material.title }}</p>
+                                                                    <p class="mb-0"><i class="fas fa-file text-danger me-2"></i>{{ material.title }}</p>
                                                                     <div>
-                                                                        <a href="javascript:void(0);" class="text-primary me-2">Preview</a>
+                                                                        <a href="javascript:void(0);" class="text-danger me-2 transition-hover">Preview</a>
                                                                         <span class="text-muted">{{ material.duration }}</span>
                                                                     </div>
                                                                 </li>
@@ -114,8 +98,8 @@
                                                             <!-- Assessments -->
                                                             {% for assesment in obj.assessments.all %}
                                                                 <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                                                                    <p class="mb-0"><i class="fa fa-check text-success me-2" aria-hidden="true"></i>{{ assesment.name | safe }}</p>
-                                                                    <span class="badge bg-success">{{ assesment.weight }}%</span>
+                                                                    <p class="mb-0"><i class="fas fa-check text-danger me-2"></i>{{ assesment.name | safe }}</p>
+                                                                    <span class="badge bg-danger text-white rounded-3">{{ assesment.weight }}%</span>
                                                                 </li>
                                                             {% empty %}
                                                                 <li class="text-muted">No assessments available.</li>
@@ -124,12 +108,12 @@
                                                             <!-- Sub-sections -->
                                                             {% for subobj in obj.children.all %}
                                                                 <li class="py-2 border-bottom">
-                                                                    <p class="mb-0"><img src="{% static 'assets/img/icon/play.svg' %}" alt="Img" class="me-2" style="width: 16px;">A.1.1 {{ subobj.title }}</p>
+                                                                    <p class="mb-0"><i class="fas fa-play-circle me-2 text-danger"></i>A.1.1 {{ subobj.title }}</p>
                                                                 </li>
                                                             {% endfor %}
                                                             <div class="mt-3">
-                                                                <a href="javascript:void(0);" class="btn btn-primary btn-sm me-2">Add Article</a>
-                                                                <a href="javascript:void(0);" class="btn btn-outline-secondary btn-sm">Add Description</a>
+                                                                <a href="javascript:void(0);" class="btn btn-danger btn-sm me-2 transition-hover">Add Article</a>
+                                                                <a href="javascript:void(0);" class="btn btn-outline-secondary btn-sm transition-hover">Add Description</a>
                                                             </div>
                                                         {% endif %}
                                                     </ul>
@@ -150,7 +134,7 @@
                     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
                         {% for similar_course in similar_courses %}
                             <div class="col">
-                                <div class="card h-100 border-0 shadow-lg rounded-3 overflow-hidden transition-hover">
+                                <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden transition-hover">
                                     {% if similar_course.image %}
                                         <a href="{% url 'courses:course_lms_detail' similar_course.id similar_course.slug %}">
                                             <img src="{{ similar_course.image.url }}" class="card-img-top" alt="{{ similar_course.course_name }}" style="height: 150px; object-fit: cover;">
@@ -175,9 +159,9 @@
                 <!-- /Similar Courses -->
 
                 <!-- Instructor -->
-                <div class="card instructor-sec border-0 shadow-lg rounded-4 mt-4">
+                <div class="card instructor-sec border-0 shadow-sm rounded-3 mt-4">
                     <div class="card-body p-4">
-                        <h5 class="subs-title fw-bold text-primary mb-4">About the Instructor</h5>
+                        <h5 class="subs-title fw-bold text-dark mb-4">About the Instructor</h5>
                         <div class="instructor-wrap d-flex flex-wrap align-items-center bg-white border rounded-3 p-3 shadow-sm mb-4">
                             <div class="about-instructor d-flex align-items-center">
                                 <div class="abt-instructor-img me-3">
@@ -209,19 +193,19 @@
                         </div>
                         <div class="course-info d-flex flex-wrap gap-3 bg-white border rounded-3 p-3 shadow-sm mb-4">
                             <div class="cou-info d-flex align-items-center">
-                                <img src="{% static 'assets/img/icon/play.svg' %}" alt="Courses" class="me-2" style="width: 24px;">
+                                <i class="fas fa-play-circle me-2 text-danger"></i>
                                 <span class="fw-medium">{{ instructor_total_courses }} Courses</span>
                             </div>
                             <div class="cou-info d-flex align-items-center">
-                                <img src="{% static 'assets/img/icon/icon-01.svg' %}" alt="Sections" class="me-2" style="width: 24px;">
+                                <i class="fas fa-book me-2 text-danger"></i>
                                 <span class="fw-medium">{{ instructor_total_sections }} Sections ({{ instructor_total_materials }} Materials)</span>
                             </div>
                             <div class="cou-info d-flex align-items-center">
-                                <img src="{% static 'assets/img/icon/icon-02.svg' %}" alt="Duration" class="me-2" style="width: 24px;">
+                                <i class="fas fa-clock me-2 text-danger"></i>
                                 <span class="fw-medium">{{ instructor_total_effort_hours }} Hours</span>
                             </div>
                             <div class="cou-info d-flex align-items-center">
-                                <img src="{% static 'assets/img/icon/people.svg' %}" alt="Students" class="me-2" style="width: 24px;">
+                                <i class="fas fa-users me-2 text-danger"></i>
                                 <span class="fw-medium">{{ instructor_total_students }} Students</span>
                             </div>
                         </div>
@@ -230,17 +214,15 @@
                 </div>
                 <!-- /Instructor -->
 
-               <!-- Reviews -->
-                <div class="card review-sec border-0 shadow-lg rounded-4 mt-4">
+                <!-- Reviews -->
+                <div class="card review-sec border-0 shadow-sm rounded-3 mt-4">
                     <div class="card-body p-4">
-                        <h5 class="subs-title fw-bold text-primary mb-4">Reviews</h5>
-
+                        <h5 class="subs-title fw-bold text-dark mb-4">Reviews</h5>
                         {% for review in reviews %}
                             <div class="instructor-wrap d-flex flex-wrap align-items-center bg-white border rounded-3 p-3 shadow-sm mb-4">
                                 <div class="about-instructor d-flex align-items-center">
                                     <div class="abt-instructor-img me-3">
-                                        <a href="{% url 'learner:learner_detail' review.user.username %}" target="_blank"> 
-                                            <!-- Gambar User -->
+                                        <a href="{% url 'learner:learner_detail' review.user.username %}" target="_blank">
                                             <img src="{{ review.user.photo.url }}" alt="Reviewer" class="img-fluid rounded-circle border" style="width: 60px; height: 60px; object-fit: cover;">
                                         </a>
                                     </div>
@@ -257,58 +239,73 @@
                                 </div>
                             </div>
                             <p class="text-muted mb-3">“{{ review.comment }}”</p>
-                           
                         {% empty %}
                             <p class="text-muted">Belum ada review untuk kursus ini.</p>
                         {% endfor %}
-
-                         <ul class="pagination justify-content-center">
+                        <ul class="pagination justify-content-center gap-2">
                             {% if reviews.has_previous %}
                                 <li class="page-item">
-                                    <a class="page-link" href="?page=1" aria-label="First">
-                                        <span aria-hidden="true">&laquo;&laquo;</span>
+                                    <a class="page-link rounded-3 shadow-sm px-3 py-1 transition-hover text-danger border-light"
+                                       href="?page=1" aria-label="First">
+                                        <i class="fas fa-angle-double-left"></i>
                                     </a>
                                 </li>
                                 <li class="page-item">
-                                    <a class="page-link" href="?page={{ reviews.previous_page_number }}" aria-label="Previous">
-                                        <span aria-hidden="true">&laquo;</span>
+                                    <a class="page-link rounded-3 shadow-sm px-3 py-1 transition-hover text-danger border-light"
+                                       href="?page={{ reviews.previous_page_number }}" aria-label="Previous">
+                                        <i class="fas fa-angle-left"></i>
                                     </a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link rounded-3 shadow-sm px-3 py-1 text-muted border-light"><i class="fas fa-angle-double-left"></i></span>
+                                </li>
+                                <li class="page-item disabled">
+                                    <span class="page-link rounded-3 shadow-sm px-3 py-1 text-muted border-light"><i class="fas fa-angle-left"></i></span>
                                 </li>
                             {% endif %}
                             <li class="page-item disabled">
-                                <span class="page-link">Page {{ reviews.number }} of {{ reviews.paginator.num_pages }}</span>
+                                <span class="page-link bg-danger text-white rounded-3 shadow-sm px-4 py-1">
+                                    {{ reviews.number }} of {{ reviews.paginator.num_pages }}
+                                </span>
                             </li>
                             {% if reviews.has_next %}
                                 <li class="page-item">
-                                    <a class="page-link" href="?page={{ reviews.next_page_number }}" aria-label="Next">
-                                        <span aria-hidden="true">&raquo;</span>
+                                    <a class="page-link rounded-3 shadow-sm px-3 py-1 transition-hover text-danger border-light"
+                                       href="?page={{ reviews.next_page_number }}" aria-label="Next">
+                                        <i class="fas fa-angle-right"></i>
                                     </a>
                                 </li>
                                 <li class="page-item">
-                                    <a class="page-link" href="?page={{ reviews.paginator.num_pages }}" aria-label="Last">
-                                        <span aria-hidden="true">&raquo;&raquo;</span>
+                                    <a class="page-link rounded-3 shadow-sm px-3 py-1 transition-hover text-danger border-light"
+                                       href="?page={{ reviews.paginator.num_pages }}" aria-label="Last">
+                                        <i class="fas fa-angle-double-right"></i>
                                     </a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled">
+                                    <span class="page-link rounded-3 shadow-sm px-3 py-1 text-muted border-light"><i class="fas fa-angle-right"></i></span>
+                                </li>
+                                <li class="page-item disabled">
+                                    <span class="page-link rounded-3 shadow-sm px-3 py-1 text-muted border-light"><i class="fas fa-angle-double-right"></i></span>
                                 </li>
                             {% endif %}
                         </ul>
                     </div>
                 </div>
-
-
                 <!-- /Reviews -->
-                
+
                 <!-- Comment Section -->
-                <div class="card comment-sec border-0 shadow-lg rounded-4 mt-4">
+                <div class="card comment-sec border-0 shadow-sm rounded-3 mt-4">
                     <div class="card-body p-4">
-                        <h5 class="subs-title fw-bold text-primary mb-4">Post a Comment</h5>
+                        <h5 class="subs-title fw-bold text-dark mb-4">Post a Comment</h5>
                         <form method="POST" action="{% url 'courses:add_comment_course' course_id=course.id %}">
                             {% csrf_token %}
-                           
                             <div class="mb-3">
                                 <textarea name="content" rows="4" class="form-control border rounded-3 shadow-sm" placeholder="Your Comments" required></textarea>
                             </div>
                             <input type="hidden" name="parent_id" value="">
-                            <button type="submit" class="btn btn-primary transition-hover">Submit</button>
+                            <button type="submit" class="btn btn-danger rounded-3 transition-hover">Submit</button>
                         </form>
                     </div>
                 </div>
@@ -325,7 +322,7 @@
                                     <div class="input-group mb-2">
                                         <textarea name="content" class="form-control border rounded-3 shadow-sm" rows="2" placeholder="Reply to this comment..." required></textarea>
                                         <input type="hidden" name="parent_id" value="{{ comment.id }}">
-                                        <button type="submit" class="btn btn-outline-secondary btn-sm transition-hover">Reply</button>
+                                        <button type="submit" class="btn btn-outline-danger btn-sm rounded-3 transition-hover">Reply</button>
                                     </div>
                                 </form>
                             </div>
@@ -353,7 +350,7 @@
                 <div class="sidebar-sec sticky-top" style="top: 80px; z-index: 10;">
                     <!-- Video -->
                     <div class="video-sec vid-bg mb-4">
-                        <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                        <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
                             <div class="card-body p-4">
                                 <div class="position-relative mb-3">
                                     {% if course.link_video %}
@@ -363,85 +360,56 @@
                                             {% else %}
                                                 <img src="{% static 'assets/img/user/logo.5272a797c07c.png' %}" alt="Default Image" class="img-fluid rounded-3 transition-hover" style="width: 100%; height: 200px; object-fit: cover;">
                                             {% endif %}
-                                            <div class="play-icon position-absolute top-50 start-50 translate-middle bg-primary bg-opacity-75 rounded-circle d-flex align-items-center justify-content-center transition-hover" style="width: 60px; height: 60px;">
-                                                <i class="fa-solid fa-play text-white fa-2x"></i>
+                                            <div class="play-icon position-absolute top-50 start-50 translate-middle bg-danger bg-opacity-75 rounded-circle d-flex align-items-center justify-content-center transition-hover" style="width: 60px; height: 60px;">
+                                                <i class="fas fa-play text-white fa-2x"></i>
                                             </div>
                                         </a>
                                     {% else %}
                                         <a href="https://www.youtube.com/watch?v=nc6m9WM3Gyw&t=1s" class="video-thumbnail d-block" data-fancybox="video-gallery">
                                             <img src="{% static 'assets/img/user/logo.5272a797c07c.png' %}" alt="Default Image" class="img-fluid rounded-3 transition-hover" style="width: 100%; height: 200px; object-fit: cover;">
-                                            <div class="play-icon position-absolute top-50 start-50 translate-middle bg-primary bg-opacity-75 rounded-circle d-flex align-items-center justify-content-center transition-hover" style="width: 60px; height: 60px;">
-                                                <i class="fa-solid fa-play text-white fa-2x"></i>
+                                            <div class="play-icon position-absolute top-50 start-50 translate-middle bg-danger bg-opacity-75 rounded-circle d-flex align-items-center justify-content-center transition-hover" style="width: 60px; height: 60px;">
+                                                <i class="fas fa-play text-white fa-2x"></i>
                                             </div>
                                         </a>
                                     {% endif %}
                                 </div>
                                 <div class="video-details text-center">
                                     <div class="course-fee mb-3">
-                                        <h2 class="fw-bold text-success mb-1">FREE</h2>
-                                        <p class="text-muted mb-0"><span class="text-decoration-line-through">$99.00</span> <span class="badge bg-success">50% off</span></p>
+                                        <h2 class="fw-bold text-dark mb-1">FREE</h2>
+                                        <p class="text-muted mb-0"><span class="text-decoration-line-through">$99.00</span> <span class="badge bg-danger text-white rounded-3">50% off</span></p>
                                     </div>
                                     <div class="row gx-2 mb-3">
                                         <div class="col-6">
-                                            <a href="course-wishlist.html" class="btn btn-outline-primary w-100 transition-hover"><i class="feather-heart me-1"></i> Wishlist</a>
+                                            <a href="course-wishlist.html" class="btn btn-outline-danger w-100 rounded-3 transition-hover"><i class="fas fa-heart me-1"></i> Wishlist</a>
                                         </div>
                                         <div class="col-6">
-                                            <button class="btn btn-outline-secondary w-100 transition-hover" onclick="openShareWindow()">
-                                                <i class="feather-share-2 me-1"></i> Share
+                                            <button class="btn btn-outline-secondary w-100 rounded-3 transition-hover" onclick="openShareWindow()">
+                                                <i class="fas fa-share-alt me-1"></i> Share
                                             </button>
                                         </div>
                                     </div>
                                     {% if request.user.is_authenticated %}
                                         {% if is_enrolled %}
-                                            <a href="{% url 'courses:course_learn' request.user.username course.slug %}" class="btn btn-primary w-100 transition-hover">Start Course</a>
+                                            <a href="{% url 'courses:course_learn' request.user.username course.slug %}" class="btn btn-danger w-100 rounded-3 transition-hover">Start Course</a>
                                         {% else %}
                                             <form id="enrollForm" method="POST" action="{% url 'courses:enroll' course.id %}">
                                                 {% csrf_token %}
-                                                <button type="submit" class="btn btn-primary w-100 transition-hover">Enroll Now</button>
+                                                <button type="submit" class="btn btn-danger w-100 rounded-3 transition-hover">Enroll Now</button>
                                             </form>
                                         {% endif %}
                                     {% else %}
-                                        <a href="{% url 'authentication:register' %}" class="btn btn-primary w-100 transition-hover">Join Now</a>
+                                        <a href="{% url 'authentication:register' %}" class="btn btn-danger w-100 rounded-3 transition-hover">Join Now</a>
                                     {% endif %}
                                 </div>
-
-                                <script>
-                                    // Fungsi untuk membuka jendela berbagi
-                                    function openShareWindow() {
-                                        var courseUrl = window.location.href;  // Ambil URL kursus saat ini
-                                        console.log('Course URL: ' + courseUrl);  // Debugging
-
-                                        var encodedUrl = encodeURIComponent(courseUrl);  // Encode URL
-
-                                        // URL untuk berbagai platform berbagi
-                                        var shareUrls = {
-                                            facebook: 'https://www.facebook.com/sharer/sharer.php?u=' + encodedUrl,
-                                            twitter: 'https://twitter.com/intent/tweet?url=' + encodedUrl + '&text=Check out this course!',
-                                            whatsapp: 'https://api.whatsapp.com/send?text=Check out this course: ' + encodedUrl
-                                        };
-
-                                        // Pilih platform (contoh: buka Facebook, bisa diganti atau ditambah opsi)
-                                        var platform = 'facebook';  // Ganti ke 'twitter' atau 'whatsapp' untuk menguji platform lain
-                                        var windowOptions = 'height=400,width=600,top=' + (window.innerHeight / 2 - 200) + ',left=' + (window.innerWidth / 2 - 300);
-
-                                        if (shareUrls[platform]) {
-                                            window.open(shareUrls[platform], '_blank', windowOptions);
-                                        } else {
-                                            console.error('Platform not supported');
-                                        }
-                                    }
-                                </script>
                             </div>
                         </div>
                     </div>
                     <!-- /Video -->
 
-                 
-
                     <!-- Features -->
-                    <div class="card feature-sec border-0 shadow-lg rounded-4">
+                    <div class="card feature-sec border-0 shadow-sm rounded-3">
                         <div class="card-body p-4">
-                            <h4 class="fw-bold text-primary mb-3">Includes</h4>
+                            <h4 class="fw-bold text-dark mb-3">Includes</h4>
                             <ul class="course-details list-unstyled">
                                 <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
                                     <span class="fw-medium text-dark">Course Number:</span>
@@ -490,18 +458,42 @@
 </section>
 <!-- /Course Content -->
 
-<!-- Scripts -->
+<!-- Dependensi Fancybox -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
 <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+
+<!-- Scripts -->
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        Fancybox.bind('[data-fancybox="video-gallery"]', {
-            infinite: false,
-            arrows: true,
-            closeButton: "top",
-            dragToClose: true
-        });
+        if (typeof Fancybox !== 'undefined') {
+            Fancybox.bind('[data-fancybox="video-gallery"]', {
+                infinite: false,
+                arrows: true,
+                closeButton: "top",
+                dragToClose: true
+            });
+        } else {
+            console.warn('Fancybox is not loaded. Video lightbox functionality will not work.');
+        }
     });
+
+    function openShareWindow() {
+        var courseUrl = window.location.href;
+        console.log('Course URL: ' + courseUrl);
+        var encodedUrl = encodeURIComponent(courseUrl);
+        var shareUrls = {
+            facebook: 'https://www.facebook.com/sharer/sharer.php?u=' + encodedUrl,
+            twitter: 'https://twitter.com/intent/tweet?url=' + encodedUrl + '&text=Check out this course!',
+            whatsapp: 'https://api.whatsapp.com/send?text=Check out this course: ' + encodedUrl
+        };
+        var platform = 'facebook';
+        var windowOptions = 'height=400,width=600,top=' + (window.innerHeight / 2 - 200) + ',left=' + (window.innerWidth / 2 - 300);
+        if (shareUrls[platform]) {
+            window.open(shareUrls[platform], '_blank', windowOptions);
+        } else {
+            console.error('Platform not supported');
+        }
+    }
 
     function enrollCourse() {
         fetch("{% url 'courses:enroll_course' course.id %}", {
@@ -515,47 +507,141 @@
 
 <!-- Custom CSS -->
 <style>
-    .bg-gradient-primary {
-        background: linear-gradient(135deg, #007bff 0%, #00c4cc 100%);
+    /* General Styles */
+    .page-content {
+        background-color: #ffffff;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     }
+
+    .container {
+        max-width: 1200px;
+    }
+
+    /* Card Styles */
+    .card {
+        transition: box-shadow 0.3s ease;
+        background-color: #ffffff;
+        border-radius: 8px !important;
+    }
+
+    .card:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1) !important;
+    }
+
     .transition-hover {
         transition: all 0.3s ease;
     }
+
     .transition-hover:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15) !important;
+        transform: translateY(-2px);
+        color: #b02a37 !important;
     }
-    .card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    /* Inner Banner */
+    .inner-banner {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
     }
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2) !important;
-    }
+
+    /* Accordion */
     .accordion-button:not(.collapsed) {
-        background-color: #007bff !important;
+        background-color: #dc3545 !important;
         color: white !important;
     }
+
     .accordion-button:focus {
         box-shadow: none;
     }
-    .btn-primary {
-        background-color: #007bff;
-        border-color: #007bff;
+
+    /* Buttons */
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
     }
-    .btn-primary:hover {
-        background-color: #0056b3;
-        border-color: #0056b3;
+
+    .btn-danger:hover {
+        background-color: #b02a37;
+        border-color: #b02a37;
     }
-    /* Pastikan sidebar tidak menutupi menu */
+
+    .btn-outline-danger {
+        border-color: #dc3545;
+        color: #dc3545;
+    }
+
+    .btn-outline-danger:hover {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    /* Badges */
+    .badge {
+        font-size: 0.75rem;
+        padding: 0.4em 0.8em;
+    }
+
+    /* Form Controls */
+    .form-control {
+        border: 1px solid #e9ecef;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.1);
+    }
+
+    /* Pagination */
+    .pagination .page-link {
+        border: none;
+        color: #dc3545;
+        font-weight: 500;
+    }
+
+    .pagination .page-link:hover {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .pagination .page-link.disabled {
+        color: #6c757d;
+        background-color: transparent;
+    }
+
+    /* Sidebar */
     .sidebar-sec {
-        z-index: 10; /* Lebih rendah dari navbar */
+        z-index: 10;
     }
-    /* Navbar dari base.html diasumsikan memiliki class .navbar */
+
     .navbar {
-        z-index: 1000 !important; /* Pastikan lebih tinggi dari semua konten */
+        z-index: 1000 !important;
         position: sticky;
         top: 0;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 767.98px) {
+        .container {
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+
+        .card {
+            padding: 10px !important;
+        }
+
+        .h2.fw-bold {
+            font-size: 1.5rem !important;
+        }
+
+        .badge {
+            font-size: 0.7rem;
+        }
+
+        .pagination .page-link {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.9rem;
+        }
     }
 </style>
 {% endblock %}
