@@ -1,98 +1,127 @@
 {% extends 'home/base.html' %}
 {% load static %}
 {% block content %}
-            <section class="py-5 bg-light">
-                <div class="container">
-                    <h2 class="text-left mb-5">Search Results for "{{ query }}"</h2>
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-left mb-5 text-danger">Search Results for "{{ query }}"</h2>
 
-                    <!-- Courses -->
-                    {% if results.courses %}
-                        <h3 class="text-left mb-4">Courses</h3>
-                        <div class="row g-4">
-                            {% for course in results.courses %}
-                                <div class="col-md-4">
-                                    <div class="card shadow-sm">
-                                        <img src="{{ course.image.url }}" class="card-img-top" alt="{{ course.course_name }}">
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ course.course_name }}</h5>
-                                            <p class="card-text">{{ course.description|truncatewords:20 |safe }}</p>
-                                            <a href="{% url 'courses:course_lms_detail' course.id course.slug %}" class="btn btn-outline-primary">View Course</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+        <!-- Courses -->
+        {% if results.courses %}
+            <h3 class="text-left mb-4 text-danger">Courses</h3>
+            <div class="row g-4">
+                {% for course in results.courses %}
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0 shadow-sm rounded-3 course-card position-relative transition-hover">
+                            <!-- Thumbnail -->
+                            {% if course.image %}
+                                <img src="{{ course.image.url }}" class="card-img-top" alt="{{ course.course_name }}" style="object-fit: cover; height: 180px;">
+                            {% else %}
+                                <img src="https://via.placeholder.com/300x180" class="card-img-top" alt="No Image" style="object-fit: cover; height: 180px;">
+                            {% endif %}
 
-                    <!-- Instructors -->
-                    <!-- Instructors -->
-                    {% if results.instructors %}
-                    <h3 class="text-left mb-4 mt-5">Instructor</h3>
-                    <div class="row g-4 justify-content-center">
-                        {% for instructor in results.instructors %}
-                            <div class="col-md-4 instructor-item">
-                                <!-- Gambar Instruktur -->
-                                <img src="{% if instructor.user.photo %}{{ instructor.user.photo.url }}{% else %}https://via.placeholder.com/150?text={{ instructor.user.email|truncatechars:1 }}{% endif %}" 
-                                    class="instructor-card mb-3" 
-                                    alt="{{ instructor.user.email }}">
-                                
-                                <!-- Nama Instruktur -->
-                                <h5 class="fw-bold">
-                                    {% if instructor.user.first_name %}
-                                        {{ instructor.user.first_name }} {{ instructor.user.last_name }}
-                                    {% else %}
-                                        {{ instructor.user.email }}
-                                    {% endif %}
-                                </h5>
-                                
-                                <!-- Keahlian dan Pengalaman -->
-                                <p class="text-muted mb-1">{{ instructor.expertise }} ({{ instructor.experience_years }} Year)</p>
-                                
-                                <!-- Bio Singkat -->
-                                <p>{{ instructor.bio|truncatewords:10 }}</p>
-                                
-                                <!-- Teknologi -->
-                                <p class="text-primary"><i class="bi bi-gear"></i> {{ instructor.tech }}</p>
-                                
-                                <!-- Mitra (Provider) -->
-                                <p class="text-muted"><small>Partner: {{ instructor.provider.name.name }}</small></p>
-                                
-                                <!-- Tautan Profil (Opsional) -->
-                                {% if instructor.status == 'Approved' %}
-                                <a href="{% url 'courses:instructor_profile' instructor.user.username %}" class="btn btn-outline-primary btn-sm">View Profile</a>
-                                {% endif %}
+                            <!-- Badge Bahasa -->
+                            {% if course.language %}
+                                <span class="badge bg-danger text-white position-absolute top-0 end-0 m-2 rounded-3">
+                                    {{ course.language|upper }}
+                                </span>
+                            {% endif %}
+
+                            <div class="card-body">
+                                <h5 class="card-title text-dark">{{ course.course_name }}</h5>
+                                <p class="card-text text-muted small">{{ course.description|truncatewords:20|safe }}</p>
+                                <a href="{% url 'courses:course_lms_detail' course.id course.slug %}" class="btn btn-outline-danger">View Course</a>
                             </div>
-                        {% endfor %}
+                        </div>
                     </div>
-                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
 
-                    <!-- Partners -->
-                    {% if results.partners %}
-                        <h3 class="text-left mb-4 mt-5">Partner</h3>
-                        <div class="row g-4">
-                            {% for partner in results.partners %}
-                                <div class="col-md-4">
-                                    <div class="card shadow-sm">
-                                        
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ partner.partner_name }}</h5>
-                                            <p class="card-text">{{ partner.description|truncatewords:20 |safe }}</p>
-                                            <a href="{% url 'courses:org_partner' partner.name.slug %}" class="btn btn-outline-primary">See Partners</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
+        <!-- Instructors -->
+        {% if results.instructors %}
+            <h3 class="text-left mb-4 mt-5 text-danger">Instructors</h3>
+            <div class="row g-4 justify-content-center">
+                {% for instructor in results.instructors %}
+                    <div class="col-md-4 instructor-item text-center">
+                        <img src="{% if instructor.user.photo %}{{ instructor.user.photo.url }}{% else %}https://via.placeholder.com/150?text={{ instructor.user.email|truncatechars:1 }}{% endif %}" 
+                             class="instructor-card mb-3 rounded-circle shadow-sm" style="width: 100px; height: 100px; object-fit: cover;" 
+                             alt="{{ instructor.user.email }}">
+
+                        <h5 class="fw-bold text-dark">
+                            {% if instructor.user.first_name %}
+                                {{ instructor.user.first_name }} {{ instructor.user.last_name }}
+                            {% else %}
+                                {{ instructor.user.email }}
+                            {% endif %}
+                        </h5>
+
+                        <p class="text-muted mb-1">{{ instructor.expertise }} ({{ instructor.experience_years }} Year)</p>
+                        <p class="text-dark">{{ instructor.bio|truncatewords:10 }}</p>
+                        <p class="text-danger"><i class="bi bi-gear me-1"></i>{{ instructor.tech }}</p>
+                        <p class="text-muted"><small>Partner: {{ instructor.provider.name.name }}</small></p>
+
+                        {% if instructor.status == 'Approved' %}
+                            <a href="{% url 'courses:instructor_profile' instructor.user.username %}" class="btn btn-outline-danger btn-sm">View Profile</a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Partners -->
+        {% if results.partners %}
+            <h3 class="text-left mb-4 mt-5 text-danger">Partners</h3>
+            <div class="row g-4">
+                {% for partner in results.partners %}
+                    <div class="col-md-4">
+                        <div class="card h-100 border-0 shadow-sm rounded-3">
+                            <div class="card-body">
+                                <h5 class="card-title text-dark">{{ partner.partner_name }}</h5>
+                                <p class="card-text text-muted">{{ partner.description|truncatewords:20|safe }}</p>
+                                <a href="{% url 'courses:org_partner' partner.name.slug %}" class="btn btn-outline-danger">See Partner</a>
+                            </div>
                         </div>
-                    {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
 
-                    <!-- Jika Tidak Ada Hasil -->
-                    {% if not results.courses and not results.instructors and not results.partners %}
-                        <div class="text-center py-5">
-                            <p class="text-muted">No results found for "{{ query }}".</p>
-                            <a href="/" class="btn btn-outline-primary">Back to Home</a>
-                        </div>
-                    {% endif %}
-                </div>
-            </section>
+        <!-- No Results -->
+        {% if not results.courses and not results.instructors and not results.partners %}
+            <div class="text-center py-5">
+                <p class="text-muted">No results found for "{{ query }}".</p>
+                <a href="/" class="btn btn-outline-danger">Back to Home</a>
+            </div>
+        {% endif %}
+    </div>
+</section>
 
-{% endblock content %}
+<!-- Custom Styling -->
+<style>
+    .course-card:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .course-card img {
+        transition: transform 0.3s ease;
+    }
+
+    .course-card:hover img {
+        transform: scale(1.05);
+    }
+
+    .btn-outline-danger:hover {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .text-danger {
+        color: #dc3545 !important;
+    }
+
+    .instructor-card {
+        border: 3px solid #dc3545;
+        padding: 2px;
+    }
+</style>
+{% endblock %}

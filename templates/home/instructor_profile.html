@@ -1,173 +1,128 @@
 {% extends 'home/base.html' %}
-
 {% block content %}
-<body class="bg-white text-dark">
+<body class="bg-light text-dark">
   <div class="container py-5">
-    <div class="row">
-      <!-- Left Section: Profile Info -->
-      <div class="col-md-8">
-        <h1 class="display-4 fw-bold">{{instructor.user.first_name}} {{instructor.user.last_name}}</h1>
-        <p class="lead text-muted">{{instructor.user.hobby}}</p>
-        {% if partner_slug %}
-    <a href="{% url 'courses:org_partner' partner_slug %}">
-        <span class="badge bg-primary mt-2">{{instructor.user.university}}  <i class="fa fa-check" aria-hidden="true"></i></span>
-    </a>
-{% else %}
-    <span class="badge bg-secondary mt-2">No University Available</span>
-{% endif %}
-        </span></a>
-
-        <!-- Stats Section -->
-        <div class="mt-4">
-          <div class="d-flex gap-4">
-            <div>
-              <p class="h5 fw-bold">Total students</p>
-              <p class="h4">{{ total_participants }}</p>
-            </div>
-            <div>
-              <p class="h5 fw-bold">Reviews</p>
-              <p class="h4">926,979</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- About Me Section -->
-        <div class="mt-5">
-          <h2 class="h3 fw-bold">About Me</h2>
-          {% if instructor %}
-          <p class="mt-3">{{instructor.bio }}.</p>
-          {% endif %}
-        <h2 class="h3 fw-bold">Experience</h2>
-        <p><strong>{{ instructor.experience_years }} years.</strong> | {{ instructor.user.university }}</p>
-            <ul>
-                {% if instructor %}
-                <li>{{ instructor.expertise }}</li>
-                {% endif %}
-                
-            </ul>
-        </div>
-
-        <!-- Courses Section with Search Bar -->
-        <div class="mt-5">
-          <h2 class="h3 fw-bold">My courses ({{ courses_count }})</h2>
-
-          <!-- Search Bar -->
-          <div class="mb-4">
-            <form method="GET" action="{% url 'courses:instructor_profile' username=instructor.user.username %}">
-              <div class="row g-2">
-                <!-- Search Input -->
-                <div class="col-12 col-md-10">
-                  <input type="text" class="form-control" name="search" value="{{ search_term }}" placeholder="Search courses..." />
-                </div>
-                <!-- Search Button -->
-                <div class="col-12 col-md-2">
-                  <button type="submit" class="btn btn-primary w-100">Search</button>
-                </div>
-              </div>
-            </form>
-          </div>
-          
-
-          <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mt-4" id="courseList">
-            {% for course in page_obj %}
-              <div class="col course-item">
-                <a href="{% url 'courses:course_lms_detail' course.id course.slug %}" class="text-decoration-none">
-                    <div class="card h-100">
-                        <!-- Set a fixed height for the card image to maintain consistency -->
-                        <img src="{{ course.image.url }}" class="card-img-top" alt="{{ course.course_name }}" style="object-fit: cover; height: 200px;">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">{{ course.course_name |truncatechars:50}}</h5>
-                            <p>End Date: {{ course.end_date }}</p>
-                            <p>Status: {% if course.status_course %} Published {% else %} Unpublished {% endif %}</p>
-                            <p>Enrolled: {{ course.total_enrollments }}</p>
-                            <!-- Add margin to push content away from bottom -->
-                            <div class="mt-auto"></div>
-                        </div>
-                    </div>
-                </a>
-              </div>
-            {% empty %}
-              <p>No courses available.</p>
-            {% endfor %}
-        </div>
-        
-
-         <style>
-            .pagination .page-item {
-                margin: 0 5px;
-            }
-            
-            .pagination .page-link {
-                color: #007bff;
-                border-radius: 20px;
-            }
-            
-            .pagination .page-link:hover {
-                background-color: #f8f9fa;
-                color: #0056b3;
-            }
-            
-            .pagination .disabled .page-link {
-                color: #6c757d;
-            }
-            
-         </style>
-        <!-- /pagination -->
-        <div class="row">
-          <div class="col-md-12">
-              <ul class="pagination lms-page">
-                  <!-- Previous Button -->
-                  <!-- Previous Button -->
-                  <li class="page-item prev {% if not page_obj.has_previous %}disabled{% endif %}">
-                      {% if page_obj.has_previous %}
-                          <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}">
-                              <i class="fas fa-angle-left"></i>
-                          </a>
-                      {% endif %}
-                  </li>
-
-                  <!-- Page Numbers -->
-                  {% for page_num in page_obj.paginator.page_range %}
-                      <li class="page-item {% if page_obj.number == page_num %}active{% endif %}">
-                          <a class="page-link" href="?page={{ page_num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}">
-                              {{ page_num }}
-                          </a>
-                      </li>
-                  {% endfor %}
-
-                  <!-- Next Button -->
-                  <li class="page-item next {% if not page_obj.has_next %}disabled{% endif %}">
-                      {% if page_obj.has_next %}
-                          <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if category_filter %}&category={{ category_filter|join:',' }}{% endif %}">
-                              <i class="fas fa-angle-right"></i>
-                          </a>
-                      {% endif %}
-                  </li>
-
-              </ul>
-          </div>
-      </div>
-      <!-- /pagination -->
-        
-        </div>
-      </div>
-
-      <!-- Right Section: Profile Picture and Links -->
-      <div class="col-md-4 d-flex flex-column align-items-center mt-4 mt-md-0">
+    <div class="row shadow rounded bg-white overflow-hidden">
+      <!-- Left Column: Sidebar -->
+      <div class="col-lg-4 bg-white border-end py-4 px-4 d-flex flex-column align-items-center">
         {% if instructor.user.photo %}
-      <img src="{{ instructor.user.photo.url }}" class="rounded-circle mb-3" alt="Instructor's profile picture" width="150" height="150">
-      {% else %}
-          <img src="https://via.placeholder.com/100" class="rounded-circle mb-3" alt="Instructor's profile picture" width="150" height="150">
-      {% endif %}
+        <img src="{{ instructor.user.photo.url }}" class="rounded-circle shadow mb-3" alt="Instructor photo" width="160" height="160">
+        {% else %}
+        <img src="https://via.placeholder.com/160" class="rounded-circle shadow mb-3" alt="Instructor photo" width="160" height="160">
+        {% endif %}
 
-        
-      <div class="d-grid gap-2">
-        <a href="mailto:{{instructor.user.email}}" class="btn btn-outline-primary" target="_blank">Email</a>
-        <a href="{{instructor.user.twitter}}" class="btn btn-outline-primary" target="_blank">X</a>
-        <a href="{{instructor.user.linkedin}}" class="btn btn-outline-primary" target="_blank">Linkedin</a>
-        <a href="{{instructor.user.youtube}}" class="btn btn-outline-primary" target="_blank">Youtube</a>
-        <a href="{{instructor.user.instagram}}" class="btn btn-outline-primary" target="_blank">Instagram</a>
-    </div>
+        <h3 class="text-center fw-bold mb-1">{{ instructor.user.first_name }} {{ instructor.user.last_name }}</h3>
+        <p class="text-muted small mb-3">{{ instructor.user.hobby }}</p>
+
+        {% if partner_slug %}
+        <a href="{% url 'courses:org_partner' partner_slug %}" class="badge bg-danger text-white mb-3">
+          {{ instructor.user.university }} <i class="fa fa-check ms-1"></i>
+        </a>
+        {% else %}
+        <span class="badge bg-secondary mb-3">No University</span>
+        {% endif %}
+
+        <hr class="w-100 my-3">
+
+        <div class="w-100">
+          <h6 class="text-uppercase text-danger mb-2">Contact</h6>
+          <ul class="list-unstyled small">
+            <li><i class="fas fa-envelope me-2"></i> <a href="mailto:{{ instructor.user.email }}">{{ instructor.user.email }}</a></li>
+            <li><i class="fab fa-twitter me-2"></i> <a href="{{ instructor.user.twitter }}" target="_blank">Twitter</a></li>
+            <li><i class="fab fa-linkedin me-2"></i> <a href="{{ instructor.user.linkedin }}" target="_blank">LinkedIn</a></li>
+            <li><i class="fab fa-youtube me-2"></i> <a href="{{ instructor.user.youtube }}" target="_blank">YouTube</a></li>
+            <li><i class="fab fa-instagram me-2"></i> <a href="{{ instructor.user.instagram }}" target="_blank">Instagram</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Right Column: Main Content -->
+      <div class="col-lg-8 py-4 px-5">
+        <!-- Stats -->
+        <div class="d-flex gap-5 mb-4">
+          <div>
+            <h6 class="text-uppercase text-muted">Total Students</h6>
+            <p class="h4 text-danger">{{ total_participants }}</p>
+          </div>
+          <div>
+            <h6 class="text-uppercase text-muted">Reviews</h6>
+            <p class="h4 text-danger">926,979</p>
+          </div>
+        </div>
+
+        <!-- Bio -->
+        <div class="mb-4">
+          <h5 class="text-danger fw-bold">About Me</h5>
+          <p>{{ instructor.bio }}</p>
+        </div>
+
+        <!-- Experience -->
+        <div class="mb-4">
+          <h5 class="text-danger fw-bold">Experience</h5>
+          <p><strong>{{ instructor.experience_years }} years</strong> | {{ instructor.user.university }}</p>
+          <ul>
+            <li>{{ instructor.expertise }}</li>
+          </ul>
+        </div>
+
+        <!-- Courses -->
+        <div class="mb-4">
+          <h5 class="text-danger fw-bold">Courses ({{ courses_count }})</h5>
+
+          <!-- Search -->
+          <form method="GET" action="{% url 'courses:instructor_profile' username=instructor.user.username %}" class="mb-3">
+            <div class="input-group">
+              <input type="text" class="form-control" name="search" placeholder="Search courses..." value="{{ search_term }}">
+              <button class="btn btn-danger" type="submit">Search</button>
+            </div>
+          </form>
+
+          <!-- Course Cards -->
+          <div class="row row-cols-1 row-cols-md-2 g-4">
+            {% for course in page_obj %}
+            <div class="col">
+              <div class="card h-100 border-0 shadow-sm">
+                <img src="{{ course.image.url }}" class="card-img-top" style="height: 180px; object-fit: cover;" alt="{{ course.course_name }}">
+                <div class="card-body">
+                  <h6 class="card-title">{{ course.course_name|truncatechars:50 }}</h6>
+                  <p class="mb-1 text-muted small">End: {{ course.end_date }}</p>
+                  <p class="mb-1 text-muted small">Status: <strong>{% if course.status_course %}Published{% else %}Unpublished{% endif %}</strong></p>
+                  <p class="mb-0 text-muted small">Enrolled: {{ course.total_enrollments }}</p>
+                </div>
+              </div>
+            </div>
+            {% empty %}
+            <p class="text-muted">No courses found.</p>
+            {% endfor %}
+          </div>
+
+          <!-- Pagination -->
+          <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+              <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+                {% if page_obj.has_previous %}
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}&search={{ search_query }}">‹</a>
+                {% else %}
+                <span class="page-link">‹</span>
+                {% endif %}
+              </li>
+
+              {% for page_num in page_obj.paginator.page_range %}
+              <li class="page-item {% if page_obj.number == page_num %}active{% endif %}">
+                <a class="page-link" href="?page={{ page_num }}&search={{ search_query }}">{{ page_num }}</a>
+              </li>
+              {% endfor %}
+
+              <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+                {% if page_obj.has_next %}
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}&search={{ search_query }}">›</a>
+                {% else %}
+                <span class="page-link">›</span>
+                {% endif %}
+              </li>
+            </ul>
+          </nav>
+        </div>
       </div>
     </div>
   </div>
