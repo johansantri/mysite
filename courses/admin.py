@@ -169,7 +169,9 @@ class QuestionAdmin(admin.ModelAdmin):
 
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Score)
-admin.site.register(Assessment)
+@admin.register(Assessment)
+class AssessmentAdmin(admin.ModelAdmin):
+    search_fields = ['title', 'description'] 
 admin.site.register(AttemptedQuestion)
 class ScoreAdmin(admin.ModelAdmin):
     list_display = ('user', 'score', 'total_questions', 'grade', 'date')
