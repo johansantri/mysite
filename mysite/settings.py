@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-*t=li&h7o=sj40!ic&)p+8!fy3p@*tfg+mz6!xuftigv_qa9yy
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True #False
+DEBUG = False
 #ALLOWED_HOSTS = ['127.0.0.1','localhost']
 ALLOWED_HOSTS = ['127.0.0.1','localhost','ini.icei.ac.id','20.11.247.222']
 SESSION_COOKIE_SECURE = True
@@ -494,10 +494,11 @@ CONTENT_SECURITY_POLICY = {
         # Form hanya bisa dikirim (POST) ke domain sendiri
         'form-action': ("'self'",),
 
-        # Izinkan iframe atau konten embedded hanya dari domain sendiri dan Moodle (untuk LTI)
+        # Izinkan iframe atau konten embedded hanya dari domain sendiri, Moodle, dan YouTube
         'frame-src': (
             "'self'",
             "https://idols.ui.ac.id",  # Moodle iframe
+            "https://www.youtube-nocookie.com",  # Izinkan YouTube iframe (tanpa cookie)
         ),
 
         # Izinkan gambar dari domain sendiri dan dari inline base64 (data:)
@@ -527,7 +528,6 @@ CONTENT_SECURITY_POLICY = {
         ),
 
         # Izinkan tag <link rel="stylesheet"> yang diarahkan ke sumber eksternal tertentu (Google Fonts)
-        # ini diperlukan di browser modern yang memisahkan style-src untuk elemen
         'style-src-elem': (
             "'self'",
             'https://cdn.jsdelivr.net',

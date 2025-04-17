@@ -27,7 +27,7 @@ from django.http import JsonResponse
 from decimal import Decimal,ROUND_DOWN
 from django.db.models import Sum
 from datetime import datetime
-from django.db.models import Count
+from django.db.models import Count,Avg
 from django.utils.text import slugify
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
@@ -4174,6 +4174,8 @@ def partner_detail(request, partner_id):
 
 
 #org partner from lms
+logger = logging.getLogger(__name__)
+
 def org_partner(request, slug):
     partner = get_object_or_404(Partner, name__slug=slug)
     search_query = request.GET.get('search', '')
@@ -4186,22 +4188,22 @@ def org_partner(request, slug):
         published_status = None
 
     if published_status:
-        # Optimalkan dengan select_related untuk mengambil relasi category
         related_courses = Course.objects.filter(
             org_partner_id=partner.id,
             status_course=published_status,
-            end_date__gte=datetime.now()
-        ).select_related('category')  # Optimalkan dengan select_related
+            end_enrol__gte=timezone.now()
+        ).select_related(
+            'category', 'instructor__user', 'org_partner'
+        ).prefetch_related('enrollments')
 
-        # Filter pencarian
+        logger.debug(f"Related Courses: {list(related_courses.values('id', 'course_name', 'end_enrol'))}")
+
         if search_query:
             related_courses = related_courses.filter(course_name__icontains=search_query)
 
-        # Filter berdasarkan kategori
         if selected_category:
             related_courses = related_courses.filter(category__name=selected_category)
 
-        # Sorting berdasarkan parameter
         if sort_by == 'learners':
             related_courses = related_courses.annotate(total_enrollments=Count('enrollments')).order_by('-total_enrollments')
         elif sort_by == 'date':
@@ -4209,43 +4211,79 @@ def org_partner(request, slug):
         else:
             related_courses = related_courses.order_by('course_name')
 
-        # Hanya ambil data yang diperlukan
-        related_courses = related_courses.annotate(total_enrollments=Count('enrollments'))
-
-        # Ambil kategori yang terkait dengan kursus berstatus "publish" dari partner ini
         categories = Category.objects.filter(
             category_courses__org_partner_id=partner.id,
             category_courses__status_course=published_status,
-            category_courses__end_date__gte=datetime.now()
-        ).distinct()
+            category_courses__end_enrol__gte=timezone.now()
+        ).annotate(course_count=Count('category_courses')).distinct()
 
     else:
         related_courses = Course.objects.none()
-        categories = Category.objects.none()  # Jika tidak ada status published, kategori kosong
+        categories = Category.objects.none()
 
     # Pagination
     page_number = request.GET.get('page')
-    paginator = Paginator(related_courses, 10)  # 10 per halaman
+    paginator = Paginator(related_courses, 10)
     page_obj = paginator.get_page(page_number)
 
-    # Hitung total peserta unik
     unique_learners = related_courses.aggregate(
         unique_users=Count('enrollments__user', distinct=True)
     )['unique_users'] or 0
 
+    # Siapkan data hanya untuk kursus di halaman saat ini
+    courses_data = []
+    total_enrollments = 0
+
+    for course in page_obj:
+        try:
+            num_enrollments = course.enrollments.count()
+        except AttributeError as e:
+            logger.error(f"Error accessing enrollments for course {course.course_name}: {str(e)}")
+            num_enrollments = 0
+
+        total_enrollments += num_enrollments
+
+        review_qs = CourseRating.objects.filter(course=course)
+        average_rating = round(review_qs.aggregate(avg=Avg('rating'))['avg'] or 0, 1)
+        full_stars = int(average_rating)
+        half_star = (average_rating % 1) >= 0.5
+        empty_stars = 5 - full_stars - (1 if half_star else 0)
+
+        course_data = {
+            'course_name': course.course_name,
+            'course_id': course.id,
+            'num_enrollments': num_enrollments,
+            'course_slug': course.slug,
+            'course_image': course.image.url if course.image else None,
+            'instructor': course.instructor.user.get_full_name() if course.instructor else None,
+            'instructor_username': course.instructor.user.username if course.instructor else None,
+            'photo': course.instructor.user.photo.url if course.instructor and course.instructor.user.photo else None,
+            'partner': course.org_partner.name if course.org_partner else None,
+            'category': course.category.name if course.category else None,
+            'language': course.language,
+            'average_rating': average_rating,
+            'review_count': review_qs.count(),
+            'full_star_range': range(full_stars),
+            'half_star': half_star,
+            'empty_star_range': range(empty_stars),
+        }
+        courses_data.append(course_data)
+        logger.debug(f"Course Data: {course_data}")
+
     context = {
         'partner': partner,
         'page_obj': page_obj,
+        'courses': courses_data,  # Gunakan courses_data untuk iterasi di template
         'total_courses': related_courses.count(),
         'unique_learners': unique_learners,
+        'total_enrollments': total_enrollments,
         'search_query': search_query,
         'selected_category': selected_category,
-        'categories': categories,
+        'categories': list(categories.values('id', 'name', 'course_count')),
         'sort_by': sort_by,
     }
 
     return render(request, 'partner/org_partner.html', context)
-
 
 def search_users(request):
     term = request.GET.get('q', '')
