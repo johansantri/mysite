@@ -561,11 +561,19 @@
                         <div class="col-md-4 instructor-item text-center">
                             <a href="{% url 'courses:instructor_profile' username=instructor.user.username %}"
                             class="text-decoration-none text-dark text-center d-block">
-                                <img src="{{ instructor.user.photo.url }}"
-                                    class="instructor-card img-fluid mb-3"
-                                    alt="Foto {{ instructor.user.first_name }} {{ instructor.user.last_name }}, Instruktur di LMSKu"
-                                    width="150" height="150"
-                                    loading="lazy">
+                                {% if instructor.user.photo %}
+                                    <img src="{{ instructor.user.photo.url }}"
+                                        class="instructor-card img-fluid mb-3"
+                                        alt="Foto {{ instructor.user.first_name }} {{ instructor.user.last_name }}, Instruktur di LMSKu"
+                                        width="150" height="150"
+                                        loading="lazy">
+                                {% else %}
+                                    <img src="{% static 'images/default.jpg' %}"
+                                        class="instructor-card img-fluid mb-3"
+                                        alt="Foto Default Instruktur"
+                                        width="150" height="150"
+                                        loading="lazy">
+                                {% endif %}
                                 <h3 class="fw-bold fs-5">{{ instructor.user.first_name }} {{ instructor.user.last_name }}</h3>
                             </a>
                             <style>
@@ -584,24 +592,24 @@
                                     height: 100px;
                                 }
                             }
-
                             </style>
                         </div>
 
                         <!-- Optional: Schema Markup -->
                         <script type="application/ld+json">
                         {
-                        "@context": "https://schema.org",
-                        "@type": "Person",
-                        "name": "{{ instructor.user.first_name }} {{ instructor.user.last_name }}",
-                        "jobTitle": "Instructor",
-                        "url": "{% url 'courses:instructor_profile' username=instructor.user.username %}",
-                        "image": "{{ instructor.user.photo.url }}"
+                            "@context": "https://schema.org",
+                            "@type": "Person",
+                            "name": "{{ instructor.user.first_name }} {{ instructor.user.last_name }}",
+                            "jobTitle": "Instructor",
+                            "url": "{% url 'courses:instructor_profile' username=instructor.user.username %}",
+                            "image": "{% if instructor.user.photo %}{{ instructor.user.photo.url }}{% else %}{% static 'images/default.jpg' %}{% endif %}"
                         }
                         </script>
                     {% empty %}
                         <p>No instructors found.</p>
                     {% endfor %}
+
                 </div>
 
                 <!-- Tombol CTA -->

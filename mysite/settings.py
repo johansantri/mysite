@@ -535,6 +535,11 @@ CONTENT_SECURITY_POLICY = {
             'https://fonts.googleapis.com',
             "'unsafe-inline'",
         ),
+        'form-action': (
+            "'self'",
+            "https://vclass.unila.ac.id",  # domain Moodle tujuan POST LTI
+            "https://idols.ui.ac.id",
+        ),
     }
 }
 

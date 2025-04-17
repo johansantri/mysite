@@ -47,12 +47,129 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 import json
 from oauthlib.oauth1 import Client
+from requests_oauthlib import OAuth1
 from urllib.parse import urlencode,parse_qs
 import uuid
+import urllib.parse
 
 
+logger = logging.getLogger(__name__)
 
+@login_required
+def launch_lti(request, idcourse, idsection, idlti, id_lti_tool):
+    is_partner = hasattr(request.user, 'is_partner') and request.user.is_partner
+    is_instructor = hasattr(request.user, 'is_instructor') and request.user.is_instructor
+    logger.debug(f"User: {request.user.username}, is_superuser={request.user.is_superuser}, "
+                 f"is_partner={is_partner}, is_instructor={is_instructor}")
 
+    try:
+        if request.user.is_superuser:
+            course = get_object_or_404(Course, id=idcourse)
+        elif is_partner:
+            course = get_object_or_404(Course, id=idcourse, org_partner__user_id=request.user.id)
+        elif is_instructor:
+            course = get_object_or_404(Course, id=idcourse, instructor__user_id=request.user.id)
+        else:
+            logger.error(f"User {request.user.username} tidak memiliki izin untuk idcourse={idcourse}")
+            messages.error(request, "Anda tidak memiliki izin untuk mengakses alat LTI ini.")
+            return redirect('authentication:home')
+    except Exception as e:
+        logger.error(f"Gagal memeriksa izin untuk idcourse={idcourse}: {str(e)}")
+        messages.error(request, "Terjadi kesalahan saat memeriksa izin.")
+        return redirect('authentication:home')
+
+    section = get_object_or_404(Section, id=idsection, courses=course)
+    assessment = get_object_or_404(Assessment, id=idlti, section=section)
+    lti_tool = get_object_or_404(LTIExternalTool, id=id_lti_tool, assessment=assessment)
+
+    if not lti_tool.platform_config:
+        logger.error(f"LTIExternalTool id={id_lti_tool} tidak memiliki platform_config")
+        messages.error(request, "Konfigurasi platform LTI tidak ditemukan untuk alat ini.")
+        return redirect('authentication:home')
+
+    logger.debug(f"LTI Tool: id={lti_tool.id}, launch_url={lti_tool.launch_url}, "
+                 f"consumer_key={lti_tool.platform_config.consumer_key}, "
+                 f"shared_secret={lti_tool.platform_config.shared_secret}")
+
+    roles = 'Instructor' if is_instructor else 'Learner'
+
+    # Build LTI params
+    lti_params = {
+        'lti_message_type': 'basic-lti-launch-request',
+        'lti_version': 'LTI-1p0',
+        'resource_link_id': f'{lti_tool.id}-{assessment.id}',
+        'resource_link_title': assessment.name or 'External Tool',  # Important for some Moodle setups
+        'user_id': str(request.user.id),
+        'roles': roles,
+        'context_id': str(course.id),
+        'context_title': getattr(course, 'course_name', 'Unknown Course'),
+        'lis_person_name_full': request.user.get_full_name() or request.user.username,
+        'lis_person_contact_email_primary': request.user.email or '',
+        'launch_presentation_return_url': request.build_absolute_uri(reverse('authentication:home')),
+        'oauth_consumer_key': lti_tool.platform_config.consumer_key,
+        'oauth_signature_method': 'HMAC-SHA1',
+        'oauth_timestamp': str(int(time.time())),
+        'oauth_nonce': str(uuid.uuid4()),
+        'oauth_version': '1.0',
+    }
+
+    try:
+        client = Client(
+            client_key=lti_tool.platform_config.consumer_key,
+            client_secret=lti_tool.platform_config.shared_secret,
+            signature_method='HMAC-SHA1',
+            timestamp=lti_params['oauth_timestamp'],
+            nonce=lti_params['oauth_nonce'],
+        )
+
+        uri = lti_tool.launch_url
+        headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+
+        # Use dict directly — do NOT urlencode manually
+        sign_result = client.sign(
+            uri=uri,
+            http_method='POST',
+            body=lti_params,
+            headers=headers
+        )
+
+        oauth_headers = sign_result[1]
+        auth_header = oauth_headers.get('Authorization', '')
+        oauth_signature = None
+
+        for param in auth_header.split(', '):
+            if param.startswith('OAuth '):
+                param = param[6:]
+            key_value = param.split('=')
+            if len(key_value) == 2 and key_value[0] == 'oauth_signature':
+                oauth_signature = urllib.parse.unquote(key_value[1].strip('"'))
+                break
+
+        if not oauth_signature:
+            raise ValueError("Gagal mengekstrak oauth_signature dari header")
+
+        signed_params = lti_params.copy()
+        signed_params['oauth_signature'] = oauth_signature
+
+        logger.debug(f"LTI Parameters: {lti_params}")
+        logger.debug(f"OAuth Headers: {oauth_headers}")
+        logger.debug(f"Signed Parameters: {signed_params}")
+
+        form = '<form action="{}" method="POST" id="ltiLaunchForm">'.format(uri)
+        for key, value in signed_params.items():
+            form += '<input type="hidden" name="{}" value="{}">'.format(
+                key, value
+            )
+        form += '</form>'
+        form += '<script>document.getElementById("ltiLaunchForm").submit();</script>'
+
+        logger.debug("Form HTML generated successfully")
+        return HttpResponse(form)
+
+    except Exception as e:
+        logger.error(f"OAuth signing failed: {str(e)}")
+        messages.error(request, f"Gagal menandatangani permintaan LTI: {str(e)}")
+        return redirect('authentication:home')
 
 @login_required
 def create_lti(request, idcourse, idsection, idlti):
