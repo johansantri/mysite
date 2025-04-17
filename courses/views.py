@@ -4251,6 +4251,7 @@ def org_partner(request, slug):
 
         course_data = {
             'course_name': course.course_name,
+            'hour': course.hour,
             'course_id': course.id,
             'num_enrollments': num_enrollments,
             'course_slug': course.slug,
