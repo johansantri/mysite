@@ -223,7 +223,11 @@
                                 <div class="about-instructor d-flex align-items-center">
                                     <div class="abt-instructor-img me-3">
                                         <a href="{% url 'learner:learner_detail' review.user.username %}" target="_blank">
-                                            <img src="{{ review.user.photo.url }}" alt="Reviewer" class="img-fluid rounded-circle border" style="width: 60px; height: 60px; object-fit: cover;">
+                                            {% if review.user.photo %}
+                                                <img src="{{ review.user.photo.url }}" alt="Reviewer" class="img-fluid rounded-circle border" style="width: 60px; height: 60px; object-fit: cover;">
+                                            {% else %}
+                                                <img src="{% static 'images/default_profile.png' %}" alt="Reviewer" class="img-fluid rounded-circle border" style="width: 60px; height: 60px; object-fit: cover;">
+                                            {% endif %}
                                         </a>
                                     </div>
                                     <div class="instructor-detail">
