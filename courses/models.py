@@ -1122,31 +1122,20 @@ class Like(models.Model):
         unique_together = ('user', 'post')  # Memastikan kombinasi user dan post unik
 
 
-#untuk lti consume
-class LTIPlatformConfiguration(models.Model):
-    consumer_key = models.CharField(max_length=255, unique=True, help_text="Consumer key dari Tool Provider")
-    shared_secret = models.CharField(max_length=255, help_text="Shared secret untuk autentikasi LTI")
-    platform_name = models.CharField(max_length=255, blank=True, help_text="Nama platform, misalnya Moodle")
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"LTI Platform: {self.platform_name or self.consumer_key}"
-
 class LTIExternalTool(models.Model):
-    assessment = models.ForeignKey('Assessment', on_delete=models.CASCADE, related_name='lti_tools')
-    name = models.CharField(max_length=255, help_text="Nama alat, misalnya 'Kuis Moodle'")
-    launch_url = models.URLField(help_text="URL peluncuran LTI, misalnya https://moodle.example.com/mod/lti/launch.php")
-    platform_config = models.ForeignKey(
-        LTIPlatformConfiguration,
-        on_delete=models.CASCADE,
-        related_name='tools',
-        help_text="Konfigurasi platform LTI yang digunakan"
-    )
-    has_grade = models.BooleanField(default=False, help_text="Apakah LTI ini mengembalikan nilai")
-    cartridge_url = models.URLField(blank=True, help_text="URL cartridge untuk konfigurasi LTI")
-    created_at = models.DateTimeField(auto_now_add=True)
-
+    name = models.CharField(max_length=255)  # Nama LTI tool, contoh: "Moodle" atau "Quiz Tool"
+    launch_url = models.URLField()  # URL untuk peluncuran LTI
+    consumer_key = models.CharField(max_length=255, null=True, blank=True)  # Kunci konsumen, opsional
+    shared_secret = models.CharField(max_length=255)  # Secret key untuk autentikasi
+    assessment = models.ForeignKey(Assessment, on_delete=models.CASCADE, related_name='lti_tools')
+    lti_passport = models.CharField(max_length=255, blank=True, null=True) 
     def __str__(self):
         return self.name
 
-    
+    def get_lti_params(self):
+        """ Mengembalikan parameter yang dibutuhkan untuk peluncuran LTI """
+        return {
+            'launch_url': self.launch_url,
+            'consumer_key': self.consumer_key,
+            'shared_secret': self.shared_secret
+        }

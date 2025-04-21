@@ -92,11 +92,7 @@
                                     <p class="mb-1">Enrolled: {{ course.num_enrollments }} students</p>
                                     <p class="mb-0"><strong>Language:</strong> {{ course.language|get_language_name }}</p>
                                 </div>
-                                <div class="mt-auto">
-                                    <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}" 
-                                       class="btn btn-danger w-100 mt-3 rounded-3 transition-hover" 
-                                       aria-label="Learn more about {{ course.course_name }}">More</a>
-                                </div>
+                                
                             </div>
                         </div>
                     </article>
@@ -149,7 +145,7 @@
             <div class="col-lg-3 col-12 mt-4 mt-lg-0 collapse d-lg-block" id="filterSidebar">
                 <div class="card search-filter shadow-sm border-0 rounded-3">
                     <div class="card-body p-4">
-                        <h2 class="mb-4 fw-bold text-dark">Course Categories</h2>
+                        <h2 class="mb-4 fw-bold text-dark">Categories</h2>
                         <form method="GET" action="{% url 'authentication:course_list' %}" aria-label="Course filter form">
                             <div class="filter-widget mb-4">
                                 {% for category in categories %}

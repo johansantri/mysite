@@ -3,13 +3,23 @@
 {% block content %}
 
 <style>
-    /* Desktop styles (unchanged from your original code) */
+    /* Define the signature color as a CSS variable for reusability */
+    :root {
+        --signature-red: #dc3545;
+        --signature-red-dark: #c82333;
+        --complementary-blue: #007bff;
+        --text-dark: #212529;
+        --text-light: #ffffff;
+    }
+
+    /* Desktop Hero Section */
     .hero {
-        background: linear-gradient(135deg, #007bff 0%, #00c4cc 100%);
-        color: #fff;
+        background: linear-gradient(135deg, var(--signature-red) 0%, var(--complementary-blue) 100%);
+        color: var(--text-light);
         padding: 100px 20px;
         position: relative;
         overflow: hidden;
+        border-bottom: 4px solid var(--signature-red-dark);
     }
     
     .hero::before {
@@ -19,7 +29,7 @@
         left: -50%;
         width: 200%;
         height: 200%;
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.15);
         transform: rotate(30deg);
         animation: subtleGlow 15s infinite linear;
     }
@@ -35,36 +45,41 @@
     }
     
     .hero h1 {
-        font-size: 2.5rem;
+        font-size: 3rem;
         line-height: 1.2;
         margin-bottom: 20px;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
         animation: fadeInDown 1s ease-out;
+        font-weight: 700;
     }
     
     .hero p.lead {
-        font-size: 1.25rem;
+        font-size: 1.5rem;
         margin-bottom: 30px;
         animation: fadeInUp 1s ease-out 0.3s;
         animation-fill-mode: both;
     }
     
     .hero .btn {
-        padding: 12px 30px;
-        font-size: 1.1rem;
+        padding: 12px 40px;
+        font-size: 1.2rem;
         font-weight: 600;
         border-radius: 50px;
         transition: all 0.3s ease;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         animation: fadeInUp 1s ease-out 0.6s;
         animation-fill-mode: both;
+        background-color: var(--text-light);
+        color: var(--signature-red);
+        border: 2px solid var(--signature-red);
     }
     
     .hero .btn:hover {
         transform: translateY(-3px);
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-        background-color: #f8f9fa;
-        color: #007bff;
+        background-color: var(--signature-red);
+        color: var(--text-light);
+        border-color: var(--text-light);
     }
     
     @keyframes fadeInDown {
@@ -77,61 +92,62 @@
         to { opacity: 1; transform: translateY(0); }
     }
     
-    /* Mobile-only optimizations */
+    /* Mobile Hero Section */
     @media (max-width: 767px) {
         .hero {
-            background: #fff; /* Remove gradient */
-            color: #000; /* Black text */
-            padding: 10px 5px; /* Minimal padding */
-            position: static; /* Remove positioning */
-            overflow: visible; /* Remove overflow */
+            background: var(--signature-red);
+            color: var(--text-light);
+            padding: 20px 10px;
+            position: static;
+            overflow: visible;
         }
     
         .hero::before {
-            display: none; /* Remove pseudo-element */
+            display: none;
         }
     
         .hero .container {
-            max-width: 320px; /* Tighter container */
+            max-width: 100%;
             position: static;
         }
     
         .hero h1 {
-            font-size: 0.8rem; /* Minimize LCP element */
-            line-height: 1;
-            margin: 0;
-            text-shadow: none; /* Remove shadow */
-            animation: none; /* Remove animation */
-            font-family: sans-serif; /* Fastest font rendering */
+            font-size: 1.5rem;
+            line-height: 1.2;
+            margin: 10px 0;
+            text-shadow: none;
+            animation: none;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
     
         .hero p.lead {
-            font-size: 0.55rem; /* Minimize size */
-            line-height: 1;
-            margin: 0;
+            font-size: 0.9rem;
+            line-height: 1.3;
+            margin: 10px 0;
             animation: none;
-            font-family: sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
     
         .hero .btn {
-            display: block;
-            padding: 2px;
-            font-size: 0.55rem;
-            border-radius: 4px;
-            transition: none; /* Remove transition */
-            box-shadow: none; /* Remove shadow */
+            display: inline-block;
+            padding: 8px 20px;
+            font-size: 0.9rem;
+            border-radius: 25px;
+            transition: none;
+            box-shadow: none;
             animation: none;
-            background: #000; /* Black button */
-            color: #fff; /* White text */
-            margin: 0;
-            width: auto; /* Override full-width for simplicity */
+            background: var(--text-light);
+            color: var(--signature-red);
+            border: 2px solid var(--text-light);
+            margin: 10px 0;
         }
     
         .hero .btn:hover {
-            transform: none; /* Remove hover effect */
+            transform: none;
             box-shadow: none;
-            background: #000;
-            color: #fff;
+            background: var(--signature-red-dark);
+            color: var(--text-light);
+            border-color: var(--text-light);
         }
     }
     
@@ -141,594 +157,624 @@
         @keyframes fadeInUp {}
         @keyframes subtleGlow {}
     }
-    </style>
 
-    <!-- Hero Section -->
-    <section class="hero text-center">
-        <div class="container">
-            <h1 class="display-4 ">Learn Without Limits</h1>
-            <p class="lead">Discover the best courses to enhance your skills anytime, anywhere.</p>
-
-           
-            {% if request.user.is_authenticated %}
-            <!-- Jika pengguna sudah login -->
-            
-                <a class="btn btn-light btn-lg mt-3" href="{% url 'authentication:course_list' %}">Explore</a>
-            
-            {% else %}
-                <!-- Jika pengguna belum login -->
-                
-                    <a class="btn btn-light btn-lg mt-3" href="{% url 'authentication:register' %}">Register</a>
-              
-            {% endif %}
-        </div>
-    </section>
-
+    /* Stats Section */
+    .stats-card {
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
     
-    <!-- Stats Section -->
-    <section class="py-5" aria-label="Statistik LMS">
-        <div class="container">
-            <div class="row g-4 text-center">
-            
-                <div class="col-md-3">
-                    <div class="stats-card">
-                        <i class="fas fa-book fa-2x text-primary mb-2" aria-hidden="true"></i>
-                        <p class="fw-bold text-primary fs-3 mb-0">{{ total_courses }}+</p>
-                        <p>Courses</p>
-                    </div>
+    .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .stats-card i {
+        color: var(--signature-red);
+    }
+    
+    /* Popular Categories */
+    .popular-categories .badge {
+        padding: 1.5rem;
+        min-height: 120px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+    
+    .popular-categories .badge:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        border-color: var(--signature-red);
+    }
+    
+    .popular-categories .badge.bg-signature {
+        background-color: var(--signature-red);
+        color: var(--text-light);
+    }
+    
+    .popular-categories .badge.bg-success {
+        background-color: #28a745;
+        color: var(--text-light);
+    }
+    
+    .popular-categories .badge.bg-primary {
+        background-color: var(--complementary-blue);
+        color: var(--text-light);
+    }
+    
+    .popular-categories .badge.bg-warning {
+        background-color: #d39e00;
+        color: var(--text-dark);
+    }
+    
+    .popular-categories .badge.bg-info {
+        background-color: #17a2b8;
+        color: var(--text-light);
+    }
+    
+    .popular-categories .badge.bg-dark {
+        background-color: #343a40;
+        color: var(--text-light);
+    }
+    
+    .popular-categories .badge .fw-bold,
+    .popular-categories .badge small {
+        color: inherit;
+        font-size: 1rem;
+    }
+    
+    .popular-categories .badge Applaud {
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+        display: block;
+    }
+    
+    /* Responsive Popular Categories */
+    @media (max-width: 767px) {
+        .popular-categories .badge {
+            padding: 1rem;
+            min-height: 100px;
+        }
+    
+        .popular-categories .badge .fw-bold {
+            font-size: 0.9rem;
+        }
+    
+        .popular-categories .badge small {
+            font-size: 0.8rem;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .popular-categories .badge {
+            padding: 0.75rem;
+        }
+    
+        .popular-categories .badge .fw-bold {
+            font-size: 0.85rem;
+        }
+    
+        .popular-categories .badge small {
+            font-size: 0.75rem;
+        }
+    }
+    
+    /* Features Section */
+    .card {
+        border: none;
+        transition: all 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        border: 1px solid var(--signature-red);
+    }
+    
+    .card i {
+        color: var(--signature-red);
+    }
+    
+    /* Partner Section */
+    .partner-logo {
+        object-fit: contain;
+        max-width: 150px;
+        height: 60px;
+        transition: transform 0.3s ease;
+    }
+    
+    .partner-logo:hover {
+        transform: scale(1.1);
+    }
+    
+    .partner-carousel .carousel-control-prev,
+    .partner-carousel .carousel-control-next {
+        background: rgba(0, 0, 0, 0.3);
+        width: 50px;
+        border-radius: 25px;
+    }
+    
+    .partner-carousel .carousel-control-prev:hover,
+    .partner-carousel .carousel-control-next:hover {
+        background: var(--signature-red);
+    }
+    
+    /* Micro Courses and Blog */
+    .blog-card {
+        background: #fff;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        border-left: 4px solid var(--signature-red);
+    }
+    
+    .blog-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .blog-card a.btn {
+        color: var(--signature-red);
+    }
+    
+    .blog-card a.btn:hover {
+        color: var(--signature-red-dark);
+        text-decoration: underline;
+    }
+    
+    /* Instructors Section */
+    .instructor-card {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 4px solid var(--signature-red);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .instructor-card:hover {
+        transform: scale(1.1);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    @media (max-width: 576px) {
+        .instructor-card {
+            width: 100px;
+            height: 100px;
+        }
+    }
+    
+    /* Interesting Facts and Testimonials */
+    .testimoni-card {
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+        border-left: 4px solid var(--signature-red);
+    }
+    
+    .testimoni-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* CTA Section */
+    .bg-primary {
+        background: var(--signature-red) !important;
+    }
+    
+    .bg-primary .btn {
+        background: var(--text-light);
+        color: var(--signature-red);
+        border: 2px solid var(--text-light);
+    }
+    
+    .bg-primary .btn:hover {
+        background: var(--signature-red-dark);
+        color: var(--text-light);
+        border-color: var(--text-light);
+    }
+    
+    /* Course Cards */
+    .card.border-primary {
+        border-color: var(--signature-red) !important;
+    }
+    
+    .card .btn-outline-primary {
+        border-color: var(--signature-red);
+        color: var(--signature-red);
+    }
+    
+    .card .btn-outline-primary:hover {
+        background: var(--signature-red);
+        color: var(--text-light);
+    }
+    
+    .rating i {
+        color: var(--signature-red);
+    }
+    
+    .card-img-top {
+        max-height: 200px;
+        object-fit: cover;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+    
+    @media (max-width: 767.98px) {
+        .card-body {
+            padding: 1rem !important;
+        }
+        .card-img-top {
+            height: 150px !important;
+        }
+        .card h5 {
+            font-size: 0.9rem !important;
+            line-height: 1.2;
+            max-height: 2.4rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: normal;
+        }
+        .card .btn {
+            font-size: 0.8rem;
+        }
+        .card .d-flex.align-items-center img {
+            width: 30px !important;
+            height: 30px !important;
+        }
+    }
+    
+    @media (min-width: 768px) {
+        .card-body {
+            padding: 1.5rem !important;
+        }
+        .card .d-flex.align-items-center img {
+            width: 40px !important;
+            height: 40px !important;
+        }
+        .card .d-flex.align-items-center .ms-2 p {
+            font-size: 0.9rem;
+        }
+        .card .d-flex.align-items-center .ms-2 p.text-muted {
+            font-size: 0.8rem;
+        }
+    }
+</style>
+
+<!-- Hero Section -->
+<section class="hero text-center">
+    <div class="container">
+        <h1 class="display-4">Learn Without Limits</h1>
+        <p class="lead">Discover the best courses to enhance your skills anytime, anywhere.</p>
+        {% if request.user.is_authenticated %}
+            <a class="btn btn-lg mt-3" href="{% url 'authentication:course_list' %}">Explore</a>
+        {% else %}
+            <a class="btn btn-lg mt-3" href="{% url 'authentication:register' %}">Register</a>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-5" aria-label="Statistik LMS">
+    <div class="container">
+        <div class="row g-4 text-center">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <i class="fas fa-book fa-2x mb-2" aria-hidden="true"></i>
+                    <p class="fw-bold fs-3 mb-0" style="color: var(--signature-red);">{{ total_courses }}+</p>
+                    <p>Courses</p>
                 </div>
-                <div class="col-md-3">
-                    <div class="stats-card">
-                        <i class="fas fa-users fa-2x text-primary mb-2" aria-hidden="true"></i>
-                        <p class="fw-bold text-primary fs-3 mb-0">{{ total_users }}+</p>
-                        <p>User</p>
-                    </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <i class="fas fa-users fa-2x mb-2" aria-hidden="true"></i>
+                    <p class="fw-bold fs-3 mb-0" style="color: var(--signature-red);">{{ total_users }}+</p>
+                    <p>User</p>
                 </div>
-                <div class="col-md-3">
-                    <div class="stats-card">
-                        <i class="fas fa-chalkboard-teacher fa-2x text-primary mb-2" aria-hidden="true"></i>
-                        <p class="fw-bold text-primary fs-3 mb-0">{{ total_instructors }}+</p>
-                        <p>Instructor</p>
-                    </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <i class="fas fa-chalkboard-teacher fa-2x mb-2" aria-hidden="true"></i>
+                    <p class="fw-bold fs-3 mb-0" style="color: var(--signature-red);">{{ total_instructors }}+</p>
+                    <p>Instructor</p>
                 </div>
-                <div class="col-md-3">
-                    <div class="stats-card">
-                        <i class="fas fa-handshake fa-2x text-primary mb-2" aria-hidden="true"></i>
-                        <p class="fw-bold text-primary fs-3 mb-0">{{ total_partners }}+</p>
-                        <p>Partner</p>
-                    </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <i class="fas fa-handshake fa-2x mb-2" aria-hidden="true"></i>
+                    <p class="fw-bold fs-3 mb-0" style="color: var(--signature-red);">{{ total_partners }}+</p>
+                    <p>Partner</p>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <section class="py-4 bg-light popular-categories">
-        <div class="container py-3">
-            <h2 class="text-left mb-4">Popular Categories</h2>
-            <div class="row g-3">
-                {% for category in popular_categories %}
-                    <div class="col-6 col-md-4 col-lg-3">
-                        <a href="{% url 'courses:category_list' category.slug %}" class="text-decoration-none" aria-label="Lihat kursus dalam kategori {{ category.name }}">
-                            <div class="badge bg-{% cycle 'danger' 'success' 'primary' 'warning' 'info' 'dark' %} p-3 rounded-4 w-100 text-center shadow-sm transition-effect">
-                                <span class="fw-bold">{{ category.name }}</span>
-                                <small class="d-block mt-1">{{ category.num_courses }} Courses</small>
-                            </div>
-                        </a>
+<!-- Popular Categories -->
+<section class="py-4 bg-light popular-categories">
+    <div class="container py-3">
+        <h2 class="text-left mb-4">Popular Categories</h2>
+        <div class="row g-3">
+            {% for category in popular_categories %}
+                <div class="col-6 col-md-4 col-lg-3">
+                    <a href="{% url 'courses:category_list' category.slug %}" class="text-decoration-none" aria-label="Lihat kursus dalam kategori {{ category.name }}">
+                        <div class="badge bg-{% cycle 'signature' 'success' 'primary' 'warning' 'info' 'dark' %} p-3 rounded-4 w-100 text-center shadow-sm transition-effect">
+                            <span class="fw-bold">{{ category.name }}</span>
+                            <small class="d-block mt-1">{{ category.num_courses }} Courses</small>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-left mb-5">Why Choose Us?</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card p-4 text-center shadow-sm">
+                    <i class="bi bi-book fs-1 mb-3"></i>
+                    <h5>Quality Courses</h5>
+                    <p>The material is crafted by experts in the field.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-4 text-center shadow-sm">
+                    <i class="bi bi-clock fs-1 mb-3"></i>
+                    <h5>Flexible</h5>
+                    <p>Learn at your own time and pace.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-4 text-center shadow-sm">
+                    <i class="bi bi-award fs-1 mb-3"></i>
+                    <h5>Certificate</h5>
+                    <p>Earn a certificate upon completion.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Popular Courses Section -->
+<section class="py-4 bg-light">
+    <div class="container py-3">
+        <h2 class="text-left mb-4">Popular Courses</h2>
+        <div class="row g-3" id="courses-list"></div>
+    </div>
+</section>
+
+<!-- Partner Section (Carousel) -->
+<section class="py-5" aria-labelledby="our-partners-heading">
+    <div class="container">
+        <h2 id="our-partners-heading" class="text-center mb-5">Our Trusted Partners</h2>
+        <div id="partnerCarousel" class="carousel slide partner-carousel" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                {% for partner in partners %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <div class="d-flex justify-content-center align-items-center">
+                            {% if partner.logo %}
+                                <a href="{% url 'courses:org_partner' partner.name.slug %}">
+                                    <img src="{{ partner.logo.url }}"
+                                        alt="Logo {{ partner.name }}"
+                                        class="mx-2 partner-logo img-fluid"
+                                        width="150" height="60"
+                                        loading="lazy">
+                                </a>
+                            {% else %}
+                                <img src="https://via.placeholder.com/150x60?text={{ partner.name|urlencode }}"
+                                    alt="{{ partner.name }}"
+                                    class="mx-2 partner-logo"
+                                    width="150" height="60"
+                                    loading="lazy">
+                            {% endif %}
+                        </div>
                     </div>
                 {% endfor %}
             </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#partnerCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#partnerCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
         </div>
-    </section>
-    <style>
-        .transition-effect {
-            transition: all 0.3s ease;
-        }
-
-        .transition-effect:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-        /* Perbaikan khusus untuk Popular Categories */
-        .popular-categories .badge {
-            padding: 1rem; /* Padding lebih besar untuk keterbacaan */
-            min-height: 100px; /* Tinggi minimum untuk konsistensi */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Perbaikan kontras warna badge */
-        .popular-categories .badge.bg-danger {
-            background-color: #dc3545;
-            color: #fff; /* Kontras ~4.5:1 */
-        }
-
-        .popular-categories .badge.bg-success {
-            background-color: #28a745;
-            color: #fff; /* Kontras ~4.6:1 */
-        }
-
-        .popular-categories .badge.bg-primary {
-            background-color: #0056b3; /* Biru lebih gelap */
-            color: #fff; /* Kontras ~6.1:1 */
-        }
-
-        .popular-categories .badge.bg-warning {
-            background-color: #d39e00; /* Kuning lebih gelap */
-            color: #212529; /* Teks gelap, kontras ~4.7:1 */
-        }
-
-        .popular-categories .badge.bg-info {
-            background-color: #17a2b8;
-            color: #fff; /* Kontras ~4.8:1 */
-        }
-
-        .popular-categories .badge.bg-dark {
-            background-color: #343a40;
-            color: #fff; /* Kontras ~12:1 */
-        }
-
-        /* Teks bold dan small */
-        .popular-categories .badge .fw-bold {
-            color: inherit; /* Mengikuti warna badge */
-            font-size: 1rem;
-        }
-
-        .popular-categories .badge small {
-            opacity: 1; /* Hilangkan opacity-75 */
-            color: inherit; /* Mengikuti warna badge */
-            font-size: 0.85rem;
-            margin-top: 0.5rem;
-            display: block;
-        }
-
-        /* Responsif untuk Mobile */
-        @media (max-width: 767px) {
-            .popular-categories .badge {
-                padding: 0.75rem; /* Padding lebih kecil tapi tetap terbaca */
-                min-height: 80px;
-            }
-
-            .popular-categories .badge .fw-bold {
-                font-size: 0.9rem;
-            }
-
-            .popular-categories .badge small {
-                font-size: 0.8rem;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .popular-categories .badge {
-                padding: 0.5rem;
-            }
-
-            .popular-categories .badge .fw-bold {
-                font-size: 0.85rem;
-            }
-
-            .popular-categories .badge small {
-                font-size: 0.75rem;
-            }
-        }
-    </style>
-
-
-
-    <!-- Features Section -->
-    <section class="py-5">
-        <div class="container">
-            <h2 class="text-left mb-5">Why Choose Us?</h2>
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="card p-4 text-center shadow-sm">
-                        <i class="bi bi-book fs-1 text-primary mb-3"></i>
-                        <h5>Quality Courses</h5>
-                        <p>The material is crafted by experts in the field.</p>
-
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card p-4 text-center shadow-sm">
-                        <i class="bi bi-clock fs-1 text-primary mb-3"></i>
-                        <h5>Flexible</h5>
-                        <p>Learn at your own time and pace.</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card p-4 text-center shadow-sm">
-                        <i class="bi bi-award fs-1 text-primary mb-3"></i>
-                        <h5>Certificate</h5>
-                        <p>Earn a certificate upon completion.</p>
-                    </div>
-                </div>
-
-            </div>
+        <div class="text-center mt-4">
+            <p class="text-muted">"Become our partner and unlock potential together!"</p>
+            {% if user.is_authenticated %}
+                <a href="{% url 'partner:explore' %}" class="btn btn-primary">Explore Partners</a>
+            {% else %}
+                <a href="{% url 'authentication:register' %}" class="btn btn-primary">Join as a Partner</a>
+            {% endif %}
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Popular Courses Section -->
-    <section class="py-4 bg-light">
-        <div class="container py-3">
-            <h2 class="text-left mb-4">Courses Populer</h2>
-            <div class="row g-3" id="courses-list">
-                
-                    
-               
-            </div>
-        </div>
-    </section>
-    
-    
-        
-        <style>
-            .transition-effect {
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-            }
-            .transition-effect:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            }
-            .card-body {
-                min-height: 150px; /* Atur tinggi minimum agar seragam */
-            }
-            a.text-decoration-none .card {
-                cursor: pointer; /* Menunjukkan bahwa card bisa diklik */
-            }
-            a.text-decoration-none:hover .card {
-                text-decoration: none; /* Menghindari garis bawah pada teks saat hover */
-            }
-
-            .transition-effect {
-    transition: all 0.3s ease;
-}
-.transition-effect:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-}
-
-/* Media Query untuk Mobile */
-@media (max-width: 767.98px) {
-    .card-body {
-        padding: 1rem !important; /* Padding lebih kecil di mobile */
-    }
-    .card-img-top {
-        height: 100px !important; /* Tinggi gambar lebih kecil di mobile */
-    }
-    .card h5 {
-        font-size: 0.9rem !important; /* Ukuran judul lebih kecil */
-        line-height: 1.2;
-        max-height: 2.4rem;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: normal;
-    }
-    .card .btn {
-        font-size: 0.8rem; /* Ukuran tombol lebih kecil */
-    }
-    .card .d-flex.align-items-center img {
-        width: 30px !important; /* Logo lebih kecil di mobile */
-        height: 30px !important;
-    }
-}
-
-/* Styling untuk Desktop */
-@media (min-width: 768px) {
-    .card-body {
-        padding: 1.5rem !important; /* Padding lebih besar di desktop */
-    }
-    .card .d-flex.align-items-center img {
-        width: 40px !important; /* Logo sedikit lebih besar di desktop */
-        height: 40px !important;
-    }
-    .card .d-flex.align-items-center .ms-2 p {
-        font-size: 0.9rem; /* Teks sedikit lebih besar di desktop */
-    }
-    .card .d-flex.align-items-center .ms-2 p.text-muted {
-        font-size: 0.8rem; /* Instruktur tetap kecil tapi lebih terbaca */
-    }
-}
-        </style>
-
-    <!-- Partner Section (Carousel) -->
-    <!-- Partner Section (Carousel) -->
-    <section class="py-5" aria-labelledby="our-partners-heading">
-        <div class="container">
-            <h2 id="our-partners-heading" class="text-center mb-5">Our Trusted Partners</h2>
-
-            <div id="partnerCarousel" class="carousel slide partner-carousel" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    {% for partner in partners %}
-                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                            <div class="d-flex justify-content-center align-items-center">
-                                {% if partner.logo %}
-                                    <a href="{% url 'courses:org_partner' partner.name.slug %}">
-                                        <img src="{{ partner.logo.url }}"
-                                            alt="Logo {{ partner.name }}"
-                                            class="mx-2 partner-logo img-fluid"
-                                            width="150" height="60"
-                                            loading="lazy">
-                                    </a>
-                                    <style>
-                                    .partner-logo {
-                                        object-fit: contain;
-                                        max-width: 100%;
-                                        height: auto;
-                                    }
-
-                                    </style>
-                                {% else %}
-                                    <img src="https://via.placeholder.com/150x60?text={{ partner.name|urlencode }}"
-                                        alt="{{ partner.name }}"
-                                        class="mx-2 partner-logo"
-                                        width="150" height="60"
-                                        loading="lazy">
-                                {% endif %}
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-
-                <button class="carousel-control-prev" type="button" data-bs-target="#partnerCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#partnerCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-            </div>
-
-            <!-- Call to Action -->
-            <div class="text-center mt-4">
-                <p class="text-muted">"Become our partner and unlock potential together!"</p>
-                {% if user.is_authenticated %}
-                    <a href="{% url 'partner:explore' %}" class="btn btn-primary">Explore Partners</a>
-                {% else %}
-                    <a href="{% url 'authentication:register' %}" class="btn btn-primary">Join as a Partner</a>
-                {% endif %}
-            </div>
-        </div>
-    </section>
-
-
-	<!-- Micro Section -->
-		<section class="py-5 bg-light">
-            <div class="container">
-                <h2 class="text-center mb-5">Micro Courses</h2>
-                <div class="row g-4">
-                    {% for microcredential in popular_microcredentials %}
-                        <div class="col-md-6">
-                            <div class="blog-card shadow-sm p-4 d-flex align-items-center rounded-3">
-                                <div class="course-info">
-                                    <h5 class="fw-bold text-primary"><a href="{% url 'courses:micro_detail' microcredential.id microcredential.slug %}" class="text-decoration-none">{{ microcredential.title }}</a></h5>
-                                    <p class="text-muted">Learn programming stress-free.</p>
-                                    <a href="{% url 'courses:micro_detail' microcredential.id microcredential.slug %}" class="btn btn-primary mt-3">Read More</a>
-                                </div>
-                            </div>
-                        </div>
-                    {% empty %}
-                        <p class="text-center text-muted">No popular micro-credentials found.</p>
-                    {% endfor %}
-                </div>
-            </div>
-        </section>
-
-
-
-    <!-- Blog Section -->
-    <section class="py-5 bg-light">
-        <div class="container">
-            <h2 class="text-left mb-5">Latest Articles</h2>
-            <div class="row g-4">
+<!-- Micro Courses Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Micro Courses</h2>
+        <div class="row g-4">
+            {% for microcredential in popular_microcredentials %}
                 <div class="col-md-6">
-                    <div class="blog-card shadow-sm p-4 d-flex align-items-center">
-                        <div>
-                            <h5 class="fw-bold">Effective Coding Learning Tips</h5>
-                            <p>Learn programming stress-free.</p>
-                            <a href="#" class="btn btn-link p-0">Read More</a>
+                    <div class="blog-card shadow-sm p-4 d-flex align-items-center rounded-3">
+                        <div class="course-info">
+                            <h5 class="fw-bold text-primary"><a href="{% url 'courses:micro_detail' microcredential.id microcredential.slug %}" class="text-decoration-none">{{ microcredential.title }}</a></h5>
+                            <p class="text-muted">Learn programming stress-free.</p>
+                            <a href="{% url 'courses:micro_detail' microcredential.id microcredential.slug %}" class="btn btn-primary mt-3">Read More</a>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="blog-card shadow-sm p-4 d-flex align-items-center">
-                        <div>
-                            <h5 class="fw-bold">UI/UX Trends 2025</h5>
-                            <p>This year's interface design predictions.</p>
-                            <a href="#" class="btn btn-link p-0">Read More</a>
-                        </div>
+            {% empty %}
+                <p class="text-center text-muted">No popular micro-credentials found.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Blog Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-left mb-5">Latest Articles</h2>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="blog-card shadow-sm p-4 d-flex align-items-center">
+                    <div>
+                        <h5 class="fw-bold">Effective Coding Learning Tips</h5>
+                        <p>Learn programming stress-free.</p>
+                        <a href="#" class="btn btn-link p-0">Read More</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="blog-card shadow-sm p-4 d-flex align-items-center">
+                    <div>
+                        <h5 class="fw-bold">UI/UX Trends 2025</h5>
+                        <p>This year's interface design predictions.</p>
+                        <a href="#" class="btn btn-link p-0">Read More</a>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-
-    <!-- Instructors Section -->
-    <section class="py-5" aria-labelledby="featured-instructors-heading">
-            <div class="container">
-                <h2 id="featured-instructors-heading" class="text-left mb-4">
-                    Featured Online Instructors from LMSKu
-                </h2>
-
-                <p class="mb-5">
-                    Experts with years of experience in their fields, who not only possess recognized qualifications and certifications but also have a passion for teaching and a commitment to guiding every student toward success. With innovative teaching methods and a personalized approach, they create an inspiring and supportive learning environment.
-                </p>
-
-                <!-- Menampilkan Instruktur -->
-                <div class="row g-4 justify-content-center">
-                    {% for instructor in instructors %}
-                        <div class="col-md-4 instructor-item text-center">
-                            <a href="{% url 'courses:instructor_profile' username=instructor.user.username %}"
-                            class="text-decoration-none text-dark text-center d-block">
-                                {% if instructor.user.photo %}
-                                    <img src="{{ instructor.user.photo.url }}"
-                                        class="instructor-card img-fluid mb-3"
-                                        alt="Foto {{ instructor.user.first_name }} {{ instructor.user.last_name }}, Instruktur di LMSKu"
-                                        width="150" height="150"
-                                        loading="lazy">
-                                {% else %}
-                                    <img src="{% static 'images/default.jpg' %}"
-                                        class="instructor-card img-fluid mb-3"
-                                        alt="Foto Default Instruktur"
-                                        width="150" height="150"
-                                        loading="lazy">
-                                {% endif %}
-                                <h3 class="fw-bold fs-5">{{ instructor.user.first_name }} {{ instructor.user.last_name }}</h3>
-                            </a>
-                            <style>
-                            .instructor-card {
-                                width: 150px;
-                                height: 150px;
-                                object-fit: cover;
-                                border-radius: 50%;
-                                border: 4px solid #007bff;
-                                transition: transform 0.3s, box-shadow 0.3s;
-                            }
-
-                            @media (max-width: 576px) {
-                                .instructor-card {
-                                    width: 100px;
-                                    height: 100px;
-                                }
-                            }
-                            </style>
-                        </div>
-
-                        <!-- Optional: Schema Markup -->
-                        <script type="application/ld+json">
-                        {
-                            "@context": "https://schema.org",
-                            "@type": "Person",
-                            "name": "{{ instructor.user.first_name }} {{ instructor.user.last_name }}",
-                            "jobTitle": "Instructor",
-                            "url": "{% url 'courses:instructor_profile' username=instructor.user.username %}",
-                            "image": "{% if instructor.user.photo %}{{ instructor.user.photo.url }}{% else %}{% static 'images/default.jpg' %}{% endif %}"
-                        }
-                        </script>
-                    {% empty %}
-                        <p>No instructors found.</p>
-                    {% endfor %}
-
+<!-- Instructors Section -->
+<section class="py-5" aria-labelledby="featured-instructors-heading">
+    <div class="container">
+        <h2 id="featured-instructors-heading" class="text-left mb-4">
+            Featured Online Instructors from LMSKu
+        </h2>
+        <p class="mb-5">
+            Experts with years of experience in their fields, who not only possess recognized qualifications and certifications but also have a passion for teaching and a commitment to guiding every student toward success. With innovative teaching methods and a personalized approach, they create an inspiring and supportive learning environment.
+        </p>
+        <div class="row g-4 justify-content-center">
+            {% for instructor in instructors %}
+                <div class="col-md-4 instructor-item text-center">
+                    <a href="{% url 'courses:instructor_profile' username=instructor.user.username %}"
+                        class="text-decoration-none text-dark text-center d-block">
+                        {% if instructor.user.photo %}
+                            <img src="{{ instructor.user.photo.url }}"
+                                class="instructor-card img-fluid mb-3"
+                                alt="Foto {{ instructor.user.first_name }} {{ instructor.user.last_name }}, Instruktur di LMSKu"
+                                width="150" height="150"
+                                loading="lazy">
+                        {% else %}
+                            <img src="{% static 'images/default.jpg' %}"
+                                class="instructor-card img-fluid mb-3"
+                                alt="Foto Default Instruktur"
+                                width="150" height="150"
+                                loading="lazy">
+                        {% endif %}
+                        <h3 class="fw-bold fs-5">{{ instructor.user.first_name }} {{ instructor.user.last_name }}</h3>
+                    </a>
                 </div>
+                <script type="application/ld+json">
+                {
+                    "@context": "https://schema.org",
+                    "@type": "Person",
+                    "name": "{{ instructor.user.first_name }} {{ instructor.user.last_name }}",
+                    "jobTitle": "Instructor",
+                    "url": "{% url 'courses:instructor_profile' username=instructor.user.username %}",
+                    "image": "{% if instructor.user.photo %}{{ instructor.user.photo.url }}{% else %}{% static 'images/default.jpg' %}{% endif %}"
+                }
+                </script>
+            {% empty %}
+                <p>No instructors found.</p>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-5">
+            <p class="text-muted">"Got skills? Join us as an instructor!"</p>
+            {% if user.is_authenticated %}
+                <a href="{% url 'courses:instructor_add' %}" class="btn btn-primary">Become an Instructor</a>
+            {% else %}
+                <a href="{% url 'authentication:register' %}" class="btn btn-primary">Join as an Instructor</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
 
-                <!-- Tombol CTA -->
-                <div class="text-center mt-5">
-                    <p class="text-muted">"Got skills? Join us as an instructor!"</p>
-
-                    {% if user.is_authenticated %}
-                        <a href="{% url 'courses:instructor_add' %}" class="btn btn-primary">
-                            Become an Instructor
-                        </a>
-                    {% else %}
-                        <a href="{% url 'authentication:register' %}" class="btn btn-primary">
-                            Join as an Instructor
-                        </a>
-                    {% endif %}
+<!-- Interesting Facts Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-left mb-5">Interesting Facts on LMSKu</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card p-4 text-center shadow-sm">
+                    <i class="bi bi-globe fs-1 mb-3"></i>
+                    <h5>Global Access</h5>
+                    <p>Learn from anywhere in the world.</p>
                 </div>
             </div>
-        </section>
-
-
-
-    <!-- Interesting Facts Section -->
-    <section class="py-5 bg-light">
-        <div class="container">
-            <h2 class="text-left mb-5">Interesting Facts on LMSKu</h2>
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="card p-4 text-center shadow-sm">
-                        <i class="bi bi-globe fs-1 text-primary mb-3"></i>
-                        <h5>Global Access</h5>
-                        <p>Learn from anywhere in the world.</p>
-                    </div>
+            <div class="col-md-4">
+                <div class="card p-4 text-center shadow-sm">
+                    <i class="bi bi-chat-dots fs-1 mb-3"></i>
+                    <h5>Active Community</h5>
+                    <p>Engage with thousands of other learners.</p>
                 </div>
-                <div class="col-md-4">
-                    <div class="card p-4 text-center shadow-sm">
-                        <i class="bi bi-chat-dots fs-1 text-primary mb-3"></i>
-                        <h5>Active Community</h5>
-                        <p>Engage with thousands of other learners.</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card p-4 text-center shadow-sm">
-                        <i class="bi bi-rocket-takeoff fs-1 text-primary mb-3"></i>
-                        <h5>Career Booster</h5>
-                        <p>Enhance your career opportunities.</p>
-                    </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-4 text-center shadow-sm">
+                    <i class="bi bi-rocket-takeoff fs-1 mb-3"></i>
+                    <h5>Career Booster</h5>
+                    <p>Enhance your career opportunities.</p>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Testimonials Section -->
-    <section class="py-5 bg-light">
-        <div class="container">
-            <h2 class="text-left mb-5">What Do They Say?</h2>
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="testimoni-card shadow-sm text-center">
-                        <p>"The courses helped me understand coding from scratch!"</p>
-                        <h6 class="fw-bold">Budi, Programmer</h6>
-                    </div>
+<!-- Testimonials Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-left mb-5">What Do They Say?</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="testimoni-card shadow-sm text-center">
+                    <p>"The courses helped me understand coding from scratch!"</p>
+                    <h6 class="fw-bold">Budi, Programmer</h6>
                 </div>
-                <div class="col-md-4">
-                    <div class="testimoni-card shadow-sm text-center">
-                        <p>"Super flexible, I can study while working."</p>
-                        <h6 class="fw-bold">Siti, Freelancer</h6>
-                    </div>
+            </div>
+            <div class="col-md-4">
+                <div class="testimoni-card shadow-sm text-center">
+                    <p>"Super flexible, I can study while working."</p>
+                    <h6 class="fw-bold">Siti, Freelancer</h6>
                 </div>
-                <div class="col-md-4">
-                    <div class="testimoni-card shadow-sm text-center">
-                        <p>"The certificate made my CV more attractive."</p>
-                        <h6 class="fw-bold">Andi, Student</h6>
-                    </div>
+            </div>
+            <div class="col-md-4">
+                <div class="testimoni-card shadow-sm text-center">
+                    <p>"The certificate made my CV more attractive."</p>
+                    <h6 class="fw-bold">Andi, Student</h6>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- CTA Section -->
-   <section class="py-5 text-center bg-primary text-white">
-        <div class="container">
-            <h2 class="fw-bold">Ready to Upgrade Your Skills?</h2>
-            <p class="lead">Join now and start your learning journey!</p>
-            <a href="{% url 'authentication:register' %}" class="btn btn-light btn-lg mt-3">Sign Up Now</a>
-        </div>
-    </section>
-    <!--css untuk course-->
-    <style>
-    .card-body {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
+<!-- CTA Section -->
+<section class="py-5 text-center bg-primary text-white">
+    <div class="container">
+        <h2 class="fw-bold">Ready to Upgrade Your Skills?</h2>
+        <p class="lead">Join now and start your learning journey!</p>
+        <a href="{% url 'authentication:register' %}" class="btn btn-lg mt-3">Sign Up Now</a>
+    </div>
+</section>
 
-.card-body h5 {
-    font-size: 1.2rem; /* Sesuaikan ukuran teks agar lebih responsif */
-    overflow: hidden;
-    text-overflow: ellipsis; /* Tambahkan pengganti teks jika terlalu panjang */
-    white-space: nowrap;
-}
-
-.card-img-top {
-    max-height: 200px; /* Tentukan tinggi gambar agar responsif */
-    object-fit: cover;
-}
-
-@media (max-width: 576px) {
-    .card-body {
-        padding: 1rem;
-    }
-
-    .card-img-top {
-        max-height: 150px; /* Gambar lebih kecil pada perangkat kecil */
-    }
-}
-
-    </style>
 {% endblock content %}
+
 {% block scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -739,32 +785,25 @@
         }
 
         $.ajax({
-            url: '/popular_courses/',  // Endpoint untuk mengambil data kursus
+            url: '/popular_courses/',
             type: 'GET',
             dataType: 'json',
             success: function(response) {
                 var courses = response.courses;
-
                 courses.forEach(function(course) {
                     var courseUrl = '/course-detail/' + course.id + '/' + course.slug + '/';
                     var instructorUrl = '/instructor-profile/' + course.instructor__user__username + '/';
                     var universityUrl = '/org-partner/' + course.org_partner__name__slug + '/';
-
-                    // Membuat rating bintang
                     var stars = '';
                     for (var i = 0; i < course.full_stars; i++) {
-                        stars += '<i class="bi bi-star-fill text-warning"></i>';
+                        stars += '<i class="bi bi-star-fill"></i>';
                     }
-
                     if (course.half_star) {
-                        stars += '<i class="bi bi-star-half text-warning"></i>';
+                        stars += '<i class="bi bi-star-half"></i>';
                     }
-
                     for (var i = 0; i < course.empty_stars; i++) {
-                        stars += '<i class="bi bi-star text-muted"></i>';
+                        stars += '<i class="bi bi-star"></i>';
                     }
-
-                    // Menambahkan elemen kursus ke dalam daftar
                     $('#courses-list').append(`
                         <div class="col-6 col-md-4 col-lg-3 mb-4">
                             <div class="card border-primary shadow-sm rounded-4 h-100 transition-effect">
@@ -788,17 +827,13 @@
                                             </p>
                                         </div>
                                     </div>
-
                                     <div class="rating mb-3">
-                                        ${stars} <!-- Rating bintang -->
+                                        ${stars}
                                         <small class="text-muted ms-1">(${course.avg_rating.toFixed(1)}) (${course.num_ratings} reviews)</small>
                                     </div>
-
-                                    <!-- Menambahkan Total Enrollment -->
                                     <div class="enrollment-count mb-3">
                                         <small class="text-muted">Enrolled: ${course.num_enrollments} students</small>
                                     </div>
-
                                     <p class="mb-0 fw-bold" style="font-size: 1.1rem;"></p>
                                     <a href="${courseUrl}" class="btn btn-outline-primary btn-sm w-100">Detail</a>
                                 </div>
@@ -813,5 +848,4 @@
         });
     });
 </script>
-
 {% endblock %}

@@ -1,46 +1,16 @@
 from django.contrib import admin
 from . import models 
-from .models import LTIPlatformConfiguration, LTIExternalTool,Submission,CourseRating,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
+from .models import  LTIExternalTool,Submission,CourseRating,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
 from import_export.admin import ImportExportModelAdmin
 from django.utils.html import format_html
 
 
-# Konfigurasi admin untuk LTIPlatformConfiguration
-@admin.register(LTIPlatformConfiguration)
-class LTIPlatformConfigurationAdmin(admin.ModelAdmin):
-    list_display = ('platform_name', 'consumer_key', 'created_at')  # Kolom yang ditampilkan di daftar
-    search_fields = ('platform_name', 'consumer_key')  # Kolom yang dapat dicari
-    list_filter = ('created_at',)  # Filter berdasarkan tanggal pembuatan
-    ordering = ('-created_at',)  # Urutkan dari yang terbaru
-    readonly_fields = ('created_at',)  # Jadikan created_at hanya baca
-
-    # Menampilkan nama platform di form admin
-    def get_form(self, request, obj=None, **kwargs):
-        form = super().get_form(request, obj, **kwargs)
-        form.base_fields['platform_name'].help_text = 'Nama platform, misalnya Moodle'
-        return form
-
-# Konfigurasi admin untuk LTIExternalTool
-@admin.register(LTIExternalTool)
 class LTIExternalToolAdmin(admin.ModelAdmin):
-    list_display = ('name', 'assessment', 'platform_config', 'launch_url', 'has_grade', 'created_at')  # Kolom yang ditampilkan
-    search_fields = ('name', 'launch_url', 'platform_config__platform_name')  # Kolom yang dapat dicari
-    list_filter = ('has_grade', 'created_at', 'platform_config')  # Filter berdasarkan has_grade, tanggal, dan platform
-    ordering = ('-created_at',)  # Urutkan dari yang terbaru
-    readonly_fields = ('created_at',)  # Jadikan created_at hanya baca
-    autocomplete_fields = ['assessment', 'platform_config']  # Gunakan autocomplete untuk ForeignKey (opsional)
+    list_display = ('name', 'launch_url', 'consumer_key', 'shared_secret', 'assessment')
+    search_fields = ('name', 'launch_url', 'consumer_key')
+    list_filter = ('assessment',)
 
-    # Menampilkan URL peluncuran sebagai link yang dapat diklik
-    def get_launch_url(self, obj):
-        return format_html('<a href="{}" target="_blank">{}</a>', obj.launch_url, obj.launch_url)
-    get_launch_url.short_description = 'Launch URL'
-
-    # Menyesuaikan form untuk memberikan petunjuk lebih jelas
-    def get_form(self, request, obj=None, **kwargs):
-        form = super().get_form(request, obj, **kwargs)
-        form.base_fields['name'].help_text = 'Nama alat, misalnya "Kuis Moodle"'
-        form.base_fields['launch_url'].help_text = 'URL peluncuran LTI, misalnya https://moodle.example.com/mod/lti/launch.php'
-        return form
+admin.site.register(LTIExternalTool, LTIExternalToolAdmin)
 
 @admin.register(CourseRating)
 class CourseRatingAdmin(admin.ModelAdmin):

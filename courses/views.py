@@ -2,6 +2,7 @@ import os
 import csv
 from io import BytesIO
 from PIL import Image
+
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.cache import cache
@@ -10,10 +11,10 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from .forms import LTI1ExternalToolForm,CoursePriceForm,CourseRatingForm,SosPostForm,MicroCredentialForm,AskOraForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
+from .forms import LTIExternalToolForm,CoursePriceForm,CourseRatingForm,SosPostForm,MicroCredentialForm,AskOraForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from .utils import user_has_passed_course,check_for_blacklisted_keywords,is_suspicious
 from django.http import JsonResponse
-from .models import LTIExternalTool, LTIPlatformConfiguration,Course,CourseRating,Like,SosPost,Hashtag,UserProfile,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
+from .models import LTIExternalTool,Course,CourseRating,Like,SosPost,Hashtag,UserProfile,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
 from authentication.models import CustomUser, Universiti
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
@@ -34,6 +35,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Prefetch
 import time
 import re
+import html  # Tambahkan impor ini
 from django.db import IntegrityError
 from django.middleware.csrf import get_token
 from django.core.exceptions import ValidationError
@@ -41,7 +43,7 @@ import logging
 from datetime import timedelta
 from django.db.models import Prefetch
 from weasyprint import HTML
-from django.template.loader import render_to_string
+
 from django_ratelimit.decorators import ratelimit
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
@@ -51,129 +53,111 @@ from requests_oauthlib import OAuth1
 from urllib.parse import urlencode,parse_qs
 import uuid
 import urllib.parse
+import random
+import string
+from requests_oauthlib import OAuth1Session
+
+
+@login_required
+def launch_lti(request, idcourse, idsection, idlti, id_lti_tool):
+    user = request.user
+    is_instructor = getattr(user, 'is_instructor', False)
+
+    logger.debug(f"User: {user.username}, is_instructor={is_instructor}")
+
+    # Cek akses ke course
+    try:
+        if is_instructor:
+            course = get_object_or_404(Course, id=idcourse, instructor__user_id=user.id)
+        else:
+            messages.error(request, "Anda tidak punya izin untuk mengakses LTI ini.")
+            return redirect('authentication:home')
+    except Exception as e:
+        logger.error(f"Gagal validasi akses course {idcourse}: {e}")
+        messages.error(request, "Terjadi kesalahan saat memverifikasi akses.")
+        return redirect('authentication:home')
+
+    # Ambil data section dan assessment
+    section = get_object_or_404(Section, id=idsection, courses=course)
+    assessment = get_object_or_404(Assessment, id=idlti, section=section)
+    lti_tool = get_object_or_404(LTIExternalTool, id=id_lti_tool, assessment=assessment)
+
+    # Konfigurasi LTI yang langsung ditulis dalam kode
+    launch_url = "https://idols.ui.ac.id/mod/lti/view.php?id=5"
+    shared_secret = "flXbBnBttWDSdkjTWdZRESL0ozpQL0kB"
+    consumer_key = "1234"
+    resource_link_id = str(uuid.uuid4()) 
+    roles = "Instructor"
+    user_id = str(request.user.id)
+    context_id = "1"
+    context_title = "Contoh Kursus"
+    context_type = "CourseSection"
+
+    lti_params = {
+        "lti_version": "LTI-1p0",
+        "lti_message_type": "basic-lti-launch-request",
+        "resource_link_id": resource_link_id,
+        "roles": roles,
+        "user_id": user_id,
+        "launch_presentation_locale": "id-ID",
+        "tool_consumer_info_product_family_code": "django-lms",
+        "tool_consumer_info_version": "1.0",
+        "context_id": context_id,
+        "context_title": context_title,
+        "context_type": context_type,
+        "oauth_nonce": uuid.uuid4().hex,  
+        "oauth_timestamp": str(int(time.time())),
+        "oauth_version": "1.0",
+        "oauth_consumer_key": consumer_key,
+        "oauth_callback": "about:blank", 
+        "lis_person_name_full": user.get_full_name(),
+        "lis_person_contact_email_primary": user.email,
+    }
+
+    # Log parameter LTI sebelum penandatanganan
+    logger.debug("LTI Params Sebelum Signing:")
+    for k, v in lti_params.items():
+        logger.debug(f"{k}: {v}")
+
+    # OAuth1 signing
+    oauth = OAuth1Session(consumer_key, client_secret=shared_secret)
+
+    try:
+        # Kirimkan permintaan POST ke LTI tool
+        logger.debug(f"Sending POST request to LTI tool with URL: {launch_url}")
+        logger.debug(f"Request payload: {lti_params}")
+        response = oauth.post(launch_url, data=lti_params)
+
+        if response.status_code != 200:
+            logger.error(f"Failed request to LTI Tool: {response.status_code} - {response.text}")
+            messages.error(request, f"Terjadi kesalahan saat menghubungkan ke aplikasi LTI: {response.status_code} - {response.text}")
+            return redirect('authentication:home')
+
+        # Log hasil parameter LTI setelah penandatanganan
+        try:
+            lti_response_data = response.json()
+            logger.debug("LTI Response Data: %s", lti_response_data)
+        except ValueError:
+            logger.error(f"Invalid JSON response: {response.text}")
+            messages.error(request, "Terjadi kesalahan dalam respons dari LTI Tool.")
+            return redirect('authentication:home')
+
+        # Render halaman dengan LTI params yang telah disiapkan
+        return render(request, 'courses/lti_launch.html', {
+            "launch_url": launch_url,
+            "lti_params": lti_params,
+        })
+
+    except Exception as e:
+        logger.error(f"Error connecting to the LTI tool: {str(e)}")
+        messages.error(request, "Terjadi kesalahan saat menghubungkan ke aplikasi LTI.")
+        return redirect('authentication:home')
 
 
 logger = logging.getLogger(__name__)
 
 @login_required
-def launch_lti(request, idcourse, idsection, idlti, id_lti_tool):
-    is_partner = hasattr(request.user, 'is_partner') and request.user.is_partner
-    is_instructor = hasattr(request.user, 'is_instructor') and request.user.is_instructor
-    logger.debug(f"User: {request.user.username}, is_superuser={request.user.is_superuser}, "
-                 f"is_partner={is_partner}, is_instructor={is_instructor}")
-
-    try:
-        if request.user.is_superuser:
-            course = get_object_or_404(Course, id=idcourse)
-        elif is_partner:
-            course = get_object_or_404(Course, id=idcourse, org_partner__user_id=request.user.id)
-        elif is_instructor:
-            course = get_object_or_404(Course, id=idcourse, instructor__user_id=request.user.id)
-        else:
-            logger.error(f"User {request.user.username} tidak memiliki izin untuk idcourse={idcourse}")
-            messages.error(request, "Anda tidak memiliki izin untuk mengakses alat LTI ini.")
-            return redirect('authentication:home')
-    except Exception as e:
-        logger.error(f"Gagal memeriksa izin untuk idcourse={idcourse}: {str(e)}")
-        messages.error(request, "Terjadi kesalahan saat memeriksa izin.")
-        return redirect('authentication:home')
-
-    section = get_object_or_404(Section, id=idsection, courses=course)
-    assessment = get_object_or_404(Assessment, id=idlti, section=section)
-    lti_tool = get_object_or_404(LTIExternalTool, id=id_lti_tool, assessment=assessment)
-
-    if not lti_tool.platform_config:
-        logger.error(f"LTIExternalTool id={id_lti_tool} tidak memiliki platform_config")
-        messages.error(request, "Konfigurasi platform LTI tidak ditemukan untuk alat ini.")
-        return redirect('authentication:home')
-
-    logger.debug(f"LTI Tool: id={lti_tool.id}, launch_url={lti_tool.launch_url}, "
-                 f"consumer_key={lti_tool.platform_config.consumer_key}, "
-                 f"shared_secret={lti_tool.platform_config.shared_secret}")
-
-    roles = 'Instructor' if is_instructor else 'Learner'
-
-    # Build LTI params
-    lti_params = {
-        'lti_message_type': 'basic-lti-launch-request',
-        'lti_version': 'LTI-1p0',
-        'resource_link_id': f'{lti_tool.id}-{assessment.id}',
-        'resource_link_title': assessment.name or 'External Tool',  # Important for some Moodle setups
-        'user_id': str(request.user.id),
-        'roles': roles,
-        'context_id': str(course.id),
-        'context_title': getattr(course, 'course_name', 'Unknown Course'),
-        'lis_person_name_full': request.user.get_full_name() or request.user.username,
-        'lis_person_contact_email_primary': request.user.email or '',
-        'launch_presentation_return_url': request.build_absolute_uri(reverse('authentication:home')),
-        'oauth_consumer_key': lti_tool.platform_config.consumer_key,
-        'oauth_signature_method': 'HMAC-SHA1',
-        'oauth_timestamp': str(int(time.time())),
-        'oauth_nonce': str(uuid.uuid4()),
-        'oauth_version': '1.0',
-    }
-
-    try:
-        client = Client(
-            client_key=lti_tool.platform_config.consumer_key,
-            client_secret=lti_tool.platform_config.shared_secret,
-            signature_method='HMAC-SHA1',
-            timestamp=lti_params['oauth_timestamp'],
-            nonce=lti_params['oauth_nonce'],
-        )
-
-        uri = lti_tool.launch_url
-        headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-
-        # Use dict directly — do NOT urlencode manually
-        sign_result = client.sign(
-            uri=uri,
-            http_method='POST',
-            body=lti_params,
-            headers=headers
-        )
-
-        oauth_headers = sign_result[1]
-        auth_header = oauth_headers.get('Authorization', '')
-        oauth_signature = None
-
-        for param in auth_header.split(', '):
-            if param.startswith('OAuth '):
-                param = param[6:]
-            key_value = param.split('=')
-            if len(key_value) == 2 and key_value[0] == 'oauth_signature':
-                oauth_signature = urllib.parse.unquote(key_value[1].strip('"'))
-                break
-
-        if not oauth_signature:
-            raise ValueError("Gagal mengekstrak oauth_signature dari header")
-
-        signed_params = lti_params.copy()
-        signed_params['oauth_signature'] = oauth_signature
-
-        logger.debug(f"LTI Parameters: {lti_params}")
-        logger.debug(f"OAuth Headers: {oauth_headers}")
-        logger.debug(f"Signed Parameters: {signed_params}")
-
-        form = '<form action="{}" method="POST" id="ltiLaunchForm">'.format(uri)
-        for key, value in signed_params.items():
-            form += '<input type="hidden" name="{}" value="{}">'.format(
-                key, value
-            )
-        form += '</form>'
-        form += '<script>document.getElementById("ltiLaunchForm").submit();</script>'
-
-        logger.debug("Form HTML generated successfully")
-        return HttpResponse(form)
-
-    except Exception as e:
-        logger.error(f"OAuth signing failed: {str(e)}")
-        messages.error(request, f"Gagal menandatangani permintaan LTI: {str(e)}")
-        return redirect('authentication:home')
-
-@login_required
 def create_lti(request, idcourse, idsection, idlti):
-    # Tentukan course berdasarkan peran pengguna
     if request.user.is_superuser:
         course = get_object_or_404(Course, id=idcourse)
     elif request.user.is_partner:
@@ -181,54 +165,34 @@ def create_lti(request, idcourse, idsection, idlti):
     elif request.user.is_instructor:
         course = get_object_or_404(Course, id=idcourse, instructor__user_id=request.user.id)
     else:
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            return JsonResponse({'success': False, 'errors': 'Anda tidak memiliki izin untuk membuat alat LTI di kursus ini.'}, status=403)
         messages.error(request, "Anda tidak memiliki izin untuk membuat alat LTI di kursus ini.")
         return redirect('courses:home')
 
-    # Pastikan section milik course
     section = get_object_or_404(Section, id=idsection, courses=course)
-
-    # Pastikan assessment milik section
     assessment = get_object_or_404(Assessment, id=idlti, section=section)
 
-    # Menangani form
     if request.method == 'POST':
-        form = LTI1ExternalToolForm(request.POST)
+        form = LTIExternalToolForm(request.POST)
         if form.is_valid():
             lti_tool = form.save(commit=False)
             lti_tool.assessment = assessment
-            try:
-                lti_tool.save()
-                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                    return JsonResponse({
-                        'success': True,
-                        'message': 'Alat LTI berhasil ditambahkan ke asesmen.',
-                        'redirect_url': reverse('courses:view-question', kwargs={
-                            'idcourse': course.id,
-                            'idsection': section.id,
-                            'idassessment': assessment.id
-                        })
-                    })
-                messages.success(request, "Alat LTI berhasil ditambahkan ke asesmen.")
-                return redirect('courses:view-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
-            except ValueError as e:
-                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                    return JsonResponse({'success': False, 'errors': str(e)}, status=400)
-                messages.error(request, str(e))
-        else:
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({'success': False, 'errors': form.errors}, status=400)
-            messages.error(request, "Ada kesalahan dalam formulir. Silakan periksa kembali.")
+            
+            # Generate random shared_secret if not provided
+            lti_tool.shared_secret = ''.join(random.choices(string.ascii_letters + string.digits, k=32))  # 32-character random string
+            
+            lti_tool.save()
+            messages.success(request, "Alat LTI berhasil ditambahkan!")
+            return redirect('courses:view-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
     else:
-        form = LTI1ExternalToolForm()
+        form = LTIExternalToolForm()
 
     return render(request, 'courses/lti_tool_form.html', {
+        'form': form,
         'course': course,
         'section': section,
         'assessment': assessment,
-        'form': form,
     })
+
 @login_required
 def edit_lti(request, idcourse, idsection, idlti, id_lti_tool):
     # Tentukan course berdasarkan peran pengguna
@@ -255,7 +219,7 @@ def edit_lti(request, idcourse, idsection, idlti, id_lti_tool):
 
     # Menangani form
     if request.method == 'POST':
-        form = LTI1ExternalToolForm(request.POST, instance=lti_tool)
+        form = LTIExternalToolForm(request.POST, instance=lti_tool)
         if form.is_valid():
             lti_tool = form.save(commit=False)
             lti_tool.assessment = assessment
@@ -282,7 +246,7 @@ def edit_lti(request, idcourse, idsection, idlti, id_lti_tool):
                 return JsonResponse({'success': False, 'errors': form.errors}, status=400)
             messages.error(request, "Ada kesalahan dalam formulir. Silakan periksa kembali.")
     else:
-        form = LTI1ExternalToolForm(instance=lti_tool)
+        form = LTIExternalToolForm(instance=lti_tool)
 
     return render(request, 'courses/edit_lti_tool_form.html', {
         'course': course,

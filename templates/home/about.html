@@ -1,34 +1,32 @@
-<!-- templates/about.html -->
 {% extends 'home/base.html' %}
 {% load static %}
 
 {% block content %}
-<!-- Halaman About -->
+<!-- About Us Page -->
 <section class="about-us py-5 bg-light">
     <div class="container">
         <!-- About Us Section -->
-        <div class="row align-items-center mb-5 animate__animated animate__fadeIn">
+        <div class="row align-items-center mb-5">
             <div class="col-lg-6 mb-4 mb-lg-0">
-                <h1 class="display-4 fw-bold text-primary mb-4 animate__animated animate__fadeInDown">About Us</h1>
+                <h1 class="display-4 fw-bold mb-4" style="color: var(--signature-red);">About Us</h1>
                 <p class="lead text-muted">
                     Welcome to <strong>LMSKu</strong>, your go-to platform for high-quality online education. We are passionate about providing an engaging learning experience that empowers students to achieve their goals.
                 </p>
                 <p class="text-muted">
                     Our mission is to make quality education accessible, affordable, and available to learners worldwide. Education is the key to unlocking potential, and we’re here to support you every step of the way.
                 </p>
-                <a href="#contact" class="btn btn-primary btn-lg mt-3 animate__animated animate__pulse">Learn More</a>
+                <a href="#contact" class="btn btn-lg mt-3">Learn More</a>
             </div>
             <div class="col-lg-6">
-                <img src="https://blog.mostar.co.id/wp-content/uploads/2023/09/6183551_3053975-1024x683.jpg" alt="About Us" class="img-fluid rounded shadow">
-
+                <img src="https://blog.mostar.co.id/wp-content/uploads/2023/09/6183551_3053975-1024x683.jpg" alt="About Us" class="img-fluid rounded shadow" style="border: 3px solid var(--signature-red);">
             </div>
         </div>
 
         <!-- Our Story Section -->
-        <div class="row mb-5 animate__animated animate__fadeInUp">
+        <div class="row mb-5">
             <div class="col-12">
-                <h2 class="fw-bold text-center mb-4 text-primary">Our Story</h2>
-                <div class="card shadow-sm border-0">
+                <h2 class="fw-bold text-center mb-4" style="color: var(--signature-red);">Our Story</h2>
+                <div class="card shadow-sm border-0 transition-hover" style="border-left: 4px solid var(--signature-red);">
                     <div class="card-body p-4">
                         <p class="text-muted">
                             Founded in 2020 by passionate educators and tech innovators, <strong>LMSKu</strong> started as a small project to provide educational resources. Today, it’s a leading platform for online learning, partnering with top universities and industry experts.
@@ -42,9 +40,9 @@
         </div>
 
         <!-- Mission & Vision Section -->
-        <div class="row mb-5 animate__animated animate__fadeInUp">
+        <div class="row mb-5">
             <div class="col-md-6">
-                <div class="card shadow-sm border-0 bg-gradient-primary text-white transition-hover">
+                <div class="card shadow-sm border-0 transition-hover" style="background: linear-gradient(135deg, var(--signature-red), var(--signature-red-dark)); color: var(--text-light);">
                     <div class="card-body p-4">
                         <h3 class="fw-semibold mb-3">Our Mission</h3>
                         <p>To make quality education accessible to everyone, anywhere, and anytime, with the best resources for success.</p>
@@ -52,7 +50,7 @@
                 </div>
             </div>
             <div class="col-md-6 mt-4 mt-md-0">
-                <div class="card shadow-sm border-0 bg-gradient-primary text-white transition-hover">
+                <div class="card shadow-sm border-0 transition-hover" style="background: linear-gradient(135deg, var(--signature-red), var(--signature-red-dark)); color: var(--text-light);">
                     <div class="card-body p-4">
                         <h3 class="fw-semibold mb-3">Our Vision</h3>
                         <p>To create a world where learning never stops and education inspires learners to reach their highest potential.</p>
@@ -62,11 +60,11 @@
         </div>
 
         <!-- Meet Our Team Section -->
-        <h2 class="fw-bold text-center mb-4 text-primary animate__animated animate__fadeIn">Meet Our Team</h2>
+        <h2 class="fw-bold text-center mb-4" style="color: var(--signature-red);">Meet Our Team</h2>
         <div class="row g-4 mb-5">
             <div class="col-md-4">
-                <div class="card shadow-sm border-0 team-card transition-hover animate__animated animate__fadeInUp">
-                    <img src="{% static 'images/team-1.jpg' %}" alt="John Doe" class="card-img-top rounded-top">
+                <div class="card shadow-sm border-0 team-card transition-hover">
+                    <img src="{% static 'images/team-1.jpg' %}" alt="John Doe" class="card-img-top rounded-top" style="border-top: 3px solid var(--signature-red);">
                     <div class="card-body text-center">
                         <h5 class="card-title fw-semibold">John Doe</h5>
                         <p class="card-text text-muted small">Co-Founder & CEO</p>
@@ -76,8 +74,8 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card shadow-sm border-0 team-card transition-hover animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
-                    <img src="{% static 'images/team-2.jpg' %}" alt="Jane Smith" class="card-img-top rounded-top">
+                <div class="card shadow-sm border-0 team-card transition-hover">
+                    <img src="{% static 'images/team-2.jpg' %}" alt="Jane Smith" class="card-img-top rounded-top" style="border-top: 3px solid var(--signature-red);">
                     <div class="card-body text-center">
                         <h5 class="card-title fw-semibold">Jane Smith</h5>
                         <p class="card-text text-muted small">Chief Content Officer</p>
@@ -87,8 +85,8 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card shadow-sm border-0 team-card transition-hover animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
-                    <img src="{% static 'images/team-3.jpg' %}" alt="Alice Johnson" class="card-img-top rounded-top">
+                <div class="card shadow-sm border-0 team-card transition-hover">
+                    <img src="{% static 'images/team-3.jpg' %}" alt="Alice Johnson" class="card-img-top rounded-top" style="border-top: 3px solid var(--signature-red);">
                     <div class="card-body text-center">
                         <h5 class="card-title fw-semibold">Alice Johnson</h5>
                         <p class="card-text text-muted small">Head of Operations</p>
@@ -100,30 +98,30 @@
         </div>
 
         <!-- Core Values Section -->
-        <h2 class="fw-bold text-center mb-4 text-primary animate__animated animate__fadeIn">Our Core Values</h2>
+        <h2 class="fw-bold text-center mb-4" style="color: var(--signature-red);">Our Core Values</h2>
         <div class="row g-4 mb-5">
             <div class="col-md-4">
-                <div class="card shadow-sm border-0 text-center core-value-card transition-hover animate__animated animate__fadeInUp">
+                <div class="card shadow-sm border-0 text-center core-value-card transition-hover">
                     <div class="card-body p-4">
-                        <i class="fas fa-book-open fa-3x text-primary mb-3"></i>
+                        <i class="fas fa-book-open fa-3x mb-3" style="color: var(--signature-red);"></i>
                         <h5 class="card-title fw-semibold">Quality Education</h5>
                         <p class="card-text text-muted small">Delivering relevant and engaging content for success.</p>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card shadow-sm border-0 text-center core-value-card transition-hover animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+                <div class="card shadow-sm border-0 text-center core-value-card transition-hover">
                     <div class="card-body p-4">
-                        <i class="fas fa-lightbulb fa-3x text-primary mb-3"></i>
+                        <i class="fas fa-lightbulb fa-3x mb-3" style="color: var(--signature-red);"></i>
                         <h5 class="card-title fw-semibold">Innovation</h5>
                         <p class="card-text text-muted small">Embracing new technologies for a better learning experience.</p>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card shadow-sm border-0 text-center core-value-card transition-hover animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
+                <div class="card shadow-sm border-0 text-center core-value-card transition-hover">
                     <div class="card-body p-4">
-                        <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                        <i class="fas fa-users fa-3x mb-3" style="color: var(--signature-red);"></i>
                         <h5 class="card-title fw-semibold">Community</h5>
                         <p class="card-text text-muted small">Building a supportive network for collective success.</p>
                     </div>
@@ -132,18 +130,18 @@
         </div>
 
         <!-- Contact Us Section -->
-        <div class="row justify-content-center animate__animated animate__fadeInUp" id="contact">
+        <div class="row justify-content-center" id="contact">
             <div class="col-lg-8">
                 <div class="card shadow-sm border-0">
-                    <div class="card-header bg-primary text-white text-center">
+                    <div class="card-header text-white text-center" style="background: var(--signature-red);">
                         <h2 class="fw-bold mb-0">Contact Us</h2>
                     </div>
                     <div class="card-body p-4 text-center">
                         <p class="text-muted mb-4">Have questions? Get in touch with us!</p>
                         <ul class="list-unstyled">
-                            <li class="mb-2"><i class="fas fa-envelope me-2 text-primary"></i><strong>Email:</strong> <a href="mailto:info@ourplatform.com" class="text-decoration-none">info@ourplatform.com</a></li>
-                            <li class="mb-2"><i class="fas fa-phone me-2 text-primary"></i><strong>Phone:</strong> 123-456-7890</li>
-                            <li><i class="fas fa-map-marker-alt me-2 text-primary"></i><strong>Address:</strong> 123 Learning St, Knowledge City, Country</li>
+                            <li class="mb-2"><i class="fas fa-envelope me-2" style="color: var(--signature-red);"></i><strong>Email:</strong> <a href="mailto:info@ourplatform.com" class="text-decoration-none">info@ourplatform.com</a></li>
+                            <li class="mb-2"><i class="fas fa-phone me-2" style="color: var(--signature-red);"></i><strong>Phone:</strong> 123-456-7890</li>
+                            <li><i class="fas fa-map-marker-alt me-2" style="color: var(--signature-red);"></i><strong>Address:</strong> 123 Learning St, Knowledge City, Country</li>
                         </ul>
                     </div>
                 </div>
@@ -151,30 +149,71 @@
         </div>
     </div>
 </section>
+
 <style>
-/* static/css/about.css */
-.bg-gradient-primary {
-    background: linear-gradient(135deg, #007bff, #0056b3);
+/* Define CSS Variables for Consistency */
+:root {
+    --signature-red: #dc3545;
+    --signature-red-dark: #c82333;
+    --complementary-blue: #007bff;
+    --text-dark: #212529;
+    --text-light: #ffffff;
 }
 
+/* General Styling */
 .transition-hover {
     transition: all 0.3s ease;
 }
 
 .transition-hover:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
 }
 
+/* About Us Section */
+.about-us .btn {
+    padding: 12px 40px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    background-color: var(--text-light);
+    color: var(--signature-red);
+    border: 2px solid var(--signature-red);
+}
+
+.about-us .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    background-color: var(--signature-red);
+    color: var(--text-light);
+    border-color: var(--text-light);
+}
+
+/* Team Cards */
 .team-card img {
     height: 200px;
     object-fit: cover;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 }
 
 .team-card .card-body {
     padding: 1.5rem;
 }
 
+.team-card .btn-outline-primary {
+    border-color: var(--signature-red);
+    color: var(--signature-red);
+}
+
+.team-card .btn-outline-primary:hover {
+    background: var(--signature-red);
+    color: var(--text-light);
+}
+
+/* Core Value Cards */
 .core-value-card i {
     transition: transform 0.3s ease;
 }
@@ -183,6 +222,17 @@
     transform: scale(1.2);
 }
 
+.core-value-card {
+    border-left: 4px solid var(--signature-red);
+}
+
+/* Contact Section */
+.card-header {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
     .about-us .display-4 {
         font-size: 2.5rem;
@@ -196,9 +246,10 @@
         padding: 1rem;
     }
 
-    .btn-lg {
-        padding: 0.5rem 1rem;
-        font-size: 1rem;
+    .about-us .btn {
+        padding: 8px 20px;
+        font-size: 0.9rem;
+        border-radius: 25px;
     }
 }
 
@@ -214,6 +265,16 @@
     .card-body {
         padding: 0.75rem;
     }
+
+    .about-us .btn {
+        padding: 6px 15px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Remove Animate.css for Simplicity */
+.animate__animated {
+    animation: none !important;
 }
 </style>
 {% endblock %}

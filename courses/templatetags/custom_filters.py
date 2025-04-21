@@ -58,3 +58,7 @@ def get_language_name(language_code):
 @register.filter
 def dict_get(dictionary, key):
     return dictionary.get(key, '')
+
+@register.filter(name='add_class')
+def add_class(value, class_name):
+    return value.as_widget(attrs={'class': class_name})

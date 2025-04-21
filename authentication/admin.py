@@ -24,6 +24,7 @@ class CustomUserAdmin(UserAdmin):
         ('Personal info', {'fields': ('first_name', 'last_name', 'phone', 'gender', 'country', 'birth', 'photo', 'address', 'university')}),
         ('Permissions', {'fields': ('is_superuser','is_member', 'is_subscription', 'is_instructor', 'is_partner', 'is_audit', 'is_learner', 'is_note', 'is_staff', 'is_active')}),
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
+        ('Sosical info', {'fields': ('tiktok', 'instagram', 'facebook', 'youtube', 'linkedin', 'twitter')}),
     )
     
     # Menambahkan field untuk mengubah password di admin

@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',  # Google provider
     'csp',
     'mathfilters',
+ 
     
 ]
 
