@@ -1132,10 +1132,21 @@ class LTIExternalTool(models.Model):
     def __str__(self):
         return self.name
 
-    def get_lti_params(self):
+    def get_lti_params(self, user, course, assessment):
         """ Mengembalikan parameter yang dibutuhkan untuk peluncuran LTI """
         return {
             'launch_url': self.launch_url,
             'consumer_key': self.consumer_key,
-            'shared_secret': self.shared_secret
+            'shared_secret': self.shared_secret,
+            'lti_message_type': 'basic-lti-launch-request',
+            'lti_version': '1.1',  # Versi LTI, bisa disesuaikan jika diperlukan
+            'resource_link_id': f"resource-{assessment.id}-{self.id}",
+            'user_id': str(user.id),
+            'roles': 'Instructor' if user.is_instructor else 'Learner',
+            'lis_person_name_full': user.get_full_name() or user.username,
+            'lis_person_contact_email_primary': user.email or '',
+            'context_id': str(course.id),
+            'context_title': course.course_name,
+            'launch_presentation_return_url': '',  # URL kembali jika diperlukan
         }
+        

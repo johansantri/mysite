@@ -1,21 +1,23 @@
 {% extends 'home/tes.html' %}
 
 {% block content %}
-  <p>Sedang menghubungkan ke Moodle...</p>
+<body>
+  <p>Anda akan diarahkan ke Moodle. Klik tombol di bawah untuk melanjutkan.</p>
 
-  <form id="lti_launch_form" action="{{ launch_url }}" method="POST">
-    {% for key, value in lti_params.items %}
-      <input type="hidden" name="{{ key }}" value="{{ value|escape }}">
+  <form id="lti_launch_form" action="{{ launch_url }}" method="post">
+    {% for key, value in lti_parameters.items %}
+      <input type="hidden" name="{{ key }}" value="{{ value }}">
+      <!-- Debug: tampilkan parameter (opsional) -->
+      <p><strong>{{ key }}</strong>: {{ value|escape }}</p>
     {% endfor %}
+
+    <button type="submit" class="btn btn-primary">Lanjutkan ke Moodle</button>
+
     <noscript>
-      <p>JavaScript nonaktif. Klik tombol di bawah untuk lanjut.</p>
-      <button type="submit">Lanjutkan ke Moodle</button>
+      <p>JavaScript nonaktif. Klik tombol di atas untuk lanjut.</p>
     </noscript>
   </form>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      document.getElementById("lti_launch_form").submit();
-    });
-  </script>
+
+</body>
 {% endblock %}

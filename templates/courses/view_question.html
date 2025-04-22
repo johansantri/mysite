@@ -75,12 +75,12 @@
                         {{ lti.name | truncatechars:75 | safe }}  <i class="bi bi-pencil-square"></i>
                       </a>
 
-                      <form method="post" action="{% url 'courses:launch_lti' idcourse=course.id idsection=section.id idlti=assessment.id id_lti_tool=lti.id %}">
-                          {% csrf_token %}
-                          <button type="submit" class="btn btn-link">
-                              {{ lti.name|truncatechars:75 }}
-                          </button>
-                      </form>
+                       <!-- Tombol Launch LTI -->
+                      <a href="{% url 'courses:launch_lti' idcourse=course.id idsection=section.id idlti=assessment.id id_lti_tool=lti.id %}" 
+                        class="btn btn-outline-primary btn-sm mt-1">
+                        Launch
+                      </a>
+
                     </td>
                     <td>
                       <form method="POST" action="{% url 'courses:delete_lti' idcourse=course.id idsection=section.id idlti=assessment.id id_lti_tool=lti.id %}"  style="display:inline;">
