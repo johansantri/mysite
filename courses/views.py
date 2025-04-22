@@ -67,6 +67,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+@csrf_exempt  # Menonaktifkan CSRF untuk view ini
 @login_required
 def launch_lti(request, idcourse, idsection, idlti, id_lti_tool):
     user = request.user
@@ -74,7 +75,7 @@ def launch_lti(request, idcourse, idsection, idlti, id_lti_tool):
 
     logger.debug(f"User: {user.username}, is_instructor={is_instructor}")
 
-    # Cek akses ke course
+    # Verifikasi akses ke course
     try:
         if is_instructor:
             course = get_object_or_404(Course, id=idcourse, instructor__user_id=user.id)
@@ -91,91 +92,53 @@ def launch_lti(request, idcourse, idsection, idlti, id_lti_tool):
     assessment = get_object_or_404(Assessment, id=idlti, section=section)
     lti_tool = get_object_or_404(LTIExternalTool, id=id_lti_tool, assessment=assessment)
 
-    # Ambil parameter LTI dari model
+    # Ambil parameter LTI
     lti_params = lti_tool.get_lti_params(user, course, assessment)
     launch_url = lti_params['launch_url']
     shared_secret = lti_params['shared_secret']
     consumer_key = lti_params['consumer_key']
 
-    # Parameter dasar LTI
-    lti_parameters = {
-        'lti_message_type': 'basic-lti-launch-request',
-        'lti_version': 'LTI-1p1',
-        'resource_link_id': f"resource-{assessment.id}-{lti_tool.id}",
-        'user_id': str(user.id),
-        'roles': 'Instructor' if is_instructor else 'Learner',
-        'lis_person_name_full': user.get_full_name() or user.username,
-        'lis_person_contact_email_primary': user.email or '',
-        'context_id': str(course.id),
-        'context_title': course.course_name,
-        'launch_presentation_return_url': request.build_absolute_uri('/'),
+    # Siapkan parameter OAuth & LTI
+    oauth_params = {
         'oauth_consumer_key': consumer_key,
+        'oauth_nonce': uuid.uuid4().hex,
         'oauth_timestamp': str(int(time.time())),
-        'oauth_nonce': str(uuid.uuid4()),
         'oauth_signature_method': 'HMAC-SHA1',
+        'oauth_version': '1.0',
+        'lti_message_type': 'basic-lti-launch-request',
+        'lti_version': '1.1',
+        'resource_link_id': lti_params['resource_link_id'],
+        'user_id': lti_params['user_id'],
+        'roles': lti_params['roles'],
+        'lis_person_name_full': lti_params['lis_person_name_full'],
+        'lis_person_contact_email_primary': lti_params['lis_person_contact_email_primary'],
+        'context_id': lti_params['context_id'],
+        'context_title': lti_params['context_title'],
+        'context_label': lti_params['context_label'],
+        'launch_presentation_locale': lti_params['launch_presentation_locale'],
+        'resource_link_title': lti_params['resource_link_title'],
+        'launch_presentation_return_url': lti_params['launch_presentation_return_url'],
     }
 
-    # Hitung OAuth signature manually
-    # Step 1: Parse the launch URL to separate the base URL and query parameters
-    parsed_url = urlparse(launch_url.lower())
-    base_uri = parsed_url.scheme + "://" + parsed_url.netloc + parsed_url.path
-    query_params = parse_qs(parsed_url.query)
+    # Menyiapkan OAuth1 untuk menandatangani permintaan
+    oauth = OAuth1(consumer_key, client_secret=shared_secret, signature_type='auth_header')
 
-    # Step 2: Define the HTTP method
-    method = 'POST'
+    # Mengirimkan permintaan POST untuk meluncurkan LTI
+    response = requests.post(launch_url, data=oauth_params, auth=oauth)
 
-    # Step 3: Combine query parameters with LTI parameters for signature
-    all_params = []
-    # Add query parameters from the launch URL
-    for key, values in query_params.items():
-        for value in values:
-            all_params.append((to_unicode(key), to_unicode(value)))
-    # Add LTI parameters
-    for key, value in lti_parameters.items():
-        all_params.append((to_unicode(key), to_unicode(value)))
-    # Sort parameters by key
-    all_params = sorted(all_params, key=lambda x: x[0])
-
-    # Step 4: Normalize parameters for the signature base string
-    normalized_params = []
-    for key, value in all_params:
-        encoded_key = quote(key, safe='')
-        encoded_value = quote(value, safe='')
-        normalized_params.append(f"{encoded_key}={encoded_value}")
-    normalized_string = '&'.join(normalized_params)
-
-    # Step 5: Construct the signature base string
-    encoded_uri = quote(base_uri, safe='')
-    base_string = f"{method}&{encoded_uri}&{quote(normalized_string, safe='')}"
-
-    # Step 6: Compute the HMAC-SHA1 signature
-    signing_key = f"{shared_secret}&".encode('utf-8')
-    base_string_bytes = base_string.encode('utf-8')
-    hashed = hmac.new(signing_key, base_string_bytes, hashlib.sha1)
-    signature = base64.b64encode(hashed.digest()).decode('utf-8')
-
-    # Step 7: Add the signature to the LTI parameters
-    lti_parameters['oauth_signature'] = signature
-
-    # Log the base string and signature for debugging
-    logger.debug(f"Base URI: {base_uri}")
-    logger.debug(f"Query params: {query_params}")
-    logger.debug(f"All params: {all_params}")
-    logger.debug(f"Normalized string: {normalized_string.replace('&', ' & ')}")  # Add spaces for readability
-    logger.debug(f"Base string: {base_string}")
-    logger.debug(f"Signature: {signature}")
-    logger.debug(f"Parameters: {lti_parameters}")
-    logger.debug(f"Launch URL: {launch_url}")
-    logger.debug(f"LTI Parameters: {lti_parameters}")
-    
+    if response.status_code == 200:
+        logger.debug("LTI Tool berhasil diluncurkan.")
+        return render(request, 'courses/lti_launch.html', {
+            'launch_url': launch_url,
+            'launch_data': oauth_params
+        })
+    else:
+        logger.error(f"Gagal meluncurkan LTI: {response.status_code} - {response.text}")
+        messages.error(request, "Terjadi kesalahan saat meluncurkan LTI.")
+        return redirect('authentication:home')
 
 
 
-    # Render form untuk auto-submit
-    return render(request, 'courses/lti_launch.html', {
-        'launch_url': launch_url,
-        'lti_parameters': lti_parameters
-    })
 
 
 
