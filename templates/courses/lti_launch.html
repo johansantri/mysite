@@ -4,11 +4,22 @@
 <body onload="document.forms[0].submit();">
   <p>Sedang mengarahkan ke Moodle, mohon tunggu...</p>
 
-  <form action="{{ launch_url }}" method="POST">
-    {% for key, value in launch_data.items %}
-      <input type="hidden" name="{{ key }}" value="{{ value|escape }}"/>
-    {% endfor %}
-    <noscript><button type="submit">Klik di sini jika tidak diarahkan otomatis</button></noscript>
-  </form>
+ <h1>Launching LTI Tool</h1>
+      <h1>Launching LTI Tool</h1>
+    <p>Tool LTI akan diluncurkan dengan parameter berikut:</p>
+    <ul>
+        <li>Launch URL: {{ launch_url }}</li>
+        <li>Resource Link Title: {{ launch_data.resource_link_title }}</li>
+        <li>User: {{ launch_data.user_id }}</li>
+        <li>Roles: {{ launch_data.roles }}</li>
+        <li>Context Title: {{ launch_data.context_title }}</li>
+    </ul>
+
+    <form action="{{ launch_url }}" method="post">
+        {% for key, value in launch_data.items %}
+            <input type="hidden" name="{{ key }}" value="{{ value }}">
+        {% endfor %}
+        <button type="submit">Launch LTI</button>
+    </form>
 </body>
 {% endblock %}

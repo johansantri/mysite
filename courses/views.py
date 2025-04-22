@@ -65,42 +65,15 @@ import base64
 
 import logging
 
+# Setup logging
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
-@csrf_exempt  # Menonaktifkan CSRF untuk view ini
-@login_required
-def launch_lti(request, idcourse, idsection, idlti, id_lti_tool):
-    user = request.user
-    is_instructor = getattr(user, 'is_instructor', False)
-
-    logger.debug(f"User: {user.username}, is_instructor={is_instructor}")
-
-    # Verifikasi akses ke course
-    try:
-        if is_instructor:
-            course = get_object_or_404(Course, id=idcourse, instructor__user_id=user.id)
-        else:
-            messages.error(request, "Anda tidak punya izin untuk mengakses LTI ini.")
-            return redirect('authentication:home')
-    except Exception as e:
-        logger.error(f"Gagal validasi akses course {idcourse}: {e}")
-        messages.error(request, "Terjadi kesalahan saat memverifikasi akses.")
-        return redirect('authentication:home')
-
-    # Ambil data section, assessment, dan LTI tool
-    section = get_object_or_404(Section, id=idsection, courses=course)
-    assessment = get_object_or_404(Assessment, id=idlti, section=section)
-    lti_tool = get_object_or_404(LTIExternalTool, id=id_lti_tool, assessment=assessment)
-
-    # Ambil parameter LTI
-    lti_params = lti_tool.get_lti_params(user, course, assessment)
-    launch_url = lti_params['launch_url']
-    shared_secret = lti_params['shared_secret']
-    consumer_key = lti_params['consumer_key']
-
-    # Siapkan parameter OAuth & LTI
+# Fungsi untuk menyiapkan dan menandatangani parameter LTI
+def generate_lti_params(launch_url, shared_secret, lti_params):
+    logger.debug("Menyiapkan parameter LTI...")
+    
     oauth_params = {
-        'oauth_consumer_key': consumer_key,
         'oauth_nonce': uuid.uuid4().hex,
         'oauth_timestamp': str(int(time.time())),
         'oauth_signature_method': 'HMAC-SHA1',
@@ -120,25 +93,70 @@ def launch_lti(request, idcourse, idsection, idlti, id_lti_tool):
         'launch_presentation_return_url': lti_params['launch_presentation_return_url'],
     }
 
-    # Menyiapkan OAuth1 untuk menandatangani permintaan
-    oauth = OAuth1(consumer_key, client_secret=shared_secret, signature_type='auth_header')
+    # Log parameter yang akan dikirimkan
+    logger.debug("Parameter LTI yang akan dikirimkan: %s", oauth_params)
 
-    # Mengirimkan permintaan POST untuk meluncurkan LTI
-    response = requests.post(launch_url, data=oauth_params, auth=oauth)
+    # Menyiapkan OAuth1Session dengan hanya shared_secret untuk menandatangani permintaan
+    oauth_session = OAuth1Session(
+        client_key='dummy_consumer_key',  # Dummy key karena tidak diperlukan
+        client_secret=shared_secret,
+        signature_method='HMAC-SHA1',
+        signature_type='body'
+    )
 
-    if response.status_code == 200:
-        logger.debug("LTI Tool berhasil diluncurkan.")
-        return render(request, 'courses/lti_launch.html', {
-            'launch_url': launch_url,
-            'launch_data': oauth_params
-        })
-    else:
-        logger.error(f"Gagal meluncurkan LTI: {response.status_code} - {response.text}")
-        messages.error(request, "Terjadi kesalahan saat meluncurkan LTI.")
+    # Melakukan permintaan POST untuk meluncurkan LTI
+    try:
+        response = oauth_session.post(launch_url, data=oauth_params)
+        logger.debug("Respons dari server LTI: %s", response.text)
+    except Exception as e:
+        logger.error("Error saat mengirim permintaan LTI: %s", str(e))
+        raise
+
+    return response
+
+# View untuk meluncurkan LTI
+@login_required
+def launch_lti(request, idcourse, idsection, idlti, id_lti_tool):
+    user = request.user
+
+    # Verifikasi akses ke course dan section
+    try:
+        course = get_object_or_404(Course, id=idcourse)
+        # Gunakan 'courses' untuk relasi antara Section dan Course
+        section = get_object_or_404(Section, id=idsection, courses=course)
+        assessment = get_object_or_404(Assessment, id=idlti, section=section)
+        lti_tool = get_object_or_404(LTIExternalTool, id=id_lti_tool, assessment=assessment)
+    except Exception as e:
+        messages.error(request, "Terjadi kesalahan saat memverifikasi akses.")
+        logger.error("Error saat memverifikasi akses: %s", str(e))
         return redirect('authentication:home')
 
+    # Siapkan parameter LTI
+    lti_params = {
+        'resource_link_id': f"resource-{lti_tool.id}",
+        'user_id': str(user.id),
+        'roles': 'Instructor' if user.is_instructor else 'Learner',
+        'lis_person_name_full': user.get_full_name(),
+        'lis_person_contact_email_primary': user.email,
+        'context_id': str(course.id),
+        'context_title': course.course_name,
+        'context_label': section.title,
+        'launch_presentation_locale': 'en',
+        'resource_link_title': lti_tool.name,
+        'launch_presentation_return_url': '',  # Sesuaikan sesuai kebutuhan
+    }
 
+    # Panggil fungsi untuk menghasilkan parameter LTI yang sudah ditandatangani
+    response = generate_lti_params(lti_tool.launch_url, lti_tool.shared_secret, lti_params)
 
+    if response.status_code == 200:
+        return render(request, 'courses/lti_launch.html', {
+            'launch_url': lti_tool.launch_url,
+            'launch_data': lti_params
+        })
+    else:
+        messages.error(request, f"Terjadi kesalahan saat meluncurkan LTI: {response.text}")
+        return redirect('authentication:home')
 
 
 

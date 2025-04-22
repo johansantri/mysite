@@ -1132,20 +1132,4 @@ class LTIExternalTool(models.Model):
     def __str__(self):
         return self.name
 
-    def get_lti_params(self, user, course, assessment):
-        return {
-            'launch_url': self.launch_url,
-            'consumer_key': self.consumer_key,
-            'shared_secret': self.shared_secret,
-            'resource_link_id': f"resource-{assessment.id}-{self.id}",
-            'user_id': str(user.id),
-            'roles': 'Instructor' if getattr(user, 'is_instructor', False) else 'Learner',
-            'lis_person_name_full': user.get_full_name() or user.username,
-            'lis_person_contact_email_primary': user.email or '',
-            'context_id': str(course.id),
-            'context_title': course.course_name,
-            'context_label': getattr(course, 'code', 'default_code'),
-            'launch_presentation_locale': 'en',
-            'resource_link_title': assessment.name,
-            'launch_presentation_return_url': '',
-        }
+   
