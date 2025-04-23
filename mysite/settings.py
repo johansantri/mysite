@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-*t=li&h7o=sj40!ic&)p+8!fy3p@*tfg+mz6!xuftigv_qa9yy
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True #False
+DEBUG = False
 #ALLOWED_HOSTS = ['127.0.0.1','localhost']
 ALLOWED_HOSTS = ['127.0.0.1','localhost','ini.icei.ac.id','20.11.247.222']
 SESSION_COOKIE_SECURE = True
@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',  # Google provider
     'csp',
     'mathfilters',
+    'blog',
  
     
 ]

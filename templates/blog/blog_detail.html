@@ -1,0 +1,177 @@
+{% extends 'home/base.html' %}
+{% load static blog_filters %}
+
+{% block content %}
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row g-4">
+
+      <!-- Blog Detail -->
+      <div class="col-lg-8">
+        <div class="card border-0 shadow-sm rounded-3 mb-4">
+          <div class="card-body p-5">
+            <div class="row g-4 align-items-start">
+              {% if post.image %}
+              <div class="col-md-4">
+                <img src="{{ post.image.url }}" class="img-fluid rounded-3 w-100" alt="{{ post.title }}">
+              </div>
+              {% else %}
+              <div class="col-md-4">
+                <div class="no-image-placeholder bg-secondary text-white text-center py-5 rounded-3">No Image</div>
+              </div>
+              {% endif %}
+
+              <div class="col-md-8">
+                <h1 class="fw-bold mb-3 text-danger fs-3">{{ post.title }}</h1>
+                <p class="text-muted small mb-3">
+                  By {{ post.author|default:"Unknown" }} |
+                  {{ post.date_posted|date:"F d, Y" }} |
+                  <a href="{{ post.category.get_absolute_url }}" class="text-decoration-none text-primary">
+                    {{ post.category|default:"Uncategorized" }}
+                  </a> |
+                  {{ post.views }} View{{ post.views|pluralize }} |
+                  {{ post.number_of_comments }} Comment{{ post.number_of_comments|pluralize }}
+                </p>
+                <div class="mb-2">
+                  {% for tag in post.tags.all %}
+                    <a href="{{ tag.get_absolute_url }}" class="badge bg-secondary text-white me-1 mb-1">#{{ tag.name }}</a>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+
+            <div class="blog-content mt-4 mb-4">{{ post.content|safe }}</div>
+
+            <div>
+              <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ post.title }}"
+                 class="btn btn-sm btn-outline-primary me-2">Share on Twitter</a>
+              <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}"
+                 class="btn btn-sm btn-outline-primary">Share on Facebook</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Comment Section -->
+        <div class="card border-0 shadow-sm rounded-3">
+          <div class="card-body p-4">
+            <h3 class="fw-bold text-primary mb-4">Comments ({{ post.number_of_comments }})</h3>
+
+            {% if comments %}
+              <ul class="list-unstyled">
+                {% for comment in comments %}
+                <li class="mb-4 {% if comment.parent %}ms-4{% endif %}">
+                  <div class="d-flex">
+                    <img src="{% static 'images/default-avatar.png' %}" alt="Avatar" class="rounded-circle me-3" width="40">
+                    <div>
+                      <h6 class="mb-1 text-primary">{{ comment.author|default:"Anonymous" }}</h6>
+                      <small class="text-muted">{{ comment.date_posted|date:"F d, Y, H:i" }}</small>
+                      <p class="mt-2">{{ comment.content }}</p>
+                      <a href="#" class="small text-muted" onclick="showReplyForm('{{ comment.id }}')">Reply</a>
+
+                      <form method="POST" class="mt-3 reply-form" id="reply-form-{{ comment.id }}" style="display: none;">
+                        {% csrf_token %}
+                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                        <div class="mb-2">{{ comment_form.author }}</div>
+                        <div class="mb-2">{{ comment_form.content }}</div>
+                        <button type="submit" class="btn btn-sm btn-outline-primary">Submit Reply</button>
+                      </form>
+
+                      {% for reply in comment.replies.all %}
+                      <div class="mt-4 ms-4">
+                        <div class="d-flex">
+                          <img src="{% static 'images/default-avatar.png' %}" class="rounded-circle me-2" width="32">
+                          <div>
+                            <h6 class="mb-1 text-primary">{{ reply.author }}</h6>
+                            <small class="text-muted">{{ reply.date_posted|date:"F d, Y, H:i" }}</small>
+                            <p class="mt-2">{{ reply.content }}</p>
+                          </div>
+                        </div>
+                      </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p class="text-muted">No comments yet. Be the first to comment!</p>
+            {% endif %}
+
+            <h4 class="mt-5 mb-3 fw-bold text-primary">Leave a Comment</h4>
+            <form method="POST">
+              {% csrf_token %}
+              <div class="mb-3">{{ comment_form.author }}</div>
+              <div class="mb-3">{{ comment_form.content }}</div>
+              <button type="submit" class="btn btn-primary">Submit Comment</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-lg-4">
+        <div class="card border-0 rounded-3 shadow-sm p-4 mb-4">
+          <h5 class="fw-bold text-primary mb-3">Categories</h5>
+          <ul class="list-unstyled">
+            {% for cat_data in categories %}
+              <li class="mb-2">
+                <a href="{{ cat_data.category.get_absolute_url }}" class="text-decoration-none {% if post.category == cat_data.category %}fw-bold{% endif %}">
+                  {{ cat_data.category.name }} ({{ cat_data.post_count }})
+                </a>
+              </li>
+            {% empty %}
+              <li class="text-muted">No categories available.</li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div class="card border-0 rounded-3 shadow-sm p-4 mb-4">
+          <h5 class="fw-bold text-primary mb-3">Popular Tags</h5>
+          <div>
+            {% for tag_data in tags %}
+              <a href="{{ tag_data.tag.get_absolute_url }}" class="badge bg-secondary text-white me-1 mb-1">
+                #{{ tag_data.tag.name }} ({{ tag_data.post_count }})
+              </a>
+            {% empty %}
+              <span class="text-muted">No tags available.</span>
+            {% endfor %}
+          </div>
+        </div>
+
+        {% if related_courses %}
+        <div class="card border-0 shadow-sm rounded-3 p-4">
+          <h5 class="fw-bold text-primary mb-3">Related Courses</h5>
+          <div class="row g-3">
+            {% for course in related_courses %}
+            <div class="col-12">
+              <div class="card border-0 rounded-3 h-100">
+                {% if course.image %}
+                  <img src="{{ course.image.url }}" class="card-img-top rounded-top-3" alt="{{ course.course_name }}">
+                {% endif %}
+                <div class="card-body">
+                  <h6 class="fw-semibold text-primary">{{ course.course_name }}</h6>
+                  <p class="text-muted small mb-2">Instructor: {{ course.instructor|default:"Unknown" }}</p>
+                  <a href="{% url 'courses:course_lms_detail' id=course.id slug=course.slug %}" class="btn btn-sm btn-outline-danger w-100">View Course</a>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+function showReplyForm(commentId) {
+  document.querySelectorAll('.reply-form').forEach(form => form.style.display = 'none');
+  const targetForm = document.getElementById(`reply-form-${commentId}`);
+  if (targetForm) {
+    targetForm.style.display = 'block';
+  }
+}
+</script>
+{% endblock %}
