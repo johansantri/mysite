@@ -521,7 +521,7 @@
             {% for category in popular_categories %}
                 <div class="col-6 col-md-4 col-lg-3">
                     <a href="{% url 'courses:category_list' category.slug %}" class="text-decoration-none" aria-label="Lihat kursus dalam kategori {{ category.name }}">
-                        <div class="badge bg-{% cycle 'signature' 'success' 'primary' 'warning' 'info' 'dark' %} p-3 rounded-4 w-100 text-center shadow-sm transition-effect">
+                        <div class="btn btn-outline-{% cycle 'success' 'primary' 'warning' 'info' 'dark' %} p-3 rounded-4 w-100 text-center shadow-sm transition-effect">
                             <span class="fw-bold">{{ category.name }}</span>
                             <small class="d-block mt-1">{{ category.num_courses }} Courses</small>
                         </div>
@@ -777,7 +777,8 @@
     </div>
 </section>
 
-<!-- CTA Section -->
+<!-- CTA Section for Unauthenticated Users -->
+{% if not user.is_authenticated %}
 <section class="py-5 text-center bg-primary text-white">
     <div class="container">
         <h2 class="fw-bold">Ready to Upgrade Your Skills?</h2>
@@ -785,6 +786,8 @@
         <a href="{% url 'authentication:register' %}" class="btn btn-lg mt-3">Sign Up Now</a>
     </div>
 </section>
+
+{% endif %}
 
 {% endblock content %}
 
