@@ -21,7 +21,7 @@ from django.views.decorators.cache import cache_page
 from django.urls import reverse
 from django.contrib import messages
 from django.db.models import F
-from django.http import HttpResponseForbidden,HttpResponse
+from django.http import HttpResponseForbidden,HttpResponse,HttpResponseNotFound
 from django_ckeditor_5.widgets import CKEditor5Widget
 from django import forms
 from django.http import JsonResponse
@@ -754,14 +754,25 @@ def submit_rating(request, id, slug):
 def category_course_list(request, slug):
     # Mengambil objek Category berdasarkan slug
     category = get_object_or_404(Category, slug=slug)
-    
-    # Mengambil kursus yang terkait dengan kategori tersebut
-    courses = Course.objects.filter(category=category)
-    
+
+    # Mendapatkan status 'published'
+    published_status = CourseStatus.objects.filter(status='published').first()
+    if not published_status:
+        return HttpResponseNotFound("Status 'published' tidak ditemukan")
+
+    # Ambil courses yang terkait dengan kategori tersebut dan status 'published'
+    courses = Course.objects.filter(
+        category=category,
+        status_course=published_status,
+        end_enrol__gte=timezone.now()
+    ).select_related(
+        'category', 'instructor__user', 'org_partner'
+    ).prefetch_related('enrollments')
+
     # Paginasi: menampilkan 10 kursus per halaman
     paginator = Paginator(courses, 10)
     page = request.GET.get('page')
-    
+
     try:
         courses_paginated = paginator.page(page)
     except PageNotAnInteger:
@@ -770,11 +781,63 @@ def category_course_list(request, slug):
     except EmptyPage:
         # Jika halaman lebih besar dari jumlah halaman, tampilkan halaman terakhir
         courses_paginated = paginator.page(paginator.num_pages)
-    
-    return render(request, 'courses/course_list.html', {
-        'category': category, 
-        'courses': courses_paginated
-    })
+
+    # Mengambil kategori yang terkait dengan kursus
+    categories = Category.objects.filter(
+        category_courses__status_course=published_status,
+        category_courses__end_enrol__gte=timezone.now()
+    ).annotate(course_count=Count('category_courses')).distinct()
+
+    # Siapkan data untuk ditampilkan
+    courses_data = []
+    total_enrollments = 0
+
+    for course in courses_paginated:
+        review_qs = CourseRating.objects.filter(course=course)
+        average_rating = round(review_qs.aggregate(avg=Avg('rating'))['avg'] or 0, 1)
+        full_stars = int(average_rating)
+        half_star = (average_rating % 1) >= 0.5
+        empty_stars = 5 - full_stars - (1 if half_star else 0)
+
+        num_enrollments = course.enrollments.count()
+        total_enrollments += num_enrollments
+
+        courses_data.append({
+            'course_name': course.course_name,
+            'course_id': course.id,
+            'num_enrollments': num_enrollments,
+            'course_slug': course.slug,
+            'course_image': course.image.url if course.image else None,
+            'instructor': course.instructor.user.get_full_name() if course.instructor else None,
+            'instructor_username': course.instructor.user.username if course.instructor else None,
+            'photo': course.instructor.user.photo.url if course.instructor and course.instructor.user.photo else None,
+            'partner': course.org_partner.name if course.org_partner else None,
+            'partner_photo': course.org_partner.logo.url if course.org_partner and course.org_partner.logo else None,
+            'category': course.category.name if course.category else None,
+            'language': course.language,
+            'average_rating': average_rating,
+            'review_count': review_qs.count(),
+            'full_star_range': range(full_stars),
+            'half_star': half_star,
+            'empty_star_range': range(empty_stars),
+            'duration': course.hour,  # Assuming `duration` is in your model
+        })
+
+    context = {
+        'category': category,
+        'courses': courses_data,
+        'page_obj': courses_paginated,
+        'total_courses': courses.count(),
+        'total_enrollments': total_enrollments,
+        'total_pages': paginator.num_pages,
+        'current_page': courses_paginated.number,
+        'start_index': courses_paginated.start_index(),
+        'end_index': courses_paginated.end_index(),
+        'categories': list(categories.values('id', 'name', 'course_count')),
+    }
+
+    return render(request, 'courses/course_list.html', context)
+
 
 def search_posts(request):
     if not request.user.is_authenticated:

@@ -2,68 +2,268 @@
 {% load static %}
 {% block content %}
 
-            <section class="py-5 bg-light">
-                <div class="container">
-                  
-                    <div class="container my-5">
-                        <h1 class="text-center mb-4">Kursus di Kategori <strong>{{ category.name }}</strong></h1>
-                
-                        <div class="row">
-                            {% for course in courses %}
-                                <div class="col-md-4 mb-4">
-                                    <div class="card shadow-sm">
-                                        <img src="{{ course.image.url }}" class="card-img-top" alt="{{ course.title }}">
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ course.title }}</h5>
-                                            <p class="card-text">{{ course.sort_description|default:"No description available." }}</p>
-                                            <a href="{% url 'courses:course_lms_detail' course.id course.slug %}" class="btn btn-primary">Lihat Kursus</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% empty %}
-                                <div class="col-12">
-                                    <div class="alert alert-warning" role="alert">
-                                        Tidak ada kursus di kategori ini.
-                                    </div>
-                                </div>
-                            {% endfor %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <!-- Page Title -->
+        <div class="text-center my-5">
+            <h1 class="display-4 mb-3" >Courses in <strong style="color: #b02a37;">{{ category.name }}</strong> </h1>
+            <p class="lead text-muted">Explore top-tier courses curated for your learning needs.</p>
+        </div>
+
+        <!-- Course List -->
+        <div class="row g-4">
+            {% for course in courses %}
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="card border-0 rounded-3 h-100 course-card">
+                        <!-- Course Image -->
+                        <div class="course-image-wrapper">
+                            <img src="{{ course.course_image }}" class="card-img-top rounded-top-3" alt="{{ course.course_name }}">
                         </div>
-                
-                        {% if courses.has_other_pages %}
-                            <nav aria-label="Page navigation example" class="mt-5">
-                                <ul class="pagination justify-content-center">
-                                    {% if courses.has_previous %}
-                                        <li class="page-item">
-                                            <a class="page-link" href="?page={{ courses.previous_page_number }}" aria-label="Previous">
-                                                <span aria-hidden="true">&laquo;</span>
-                                            </a>
-                                        </li>
-                                    {% endif %}
-                                    {% for num in courses.paginator.page_range %}
-                                        <li class="page-item {% if courses.number == num %}active{% endif %}">
-                                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-                                        </li>
-                                    {% endfor %}
-                                    {% if courses.has_next %}
-                                        <li class="page-item">
-                                            <a class="page-link" href="?page={{ courses.next_page_number }}" aria-label="Next">
-                                                <span aria-hidden="true">&raquo;</span>
-                                            </a>
-                                        </li>
-                                    {% endif %}
-                                </ul>
-                            </nav>
-                        {% endif %}
+
+                        <div class="card-body d-flex flex-column p-4">
+                            <!-- Course Name -->
+                            <h5 class="card-title text-center mb-3" style="color: #b02a37;">{{ course.course_name }}</h5>
+
+                            <!-- Instructor Name -->
+                            <p class="text-muted mb-2"><strong>Instructor:</strong> {{ course.instructor }}</p>
+
+                            <!-- University Name and Photo -->
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <p class="text-muted mb-0"><strong>Partner:</strong> {{ course.partner }}</p>
+                                {% if course.partner_photo %}
+                                    <img src="{{ course.partner_photo }}" alt="{{ course.partner }}" class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover;">
+                                {% endif %}
+                            </div>
+
+                            <!-- Course Language -->
+                            <p class="text-muted mb-2"><strong>Language:</strong> {{ course.language }}</p>
+
+                            <!-- Number of Enrollments -->
+                            <p class="text-muted mb-2"><strong>Enrollments:</strong> {{ course.num_enrollments }}</p>
+
+                            <!-- Rating -->
+                            <div class="mb-2">
+                                <strong>Rating:</strong>
+                                {% for i in course.full_star_range %}
+                                    <i class="bi bi-star-fill" style="color: #b02a37;"></i>
+                                {% endfor %}
+                                {% if course.half_star %}
+                                    <i class="bi bi-star-half" style="color: #b02a37;"></i>
+                                {% endif %}
+                                {% for i in course.empty_star_range %}
+                                    <i class="bi bi-star text-muted"></i>
+                                {% endfor %}
+                                <span class="text-muted">({{ course.review_count }} Reviews)</span>
+                            </div>
+
+                            <!-- Duration -->
+                            <p class="text-muted mb-3"><strong>Duration:</strong> {{ course.duration }} hours</p>
+
+                            <!-- View Course Button -->
+                            <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}" class="btn btn-course w-100 mt-auto" style="background-color: #b02a37; border-color: #b02a37;">View Course</a>
+                        </div>
                     </div>
-                 
-
-                
-
-                 
-
-                  
                 </div>
-            </section>
+            {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-warning text-center rounded-3" role="alert">
+                        No courses available in this category.
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
 
+        <!-- Pagination -->
+        {% if courses.has_other_pages %}
+            <nav aria-label="Page navigation" class="mt-5">
+                <ul class="pagination justify-content-center">
+                    {% if courses.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ courses.previous_page_number }}" aria-label="Previous" style="color: #b02a37;">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% for num in courses.paginator.page_range %}
+                        <li class="page-item {% if courses.number == num %}active{% endif %}">
+                            <a class="page-link" href="?page={{ num }}" style="color: #b02a37; {% if courses.number == num %}background-color: #b02a37; border-color: #b02a37; color: white;{% endif %}">{{ num }}</a>
+                        </li>
+                    {% endfor %}
+                    {% if courses.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ courses.next_page_number }}" aria-label="Next" style="color: #b02a37;">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    </div>
+</section>
+<style>
+/* General Styling */
+.bg-light {
+    background-color: #f8f9fa !important;
+}
 
+.display-4 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.lead {
+    font-size: 1.2rem;
+    font-weight: 400;
+}
+
+/* Course Card Styling */
+.course-card {
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+.course-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.course-image-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.course-card:hover .card-img-top {
+    transform: scale(1.03);
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.text-muted {
+    font-size: 0.9rem;
+}
+
+/* Button Styling */
+.btn-course {
+    background-color: #b02a37;
+    border-color: #b02a37;
+    color: white;
+    font-weight: 500;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-course:hover {
+    background-color: #8f202c;
+    border-color: #8f202c;
+    transform: translateY(-2px);
+    color: white;
+}
+
+/* Pagination Styling */
+.page-link {
+    border-radius: 5px;
+    margin: 0 3px;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.page-link:hover {
+    background-color: #b02a37;
+    color: white !important;
+    border-color: #b02a37;
+}
+
+.page-item.active .page-link {
+    background-color: #b02a37;
+    border-color: #b02a37;
+    color: white !important;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .display-4 {
+        font-size: 2.2rem;
+    }
+
+    .lead {
+        font-size: 1.1rem;
+    }
+
+    .card-img-top {
+        height: 180px;
+    }
+}
+
+@media (max-width: 768px) {
+    .display-4 {
+        font-size: 1.8rem;
+    }
+
+    .lead {
+        font-size: 1rem;
+    }
+
+    .card-img-top {
+        height: 160px;
+    }
+
+    .card-body {
+        padding: 1.25rem;
+    }
+
+    .card-title {
+        font-size: 1.1rem;
+    }
+
+    .btn-course {
+        padding: 8px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .display-4 {
+        font-size: 1.5rem;
+    }
+
+    .card-img-top {
+        height: 140px;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .card-title {
+        font-size: 1rem;
+    }
+
+    .text-muted {
+        font-size: 0.85rem;
+    }
+
+    .btn-course {
+        padding: 7px;
+        font-size: 0.85rem;
+    }
+}
+</style>
 {% endblock %}
