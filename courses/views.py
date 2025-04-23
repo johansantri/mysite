@@ -65,6 +65,224 @@ import base64
 
 import logging
 
+
+def self_course(request, username, id, slug):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+
+    # Ambil course berdasarkan id dan slug
+    course = get_object_or_404(Course, id=id, slug=slug)
+
+    # Pastikan user yang mengakses adalah user yang benar
+    if request.user.username != username:
+        return redirect('authentication:course_list')
+
+    # Cek apakah user adalah instruktur dari course ini
+    is_instructor = course.instructor == request.user
+
+   
+    
+    course_name = course.course_name
+
+    # Ambil section, material, assessment, dan askora
+    sections = Section.objects.filter(courses=course).prefetch_related(
+        Prefetch('materials', queryset=Material.objects.all()),
+        Prefetch('assessments', queryset=Assessment.objects.all().prefetch_related(
+            Prefetch('questions', queryset=Question.objects.all().prefetch_related(
+                Prefetch('choices', queryset=Choice.objects.all())
+            )),
+            Prefetch('ask_oras', queryset=AskOra.objects.all())
+        ))
+    )
+
+    # Buat daftar konten gabungan dengan informasi section
+    combined_content = []
+    for section in sections:
+        for material in section.materials.all():
+            combined_content.append(('material', material, section))
+        for assessment in section.assessments.all():
+            combined_content.append(('assessment', assessment, section))
+
+    total_content = len(combined_content)
+
+    # Ambil ID konten saat ini dari parameter URL
+    material_id = request.GET.get('material_id')
+    assessment_id = request.GET.get('assessment_id')
+
+    # Tentukan current_content
+    current_content = None
+    if not material_id and not assessment_id:
+        current_content = combined_content[0] if combined_content else None
+    elif material_id:
+        material = get_object_or_404(Material, id=material_id)
+        current_content = ('material', material, next((s for s in sections if material in s.materials.all()), None))
+    elif assessment_id:
+        assessment = get_object_or_404(Assessment, id=assessment_id)
+        current_content = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
+
+    # Handle comments and pagination based on current_content
+    comments = None
+    page_comments = []
+    if current_content:
+        if current_content[0] == 'material':
+            material = current_content[1]
+            comments = Comment.objects.filter(material=material, parent=None).order_by('-created_at')
+        elif current_content[0] == 'assessment':
+            section = current_content[2]
+            comments = Comment.objects.filter(material__section=section, parent=None).order_by('-created_at')
+
+        if comments:
+            paginator = Paginator(comments, 5)
+            page_number = request.GET.get('page')
+            page_comments = paginator.get_page(page_number)
+
+    # Cek status assessment untuk peserta
+    is_started = False
+    is_expired = False
+    remaining_time = 0
+
+    # Jika user adalah instruktur, abaikan cek session assessment
+    if not is_instructor:
+        session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
+        if session:
+            is_started = True
+            remaining_time = int((session.end_time - timezone.now()).total_seconds())
+            if remaining_time <= 0:
+                is_expired = True
+                remaining_time = 0
+        else:
+            if assessment.duration_in_minutes == 0:
+                is_started = True
+                remaining_time = 0
+            else:
+                is_started = False
+
+    # Tentukan indeks konten saat ini
+    current_index = -1
+    if current_content:
+        for i, content in enumerate(combined_content):
+            if (content[0] == current_content[0] and 
+                content[1].id == current_content[1].id and 
+                content[2].id == current_content[2].id):
+                current_index = i
+                break
+        if current_index == -1:
+            print("Warning: Current content not found in combined_content, defaulting to first content")
+            current_index = 0
+            current_content = combined_content[0] if combined_content else None
+
+    # Tentukan konten sebelumnya dan berikutnya
+    previous_content = combined_content[current_index - 1] if current_index > 0 else None
+    next_content = combined_content[current_index + 1] if current_index < len(combined_content) - 1 and current_index != -1 else None
+    is_last_content = next_content is None
+
+    # Buat URL untuk navigasi
+    previous_url = "#" if not previous_content else f"?{previous_content[0]}_id={previous_content[1].id}"
+    next_url = "#" if not next_content else f"?{next_content[0]}_id={next_content[1].id}"
+
+    # Skip progres dan sertifikat untuk instruktur
+    if not is_instructor:
+        # Save track records
+        if current_content:
+            if current_content[0] == 'material':
+                material = current_content[1]
+                if not MaterialRead.objects.filter(user=request.user, material=material).exists():
+                    MaterialRead.objects.create(user=request.user, material=material)
+            elif current_content[0] == 'assessment':
+                assessment = current_content[1]
+                if not AssessmentRead.objects.filter(user=request.user, assessment=assessment).exists():
+                    AssessmentRead.objects.create(user=request.user, assessment=assessment)
+
+        # Lacak kemajuan pengguna
+        user_progress, created = CourseProgress.objects.get_or_create(user=request.user, course=course)
+        if current_content and (current_index + 1) > user_progress.progress_percentage / 100 * total_content:
+            user_progress.progress_percentage = (current_index + 1) / total_content * 100
+            user_progress.save()
+
+    # Ambil skor terakhir dari pengguna (untuk peserta)
+    if not is_instructor:
+        score = Score.objects.filter(user=request.user.username, course=course).order_by('-date').first()
+        user_grade = 'Fail'
+        if score:
+            score_percentage = (score.score / score.total_questions) * 100
+            user_grade = calculate_grade(score_percentage, course)
+
+    # Proses assessment untuk instruktur dan peserta
+    assessments = Assessment.objects.filter(section__courses=course)
+    assessment_scores = []
+    total_max_score = 0
+    total_score = 0  # Inisialisasi total_score
+    all_assessments_submitted = True
+
+    grade_range = GradeRange.objects.filter(course=course).all()
+    if grade_range:
+        passing_threshold = grade_range.filter(name='Pass').first().min_grade
+        max_grade = grade_range.filter(name='Pass').first().max_grade
+    else:
+        return render(request, 'error_template.html', {'message': 'Grade range not found for this course.'})
+
+    # Proses skor untuk setiap assessment
+    for assessment in assessments:
+        score_value = Decimal(0)
+        total_correct_answers = 0
+        total_questions = assessment.questions.count()
+        if total_questions > 0:
+            answers_exist = False
+            for question in assessment.questions.all():
+                answers = QuestionAnswer.objects.filter(question=question, user=request.user)
+                if answers.exists():
+                    answers_exist = True
+                total_correct_answers += answers.filter(choice__is_correct=True).count()
+            if not answers_exist:
+                all_assessments_submitted = False
+            if total_questions > 0:
+                score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
+        else:  # Assessment adalah AskOra
+            askora_submissions = Submission.objects.filter(
+                askora__assessment=assessment,
+                user=request.user
+            )
+            if not askora_submissions.exists():
+                all_assessments_submitted = False
+            else:
+                latest_submission = askora_submissions.order_by('-submitted_at').first()
+                assessment_score = AssessmentScore.objects.filter(submission=latest_submission).first()
+                if assessment_score:
+                    score_value = Decimal(assessment_score.final_score)
+
+        score_value = min(score_value, Decimal(assessment.weight))
+        assessment_scores.append({
+            'assessment': assessment,
+            'score': score_value,
+            'weight': assessment.weight
+        })
+        total_max_score += assessment.weight
+
+    # Jangan lupa untuk merender halaman dengan context
+    context = {
+        'course': course,
+        'course_name': course_name,
+        'sections': sections,
+        'current_content': current_content,
+        'previous_url': previous_url,
+        'next_url': next_url,
+        'course_progress': user_progress.progress_percentage if not is_instructor else None,
+        'user_grade': user_grade if not is_instructor else None,
+        'assessment_results': assessment_scores,
+        'total_score': total_score,
+        'overall_percentage': (total_score / total_max_score) * 100 if total_max_score > 0 else 0,
+        'total_weight': total_max_score,
+        'status': 'Pass' if total_score >= passing_threshold else 'Fail',
+        'is_last_content': is_last_content,
+        'comments': page_comments,
+        'material': current_content[1] if current_content and current_content[0] == 'material' else None,
+        'assessment': current_content[1] if current_content and current_content[0] == 'assessment' else None,
+    }
+
+    return render(request, 'instructor/self_course.html', context)
+
+
+
 # Setup logger
 # Inisialisasi logger
 logger = logging.getLogger(__name__)
@@ -2523,6 +2741,9 @@ def course_lms_detail(request, id, slug):
         'empty_star_range': empty_star_range,
         'average_rating': average_rating
     })
+
+
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)

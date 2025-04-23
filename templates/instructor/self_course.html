@@ -1,0 +1,119 @@
+{% extends 'home/tes.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block content %}
+
+  <!-- Main Content -->
+ 
+    {% if current_content %}
+      {% if current_content.0 == 'material' %}
+        <!-- Material Content -->
+        <div class="material-item" style="border-bottom: 2px solid rgb(116, 114, 114); padding: 20px; background-color: #f9f9f9;">
+          <h2 class="material-title h4" style="color: rgb(0, 0, 0);">{{ current_content.1.title }}</h2>
+          <p class="material-description" style="font-size: 14px; color: #555;">{{ current_content.1.description |safe}}</p>
+          <div class="comment-section" style="margin-top: 30px;">
+            <h4>Leave a Comment for discussion</h4>
+            <form method="POST" action="{% url 'courses:add_comment' material_id=current_content.1.id %}">
+              {% csrf_token %}
+              <div class="form-group">
+                <textarea name="content" class="form-control" rows="4" placeholder="Write your comment here..." required></textarea>
+              </div>
+              <br>
+              <button type="submit" class="btn btn-primary">Post Comment</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Comments Section -->
+        <div class="material-item border-bottom p-4 bg-light">
+          {% if comments %}
+            <div class="comments-section">
+              <hr>
+              <div class="comments-list mt-4">
+                {% for comment in comments %}
+                  <div class="comment-item border rounded p-3 mb-3 bg-white shadow-sm">
+                    <p>
+                      <span class="fw-bold">{{ comment.user.username }}</span> 
+                      <small class="text-muted">Posted on {{ comment.created_at|date:"F j, Y, g:i a" }}</small>
+                    </p>
+                    <p>{{ comment.content }}</p>
+
+                    <!-- Reply Button -->
+                    <button class="btn btn-link" data-bs-toggle="collapse" data-bs-target="#replyForm{{ comment.id }}" aria-expanded="false" aria-controls="replyForm{{ comment.id }}">
+                      Reply
+                    </button>
+
+                    <!-- Reply Form (hidden by default) -->
+                    <div class="collapse" id="replyForm{{ comment.id }}">
+                      <form method="POST" action="{% url 'courses:add_comment' material_id=current_content.1.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="parent_comment_id" value="{{ comment.id }}">
+                        <div class="form-group">
+                          <textarea name="content" class="form-control" rows="3" placeholder="Write your reply here..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-2">Post Reply</button>
+                      </form>
+                    </div>
+                  </div>
+                {% empty %}
+                  <div class="alert alert-info" role="alert">
+                    No comments yet. Be the first to comment!
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+        </div>
+
+      {% elif current_content.0 == 'assessment' %}
+        <!-- Assessment Content -->
+        {% if current_content.1.questions.exists %}
+        <div class="assessment-item" style="border-bottom: 2px solid rgb(134, 134, 134); padding: 20px; background-color: #f9f9f9;">
+          <h3 class="h5" style="color: rgb(2, 2, 2); font-size: 24px;">Assessment: {{ current_content.1.name }}</h3>
+          
+          <!-- Display time from DB -->
+          <p>Time for this assessment: {{ current_content.1.duration_in_minutes }} minutes</p>
+          
+          <form method="POST" action="{% url 'courses:submit_assessment' assessment_id=current_content.1.id %}">
+            {% csrf_token %}
+            <ul style="list-style: none; padding-left: 0;">
+              {% for question in current_content.1.questions.all|randomize %}
+                <li class="question" style="margin-bottom: 30px;">
+                  <div style="display: inline-block; margin-left: 10px; padding: 10px; background-color: #e9ecef; border-radius: 8px; font-size: 18px; color: #555;">
+                    {{ question.text |safe }}
+                  </div>
+                  <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
+                    {% for choice in question.choices.all|randomize %}
+                      <li style="margin-bottom: 15px;">
+                        <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}" id="choice_{{ choice.id }}">
+                        <label for="choice_{{ choice.id }}" style="cursor: pointer;">{{ choice.text |safe }}</label>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </li>
+              {% endfor %}
+            </ul>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+        {% endif %}
+      {% endif %}
+
+      <!-- Navigation buttons -->
+      <div class="d-flex justify-content-between" style="margin-top: 30px;">
+        <a href="{{ previous_url }}" class="btn btn-secondary">Previous</a>
+        {% if is_last_content %}
+          <p class="text-center">You have reached the end of this content. Thank you for participating!</p>
+        {% else %}
+          <a href="{{ next_url }}" class="btn btn-primary">Next</a>
+        {% endif %}
+      </div>
+    {% endif %}
+ 
+
+  {% block scripts %}
+    <script>
+      // Remove the timer-related logic
+    </script>
+  {% endblock %}
+{% endblock %}
