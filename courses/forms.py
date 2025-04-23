@@ -393,78 +393,65 @@ class MatrialForm(forms.ModelForm):
         }
 
 class ProfilForm(forms.ModelForm):
-    #description = forms.CharField(widget=CKEditor5Widget())
     class Meta:
         model = Course
-        fields = ['sort_description','description','image','link_video','hour','language','level','start_date','end_date','start_enrol','end_enrol']
+        fields = ['sort_description', 'description', 'image', 'link_video', 'hour', 'language', 'level', 'start_date', 'end_date', 'start_enrol', 'end_enrol']
 
-        
         widgets = {
-            
             'sort_description': forms.TextInput(attrs={'placeholder': 'Enter short description here', 'class': 'form-control'}),
-            "description": CKEditor5Widget(
-                attrs={"class": "django_ckeditor_5"},
-                config_name="extends",
-            ),
-            #'description': CKEditor5Widget(attrs={'placeholder': 'Enter full description here', 'class': 'django_ckeditor_5'}),
+            "description": CKEditor5Widget(attrs={"class": "django_ckeditor_5"}, config_name="extends"),
             'image': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
             'link_video': forms.URLInput(attrs={'placeholder': 'Enter video URL here', 'class': 'form-control'}),
             'hour': forms.NumberInput(attrs={'class': 'form-control'}),
             'language': forms.Select(attrs={'class': 'form-control'}),
-            'level': forms.Select(choices=[('beginner', 'Beginner'), ('intermediate', 'Intermediate'), ('advanced', 'Advanced')], attrs={'class': 'form-control'}),           
+            'level': forms.Select(choices=[('beginner', 'Beginner'), ('intermediate', 'Intermediate'), ('advanced', 'Advanced')], attrs={'class': 'form-control'}),
             'start_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'end_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'start_enrol': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'end_enrol': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
         }
-    def __init__(self, *args, **kwargs):
 
+    def __init__(self, *args, **kwargs):
         super(ProfilForm, self).__init__(*args, **kwargs)
 
-
     def save(self, commit=True):
-
         course = super(ProfilForm, self).save(commit=False)
 
-
         # If the image field has changed, delete the old image
-
         if self.cleaned_data.get('image') and course.pk:
-
             old_course = Course.objects.get(pk=course.pk)
-
             if old_course.image != self.cleaned_data['image']:
-
                 old_course.delete_old_image()
 
-
-        # Convert the uploaded image to WebP format
-
+        # Convert and resize image
         if self.cleaned_data.get('image'):
-
             image_file = self.cleaned_data['image']
-
             image = PILImage.open(image_file)
 
+            # Resize the image to 150x150 pixels using LANCZOS resampling
+            image = image.resize((1200, 628), PILImage.Resampling.LANCZOS)
 
-            # Create a BytesIO object to hold the WebP image
+            # Save the image to a BytesIO object to work with it in memory
+            image_io = io.BytesIO()
+            
+            # Ensure the image is saved as WebP with a compression quality
+            image.save(image_io, format='WEBP', quality=100)  # Adjust quality if needed
+            
+            image_io.seek(0)
 
-            webp_image_io = io.BytesIO()
-
-            image.save(webp_image_io, format='WEBP')
-
-            webp_image_io.seek(0)
-
-
+            # Check if image size exceeds 100KB, and adjust quality until it's within limit
+            while image_io.tell() > 100 * 1024:  # 100KB in bytes
+                image_io.seek(0)  # Reset the pointer
+                image.save(image_io, format='WEBP', quality=100)  # Decrease quality if necessary
+                image_io.seek(0)
+            
             # Create a new ContentFile to save the WebP image
+            webp_image_file = ContentFile(image_io.read(), name=image_file.name.rsplit('.', 1)[0] + '.webp')
 
-            webp_image_file = ContentFile(webp_image_io.read(), name=image_file.name.rsplit('.', 1)[0] + '.webp')
-
+            # Save the processed image file to the course instance
             course.image.save(webp_image_file.name, webp_image_file, save=False)
 
-
         if commit:
-
             course.save()
 
         return course
