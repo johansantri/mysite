@@ -65,18 +65,20 @@ import base64
 
 import logging
 
-# Setup logging
+# Setup logger
+# Inisialisasi logger
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 # Fungsi untuk menyiapkan dan menandatangani parameter LTI
-def generate_lti_params(launch_url, shared_secret, lti_params):
-    logger.debug("Menyiapkan parameter LTI...")
+def generate_lti_params(launch_url, shared_secret, consumer_key, lti_params):
+    logger.info("Menyiapkan parameter LTI untuk peluncuran.")
     
+    # Menyiapkan parameter OAuth
     oauth_params = {
-        'oauth_nonce': uuid.uuid4().hex,
-        'oauth_timestamp': str(int(time.time())),
-        'oauth_signature_method': 'HMAC-SHA1',
+        'oauth_consumer_key': consumer_key,  # Menambahkan consumer_key
+        'oauth_nonce': uuid.uuid4().hex,  # Unik untuk setiap permintaan
+        'oauth_timestamp': str(int(time.time())),  # Waktu saat permintaan dibuat
+        'oauth_signature_method': 'HMAC-SHA1',  # Metode tanda tangan
         'oauth_version': '1.0',
         'lti_message_type': 'basic-lti-launch-request',
         'lti_version': '1.1',
@@ -93,34 +95,36 @@ def generate_lti_params(launch_url, shared_secret, lti_params):
         'launch_presentation_return_url': lti_params['launch_presentation_return_url'],
     }
 
-    # Log parameter yang akan dikirimkan
-    logger.debug("Parameter LTI yang akan dikirimkan: %s", oauth_params)
-
-    # Menyiapkan OAuth1Session dengan hanya shared_secret untuk menandatangani permintaan
+    # Menyiapkan OAuth1Session dengan shared_secret untuk menandatangani permintaan
     oauth_session = OAuth1Session(
-        client_key='dummy_consumer_key',  # Dummy key karena tidak diperlukan
+        client_key=consumer_key,  # Gunakan consumer_key yang valid
         client_secret=shared_secret,
         signature_method='HMAC-SHA1',
         signature_type='body'
     )
 
-    # Melakukan permintaan POST untuk meluncurkan LTI
     try:
+        # Melakukan permintaan POST untuk meluncurkan LTI
         response = oauth_session.post(launch_url, data=oauth_params)
-        logger.debug("Respons dari server LTI: %s", response.text)
+        logger.info("Permintaan LTI berhasil dikirim.")
+        return response
     except Exception as e:
-        logger.error("Error saat mengirim permintaan LTI: %s", str(e))
+        logger.error(f"Error saat mengirim permintaan LTI: {str(e)}")
         raise
 
-    return response
-
-# View untuk meluncurkan LTI
 @login_required
 def launch_lti(request, idcourse, idsection, idlti, id_lti_tool):
     user = request.user
+    logger.info(f"Instruktur {user.get_full_name()} mencoba meluncurkan LTI.")
 
-    # Verifikasi akses ke course dan section
+    # Hardcoded LTI Tool details
+    lti_tool_name = "Example LTI Tool"
+    launch_url = "https://idols.ui.ac.id/enrol/lti/tool.php?id=38"  # Hardcoded LTI Launch URL
+    shared_secret = "IAocmdT0wTaDLJyz53whZ2IcisZLyzgp"  # Hardcoded Shared Secret
+    consumer_key = "your_consumer_key_here"  # Hardcoded consumer key yang sesuai dengan Moodle
+
     try:
+        # Verifikasi akses ke course dan section
         course = get_object_or_404(Course, id=idcourse)
         # Gunakan 'courses' untuk relasi antara Section dan Course
         section = get_object_or_404(Section, id=idsection, courses=course)
@@ -142,20 +146,32 @@ def launch_lti(request, idcourse, idsection, idlti, id_lti_tool):
         'context_title': course.course_name,
         'context_label': section.title,
         'launch_presentation_locale': 'en',
-        'resource_link_title': lti_tool.name,
-        'launch_presentation_return_url': '',  # Sesuaikan sesuai kebutuhan
+        'resource_link_title': lti_tool_name,
+        'launch_presentation_return_url': '',  # Sesuaikan dengan kebutuhan
     }
 
-    # Panggil fungsi untuk menghasilkan parameter LTI yang sudah ditandatangani
-    response = generate_lti_params(lti_tool.launch_url, lti_tool.shared_secret, lti_params)
+    logger.info(f"Mempersiapkan parameter LTI untuk user {user.get_full_name()} dengan role {lti_params['roles']}.")
 
-    if response.status_code == 200:
-        return render(request, 'courses/lti_launch.html', {
-            'launch_url': lti_tool.launch_url,
-            'launch_data': lti_params
-        })
-    else:
-        messages.error(request, f"Terjadi kesalahan saat meluncurkan LTI: {response.text}")
+    # Panggil fungsi untuk menghasilkan parameter LTI yang sudah ditandatangani
+    try:
+        response = generate_lti_params(launch_url, shared_secret, consumer_key, lti_params)
+
+        # Jika LTI berhasil diluncurkan
+        if response.status_code == 200:
+            logger.info("LTI Tool berhasil diluncurkan.")
+            return render(request, 'courses/lti_launch.html', {
+                'launch_url': launch_url,
+                'launch_data': lti_params
+            })
+        else:
+            logger.error(f"LTI launch failed with status {response.status_code}: {response.text}")
+            messages.error(request, f"Terjadi kesalahan saat meluncurkan LTI: {response.text}")
+            return redirect('authentication:home')
+
+    except Exception as e:
+        # Error jika permintaan gagal
+        logger.error(f"Error during LTI launch: {str(e)}")
+        messages.error(request, f"Terjadi kesalahan saat meluncurkan LTI: {str(e)}")
         return redirect('authentication:home')
 
 

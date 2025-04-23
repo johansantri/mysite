@@ -1,192 +1,442 @@
-Menyiapkan parameter LTI...
-Parameter LTI yang akan dikirimkan: {'oauth_nonce': '3a78a393f36f466f9ee533f2f918d7fe', 'oauth_timestamp': '1745312538', 'oauth_signature_method': 'HMAC-SHA1', 'oauth_version': '1.0', 'lti_message_type': 'basic-lti-launch-request', 'lti_version': '1.1', 'resource_link_id': 'resource-4', 'user_id': '3', 'roles': 'Instructor', 'lis_person_name_full': 'Mr Instructor LMS', 'lis_person_contact_email_primary': 'instructor@instructor.com', 'context_id': '1', 'context_title': 'full stack development', 'context_label': 'Django orm', 'launch_presentation_locale': 'en', 'resource_link_title': 'soal', 'launch_presentation_return_url': ''}
-Respons dari server LTI: <div class="alert alert-danger alert-block fade in "  role="alert" data-aria-autofocus="true">
-    <button type="button" class="close" data-dismiss="alert">&times;</button>
-    Failed request. Reason: Sorry, there was an error connecting you to the application.
-</div><!DOCTYPE html>
-
-<html  dir="ltr" lang="en" xml:lang="en">
-<head>
-    <title>Open tool</title>
-    <link rel="shortcut icon" href="https://idols.ui.ac.id/theme/image.php/remui/theme/1685954711/favicon" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="keywords" content="moodle, Open tool" />
-<link rel="stylesheet" type="text/css" href="https://idols.ui.ac.id/theme/yui_combo.php?rollup/3.17.2/yui-moodlesimple-min.css" /><script id="firstthemesheet" type="text/css">/** Required in order to fix style inclusion problems in IE with YUI **/</script><link rel="stylesheet" type="text/css" href="https://idols.ui.ac.id/theme/styles.php/remui/1685954711_1/all" />
-<script type="text/javascript">
-//<![CDATA[
-var M = {}; M.yui = {};
-M.pageloadstarttime = new Date();
-M.cfg = {"wwwroot":"https:\/\/idols.ui.ac.id","sesskey":"ySZZ8Gul14","themerev":"1685954711","slasharguments":1,"theme":"remui","iconsystemmodule":"core\/icon_system_fontawesome","jsrev":"1685954711","admin":"admin","svgicons":true,"usertimezone":"Asia\/Jakarta","contextid":1};var yui1ConfigFn = function(me) {if(/-skin|reset|fonts|grids|base/.test(me.name)){me.type='css';me.path=me.path.replace(/\.js/,'.css');me.path=me.path.replace(/\/yui2-skin/,'/assets/skins/sam/yui2-skin')}};
-var yui2ConfigFn = function(me) {var parts=me.name.replace(/^moodle-/,'').split('-'),component=parts.shift(),module=parts[0],min='-min';if(/-(skin|core)$/.test(me.name)){parts.pop();me.type='css';min=''}
-if(module){var filename=parts.join('-');me.path=component+'/'+module+'/'+filename+min+'.'+me.type}else{me.path=component+'/'+component+'.'+me.type}};
-YUI_config = {"debug":false,"base":"https:\/\/idols.ui.ac.id\/lib\/yuilib\/3.17.2\/","comboBase":"https:\/\/idols.ui.ac.id\/theme\/yui_combo.php?","combine":true,"filter":null,"insertBefore":"firstthemesheet","groups":{"yui2":{"base":"https:\/\/idols.ui.ac.id\/lib\/yuilib\/2in3\/2.9.0\/build\/","comboBase":"https:\/\/idols.ui.ac.id\/theme\/yui_combo.php?","combine":true,"ext":false,"root":"2in3\/2.9.0\/build\/","patterns":{"yui2-":{"group":"yui2","configFn":yui1ConfigFn}}},"moodle":{"name":"moodle","base":"https:\/\/idols.ui.ac.id\/theme\/yui_combo.php?m\/1685954711\/","combine":true,"comboBase":"https:\/\/idols.ui.ac.id\/theme\/yui_combo.php?","ext":false,"root":"m\/1685954711\/","patterns":{"moodle-":{"group":"moodle","configFn":yui2ConfigFn}},"filter":null,"modules":{"moodle-core-blocks":{"requires":["base","node","io","dom","dd","dd-scroll","moodle-core-dragdrop","moodle-core-notification"]},"moodle-core-formchangechecker":{"requires":["base","event-focus","moodle-core-event"]},"moodle-core-lockscroll":{"requires":["plugin","base-build"]},"moodle-core-popuphelp":{"requires":["moodle-core-tooltip"]},"moodle-core-event":{"requires":["event-custom"]},"moodle-core-dragdrop":{"requires":["base","node","io","dom","dd","event-key","event-focus","moodle-core-notification"]},"moodle-core-notification":{"requires":["moodle-core-notification-dialogue","moodle-core-notification-alert","moodle-core-notification-confirm","moodle-core-notification-exception","moodle-core-notification-ajaxexception"]},"moodle-core-notification-dialogue":{"requires":["base","node","panel","escape","event-key","dd-plugin","moodle-core-widget-focusafterclose","moodle-core-lockscroll"]},"moodle-core-notification-alert":{"requires":["moodle-core-notification-dialogue"]},"moodle-core-notification-confirm":{"requires":["moodle-core-notification-dialogue"]},"moodle-core-notification-exception":{"requires":["moodle-core-notification-dialogue"]},"moodle-core-notification-ajaxexception":{"requires":["moodle-core-notification-dialogue"]},"moodle-core-handlebars":{"condition":{"trigger":"handlebars","when":"after"}},"moodle-core-languninstallconfirm":{"requires":["base","node","moodle-core-notification-confirm","moodle-core-notification-alert"]},"moodle-core-maintenancemodetimer":{"requires":["base","node"]},"moodle-core-actionmenu":{"requires":["base","event","node-event-simulate"]},"moodle-core-checknet":{"requires":["base-base","moodle-core-notification-alert","io-base"]},"moodle-core-tooltip":{"requires":["base","node","io-base","moodle-core-notification-dialogue","json-parse","widget-position","widget-position-align","event-outside","cache-base"]},"moodle-core-chooserdialogue":{"requires":["base","panel","moodle-core-notification"]},"moodle-core_availability-form":{"requires":["base","node","event","event-delegate","panel","moodle-core-notification-dialogue","json"]},"moodle-backup-backupselectall":{"requires":["node","event","node-event-simulate","anim"]},"moodle-backup-confirmcancel":{"requires":["node","node-event-simulate","moodle-core-notification-confirm"]},"moodle-course-modchooser":{"requires":["moodle-core-chooserdialogue","moodle-course-coursebase"]},"moodle-course-categoryexpander":{"requires":["node","event-key"]},"moodle-course-dragdrop":{"requires":["base","node","io","dom","dd","dd-scroll","moodle-core-dragdrop","moodle-core-notification","moodle-course-coursebase","moodle-course-util"]},"moodle-course-util":{"requires":["node"],"use":["moodle-course-util-base"],"submodules":{"moodle-course-util-base":{},"moodle-course-util-section":{"requires":["node","moodle-course-util-base"]},"moodle-course-util-cm":{"requires":["node","moodle-course-util-base"]}}},"moodle-course-formatchooser":{"requires":["base","node","node-event-simulate"]},"moodle-course-management":{"requires":["base","node","io-base","moodle-core-notification-exception","json-parse","dd-constrain","dd-proxy","dd-drop","dd-delegate","node-event-delegate"]},"moodle-form-dateselector":{"requires":["base","node","overlay","calendar"]},"moodle-form-passwordunmask":{"requires":[]},"moodle-form-shortforms":{"requires":["node","base","selector-css3","moodle-core-event"]},"moodle-question-preview":{"requires":["base","dom","event-delegate","event-key","core_question_engine"]},"moodle-question-searchform":{"requires":["base","node"]},"moodle-question-chooser":{"requires":["moodle-core-chooserdialogue"]},"moodle-availability_completion-form":{"requires":["base","node","event","moodle-core_availability-form"]},"moodle-availability_date-form":{"requires":["base","node","event","io","moodle-core_availability-form"]},"moodle-availability_grade-form":{"requires":["base","node","event","moodle-core_availability-form"]},"moodle-availability_group-form":{"requires":["base","node","event","moodle-core_availability-form"]},"moodle-availability_grouping-form":{"requires":["base","node","event","moodle-core_availability-form"]},"moodle-availability_paypal-form":{"requires":["base","node","event","moodle-core_availability-form"]},"moodle-availability_profile-form":{"requires":["base","node","event","moodle-core_availability-form"]},"moodle-mod_assign-history":{"requires":["node","transition"]},"moodle-mod_customcert-rearrange":{"requires":["dd-delegate","dd-drag"]},"moodle-mod_forum-subscriptiontoggle":{"requires":["base-base","io-base"]},"moodle-mod_quiz-autosave":{"requires":["base","node","event","event-valuechange","node-event-delegate","io-form"]},"moodle-mod_quiz-modform":{"requires":["base","node","event"]},"moodle-mod_quiz-dragdrop":{"requires":["base","node","io","dom","dd","dd-scroll","moodle-core-dragdrop","moodle-core-notification","moodle-mod_quiz-quizbase","moodle-mod_quiz-util-base","moodle-mod_quiz-util-page","moodle-mod_quiz-util-slot","moodle-course-util"]},"moodle-mod_quiz-toolboxes":{"requires":["base","node","event","event-key","io","moodle-mod_quiz-quizbase","moodle-mod_quiz-util-slot","moodle-core-notification-ajaxexception"]},"moodle-mod_quiz-util":{"requires":["node","moodle-core-actionmenu"],"use":["moodle-mod_quiz-util-base"],"submodules":{"moodle-mod_quiz-util-base":{},"moodle-mod_quiz-util-slot":{"requires":["node","moodle-mod_quiz-util-base"]},"moodle-mod_quiz-util-page":{"requires":["node","moodle-mod_quiz-util-base"]}}},"moodle-mod_quiz-questionchooser":{"requires":["moodle-core-chooserdialogue","moodle-mod_quiz-util","querystring-parse"]},"moodle-mod_quiz-quizbase":{"requires":["base","node"]},"moodle-message_airnotifier-toolboxes":{"requires":["base","node","io"]},"moodle-block_xp-rulepicker":{"requires":["base","node","handlebars","moodle-core-notification-dialogue"]},"moodle-block_xp-filters":{"requires":["base","node","moodle-core-dragdrop","moodle-core-notification-confirm","moodle-block_xp-rulepicker"]},"moodle-block_xp-notification":{"requires":["base","node","handlebars","button-plugin","moodle-core-notification-dialogue"]},"moodle-filter_glossary-autolinker":{"requires":["base","node","io-base","json-parse","event-delegate","overlay","moodle-core-event","moodle-core-notification-alert","moodle-core-notification-exception","moodle-core-notification-ajaxexception"]},"moodle-filter_mathjaxloader-loader":{"requires":["moodle-core-event"]},"moodle-editor_atto-editor":{"requires":["node","transition","io","overlay","escape","event","event-simulate","event-custom","node-event-html5","node-event-simulate","yui-throttle","moodle-core-notification-dialogue","moodle-core-notification-confirm","moodle-editor_atto-rangy","handlebars","timers","querystring-stringify"]},"moodle-editor_atto-plugin":{"requires":["node","base","escape","event","event-outside","handlebars","event-custom","timers","moodle-editor_atto-menu"]},"moodle-editor_atto-menu":{"requires":["moodle-core-notification-dialogue","node","event","event-custom"]},"moodle-editor_atto-rangy":{"requires":[]},"moodle-report_eventlist-eventfilter":{"requires":["base","event","node","node-event-delegate","datatable","autocomplete","autocomplete-filters"]},"moodle-report_loglive-fetchlogs":{"requires":["base","event","node","io","node-event-delegate"]},"moodle-gradereport_grader-gradereporttable":{"requires":["base","node","event","handlebars","overlay","event-hover"]},"moodle-gradereport_history-userselector":{"requires":["escape","event-delegate","event-key","handlebars","io-base","json-parse","moodle-core-notification-dialogue"]},"moodle-tool_capability-search":{"requires":["base","node"]},"moodle-tool_lp-dragdrop-reorder":{"requires":["moodle-core-dragdrop"]},"moodle-tool_monitor-dropdown":{"requires":["base","event","node"]},"moodle-assignfeedback_editpdf-editor":{"requires":["base","event","node","io","graphics","json","event-move","event-resize","transition","querystring-stringify-simple","moodle-core-notification-dialog","moodle-core-notification-alert","moodle-core-notification-warning","moodle-core-notification-exception","moodle-core-notification-ajaxexception"]},"moodle-atto_accessibilitychecker-button":{"requires":["color-base","moodle-editor_atto-plugin"]},"moodle-atto_accessibilityhelper-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_align-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_bold-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_charmap-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_clear-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_collapse-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_emoticon-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_equation-button":{"requires":["moodle-editor_atto-plugin","moodle-core-event","io","event-valuechange","tabview","array-extras"]},"moodle-atto_html-beautify":{},"moodle-atto_html-codemirror":{"requires":["moodle-atto_html-codemirror-skin"]},"moodle-atto_html-button":{"requires":["promise","moodle-editor_atto-plugin","moodle-atto_html-beautify","moodle-atto_html-codemirror","event-valuechange"]},"moodle-atto_image-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_indent-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_italic-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_link-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_managefiles-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_managefiles-usedfiles":{"requires":["node","escape"]},"moodle-atto_media-button":{"requires":["moodle-editor_atto-plugin","moodle-form-shortforms"]},"moodle-atto_noautolink-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_orderedlist-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_recordrtc-recording":{"requires":["moodle-atto_recordrtc-button"]},"moodle-atto_recordrtc-button":{"requires":["moodle-editor_atto-plugin","moodle-atto_recordrtc-recording"]},"moodle-atto_rtl-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_strike-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_subscript-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_superscript-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_table-button":{"requires":["moodle-editor_atto-plugin","moodle-editor_atto-menu","event","event-valuechange"]},"moodle-atto_title-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_underline-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_undo-button":{"requires":["moodle-editor_atto-plugin"]},"moodle-atto_unorderedlist-button":{"requires":["moodle-editor_atto-plugin"]}}},"gallery":{"name":"gallery","base":"https:\/\/idols.ui.ac.id\/lib\/yuilib\/gallery\/","combine":true,"comboBase":"https:\/\/idols.ui.ac.id\/theme\/yui_combo.php?","ext":false,"root":"gallery\/1685954711\/","patterns":{"gallery-":{"group":"gallery"}}}},"modules":{"core_filepicker":{"name":"core_filepicker","fullpath":"https:\/\/idols.ui.ac.id\/lib\/javascript.php\/1685954711\/repository\/filepicker.js","requires":["base","node","node-event-simulate","json","async-queue","io-base","io-upload-iframe","io-form","yui2-treeview","panel","cookie","datatable","datatable-sort","resize-plugin","dd-plugin","escape","moodle-core_filepicker","moodle-core-notification-dialogue"]},"core_comment":{"name":"core_comment","fullpath":"https:\/\/idols.ui.ac.id\/lib\/javascript.php\/1685954711\/comment\/comment.js","requires":["base","io-base","node","json","yui2-animation","overlay","escape"]},"mathjax":{"name":"mathjax","fullpath":"https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/mathjax\/2.7.2\/MathJax.js?delayStartupUntil=configured"}}};
-M.yui.loader = {modules: {}};
-
-//]]>
-</script>
-
-<!-- Google tag (gtag.js) tag ini mengirim ke google analytics biro humas UI --> 
-
-<script async src="https://www.googletagmanager.com/gtag/js?id=GT-PJSNTZL"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'GT-PJSNTZL');
-</script>
-
-<!-- Histats.com  (div with counter) --><div id="histats_counter"></div>
-<!-- Histats.com  START  (aync)-->
-<script type="text/javascript">var _Hasync= _Hasync|| [];
-_Hasync.push(['Histats.startgif', '1,4571073,4,10054,"div#histatsC {position: absolute;bottom:60px;right:0px;}body>div#histatsC {position: fixed;}"']);
-_Hasync.push(['Histats.fasi', '1']);
-_Hasync.push(['Histats.track_hits', '']);
-(function() {
-var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
-hs.src = ('//s10.histats.com/js15_giftop_as.js');
-(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
-})();</script>
-<noscript><style type="text/css">div#histatsC {position: absolute;bottom:0px;right:0px;}body>div#histatsC {position: fixed;}</style>
-<a href="/" alt="" target="_blank" ><div id="histatsC"><img border="0" src="//s4is.histats.com/stats/i/4571073.gif?4571073&103"></div></a>
-</noscript>
-        <!-- Histats.com  END  -->
-
-<!--PURECHAT-->
-<script type='text/javascript' data-cfasync='false'>window.purechatApi = { l: [], t: [], on: function () { this.l.push(arguments); } }; (function () { var done = false; var script = document.createElement('script'); script.async = true; script.type = 'text/javascript'; script.src = 'https://app.purechat.com/VisitorWidget/WidgetScript'; document.getElementsByTagName('HEAD').item(0).appendChild(script); script.onreadystatechange = script.onload = function (e) { if (!done && (!this.readyState || this.readyState == 'loaded' || this.readyState == 'complete')) { var w = new PCWidget({c: '65422d1a-a8ac-4f31-8ca9-83735fb60f89', f: true }); done = true; } }; })();</script>
-
-<link href='https://fonts.googleapis.com/css?family=Open Sans:300,400,500,600,700,300italic' rel='stylesheet'
-        type='text/css'><!-- Global site tag (gtag.js) - Google Analytics --><script async src='https://www.googletagmanager.com/gtag/js?id=UA-23617906-5'></script>
-            <script>
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-
-              gtag('config', 'UA-23617906-5');
-            </script><!-- Google Analytics -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body  id="page-enrol-lti-tool" class="format-site  path-enrol path-enrol-lti dir-ltr lang-en yui-skin-sam yui3-skin-sam idols-ui-ac-id pagelayout-popup course-1 context-1 notloggedin ">
-
-<div id="page-wrapper">
-
-    <div>
-    <a class="sr-only sr-only-focusable" href="#maincontent">Skip to main content</a>
-</div><script type="text/javascript" src="https://idols.ui.ac.id/theme/yui_combo.php?rollup/3.17.2/yui-moodlesimple-min.js"></script><script type="text/javascript" src="https://idols.ui.ac.id/lib/javascript.php/1685954711/lib/javascript-static.js"></script>
-<script type="text/javascript">
-//<![CDATA[
-document.body.className += ' jsenabled';
-//]]>
-</script>
-
-
-<!--Start of Tawk.to Script-->
-<script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/6110c5b9d6e7610a49af407e/1g9e6l8kv';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
-</script>
-<!--End of Tawk.to Script-->
-
-    <div id="page" class="container">
-        <div id="page-content" class="row pb-3">
-            <div id="region-main-box" class="col-12">
-                <section id="region-main" aria-label="Content">
-                    <span class="notifications" id="user-notifications"></span>
-                    <div role="main"><span id="maincontent"></span></div>
-                    
-                    
-                </section>
-            </div>
-        </div>
-    </div>
-
-    
-
-</div>
-<script type="text/javascript">
-//<![CDATA[
-var require = {
-    baseUrl : 'https://idols.ui.ac.id/lib/requirejs.php/1685954711/',
-    // We only support AMD modules with an explicit define() statement.
-    enforceDefine: true,
-    skipDataMain: true,
-    waitSeconds : 0,
-
-    paths: {
-        jquery: 'https://idols.ui.ac.id/lib/javascript.php/1685954711/lib/jquery/jquery-3.2.1.min',
-        jqueryui: 'https://idols.ui.ac.id/lib/javascript.php/1685954711/lib/jquery/ui-1.12.1/jquery-ui.min',
-        jqueryprivate: 'https://idols.ui.ac.id/lib/javascript.php/1685954711/lib/requirejs/jquery-private'
-    },
-
-    // Custom jquery config map.
-    map: {
-      // '*' means all modules will get 'jqueryprivate'
-      // for their 'jquery' dependency.
-      '*': { jquery: 'jqueryprivate' },
-      // Stub module for 'process'. This is a workaround for a bug in MathJax (see MDL-60458).
-      '*': { process: 'core/first' },
-
-      // 'jquery-private' wants the real jQuery module
-      // though. If this line was not here, there would
-      // be an unresolvable cyclic dependency.
-      jqueryprivate: { jquery: 'jquery' }
-    }
-};
-
-//]]>
-</script>
-<script type="text/javascript" src="https://idols.ui.ac.id/lib/javascript.php/1685954711/lib/requirejs/require.min.js"></script>
-<script type="text/javascript">
-//<![CDATA[
-require(['core/first'], function() {
-;
-require(["media_videojs/loader"], function(loader) {
-    loader.setUp(function(videojs) {
-        videojs.options.flash.swf = "https://idols.ui.ac.id/media/player/videojs/videojs/video-js.swf";
-videojs.addLanguage("en",{
- "Audio Player": "Audio Player",
- "Video Player": "Video Player",
- "Play": "Play",
- "Pause": "Pause",
- "Replay": "Replay",
- "Current Time": "Current Time",
-
- "Beginning of dialog window. Escape will cancel and close the window.": "Beginning of dialog window. Escape will cancel and close the window.",
- "End of dialog window.": "End of dialog window."
-});
-
-    });
-});;
-
-require(['theme_remui/loader']);
-;
-require(["core/notification"], function(amd) { amd.init(1, []); });;
-require(["core/log"], function(amd) { amd.setConfig({"level":"warn"}); });;
-require(["core/page_global"], function(amd) { amd.init(); });
-});
-//]]>
-</script>
-<script type="text/javascript">
-//<![CDATA[
-M.str = {"moodle":{"lastmodified":"Last modified","name":"Name","error":"Error","info":"Information","yes":"Yes","no":"No","cancel":"Cancel","confirm":"Confirm","areyousure":"Are you sure?","closebuttontitle":"Close","unknownerror":"Unknown error"},"repository":{"type":"Type","size":"Size","invalidjson":"Invalid JSON string","nofilesattached":"No files attached","filepicker":"File picker","logout":"Logout","nofilesavailable":"No files available","norepositoriesavailable":"Sorry, none of your current repositories can return files in the required format.","fileexistsdialogheader":"File exists","fileexistsdialog_editor":"A file with that name has already been attached to the text you are editing.","fileexistsdialog_filemanager":"A file with that name has already been attached","renameto":"Rename to \"{$a}\"","referencesexist":"There are {$a} alias\/shortcut files that use this file as their source","select":"Select"},"admin":{"confirmdeletecomments":"You are about to delete comments, are you sure?","confirmation":"Confirmation"}};
-//]]>
-</script>
-<script type="text/javascript">
-//<![CDATA[
-(function() {Y.use("moodle-filter_mathjaxloader-loader",function() {M.filter_mathjaxloader.configure({"mathjaxconfig":"\nMathJax.Hub.Config({\n    config: [\"Accessible.js\", \"Safe.js\"],\n    errorSettings: { message: [\"!\"] },\n    skipStartupTypeset: true,\n    messageStyle: \"none\"\n});\n","lang":"en"});
-});
-M.util.help_popups.setup(Y);
- M.util.js_pending('random68075ac42945c2'); Y.on('domready', function() { M.util.js_complete("init");  M.util.js_complete('random68075ac42945c2'); });
-})();
-//]]>
-</script>
-
-</body>
-</html>
+Instruktur Mr Instructor LMS mencoba meluncurkan LTI.
+Mempersiapkan parameter LTI untuk user Mr Instructor LMS dengan role Instructor.
+Menyiapkan parameter LTI untuk peluncuran.
+Permintaan LTI berhasil dikirim.
+LTI Tool berhasil diluncurkan.
+Forbidden (Referer checking failed - no Referer.): /
+Not Found: /.env
+Not Found: /bEMh
+Not Found: /course-detail/1/full-stack-developm/
+Not Found: /favicon.ico
+Forbidden (Referer checking failed - no Referer.): /
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /favicon.ico
+Not Found: /robots.txt
+Not Found: /login.php
+Not Found: /main.jsp
+Not Found: /Portal/Portal.mwsl
+Not Found: /sdk
+Not Found: /webui
+Not Found: /dniapi/userInfos
+Not Found: /webui
+Not Found: /CSS/Miniweb.css
+Not Found: /nmaplowercheck1745320325
+Not Found: /dSQT
+Not Found: /localstart.php
+Not Found: /docs/cplugError.html/
+Method Not Allowed: /
+Not Found: /api/v2/about
+Not Found: /Portal0000.htm
+Method Not Allowed: /
+Not Found: /main.html
+Not Found: /.git/HEAD
+Not Found: /pools/default/buckets
+Not Found: /webui
+Not Found: /HNAP1
+Not Found: /owa/
+Not Found: /__Additional
+Not Found: /pools
+Not Found: /start.aspx
+Not Found: /user
+Not Found: /health
+Not Found: /owa/
+Not Found: /human.aspx
+Not Found: /robots.txt
+Not Found: /home.aspx
+Not Found: /dana-cached/hc/HostCheckerInstaller.osx
+Not Found: /owa/
+Not Found: /dana-na/nc/nc_gina_ver.txt
+Not Found: /menu.jsa
+Not Found: /+CSCOE+/logon.html
+Not Found: /admin.jhtml
+Not Found: /CFIDE/componentutils/
+Not Found: /admin.shtml
+Not Found: /geoserver/index.html
+Not Found: /inicio.cgi
+Not Found: /geoserver/
+Not Found: /admin.php
+Not Found: /geoserver/web/wicket/bookmarkable/org.geoserver.web.AboutGeoServerPage
+Not Found: /home.cgi
+Not Found: /Account/Login
+Not Found: /start.pl
+Not Found: /cgi-bin/info.cgi
+Not Found: /main.php
+Not Found: /xml/info.xml
+Not Found: /magento_version
+Not Found: /api/v1/check-version
+Not Found: /index.jsa
+Not Found: /admin.jsp
+Not Found: /fog/management/index.php
+Not Found: /helpdesk/WebObjects/Helpdesk.woa
+Not Found: /indice.jsa
+Not Found: /cluster/list.query
+Not Found: /indice.shtml
+Not Found: /apps/zxtm/login.cgi
+Not Found: /home.jhtml
+Not Found: /api/server/version
+Not Found: /main.jsa
+Not Found: /base.jhtml
+Not Found: /administrator/manifests/files/joomla.xml
+Not Found: /main.jhtml
+Not Found: /language/en-GB/en-GB.xml
+Not Found: /admin.html
+Not Found: /versa/login
+Not Found: /login.html
+Not Found: /readme.txt
+Not Found: /default.html
+Not Found: /p/login/
+Not Found: /main.shtml
+Not Found: /api/version
+Not Found: /admin.cfm
+Not Found: /portal/
+Not Found: /menu.asp
+Not Found: /status
+Not Found: /indice.html
+Not Found: /info.asp
+Not Found: /admin.aspx
+Not Found: /cgi-bin/param.cgi
+Not Found: /base.inc
+Not Found: /lms/db
+Not Found: /localstart.shtml
+Not Found: /ext-js/app/common/zld_product_spec.js
+Not Found: /index.cgi
+Not Found: /login/login.html
+Not Found: /allversions
+Not Found: /default.jhtml
+Not Found: /versions
+Not Found: /base.cfm
+Not Found: /home.cfm
+Not Found: /r-seenet/index.php
+Not Found: /.env
+Not Found: /webui/
+Not Found: /favicon.ico
+Not Found: /.git/config
+Not Found: /robots.txt
+Not Found: /version
+Not Found: /.env
+Forbidden (Referer checking failed - no Referer.): /
+Not Found: /core/.env
+Not Found: /core/.env
+Forbidden (Referer checking failed - no Referer.): /
+Not Found: /core/.env
+Forbidden (Referer checking failed - no Referer.): /
+Not Found: /favicon.ico
+Not Found: /actuator/gateway/routes
+Not Found: /robots.txt
+Not Found: /robots.txt
+Not Found: /sitemap.txt
+Not Found: /sitemaps.xml
+Not Found: /sitemap.xml.gz
+Not Found: /sitemap.xml
+Not Found: /.aws/credentials
+Not Found: /.git/config
+Not Found: /favicon.ico
+Not Found: /.env
+Forbidden (Referer checking failed - no Referer.): /
+Not Found: /.env
+Not Found: /.git/config
+Not Found: /owa/auth/logon.aspx
+Method Not Allowed: /
+Not Found: /nice ports,/Trinity.txt.bak
+Not Found: /.env
+Forbidden (Referer checking failed - no Referer.): /
+Not Found: /nvidia_license_upd.php
+Not Found: /DBds
+Not Found: /s
+Not Found: /search/s.php
+Not Found: /jquery/2.0.1/jquery.min.js
+Not Found: /JYNl
+Not Found: /fw6I
+Not Found: /202312082118335862cd360.bmp
+Not Found: /llq.rar
+Not Found: /QKBFJBVZsPKeqFS/HAchGeCttVyEtqZ.php
+Not Found: /jquery-3.3.1.min.js
+Not Found: /manjusaka/static/
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /Qi7wAH39
+Not Found: /favicon.ico
+Not Found: /QKBFJBVZsPKeqFS/HAchGeCttVyEtqZ.php
+Not Found: /trx38.zip
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /test.jpg
+Not Found: /Tan.jpg
+Not Found: /Mozi.m
+Not Found: /cmdoutput
+Not Found: /fssdcsrweqww.ini
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /beacons/
+Not Found: /favicon.ico
+Not Found: /BoPai.xq
+Not Found: /i
+Not Found: /1.jpg
+Not Found: /favicon.ico
+Not Found: /ui/authentication
+Not Found: /45.txt
+Not Found: /api/getit
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /jquery.js
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /ymybisvimqjoknhmgryit/getocmskdmsm/
+Not Found: /1.exe
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /common2/out/2
+Not Found: /favicon.ico
+Not Found: /2jjd7VgJVdKDI4Ih4eB63gTcZqdcCuq-35nmN8xhwTM8_uHq3BUqs9Zb_nf_C7AzNzvltmRoSf6-WRNz-
+Not Found: /favicon.ico
+Not Found: /zMLUH93A
+Invalid HTTP_HOST header: 'api.tdp.u7u9.com'. You may need to add 'api.tdp.u7u9.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 128, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'api.tdp.u7u9.com'. You may need to add 'api.tdp.u7u9.com' to ALLOWED_HOSTS.
+Bad Request: /statistic/finishtask
+Not Found: /login.php
+Not Found: /favicon.ico
+Not Found: /1.dll
+Not Found: /favicon.ico
+Not Found: /c2
+Not Found: /nation.php
+Not Found: /favicon.ico
+Not Found: /mine/random.exe
+Not Found: /MSyD
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /common2/out/1
+Not Found: /favicon.ico
+Not Found: /MYMj
+Not Found: /favicon.ico
+Not Found: /wL7b
+Not Found: /s1/index.htm
+Not Found: /9lqF
+Not Found: /favicon.ico
+Not Found: /api/attach
+Not Found: /font/main-webfont.woff2
+Not Found: /favicon.ico
+Not Found: /jquery-3.3.1.min.js
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /extensions/a586bc8a-728c-4d06-8180-befb9e20c408
+Not Found: /kpi
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /test.dat
+Not Found: /favicon.ico
+Not Found: /wh/glass.php
+Not Found: /favicon.ico
+Not Found: /b.gif
+Not Found: /upaid.exe
+Not Found: /fsxlxhxzaf.png
+Not Found: /favicon.ico
+Not Found: /Dem7kTu/Login.php
+Not Found: /favicon.ico
+Not Found: /x86
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /c/msdownload/update/software/update/2021/11/6632de33-967441-x86.cab
+Not Found: /kY8a
+Not Found: /test6.jpg
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /tat
+Not Found: /Tan.jpg
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Invalid HTTP_HOST header: 'www.sogou.com'. You may need to add 'www.sogou.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 128, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'www.sogou.com'. You may need to add 'www.sogou.com' to ALLOWED_HOSTS.
+Bad Request: /viwwwsogou
+Not Found: /favicon.ico
+Not Found: /c.gif
+Not Found: /favicon.ico
+Not Found: /jquery-3.3.2.slim.min.js
+Not Found: /test.dat
+Not Found: /test7.jpg
+Not Found: /download/1.txt
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /any.png
+Not Found: /1.jpg
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /d.gif
+Not Found: /favicon.ico
+Not Found: /blink
+Not Found: /center/user_sid
+Not Found: /test9.jpg
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /favicon.ico
+Not Found: /1.txt
+Not Found: /favicon.ico
+Forbidden (Referer checking failed - no Referer.): /
+Forbidden (Referer checking failed - no Referer.): /
+Not Found: /robots.txt
+Not Found: /geoserver
+Not Found: /ab2g
+Not Found: /ab2h
+Not Found: /alive.php
+Not Found: /t4
+Not Found: /favicon.ico
+Not Found: /teorema505
+Not Found: /ini.icei.ac.id/cobbler_api
+Not Found: /favicon.ico
+Not Found: /api/v1/settings
+Not Found: /hello.world
+Not Found: /vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+Not Found: /vendor/phpunit/phpunit/Util/PHP/eval-stdin.php
+Not Found: /vendor/phpunit/src/Util/PHP/eval-stdin.php
+Not Found: /vendor/phpunit/Util/PHP/eval-stdin.php
+Not Found: /vendor/phpunit/phpunit/LICENSE/eval-stdin.php
+Not Found: /vendor/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
+Not Found: /phpunit/phpunit/src/Util/PHP/eval-stdin.php
+Not Found: /phpunit/phpunit/Util/PHP/eval-stdin.php
+Not Found: /phpunit/src/Util/PHP/eval-stdin.php
+Not Found: /actuator/gateway/routes
+Forbidden (Referer checking failed - no Referer.): /
+Method Not Allowed: /
+Forbidden (Referer checking failed - no Referer.): /
+Not Found: /.aws/config
+Not Found: /@vite/env
+Not Found: /actuator/env
+Not Found: /server
+Not Found: /.vscode/sftp.json
+Not Found: /debug/default/view
+Not Found: /v2/_catalog
+Not Found: /ecp/Current/exporttool/microsoft.exchange.ediscovery.exporttool.application
+Not Found: /server-status
+Not Found: /login.action
+Not Found: /_all_dbs
+Not Found: /.DS_Store
+Not Found: /.env
+Not Found: /.git/config
+Not Found: /s/232323e2734323e21313e20323/_/;/META-INF/maven/com.atlassian.jira/jira-webapp-dist/pom.properties
+Not Found: /config.json
+Not Found: /telescope/requests
+Not Found: /info.php
+Not Found: /ecp/Current/exporttool/microsoft.exchange.ediscovery.exporttool.application
+Not Found: /phpinfo
+Not Found: /.env
+Not Found: /_profiler/phpinfo
+Not Found: /info.php
+Not Found: /node/.env_example
+Not Found: /index.html
+Not Found: /backend/.env
+Not Found: /api/.env
+Not Found: /env.backup
+Not Found: /.env.example
+Not Found: /phpinfo.php
+Not Found: /main/.env
+Not Found: /config.env
+Not Found: /test.php
+Not Found: /.env.old
+Not Found: /api/config.env
+Not Found: /public/.env
+Not Found: /.env.local
+Not Found: /.aws/credentials
+Not Found: /lara/phpinfo.php
+Not Found: /core/.env
+Not Found: /new/.env.local
+Not Found: /application.properties
+Not Found: /_profiler/phpinfo/phpinfo.php
+Not Found: /new/.env.staging
+Not Found: /application/.env
+Not Found: /prod/.env
+Not Found: /aws-secret.yaml
+Not Found: /.env.stage
+Not Found: /portal/.env
+Not Found: /kyc/.env
+Not Found: /app_dev.php/_profiler/phpinfo
+Not Found: /config/aws.yml
+Not Found: /_phpinfo.php
+Not Found: /server_info.php
+Not Found: /api/shared/config/.env
+Not Found: /app/.env
+Not Found: /aws/credentials
+Not Found: /laravel/core/.env
+Not Found: /mailer/.env
+Not Found: /server-info.php
+Not Found: /debug/default/view
+Not Found: /sendgrid/.env
+Not Found: /sendgrid.env
+Not Found: /.aws/config
+Not Found: /crm/.env
+Not Found: /server-info
+Not Found: /laravel/info.php
+Not Found: /conf/.env
+Not Found: /dashboard/phpinfo.php
+Not Found: /api/shared/.env
+Not Found: /development/.env
+Not Found: /laravel/.env
+Not Found: /docker/app/.env
+Not Found: /env/.env
+Not Found: /secured/phpinfo.php
+Not Found: /.env
+Forbidden (Referer checking failed - no Referer.): /
+Not Found: /.env
+Forbidden (Referer checking failed - no Referer.): /
+Forbidden (Referer checking failed - no Referer.): /
+Not Found: /WuEL
+Not Found: /a
+Not Found: /download/file.ext
+Not Found: /SiteLoader
+Not Found: /mPlayer
+Internal Server Error: /sosial/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 633, in create_and_list_sos_posts
+    return render(request, 'login_required.html')
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: login_required.html
+Not Found: /favicon.ico
+Related Courses: [{'id': 1, 'course_name': 'full stack development', 'end_enrol': datetime.date(2026, 4, 15)}]
+Course Data: {'course_name': 'full stack development', 'hour': '20', 'course_id': 1, 'num_enrollments': 1, 'course_slug': 'full-stack-development', 'course_image': '/media/courses/full.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'category': 'Software Development', 'language': 'en', 'average_rating': 4.0, 'review_count': 1, 'full_star_range': range(0, 4), 'half_star': False, 'empty_star_range': range(0, 1)}
