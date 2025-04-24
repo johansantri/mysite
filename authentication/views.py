@@ -42,6 +42,7 @@ from django.db.models import Prefetch
 from django.core.mail import EmailMultiAlternatives,EmailMessage
 from django.db.models.functions import Coalesce
 from blog.models import BlogPost
+from django.views.decorators.http import require_GET
 
 def about(request):
     return render(request, 'home/about.html')
@@ -871,6 +872,7 @@ def edit_profile_save(request, pk):
 
 #populercourse
 @ratelimit(key='ip', rate='100/h')
+@require_GET
 def popular_courses(request):
     now = timezone.now().date()
 
@@ -879,24 +881,20 @@ def popular_courses(request):
     except CourseStatus.DoesNotExist:
         return JsonResponse({'error': 'Published status not found.'}, status=404)
 
-    # Mendapatkan kursus yang sudah diterbitkan dan belum berakhir
     courses = Course.objects.filter(
         status_course=published_status,
         end_date__gte=now
     ).annotate(
-        num_enrollments=Count('enrollments'),  # Hitung jumlah enrollments
-        avg_rating=Coalesce(Avg('ratings__rating'), 0.0, output_field=FloatField()),  # Hitung rata-rata rating
-        num_ratings=Count('ratings')  # Hitung jumlah rating
-    ).order_by('-num_enrollments')  # Urutkan berdasarkan jumlah enrollments
-
-    # Hitung unique users yang memberikan rating
-    courses = courses.annotate(
+        num_enrollments=Count('enrollments'),
+        avg_rating=Coalesce(Avg('ratings__rating'), 0.0),
+        num_ratings=Count('ratings'),
         unique_raters=Count('ratings__user', distinct=True)
+    ).order_by('-num_enrollments').select_related(
+        'instructor__user', 'org_partner__name', 'org_partner'
     )
 
-    # Pagination
+    paginator = Paginator(courses, 6)
     page_number = request.GET.get('page', 1)
-    paginator = Paginator(courses, 6)  # 6 kursus per halaman
     try:
         page_obj = paginator.get_page(page_number)
     except (PageNotAnInteger, EmptyPage):
@@ -909,48 +907,47 @@ def popular_courses(request):
         half_star = (avg_rating % 1) >= 0.5
         empty_stars = 5 - full_stars - (1 if half_star else 0)
 
-        course_data = {
+        courses_list.append({
             'id': course.id,
             'course_name': course.course_name,
             'slug': course.slug,
-            'image': settings.MEDIA_URL + course.image.name if course.image else '',
-            'instructor__user__first_name': course.instructor.user.first_name,
-            'instructor__user__last_name': course.instructor.user.last_name,
-            'instructor__user__photo': settings.MEDIA_URL + course.instructor.user.photo.name if course.instructor.user.photo else '',
-            'instructor__user__username': course.instructor.user.username,
-            'org_partner__name__name': course.org_partner.name.name,
-            'org_partner__name__slug': course.org_partner.name.slug,
-            'org_partner__logo': settings.MEDIA_URL + course.org_partner.logo.name if course.org_partner.logo else '',
-            'num_enrollments': course.num_enrollments,  # Menambahkan jumlah enrollments
+            'image': course.image.url if course.image else '',
+            'instructor_name': course.instructor.user.first_name,
+            'instructor_photo': course.instructor.user.photo.url if course.instructor.user.photo else '',
+            'org_name': course.org_partner.name.name,
+            'org_slug': course.org_partner.name.slug,
+            'org_logo': course.org_partner.logo.url if course.org_partner.logo else '',
+            'num_enrollments': course.num_enrollments,
             'avg_rating': float(avg_rating),
-            'num_ratings': course.unique_raters,  # Menghitung unique raters, bukan hanya jumlah rating
+            'num_ratings': course.unique_raters,
             'full_stars': full_stars,
             'half_star': half_star,
             'empty_stars': empty_stars
-        }
-
-        courses_list.append(course_data)
+        })
 
     return JsonResponse({'courses': courses_list})
 
 
-# Home page
 def home(request):
     if request.method != 'GET':
         return HttpResponseNotAllowed("Metode tidak diperbolehkan")
-    
-    # Mendapatkan status 'published', hanya mengambil yang pertama
+
     published_status = CourseStatus.objects.filter(status='published').first()
 
-    # Inisialisasi variabel total
+    # Inisialisasi variabel default
+    popular_categories = []
+    popular_microcredentials = []
+    partners = []
+    instructors_page = None
+    latest_articles = []
+
     total_instructors = 0
     total_partners = 0
     total_users = 0
     total_courses = 0
-    instructors_page = None  # Inisialisasi variabel instructors_page
 
     if published_status:
-        # Mendapatkan kategori populer dengan kursus yang sudah dipublikasikan
+        # Kategori populer dengan jumlah kursus aktif
         popular_categories = Category.objects.annotate(
             num_courses=Count(
                 'category_courses',
@@ -961,43 +958,38 @@ def home(request):
             )
         ).order_by('-num_courses')[:4]
 
-        # Mendapatkan microcredential aktif
+        # Microcredential aktif
         popular_microcredentials = MicroCredential.objects.filter(
             status='active'
         ).order_by('-created_at')[:6]
 
-        # Mendapatkan semua mitra
-        partners = Partner.objects.all()
+        # Mitra dengan urutan
+        partners = Partner.objects.all().order_by('id')
 
-        # Mengambil instruktur yang statusnya 'Approved'
-        instructors = Instructor.objects.filter(status='Approved')
+        # Instruktur disetujui dengan urutan
+        instructors = Instructor.objects.filter(status='Approved').order_by('id')
 
-        # Pagination: Menampilkan 6 instruktur per halaman
-        if instructors.exists():  # Cek apakah ada instruktur
-            paginator = Paginator(instructors, 6)
-            page_number = request.GET.get('page')
-            instructors_page = paginator.get_page(page_number)
-        
-        # Menghitung total
-        total_instructors = Instructor.objects.count()  # Asumsi ada model Instructor
-        total_partners = Partner.objects.count()
-        total_users = CustomUser.objects.count()  # Asumsi menggunakan Django User model
+        if instructors.exists():
+            instructor_paginator = Paginator(instructors, 6)
+            page_number = request.GET.get('instructor_page')
+            instructors_page = instructor_paginator.get_page(page_number)
+            total_instructors = instructors.count()
+
+        total_partners = partners.count()
+        total_users = CustomUser.objects.count()
         total_courses = Course.objects.filter(
             status_course=published_status,
             end_enrol__gte=timezone.now()
-        ).count()  # Hanya menghitung kursus yang dipublikasikan dan masih aktif
-         # Menambahkan 2 artikel terbaru dari BlogPost
-        latest_articles = BlogPost.objects.filter(status='published').order_by('-date_posted')[:2]
-    else:
-        # Jika tidak ada status 'published', beri hasil kosong
-        popular_categories = []
-        popular_microcredentials = []
-        partners = []
+        ).count()
 
-    # Pagination: Menampilkan 6 mitra per halaman
-    paginator = Paginator(partners, 6)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+        latest_articles = BlogPost.objects.filter(
+            status='published'
+        ).order_by('-date_posted')[:2]
+
+    # Pagination untuk partners
+    partner_paginator = Paginator(partners, 6)
+    page_number = request.GET.get('partner_page')
+    page_obj = partner_paginator.get_page(page_number)
 
     return render(request, 'home/index.html', {
         'popular_categories': popular_categories,
@@ -1010,6 +1002,7 @@ def home(request):
         'instructors': instructors_page,
         'latest_articles': latest_articles,
     })
+
 
 #@csrf_protect
 @ratelimit(key='ip', rate='100/h')

@@ -648,8 +648,8 @@
                 <div class="blog-card shadow-sm p-4 d-flex align-items-center">
                     <div>
                         <h5 class="fw-bold">{{ article.title|truncatewords:10 }}</h5>
-                        <p>{{ article.title|safe|truncatewords:15 }}</p>
-                        <a href="{% url 'blog:blog-detail' slug=article.slug %}" class="btn btn-link p-0">Read More</a>
+                        <p><a href="{% url 'blog:blog-detail' slug=article.slug %}" class="btn btn-link p-0">{{ article.title|safe|truncatewords:15 }}</a></p>
+                       
                     </div>
                 </div>
             </div>
@@ -796,7 +796,7 @@
 {% endblock content %}
 
 {% block scripts %}
-<script>
+<script >
     document.addEventListener('DOMContentLoaded', function() {
         const coursesList = document.getElementById('courses-list');
         
@@ -809,41 +809,44 @@
             type: 'GET',
             dataType: 'json',
             success: function(response) {
-                var courses = response.courses;
+                const courses = response.courses;
+                
                 courses.forEach(function(course) {
-                    var courseUrl = '/course-detail/' + course.id + '/' + course.slug + '/';
-                    var instructorUrl = '/instructor-profile/' + course.instructor__user__username + '/';
-                    var universityUrl = '/org-partner/' + course.org_partner__name__slug + '/';
-                    var stars = '';
-                    for (var i = 0; i < course.full_stars; i++) {
-                        stars += '<i class="bi bi-star-fill"></i>';
+                    const courseUrl = `/course-detail/${course.id}/${course.slug}/`;
+                    const instructorName = course.instructor_name || "Instructor";
+                    const instructorPhoto = course.instructor_photo || '/static/images/default-avatar.png';
+                    const orgName = course.org_name || "University";
+                    const orgSlug = course.org_slug || "#";
+                    const orgLogo = course.org_logo || '/static/images/default-logo.png';
+                    const universityUrl = `/org-partner/${orgSlug}/`;
+
+                    let stars = '';
+                    for (let i = 0; i < course.full_stars; i++) {
+                        stars += '<i class="bi bi-star-fill text-warning"></i>';
                     }
                     if (course.half_star) {
-                        stars += '<i class="bi bi-star-half"></i>';
+                        stars += '<i class="bi bi-star-half text-warning"></i>';
                     }
-                    for (var i = 0; i < course.empty_stars; i++) {
-                        stars += '<i class="bi bi-star"></i>';
+                    for (let i = 0; i < course.empty_stars; i++) {
+                        stars += '<i class="bi bi-star text-warning"></i>';
                     }
+
                     $('#courses-list').append(`
                         <div class="col-6 col-md-4 col-lg-3 mb-4">
                             <div class="card border-primary shadow-sm rounded-4 h-100 transition-effect">
-                                <img src="${course.image}"
-                                    class="card-img-top rounded-top-4"
-                                    alt="${course.course_name}" loading="lazy">
+                                <img src="${course.image}" class="card-img-top rounded-top-4" alt="${course.course_name}" loading="lazy">
                                 <div class="card-body p-3">
                                     <h5 class="fw-bold mb-2">${course.course_name}</h5>
                                     <div class="d-flex align-items-center mb-2">
-                                        <img src="${course.org_partner__logo}" class="rounded-circle" alt="Logo ${course.org_partner__name__name}" width="35" height="35">
+                                        <img src="${orgLogo}" class="rounded-circle" alt="Logo ${orgName}" width="35" height="35">
                                         <div class="ms-2">
                                             <p class="small mb-0">
                                                 <a href="${universityUrl}" class="text-dark py-1 px-2">
-                                                    <strong>${course.org_partner__name__name}</strong>
+                                                    <strong>${orgName}</strong>
                                                 </a>
                                             </p>
                                             <p class="text-muted" style="font-size: 0.75rem;">
-                                                <a href="${instructorUrl}" class="text-dark py-1 px-2">
-                                                    ${course.instructor__user__first_name} ${course.instructor__user__last_name}
-                                                </a>
+                                                ${instructorName}
                                             </p>
                                         </div>
                                     </div>
@@ -854,7 +857,6 @@
                                     <div class="enrollment-count mb-3">
                                         <small class="text-muted">Enrolled: ${course.num_enrollments} students</small>
                                     </div>
-                                    <p class="mb-0 fw-bold" style="font-size: 1.1rem;"></p>
                                     <a href="${courseUrl}" class="btn btn-outline-primary btn-sm w-100">Detail</a>
                                 </div>
                             </div>
@@ -863,7 +865,8 @@
                 });
             },
             error: function(xhr, status, error) {
-                console.log("Error: " + error);
+                console.error("AJAX Error: ", error);
+                $('#courses-list').html('<p class="text-danger">Failed to load courses. Please try again later.</p>');
             }
         });
     });
