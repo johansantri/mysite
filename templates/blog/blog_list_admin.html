@@ -1,7 +1,79 @@
 {% extends 'home/tes.html' %}
 {% load static %}
 
-
+{% block extra_head %}
+<meta name="robots" content="noindex, nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+  }
+  .list-section {
+    padding: 2rem 1rem;
+    background: #f8f9fa;
+    min-height: 100vh;
+  }
+  .list-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 2rem;
+    background: #fff;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .list-card h1 {
+    color: #b02a37;
+    font-weight: 700;
+  }
+  .table {
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .btn-primary {
+    background-color: #b02a37;
+    border-color: #b02a37;
+    border-radius: 8px;
+  }
+  .btn-primary:hover {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+  }
+  .btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    border-radius: 8px;
+  }
+  .btn-danger:hover {
+    background-color: #b02a37;
+    border-color: #b02a37;
+  }
+  .pagination .page-link {
+    border-radius: 8px;
+  }
+  .pagination .page-item.active .page-link {
+    background-color: #b02a37;
+    border-color: #b02a37;
+  }
+  .filter-form .form-control, .filter-form .form-select {
+    border-radius: 8px;
+  }
+  @media (max-width: 576px) {
+    .list-section {
+      padding: 1rem 0.5rem;
+    }
+    .list-card {
+      padding: 1.5rem;
+    }
+    .list-card h1 {
+      font-size: 1.75rem;
+    }
+    .table {
+      font-size: 0.875rem;
+    }
+  }
+</style>
+{% endblock %}
 
 {% block content %}
 <section class="list-section">
@@ -16,6 +88,40 @@
           </div>
         {% endfor %}
       {% endif %}
+
+      <!-- Form Pencarian dan Filter -->
+      <form method="GET" class="filter-form mb-4">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <input type="text" name="q" class="form-control" placeholder="Search by title or content" value="{{ search_query }}">
+          </div>
+          <div class="col-md-2">
+            <select name="status" class="form-select" onchange="this.form.submit()">
+              <option value="">All Status</option>
+              {% for status_value, status_label in status_choices %}
+                <option value="{{ status_value }}" {% if selected_status == status_value %}selected{% endif %}>{{ status_label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-3">
+            <select name="category" class="form-select" onchange="this.form.submit()">
+              <option value="">All Categories</option>
+              {% for category in categories %}
+                <option value="{{ category.id }}" {% if selected_category == category.id|stringformat:"s" %}selected{% endif %}>{{ category.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-3">
+            <select name="tag" class="form-select" onchange="this.form.submit()">
+              <option value="">All Tags</option>
+              {% for tag in tags %}
+                <option value="{{ tag.id }}" {% if selected_tag == tag.id|stringformat:"s" %}selected{% endif %}>{{ tag.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </form>
+
       <a href="{% url 'blog:blog-create' %}" class="btn btn-primary mb-3">Create New Post</a>
       {% if posts %}
         <table class="table table-hover">
@@ -23,6 +129,8 @@
             <tr>
               <th scope="col">Title</th>
               <th scope="col">Status</th>
+              <th scope="col">Category</th>
+              <th scope="col">Tags</th>
               <th scope="col">Date Posted</th>
               <th scope="col">Actions</th>
             </tr>
@@ -32,6 +140,14 @@
               <tr>
                 <td>{{ post.title }}</td>
                 <td>{{ post.status|title }}</td>
+                <td>{% if post.category %}{{ post.category.name }}{% else %}No Category{% endif %}</td>
+                <td>
+                  {% for tag in post.tags.all %}
+                    {{ tag.name }}{% if not forloop.last %}, {% endif %}
+                  {% empty %}
+                    No Tags
+                  {% endfor %}
+                </td>
                 <td>{{ post.date_posted|date:"F d, Y" }}</td>
                 <td>
                   <a href="{% url 'blog:blog-update' post.pk %}" class="btn btn-sm btn-primary">Edit</a>
@@ -46,17 +162,17 @@
             <ul class="pagination justify-content-center">
               {% if page_obj.has_previous %}
                 <li class="page-item">
-                  <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">«</a>
+                  <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_tag %}&tag={{ selected_tag }}{% endif %}" aria-label="Previous">«</a>
                 </li>
               {% endif %}
               {% for num in page_obj.paginator.page_range %}
                 <li class="page-item {% if page_obj.number == num %}active{% endif %}">
-                  <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                  <a class="page-link" href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_tag %}&tag={{ selected_tag }}{% endif %}">{{ num }}</a>
                 </li>
               {% endfor %}
               {% if page_obj.has_next %}
                 <li class="page-item">
-                  <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">»</a>
+                  <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_tag %}&tag={{ selected_tag }}{% endif %}" aria-label="Next">»</a>
                 </li>
               {% endif %}
             </ul>

@@ -2399,3 +2399,175 @@ Traceback (most recent call last):
     super().__init__(*args, **kwargs)
 TypeError: BaseModelForm.__init__() got an unexpected keyword argument 'user'
 Forbidden (Referer checking failed - no Referer.): /
+Not Found: /aaa9
+Not Found: /aab9
+Not Found: /.env
+Not Found: /.env
+Not Found: /aaa9
+Not Found: /aab9
+Not Found: /${universityUrl}
+Internal Server Error: /admin/posts/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 883, in _resolve_lookup
+    current = current[bit]
+TypeError: 'Category' object is not subscriptable
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 893, in _resolve_lookup
+    current = getattr(current, bit)
+AttributeError: 'Category' object has no attribute 'title'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 899, in _resolve_lookup
+    current = current[int(bit)]
+ValueError: invalid literal for int() with base 10: 'title'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 220, in _get_response
+    response = response.render()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/response.py", line 114, in render
+    self.content = self.rendered_content
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1067, in render
+    output = self.filter_expression.resolve(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 739, in resolve
+    arg_vals.append(arg.resolve(context))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 850, in resolve
+    value = self._resolve_lookup(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 906, in _resolve_lookup
+    raise VariableDoesNotExist(
+django.template.base.VariableDoesNotExist: Failed lookup for key [title] in <Category: Artificial Intelligence>
+Internal Server Error: /admin/posts/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 883, in _resolve_lookup
+    current = current[bit]
+TypeError: 'Category' object is not subscriptable
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 893, in _resolve_lookup
+    current = getattr(current, bit)
+AttributeError: 'Category' object has no attribute 'title'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 899, in _resolve_lookup
+    current = current[int(bit)]
+ValueError: invalid literal for int() with base 10: 'title'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 220, in _get_response
+    response = response.render()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/response.py", line 114, in render
+    self.content = self.rendered_content
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1067, in render
+    output = self.filter_expression.resolve(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 739, in resolve
+    arg_vals.append(arg.resolve(context))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 850, in resolve
+    value = self._resolve_lookup(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 906, in _resolve_lookup
+    raise VariableDoesNotExist(
+django.template.base.VariableDoesNotExist: Failed lookup for key [title] in <Category: Artificial Intelligence>
+Internal Server Error: /admin/posts/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/views/generic/base.py", line 104, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/views/generic/base.py", line 143, in dispatch
+    return handler(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/views/generic/list.py", line 174, in get
+    context = self.get_context_data()
+  File "/home/TIM/mysite/blog/views.py", line 168, in get_context_data
+    categories = Category.objects.all()
+NameError: name 'Category' is not defined

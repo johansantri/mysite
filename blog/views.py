@@ -15,6 +15,8 @@ from django.utils.decorators import method_decorator
 from django.core.exceptions import PermissionDenied
 from django.utils import timezone
 from datetime import timedelta
+from django.db.models import Q
+from django.core.cache import cache
 
 # View baru untuk CRUD
 class BlogPostCreateView(LoginRequiredMixin, CreateView):
@@ -116,17 +118,72 @@ class BlogPostListAdminView(LoginRequiredMixin, ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        # Filter artikel yang tidak dihapus (status != 'deleted')
+        # Cache key berdasarkan user dan parameter filter
+        cache_key = f'blog_posts_{self.request.user.id}_'
+        cache_key += f'q_{self.request.GET.get("q", "")}_'
+        cache_key += f'status_{self.request.GET.get("status", "")}_'
+        cache_key += f'category_{self.request.GET.get("category", "")}_'
+        cache_key += f'tag_{self.request.GET.get("tag", "")}_'
+       
+
+        # Cek cache
+        cached_queryset = cache.get(cache_key)
+        if cached_queryset is not None:
+            return cached_queryset
+
+        # Query dasar
         queryset = BlogPost.objects.exclude(status='deleted')
+        queryset = queryset.select_related('author', 'category').prefetch_related('tags')
+
+        # Pencarian
+        search_query = self.request.GET.get('q', '')
+        if search_query:
+            queryset = queryset.filter(
+                Q(title__icontains=search_query) | Q(content__icontains=search_query)
+            )
+
+        # Filter status
+        status = self.request.GET.get('status', '')
+        if status in ['draft', 'published']:
+            queryset = queryset.filter(status=status)
+
+        # Filter kategori
+        category_id = self.request.GET.get('category', '')
+        if category_id:
+            queryset = queryset.filter(category__id=category_id)
+
+        # Filter tag
+        tag_id = self.request.GET.get('tag', '')
+        if tag_id:
+            queryset = queryset.filter(tags__id=tag_id)
+
+       
+
+        # Filter berdasarkan user (kecuali superuser)
         if self.request.user.is_superuser:
-            return queryset.order_by('-date_posted')
-        return queryset.filter(author=self.request.user).order_by('-date_posted')
+            queryset = queryset.order_by('-date_posted')
+        else:
+            queryset = queryset.filter(author=self.request.user).order_by('-date_posted')
+
+        # Simpan ke cache (timeout 5 menit)
+        cache.set(cache_key, queryset, 300)
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Manage Blog Posts'
+        # Data untuk dropdown filter
+        context['categories'] = CourseCategory.objects.all()
+        context['tags'] = Tag.objects.all()
+        
+        context['status_choices'] = BlogPost.STATUS_CHOICES[:2]  # Exclude 'deleted'
+        # Parameter pencarian/filter untuk template
+        context['search_query'] = self.request.GET.get('q', '')
+        context['selected_status'] = self.request.GET.get('status', '')
+        context['selected_category'] = self.request.GET.get('category', '')
+        context['selected_tag'] = self.request.GET.get('tag', '')
+        
         return context
-
 
 
 class BlogListView(ListView):
