@@ -45,7 +45,7 @@ class BlogPost(models.Model):
 class BlogComment(models.Model):
     blogpost_connected = models.ForeignKey(BlogPost, related_name='comments', on_delete=models.CASCADE)
     parent = models.ForeignKey('self', null=True, blank=True, related_name='replies', on_delete=models.CASCADE)
-    author = models.CharField(max_length=100)
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE) 
     content = models.TextField()
     date_posted = models.DateTimeField(default=timezone.now)
 

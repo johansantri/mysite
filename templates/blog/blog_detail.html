@@ -51,61 +51,83 @@
           </div>
         </div>
 
+        
+
         <!-- Comment Section -->
-        <div class="card border-0 shadow-sm rounded-3">
-          <div class="card-body p-4">
-            <h3 class="fw-bold text-primary mb-4">Comments ({{ post.number_of_comments }})</h3>
+          <div class="card border-0 shadow-sm rounded-3">
+            <div class="card-body p-4">
+              <h3 class="fw-bold text-primary mb-4">Comments ({{ post.number_of_comments }})</h3>
 
-            {% if comments %}
-              <ul class="list-unstyled">
-                {% for comment in comments %}
-                <li class="mb-4 {% if comment.parent %}ms-4{% endif %}">
-                  <div class="d-flex">
-                    <img src="{% static 'images/default-avatar.png' %}" alt="Avatar" class="rounded-circle me-3" width="40">
-                    <div>
-                      <h6 class="mb-1 text-primary">{{ comment.author|default:"Anonymous" }}</h6>
-                      <small class="text-muted">{{ comment.date_posted|date:"F d, Y, H:i" }}</small>
-                      <p class="mt-2">{{ comment.content }}</p>
-                      <a href="#" class="small text-muted" onclick="showReplyForm('{{ comment.id }}')">Reply</a>
+              {% if comments %}
+                <ul class="list-unstyled">
+                  {% for comment in comments %}
+                  <li class="mb-4 {% if comment.parent %}ms-4{% endif %}">
+                    <div class="d-flex align-items-start">
+                      <!-- Foto profil -->
+                      <img src="{% if comment.author.photo %}{{ comment.author.photo.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}" 
+                          alt="Avatar for {{ comment.author.username|default:'Anonymous' }}" 
+                          class="rounded-circle me-3 mt-1" width="48" height="48">
 
-                      <form method="POST" class="mt-3 reply-form" id="reply-form-{{ comment.id }}" style="display: none;">
-                        {% csrf_token %}
-                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
-                        <div class="mb-2">{{ comment_form.author }}</div>
-                        <div class="mb-2">{{ comment_form.content }}</div>
-                        <button type="submit" class="btn btn-sm btn-outline-primary">Submit Reply</button>
-                      </form>
+                      <!-- Konten komentar -->
+                      <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-center">
+                          <h6 class="mb-0 fw-semibold text-primary">{{ comment.author.username|default:"Anonymous" }}</h6>
+                          <small class="text-muted">{{ comment.date_posted|date:"F d, Y, H:i" }}</small>
+                        </div>
+                        <p class="mt-2 mb-2">{{ comment.content }}</p>
+                        <button type="button" class="small text-muted btn btn-link p-0" onclick="showReplyForm('{{ comment.id }}')">Reply</button>
 
-                      {% for reply in comment.replies.all %}
-                      <div class="mt-4 ms-4">
-                        <div class="d-flex">
-                          <img src="{% static 'images/default-avatar.png' %}" class="rounded-circle me-2" width="32">
-                          <div>
-                            <h6 class="mb-1 text-primary">{{ reply.author }}</h6>
-                            <small class="text-muted">{{ reply.date_posted|date:"F d, Y, H:i" }}</small>
-                            <p class="mt-2">{{ reply.content }}</p>
+                        <!-- Formulir balasan -->
+                        <form method="POST" class="mt-3 reply-form" id="reply-form-{{ comment.id }}" style="display: none;">
+                          {% csrf_token %}
+                          <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                          {% if comment_form.errors %}
+                            <div class="alert alert-danger">{{ comment_form.errors }}</div>
+                          {% endif %}
+                          <div class="mb-2">{{ comment_form.content }}</div>
+                          <button type="submit" class="btn btn-sm btn-outline-primary">Submit Reply</button>
+                        </form>
+
+                        <!-- Balasan -->
+                        {% for reply in comment.replies.all %}
+                        <div class="mt-4 ms-4">
+                          <div class="d-flex align-items-start">
+                            <img src="{% if reply.author.photo %}{{ reply.author.photo.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}" 
+                                alt="Avatar for {{ reply.author.username|default:'Anonymous' }}" 
+                                class="rounded-circle me-2 mt-1" width="40" height="40">
+
+                            <div class="flex-grow-1">
+                              <div class="d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0 fw-semibold text-primary">{{ reply.author.username|default:"Anonymous" }}</h6>
+                                <small class="text-muted">{{ reply.date_posted|date:"F d, Y, H:i" }}</small>
+                              </div>
+                              <p class="mt-2 mb-2">{{ reply.content }}</p>
+                            </div>
                           </div>
                         </div>
+                        {% endfor %}
                       </div>
-                      {% endfor %}
                     </div>
-                  </div>
-                </li>
-                {% endfor %}
-              </ul>
-            {% else %}
-              <p class="text-muted">No comments yet. Be the first to comment!</p>
-            {% endif %}
+                  </li>
+                  {% endfor %}
+                </ul>
+              {% else %}
+                <p class="text-muted">No comments yet. Be the first to comment!</p>
+              {% endif %}
 
-            <h4 class="mt-5 mb-3 fw-bold text-primary">Leave a Comment</h4>
-            <form method="POST">
-              {% csrf_token %}
-              <div class="mb-3">{{ comment_form.author }}</div>
-              <div class="mb-3">{{ comment_form.content }}</div>
-              <button type="submit" class="btn btn-primary">Submit Comment</button>
-            </form>
+              <!-- Form Komentar Baru -->
+              <h4 class="mt-5 mb-3 fw-bold text-primary">Leave a Comment</h4>
+              <form method="POST">
+                {% csrf_token %}
+                {% if comment_form.errors %}
+                  <div class="alert alert-danger">{{ comment_form.errors }}</div>
+                {% endif %}
+                <div class="mb-3">{{ comment_form.content }}</div>
+                <button type="submit" class="btn btn-primary">Submit Comment</button>
+              </form>
+            </div>
           </div>
-        </div>
+
       </div>
 
       <!-- Sidebar -->
@@ -115,7 +137,7 @@
           <ul class="list-unstyled">
             {% for cat_data in categories %}
               <li class="mb-2">
-                <a href="{{ cat_data.category.get_absolute_url }}" class="text-decoration-none {% if post.category == cat_data.category %}fw-bold{% endif %}">
+                <a href="{{ cat_data.url }}" class="text-decoration-none {% if post.category == cat_data.category %}fw-bold{% endif %}">
                   {{ cat_data.category.name }} ({{ cat_data.post_count }})
                 </a>
               </li>
@@ -167,7 +189,9 @@
 
 <script>
 function showReplyForm(commentId) {
+  // Hide all reply forms
   document.querySelectorAll('.reply-form').forEach(form => form.style.display = 'none');
+  // Show the target reply form
   const targetForm = document.getElementById(`reply-form-${commentId}`);
   if (targetForm) {
     targetForm.style.display = 'block';

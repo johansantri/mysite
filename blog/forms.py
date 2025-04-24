@@ -1,18 +1,14 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from .models import BlogComment
+from courses.models import BlacklistedKeyword  # Import from the courses app
 
 class NewCommentForm(forms.ModelForm):
     class Meta:
         model = BlogComment
-        fields = ['author', 'content']
+        fields = ['content']  # Only include 'content' since 'author' and 'blogpost_connected' are set in the view
 
         widgets = {
-            'author': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Enter your name',
-                'aria-label': 'Author',
-                'required': True
-            }),
             'content': forms.Textarea(attrs={
                 'class': 'form-control',
                 'placeholder': 'Write your comment here...',
@@ -23,7 +19,6 @@ class NewCommentForm(forms.ModelForm):
         }
 
         labels = {
-            'author': 'Name',
             'content': 'Comment',
         }
 
@@ -31,14 +26,20 @@ class NewCommentForm(forms.ModelForm):
             'content': 'Keep your comment respectful and relevant.',
         }
 
-    def clean_author(self):
-        author = self.cleaned_data.get('author')
-        if len(author) < 2:
-            raise forms.ValidationError("Name must be at least 2 characters long.")
-        return author
-
     def clean_content(self):
         content = self.cleaned_data.get('content')
+        if not content:
+            raise ValidationError("Comment cannot be empty.")
+
+        # Check minimum length
         if len(content.strip()) < 5:
-            raise forms.ValidationError("Comment is too short. Please write something meaningful.")
+            raise ValidationError("Comment is too short. Please write something meaningful.")
+
+        # Check for blacklisted keywords
+        blacklisted_keywords = BlacklistedKeyword.objects.all()
+        content_lower = content.lower()  # Case-insensitive comparison
+        for keyword in blacklisted_keywords:
+            if keyword.keyword.lower() in content_lower:
+                raise ValidationError(f"Comment contains inappropriate word: '{keyword.keyword}'. Please revise your comment.")
+
         return content

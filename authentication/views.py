@@ -1068,6 +1068,10 @@ def login_view(request):
 
             if user is not None:
                 login(request, user)
+                next_url = request.POST.get('next') or request.GET.get('next')
+                if next_url:
+                    return redirect(next_url)
+                #return redirect('home') 
                 return redirect('authentication:home')  # Redirect to home after login
             else:
                 return render(request, 'authentication/login.html', {'form': form, 'error': 'Invalid email or password'})
