@@ -203,11 +203,7 @@
                   {{ post.views }} View{{ post.views|pluralize }} |
                   {{ post.number_of_comments }} Comment{{ post.number_of_comments|pluralize }}
                 </p>
-                <div class="mb-2">
-                  {% for tag in post.tags.all %}
-                    <a href="{{ tag.get_absolute_url }}" rel="canonical" class="badge bg-secondary text-white badge-tag me-1 mb-1">#{{ tag.name }}</a>
-                  {% endfor %}
-                </div>
+               
               </div>
             </div>
 
@@ -279,9 +275,39 @@
                 </li>
                 {% endfor %}
               </ul>
+                    {% if comments.has_previous or comments.has_next %}
+                        <div class="pagination">
+                          <ul class="pagination justify-content-center">
+                            {% if comments.has_previous %}
+                              <li class="page-item">
+                                <a href="?page={{ comments.previous_page_number }}" class="page-link" aria-label="Previous">Previous</a>
+                              </li>
+                            {% else %}
+                              <li class="page-item disabled">
+                                <span class="page-link" aria-label="Previous">Previous</span>
+                              </li>
+                            {% endif %}
+                          
+                            {% if comments.has_next %}
+                              <li class="page-item">
+                                <a href="?page={{ comments.next_page_number }}" class="page-link" aria-label="Next">Next</a>
+                              </li>
+                            {% else %}
+                              <li class="page-item disabled">
+                                <span class="page-link" aria-label="Next">Next</span>
+                              </li>
+                            {% endif %}
+                          </ul>
+                        </div>
+                      {% endif %}
+
+
             {% else %}
               <p class="text-muted">No comments yet. Be the first to comment!</p>
             {% endif %}
+
+              <!-- Pagination for Comments -->
+      
 
             <!-- Form Komentar Baru -->
             <h4 class="mt-5 mb-3 fw-bold text-primary">Leave a Comment</h4>
@@ -298,32 +324,112 @@
 
         <!-- Related Posts Section -->
         {% if related_posts %}
-          <div class="related-posts mb-5">
-            <h3 class="fw-bold text-primary mb-4">Related Posts</h3>
-            <div class="row g-4">
-              {% for related_post in related_posts %}
-                <div class="col-md-6">
-                  <div class="related-posts-card card border-0 shadow-sm h-100">
-                    {% if related_post.image %}
-                      <img src="{{ related_post.image.url }}" class="card-img-top" alt="{{ related_post.title }}">
-                    {% else %}
-                      <div class="no-image-placeholder bg-secondary text-white text-center rounded-top-3">No Image</div>
-                    {% endif %}
-                    <div class="card-body d-flex flex-column">
-                      <h5 class="card-title fw-semibold">{{ related_post.title }}</h5>
-                      <p class="small text-muted mb-2">
-                        By {{ related_post.author|default:"Unknown" }} | {{ related_post.date_posted|date:"M d, Y" }}
-                      </p>
-                      <div class="mt-auto">
-                        <a href="{% url 'blog:blog-detail' slug=related_post.slug %}" rel="canonical" class="btn btn-outline-primary w-100">Read More</a>
+            <div class="related-posts mb-5">
+              <h3 class="fw-bold text-primary mb-4">Related Posts</h3>
+              <div class="row g-4">
+                {% for related_post in related_posts %}
+                  <div class="col-12 col-md-6 col-lg-4"> <!-- Responsif pada berbagai ukuran layar -->
+                    <div class="related-posts-card card border-0 shadow-sm h-100">
+                      {% if related_post.image %}
+                        <img src="{{ related_post.image.url }}" class="card-img-top" alt="{{ related_post.title }}">
+                      {% else %}
+                        <div class="no-image-placeholder bg-secondary text-white text-center rounded-top-3">No Image</div>
+                      {% endif %}
+                      <div class="card-body d-flex flex-column">
+                        <h5 class="card-title fw-semibold">{{ related_post.title }}</h5>
+                        <p class="small text-muted mb-2">
+                          By {{ related_post.author|default:"Unknown" }} | {{ related_post.date_posted|date:"M d, Y" }}
+                        </p>
+                        <div class="mt-auto">
+                          <a href="{% url 'blog:blog-detail' slug=related_post.slug %}" rel="canonical" class="btn btn-outline-primary w-100">Read More</a>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              {% endfor %}
+                {% endfor %}
+              </div>
+
+              <!-- Pagination untuk Related Posts -->
+              <div class="pagination mt-3">
+                {% if related_posts.has_previous %}
+                  <a href="?page={{ related_posts.previous_page_number }}" class="btn btn-outline-primary">Previous</a>
+                {% endif %}
+                {% if related_posts.has_next %}
+                  <a href="?page={{ related_posts.next_page_number }}" class="btn btn-outline-primary">Next</a>
+                {% endif %}
+              </div>
             </div>
-          </div>
-        {% endif %}
+          {% endif %}
+
+        <style>
+        /* Default style untuk PC (desktop) */
+          .related-posts-card img {
+            max-width: 100%;
+            height: auto;  /* Pastikan gambar tidak terdistorsi */
+            object-fit: contain;
+            margin: 0 auto;
+            display: block;
+            max-height: 200px;  /* Batasi tinggi gambar */
+          }
+
+          /* Media Query untuk perangkat dengan lebar layar kecil (tablet dan mobile) */
+          @media (max-width: 768px) {
+            .related-posts-card {
+              margin-bottom: 1rem;  /* Memberikan jarak antar card pada tablet dan mobile */
+            }
+
+            /* Mengatur gambar pada card menjadi lebih kecil pada tablet */
+            .related-posts-card img {
+              max-height: 180px;  /* Membatasi gambar agar tidak terlalu tinggi */
+              object-fit: contain;  /* Pastikan gambar tetap terlihat utuh */
+            }
+
+            /* Mengatur padding pada card body lebih kecil */
+            .related-posts-card .card-body {
+              padding: 0.75rem;
+            }
+
+            /* Menyesuaikan layout untuk kolom di bawah ukuran tablet */
+            .related-posts .row {
+              display: flex;
+              flex-wrap: wrap;
+              justify-content: space-between; /* Mengatur kolom agar tidak terlalu rapat */
+            }
+
+            .related-posts .col-md-6 {
+              width: 100%;  /* Pastikan card menggunakan lebar penuh pada perangkat mobile */
+              padding: 0 10px;  /* Menambahkan sedikit padding pada kolom */
+            }
+
+            .related-posts .col-lg-4 {
+              width: 100%;  /* Pastikan card menggunakan lebar penuh pada perangkat mobile */
+            }
+          }
+
+          /* Media Query untuk perangkat dengan lebar layar sangat kecil (ponsel kecil) */
+          @media (max-width: 480px) {
+            /* Mengatur gambar pada card menjadi lebih kecil pada ponsel kecil */
+            .related-posts-card img {
+              max-height: 190px;
+            }
+
+            /* Menyesuaikan padding pada card lebih kecil */
+            .related-posts-card .card-body {
+              padding: 0.5rem;  /* Mengurangi padding untuk ponsel kecil */
+            }
+
+            .no-image-placeholder {
+              height: 120px;  /* Mengatur ukuran placeholder untuk ponsel kecil */
+            }
+
+            .related-posts .col-md-6 {
+              width: 100%;  /* Kolom tetap menggunakan lebar penuh */
+            }
+          }
+
+
+
+        </style>
       </div>
 
       <!-- Sidebar -->

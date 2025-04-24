@@ -17,6 +17,7 @@ from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Q
 from django.core.cache import cache
+from django.core.paginator import Paginator
 
 # View baru untuk CRUD
 class BlogPostCreateView(LoginRequiredMixin, CreateView):
@@ -244,9 +245,17 @@ class BlogDetailView(DetailView):
         
         # Remove duplicates using set() and ensure uniqueness
         context['related_posts'] = list({post.id: post for post in related_posts}.values())[:5]
-        context['comments'] = self.object.comments.filter(parent__isnull=True).order_by('-date_posted')
-        context['comment_form'] = NewCommentForm()
         
+        # Paginasi komentar
+        comments = self.object.comments.filter(parent__isnull=True).order_by('-date_posted')
+        paginator = Paginator(comments, 10)  # 10 komentar per halaman
+        page_number = self.request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        context['comments'] = page_obj
+        
+        context['comment_form'] = NewCommentForm()
+
+        # Fetching and processing categories and tags
         categories = CourseCategory.objects.filter(blogpost__status='published').distinct()
         context['categories'] = [
             {
@@ -278,8 +287,8 @@ class BlogDetailView(DetailView):
             if not request.user.is_authenticated:
                 # Redirect to login with 'next' parameter to return to this page
                 next_url = reverse('blog:blog-detail', kwargs={'slug': self.object.slug})
-                return redirect(next_url)  # Use named URL 'login' or /accounts/login/
-                
+                return redirect(next_url)  # Redirect to login page
+            
             # Check the time of the user's last comment
             last_comment = self.object.comments.filter(author=request.user).order_by('-date_posted').first()
             if last_comment and last_comment.date_posted > timezone.now() - timedelta(seconds=60):
@@ -294,14 +303,14 @@ class BlogDetailView(DetailView):
             comment.blogpost_connected = self.object
             comment.author = request.user  # Set the authenticated user as the author
             
-            # Validate parent_id safely
+            # Validate parent_id safely for threaded comments
             parent_id = request.POST.get('parent_id')
             if parent_id:
                 try:
                     parent = get_object_or_404(BlogComment, id=int(parent_id), blogpost_connected=self.object)
                     comment.parent = parent
                 except (ValueError, BlogComment.DoesNotExist):
-                    # Invalid parent_id, ignore or handle as needed
+                    # If parent comment doesn't exist or invalid, we skip assigning parent
                     pass
             
             comment.save()

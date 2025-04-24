@@ -5,6 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="This is a brief description of the page content, summarizing the main idea.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="LMSKu - Home">
+    <meta name="twitter:description" content="LMSKu adalah platform pembelajaran online untuk kursus dan pengembangan diri.">
+    <meta name="twitter:image" content="{% static 'assets/img/course-01.png' %}">
+    <meta property="og:title" content="LMSKu - Home">
+    <meta property="og:description" content="LMSKu adalah platform pembelajaran online untuk kursus dan pengembangan diri.">
+    <meta property="og:image" content="{% static 'assets/img/course-01.png' %}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:type" content="website">
     <title>LMS - Home</title>
     <link rel="icon" href="{% static 'assets/img/icon/badge.svg' %}" sizes="32x32" type="image/svg+xml">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" integrity="sha512-jnSuA4Ss2PkkikSOLtYs8BlYIeeIK1h99ty4YfvRPAlzr377vr3CXDb7sb7eEEBYjDtcYj+AjBH3FLv5uSJuXg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
