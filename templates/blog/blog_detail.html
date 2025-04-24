@@ -1,14 +1,185 @@
 {% extends 'home/base.html' %}
 {% load static blog_filters %}
 
+{% block extra_head %}
+<meta name="description" content="{{ post.meta_description|default:post.title }}">
+<meta name="keywords" content="{{ post.tags.all|join:', ' }}, {{ post.category.name|default:'blog' }}, education, technology">
+<meta name="robots" content="index, follow">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  /* Font dan Reset */
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+  }
+
+  /* Section Styling */
+  .blog-detail-section {
+    background: #f8f9fa;
+    padding: 3rem 0;
+  }
+
+  /* Blog Post Card */
+  .blog-post-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+  .blog-post-card img {
+    object-fit: cover;
+  }
+  .blog-post-card .no-image-placeholder {
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+  }
+  .blog-post-card h1 {
+    color: #b02a37;
+    font-weight: 700;
+  }
+
+  /* Comment Section */
+  .comment-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+  .comment-card img {
+    object-fit: cover;
+  }
+  .reply-form {
+    transition: opacity 0.3s ease;
+  }
+
+  /* Sidebar Cards */
+  .sidebar-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+  .sidebar-card h5 {
+    color: #b02a37;
+  }
+  .sidebar-card a {
+    color: #6c757d;
+    transition: color 0.3s ease;
+  }
+  .sidebar-card a:hover {
+    color: #b02a37;
+  }
+
+  /* Related Posts Section */
+  .related-posts-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .related-posts-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+  .related-posts-card img {
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    height: 150px;
+  }
+  .related-posts-card .no-image-placeholder {
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+  }
+  .related-posts-card .card-body {
+    padding: 1rem;
+  }
+  .related-posts-card .card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #212529;
+  }
+  .related-posts-card .btn {
+    border-radius: 8px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  .related-posts-card .btn:hover {
+    background-color: #b02a37;
+    color: #fff;
+    border-color: #b02a37;
+  }
+
+  /* Badge Tags */
+  .badge-tag {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 20px;
+    transition: background-color 0.3s ease;
+  }
+  .badge-tag:hover {
+    background-color: #0d6efd;
+    text-decoration: none;
+  }
+
+  /* Animasi Fade-In */
+  .related-posts-card {
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards;
+  }
+  .related-posts-card:nth-child(odd) {
+    animation-delay: 0.1s;
+  }
+  .related-posts-card:nth-child(even) {
+    animation-delay: 0.2s;
+  }
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Responsivitas */
+  @media (max-width: 991px) {
+    .blog-post-card img,
+    .blog-post-card .no-image-placeholder {
+      height: 150px;
+    }
+    .related-posts-card img,
+    .related-posts-card .no-image-placeholder {
+      height: 120px;
+    }
+    .sidebar-card {
+      margin-top: 2rem;
+    }
+  }
+  @media (max-width: 576px) {
+    .blog-post-card img,
+    .blog-post-card .no-image-placeholder {
+      height: 120px;
+    }
+    .blog-post-card h1 {
+      font-size: 1.75rem;
+    }
+    .related-posts-card img,
+    .related-posts-card .no-image-placeholder {
+      height: 100px;
+    }
+    .related-posts-card .card-title {
+      font-size: 1rem;
+    }
+  }
+</style>
+{% endblock %}
+
 {% block content %}
-<section class="py-5 bg-light">
+<section class="blog-detail-section py-5">
   <div class="container">
     <div class="row g-4">
-
       <!-- Blog Detail -->
       <div class="col-lg-8">
-        <div class="card border-0 shadow-sm rounded-3 mb-4">
+        <div class="blog-post-card card border-0 shadow-sm rounded-3 mb-4">
           <div class="card-body p-5">
             <div class="row g-4 align-items-start">
               {% if post.image %}
@@ -22,7 +193,7 @@
               {% endif %}
 
               <div class="col-md-8">
-                <h1 class="fw-bold mb-3 text-danger fs-3">{{ post.title }}</h1>
+                <h1 class="fw-bold mb-3 fs-3">{{ post.title }}</h1>
                 <p class="text-muted small mb-3">
                   By {{ post.author|default:"Unknown" }} |
                   {{ post.date_posted|date:"F d, Y" }} |
@@ -34,7 +205,7 @@
                 </p>
                 <div class="mb-2">
                   {% for tag in post.tags.all %}
-                    <a href="{{ tag.get_absolute_url }}" class="badge bg-secondary text-white me-1 mb-1">#{{ tag.name }}</a>
+                    <a href="{{ tag.get_absolute_url }}" class="badge bg-secondary text-white badge-tag me-1 mb-1">#{{ tag.name }}</a>
                   {% endfor %}
                 </div>
               </div>
@@ -51,88 +222,113 @@
           </div>
         </div>
 
-        
-
         <!-- Comment Section -->
-          <div class="card border-0 shadow-sm rounded-3">
-            <div class="card-body p-4">
-              <h3 class="fw-bold text-primary mb-4">Comments ({{ post.number_of_comments }})</h3>
+        <div class="comment-card card border-0 shadow-sm rounded-3 mb-5">
+          <div class="card-body p-4">
+            <h3 class="fw-bold text-primary mb-4">Comments ({{ post.number_of_comments }})</h3>
 
-              {% if comments %}
-                <ul class="list-unstyled">
-                  {% for comment in comments %}
-                  <li class="mb-4 {% if comment.parent %}ms-4{% endif %}">
-                    <div class="d-flex align-items-start">
-                      <!-- Foto profil -->
-                      <img src="{% if comment.author.photo %}{{ comment.author.photo.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}" 
-                          alt="Avatar for {{ comment.author.username|default:'Anonymous' }}" 
-                          class="rounded-circle me-3 mt-1" width="48" height="48">
+            {% if comments %}
+              <ul class="list-unstyled">
+                {% for comment in comments %}
+                <li class="mb-4 {% if comment.parent %}ms-4{% endif %}">
+                  <div class="d-flex align-items-start">
+                    <!-- Foto profil -->
+                    <img src="{% if comment.author and comment.author.photo %}{{ comment.author.photo.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}" 
+                         alt="Avatar for {{ comment.author.username|default:'Anonymous' }}" 
+                         class="rounded-circle me-3 mt-1" width="48" height="48">
 
-                      <!-- Konten komentar -->
-                      <div class="flex-grow-1">
-                        <div class="d-flex justify-content-between align-items-center">
-                          <h6 class="mb-0 fw-semibold text-primary">{{ comment.author.username|default:"Anonymous" }}</h6>
-                          <small class="text-muted">{{ comment.date_posted|date:"F d, Y, H:i" }}</small>
-                        </div>
-                        <p class="mt-2 mb-2">{{ comment.content }}</p>
-                        <button type="button" class="small text-muted btn btn-link p-0" onclick="showReplyForm('{{ comment.id }}')">Reply</button>
+                    <!-- Konten komentar -->
+                    <div class="flex-grow-1">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0 fw-semibold text-primary">{{ comment.author.username|default:"Anonymous" }}</h6>
+                        <small class="text-muted">{{ comment.date_posted|date:"F d, Y, H:i" }}</small>
+                      </div>
+                      <p class="mt-2 mb-2">{{ comment.content }}</p>
+                      <button type="button" class="small text-muted btn btn-link p-0" onclick="showReplyForm('{{ comment.id }}')">Reply</button>
 
-                        <!-- Formulir balasan -->
-                        <form method="POST" class="mt-3 reply-form" id="reply-form-{{ comment.id }}" style="display: none;">
-                          {% csrf_token %}
-                          <input type="hidden" name="parent_id" value="{{ comment.id }}">
-                          {% if comment_form.errors %}
-                            <div class="alert alert-danger">{{ comment_form.errors }}</div>
-                          {% endif %}
-                          <div class="mb-2">{{ comment_form.content }}</div>
-                          <button type="submit" class="btn btn-sm btn-outline-primary">Submit Reply</button>
-                        </form>
+                      <!-- Formulir balasan -->
+                      <form method="POST" class="mt-3 reply-form" id="reply-form-{{ comment.id }}" style="display: none;">
+                        {% csrf_token %}
+                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                        {% if comment_form.errors %}
+                          <div class="alert alert-danger">{{ comment_form.errors }}</div>
+                        {% endif %}
+                        <div class="mb-2">{{ comment_form.content }}</div>
+                        <button type="submit" class="btn btn-sm btn-outline-primary">Submit Reply</button>
+                      </form>
 
-                        <!-- Balasan -->
-                        {% for reply in comment.replies.all %}
-                        <div class="mt-4 ms-4">
-                          <div class="d-flex align-items-start">
-                            <img src="{% if reply.author.photo %}{{ reply.author.photo.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}" 
-                                alt="Avatar for {{ reply.author.username|default:'Anonymous' }}" 
-                                class="rounded-circle me-2 mt-1" width="40" height="40">
-
-                            <div class="flex-grow-1">
-                              <div class="d-flex justify-content-between align-items-center">
-                                <h6 class="mb-0 fw-semibold text-primary">{{ reply.author.username|default:"Anonymous" }}</h6>
-                                <small class="text-muted">{{ reply.date_posted|date:"F d, Y, H:i" }}</small>
-                              </div>
-                              <p class="mt-2 mb-2">{{ reply.content }}</p>
+                      <!-- Balasan -->
+                      {% for reply in comment.replies.all %}
+                      <div class="mt-4 ms-4">
+                        <div class="d-flex align-items-start">
+                          <img src="{% if reply.author and reply.author.photo %}{{ reply.author.photo.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}" 
+                               alt="Avatar for {{ reply.author.username|default:'Anonymous' }}" 
+                               class="rounded-circle me-2 mt-1" width="40" height="40">
+                          <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-center">
+                              <h6 class="mb-0 fw-semibold text-primary">{{ reply.author.username|default:"Anonymous" }}</h6>
+                              <small class="text-muted">{{ reply.date_posted|date:"F d, Y, H:i" }}</small>
                             </div>
+                            <p class="mt-2 mb-2">{{ reply.content }}</p>
                           </div>
                         </div>
-                        {% endfor %}
+                      </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p class="text-muted">No comments yet. Be the first to comment!</p>
+            {% endif %}
+
+            <!-- Form Komentar Baru -->
+            <h4 class="mt-5 mb-3 fw-bold text-primary">Leave a Comment</h4>
+            <form method="POST">
+              {% csrf_token %}
+              {% if comment_form.errors %}
+                <div class="alert alert-danger">{{ comment_form.errors }}</div>
+              {% endif %}
+              <div class="mb-3">{{ comment_form.content }}</div>
+              <button type="submit" class="btn btn-primary">Submit Comment</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Related Posts Section -->
+        {% if related_posts %}
+          <div class="related-posts mb-5">
+            <h3 class="fw-bold text-primary mb-4">Related Posts</h3>
+            <div class="row g-4">
+              {% for related_post in related_posts %}
+                <div class="col-md-6">
+                  <div class="related-posts-card card border-0 shadow-sm h-100">
+                    {% if related_post.image %}
+                      <img src="{{ related_post.image.url }}" class="card-img-top" alt="{{ related_post.title }}">
+                    {% else %}
+                      <div class="no-image-placeholder bg-secondary text-white text-center rounded-top-3">No Image</div>
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                      <h5 class="card-title fw-semibold">{{ related_post.title }}</h5>
+                      <p class="small text-muted mb-2">
+                        By {{ related_post.author|default:"Unknown" }} | {{ related_post.date_posted|date:"M d, Y" }}
+                      </p>
+                      <div class="mt-auto">
+                        <a href="{% url 'blog:blog-detail' slug=related_post.slug %}" class="btn btn-outline-primary w-100">Read More</a>
                       </div>
                     </div>
-                  </li>
-                  {% endfor %}
-                </ul>
-              {% else %}
-                <p class="text-muted">No comments yet. Be the first to comment!</p>
-              {% endif %}
-
-              <!-- Form Komentar Baru -->
-              <h4 class="mt-5 mb-3 fw-bold text-primary">Leave a Comment</h4>
-              <form method="POST">
-                {% csrf_token %}
-                {% if comment_form.errors %}
-                  <div class="alert alert-danger">{{ comment_form.errors }}</div>
-                {% endif %}
-                <div class="mb-3">{{ comment_form.content }}</div>
-                <button type="submit" class="btn btn-primary">Submit Comment</button>
-              </form>
+                  </div>
+                </div>
+              {% endfor %}
             </div>
           </div>
-
+        {% endif %}
       </div>
 
       <!-- Sidebar -->
       <div class="col-lg-4">
-        <div class="card border-0 rounded-3 shadow-sm p-4 mb-4">
+        <div class="sidebar-card card border-0 rounded-3 shadow-sm p-4 mb-4">
           <h5 class="fw-bold text-primary mb-3">Categories</h5>
           <ul class="list-unstyled">
             {% for cat_data in categories %}
@@ -147,11 +343,11 @@
           </ul>
         </div>
 
-        <div class="card border-0 rounded-3 shadow-sm p-4 mb-4">
+        <div class="sidebar-card card border-0 rounded-3 shadow-sm p-4 mb-4">
           <h5 class="fw-bold text-primary mb-3">Popular Tags</h5>
           <div>
             {% for tag_data in tags %}
-              <a href="{{ tag_data.tag.get_absolute_url }}" class="badge bg-secondary text-white me-1 mb-1">
+              <a href="{{ tag_data.tag.get_absolute_url }}" class="badge bg-secondary text-white badge-tag me-1 mb-1">
                 #{{ tag_data.tag.name }} ({{ tag_data.post_count }})
               </a>
             {% empty %}
@@ -161,7 +357,7 @@
         </div>
 
         {% if related_courses %}
-        <div class="card border-0 shadow-sm rounded-3 p-4">
+        <div class="sidebar-card card border-0 shadow-sm rounded-3 p-4">
           <h5 class="fw-bold text-primary mb-3">Related Courses</h5>
           <div class="row g-3">
             {% for course in related_courses %}
@@ -182,11 +378,11 @@
         </div>
         {% endif %}
       </div>
-
     </div>
   </div>
 </section>
 
+{% block extra_js %}
 <script>
 function showReplyForm(commentId) {
   // Hide all reply forms
@@ -198,4 +394,5 @@ function showReplyForm(commentId) {
   }
 }
 </script>
+{% endblock %}
 {% endblock %}

@@ -50,11 +50,19 @@ class BlogDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
-        # Fetch other posts in the same category (exclude the current post)
-        context['related_posts'] = BlogPost.objects.filter(
-            category=self.object.category
-        ).exclude(id=self.object.id)[:5]  # Adjust the number as needed
+        # Fetch related posts (same category, exclude current post)
+        related_posts = BlogPost.objects.filter(
+            category=self.object.category, status='published'
+        ).exclude(id=self.object.id).order_by('-date_posted')[:5]
         
+        # If not enough related posts, try matching by tags
+        if len(related_posts) < 3 and self.object.tags.exists():
+            tag_related = BlogPost.objects.filter(
+                tags__in=self.object.tags.all(), status='published'
+            ).exclude(id=self.object.id).order_by('-date_posted')[:5 - len(related_posts)]
+            related_posts = list(related_posts) + list(tag_related)
+        
+        context['related_posts'] = related_posts[:5]
         context['comments'] = self.object.comments.filter(parent__isnull=True).order_by('-date_posted')
         context['comment_form'] = NewCommentForm()
         
@@ -74,7 +82,6 @@ class BlogDetailView(DetailView):
             for tag in tags
         ]
         
-        # If you want to keep related courses as well
         context['related_courses'] = self.object.related_courses.filter(
             id__isnull=False, slug__isnull=False
         ).exclude(slug='')
