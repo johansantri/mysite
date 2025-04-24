@@ -53,7 +53,7 @@
                 <p class="small text-muted mb-2">
                   By {{ post.author|default:"Unknown" }} • {{ post.date_posted|date:"M d, Y" }}
                 </p>
-                <p class="card-text text-muted">{{ post.content|truncatewords:25 }}</p>
+                <p class="card-text text-muted">{{ post.content|safe|truncatewords:25 }}</p>
 
                 <div class="mt-auto">
                   <a href="{% url 'blog:blog-detail' slug=post.slug %}" class="btn btn-outline-primary w-100">Read More</a>

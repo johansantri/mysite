@@ -1,0 +1,71 @@
+{% extends 'home/tes.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<section class="list-section">
+  <div class="list-card card border-0 shadow-sm">
+    <div class="card-body">
+      <h1 class="fw-bold mb-4">{{ title }}</h1>
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+      <a href="{% url 'blog:blog-create' %}" class="btn btn-primary mb-3">Create New Post</a>
+      {% if posts %}
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Title</th>
+              <th scope="col">Status</th>
+              <th scope="col">Date Posted</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for post in posts %}
+              <tr>
+                <td>{{ post.title }}</td>
+                <td>{{ post.status|title }}</td>
+                <td>{{ post.date_posted|date:"F d, Y" }}</td>
+                <td>
+                  <a href="{% url 'blog:blog-update' post.pk %}" class="btn btn-sm btn-primary">Edit</a>
+                  <a href="{% url 'blog:blog-delete' post.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% if is_paginated %}
+          <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+              {% if page_obj.has_previous %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">«</a>
+                </li>
+              {% endif %}
+              {% for num in page_obj.paginator.page_range %}
+                <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                  <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+              {% endfor %}
+              {% if page_obj.has_next %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">»</a>
+                </li>
+              {% endif %}
+            </ul>
+          </nav>
+        {% endif %}
+      {% else %}
+        <p>No posts available. <a href="{% url 'blog:blog-create' %}">Create your first post</a>.</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

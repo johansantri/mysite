@@ -18,6 +18,7 @@ class BlogPost(models.Model):
     STATUS_CHOICES = (
         ('draft', 'Draft'),
         ('published', 'Published'),
+        ('deleted', 'Deleted'),
     )
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True)
@@ -41,6 +42,8 @@ class BlogPost(models.Model):
     @property
     def number_of_comments(self):
         return self.comments.count()
+    class Meta:
+        ordering = ['-date_posted']
 
 class BlogComment(models.Model):
     blogpost_connected = models.ForeignKey(BlogPost, related_name='comments', on_delete=models.CASCADE)

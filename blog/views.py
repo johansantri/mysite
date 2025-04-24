@@ -1,10 +1,133 @@
 from django.views.generic import ListView, DetailView
 from django.shortcuts import render,get_object_or_404, redirect
 from .models import BlogPost, Tag, BlogComment
-from .forms import NewCommentForm
+from .forms import NewCommentForm,BlogPostForm
 from courses.models import Course, Category as CourseCategory
 from django.urls import reverse
 from django.contrib.auth.views import redirect_to_login
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib import messages
+from django.urls import reverse_lazy
+from django_ratelimit.decorators import ratelimit  # Untuk rate-limiting
+from django.utils.decorators import method_decorator
+from django.core.exceptions import PermissionDenied
+from django.utils import timezone
+from datetime import timedelta
+
+# View baru untuk CRUD
+class BlogPostCreateView(LoginRequiredMixin, CreateView):
+    model = BlogPost
+    form_class = BlogPostForm
+    template_name = 'blog/blog_form.html'
+    success_url = reverse_lazy('blog:blog-list-admin')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def dispatch(self, *args, **kwargs):
+        recent_post = BlogPost.objects.filter(
+            author=self.request.user,
+            date_posted__gte=timezone.now() - timedelta(hours=1)
+        ).count()
+        if recent_post >= 5:
+            messages.error(self.request, 'You have reached the limit of 5 posts per hour. Please try again later.')
+            return redirect('blog:blog-list-admin')
+        return super().dispatch(*args, **kwargs)
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        messages.success(self.request, 'Blog post created successfully!')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'There was an error creating the blog post. Please check the form.')
+        return super().form_invalid(form)
+
+class BlogPostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = BlogPost
+    form_class = BlogPostForm
+    template_name = 'blog/blog_form.html'
+    success_url = reverse_lazy('blog:blog-list-admin')
+
+    def test_func(self):
+        post = self.get_object()
+        return self.request.user == post.author or self.request.user.is_superuser
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def dispatch(self, *args, **kwargs):
+        recent_edits = BlogPost.objects.filter(
+            author=self.request.user,
+            date_updated__gte=timezone.now() - timedelta(hours=1)
+        ).count()
+        if recent_edits >= 10:
+            messages.error(self.request, 'You have reached the limit of 10 edits per hour. Please try again later.')
+            return redirect('blog:blog-list-admin')
+        return super().dispatch(*args, **kwargs)
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Blog post updated successfully!')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'There was an error updating the blog post. Please check the form.')
+        return super().form_invalid(form)
+
+class BlogPostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = BlogPost
+    template_name = 'blog/blog_confirm_delete.html'
+    success_url = reverse_lazy('blog:blog-list-admin')
+
+    def test_func(self):
+        post = self.get_object()
+        return self.request.user == post.author or self.request.user.is_superuser
+
+    def dispatch(self, *args, **kwargs):
+        # Rate-limiting: cek jumlah penghapusan (status='deleted') dalam 1 jam
+        recent_deletions = BlogPost.objects.filter(
+            author=self.request.user,
+            status='deleted',
+            date_updated__gte=timezone.now() - timedelta(hours=1)
+        ).count()
+        if recent_deletions >= 5:
+            messages.error(self.request, 'You have reached the limit of 5 deletions per hour. Please try again later.')
+            return redirect('blog:blog-list-admin')
+        return super().dispatch(*args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        # Soft delete: set status='deleted'
+        self.object = self.get_object()
+        self.object.status = 'deleted'
+        self.object.save()
+        messages.success(self.request, 'Blog post deleted successfully!')
+        return redirect(self.success_url)
+
+class BlogPostListAdminView(LoginRequiredMixin, ListView):
+    model = BlogPost
+    template_name = 'blog/blog_list_admin.html'
+    context_object_name = 'posts'
+    paginate_by = 10
+
+    def get_queryset(self):
+        # Filter artikel yang tidak dihapus (status != 'deleted')
+        queryset = BlogPost.objects.exclude(status='deleted')
+        if self.request.user.is_superuser:
+            return queryset.order_by('-date_posted')
+        return queryset.filter(author=self.request.user).order_by('-date_posted')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Manage Blog Posts'
+        return context
+
+
 
 class BlogListView(ListView):
     model = BlogPost
