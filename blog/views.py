@@ -242,7 +242,8 @@ class BlogDetailView(DetailView):
             ).exclude(id=self.object.id).order_by('-date_posted')[:5 - len(related_posts)]
             related_posts = list(related_posts) + list(tag_related)
         
-        context['related_posts'] = related_posts[:5]
+        # Remove duplicates using set() and ensure uniqueness
+        context['related_posts'] = list({post.id: post for post in related_posts}.values())[:5]
         context['comments'] = self.object.comments.filter(parent__isnull=True).order_by('-date_posted')
         context['comment_form'] = NewCommentForm()
         
@@ -277,8 +278,17 @@ class BlogDetailView(DetailView):
             if not request.user.is_authenticated:
                 # Redirect to login with 'next' parameter to return to this page
                 next_url = reverse('blog:blog-detail', kwargs={'slug': self.object.slug})
-                return redirect_to_login(next_url, login_url='authentication:login')  # Use named URL 'login' or /accounts/login/
+                return redirect(next_url)  # Use named URL 'login' or /accounts/login/
                 
+            # Check the time of the user's last comment
+            last_comment = self.object.comments.filter(author=request.user).order_by('-date_posted').first()
+            if last_comment and last_comment.date_posted > timezone.now() - timedelta(seconds=60):
+                # If last comment was made less than 60 seconds ago, show error
+                form.add_error(None, "You are posting too quickly. Please wait a few seconds before commenting again.")
+                context = self.get_context_data()
+                context['comment_form'] = form
+                return render(request, self.template_name, context)
+
             # Save the comment for authenticated users
             comment = form.save(commit=False)
             comment.blogpost_connected = self.object

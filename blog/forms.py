@@ -9,20 +9,23 @@ from datetime import timedelta
 from PIL import Image as PILImage
 import io
 from django.core.files.base import ContentFile
+from django.db.models import Q
+
 
 class BlogPostForm(forms.ModelForm):
     content = forms.CharField(widget=CKEditor5Widget())
     
     class Meta:
         model = BlogPost
-        fields = ['title', 'content', 'image', 'category', 'tags', 'related_courses', 'status']
+        fields = ['title', 'content', 'image', 'category', 'tags', 'status']
+
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter post title'}),
             'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 8, 'placeholder': 'Write your content here'}),
             'image': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
             'category': forms.Select(attrs={'class': 'form-select'}),
             'tags': forms.SelectMultiple(attrs={'class': 'form-select', 'multiple': 'multiple'}),
-            'related_courses': forms.SelectMultiple(attrs={'class': 'form-select', 'multiple': 'multiple'}),
+            
             'status': forms.Select(attrs={'class': 'form-select'}),
         }
 
@@ -31,7 +34,7 @@ class BlogPostForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['category'].queryset = Category.objects.all()
         self.fields['tags'].queryset = Tag.objects.all()
-        self.fields['related_courses'].queryset = Course.objects.all()
+        
 
     def clean(self):
         cleaned_data = super().clean()
@@ -73,49 +76,64 @@ class BlogPostForm(forms.ModelForm):
     def save(self, commit=True):
         blog_post = super().save(commit=False)
 
-        # If the image field has changed, delete the old image
+        # Penanganan gambar (seperti di kode kamu sebelumnya, tidak diubah)
         if self.cleaned_data.get('image') and blog_post.pk:
             old_post = BlogPost.objects.get(pk=blog_post.pk)
             if old_post.image and old_post.image != self.cleaned_data['image']:
-                old_post.image.delete(save=False)  # Delete old image file
+                old_post.image.delete(save=False)
 
-        # Convert and resize image
         if self.cleaned_data.get('image'):
             image_file = self.cleaned_data['image']
             image = PILImage.open(image_file)
 
-            # Convert to RGB if image is in RGBA mode (e.g., PNG with transparency)
             if image.mode == 'RGBA':
                 image = image.convert('RGB')
-
-            # Resize the image to 1200x628 pixels using LANCZOS resampling
             image = image.resize((1200, 628), PILImage.Resampling.LANCZOS)
 
-            # Save the image to a BytesIO object
             image_io = io.BytesIO()
-            image.save(image_io, format='WEBP', quality=85)  # Start with quality=85
+            quality = 85
+            image.save(image_io, format='WEBP', quality=quality)
             image_io.seek(0)
 
-            # Check if image size exceeds 100KB, adjust quality if necessary
-            quality = 85
-            while image_io.tell() > 100 * 1024 and quality > 10:  # 100KB in bytes
-                image_io = io.BytesIO()  # Reset BytesIO
-                quality -= 5  # Reduce quality incrementally
+            while image_io.tell() > 100 * 1024 and quality > 10:
+                image_io = io.BytesIO()
+                quality -= 5
                 image.save(image_io, format='WEBP', quality=quality)
                 image_io.seek(0)
 
-            # Create a new ContentFile for the WebP image
             webp_image_file = ContentFile(
                 image_io.read(),
                 name=image_file.name.rsplit('.', 1)[0] + '.webp'
             )
-
-            # Save the processed image to the blog_post instance
             blog_post.image.save(webp_image_file.name, webp_image_file, save=False)
 
         if commit:
+            blog_post.slug = self.cleaned_data['slug']
             blog_post.save()
-            self.save_m2m()  # Save ManyToMany fields (tags, related_courses)
+
+            # === Penentuan Kursus Terkait Secara Otomatis ===
+            related_courses_qs = Course.objects.none()
+
+            # Berdasarkan kategori
+            if blog_post.category:
+                related_courses_qs = Course.objects.filter(category=blog_post.category)
+
+            
+
+            # Berdasarkan kecocokan judul/konten artikel dengan nama/deskripsi kursus
+            content_text = blog_post.content.lower()
+            related_courses_qs |= Course.objects.filter(
+                Q(course_name__icontains=blog_post.title) |
+                Q(description__icontains=blog_post.title) |
+                Q(description__icontains=content_text)
+            )
+
+
+            # Gabungkan hasil pencarian dan buang duplikat
+            blog_post.related_courses.set(related_courses_qs.distinct())
+
+            self.save_m2m()
+
         return blog_post
 
 # NewCommentForm tetap sama
