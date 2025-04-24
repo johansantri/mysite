@@ -12,7 +12,7 @@
   <div class="container">
     <div class="row">
       <!-- Blog Content -->
-      <div class="col-lg-8">
+      <div class="col-lg-9">
         <div class="text-center mb-5">
           <h1 class="fw-bold text-danger">
             {% if current_category %}
@@ -28,17 +28,16 @@
 
         <div class="row g-4">
           {% for post in posts %}
-          <div class="col-md-6">
+          <div class="col-md-4">
             <div class="card border-0 shadow-sm h-100">
               <div class="position-relative">
                 {% if post.image %}
                   <img src="{{ post.image.url }}" class="img-fluid w-100 rounded-top" alt="{{ post.title|truncatewords:6 }}">
                 {% endif %}
                 {% if post.category %}
-                  <!-- Kategori di sudut kanan bawah dengan transparansi -->
                   <a href="{% url 'blog:category-posts' slug=post.category.slug %}"
                      class="badge text-white position-absolute bottom-0 end-0 m-3 px-3 py-2 shadow-sm rounded-pill d-inline-block"
-                    style="background-color: rgba(255, 0, 0, 0.6); max-width: 75%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                     style="background-color: rgba(255, 0, 0, 0.6); max-width: 75%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                     {{ post.category.name }}
                   </a>
                 {% endif %}
@@ -93,7 +92,7 @@
       </div>
 
       <!-- Sidebar -->
-      <div class="col-lg-4">
+      <div class="col-lg-3">
         <div class="mb-4 p-4 bg-white rounded shadow-sm">
           <h4 class="fw-bold mb-3 text-primary">Categories</h4>
           <ul class="list-unstyled">
