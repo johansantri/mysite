@@ -643,24 +643,20 @@
     <div class="container">
         <h2 class="text-left mb-5">Latest Articles</h2>
         <div class="row g-4">
+            {% for article in latest_articles %}
             <div class="col-md-6">
                 <div class="blog-card shadow-sm p-4 d-flex align-items-center">
                     <div>
-                        <h5 class="fw-bold">Effective Coding Learning Tips</h5>
-                        <p>Learn programming stress-free.</p>
-                        <a href="#" class="btn btn-link p-0">Read More</a>
+                        <h5 class="fw-bold">{{ article.title|truncatewords:10 }}</h5>
+                        <p>{{ article.title|safe|truncatewords:15 }}</p>
+                        <a href="{% url 'blog:blog-detail' slug=article.slug %}" class="btn btn-link p-0">Read More</a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="blog-card shadow-sm p-4 d-flex align-items-center">
-                    <div>
-                        <h5 class="fw-bold">UI/UX Trends 2025</h5>
-                        <p>This year's interface design predictions.</p>
-                        <a href="#" class="btn btn-link p-0">Read More</a>
-                    </div>
-                </div>
-            </div>
+                {% empty %}
+                <li>No articles found.</li>
+            {% endfor %}
+            
         </div>
     </div>
 </section>

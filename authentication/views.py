@@ -41,6 +41,7 @@ from django.views.decorators.cache import cache_page
 from django.db.models import Prefetch
 from django.core.mail import EmailMultiAlternatives,EmailMessage
 from django.db.models.functions import Coalesce
+from blog.models import BlogPost
 
 def about(request):
     return render(request, 'home/about.html')
@@ -985,7 +986,8 @@ def home(request):
             status_course=published_status,
             end_enrol__gte=timezone.now()
         ).count()  # Hanya menghitung kursus yang dipublikasikan dan masih aktif
-
+         # Menambahkan 2 artikel terbaru dari BlogPost
+        latest_articles = BlogPost.objects.filter(status='published').order_by('-date_posted')[:2]
     else:
         # Jika tidak ada status 'published', beri hasil kosong
         popular_categories = []
@@ -1006,6 +1008,7 @@ def home(request):
         'total_users': total_users,
         'total_courses': total_courses,
         'instructors': instructors_page,
+        'latest_articles': latest_articles,
     })
 
 #@csrf_protect
