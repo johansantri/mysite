@@ -318,47 +318,113 @@
                 </div>
 
                 <!-- Displaying Comments -->
-               <!-- Menampilkan komentar -->
-                <div class="comments-section mt-4">
-                    {% for comment in comments %}
-                        <div class="comment-item bg-white border rounded-3 p-3 mb-3 shadow-sm transition-hover">
-                            <p class="mb-1"><strong class="text-dark">{{ comment.user.username }}</strong> <small class="text-muted">{{ comment.created_at|date:"F j, Y, g:i a" }}</small></p>
-                            <p class="text-muted mb-2">{{ comment.content }}</p>
+                <!-- Menampilkan komentar -->
+                    <div class="comments-section mt-4">
+                        {% for comment in comments %}
+                            <div class="comment-item bg-white border rounded-3 p-3 mb-3 shadow-sm transition-hover">
+                                <p class="mb-1"><strong class="text-dark">{{ comment.user.username }}</strong> <small class="text-muted">{{ comment.created_at|date:"F j, Y, g:i a" }}</small></p>
+                                <p class="text-muted mb-2">{{ comment.content }}</p>
 
-                            <!-- Menampilkan replies (balasan) -->
-                            <div class="replies">
-                                {% for reply in comment.replies.all %}
-                                    <div class="reply-item bg-light border rounded-3 p-3 mt-3 ms-4 shadow-sm">
-                                        <p class="mb-1"><strong class="text-dark">{{ reply.user.username }}</strong> <small class="text-muted">{{ reply.created_at|date:"F j, Y, g:i a" }}</small></p>
-                                        <p class="text-muted mb-2">{{ reply.content }}</p>
+                                <!-- Menampilkan replies (balasan) -->
+                                <div class="replies">
+                                    {% for reply in comment.replies.all %}
+                                        <div class="reply-item bg-light border rounded-3 p-3 mt-3 ms-4 shadow-sm">
+                                            <p class="mb-1"><strong class="text-dark">{{ reply.user.username }}</strong> <small class="text-muted">{{ reply.created_at|date:"F j, Y, g:i a" }}</small></p>
+                                            <p class="text-muted mb-2">{{ reply.content }}</p>
 
-                                        <!-- Menampilkan sub-replies -->
-                                        <div class="sub-replies">
-                                            {% for sub_reply in reply.replies.all %}
-                                                <div class="sub-reply-item bg-secondary bg-opacity-10 border rounded-3 p-3 mt-3 ms-4 shadow-sm">
-                                                    <p class="mb-1"><strong class="text-dark">{{ sub_reply.user.username }}</strong> <small class="text-muted">{{ sub_reply.created_at|date:"F j, Y, g:i a" }}</small></p>
-                                                    <p class="text-muted mb-2">{{ sub_reply.content }}</p>
-                                                </div>
-                                            {% endfor %}
+                                            <!-- Menampilkan sub-replies -->
+                                            <div class="sub-replies">
+                                                {% for sub_reply in reply.replies.all %}
+                                                    <div class="sub-reply-item bg-secondary bg-opacity-10 border rounded-3 p-3 mt-3 ms-4 shadow-sm">
+                                                        <p class="mb-1"><strong class="text-dark">{{ sub_reply.user.username }}</strong> <small class="text-muted">{{ sub_reply.created_at|date:"F j, Y, g:i a" }}</small></p>
+                                                        <p class="text-muted mb-2">{{ sub_reply.content }}</p>
+
+                                                        <!-- Teks Reply untuk Sub-Reply -->
+                                                        <div class="text-end">
+                                                            <span class="reply-link" onclick="toggleReplyForm('sub-reply-form-{{ sub_reply.id }}')">Reply</span>
+                                                        </div>
+
+                                                        <!-- Form untuk menambah sub-sub-reply -->
+                                                        <div id="sub-reply-form-{{ sub_reply.id }}" class="reply-form" style="display:none;">
+                                                            <form method="POST" action="{% url 'courses:add_comment_course' course_id=course.id %}">
+                                                                {% csrf_token %}
+                                                                <div class="input-group mb-2">
+                                                                    <textarea name="content" class="form-control border rounded-3 shadow-sm" rows="2" placeholder="Reply to this sub-reply..." required></textarea>
+                                                                    <input type="hidden" name="parent_id" value="{{ sub_reply.id }}">
+                                                                    <button type="submit" class="btn btn-outline-danger btn-sm rounded-3 transition-hover">Reply</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+
+                                            <!-- Teks Reply untuk Balasan -->
+                                            <div class="text-end">
+                                                <span class="reply-link" onclick="toggleReplyForm('reply-form-{{ reply.id }}')">Reply</span>
+                                            </div>
+
+                                            <!-- Form untuk menambah reply -->
+                                            <div id="reply-form-{{ reply.id }}" class="reply-form" style="display:none;">
+                                                <form method="POST" action="{% url 'courses:add_comment_course' course_id=course.id %}">
+                                                    {% csrf_token %}
+                                                    <div class="input-group mb-2">
+                                                        <textarea name="content" class="form-control border rounded-3 shadow-sm" rows="2" placeholder="Reply to this comment..." required></textarea>
+                                                        <input type="hidden" name="parent_id" value="{{ reply.id }}">
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm rounded-3 transition-hover">Reply</button>
+                                                    </div>
+                                                </form>
+                                            </div>
                                         </div>
-                                    </div>
-                                {% endfor %}
-                            </div>
-
-                            <!-- Form untuk menambah reply -->
-                            <form method="POST" action="{% url 'courses:add_comment_course' course_id=course.id %}">
-                                {% csrf_token %}
-                                <div class="input-group mb-2">
-                                    <textarea name="content" class="form-control border rounded-3 shadow-sm" rows="2" placeholder="Reply to this comment..." required></textarea>
-                                    <input type="hidden" name="parent_id" value="{{ comment.id }}">
-                                    <button type="submit" class="btn btn-outline-danger btn-sm rounded-3 transition-hover">Reply</button>
+                                    {% endfor %}
                                 </div>
-                            </form>
-                        </div>
-                    {% empty %}
-                        <p class="text-muted">No comments yet. Be the first to comment!</p>
-                    {% endfor %}
-                </div>
+
+                                <!-- Teks Reply untuk Komentar Utama -->
+                                <div class="text-end">
+                                    <span class="reply-link" onclick="toggleReplyForm('comment-reply-form-{{ comment.id }}')">Reply</span>
+                                </div>
+
+                                <!-- Form untuk menambah reply ke komentar utama -->
+                                <div id="comment-reply-form-{{ comment.id }}" class="reply-form" style="display:none;">
+                                    <form method="POST" action="{% url 'courses:add_comment_course' course_id=course.id %}">
+                                        {% csrf_token %}
+                                        <div class="input-group mb-2">
+                                            <textarea name="content" class="form-control border rounded-3 shadow-sm" rows="2" placeholder="Reply to this comment..." required></textarea>
+                                            <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm rounded-3 transition-hover">Reply</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <p class="text-muted">No comments yet. Be the first to comment!</p>
+                        {% endfor %}
+                    </div>
+
+                    <script>
+                        // Fungsi untuk menampilkan atau menyembunyikan form balasan
+                        function toggleReplyForm(formId) {
+                            var form = document.getElementById(formId);
+                            form.style.display = form.style.display === 'block' ? 'none' : 'block';
+                        }
+                    </script>
+
+                <style>
+    .reply-link {
+    color: #dc3545; /* Warna merah untuk teks */
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.reply-link:hover {
+    color: #c82333;
+}
+
+</style>
+
+
 
             </div>
 
@@ -661,4 +727,7 @@
         }
     }
 </style>
+
+
+
 {% endblock %}
