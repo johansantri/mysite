@@ -4,7 +4,7 @@
 
 {% block content %}
 <section class="course-content py-5 bg-white">
-    <div class="container">
+    
         <!-- Filter Toggle untuk Mobile -->
         <div class="filter-toggle d-lg-none text-center mb-4">
             <button class="btn btn-outline-danger rounded-3 transition-hover" type="button" data-bs-toggle="collapse" data-bs-target="#filterSidebar" aria-expanded="false" aria-controls="filterSidebar">
@@ -180,7 +180,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    
 </section>
 
 <!-- Schema Markup untuk SEO -->
@@ -213,153 +213,5 @@
 }
 </script>
 
-<!-- Custom CSS -->
-<style>
-    /* General Styles */
-    .course-content {
-        background-color: #ffffff;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    }
 
-    .container {
-        max-width: 1200px;
-    }
-
-    /* Card Styles */
-    .course-box {
-        border-radius: 8px !important;
-        background: #ffffff;
-        transition: box-shadow 0.3s ease, transform 0.3s ease;
-    }
-
-    .course-box:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1) !important;
-    }
-
-    .card-img-top {
-        border-radius: 8px 8px 0 0;
-        transition: opacity 0.3s ease;
-    }
-
-    .card-img-top:hover {
-        opacity: 0.95;
-    }
-
-    /* Transition Hover */
-    .transition-hover {
-        transition: all 0.3s ease;
-    }
-
-    .transition-hover:hover {
-        color: #b02a37 !important;
-    }
-
-    /* Buttons */
-    .btn-danger {
-        background-color: #dc3545;
-        border-color: #dc3545;
-    }
-
-    .btn-danger:hover {
-        background-color: #b02a37;
-        border-color: #b02a37;
-    }
-
-    .btn-outline-danger {
-        border-color: #dc3545;
-        color: #dc3545;
-    }
-
-    .btn-outline-danger:hover {
-        background-color: #dc3545;
-        color: white;
-    }
-
-    /* Form Controls */
-    .form-control, .form-select {
-        border: 1px solid #e9ecef;
-        transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .form-control:focus, .form-select:focus {
-        border-color: #dc3545;
-        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.1);
-    }
-
-    /* Pagination */
-    .pagination .page-link {
-        border: none;
-        color: #dc3545;
-        font-weight: 500;
-    }
-
-    .pagination .page-link:hover {
-        background-color: #dc3545;
-        color: white;
-    }
-
-    .pagination .page-link.disabled {
-        color: #6c757d;
-        background-color: transparent;
-    }
-
-    /* Sidebar */
-    .search-filter {
-        background-color: #ffffff;
-    }
-
-    /* Responsive Adjustments */
-    @media (max-width: 991px) {
-        .showing-list {
-            justify-content: center;
-            text-align: center;
-        }
-
-        .show-result h1 {
-            font-size: 1.25rem;
-        }
-
-        .filter-toggle {
-            display: block;
-        }
-
-        .course-box {
-            margin-bottom: 20px;
-        }
-    }
-
-    @media (max-width: 576px) {
-        .container {
-            padding-left: 12px;
-            padding-right: 12px;
-        }
-
-        .card-img-top {
-            height: 150px;
-        }
-
-        .card-title {
-            font-size: 1rem;
-        }
-
-        .card-body {
-            padding: 12px !important;
-        }
-
-        .btn {
-            font-size: 0.85rem;
-            padding: 8px 12px;
-        }
-
-        .pagination .page-link {
-            padding: 6px 10px;
-            font-size: 0.85rem;
-        }
-
-        .show-result h1 {
-            font-size: 1rem;
-        }
-    }
-</style>
 {% endblock %}
