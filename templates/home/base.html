@@ -140,11 +140,14 @@
                 <div class="d-flex align-items-center flex-column flex-lg-row mt-3 mt-lg-0">
                     <form class="d-flex me-lg-2 w-100 w-lg-75" role="search" action="{% url 'authentication:search' %}" method="get">
                         {% csrf_token %}
-                        <input class="form-control me-2" type="search" name="q" placeholder="Search..." aria-label="Search">
+                        <input class="form-control me-2" type="search" name="q" id="search-input" placeholder="Search..." aria-label="Search" autocomplete="off">
+                        <div id="search-suggestions" class="list-group position-absolute w-100 z-3"></div>
                         <button class="btn btn-outline-primary w-auto" type="submit" aria-label="Search">
                             <i class="bi bi-search"></i>
                         </button>
                     </form>
+
+                    
                     <ul class="navbar-nav w-100 w-lg-auto">
                         {% if request.user.is_authenticated %}
                             {% if request.user.is_learner %}
@@ -219,6 +222,49 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
     {% block scripts %}
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('search-input');
+        const suggestionsBox = document.getElementById('search-suggestions');
+
+        if (!searchInput || !suggestionsBox) return;
+
+        const historyKeywords = [
+            {% if search_history %}
+                {% for item in search_history %}
+                    "{{ item.keyword }}"{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            {% endif %}
+        ];
+
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.toLowerCase();
+            suggestionsBox.innerHTML = '';
+            if (query.length === 0) return;
+
+            const matched = historyKeywords.filter(kw => kw.toLowerCase().includes(query));
+            matched.forEach(kw => {
+                const div = document.createElement('div');
+                div.classList.add('list-group-item', 'list-group-item-action');
+                div.textContent = kw;
+                div.onclick = () => {
+                    searchInput.value = kw;
+                    suggestionsBox.innerHTML = '';
+                    searchInput.closest('form').submit();
+                };
+                suggestionsBox.appendChild(div);
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+                suggestionsBox.innerHTML = '';
+            }
+        });
+    });
+</script>
+
+
     {% endblock %}
 </body>
 </html>

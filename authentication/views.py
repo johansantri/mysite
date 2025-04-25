@@ -22,7 +22,7 @@ from django.urls import reverse
 from django.core.mail import send_mail
 from authentication.forms import  Userprofile, UserPhoto
 from .models import Profile
-from courses.models import Instructor,CourseRating,Partner,Assessment,GradeRange,AssessmentRead,Material, MaterialRead, Submission,AssessmentScore,QuestionAnswer,CourseStatus,Enrollment,MicroCredential, MicroCredentialEnrollment,Course, Enrollment, Category,CourseProgress
+from courses.models import SearchHistory,Instructor,CourseRating,Partner,Assessment,GradeRange,AssessmentRead,Material, MaterialRead, Submission,AssessmentScore,QuestionAnswer,CourseStatus,Enrollment,MicroCredential, MicroCredentialEnrollment,Course, Enrollment, Category,CourseProgress
 from django.http import HttpResponse,JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseForbidden
@@ -1004,48 +1004,101 @@ def home(request):
     })
 
 
-#@csrf_protect
+@csrf_protect
 @ratelimit(key='ip', rate='100/h')
 def search(request):
+    # Pengecekan Referer
     if not request.headers.get('Referer', '').startswith('https://ini.icei.ac.id'):
         return HttpResponseForbidden("Akses ditolak: sumber tidak sah")
     
-    # Jika metode bukan GET, batalkan
+    # Handle penghapusan riwayat (POST request)
+    if request.method == 'POST' and request.user.is_authenticated:
+        # Pastikan ada parameter untuk clear history
+        if request.POST.get('clear_history') == '1':
+            # Menghapus riwayat pencarian user
+            SearchHistory.objects.filter(user=request.user).delete()
+            messages.success(request, "Riwayat pencarian berhasil dihapus.")
+            return redirect(reverse('authentication:home'))
+
+    # Hanya izinkan GET untuk pencarian
     if request.method != 'GET':
         return HttpResponseNotAllowed("Metode tidak diperbolehkan")
-    
+
     query = request.GET.get('q', '').strip()
+    page_number = request.GET.get('page', 1)
     results = {
         'courses': [],
         'instructors': [],
         'partners': [],
+        'blog_posts': [],
     }
-    
+    search_history = []
+    base_url = request.build_absolute_uri('/')
+
     if query:
         # Pencarian Courses
         results['courses'] = Course.objects.filter(
             Q(course_name__icontains=query) | 
             Q(description__icontains=query),
             status_course__status='published',
-            end_enrol__gte=timezone.now()  # Hanya kursus aktif
+            end_enrol__gte=timezone.now()
         ).select_related('instructor', 'org_partner')[:5]
-        
+
         # Pencarian Instructors
         results['instructors'] = Instructor.objects.filter(
             Q(user__email__icontains=query) | 
             Q(bio__icontains=query)
         ).select_related('user')[:5]
-        
+
         # Pencarian Partners
         results['partners'] = Partner.objects.filter(
             Q(name__name__icontains=query) | 
             Q(description__icontains=query)
         ).select_related('name')[:5]
 
+        # Pencarian Blog Posts
+        blog_posts = BlogPost.objects.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query) |
+            Q(related_courses__course_name__icontains=query),
+            status='published'
+        ).select_related('author', 'category').prefetch_related('tags', 'related_courses')
+        results['blog_posts'] = blog_posts
+
+        # Simpan kata kunci pencarian
+        if request.user.is_authenticated:
+            # Cek duplikasi dan simpan ke database
+            if not SearchHistory.objects.filter(user=request.user, keyword=query).exists():
+                SearchHistory.objects.create(user=request.user, keyword=query)
+        else:
+            # Simpan ke cache Memcached
+            cache_key = f"search_history_anonymous_{request.session.session_key or 'default'}"
+            history = cache.get(cache_key, [])
+            if query not in history:
+                history.append(query)
+                cache.set(cache_key, history, timeout=24*60*60)  # Cache 24 jam
+
+    # Ambil riwayat pencarian
+    if request.user.is_authenticated:
+        search_history = SearchHistory.objects.filter(user=request.user).order_by('-search_date')[:10]
+    else:
+        cache_key = f"search_history_anonymous_{request.session.session_key or 'default'}"
+        search_history = cache.get(cache_key, [])
+
+    # Pagination untuk blog posts
+    paginator = Paginator(results['blog_posts'], 6)  # 6 artikel per halaman untuk grid 3 kolom
+    page_obj = paginator.get_page(page_number)
+    results['blog_posts'] = page_obj
+
     return render(request, 'home/results.html', {
         'query': query,
         'results': results,
+        'search_history': search_history,
+        'base_url': base_url,
+        'page_obj': page_obj,
     })
+
 
 # Logout view
 def logout_view(request):
