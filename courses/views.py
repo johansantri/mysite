@@ -1667,7 +1667,7 @@ def add_comment_course(request, course_id):
         # Memeriksa apakah komentar adalah spam berdasarkan cooldown
         if comment.is_spam():
             messages.warning(request, "You are posting too frequently. Please wait a moment before posting again.")
-            return redirect('course_detail', course_id=course.id)
+            return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
 
         comment.save()
 
@@ -2712,11 +2712,14 @@ def course_lms_detail(request, id, slug):
     # Get all comments for the course, excluding replies (parent is None)
     comments = CourseComment.objects.filter(course=course, parent=None).order_by('-created_at')
 
-    # Get replies for each comment
+    # Get replies for each comment and sub-replies for each reply
     for comment in comments:
-        comment.replies = CourseComment.objects.filter(parent=comment).order_by('-created_at')
-        for reply in comment.replies:
-            reply.sub_replies = CourseComment.objects.filter(parent=reply).order_by('-created_at')
+        # Fetch replies for each comment
+        replies = comment.replies.all().order_by('-created_at')
+        for reply in replies:
+            # Fetch sub-replies for each reply
+            sub_replies = reply.replies.all().order_by('-created_at')
+            reply.sub_replies = sub_replies  # Store the sub-replies in the reply object
 
     # Fetch sections with related materials for the current course
     section_data = Section.objects.filter(
@@ -2804,7 +2807,6 @@ def course_lms_detail(request, id, slug):
         'empty_star_range': empty_star_range,
         'average_rating': average_rating
     })
-
 
 
 

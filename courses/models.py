@@ -1006,32 +1006,34 @@ class CourseComment(models.Model):
     content = models.TextField(blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
     course = models.ForeignKey('Course', on_delete=models.CASCADE)
-    likes = models.IntegerField(default=0)  # Jumlah like
-    dislikes = models.IntegerField(default=0)  # Jumlah dislike
-    parent=models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE)
-    def is_spam(self):
-        # Membatasi komentar dengan interval 1 menit
-        last_comment_time = CourseComment.objects.filter(user=self.user).order_by('-created_at').first()
-        if last_comment_time:
-            time_difference = timezone.now() - last_comment_time.created_at
-            if time_difference < timedelta(minutes=1):  # Cooldown 1 menit
-                return True
-        return False
+    likes = models.IntegerField(default=0)
+    dislikes = models.IntegerField(default=0)
+    parent = models.ForeignKey("self", null=True, blank=True, related_name='replies', on_delete=models.CASCADE)
 
     class Meta:
-        indexes = [
-            models.Index(fields=['course']),
-        ]
+        indexes = [models.Index(fields=['course'])]
 
     def __str__(self):
         return f'Comment by {self.user.username} on {self.created_at}'
+
+    def is_spam(self):
+        last_comment_time = CourseComment.objects.filter(user=self.user).order_by('-created_at').first()
+        if last_comment_time:
+            time_difference = timezone.now() - last_comment_time.created_at
+            if time_difference < timedelta(minutes=1):
+                return True
+        return False
+
     def contains_blacklisted_keywords(self):
-        """Memeriksa apakah konten mengandung kata-kata yang diblacklist."""
         blacklisted_keywords = BlacklistedKeyword.objects.values_list('keyword', flat=True)
         for keyword in blacklisted_keywords:
             if re.search(r'\b' + re.escape(keyword) + r'\b', self.content.lower()):
                 return True
         return False
+
+    def get_replies(self):
+        return self.replies.all().order_by('created_at')  # Mengambil semua balasan dari komentar ini
+
     
 class MicroCredentialEnrollment(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="microcredential_enrollments")
