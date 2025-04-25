@@ -727,6 +727,59 @@
             font-size: 0.9rem;
         }
     }
+
+    /* Mobile-Specific Adjustments */
+@media (max-width: 767.98px) {
+    /* Reduce padding for the container to minimize side gaps */
+    .container {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    /* Ensure cards take full width with minimal side padding */
+    .card {
+        margin-left: 0;
+        margin-right: 0;
+        padding: 8px !important; /* Override any excessive padding */
+    }
+
+    /* Adjust inner content padding for better space usage */
+    .card-body {
+        padding: 12px !important;
+    }
+
+    /* Ensure inner-banner and other sections use full width */
+    .inner-banner,
+    .course-info,
+    .instructor-wrap {
+        margin-left: 0;
+        margin-right: 0;
+        padding: 10px !important;
+    }
+
+    /* Remove excessive margins for course description */
+    .overview-sec p.text-muted {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    /* Ensure accordion items use full width */
+    .accordion-item {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    /* Adjust sidebar video section for mobile */
+    .sidebar-sec .card-body {
+        padding: 10px !important;
+    }
+
+    /* Ensure images and thumbnails use full width */
+    .video-thumbnail img {
+        width: 100%;
+        height: auto;
+    }
+}
 </style>
 
 

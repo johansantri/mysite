@@ -16,7 +16,7 @@
   /* Section Styling */
   .blog-detail-section {
     background: #f8f9fa;
-    padding: 3rem 0;
+    padding: 2rem 0;
   }
 
   /* Blog Post Card */
@@ -26,6 +26,7 @@
   }
   .blog-post-card img {
     object-fit: cover;
+    width: 100%;
   }
   .blog-post-card .no-image-placeholder {
     height: 200px;
@@ -33,6 +34,7 @@
     align-items: center;
     justify-content: center;
     font-size: 1.2rem;
+    background: #6c757d;
   }
   .blog-post-card h1 {
     color: #b02a37;
@@ -82,6 +84,7 @@
     aspect-ratio: 16 / 9;
     object-fit: cover;
     height: 150px;
+    width: 100%;
   }
   .related-posts-card .no-image-placeholder {
     height: 150px;
@@ -140,34 +143,159 @@
     }
   }
 
-  /* Responsivitas */
-  @media (max-width: 991px) {
+  /* Mobile-Specific Adjustments for Blog Detail */
+  @media (max-width: 767.98px) {
+    /* Minimize container padding and ensure full width */
+    .container {
+      padding-left: 4px !important;
+      padding-right: 4px !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      max-width: 100% !important;
+    }
+
+    /* Remove all margins and padding from cards */
+    .blog-post-card,
+    .comment-card,
+    .sidebar-card,
+    .related-posts-card {
+      margin: 0 !important;
+      padding: 4px !important;
+      border-radius: 8px;
+      width: 100% !important;
+    }
+
+    /* Adjust card body for minimal padding */
+    .blog-post-card .card-body,
+    .comment-card .card-body,
+    .sidebar-card .card-body,
+    .related-posts-card .card-body {
+      padding: 8px !important;
+      margin: 0 !important;
+    }
+
+    /* Reorder title, image, and metadata */
+    .blog-post-card .card-body {
+      display: flex;
+      flex-direction: column;
+      padding: 8px !important;
+    }
+    .blog-post-card h1 {
+      order: 1;
+      font-size: 1.4rem;
+      margin: 0 0 1rem 0;
+    }
+    .image-wrapper {
+      order: 2;
+      width: 100%;
+      margin: 0 0 1rem 0;
+      padding: 0 !important;
+    }
+    .metadata-wrapper {
+      order: 3;
+      width: 100%;
+      margin: 0;
+      padding: 0 !important;
+    }
+    .blog-content {
+      order: 4;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    .blog-post-card .card-body > div:last-child { /* Share buttons */
+      order: 5;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Optimize image size for mobile */
     .blog-post-card img,
     .blog-post-card .no-image-placeholder {
+      width: 100%;
       height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin: 0 !important;
+    }
+
+    /* Ensure content is full-width and readable */
+    .blog-content {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    /* Remove row gutters and ensure full-width columns */
+    .row {
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      padding: 0 !important;
+    }
+    .row > * {
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      margin: 0 !important;
+    }
+    .related-posts .col-md-6,
+    .related-posts .col-lg-4 {
+      width: 100%;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+
+    /* Related posts and comments */
+    .related-posts .row,
+    .comment-card ul {
+      margin: 0 !important;
+      padding: 0 !important;
     }
     .related-posts-card img,
     .related-posts-card .no-image-placeholder {
       height: 120px;
+      margin: 0 !important;
     }
+    .related-posts-card .card-title {
+      font-size: 0.9rem;
+    }
+
+    /* Sidebar adjustments */
     .sidebar-card {
-      margin-top: 2rem;
+      margin-top: 1rem !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+
+    /* Comment section */
+    .comment-card h3 {
+      font-size: 1.2rem;
+    }
+    .comment-card img {
+      width: 40px;
+      height: 40px;
+    }
+
+    /* Ensure section padding is minimal */
+    .blog-detail-section {
+      padding: 1rem 0 !important;
     }
   }
-  @media (max-width: 576px) {
+
+  /* Extra small devices (phones < 576px) */
+  @media (max-width: 575.98px) {
+    .blog-post-card h1 {
+      font-size: 1.25rem;
+    }
     .blog-post-card img,
     .blog-post-card .no-image-placeholder {
       height: 120px;
     }
-    .blog-post-card h1 {
-      font-size: 1.75rem;
+    .blog-content {
+      font-size: 0.9rem;
     }
     .related-posts-card img,
     .related-posts-card .no-image-placeholder {
       height: 100px;
-    }
-    .related-posts-card .card-title {
-      font-size: 1rem;
     }
   }
 </style>
@@ -181,19 +309,22 @@
       <div class="col-lg-8">
         <div class="blog-post-card card border-0 shadow-sm rounded-3 mb-4">
           <div class="card-body p-5">
+            <!-- Title -->
+            <h1 class="fw-bold mb-3 fs-3">{{ post.title }}</h1>
+            
+            <!-- Image and Metadata Container -->
             <div class="row g-4 align-items-start">
-              {% if post.image %}
-              <div class="col-md-4">
-                <img src="{{ post.image.url }}" class="img-fluid rounded-3 w-100" alt="{{ post.title }}">
+              <!-- Image -->
+              <div class="col-md-4 image-wrapper">
+                {% if post.image %}
+                  <img src="{{ post.image.url }}" class="img-fluid rounded-3 w-100" alt="{{ post.title }}">
+                {% else %}
+                  <div class="no-image-placeholder bg-secondary text-white text-center py-5 rounded-3">No Image</div>
+                {% endif %}
               </div>
-              {% else %}
-              <div class="col-md-4">
-                <div class="no-image-placeholder bg-secondary text-white text-center py-5 rounded-3">No Image</div>
-              </div>
-              {% endif %}
-
-              <div class="col-md-8">
-                <h1 class="fw-bold mb-3 fs-3">{{ post.title }}</h1>
+              
+              <!-- Metadata -->
+              <div class="col-md-8 metadata-wrapper">
                 <p class="text-muted small mb-3">
                   By {{ post.author|default:"Unknown" }} |
                   {{ post.date_posted|date:"F d, Y" }} |
@@ -203,12 +334,13 @@
                   {{ post.views }} View{{ post.views|pluralize }} |
                   {{ post.number_of_comments }} Comment{{ post.number_of_comments|pluralize }}
                 </p>
-               
               </div>
             </div>
 
+            <!-- Content -->
             <div class="blog-content mt-4 mb-4">{{ post.content|safe }}</div>
 
+            <!-- Share Buttons -->
             <div>
               <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ post.title }}"
                  class="btn btn-sm btn-outline-primary me-2">Share on Twitter</a>
@@ -275,39 +407,33 @@
                 </li>
                 {% endfor %}
               </ul>
-                    {% if comments.has_previous or comments.has_next %}
-                        <div class="pagination">
-                          <ul class="pagination justify-content-center">
-                            {% if comments.has_previous %}
-                              <li class="page-item">
-                                <a href="?page={{ comments.previous_page_number }}" class="page-link" aria-label="Previous">Previous</a>
-                              </li>
-                            {% else %}
-                              <li class="page-item disabled">
-                                <span class="page-link" aria-label="Previous">Previous</span>
-                              </li>
-                            {% endif %}
-                          
-                            {% if comments.has_next %}
-                              <li class="page-item">
-                                <a href="?page={{ comments.next_page_number }}" class="page-link" aria-label="Next">Next</a>
-                              </li>
-                            {% else %}
-                              <li class="page-item disabled">
-                                <span class="page-link" aria-label="Next">Next</span>
-                              </li>
-                            {% endif %}
-                          </ul>
-                        </div>
-                      {% endif %}
-
-
+              {% if comments.has_previous or comments.has_next %}
+                <div class="pagination">
+                  <ul class="pagination justify-content-center">
+                    {% if comments.has_previous %}
+                      <li class="page-item">
+                        <a href="?page={{ comments.previous_page_number }}" class="page-link" aria-label="Previous">Previous</a>
+                      </li>
+                    {% else %}
+                      <li class="page-item disabled">
+                        <span class="page-link" aria-label="Previous">Previous</span>
+                      </li>
+                    {% endif %}
+                    {% if comments.has_next %}
+                      <li class="page-item">
+                        <a href="?page={{ comments.next_page_number }}" class="page-link" aria-label="Next">Next</a>
+                      </li>
+                    {% else %}
+                      <li class="page-item disabled">
+                        <span class="page-link" aria-label="Next">Next</span>
+                      </li>
+                    {% endif %}
+                  </ul>
+                </div>
+              {% endif %}
             {% else %}
               <p class="text-muted">No comments yet. Be the first to comment!</p>
             {% endif %}
-
-              <!-- Pagination for Comments -->
-      
 
             <!-- Form Komentar Baru -->
             <h4 class="mt-5 mb-3 fw-bold text-primary">Leave a Comment</h4>
@@ -324,112 +450,42 @@
 
         <!-- Related Posts Section -->
         {% if related_posts %}
-            <div class="related-posts mb-5">
-              <h3 class="fw-bold text-primary mb-4">Related Posts</h3>
-              <div class="row g-4">
-                {% for related_post in related_posts %}
-                  <div class="col-12 col-md-6 col-lg-4"> <!-- Responsif pada berbagai ukuran layar -->
-                    <div class="related-posts-card card border-0 shadow-sm h-100">
-                      {% if related_post.image %}
-                        <img src="{{ related_post.image.url }}" class="card-img-top" alt="{{ related_post.title }}">
-                      {% else %}
-                        <div class="no-image-placeholder bg-secondary text-white text-center rounded-top-3">No Image</div>
-                      {% endif %}
-                      <div class="card-body d-flex flex-column">
-                        <h5 class="card-title fw-semibold">{{ related_post.title }}</h5>
-                        <p class="small text-muted mb-2">
-                          By {{ related_post.author|default:"Unknown" }} | {{ related_post.date_posted|date:"M d, Y" }}
-                        </p>
-                        <div class="mt-auto">
-                          <a href="{% url 'blog:blog-detail' slug=related_post.slug %}" rel="canonical" class="btn btn-outline-primary w-100">Read More</a>
-                        </div>
+          <div class="related-posts mb-5">
+            <h3 class="fw-bold text-primary mb-4">Related Posts</h3>
+            <div class="row g-4">
+              {% for related_post in related_posts %}
+                <div class="col-12 col-md-6 col-lg-4">
+                  <div class="related-posts-card card border-0 shadow-sm h-100">
+                    {% if related_post.image %}
+                      <img src="{{ related_post.image.url }}" class="card-img-top" alt="{{ related_post.title }}">
+                    {% else %}
+                      <div class="no-image-placeholder bg-secondary text-white text-center rounded-top-3">No Image</div>
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                      <h5 class="card-title fw-semibold">{{ related_post.title }}</h5>
+                      <p class="small text-muted mb-2">
+                        By {{ related_post.author|default:"Unknown" }} | {{ related_post.date_posted|date:"M d, Y" }}
+                      </p>
+                      <div class="mt-auto">
+                        <a href="{% url 'blog:blog-detail' slug=related_post.slug %}" rel="canonical" class="btn btn-outline-primary w-100">Read More</a>
                       </div>
                     </div>
                   </div>
-                {% endfor %}
-              </div>
-
-              <!-- Pagination untuk Related Posts -->
-              <div class="pagination mt-3">
-                {% if related_posts.has_previous %}
-                  <a href="?page={{ related_posts.previous_page_number }}" class="btn btn-outline-primary">Previous</a>
-                {% endif %}
-                {% if related_posts.has_next %}
-                  <a href="?page={{ related_posts.next_page_number }}" class="btn btn-outline-primary">Next</a>
-                {% endif %}
-              </div>
+                </div>
+              {% endfor %}
             </div>
-          {% endif %}
 
-        <style>
-        /* Default style untuk PC (desktop) */
-          .related-posts-card img {
-            max-width: 100%;
-            height: auto;  /* Pastikan gambar tidak terdistorsi */
-            object-fit: contain;
-            margin: 0 auto;
-            display: block;
-            max-height: 200px;  /* Batasi tinggi gambar */
-          }
-
-          /* Media Query untuk perangkat dengan lebar layar kecil (tablet dan mobile) */
-          @media (max-width: 768px) {
-            .related-posts-card {
-              margin-bottom: 1rem;  /* Memberikan jarak antar card pada tablet dan mobile */
-            }
-
-            /* Mengatur gambar pada card menjadi lebih kecil pada tablet */
-            .related-posts-card img {
-              max-height: 180px;  /* Membatasi gambar agar tidak terlalu tinggi */
-              object-fit: contain;  /* Pastikan gambar tetap terlihat utuh */
-            }
-
-            /* Mengatur padding pada card body lebih kecil */
-            .related-posts-card .card-body {
-              padding: 0.75rem;
-            }
-
-            /* Menyesuaikan layout untuk kolom di bawah ukuran tablet */
-            .related-posts .row {
-              display: flex;
-              flex-wrap: wrap;
-              justify-content: space-between; /* Mengatur kolom agar tidak terlalu rapat */
-            }
-
-            .related-posts .col-md-6 {
-              width: 100%;  /* Pastikan card menggunakan lebar penuh pada perangkat mobile */
-              padding: 0 10px;  /* Menambahkan sedikit padding pada kolom */
-            }
-
-            .related-posts .col-lg-4 {
-              width: 100%;  /* Pastikan card menggunakan lebar penuh pada perangkat mobile */
-            }
-          }
-
-          /* Media Query untuk perangkat dengan lebar layar sangat kecil (ponsel kecil) */
-          @media (max-width: 480px) {
-            /* Mengatur gambar pada card menjadi lebih kecil pada ponsel kecil */
-            .related-posts-card img {
-              max-height: 190px;
-            }
-
-            /* Menyesuaikan padding pada card lebih kecil */
-            .related-posts-card .card-body {
-              padding: 0.5rem;  /* Mengurangi padding untuk ponsel kecil */
-            }
-
-            .no-image-placeholder {
-              height: 120px;  /* Mengatur ukuran placeholder untuk ponsel kecil */
-            }
-
-            .related-posts .col-md-6 {
-              width: 100%;  /* Kolom tetap menggunakan lebar penuh */
-            }
-          }
-
-
-
-        </style>
+            <!-- Pagination untuk Related Posts -->
+            <div class="pagination mt-3">
+              {% if related_posts.has_previous %}
+                <a href="?page={{ related_posts.previous_page_number }}" class="btn btn-outline-primary">Previous</a>
+              {% endif %}
+              {% if related_posts.has_next %}
+                <a href="?page={{ related_posts.next_page_number }}" class="btn btn-outline-primary">Next</a>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
       </div>
 
       <!-- Sidebar -->
