@@ -1,137 +1,203 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate of Achievement</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@400;700&display=swap');
+
         @page {
             size: A4;
             margin: 0;
         }
 
         body {
-            font-family: 'Georgia', serif;
-            background-color: #f0f4f8;
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f6f8;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
         }
 
         .certificate {
-            width: 210mm; /* Ukuran A4 secara horizontal */
-            height: 297mm; /* Ukuran A4 secara vertikal */
-            background: url('https://www.transparenttextures.com/patterns/subtle-white-feathers.png'), #ffffff;
-            border: 8px double #2a4066;
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            width: 210mm;
+            height: 297mm;
+            background: #ffffff;
+            border: 2px solid #1B263B;
+            border-radius: 12px;
             padding: 40px;
             position: relative;
-            overflow: hidden;
             text-align: center;
-            box-sizing: border-box; /* Menghindari padding tambahan melebihi ukuran */
+            box-sizing: border-box;
         }
 
         .header {
-            background-color: #2a4066;
-            color: white;
-            padding: 15px;
-            font-size: 28px;
-            font-weight: bold;
+            margin: -40px -40px 30px -40px;
+            padding: 20px;
+            background: #1B263B;
+            color: #ffffff;
+            font-family: 'Playfair Display', serif;
+            font-size: 34px;
+            font-weight: 700;
             letter-spacing: 1.5px;
             border-radius: 10px 10px 0 0;
-            margin: -40px -40px 30px -40px;
+            position: relative;
+            border-bottom: 3px solid #D4A017;
+        }
+
+        .logo-partner {
+            position: absolute;
+            top: 15px;
+            left: 25px;
+            width: 90px;
+            height: 90px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-image: url('{% if partner_logo_url %}{{ partner_logo_url }}{% else %}{{ base_url }}static/images/default_logo.png{% endif %}');
         }
 
         .title {
-            font-size: 40px;
-            font-weight: bold;
-            color: #d4af37;
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            font-weight: 700;
+            color: #D4A017;
             margin: 20px 0;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 2.5px;
+        }
+
+        .main-section {
+            margin: 30px auto;
+            padding: 20px;
+            max-width: 700px;
+            border: 2px solid #D4A017;
+            border-radius: 8px;
+            background: #F9FAFB;
+        }
+
+        .main-section .name {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: #1B263B;
+            margin: 10px 0;
+        }
+
+        .main-section .course {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1B263B;
+            margin: 10px 0;
         }
 
         .content {
-            font-size: 20px;
-            line-height: 2;
-            color: #333;
-            margin: 15px 0;
-            max-width: 600px;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #1B263B;
+            margin: 8px 0;
+            max-width: 700px;
             margin-left: auto;
             margin-right: auto;
         }
 
         .content strong {
-            color: #2a4066;
-            font-weight: bold;
+            color: #1B263B;
+            font-weight: 600;
         }
 
-        .checklist {
+        .ornament {
             position: absolute;
             top: 20px;
             right: 20px;
             width: 60px;
             height: 60px;
-            background: #28a745;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .checklist::before {
-            content: '\2713';
-            font-size: 30px;
-            color: white;
-            font-weight: bold;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23D4A017"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>') no-repeat center;
+            background-size: contain;
+            opacity: 0.8;
         }
 
         .transcript {
-            margin-top: 40px;
-            width: 80%;
+            margin-top: 25px;
+            width: 85%;
             margin-left: auto;
             margin-right: auto;
             border-collapse: collapse;
-            background-color: #fff;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background-color: #F9FAFB;
             border-radius: 8px;
             overflow: hidden;
+            border: 1px solid #E5E7EB;
         }
 
         .transcript th, .transcript td {
             padding: 12px 15px;
-            font-size: 16px;
-            color: #333;
+            font-size: 14px;
+            color: #1B263B;
         }
 
         .transcript th {
-            background-color: #2a4066;
-            color: white;
-            font-weight: bold;
+            background: #1B263B;
+            color: #ffffff;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.8px;
         }
 
         .transcript td {
-            border-bottom: 1px solid #e0e0e0;
+            border-bottom: 1px solid #E5E7EB;
         }
 
         .transcript tr:nth-child(even) {
-            background-color: #f9f9f9; /* Zebra stripes lembut */
+            background-color: #F1F5F9;
         }
 
         .transcript tr:hover {
-            background-color: #f0f4f8; /* Hover effect */
+            background-color: #E2E8F0;
         }
 
         .footer {
-            margin-top: 40px;
-            font-size: 16px;
-            color: #666;
-            border-top: 2px dashed #d4af37;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #4B5E7A;
+            border-top: 2px solid #D4A017;
             padding-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer .issued {
+            flex: 1;
+            text-align: left;
+        }
+
+        .footer .qr-code {
+            flex: 0 0 auto;
+            margin: 0 20px;
+            text-align: center;
+        }
+
+        .footer .qr-code img {
+            width: 100px;
+            height: 100px;
+        }
+
+        .footer .qr-code .verify-text {
+            font-size: 12px;
+            color: #4B5E7A;
+            margin-top: 5px;
+        }
+
+        .footer .signature {
+            flex: 1;
+            text-align: right;
+            width: 120px;
+            height: 50px;
+            background: url('{{ base_url }}static/images/signature.png') no-repeat center;
+            background-size: contain;
         }
 
         .watermark {
@@ -139,49 +205,100 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) rotate(-45deg);
-            font-size: 60px;
-            color: rgba(212, 175, 55, 0.1);
+            font-size: 50px;
+            color: rgba(212, 160, 23, 0.08);
             pointer-events: none;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+
+        .decor-line {
+            position: absolute;
+            left: 40px;
+            right: 40px;
+            height: 1px;
+            background: #D4A017;
+            opacity: 0.5;
+        }
+
+        .decor-line.top {
+            top: 20px;
+        }
+
+        .decor-line.bottom {
+            bottom: 20px;
+        }
+
+        @media print {
+            body {
+                background: none;
+            }
+            .certificate {
+                border: none;
+            }
         }
     </style>
 </head>
 <body>
     <div class="certificate">
-        <div class="header">Certificate of Achievement</div>
-        <div class="title">Completion Certificate</div>
+        <div class="header">
+            Certificate of Achievement
+            <div class="logo-partner"></div>
+        </div>
+        <div class="title">Certificate of Completion</div>
         
-        <div class="content">This is to certify that</div>
-        <div class="content"><strong>{{ user.username }}</strong></div>
-        <div class="content">has successfully completed the course</div>
-        <div class="content"><strong>{{ course.course_name }}</strong></div>
-        <div class="content">with a score of <strong>{{ total_score }}</strong></div>
-        <div class="content">Passing Threshold: <strong>{{ passing_threshold }}</strong></div>
-        <div class="content">Status: <strong>{{ status }}</strong></div>
+        <div class="main-section">
+            <div class="content">Awarded to</div>
+            <div class="name">{{ user.username }}</div>
+            <div class="content">for excellence in</div>
+            <div class="course">{{ course.course_name }}</div>
+            <div class="content">offered by <strong>{% if course.org_partner %}{{ course.org_partner.name }}{% else %}Our Institution{% endif %}</strong></div>
+        </div>
 
-        <div class="checklist"></div>
+        <div class="content">Total Score: <strong>{{ total_score | floatformat:2 }}</strong></div>
+        <div class="content">Passing Threshold: <strong>{{ passing_threshold | floatformat:2 }}</strong></div>
+        <div class="content">Status: <strong>{{ status }}</strong></div>
+        {% if course.instructor %}
+        <div class="content">Instructed by: <strong>{{ course.instructor.name | default:course.instructor }}</strong></div>
+        {% endif %}
+
+        <div class="ornament"></div>
         <div class="watermark">Certified</div>
         
         <table class="transcript">
             <thead>
                 <tr>
                     <th>Assessment</th>
-                    <th>Grade</th>
-                    <th>Score</th>
+                    <th>Maximum Score</th>
+                    <th>Score Achieved</th>
                 </tr>
             </thead>
             <tbody>
                 {% for result in assessment_results %}
                 <tr>
                     <td>{{ result.name }}</td>
-                    <td>{{ result.max_score }}</td>
+                    <td>{{ result.max_score | floatformat:2 }}</td>
                     <td>{{ result.score | floatformat:2 }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
 
+        <div class="decor-line top"></div>
+        <div class="decor-line bottom"></div>
+
         <div class="footer">
-            <p>Issued on: {{ issue_date }}</p>
+            <div class="issued">
+                <p>Issued on: {{ issue_date }}</p>
+                {% if course.org_partner %}
+                <p>Issued by: {{ course.org_partner.name }}</p>
+                {% endif %}
+            </div>
+            <div class="qr-code">
+                <img src="{% if qr_code_url %}{{ qr_code_url }}{% else %}{{ base_url }}static/images/default_qr.png{% endif %}" alt="Verification QR Code">
+                <div class="verify-text">Verify Online</div>
+            </div>
+            <div class="signature"></div>
         </div>
     </div>
 </body>

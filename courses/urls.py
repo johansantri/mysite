@@ -77,6 +77,7 @@ urlpatterns = [
     path('delete-askora/<int:idcourse>/<int:idaskora>/<int:idsection>/<int:idassessment>/', views.delete_askora, name='delete_askora'),
     #sertifikat
     path('certificate/<int:course_id>/', views.generate_certificate, name='generate_certificate'),
+    path('verify/<uuid:certificate_id>/', views.verify_certificate, name='verify_certificate'),
     path('submit-answer/<int:askora_id>/', views.submit_answer, name='submit_answer'),
     path('submit-peer-review/<int:submission_id>/', views.submit_peer_review, name='submit_peer_review'),
 

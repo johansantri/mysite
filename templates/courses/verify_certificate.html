@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Certificate</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 800px;
+            background: #ffffff;
+            border: 2px solid #1B263B;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .header {
+            background: #1B263B;
+            color: #ffffff;
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            padding: 15px;
+            margin: -40px -40px 30px -40px;
+            border-radius: 10px 10px 0 0;
+            border-bottom: 3px solid #D4A017;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 20px auto;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-image: url('{% if certificate.partner.logo %}{{ base_url.rstrip }}/media/{{ certificate.partner.logo }}{% else %}{{ base_url }}static/images/default_logo.png{% endif %}');
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: #D4A017;
+            margin: 20px 0;
+        }
+
+        .content {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #1B263B;
+            margin: 15px 0;
+        }
+
+        .content strong {
+            color: #1B263B;
+            font-weight: 600;
+        }
+
+        .details {
+            margin: 30px 0;
+            padding: 20px;
+            border: 2px solid #D4A017;
+            border-radius: 8px;
+            background: #F9FAFB;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #4B5E7A;
+            border-top: 2px solid #D4A017;
+            padding-top: 20px;
+        }
+
+        .valid {
+            color: #1B263B;
+            font-weight: 600;
+            font-size: 20px;
+            margin: 20px 0;
+        }
+
+        @media print {
+            body {
+                background: none;
+            }
+            .container {
+                border: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">Certificate Verification</div>
+        <div class="logo"></div>
+        <div class="title">Verification Result</div>
+        
+        <div class="valid">Valid Certificate</div>
+        
+        <div class="details">
+            <div class="content">This certificate was awarded to <strong>{{ certificate.user.username }}</strong></div>
+            <div class="content">for completing <strong>{{ certificate.course.course_name }}</strong></div>
+            <div class="content">offered by <strong>{{ certificate.partner.name | default:"Our Institution" }}</strong></div>
+            <div class="content">Total Score: <strong>{{ certificate.total_score | floatformat:2 }}</strong></div>
+            <div class="content">Issued on: <strong>{{ certificate.issue_date }}</strong></div>
+            <div class="content">Certificate ID: <strong>{{ certificate.certificate_id }}</strong></div>
+        </div>
+
+        <div class="footer">
+            <p>Verified by {{ certificate.partner.name | default:"Our Institution" }}</p>
+            <p>Contact us for further inquiries.</p>
+        </div>
+    </div>
+</body>
+</html>

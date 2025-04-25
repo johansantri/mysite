@@ -1134,4 +1134,14 @@ class LTIExternalTool(models.Model):
     def __str__(self):
         return self.name
 
-   
+class Certificate(models.Model):
+    certificate_id = models.UUIDField(unique=True, editable=False)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="certificates")
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="certificates")
+    issue_date = models.DateField()
+    total_score = models.DecimalField(max_digits=5, decimal_places=2)
+    partner = models.ForeignKey(Partner, on_delete=models.CASCADE, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Certificate {self.certificate_id} for {self.user.username} - {self.course.course_name}"
