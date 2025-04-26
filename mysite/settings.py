@@ -495,7 +495,7 @@ CONTENT_SECURITY_POLICY = {
         ),
 
         # Form hanya bisa dikirim (POST) ke domain sendiri
-        'form-action': ("'self'",),
+        #'form-action': ("'self'",),
 
         # Izinkan iframe atau konten embedded hanya dari domain sendiri, Moodle, dan YouTube
         'frame-src': (
