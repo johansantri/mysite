@@ -68,53 +68,97 @@ import logging
 
 @login_required
 def add_microcredential_review(request, microcredential_id):
-    # Ambil MicroCredential berdasarkan ID
     microcredential = get_object_or_404(MicroCredential, id=microcredential_id)
 
-    # Cek apakah user terdaftar di semua course yang diperlukan
-    user_courses = Enrollment.objects.filter(user=request.user, course__in=microcredential.required_courses.all())
-    if user_courses.count() != microcredential.required_courses.count():
-        # Jika pengguna tidak terdaftar di semua kursus, arahkan kembali
-        messages.error(request, "You must be enrolled in all required courses to review this MicroCredential.")
-        return redirect('courses:micro_detail', id=microcredential.id, slug=microcredential.slug)  # redirect ke detail microcredential
+    # Validasi apakah user terdaftar dalam microcredential
+    is_enrolled = MicroCredentialEnrollment.objects.filter(user=request.user, microcredential=microcredential).exists()
+    if not is_enrolled:
+        messages.error(request, "You must be enrolled in this MicroCredential to leave a review.")
+        return redirect('courses:micro_detail', slug=microcredential.slug)
 
-    # Cek apakah pengguna sudah lulus dari semua kursus yang diperlukan
-    user_courses_completed = True
-    for enrollment in user_courses:
-        user_progress = UserMicroProgress.objects.filter(user=request.user, course=enrollment.course, microcredential=microcredential).first()
-        if not user_progress or not user_progress.completed:
-            user_courses_completed = False
-            break
+    # Hitung kelulusan seluruh kursus
+    required_courses = microcredential.required_courses.all()
+    total_user_score = Decimal(0)
+    total_max_score = Decimal(0)
+    all_courses_completed = True
 
-    if not user_courses_completed:
-        # Jika pengguna belum lulus semua kursus yang diperlukan
-        messages.error(request, "You must complete all required courses before you can leave a review.")
-        return redirect('courses:micro_detail', id=microcredential.id, slug=microcredential.slug)  # redirect ke detail microcredential
+    for course in required_courses:
+        assessments = Assessment.objects.filter(section__courses=course)
+        course_score = Decimal(0)
+        course_completed = True
 
-    # Proses form review jika POST
+        for assessment in assessments:
+            score_value = Decimal(0)
+            total_questions = assessment.questions.count()
+
+            if total_questions > 0:  # Multiple Choice
+                total_correct_answers = 0
+                answers_exist = False
+                for question in assessment.questions.all():
+                    answers = QuestionAnswer.objects.filter(question=question, user=request.user)
+                    if answers.exists():
+                        answers_exist = True
+                    total_correct_answers += answers.filter(choice__is_correct=True).count()
+                if not answers_exist:
+                    course_completed = False
+                if total_questions > 0:
+                    score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
+            else:  # AskOra
+                submissions = Submission.objects.filter(askora__assessment=assessment, user=request.user)
+                if not submissions.exists():
+                    course_completed = False
+                else:
+                    latest = submissions.order_by('-submitted_at').first()
+                    score_obj = AssessmentScore.objects.filter(submission=latest).first()
+                    if score_obj:
+                        score_value = Decimal(score_obj.final_score)
+
+            score_value = min(score_value, Decimal(assessment.weight))
+            course_score += score_value
+
+        min_score = Decimal(microcredential.get_min_score(course))
+        course_passed = course_completed and course_score >= min_score
+        if not course_passed:
+            all_courses_completed = False
+
+        total_user_score += course_score
+        total_max_score += sum(a.weight for a in assessments)
+
+    microcredential_passed = all_courses_completed and total_user_score >= Decimal(microcredential.min_total_score)
+
+    if not microcredential_passed:
+        messages.error(request, "You must complete and pass all required courses to leave a review.")
+        return redirect('courses:micro_detail', slug=microcredential.slug)
+
+    # Form submission
     if request.method == 'POST':
         form = MicroCredentialReviewForm(request.POST)
         if form.is_valid():
-            # Cek apakah user sudah memberi review sebelumnya
-            existing_review = MicroCredentialReview.objects.filter(user=request.user, microcredential=microcredential).first()
-            if existing_review:
-                # Jika review sudah ada, update review
-                existing_review.rating = form.cleaned_data['rating']
-                existing_review.review_text = form.cleaned_data['review_text']
-                existing_review.save()
-                messages.success(request, "Your review has been updated.")
-            else:
-                # Simpan review baru
-                review = form.save(commit=False)
-                review.user = request.user
-                review.microcredential = microcredential
-                review.save()
+            review, created = MicroCredentialReview.objects.get_or_create(
+                user=request.user,
+                microcredential=microcredential
+            )
+            review.rating = form.cleaned_data['rating']
+            review.review_text = form.cleaned_data['review_text']
+            review.save()
+            if created:
                 messages.success(request, "Your review has been submitted.")
-            return redirect('courses:micro_detail', id=microcredential.id, slug=microcredential.slug)  # redirect ke detail microcredential
+            else:
+                messages.success(request, "Your review has been updated.")
+            return redirect('courses:micro_detail', slug=microcredential.slug)
     else:
-        form = MicroCredentialReviewForm()
+        existing_review = MicroCredentialReview.objects.filter(user=request.user, microcredential=microcredential).first()
+        if existing_review:
+            messages.info(request, "You're editing your previous review.")
+            form = MicroCredentialReviewForm(instance=existing_review)
+        else:
+            form = MicroCredentialReviewForm()
 
-    return render(request, 'micro/add_review.html', {'form': form, 'microcredential': microcredential})
+    return render(request, 'micro/add_review.html', {
+        'form': form,
+        'microcredential': microcredential
+    })
+
 
 def self_course(request, username, id, slug):
     if not request.user.is_authenticated:
@@ -1146,9 +1190,38 @@ def reply_form(request, post_id):
 
 
 
-def micro_detail(request,id,slug):
+def micro_detail(request, id, slug):
     microcredential = get_object_or_404(MicroCredential, id=id, slug=slug)
-    return render(request,'micro/micro_detail.html',{'microcredential': microcredential})
+
+    # Mengecek apakah pengguna sudah terdaftar dalam microcredential
+    is_enrolled = False
+    if request.user.is_authenticated:
+        is_enrolled = MicroCredentialEnrollment.objects.filter(user=request.user, microcredential=microcredential).exists()
+
+    # Ambil semua review
+    reviews = microcredential.reviews.select_related('user').all().order_by('-created_at')
+
+    # Paginasi: menampilkan 10 review per halaman
+    paginator = Paginator(reviews, 10)  # 10 review per halaman
+    page_number = request.GET.get('page')  # ambil nomor halaman dari URL
+    page_obj = paginator.get_page(page_number)
+
+    # Hitung rating rata-rata dan jumlah review
+    rating_summary = reviews.aggregate(
+        average_rating=Avg('rating'),
+        total_reviews=Count('id')
+    )
+
+    context = {
+        'microcredential': microcredential,
+        'page_obj': page_obj,
+        'average_rating': rating_summary['average_rating'] or 0,
+        'total_reviews': rating_summary['total_reviews'],
+        'is_enrolled': is_enrolled,  # Menambahkan status enrollment ke context
+    }
+
+    return render(request, 'micro/micro_detail.html', context)
+
 
 def enroll_microcredential(request, slug):
     if not request.user.is_authenticated:

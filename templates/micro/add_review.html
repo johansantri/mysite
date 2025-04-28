@@ -1,19 +1,80 @@
-{% extends 'base.html' %}
+{% extends 'home/base.html' %}
 
 {% block content %}
-    <h1>Leave a Review for {{ microcredential.title }}</h1>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
 
-    {% if messages %}
-        <div class="alert alert-info">
-            {% for message in messages %}
-                <p>{{ message }}</p>
-            {% endfor %}
+            <h2 class="mb-4 text-center">Leave a Review for <strong>{{ microcredential.title }}</strong></h2>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <!-- Rating Bintang -->
+                        <div class="mb-4">
+                            <label class="form-label d-block">Rating</label>
+                            <div class="star-rating">
+                                {% for i in "54321"|make_list %}
+                                    <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}" {% if form.rating.value == i|stringformat:"s" %}checked{% endif %}>
+                                    <label for="star{{ i }}" title="{{ i }} stars">&#9733;</label>
+                                {% endfor %}
+                            </div>
+                            {% if form.rating.errors %}
+                                <div class="text-danger small">{{ form.rating.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Review Text -->
+                        <div class="mb-4">
+                            <label for="id_review_text" class="form-label">Your Review</label>
+                            <textarea name="review_text" id="id_review_text" class="form-control" rows="5">{{ form.review_text.value }}</textarea>
+                            {% if form.review_text.errors %}
+                                <div class="text-danger small">{{ form.review_text.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary px-5">Submit Review</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
         </div>
-    {% endif %}
+    </div>
+</div>
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Submit Review</button>
-    </form>
+<style>
+.star-rating {
+    direction: rtl;
+    display: inline-flex;
+    font-size: 2rem;
+}
+.star-rating input[type="radio"] {
+    display: none;
+}
+.star-rating label {
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.star-rating input[type="radio"]:checked ~ label,
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+    color: #ffc107;
+}
+</style>
+
 {% endblock %}

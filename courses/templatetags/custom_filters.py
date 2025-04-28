@@ -62,3 +62,8 @@ def dict_get(dictionary, key):
 @register.filter(name='add_class')
 def add_class(value, class_name):
     return value.as_widget(attrs={'class': class_name})
+
+@register.filter
+def to(value):
+    """Returns a range from 1 to the given value."""
+    return range(1, value + 1)
