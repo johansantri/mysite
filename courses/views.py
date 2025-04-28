@@ -1294,6 +1294,9 @@ def add_comment_microcredential(request, microcredential_id, slug):
     return redirect('courses:micro_detail', id=microcredential.id, slug=microcredential.slug)
 
 def reply_comment(request, comment_id):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+    
     # Ambil komentar yang akan dibalas
     comment = get_object_or_404(MicroCredentialComment, id=comment_id)
 
