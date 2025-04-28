@@ -1,9 +1,25 @@
 from django.contrib import admin
 from . import models 
-from .models import  LTIExternalTool,Submission,CourseRating,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
+from .models import  MicroCredentialComment,LTIExternalTool,Submission,CourseRating,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
 from import_export.admin import ImportExportModelAdmin
 from django.utils.html import format_html
 
+class MicroCredentialCommentAdmin(admin.ModelAdmin):
+    list_display = ('user', 'microcredential', 'created_at', 'likes', 'dislikes', 'is_spam', 'parent')  # Menampilkan field yang relevan di daftar admin
+    list_filter = ('microcredential', 'created_at', 'likes', 'dislikes')  # Filter berdasarkan kolom ini
+    search_fields = ('user__username', 'content', 'microcredential__title')  # Mencari berdasarkan kolom ini
+    date_hierarchy = 'created_at'  # Menyediakan filter berdasarkan tanggal
+    ordering = ('-created_at',)  # Urutkan komentar terbaru ke atas
+    raw_id_fields = ('user', 'microcredential')  # Gunakan raw_id untuk pemilihan user dan microcredential (agar lebih efisien)
+    fields = ('user', 'content', 'microcredential', 'parent', 'likes', 'dislikes', 'created_at')  # Menentukan urutan field yang ditampilkan saat mengedit komentar
+    readonly_fields = ('created_at',)  # Membuat field 'created_at' menjadi hanya baca
+    
+    def is_spam(self, obj):
+        return obj.is_spam()
+    is_spam.boolean = True  # Menampilkan checkbox untuk spam di admin panel
+
+# Registrasi model dan admin
+admin.site.register(MicroCredentialComment, MicroCredentialCommentAdmin)
 
 class LTIExternalToolAdmin(admin.ModelAdmin):
     list_display = ('name', 'launch_url', 'consumer_key', 'shared_secret', 'assessment')

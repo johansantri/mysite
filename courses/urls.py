@@ -93,6 +93,8 @@ urlpatterns = [
     #detail micro lms
     path('microcredential/<int:id>/<slug:slug>/detail/', views.micro_detail, name='micro_detail'),
     path('microcredential/<int:microcredential_id>/add-review/', views.add_microcredential_review, name='add_microcredential_review'),
+    path('microcredential/<int:microcredential_id>/<slug:slug>/add_comment/', views.add_comment_microcredential, name='add_comment_microcredential'),
+    path('comment/<int:comment_id>/reply/', views.reply_comment, name='reply_comment'),
     path('sosial/', views.create_and_list_sos_posts, name='create_and_list_sos_posts'),
     path('sosial/create/', views.create_post, name='create_post'),
     path('sosial/like/<int:post_id>/', views.like_post, name='like_post'),

@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 from django import forms
 from django.forms import inlineformset_factory
 from django.core.cache import cache
-from .models import MicroCredentialReview,LTIExternalTool,Course,SosPost,CourseStatus,CourseRating,MicroCredential, AskOra,Partner,Category, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment,PricingType, CoursePrice
+from .models import MicroCredentialComment,MicroCredentialReview,LTIExternalTool,Course,SosPost,CourseStatus,CourseRating,MicroCredential, AskOra,Partner,Category, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment,PricingType, CoursePrice
 from django_ckeditor_5.widgets import CKEditor5Widget
 
 from authentication.models import CustomUser, Universiti
@@ -20,6 +20,15 @@ from captcha.fields import CaptchaField
 import xml.etree.ElementTree as ET
 import hashlib
 logger = logging.getLogger(__name__)
+
+class MicroCredentialCommentForm(forms.ModelForm):
+    class Meta:
+        model = MicroCredentialComment
+        fields = ['content']  # Form hanya meminta konten komentar
+
+    def __init__(self, *args, **kwargs):
+        super(MicroCredentialCommentForm, self).__init__(*args, **kwargs)
+        self.fields['content'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Write your comment here...'})
 
 class MicroCredentialReviewForm(forms.ModelForm):
     class Meta:

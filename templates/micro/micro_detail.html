@@ -25,7 +25,7 @@
                                     <div class="course-info d-flex flex-wrap gap-3 bg-white border rounded-3 p-3 shadow-sm">
                                         <div class="cou-info d-flex align-items-center">
                                             <i class="fas fa-star text-danger me-2"></i>
-                                            <span class="fw-medium">4.5 Rating (15)</span>
+                                            <span class="fw-medium"> {{ average_rating }} Rating ({{ total_reviews }})</span>
                                         </div>
                                         <div class="cou-info d-flex align-items-center">
                                             <i class="fas fa-book me-2 text-danger"></i>
@@ -113,30 +113,209 @@
                                 </div>
                             </div>
                             <p class="text-muted mb-3">“{{ review.review_text }}”</p>
-                            <a href="javascript:void(0);" class="btn btn-outline-danger btn-sm rounded-3 transition-hover">
-                                <i class="feather-corner-up-left"></i> Reply
-                            </a>
+                            
                         {% empty %}
                             <p class="text-muted">No reviews yet.</p>
                         {% endfor %}
                     </div>
                 </div>
                 <!-- /Reviews -->
-
-                <!-- Comment Section -->
-                <div class="card comment-sec border-0 shadow-sm rounded-3 mt-4">
-                    <div class="card-body p-4">
-                        <h5 class="subs-title fw-bold text-dark mb-4">Post a Comment</h5>
-                        <form method="POST" action="#">
-                            {% csrf_token %}
-                            <div class="mb-3">
-                                <textarea name="content" rows="4" class="form-control border rounded-3 shadow-sm" placeholder="Your Comments" required></textarea>
+            
+              <!-- Comments Section -->
+                    <div class="comments-section mt-4">
+                        {% for comment in page_obj_comments %}
+                            <div class="comment-item bg-white border rounded-3 p-3 mb-3 shadow-sm transition-hover">
+                                <p class="mb-1">
+                                    <strong class="text-dark">{{ comment.user.username }}</strong>
+                                    <small class="text-muted">{{ comment.created_at|date:"F j, Y, g:i a" }}</small>
+                                </p>
+                                <p class="text-muted mb-2">{{ comment.content }}</p>
+                                <!-- Reply Link for Main Comment -->
+                                <div class="text-end">
+                                    <span class="reply-link" onclick="toggleReplyForm('comment-reply-form-{{ comment.id }}')">
+                                        <i class="bi bi-reply-fill"></i>
+                                    </span>
+                                </div>
+                                <!-- Form to Add Reply to Main Comment -->
+                                <div id="comment-reply-form-{{ comment.id }}" class="reply-form" style="display:none;">
+                                    <form method="POST" action="{% url 'courses:reply_comment' comment_id=comment.id %}">
+                                        {% csrf_token %}
+                                        <div class="input-group mb-2">
+                                            <textarea name="content" class="form-control border rounded-3 shadow-sm" rows="2" placeholder="Reply to this comment..." required></textarea>
+                                            <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm rounded-3 transition-hover">Reply</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- Displaying Replies -->
+                                <div class="replies">
+                                    {% for reply in comment.replies.all %}
+                                        <div class="reply-item bg-light border rounded-3 p-3 mt-3 ms-4 shadow-sm">
+                                            <p class="mb-1">
+                                                <strong class="text-dark">{{ reply.user.username }}</strong>
+                                                <small class="text-muted">{{ reply.created_at|date:"F j, Y, g:i a" }}</small>
+                                            </p>
+                                            <p class="text-muted mb-2">{{ reply.content }}</p>
+                                            <!-- Displaying Sub-Replies -->
+                                            <div class="sub-replies">
+                                                {% for sub_reply in reply.replies.all %}
+                                                    <div class="sub-reply-item bg-secondary bg-opacity-10 border rounded-3 p-3 mt-3 ms-4 shadow-sm">
+                                                        <p class="mb-1">
+                                                            <strong class="text-dark">{{ sub_reply.user.username }}</strong>
+                                                            <small class="text-muted">{{ sub_reply.created_at|date:"F j, Y, g:i a" }}</small>
+                                                        </p>
+                                                        <p class="text-muted mb-2">{{ sub_reply.content }}</p>
+                                                        <!-- Reply Link for Sub-Reply -->
+                                                        <div class="text-end">
+                                                            <span class="reply-link" onclick="toggleReplyForm('sub-reply-form-{{ sub_reply.id }}')">
+                                                                <i class="bi bi-reply-fill"></i>
+                                                            </span>
+                                                        </div>
+                                                        <!-- Form to Add Sub-Reply -->
+                                                        <div id="sub-reply-form-{{ sub_reply.id }}" class="reply-form" style="display:none;">
+                                                            <form method="POST" action="{% url 'courses:reply_comment' comment_id=sub_reply.id %}">
+                                                                {% csrf_token %}
+                                                                <div class="input-group mb-2">
+                                                                    <textarea name="content" class="form-control border rounded-3 shadow-sm" rows="2" placeholder="Reply to this sub-reply..." required></textarea>
+                                                                    <input type="hidden" name="parent_id" value="{{ sub_reply.id }}">
+                                                                    <button type="submit" class="btn btn-outline-danger btn-sm rounded-3 transition-hover">Reply</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                            <!-- Reply Link for Reply -->
+                                            <div class="text-end">
+                                                <span class="reply-link" onclick="toggleReplyForm('reply-form-{{ reply.id }}')">
+                                                    <i class="bi bi-reply-fill"></i>
+                                                </span>
+                                            </div>
+                                            <!-- Form to Add Reply to Reply -->
+                                            <div id="reply-form-{{ reply.id }}" class="reply-form" style="display:none;">
+                                                <form method="POST" action="{% url 'courses:reply_comment' comment_id=reply.id %}">
+                                                    {% csrf_token %}
+                                                    <div class="input-group mb-2">
+                                                        <textarea name="content" class="form-control border rounded-3 shadow-sm" rows="2" placeholder="Reply to this comment..." required></textarea>
+                                                        <input type="hidden" name="parent_id" value="{{ reply.id }}">
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm rounded-3 transition-hover">Reply</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
                             </div>
-                            <button type="submit" class="btn btn-outline-secondary rounded-3 transition-hover">Submit</button>
-                        </form>
+                        {% empty %}
+                            <p class="text-muted">No comments yet. Be the first to comment!</p>
+                        {% endfor %}
                     </div>
-                </div>
-                <!-- /Comment Section -->
+
+                    <!-- Form to Add New Comment -->
+                    <div class="card comment-sec border-0 shadow-sm rounded-3 mt-4">
+                        <div class="card-body p-4">
+                            <h5 class="subs-title fw-bold text-dark mb-4">Post a Comment</h5>
+                            <form method="POST" action="{% url 'courses:add_comment_microcredential' microcredential_id=microcredential.id slug=microcredential.slug %}">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <textarea name="content" rows="4" class="form-control border rounded-3 shadow-sm" placeholder="Write a comment..." required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-outline-danger rounded-3 transition-hover">Post Comment</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- JavaScript for Toggling Reply Forms -->
+                    <script>
+                        function toggleReplyForm(formId) {
+                            var form = document.getElementById(formId);
+                            form.style.display = form.style.display === 'block' || form.style.display === '' ? 'none' : 'block';
+                        }
+                    </script>
+
+                    <!-- Custom CSS -->
+                    <style>
+                        /* General Styles */
+                        .comments-section {
+                            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+                        }
+
+                        /* Comment Item */
+                        .comment-item, .reply-item, .sub-reply-item {
+                            transition: box-shadow 0.3s ease;
+                        }
+
+                        .comment-item:hover, .reply-item:hover, .sub-reply-item:hover {
+                            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1) !important;
+                        }
+
+                        /* Reply Link */
+                        .reply-link {
+                            color: #dc3545;
+                            cursor: pointer;
+                            font-size: 14px;
+                            font-weight: bold;
+                        }
+
+                        .reply-link:hover {
+                            color: #b02a37;
+                        }
+
+                        /* Buttons */
+                        .btn-outline-danger {
+                            border-color: #dc3545;
+                            color: #dc3545;
+                        }
+
+                        .btn-outline-danger:hover {
+                            background-color: #dc3545;
+                            color: white;
+                        }
+
+                        /* Form Controls */
+                        .form-control {
+                            border: 1px solid #e9ecef;
+                            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+                        }
+
+                        .form-control:focus {
+                            border-color: #dc3545;
+                            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.1);
+                        }
+
+                        /* Transition Hover */
+                        .transition-hover {
+                            transition: all 0.3s ease;
+                        }
+
+                        .transition-hover:hover {
+                            transform: translateY(-2px);
+                            color: #b02a37 !important;
+                        }
+
+                        /* Responsive Adjustments */
+                        @media (max-width: 767.98px) {
+                            .comment-item, .reply-item, .sub-reply-item {
+                                padding: 10px !important;
+                            }
+
+                            .replies, .sub-replies {
+                                margin-left: 10px;
+                            }
+
+                            .card-body {
+                                padding: 12px !important;
+                            }
+
+                            .form-control {
+                                font-size: 0.9rem;
+                            }
+
+                            .btn-outline-danger {
+                                font-size: 0.85rem;
+                            }
+                        }
+                    </style>
             </div>
 
             <!-- Sidebar -->

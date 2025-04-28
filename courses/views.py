@@ -11,10 +11,10 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from .forms import MicroCredentialReviewForm,LTIExternalToolForm,CoursePriceForm,CourseRatingForm,SosPostForm,MicroCredentialForm,AskOraForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
+from .forms import MicroCredentialCommentForm,MicroCredentialReviewForm,LTIExternalToolForm,CoursePriceForm,CourseRatingForm,SosPostForm,MicroCredentialForm,AskOraForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from .utils import user_has_passed_course,check_for_blacklisted_keywords,is_suspicious
 from django.http import JsonResponse
-from .models import MicroCredentialReview,UserMicroProgress,SearchHistory,Certificate,LTIExternalTool,Course,CourseRating,Like,SosPost,Hashtag,UserProfile,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
+from .models import MicroCredentialComment,MicroCredentialReview,UserMicroProgress,SearchHistory,Certificate,LTIExternalTool,Course,CourseRating,Like,SosPost,Hashtag,UserProfile,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
 from authentication.models import CustomUser, Universiti
 from blog.models import BlogPost
 from django.template.loader import render_to_string
@@ -1188,9 +1188,8 @@ def reply_form(request, post_id):
     except SosPost.DoesNotExist:
         return HttpResponse(render_to_string('messages.html', {'message': "Post tidak ditemukan!", 'type': 'error'}))
 
-
-
 def micro_detail(request, id, slug):
+    # Ambil data MicroCredential
     microcredential = get_object_or_404(MicroCredential, id=id, slug=slug)
 
     # Mengecek apakah pengguna sudah terdaftar dalam microcredential
@@ -1202,9 +1201,9 @@ def micro_detail(request, id, slug):
     reviews = microcredential.reviews.select_related('user').all().order_by('-created_at')
 
     # Paginasi: menampilkan 10 review per halaman
-    paginator = Paginator(reviews, 10)  # 10 review per halaman
-    page_number = request.GET.get('page')  # ambil nomor halaman dari URL
-    page_obj = paginator.get_page(page_number)
+    paginator_reviews = Paginator(reviews, 10)  # 10 review per halaman
+    page_number_reviews = request.GET.get('page')  # ambil nomor halaman dari URL
+    page_obj_reviews = paginator_reviews.get_page(page_number_reviews)
 
     # Hitung rating rata-rata dan jumlah review
     rating_summary = reviews.aggregate(
@@ -1212,15 +1211,108 @@ def micro_detail(request, id, slug):
         total_reviews=Count('id')
     )
 
+
+    # Ambil semua review untuk microcredential ini
+    reviews = microcredential.reviews.all().order_by('-created_at')
+
+    # Hitung rating rata-rata dan jumlah review
+    rating_summary = reviews.aggregate(
+        average_rating=Avg('rating'),
+        total_reviews=Count('id')
+    )
+    # Ambil komentar utama (parent) untuk microcredential ini
+    comments = MicroCredentialComment.objects.filter(microcredential=microcredential, parent=None).order_by('-created_at')
+
+    # Paginasi komentar utama
+    paginator_comments = Paginator(comments, 10)  # 10 komentar per halaman
+    page_number_comments = request.GET.get('page_comments')
+    page_obj_comments = paginator_comments.get_page(page_number_comments)
+
+    
+
     context = {
         'microcredential': microcredential,
-        'page_obj': page_obj,
+        'page_obj_reviews': page_obj_reviews,  # Paginasi review
         'average_rating': rating_summary['average_rating'] or 0,
         'total_reviews': rating_summary['total_reviews'],
         'is_enrolled': is_enrolled,  # Menambahkan status enrollment ke context
+
+        # Menambahkan komentar ke context
+        'page_obj_comments': page_obj_comments,  # Paginasi komentar
+       
     }
 
     return render(request, 'micro/micro_detail.html', context)
+
+
+def add_comment_microcredential(request, microcredential_id, slug):
+    # Mengecek apakah pengguna sudah login
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+    
+    # Ambil data MicroCredential
+    microcredential = get_object_or_404(MicroCredential, id=microcredential_id, slug=slug)
+
+    if request.method == 'POST':
+        # Mengecek apakah request mencurigakan (bot detection)
+        if is_suspicious(request):
+            messages.warning(request, "Suspicious activity detected. Comment not posted.")
+            return redirect('courses:micro_detail', id=microcredential.id, slug=microcredential.slug)
+
+        content = request.POST.get('content')
+        parent_id = request.POST.get('parent_id')
+        parent_comment = None
+
+        # Menentukan apakah ini komentar balasan
+        if parent_id:
+            parent_comment = get_object_or_404(MicroCredentialComment, id=parent_id)
+
+        # Membuat objek komentar
+        comment = MicroCredentialComment(
+            user=request.user,
+            content=content,
+            microcredential=microcredential,
+            parent=parent_comment
+        )
+
+        # Memeriksa apakah komentar mengandung kata kunci terlarang
+        if comment.contains_blacklisted_keywords():
+            messages.warning(request, "Your comment contains blacklisted content.")
+            return redirect('courses:micro_detail', id=microcredential.id, slug=microcredential.slug)
+
+        # Memeriksa apakah komentar adalah spam berdasarkan cooldown
+        if comment.is_spam():
+            messages.warning(request, "You are posting too frequently. Please wait a moment before posting again.")
+            return redirect('courses:micro_detail', id=microcredential.id, slug=microcredential.slug)
+
+        # Simpan komentar ke database
+        comment.save()
+
+        messages.success(request, 'Your comment has been posted.')
+        return redirect('courses:micro_detail', id=microcredential.id, slug=microcredential.slug)
+    
+    return redirect('courses:micro_detail', id=microcredential.id, slug=microcredential.slug)
+
+def reply_comment(request, comment_id):
+    # Ambil komentar yang akan dibalas
+    comment = get_object_or_404(MicroCredentialComment, id=comment_id)
+
+    # Jika form di-submit
+    if request.method == 'POST':
+        content = request.POST.get('content')
+        if content:
+            # Buat balasan komentar
+            reply_comment = MicroCredentialComment(
+                user=request.user,
+                content=content,
+                microcredential=comment.microcredential,
+                parent=comment  # Tautkan dengan komentar induk
+            )
+            reply_comment.save()
+            messages.success(request, 'Your reply has been posted.')
+            return redirect('courses:micro_detail', id=comment.microcredential.id, slug=comment.microcredential.slug)
+
+    return redirect('courses:micro_detail', id=comment.microcredential.id, slug=comment.microcredential.slug)
 
 
 def enroll_microcredential(request, slug):

@@ -1060,6 +1060,47 @@ class MicroCredentialEnrollment(models.Model):
     def __str__(self):
         return f"{self.user.username} enrolled in {self.microcredential.title}"
     
+class MicroCredentialComment(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    content = models.TextField(blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    microcredential = models.ForeignKey('MicroCredential', on_delete=models.CASCADE)
+    likes = models.IntegerField(default=0)
+    dislikes = models.IntegerField(default=0)
+    parent = models.ForeignKey("self", null=True, blank=True, related_name='replies', on_delete=models.CASCADE)
+
+    class Meta:
+        indexes = [models.Index(fields=['microcredential'])]
+
+    def __str__(self):
+        return f'Comment by {self.user.username} on {self.microcredential.title} at {self.created_at}'
+
+    def is_spam(self):
+        """
+        Pengecekan untuk spam. Menggunakan interval waktu antara komentar.
+        """
+        last_comment_time = MicroCredentialComment.objects.filter(user=self.user).order_by('-created_at').first()
+        if last_comment_time:
+            time_difference = timezone.now() - last_comment_time.created_at
+            if time_difference < timedelta(minutes=1):  # Jika komentar sebelumnya dibuat kurang dari 1 menit
+                return True
+        return False
+
+    def contains_blacklisted_keywords(self):
+        """
+        Memeriksa apakah komentar mengandung kata-kata yang diblacklist.
+        """
+        blacklisted_keywords = BlacklistedKeyword.objects.values_list('keyword', flat=True)
+        for keyword in blacklisted_keywords:
+            if re.search(r'\b' + re.escape(keyword) + r'\b', self.content.lower()):
+                return True
+        return False
+
+    def get_replies(self):
+        """
+        Mengambil semua balasan (replies) dari komentar ini, diurutkan berdasarkan waktu pembuatan.
+        """
+        return self.replies.all().order_by('created_at')  # Mengambil semua balasan dari komentar ini
 
 
 
