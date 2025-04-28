@@ -132,11 +132,14 @@ def course_list(request):
 
     category_filter = request.GET.getlist('category')
     language_filter = request.GET.get('language')
+    level_filter = request.GET.get('level')  # Menangkap filter level
 
     if category_filter:
         courses = courses.filter(category__in=category_filter)
     if language_filter:
         courses = courses.filter(language=language_filter)
+    if level_filter:  # Menambahkan filter level
+        courses = courses.filter(level=level_filter)
 
     paginator = Paginator(courses, 9)
     page_number = request.GET.get('page', 1)
@@ -184,6 +187,7 @@ def course_list(request):
             'partner': course.org_partner.name if course.org_partner else None,
             'category': course.category.name if course.category else None,
             'language': course.language,
+            'level': course.level,  # Menambahkan level ke data
             'average_rating': average_rating,
             'review_count': review_qs.count(),
             'full_star_range': range(full_stars),
@@ -202,6 +206,7 @@ def course_list(request):
         'end_index': page_obj.end_index(),
         'category_filter': category_filter,
         'language_filter': language_filter,
+        'level_filter': level_filter,  # Menambahkan level_filter ke context
         'categories': list(categories.values('id', 'name', 'course_count')),
         'language_options': language_options,
     }
@@ -210,94 +215,6 @@ def course_list(request):
 
 
 
-@ratelimit(key='ip', rate='100/h')
-@cache_page(60 * 15)  # Cache selama 15 menit
-def course_list_api(request):
-    if request.method != 'GET':
-        return JsonResponse({'error': 'Metode tidak diperbolehkan'}, status=405)
-
-    # Dapatkan status 'published'
-    published_status = CourseStatus.objects.filter(status='published').first()
-    if not published_status:
-        return JsonResponse({'error': 'Status "published" tidak ditemukan'}, status=404)
-
-    # Query dasar untuk kursus dengan relasi dan anotasi
-    courses = Course.objects.filter(status_course=published_status).select_related(
-        'category', 'instructor__user', 'org_partner'
-    ).annotate(
-        num_enrollments=Count('enrollments'),  # Total enrollments
-        num_ratings=Count('ratings'),          # Total ratings
-        avg_rating=Avg('ratings__rating')      # Rata-rata rating (opsional)
-    )
-
-    # Filter berdasarkan kategori
-    category_filter = request.GET.getlist('category')
-    if category_filter:
-        courses = courses.filter(category__in=category_filter)
-
-    # Pagination
-    paginator = Paginator(courses, 9)  # 9 kursus per halaman
-    page_number = request.GET.get('page', 1)
-
-    try:
-        page_number = int(page_number) if int(page_number) >= 1 else 1
-    except ValueError:
-        page_number = 1
-
-    try:
-        page_obj = paginator.get_page(page_number)
-    except PageNotAnInteger:
-        page_obj = paginator.get_page(1)
-    except EmptyPage:
-        page_obj = paginator.get_page(paginator.num_pages)
-
-    # Data kursus untuk JSON
-    courses_data = []
-    for course in page_obj:
-        courses_data.append({
-            'course_id': course.id,
-            'course_name': course.course_name,
-            'course_slug': course.slug,
-            'course_image': course.image.url if course.image else None,
-            'instructor': course.instructor.user.get_full_name() if course.instructor else None,
-            'instructor_username': course.instructor.user.username if course.instructor else None,
-            'photo': course.instructor.user.photo.url if course.instructor and course.instructor.user.photo else None,
-            'partner': course.org_partner.name.name if course.org_partner else None,  # Pastikan ini string
-            'category': course.category.name if course.category else None,
-            'num_enrollments': course.num_enrollments,
-            'num_ratings': course.num_ratings,
-            'avg_rating': float(course.avg_rating) if course.avg_rating else 0.0,
-        })
-
-    # Kategori untuk filter
-    categories = Category.objects.filter(
-        category_courses__status_course=published_status
-    ).annotate(
-        course_count=Count('category_courses')
-    ).distinct()
-
-    # Konversi kategori ke format yang bisa di-serialize
-    categories_data = [
-        {
-            'id': category.id,
-            'name': category.name,
-            'course_count': category.course_count
-        } for category in categories
-    ]
-
-    # Response JSON
-    response_data = {
-        'courses': courses_data,
-        'total_courses': courses.count(),
-        'total_pages': paginator.num_pages,
-        'current_page': page_obj.number,
-        'start_index': page_obj.start_index(),
-        'end_index': page_obj.end_index(),
-        'category_filter': category_filter,
-        'categories': categories_data,  # Gunakan list dict, bukan queryset
-    }
-
-    return JsonResponse(response_data)
 
 
 #detailuser

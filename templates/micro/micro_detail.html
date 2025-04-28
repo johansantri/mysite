@@ -16,7 +16,7 @@
                             <div class="row align-items-center">
                                 <div class="col-lg-12">
                                     <h2 class="fw-bold mb-3 text-dark">{{ microcredential.title }}</h2>
-                                    <a href="#" class="text-decoration-none">
+                                    <a href="{% url 'courses:category_list' microcredential.category.slug %}" class="text-decoration-none">
                                         <span class="badge bg-danger text-white rounded-3 mb-3">
                                             {% if microcredential.category %}{{ microcredential.category }}{% else %}N/A{% endif %}
                                         </span>
