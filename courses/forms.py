@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 from django import forms
 from django.forms import inlineformset_factory
 from django.core.cache import cache
-from .models import LTIExternalTool,Course,SosPost,CourseStatus,CourseRating,MicroCredential, AskOra,Partner,Category, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment,PricingType, CoursePrice
+from .models import MicroCredentialReview,LTIExternalTool,Course,SosPost,CourseStatus,CourseRating,MicroCredential, AskOra,Partner,Category, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment,PricingType, CoursePrice
 from django_ckeditor_5.widgets import CKEditor5Widget
 
 from authentication.models import CustomUser, Universiti
@@ -21,7 +21,14 @@ import xml.etree.ElementTree as ET
 import hashlib
 logger = logging.getLogger(__name__)
 
-
+class MicroCredentialReviewForm(forms.ModelForm):
+    class Meta:
+        model = MicroCredentialReview
+        fields = ['rating', 'review_text']
+        widgets = {
+            'review_text': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Write your review here...'}),
+        }
+        
 class LTIExternalToolForm(forms.ModelForm):
     class Meta:
         model = LTIExternalTool

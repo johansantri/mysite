@@ -67,12 +67,15 @@
                                         </thead>
                                         <tbody>
                                             {% for course in microcredential.required_courses.all %}
-                                            <tr>
-                                                <td>
-                                                    <a class="collapsed" data-bs-toggle="collapse" href="#collapse{{ forloop.counter }}" aria-expanded="false">{{ course.course_name }}</a>
-                                                </td>
-                                            </tr>
-                                            {% endfor %}
+												<tr>
+													<td>
+														<a class="collapsed" href="{% url 'courses:course_lms_detail' id=course.id slug=course.slug %}" aria-expanded="false">
+															{{ course.course_name }}
+														</a>
+													</td>
+												</tr>
+											{% endfor %}
+
                                         </tbody>
                                     </table>
 								
@@ -116,21 +119,7 @@
 								<div class="card-body">
 									<h5 class="subs-title">Post A comment</h5>
 									<form>
-										<div class="row">
-											<div class="col-md-6">
-												<div class="input-block">
-													<input type="text" class="form-control" placeholder="Full Name">
-												</div>
-											</div>
-											<div class="col-md-6">
-												<div class="input-block">
-													<input type="email" class="form-control" placeholder="Email">
-												</div>
-											</div>
-										</div>
-										<div class="input-block">
-											<input type="email" class="form-control" placeholder="Subject">
-										</div>
+										
 										<div class="input-block">
 											<textarea rows="4" class="form-control" placeholder="Your Comments"></textarea>
 										</div>

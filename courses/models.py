@@ -768,6 +768,20 @@ class UserMicroCredential(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.microcredential}"
+from django.db import models
+
+class MicroCredentialReview(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="microcredential_reviews")
+    microcredential = models.ForeignKey(MicroCredential, on_delete=models.CASCADE, related_name="reviews")
+    rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)], default=1)  # Rating dari 1 hingga 5
+    review_text = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ('user', 'microcredential')  # Pastikan setiap user hanya bisa memberi 1 review per microcredential
+
+    def __str__(self):
+        return f"Review by {self.user} for {self.microcredential} - Rating: {self.rating}"
     
 
 class Assessment(models.Model):

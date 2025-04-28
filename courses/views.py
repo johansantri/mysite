@@ -11,10 +11,10 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from .forms import LTIExternalToolForm,CoursePriceForm,CourseRatingForm,SosPostForm,MicroCredentialForm,AskOraForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
+from .forms import MicroCredentialReviewForm,LTIExternalToolForm,CoursePriceForm,CourseRatingForm,SosPostForm,MicroCredentialForm,AskOraForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from .utils import user_has_passed_course,check_for_blacklisted_keywords,is_suspicious
 from django.http import JsonResponse
-from .models import SearchHistory,Certificate,LTIExternalTool,Course,CourseRating,Like,SosPost,Hashtag,UserProfile,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
+from .models import MicroCredentialReview,UserMicroProgress,SearchHistory,Certificate,LTIExternalTool,Course,CourseRating,Like,SosPost,Hashtag,UserProfile,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
 from authentication.models import CustomUser, Universiti
 from blog.models import BlogPost
 from django.template.loader import render_to_string
@@ -66,6 +66,55 @@ import base64
 
 import logging
 
+@login_required
+def add_microcredential_review(request, microcredential_id):
+    # Ambil MicroCredential berdasarkan ID
+    microcredential = get_object_or_404(MicroCredential, id=microcredential_id)
+
+    # Cek apakah user terdaftar di semua course yang diperlukan
+    user_courses = Enrollment.objects.filter(user=request.user, course__in=microcredential.required_courses.all())
+    if user_courses.count() != microcredential.required_courses.count():
+        # Jika pengguna tidak terdaftar di semua kursus, arahkan kembali
+        messages.error(request, "You must be enrolled in all required courses to review this MicroCredential.")
+        return redirect('courses:micro_detail', id=microcredential.id, slug=microcredential.slug)  # redirect ke detail microcredential
+
+    # Cek apakah pengguna sudah lulus dari semua kursus yang diperlukan
+    user_courses_completed = True
+    for enrollment in user_courses:
+        user_progress = UserMicroProgress.objects.filter(user=request.user, course=enrollment.course, microcredential=microcredential).first()
+        if not user_progress or not user_progress.completed:
+            user_courses_completed = False
+            break
+
+    if not user_courses_completed:
+        # Jika pengguna belum lulus semua kursus yang diperlukan
+        messages.error(request, "You must complete all required courses before you can leave a review.")
+        return redirect('courses:micro_detail', id=microcredential.id, slug=microcredential.slug)  # redirect ke detail microcredential
+
+    # Proses form review jika POST
+    if request.method == 'POST':
+        form = MicroCredentialReviewForm(request.POST)
+        if form.is_valid():
+            # Cek apakah user sudah memberi review sebelumnya
+            existing_review = MicroCredentialReview.objects.filter(user=request.user, microcredential=microcredential).first()
+            if existing_review:
+                # Jika review sudah ada, update review
+                existing_review.rating = form.cleaned_data['rating']
+                existing_review.review_text = form.cleaned_data['review_text']
+                existing_review.save()
+                messages.success(request, "Your review has been updated.")
+            else:
+                # Simpan review baru
+                review = form.save(commit=False)
+                review.user = request.user
+                review.microcredential = microcredential
+                review.save()
+                messages.success(request, "Your review has been submitted.")
+            return redirect('courses:micro_detail', id=microcredential.id, slug=microcredential.slug)  # redirect ke detail microcredential
+    else:
+        form = MicroCredentialReviewForm()
+
+    return render(request, 'micro/add_review.html', {'form': form, 'microcredential': microcredential})
 
 def self_course(request, username, id, slug):
     if not request.user.is_authenticated:
