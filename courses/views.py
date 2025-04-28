@@ -1447,18 +1447,22 @@ def microcredential_detail(request, slug):
     return render(request, 'learner/microcredential_detail.html', context)
 
 
+# Configure weasyprint logging
+logging.getLogger('weasyprint').setLevel(logging.DEBUG)
+
 def generate_microcredential_certificate(request, id):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
 
-    # Ambil microcredential berdasarkan ID
+    # Get microcredential
     microcredential = get_object_or_404(MicroCredential, id=id)
 
-    # Cek apakah pengguna telah lulus microcredential (opsional)
+    # Check if user has passed the microcredential and collect course grades
     required_courses = microcredential.required_courses.all()
     total_user_score = Decimal(0)
     total_max_score = Decimal(0)
     all_courses_completed = True
+    course_grades = []
 
     for course in required_courses:
         assessments = Assessment.objects.filter(section__courses=course)
@@ -1501,6 +1505,13 @@ def generate_microcredential_certificate(request, id):
         min_score = Decimal(microcredential.get_min_score(course))
         if not (course_completed and course_score >= min_score):
             all_courses_completed = False
+
+        grade_point = (course_score / course_max_score * 100) if course_max_score > 0 else Decimal(0)
+        course_grades.append({
+            'name': course.course_name,
+            'grade_point': grade_point.quantize(Decimal('0.01')),
+        })
+
         total_user_score += course_score
         total_max_score += course_max_score
 
@@ -1509,19 +1520,50 @@ def generate_microcredential_certificate(request, id):
     if not microcredential_passed:
         return render(request, 'error_template.html', {'message': 'You have not yet completed this MicroCredential.'})
 
-    # Render template sertifikat
-    html_content = render_to_string('learner/microcredential_certificate.html', {
+    # Build absolute URLs for images
+    base_url = request.build_absolute_uri('/')
+    microcredential_image_absolute_url = (
+        f"{base_url.rstrip('/')}{microcredential.image.url}"
+        if microcredential.image else None
+    )
+    author_photo_absolute_url = (
+        f"{base_url.rstrip('/')}{microcredential.author.photo.url}"
+        if hasattr(microcredential.author, 'photo') and microcredential.author.photo
+        else None
+    )
+
+    # Generate certificate ID
+    certificate_id = f"CERT-{microcredential.id}-{request.user.id}"
+
+    # Debug context
+    context = {
         'microcredential': microcredential,
         'user': request.user,
         'current_date': timezone.now().date(),
-    })
+        'microcredential_image_absolute_url': microcredential_image_absolute_url,
+        'author_photo_absolute_url': author_photo_absolute_url,
+        'course_grades': course_grades,
+        'certificate_id': certificate_id,
+        'min_total_score': microcredential.min_total_score,
+    }
+    logger = logging.getLogger(__name__)
+    logger.debug(f"Certificate context: {context}")
+
+    # Render template
+    html_content = render_to_string('learner/microcredential_certificate.html', context)
 
     # Generate PDF
-    pdf = HTML(string=html_content).write_pdf()
+    try:
+        pdf = HTML(string=html_content, base_url=base_url).write_pdf()
+    except Exception as e:
+        logger.error(f"Error generating PDF: {str(e)}")
+        return render(request, 'error_template.html', {'message': f'Error generating PDF: {str(e)}'})
+
     filename = f"certificate_{microcredential.slug}.pdf"
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
     return response
+
 
 def deletemic(request, pk):
     if not request.user.is_authenticated:
