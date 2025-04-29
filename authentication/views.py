@@ -113,7 +113,7 @@ def microcredential_list(request):
 
 #course_list lms
 @ratelimit(key='ip', rate='100/h')
-#@cache_page(60 * 15)  # Cache the page for 15 minutes
+@cache_page(60 * 15)  # Cache the page for 15 minutes
 def course_list(request):
     if request.method != 'GET':
         return HttpResponseNotAllowed("Metode tidak diperbolehkan")
@@ -188,7 +188,7 @@ def course_list(request):
             'partner': course.org_partner.name if course.org_partner else None,
             'partner_kode': course.org_partner.name.kode if course.org_partner else None,
             'category': course.category.name if course.category else None,
-            'language': course.language,
+            'language': course.get_language_display(),  # ← ini
             'level': course.level,  # Menambahkan level ke data
             'average_rating': average_rating,
             'review_count': review_qs.count(),

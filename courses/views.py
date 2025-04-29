@@ -909,7 +909,7 @@ def category_course_list(request, slug):
             'partner_kode': course.org_partner.name.kode if course.org_partner else None,
             'partner_photo': course.org_partner.logo.url if course.org_partner and course.org_partner.logo else None,
             'category': course.category.name if course.category else None,
-            'language': course.language,
+            'language': course.get_language_display(),  # ← ini
             'average_rating': average_rating,
             'review_count': review_qs.count(),
             'full_star_range': range(full_stars),
