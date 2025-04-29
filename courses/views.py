@@ -906,6 +906,7 @@ def category_course_list(request, slug):
             'instructor_username': course.instructor.user.username if course.instructor else None,
             'photo': course.instructor.user.photo.url if course.instructor and course.instructor.user.photo else None,
             'partner': course.org_partner.name if course.org_partner else None,
+            'partner_kode': course.org_partner.name.kode if course.org_partner else None,
             'partner_photo': course.org_partner.logo.url if course.org_partner and course.org_partner.logo else None,
             'category': course.category.name if course.category else None,
             'language': course.language,
@@ -4787,7 +4788,7 @@ def org_partner(request, slug):
             'category', 'instructor__user', 'org_partner'
         ).prefetch_related('enrollments')
 
-        logger.debug(f"Related Courses: {list(related_courses.values('id', 'course_name', 'end_enrol'))}")
+        #logger.debug(f"Related Courses: {list(related_courses.values('id', 'course_name', 'end_enrol'))}")
 
         if search_query:
             related_courses = related_courses.filter(course_name__icontains=search_query)
@@ -4851,6 +4852,7 @@ def org_partner(request, slug):
             'instructor_username': course.instructor.user.username if course.instructor else None,
             'photo': course.instructor.user.photo.url if course.instructor and course.instructor.user.photo else None,
             'partner': course.org_partner.name if course.org_partner else None,
+            'partner_kode': course.org_partner.name.kode if course.org_partner else None,
             'category': course.category.name if course.category else None,
             'language': course.language,
             'average_rating': average_rating,
@@ -4860,7 +4862,7 @@ def org_partner(request, slug):
             'empty_star_range': range(empty_stars),
         }
         courses_data.append(course_data)
-        logger.debug(f"Course Data: {course_data}")
+        #logger.debug(f"Course Data: {course_data}")
 
     context = {
         'partner': partner,

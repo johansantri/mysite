@@ -113,7 +113,7 @@ def microcredential_list(request):
 
 #course_list lms
 @ratelimit(key='ip', rate='100/h')
-@cache_page(60 * 15)  # Cache the page for 15 minutes
+#@cache_page(60 * 15)  # Cache the page for 15 minutes
 def course_list(request):
     if request.method != 'GET':
         return HttpResponseNotAllowed("Metode tidak diperbolehkan")
@@ -177,6 +177,7 @@ def course_list(request):
 
         courses_data.append({
             'course_name': course.course_name,
+            'hour': course.hour,
             'course_id': course.id,
             'num_enrollments': num_enrollments,
             'course_slug': course.slug,
@@ -185,6 +186,7 @@ def course_list(request):
             'instructor_username': course.instructor.user.username if course.instructor else None,
             'photo': course.instructor.user.photo.url if course.instructor and course.instructor.user.photo else None,
             'partner': course.org_partner.name if course.org_partner else None,
+            'partner_kode': course.org_partner.name.kode if course.org_partner else None,
             'category': course.category.name if course.category else None,
             'language': course.language,
             'level': course.level,  # Menambahkan level ke data
@@ -829,9 +831,10 @@ def popular_courses(request):
             'course_name': course.course_name,
             'slug': course.slug,
             'image': course.image.url if course.image else '',
-            'instructor_name': course.instructor.user.first_name,
+            'instructor_name': f"{course.instructor.user.first_name} {course.instructor.user.last_name}".strip(),
             'instructor_photo': course.instructor.user.photo.url if course.instructor.user.photo else '',
             'org_name': course.org_partner.name.name,
+            'org_kode': course.org_partner.name.kode,
             'org_slug': course.org_partner.name.slug,
             'org_logo': course.org_partner.logo.url if course.org_partner.logo else '',
             'num_enrollments': course.num_enrollments,

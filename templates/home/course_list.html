@@ -57,7 +57,7 @@
                                             <a href="{% url 'courses:instructor_profile' course.instructor_username %}" class="text-dark text-decoration-none transition-hover">{{ course.instructor }}</a>
                                         </h2>
                                         <small class="text-muted">
-                                            <a href="{% url 'courses:org_partner' course.partner.slug %}" class="text-muted text-decoration-none transition-hover">{{ course.partner }}</a>
+                                            <a href="{% url 'courses:org_partner' course.partner.slug %}" class="text-muted text-decoration-none transition-hover">{{ course.partner_kode }}</a>
                                         </small>
                                     </div>
                                 </div>
@@ -71,7 +71,7 @@
                                     </div>
                                     <div class="d-flex align-items-center">
                                         <i class="fas fa-clock me-1 text-danger"></i>
-                                        <small class="ms-1">9hr 30min</small>
+                                        <small class="ms-1">{{ course.hour }} hour</small>
                                     </div>
                                 </div>
                                 <div class="rating mb-3">

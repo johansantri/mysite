@@ -3,17 +3,29 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from django.db.models.signals import post_save
+from django.utils.text import slugify
 
 class Universiti(models.Model):
     name = models.CharField(max_length=200, blank=True, null=True)
     slug = models.SlugField(unique=True)
     location = models.CharField(max_length=100, blank=True, null=True)
+    kode = models.CharField(max_length=10, blank=True)
 
     def save(self, *args, **kwargs):
+        if self.name:
+            # Set slug otomatis dari name (contoh: "Universitas Indonesia" -> "universitas-indonesia")
+            if not self.slug:
+                self.slug = slugify(self.name)
+
+            # Set kode otomatis (ambil inisial + 'x')
+            if not self.kode:
+                initials = ''.join([word[0].upper() for word in self.name.split() if word])
+                self.kode = initials + 'x'
+
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.name
+        return self.name or ""
     
 class CustomUser(AbstractUser):
     gen = {
