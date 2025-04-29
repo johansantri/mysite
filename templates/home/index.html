@@ -617,17 +617,31 @@
 </section>
 
 <!-- Micro Courses Section -->
+<!-- Micro Courses Section -->
+
 <section class="py-5 bg-light">
     <div class="container">
-        <h2 class="text-center mb-5">Micro Courses</h2>
-        <div class="row g-4">
+        <h2 class="text-center mb-5">Popular Micro Courses</h2>
+        <div class="row g-3">
             {% for microcredential in popular_microcredentials %}
-                <div class="col-md-6">
-                    <div class="blog-card shadow-sm p-4 d-flex align-items-center rounded-3">
-                        <div class="course-info">
-                            <h5 class="fw-bold text-primary"><a href="{% url 'courses:micro_detail' microcredential.id microcredential.slug %}" class="text-decoration-none">{{ microcredential.title }}</a></h5>
-                            <p class="text-muted">Learn programming stress-free.</p>
-                            <a href="{% url 'courses:micro_detail' microcredential.id microcredential.slug %}" class="btn btn-primary mt-3">Read More</a>
+                <div class="col-12">
+                    <div class="blog-card shadow-sm p-3 d-flex justify-content-between align-items-center rounded-3 bg-white">
+                        <!-- Judul (sebelah kiri) -->
+                        <div class="flex-grow-1 me-3">
+                            <h5 class="fw-bold text-primary mb-0">
+                                <a href="{% url 'courses:micro_detail' microcredential.id microcredential.slug %}"
+                                   class="text-decoration-none" title="View details about {{ microcredential.title }}">
+                                    {{ microcredential.title }}
+                                </a>
+                            </h5>
+                        </div>
+
+                        <!-- Gambar kecil (sebelah kanan) -->
+                        <div class="flex-shrink-0">
+                            <img src="{{ microcredential.image.url }}"
+                                 alt="Image of {{ microcredential.title }} course"
+                                 style="height: 40px; width: auto;"
+                                 class="rounded-2 shadow-sm">
                         </div>
                     </div>
                 </div>
@@ -637,6 +651,10 @@
         </div>
     </div>
 </section>
+
+
+
+
 
 <!-- Blog Section -->
 <section class="py-5 bg-light">

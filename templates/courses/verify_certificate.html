@@ -1,128 +1,257 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verify Certificate</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@400;700&display=swap');
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f4f6f8;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
+  <meta name="description" content="Certificate of Completion for {{ certificate.course.course_name }}. Awarded to {{ certificate.user.first_name }} {{ certificate.user.last_name }} by {{ certificate.partner.name|default:'Our Institution' }}.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Certificate of Completion">
+  <meta property="og:description" content="Awarded to {{ certificate.user.first_name }} {{ certificate.user.last_name }} for completing {{ certificate.course.course_name }}">
+  <meta property="og:image" content="{{ base_url }}static/assets/img/icon/certificate.svg">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Certificate of Completion">
+  <meta name="twitter:description" content="Awarded to {{ certificate.user.first_name }} {{ certificate.user.last_name }} for completing {{ certificate.course.course_name }}">
+  <meta name="twitter:image" content="{{ base_url }}static/assets/img/icon/certificate.svg">
+  <meta name="twitter:url" content="{{ request.build_absolute_uri }}">
+  <link rel="canonical" href="{{ request.build_absolute_uri }}">
+  <link rel="icon" href="{% static 'assets/img/icon/badge.svg' %}" sizes="32x32" type="image/svg+xml">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
-        .container {
-            width: 800px;
-            background: #ffffff;
-            border: 2px solid #1B263B;
-            border-radius: 12px;
-            padding: 40px;
-            text-align: center;
-            box-sizing: border-box;
-        }
+  <title>Certificate of Completion</title>
 
-        .header {
-            background: #1B263B;
-            color: #ffffff;
-            font-family: 'Playfair Display', serif;
-            font-size: 28px;
-            font-weight: 700;
-            padding: 15px;
-            margin: -40px -40px 30px -40px;
-            border-radius: 10px 10px 0 0;
-            border-bottom: 3px solid #D4A017;
-        }
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f7f9fb;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
 
-        .logo {
-            width: 80px;
-            height: 80px;
-            margin: 20px auto;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-image: url('{% if certificate.partner.logo %}{{ base_url.rstrip }}/media/{{ certificate.partner.logo }}{% else %}{{ base_url }}static/images/default_logo.png{% endif %}');
-        }
+    .certificate-wrapper {
+      width: 900px;
+      background: #fff;
+      border: 8px solid #D4A017;
+      padding: 60px 50px;
+      text-align: center;
+      box-shadow: 0 0 25px rgba(0,0,0,0.1);
+      position: relative;
+      margin-bottom: 40px;
+    }
 
-        .title {
-            font-family: 'Playfair Display', serif;
-            font-size: 36px;
-            font-weight: 700;
-            color: #D4A017;
-            margin: 20px 0;
-        }
+    .certificate-wrapper::after {
+      content: '';
+      position: absolute;
+      top: 20px;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      border: 2px dashed #ccc;
+      pointer-events: none;
+    }
 
-        .content {
-            font-size: 18px;
-            line-height: 1.6;
-            color: #1B263B;
-            margin: 15px 0;
-        }
+    .certificate-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
+      color: #1B263B;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
 
-        .content strong {
-            color: #1B263B;
-            font-weight: 600;
-        }
+    .subtitle {
+      font-size: 18px;
+      color: #4B5E7A;
+      margin-bottom: 40px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
 
-        .details {
-            margin: 30px 0;
-            padding: 20px;
-            border: 2px solid #D4A017;
-            border-radius: 8px;
-            background: #F9FAFB;
-        }
+    .recipient {
+      font-size: 22px;
+      color: #1B263B;
+      margin: 40px 0 10px;
+    }
 
-        .footer {
-            margin-top: 30px;
-            font-size: 14px;
-            color: #4B5E7A;
-            border-top: 2px solid #D4A017;
-            padding-top: 20px;
-        }
+    .highlight {
+      font-size: 26px;
+      font-weight: 700;
+      color: #D4A017;
+      font-family: 'Playfair Display', serif;
+      margin: 10px 0 20px;
+    }
 
-        .valid {
-            color: #1B263B;
-            font-weight: 600;
-            font-size: 20px;
-            margin: 20px 0;
-        }
+    .detail-line {
+      font-size: 18px;
+      color: #1B263B;
+      margin: 8px 0;
+    }
 
-        @media print {
-            body {
-                background: none;
-            }
-            .container {
-                border: none;
-            }
-        }
-    </style>
+    .footer {
+      margin-top: 50px;
+      font-size: 14px;
+      color: #4B5E7A;
+      border-top: 1px solid #ccc;
+      padding-top: 20px;
+    }
+
+    .logo {
+      position: absolute;
+      top: 30px;
+      left: 30px;
+      width: 80px;
+      height: 80px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-image: url('{{ partner_logo_url }}');
+    }
+
+    .seal {
+      position: absolute;
+      top: 30px;
+      right: 30px;
+      width: 100px;
+      height: 100px;
+      background-image: url('{{ base_url }}static/assets/img/icon/certificate.svg');
+      background-size: cover;
+      opacity: 0.8;
+    }
+
+    .social-share {
+      margin-top: 30px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .social-share a {
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      color: white;
+      font-size: 18px;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .facebook {
+      background-color: #3b5998;
+    }
+
+    .twitter {
+      background-color: #1da1f2;
+    }
+
+    .linkedin {
+      background-color: #0077b5;
+    }
+
+    .social-share a:hover {
+      opacity: 0.8;
+    }
+
+    /* Responsive Tweaks */
+    @media (max-width: 1024px) {
+      .certificate-wrapper {
+        width: 85%;
+        padding: 40px;
+      }
+
+      .seal {
+        width: 90px;
+        height: 90px;
+        top: 20px;
+        right: 20px;
+        bottom: unset;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .certificate-wrapper {
+        width: 95%;
+        padding: 30px;
+      }
+
+      .certificate-title {
+        font-size: 26px;
+      }
+
+      .highlight {
+        font-size: 20px;
+      }
+
+      .seal {
+        width: 80px;
+        height: 80px;
+        top: 20px;
+        right: 20px;
+      }
+
+      .social-share a {
+        font-size: 16px;
+        padding: 8px 15px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .certificate-wrapper {
+        width: 100%;
+        padding: 20px;
+      }
+
+      .certificate-title {
+        font-size: 22px;
+      }
+
+      .recipient {
+        font-size: 16px;
+      }
+
+      .seal {
+        width: 40px;
+        height: 40px;
+        top: 15px;
+        right: 15px;
+      }
+
+      .social-share a {
+        font-size: 14px;
+        padding: 6px 12px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">Certificate Verification</div>
-        <div class="logo"></div>
-        <div class="title">Verification Result</div>
-        
-        <div class="valid">Valid Certificate</div>
-        
-        <div class="details">
-            <div class="content">This certificate was awarded to <strong>{{ certificate.user.username }}</strong></div>
-            <div class="content">for completing <strong>{{ certificate.course.course_name }}</strong></div>
-            <div class="content">offered by <strong>{{ certificate.partner.name | default:"Our Institution" }}</strong></div>
-            <div class="content">Total Score: <strong>{{ certificate.total_score | floatformat:2 }}</strong></div>
-            <div class="content">Issued on: <strong>{{ certificate.issue_date }}</strong></div>
-            <div class="content">Certificate ID: <strong>{{ certificate.certificate_id }}</strong></div>
-        </div>
+  <div class="certificate-wrapper">
+    <div class="logo"></div>
+    <div class="seal"></div>
+    <div class="certificate-title">Certificate of Completion</div>
+    <div class="subtitle">This certifies that</div>
+    <div class="recipient"><strong>{{ certificate.user.first_name }} {{ certificate.user.last_name }}</strong></div>
+    <div class="subtitle">has successfully completed the course</div>
+    <div class="highlight">{{ certificate.course.course_name }}</div>
+    <div class="detail-line">Offered by: <strong>{{ certificate.partner.name|default:"Our Institution" }}</strong></div>
+    <div class="detail-line">Total Score: <strong>{{ certificate.total_score|floatformat:2 }}</strong></div>
+    <div class="detail-line">Issued on: <strong>{{ certificate.issue_date }}</strong></div>
+    <div class="detail-line">Certificate ID: <strong>{{ certificate.certificate_id }}</strong></div>
 
-        <div class="footer">
-            <p>Verified by {{ certificate.partner.name | default:"Our Institution" }}</p>
-            <p>Contact us for further inquiries.</p>
-        </div>
+    <div class="footer">
+      Verified by {{ certificate.partner.name|default:"Our Institution" }} · This is an official document.
     </div>
+
+    <div class="social-share">
+      <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" class="facebook" target="_blank">Facebook</a>
+      <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}" class="twitter" target="_blank">X</a>
+      <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" class="linkedin" target="_blank">LinkedIn</a>
+    </div>
+  </div>
 </body>
 </html>

@@ -537,7 +537,6 @@ def dasbord(request):
 @login_required
 @ratelimit(key='ip', rate='100/h')
 def dashbord(request):
-    # Cek kelengkapan data pribadi
     user = request.user
     required_fields = {
         'first_name': 'Nama Depan',
@@ -553,24 +552,19 @@ def dashbord(request):
         messages.warning(request, f"Harap lengkapi data berikut: {', '.join(missing_fields)}")
         return redirect('authentication:edit-profile', pk=user.pk)
 
-    # Initialize variables
     search_query = request.GET.get('search', '')
     enrollments_page = request.GET.get('enrollments_page', 1)
 
-    # Fetch enrollments for the currently logged-in user and order by enrolled_at
-    enrollments = Enrollment.objects.filter(user=request.user).order_by('-enrolled_at')
+    enrollments = Enrollment.objects.filter(user=user).order_by('-enrolled_at')
 
-    # Search logic for enrollments (by username or course name)
     if search_query:
         enrollments = enrollments.filter(
             Q(user__username__icontains=search_query) |
             Q(course__course_name__icontains=search_query)
         )
 
-    # Count of total enrollments
     total_enrollments = enrollments.count()
 
-    # Fetch active courses that the user is enrolled in with "published" status
     active_courses = Course.objects.filter(
         id__in=enrollments.values('course'),
         status_course__status='published',
@@ -578,74 +572,72 @@ def dashbord(request):
         end_enrol__gte=timezone.now()
     )
 
-    # Completed Courses (based on CourseProgress)
-    completed_courses = CourseProgress.objects.filter(user=request.user, progress_percentage=100)
+    completed_courses = CourseProgress.objects.filter(user=user, progress_percentage=100)
 
-    # Prepare data for each enrollment with progress and certificate status
     enrollments_data = []
     for enrollment in enrollments:
         course = enrollment.course
 
-        # Calculate progress
+        # Hitung progress
         materials = Material.objects.filter(section__courses=course)
         total_materials = materials.count()
-        materials_read = MaterialRead.objects.filter(user=request.user, material__in=materials).count()
-        materials_read_percentage = (materials_read / total_materials * 100) if total_materials > 0 else 0
+        materials_read = MaterialRead.objects.filter(user=user, material__in=materials).count()
+        materials_read_percentage = (Decimal(materials_read) / Decimal(total_materials) * Decimal('100')) if total_materials > 0 else Decimal('0')
 
         assessments = Assessment.objects.filter(section__courses=course)
         total_assessments = assessments.count()
-        assessments_completed = AssessmentRead.objects.filter(user=request.user, assessment__in=assessments).count()
-        assessments_completed_percentage = (assessments_completed / total_assessments * 100) if total_assessments > 0 else 0
+        assessments_completed = AssessmentRead.objects.filter(user=user, assessment__in=assessments).count()
+        assessments_completed_percentage = (Decimal(assessments_completed) / Decimal(total_assessments) * Decimal('100')) if total_assessments > 0 else Decimal('0')
 
-        progress = (materials_read_percentage + assessments_completed_percentage) / 2 if (total_materials + total_assessments) > 0 else 0
+        progress = ((materials_read_percentage + assessments_completed_percentage) / Decimal('2')) if (total_materials + total_assessments) > 0 else Decimal('0')
 
-        # Update progress in CourseProgress
-        course_progress, created = CourseProgress.objects.get_or_create(user=request.user, course=course)
+        course_progress, created = CourseProgress.objects.get_or_create(user=user, course=course)
         course_progress.progress_percentage = progress
         course_progress.save()
 
-        # Fetch grade range
-        grade_range = GradeRange.objects.filter(course=course).first()
-        passing_threshold = grade_range.min_grade if grade_range else 0
-        max_grade = grade_range.max_grade if grade_range else 100
+        # Ambil passing threshold dari GradeRange
+        grade_range = GradeRange.objects.filter(course=course, name='Pass').first()
+        passing_threshold = grade_range.min_grade if grade_range else Decimal('52.00')
+        max_grade = grade_range.max_grade if grade_range else Decimal('100.00')
 
-        # Calculate total score
-        total_score = 0
-        total_max_score = 0
-        assessments = Assessment.objects.filter(section__courses=course)
+        # Hitung skor
+        total_score = Decimal('0')
+        total_max_score = Decimal('0')
         for assessment in assessments:
-            score_value = 0
-            total_correct_answers = 0
+            score_value = Decimal('0')
             total_questions = assessment.questions.count()
+
             if total_questions > 0:
+                total_correct_answers = 0
                 for question in assessment.questions.all():
-                    answers = QuestionAnswer.objects.filter(question=question, user=request.user)
-                    total_correct_answers += answers.filter(choice__is_correct=True).count()
+                    correct = QuestionAnswer.objects.filter(
+                        question=question, user=user, choice__is_correct=True
+                    ).count()
+                    total_correct_answers += correct
                 score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
             else:
-                askora_submissions = Submission.objects.filter(askora__assessment=assessment, user=request.user)
-                if askora_submissions.exists():
-                    latest_submission = askora_submissions.order_by('-submitted_at').first()
-                    assessment_score = AssessmentScore.objects.filter(submission=latest_submission).first()
-                    if assessment_score:
-                        score_value = Decimal(assessment_score.final_score)
+                submissions = Submission.objects.filter(askora__assessment=assessment, user=user)
+                if submissions.exists():
+                    latest = submissions.order_by('-submitted_at').first()
+                    score_obj = AssessmentScore.objects.filter(submission=latest).first()
+                    if score_obj:
+                        score_value = Decimal(score_obj.final_score)
             total_score += score_value
-            total_max_score += assessment.weight
+            total_max_score += Decimal(assessment.weight)
 
-        overall_percentage = (total_score / total_max_score) * 100 if total_max_score > 0 else 0
-
-        certificate_eligible = progress == 100 and overall_percentage >= passing_threshold
-        certificate_issued = enrollment.certificate_issued if hasattr(enrollment, 'certificate_issued') else False
+        overall_percentage = (total_score / total_max_score * Decimal('100')) if total_max_score > 0 else Decimal('0')
+        certificate_eligible = progress == Decimal('100') and overall_percentage >= passing_threshold
+        certificate_issued = getattr(enrollment, 'certificate_issued', False)
 
         enrollments_data.append({
             'enrollment': enrollment,
-            'progress': progress,
-            'certificate_issued': certificate_issued,
+            'progress': float(progress),  # Convert to float for template display
             'certificate_eligible': certificate_eligible,
-            'overall_percentage': overall_percentage,
+            'certificate_issued': certificate_issued,
+            'overall_percentage': float(overall_percentage),
+            'passing_threshold': float(passing_threshold),
         })
 
-    # Pagination
     enrollments_paginator = Paginator(enrollments_data, 5)
     enrollments_page_obj = enrollments_paginator.get_page(enrollments_page)
 
@@ -812,7 +804,7 @@ def popular_courses(request):
         'instructor__user', 'org_partner__name', 'org_partner'
     )
 
-    paginator = Paginator(courses, 6)
+    paginator = Paginator(courses, 4)
     page_number = request.GET.get('page', 1)
     try:
         page_obj = paginator.get_page(page_number)
