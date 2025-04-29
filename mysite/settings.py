@@ -39,7 +39,7 @@ SECURE_SSL_REDIRECT = True
 #SECURE_CONTENT_TYPE_NOSNIFF = True
 RATELIMIT_IP_META_KEY = 'HTTP_X_REAL_IP'
 CSRF_TRUSTED_ORIGINS = ['https://ini.icei.ac.id']
-
+ALLOWED_REFERER = 'https://ini.icei.ac.id'
 
 
 
