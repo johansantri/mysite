@@ -1,74 +1,97 @@
+<!-- templates/learner/courses.html -->
 {% extends 'home/base.html' %}
 {% load static %}
 {% block content %}
+
+<!-- 
+  Catatan untuk SEO:
+  - Tambahkan meta tags di base.html:
+    <meta name="description" content="Explore {{ category.name }} courses with expert instructors and top universities.">
+    <meta name="keywords" content="{{ category.name }}, online courses, e-learning">
+  - Tambahkan canonical URL:
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+  - Tambahkan rel="next"/"prev" untuk pagination:
+    {% if courses.has_previous %}
+      <link rel="prev" href="?page={{ courses.previous_page_number }}">
+    {% endif %}
+    {% if courses.has_next %}
+      <link rel="next" href="?page={{ courses.next_page_number }}">
+    {% endif %}
+-->
 
 <section class="py-5 bg-light">
     <div class="container">
         <!-- Page Title -->
         <div class="text-center my-5">
-            <h1 class="display-4 mb-3" >Courses in <strong style="color: #b02a37;">{{ category.name }}</strong> </h1>
+            <h1 class="display-4 mb-3">Courses in <strong style="color: #b02a37;">{{ category.name }}</strong></h1>
             <p class="lead text-muted">Explore top-tier courses curated for your learning needs.</p>
         </div>
 
         <!-- Course List -->
-        <div class="row g-4">
+        <div class="course-list">
             {% for course in courses %}
-                <div class="col-lg-4 col-md-6 col-sm-12">
-                    <div class="card border-0 rounded-3 h-100 course-card">
-                        <!-- Course Image -->
-                        <div class="course-image-wrapper">
-                            <img src="{{ course.course_image }}" class="card-img-top rounded-top-3" alt="{{ course.course_name }}">
-                        </div>
-
-                        <div class="card-body d-flex flex-column p-4">
-                            <!-- Course Name -->
-                            <h5 class="card-title text-center mb-3" style="color: #b02a37;">{{ course.course_name }}</h5>
-
-                            <!-- Instructor Name -->
-                            <p class="text-muted mb-2"><strong>Instructor:</strong> {{ course.instructor }}</p>
-
-                            <!-- University Name and Photo -->
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <p class="text-muted mb-0"><strong>Partner:</strong> {{ course.partner_kode }}</p>
-                                {% if course.partner_photo %}
-                                    <img src="{{ course.partner_photo }}" alt="{{ course.partner }}" class="rounded-circle" style="width: 32px; height: 32px; object-fit: cover;">
-                                {% endif %}
-                            </div>
-
-                            <!-- Course Language -->
-                            <p class="text-muted mb-2"><strong>Language:</strong> {{ course.language }}</p>
-
-                            <!-- Number of Enrollments -->
-                            <p class="text-muted mb-2"><strong>Enrollments:</strong> {{ course.num_enrollments }}</p>
-
-                            <!-- Rating -->
-                            <div class="mb-2">
-                                <strong>Rating:</strong>
-                                {% for i in course.full_star_range %}
-                                    <i class="bi bi-star-fill" style="color: #b02a37;"></i>
-                                {% endfor %}
-                                {% if course.half_star %}
-                                    <i class="bi bi-star-half" style="color: #b02a37;"></i>
-                                {% endif %}
-                                {% for i in course.empty_star_range %}
-                                    <i class="bi bi-star text-muted"></i>
-                                {% endfor %}
-                                <span class="text-muted">({{ course.review_count }} Reviews)</span>
-                            </div>
-
-                            <!-- Duration -->
-                            <p class="text-muted mb-3"><strong>Duration:</strong> {{ course.duration }} hours</p>
-
-                            <!-- View Course Button -->
-                            <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}" class="btn btn-course w-100 mt-auto" style="background-color: #b02a37; border-color: #b02a37;">View Course</a>
-                        </div>
+                <div class="course-item d-flex align-items-center p-4 mb-3 rounded-3 bg-white shadow-sm transition-hover">
+                    <!-- Course Image -->
+                    <div class="course-image-wrapper me-4">
+                        <img src="{{ course.course_image }}" 
+                             class="rounded-3" 
+                             alt="{{ course.course_name }}" 
+                             loading="lazy">
                     </div>
+
+                    <!-- Course Details -->
+                    <div class="course-details flex-grow-1">
+                        <!-- Course Name -->
+                        <h5 class="course-title mb-2" style="color: #b02a37;">{{ course.course_name }}</h5>
+
+                        <!-- Instructor Name -->
+                        <p class="text-muted mb-1"><strong>Instructor:</strong> {{ course.instructor }}</p>
+
+                        <!-- University Name and Photo -->
+                        <div class="d-flex align-items-center mb-1">
+                            <p class="text-muted mb-0 me-3"><strong>Partner:</strong> {{ course.partner_kode }}</p>
+                            {% if course.partner_photo %}
+                                <img src="{{ course.partner_photo }}" 
+                                     alt="{{ course.partner }}" 
+                                     class="rounded-circle" 
+                                     style="width: 24px; height: 24px; object-fit: cover;" 
+                                     loading="lazy">
+                            {% endif %}
+                        </div>
+
+                        <!-- Course Language -->
+                        <p class="text-muted mb-1"><strong>Language:</strong> {{ course.language }}</p>
+
+                        <!-- Number of Enrollments -->
+                        <p class="text-muted mb-1"><strong>Enrollments:</strong> {{ course.num_enrollments }}</p>
+
+                        <!-- Rating -->
+                        <div class="mb-1">
+                            <strong>Rating:</strong>
+                            {% for i in course.full_star_range %}
+                                <i class="bi bi-star-fill" style="color: #b02a37;"></i>
+                            {% endfor %}
+                            {% if course.half_star %}
+                                <i class="bi bi-star-half" style="color: #b02a37;"></i>
+                            {% endif %}
+                            {% for i in course.empty_star_range %}
+                                <i class="bi bi-star text-muted"></i>
+                            {% endfor %}
+                            <span class="text-muted">({{ course.review_count }} Reviews)</span>
+                        </div>
+
+                        <!-- Duration -->
+                        <p class="text-muted mb-2"><strong>Duration:</strong> {{ course.duration }} hours</p>
+                    </div>
+
+                    <!-- View Course Button -->
+                    <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}" 
+                       class="btn btn-course ms-3" 
+                       style="background-color: #b02a37; border-color: #b02a37;">View Course</a>
                 </div>
             {% empty %}
-                <div class="col-12">
-                    <div class="alert alert-warning text-center rounded-3" role="alert">
-                        No courses available in this category.
-                    </div>
+                <div class="alert alert-warning text-center rounded-3" role="alert">
+                    No courses available in this category.
                 </div>
             {% endfor %}
         </div>
@@ -79,20 +102,28 @@
                 <ul class="pagination justify-content-center">
                     {% if courses.has_previous %}
                         <li class="page-item">
-                            <a class="page-link" href="?page={{ courses.previous_page_number }}" aria-label="Previous" style="color: #b02a37;">
-                                <span aria-hidden="true">&laquo;</span>
+                            <a class="page-link" 
+                               href="?page={{ courses.previous_page_number }}" 
+                               aria-label="Previous" 
+                               style="color: #b02a37;">
+                                <span aria-hidden="true">«</span>
                             </a>
                         </li>
                     {% endif %}
                     {% for num in courses.paginator.page_range %}
                         <li class="page-item {% if courses.number == num %}active{% endif %}">
-                            <a class="page-link" href="?page={{ num }}" style="color: #b02a37; {% if courses.number == num %}background-color: #b02a37; border-color: #b02a37; color: white;{% endif %}">{{ num }}</a>
+                            <a class="page-link" 
+                               href="?page={{ num }}" 
+                               style="color: #b02a37; {% if courses.number == num %}background-color: #b02a37; border-color: #b02a37; color: white;{% endif %}">{{ num }}</a>
                         </li>
                     {% endfor %}
                     {% if courses.has_next %}
                         <li class="page-item">
-                            <a class="page-link" href="?page={{ courses.next_page_number }}" aria-label="Next" style="color: #b02a37;">
-                                <span aria-hidden="true">&raquo;</span>
+                            <a class="page-link" 
+                               href="?page={{ courses.next_page_number }}" 
+                               aria-label="Next" 
+                               style="color: #b02a37;">
+                                <span aria-hidden="true">»</span>
                             </a>
                         </li>
                     {% endif %}
@@ -101,7 +132,30 @@
         {% endif %}
     </div>
 </section>
+
 <style>
+/* 
+  Catatan untuk SEO:
+  - Tambahkan schema.org markup di template untuk rich snippets:
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "name": "{{ course.course_name }}",
+    "description": "Learn {{ course.course_name }} with {{ course.instructor }}.",
+    "provider": {
+      "@type": "Organization",
+      "name": "{{ course.partner_kode }}"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "{{ course.rating }}",
+      "reviewCount": "{{ course.review_count }}"
+    }
+  }
+  </script>
+*/
+
 /* General Styling */
 .bg-light {
     background-color: #f8f9fa !important;
@@ -118,39 +172,47 @@
     font-weight: 400;
 }
 
-/* Course Card Styling */
-.course-card {
-    background-color: #ffffff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    overflow: hidden;
+/* Course List Styling */
+.course-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
-.course-card:hover {
+.course-item {
+    background-color: #ffffff;
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.course-item:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .course-image-wrapper {
-    position: relative;
-    overflow: hidden;
+    width: 150px;
+    height: 100px;
+    flex-shrink: 0;
 }
 
-.card-img-top {
-    height: 200px;
+.course-image-wrapper img {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
+    object-position: center; /* Memastikan gambar terpusat */
     transition: transform 0.3s ease;
 }
 
-.course-card:hover .card-img-top {
-    transform: scale(1.03);
+.course-item:hover .course-image-wrapper img {
+    transform: scale(1.05);
 }
 
-.card-body {
-    padding: 1.5rem;
+.course-details {
+    flex-grow: 1;
 }
 
-.card-title {
+.course-title {
     font-size: 1.25rem;
     font-weight: 600;
 }
@@ -161,20 +223,25 @@
 
 /* Button Styling */
 .btn-course {
-    background-color: #b02a37;
-    border-color: #b02a37;
     color: white;
     font-weight: 500;
-    padding: 10px;
+    padding: 8px 16px;
     border-radius: 5px;
     transition: background-color 0.3s ease, transform 0.2s ease;
+    flex-shrink: 0;
 }
 
-.btn-course:hover {
-    background-color: #8f202c;
-    border-color: #8f202c;
+.btn-course:hover,
+.btn-course:focus {
+    background-color: #8f202c !important;
+    border-color: #8f202c !important;
     transform: translateY(-2px);
-    color: white;
+    color: white !important;
+}
+
+.btn-course:focus {
+    outline: 2px solid #b02a37;
+    outline-offset: 2px;
 }
 
 /* Pagination Styling */
@@ -185,10 +252,16 @@
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.page-link:hover {
+.page-link:hover,
+.page-link:focus {
     background-color: #b02a37;
     color: white !important;
     border-color: #b02a37;
+}
+
+.page-link:focus {
+    outline: 2px solid #b02a37;
+    outline-offset: 2px;
 }
 
 .page-item.active .page-link {
@@ -207,8 +280,9 @@
         font-size: 1.1rem;
     }
 
-    .card-img-top {
-        height: 180px;
+    .course-image-wrapper {
+        width: 120px;
+        height: 80px;
     }
 }
 
@@ -221,21 +295,41 @@
         font-size: 1rem;
     }
 
-    .card-img-top {
-        height: 160px;
-    }
-
-    .card-body {
+    .course-item {
+        flex-direction: column;
+        align-items: center; /* Memusatkan semua elemen */
         padding: 1.25rem;
     }
 
-    .card-title {
-        font-size: 1.1rem;
+    .course-image-wrapper {
+        width: 100%;
+        height: 150px;
+        margin-bottom: 1rem;
+        margin-right: 0;
+        display: flex;
+        justify-content: center; /* Memastikan gambar terpusat */
+    }
+
+    .course-image-wrapper img {
+        width: 100%;
+        max-width: 100%; /* Memastikan gambar full-width */
+        height: 100%;
+        object-fit: cover;
+        object-position: center; /* Memastikan gambar tetap terpusat */
+    }
+
+    .course-details {
+        text-align: center;
     }
 
     .btn-course {
-        padding: 8px;
-        font-size: 0.9rem;
+        width: 100%;
+        margin-top: 1rem;
+        margin-left: 0;
+    }
+
+    .course-title {
+        font-size: 1.1rem;
     }
 }
 
@@ -244,15 +338,15 @@
         font-size: 1.5rem;
     }
 
-    .card-img-top {
-        height: 140px;
-    }
-
-    .card-body {
+    .course-item {
         padding: 1rem;
     }
 
-    .card-title {
+    .course-image-wrapper {
+        height: 120px;
+    }
+
+    .course-title {
         font-size: 1rem;
     }
 
