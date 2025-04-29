@@ -1,5 +1,123 @@
+Internal Server Error: /reports/user-progress/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 1676, in user_micro_progress_report
+    users = User.objects.all()
+NameError: name 'User' is not defined
+Invalid referer:  from IP 
+Forbidden: /search/
+Invalid referer:  from IP 
+Forbidden: /search/
+Invalid referer:  from IP 
+Forbidden: /search/
+Not Found: /webui/
+Not Found: /favicon.ico
+Invalid referer:  from IP 
+Forbidden: /search/
+Invalid referer:  from IP 
+Forbidden: /search/
+Not Found: /geoserver/web/
+Not Found: /owa/auth/logon.aspx
+Not Found: /.env
+Invalid referer:  from IP 
+Forbidden: /search/
+Invalid referer:  from IP 
+Forbidden: /search/
+Invalid referer:  from IP 
+Forbidden: /search/
+Internal Server Error: /learner/learn/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/learner/views.py", line 57, in learner_detail
+    course_progress.save()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/base.py", line 892, in save
+    self.save_base(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/base.py", line 1013, in save_base
+    post_save.send(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/dispatch/dispatcher.py", line 189, in send
+    response = receiver(signal=self, sender=sender, **named)
+  File "/home/TIM/mysite/courses/signals.py", line 32, in update_user_micro_progress
+    user_micro_progress.score = instance.score  # Pastikan score juga diperbarui
+AttributeError: 'CourseProgress' object has no attribute 'score'
+Internal Server Error: /learner/learn/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/learner/views.py", line 57, in learner_detail
+    course_progress.save()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/base.py", line 892, in save
+    self.save_base(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/base.py", line 1013, in save_base
+    post_save.send(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/dispatch/dispatcher.py", line 189, in send
+    response = receiver(signal=self, sender=sender, **named)
+  File "/home/TIM/mysite/courses/signals.py", line 32, in update_user_micro_progress
+    user_micro_progress.score = instance.score  # Pastikan score juga diperbarui
+AttributeError: 'CourseProgress' object has no attribute 'score'
+Internal Server Error: /learner/learn/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/learner/views.py", line 57, in learner_detail
+    course_progress.save()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/base.py", line 892, in save
+    self.save_base(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/base.py", line 1013, in save_base
+    post_save.send(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/dispatch/dispatcher.py", line 189, in send
+    response = receiver(signal=self, sender=sender, **named)
+  File "/home/TIM/mysite/courses/signals.py", line 32, in update_user_micro_progress
+    user_micro_progress.score = instance.score  # Pastikan score juga diperbarui
+AttributeError: 'CourseProgress' object has no attribute 'score'
+Internal Server Error: /learner/learn/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/learner/views.py", line 57, in learner_detail
+    course_progress.save()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/base.py", line 892, in save
+    self.save_base(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/base.py", line 1013, in save_base
+    post_save.send(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/dispatch/dispatcher.py", line 189, in send
+    response = receiver(signal=self, sender=sender, **named)
+  File "/home/TIM/mysite/courses/signals.py", line 36, in update_user_micro_progress_from_course_progress
+    score_entry = Score.objects.get(user=user, course=course)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 652, in get
+    raise self.model.MultipleObjectsReturned(
+courses.models.Score.MultipleObjectsReturned: get() returned more than one Score -- it returned 6!
+Invalid referer:  from IP 
+Forbidden: /search/
+Certificate context: {'microcredential': <MicroCredential: full stack web developer>, 'user': <SimpleLazyObject: <CustomUser: learn>>, 'current_date': datetime.date(2025, 4, 29), 'microcredential_image_absolute_url': 'https://ini.icei.ac.id/media/microcredentials/0_cl7fc6pt1MHjIF4K.png', 'author_photo_absolute_url': 'https://ini.icei.ac.id/media/profile_pics/anime-black-and-white-illustration-vector_VVNmP8u.webp', 'course_grades': [{'name': 'Backend development', 'grade_point': Decimal('60.00')}, {'name': 'Build Powerful Web Applications with Django', 'grade_point': Decimal('83.33')}, {'name': 'Front End Developer', 'grade_point': Decimal('100.00')}], 'certificate_id': 'CERT-1-4', 'min_total_score': 70.0}
+Step 1 - Fetching and parsing HTML - HTML string
+Step 2 - Fetching and parsing CSS - https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Open+Sans:wght@400;600&display=swap
+Step 2 - Fetching and parsing CSS - CSS string
+Ignored `overflow-y: auto` at 89:13, unknown property.
+Ignored `overflow-y: visible` at 178:17, unknown property.
 Expected a media type, got 'screen/**/and/**/(max-width: 768px)'
-Invalid media type ' screen and (max-width: 768px) ' the whole @media rule was ignored at 171:9.
+Invalid media type ' screen and (max-width: 768px) ' the whole @media rule was ignored at 185:9.
+Step 3 - Applying CSS
+Step 4 - Creating formatting structure
+Step 5 - Creating layout - Page 1
+Step 5 - Creating layout - Page 2
+Step 6 - Creating PDF
+Step 7 - Adding PDF metadata
 Reading 'maxp' table from disk
 Decompiling 'maxp' table
 Took 0.001s to load 'maxp'
@@ -27,7 +145,7 @@ Reading 'loca' table from disk
 Decompiling 'loca' table
 Reading 'head' table from disk
 Decompiling 'head' table
-Took 0.011s to load 'glyf'
+Took 0.013s to load 'glyf'
 Took 0.000s to prune 'glyf'
 glyf pruned
 Took 0.001s to close glyph list over 'cmap'
@@ -40,7 +158,7 @@ Decompiling 'MATH' table
 Closed glyph list over 'MATH': 7 glyphs after
 Glyph names: ['.notdef', 'A', 'a', 'd', 'e', 'r', 'w']
 Glyph IDs:   [0, 36, 68, 71, 72, 85, 90]
-Took 0.006s to close glyph list over 'MATH'
+Took 0.007s to close glyph list over 'MATH'
 Closing glyph list over 'glyf': 7 glyphs before
 Glyph names: ['.notdef', 'A', 'a', 'd', 'e', 'r', 'w']
 Glyph IDs:   [0, 36, 68, 71, 72, 85, 90]
@@ -57,9 +175,9 @@ Reading 'hmtx' table from disk
 Decompiling 'hmtx' table
 Reading 'hhea' table from disk
 Decompiling 'hhea' table
-Took 0.007s to subset 'hmtx'
+Took 0.005s to subset 'hmtx'
 hmtx subsetted
-Took 0.006s to subset 'cmap'
+Took 0.004s to subset 'cmap'
 cmap subsetted
 loca subsetting not needed
 Took 0.000s to subset 'post'
@@ -70,10 +188,10 @@ Took 0.000s to subset 'MATH'
 MATH subsetted
 Reading 'GDEF' table from disk
 Decompiling 'GDEF' table
-Took 0.004s to subset 'GDEF'
+Took 0.003s to subset 'GDEF'
 GDEF subsetted
 name subsetting not needed
-Took 0.006s to subset 'glyf'
+Took 0.002s to subset 'glyf'
 glyf subsetted
 Took 0.000s to subset GlyphOrder
 Took 0.000s to prune 'head'
@@ -118,7 +236,7 @@ Reading 'loca' table from disk
 Decompiling 'loca' table
 Reading 'head' table from disk
 Decompiling 'head' table
-Took 0.002s to load 'glyf'
+Took 0.003s to load 'glyf'
 Took 0.000s to prune 'glyf'
 glyf pruned
 Took 0.000s to close glyph list over 'cmap'
@@ -176,14 +294,14 @@ Took 0.002s to prune 'name'
 name pruned
 Reading 'maxp' table from disk
 Decompiling 'maxp' table
-Took 0.000s to load 'maxp'
+Took 0.001s to load 'maxp'
 Took 0.000s to prune 'maxp'
 maxp pruned
 Reading 'cmap' table from disk
 Decompiling 'cmap' table
 Reading 'post' table from disk
 Decompiling 'post' table
-Took 0.004s to load 'cmap'
+Took 0.006s to load 'cmap'
 Took 0.000s to prune 'cmap'
 cmap pruned
 fpgm dropped
@@ -205,14 +323,14 @@ Took 0.000s to prune 'glyf'
 glyf pruned
 Took 0.000s to close glyph list over 'cmap'
 Added gid0 to subset
-Closing glyph list over 'glyf': 20 glyphs before
-Glyph names: ['.notdef', 'C', 'M', 'a', 'c', 'd', 'e', 'eight', 'i', 'l', 'n', 'o', 'one', 'percent', 'period', 'r', 'six', 't', 'three', 'zero']
-Glyph IDs:   [0, 8, 17, 19, 20, 22, 25, 27, 38, 48, 68, 70, 71, 72, 76, 79, 81, 82, 85, 87]
-Closed glyph list over 'glyf': 20 glyphs after
-Glyph names: ['.notdef', 'C', 'M', 'a', 'c', 'd', 'e', 'eight', 'i', 'l', 'n', 'o', 'one', 'percent', 'period', 'r', 'six', 't', 'three', 'zero']
-Glyph IDs:   [0, 8, 17, 19, 20, 22, 25, 27, 38, 48, 68, 70, 71, 72, 76, 79, 81, 82, 85, 87]
+Closing glyph list over 'glyf': 38 glyphs before
+Glyph names: ['.notdef', 'A', 'C', 'D', 'I', 'M', 'O', 'R', 'S', 'T', 'a', 'c', 'colon', 'd', 'e', 'eight', 'fi', 'g', 'h', 'i', 'l', 'm', 'n', 'o', 'one', 'percent', 'period', 'q', 'r', 's', 'six', 'space', 't', 'three', 'u', 'y', 'z', 'zero']
+Glyph IDs:   [0, 3, 8, 17, 19, 20, 22, 25, 27, 29, 36, 38, 39, 44, 48, 50, 53, 54, 55, 68, 70, 71, 72, 74, 75, 76, 79, 80, 81, 82, 84, 85, 86, 87, 88, 92, 93, 904]
+Closed glyph list over 'glyf': 39 glyphs after
+Glyph names: ['.notdef', 'A', 'C', 'D', 'I', 'M', 'O', 'R', 'S', 'T', 'a', 'c', 'colon', 'd', 'e', 'eight', 'f', 'fi', 'g', 'h', 'i', 'l', 'm', 'n', 'o', 'one', 'percent', 'period', 'q', 'r', 's', 'six', 'space', 't', 'three', 'u', 'y', 'z', 'zero']
+Glyph IDs:   [0, 3, 8, 17, 19, 20, 22, 25, 27, 29, 36, 38, 39, 44, 48, 50, 53, 54, 55, 68, 70, 71, 72, 73, 74, 75, 76, 79, 80, 81, 82, 84, 85, 86, 87, 88, 92, 93, 904]
 Took 0.002s to close glyph list over 'glyf'
-Retaining 20 glyphs
+Retaining 39 glyphs
 head subsetting not needed
 hhea subsetting not needed
 maxp subsetting not needed
@@ -232,7 +350,7 @@ gasp subsetting not needed
 STAT subsetting not needed
 Reading 'GDEF' table from disk
 Decompiling 'GDEF' table
-Took 0.002s to subset 'GDEF'
+Took 0.001s to subset 'GDEF'
 GDEF subsetted
 name subsetting not needed
 Took 0.001s to subset 'glyf'
@@ -242,9 +360,9 @@ Took 0.000s to prune 'head'
 head pruned
 Reading 'OS/2' table from disk
 Decompiling 'OS/2' table
-OS/2 Unicode ranges pruned: [0]
+OS/2 Unicode ranges pruned: [0, 62]
 OS/2 CodePage ranges pruned: [0]
-Took 0.000s to prune 'glyf'
+Took 0.001s to prune 'glyf'
 glyf pruned
 Took 0.000s to prune 'GDEF'
 GDEF pruned
@@ -282,19 +400,19 @@ Reading 'loca' table from disk
 Decompiling 'loca' table
 Reading 'head' table from disk
 Decompiling 'head' table
-Took 0.003s to load 'glyf'
+Took 0.004s to load 'glyf'
 Took 0.000s to prune 'glyf'
 glyf pruned
 Took 0.000s to close glyph list over 'cmap'
 Added gid0 to subset
-Closing glyph list over 'glyf': 38 glyphs before
-Glyph names: ['.notdef', 'A', 'B', 'C', 'D', 'E', 'F', 'M', 'P', 'T', 'W', 'a', 'b', 'c', 'd', 'e', 'f', 'fi', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'period', 'q', 'r', 's', 'space', 't', 'u', 'v', 'w', 'y']
-Glyph IDs:   [0, 3, 17, 36, 37, 38, 39, 40, 41, 48, 51, 55, 58, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 92, 904]
-Closed glyph list over 'glyf': 38 glyphs after
-Glyph names: ['.notdef', 'A', 'B', 'C', 'D', 'E', 'F', 'M', 'P', 'T', 'W', 'a', 'b', 'c', 'd', 'e', 'f', 'fi', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'period', 'q', 'r', 's', 'space', 't', 'u', 'v', 'w', 'y']
-Glyph IDs:   [0, 3, 17, 36, 37, 38, 39, 40, 41, 48, 51, 55, 58, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 92, 904]
+Closing glyph list over 'glyf': 52 glyphs before
+Glyph names: ['.notdef', 'A', 'B', 'C', 'D', 'E', 'F', 'M', 'O', 'P', 'R', 'S', 'T', 'U', 'W', 'a', 'b', 'c', 'comma', 'd', 'e', 'f', 'fi', 'five', 'four', 'g', 'h', 'hyphen', 'i', 'j', 'k', 'l', 'm', 'n', 'nine', 'o', 'one', 'p', 'period', 'q', 'r', 's', 'seven', 'space', 't', 'two', 'u', 'v', 'w', 'x', 'y', 'zero']
+Glyph IDs:   [0, 3, 15, 16, 17, 19, 20, 21, 23, 24, 26, 28, 36, 37, 38, 39, 40, 41, 48, 50, 51, 53, 54, 55, 56, 58, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 904]
+Closed glyph list over 'glyf': 52 glyphs after
+Glyph names: ['.notdef', 'A', 'B', 'C', 'D', 'E', 'F', 'M', 'O', 'P', 'R', 'S', 'T', 'U', 'W', 'a', 'b', 'c', 'comma', 'd', 'e', 'f', 'fi', 'five', 'four', 'g', 'h', 'hyphen', 'i', 'j', 'k', 'l', 'm', 'n', 'nine', 'o', 'one', 'p', 'period', 'q', 'r', 's', 'seven', 'space', 't', 'two', 'u', 'v', 'w', 'x', 'y', 'zero']
+Glyph IDs:   [0, 3, 15, 16, 17, 19, 20, 21, 23, 24, 26, 28, 36, 37, 38, 39, 40, 41, 48, 50, 51, 53, 54, 55, 56, 58, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 904]
 Took 0.002s to close glyph list over 'glyf'
-Retaining 38 glyphs
+Retaining 52 glyphs
 head subsetting not needed
 hhea subsetting not needed
 maxp subsetting not needed
@@ -347,7 +465,7 @@ Reading 'cmap' table from disk
 Decompiling 'cmap' table
 Reading 'post' table from disk
 Decompiling 'post' table
-Took 0.014s to load 'cmap'
+Took 0.015s to load 'cmap'
 Took 0.000s to prune 'cmap'
 cmap pruned
 fpgm dropped
@@ -376,7 +494,7 @@ Glyph IDs:   [0, 4004]
 Closed glyph list over 'glyf': 2 glyphs after
 Glyph names: ['.notdef', 'uni2713']
 Glyph IDs:   [0, 4004]
-Took 0.002s to close glyph list over 'glyf'
+Took 0.004s to close glyph list over 'glyf'
 Retaining 2 glyphs
 head subsetting not needed
 hhea subsetting not needed
@@ -386,525 +504,7 @@ Reading 'hmtx' table from disk
 Decompiling 'hmtx' table
 Reading 'hhea' table from disk
 Decompiling 'hhea' table
-Took 0.009s to subset 'hmtx'
-hmtx subsetted
-Took 0.009s to subset 'cmap'
-cmap subsetted
-loca subsetting not needed
-Took 0.000s to subset 'post'
-post subsetted
-gasp subsetting not needed
-FFTM NOT subset; don't know how to subset
-Reading 'GDEF' table from disk
-Decompiling 'GDEF' table
-Took 0.005s to subset 'GDEF'
-GDEF subsetted
-name subsetting not needed
-Took 0.008s to subset 'glyf'
-glyf subsetted
-Took 0.000s to subset GlyphOrder
-Took 0.000s to prune 'head'
-head pruned
-Reading 'OS/2' table from disk
-Decompiling 'OS/2' table
-OS/2 Unicode ranges pruned: [47]
-OS/2 CodePage ranges pruned: [0]
-Took 0.002s to prune 'glyf'
-glyf pruned
-Took 0.000s to prune 'GDEF'
-GDEF pruned
-Reading 'name' table from disk
-Decompiling 'name' table
-Reading 'gasp' table from disk
-Decompiling 'gasp' table
-Reading 'FFTM' table from disk
-Decompiling 'FFTM' table
-Took 0.002s to prune 'name'
-name pruned
-Reading 'maxp' table from disk
-Decompiling 'maxp' table
-Took 0.000s to load 'maxp'
-Took 0.000s to prune 'maxp'
-maxp pruned
-Reading 'cmap' table from disk
-Decompiling 'cmap' table
-Reading 'post' table from disk
-Decompiling 'post' table
-Took 0.003s to load 'cmap'
-Took 0.000s to prune 'cmap'
-cmap pruned
-fpgm dropped
-prep dropped
-cvt  dropped
-Took 0.000s to load 'post'
-Took 0.000s to prune 'post'
-post pruned
-GPOS dropped
-GSUB dropped
-Reading 'glyf' table from disk
-Decompiling 'glyf' table
-Reading 'loca' table from disk
-Decompiling 'loca' table
-Reading 'head' table from disk
-Decompiling 'head' table
-Took 0.003s to load 'glyf'
-Took 0.000s to prune 'glyf'
-glyf pruned
-Took 0.000s to close glyph list over 'cmap'
-Added gid0 to subset
-Closing glyph list over 'glyf': 2 glyphs before
-Glyph names: ['.notdef', 'underscore']
-Glyph IDs:   [0, 66]
-Closed glyph list over 'glyf': 2 glyphs after
-Glyph names: ['.notdef', 'underscore']
-Glyph IDs:   [0, 66]
-Took 0.001s to close glyph list over 'glyf'
-Retaining 2 glyphs
-head subsetting not needed
-hhea subsetting not needed
-maxp subsetting not needed
-OS/2 subsetting not needed
-Reading 'hmtx' table from disk
-Decompiling 'hmtx' table
-Reading 'hhea' table from disk
-Decompiling 'hhea' table
-Took 0.002s to subset 'hmtx'
-hmtx subsetted
-Took 0.000s to subset 'cmap'
-cmap subsetted
-loca subsetting not needed
-Took 0.000s to subset 'post'
-post subsetted
-gasp subsetting not needed
-STAT subsetting not needed
-Reading 'GDEF' table from disk
-Decompiling 'GDEF' table
-Took 0.002s to subset 'GDEF'
-GDEF subsetted
-name subsetting not needed
-Took 0.000s to subset 'glyf'
-glyf subsetted
-Took 0.000s to subset GlyphOrder
-Took 0.000s to prune 'head'
-head pruned
-Reading 'OS/2' table from disk
-Decompiling 'OS/2' table
-OS/2 Unicode ranges pruned: [0]
-OS/2 CodePage ranges pruned: [0]
-Took 0.000s to prune 'glyf'
-glyf pruned
-Took 0.000s to prune 'GDEF'
-GDEF pruned to empty; dropped
-Reading 'name' table from disk
-Decompiling 'name' table
-Reading 'gasp' table from disk
-Decompiling 'gasp' table
-Reading 'STAT' table from disk
-Decompiling 'STAT' table
-Took 0.002s to prune 'name'
-name pruned
-Not Found: /favicon.ico
-Certificate context: {'microcredential': <MicroCredential: full stack web developer>, 'user': <SimpleLazyObject: <CustomUser: learn>>, 'current_date': datetime.date(2025, 4, 28), 'microcredential_image_absolute_url': 'https://ini.icei.ac.id/media/microcredentials/0_cl7fc6pt1MHjIF4K.png', 'author_photo_absolute_url': 'https://ini.icei.ac.id/media/profile_pics/anime-black-and-white-illustration-vector_VVNmP8u.webp', 'course_grades': [{'name': 'Backend development', 'grade_point': Decimal('60.00')}, {'name': 'Build Powerful Web Applications with Django', 'grade_point': Decimal('83.33')}, {'name': 'Front End Developer', 'grade_point': Decimal('100.00')}], 'certificate_id': 'CERT-1-4', 'min_total_score': 70.0}
-Step 1 - Fetching and parsing HTML - HTML string
-Step 2 - Fetching and parsing CSS - https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Open+Sans:wght@400;600&display=swap
-Step 2 - Fetching and parsing CSS - CSS string
-Ignored `overflow-y: auto` at 89:13, unknown property.
-Ignored `overflow-y: visible` at 178:17, unknown property.
-Expected a media type, got 'screen/**/and/**/(max-width: 768px)'
-Invalid media type ' screen and (max-width: 768px) ' the whole @media rule was ignored at 185:9.
-Step 3 - Applying CSS
-Step 4 - Creating formatting structure
-Step 5 - Creating layout - Page 1
-Step 5 - Creating layout - Page 2
-Step 6 - Creating PDF
-Step 7 - Adding PDF metadata
-Reading 'maxp' table from disk
-Decompiling 'maxp' table
-Took 0.001s to load 'maxp'
-Took 0.000s to prune 'maxp'
-maxp pruned
-Reading 'cmap' table from disk
-Decompiling 'cmap' table
-Reading 'post' table from disk
-Decompiling 'post' table
-Took 0.018s to load 'cmap'
-Took 0.000s to prune 'cmap'
-cmap pruned
-fpgm dropped
-prep dropped
-cvt  dropped
-kern dropped
-Took 0.000s to load 'post'
-Took 0.000s to prune 'post'
-post pruned
-GPOS dropped
-GSUB dropped
-Reading 'glyf' table from disk
-Decompiling 'glyf' table
-Reading 'loca' table from disk
-Decompiling 'loca' table
-Reading 'head' table from disk
-Decompiling 'head' table
-Took 0.019s to load 'glyf'
-Took 0.000s to prune 'glyf'
-glyf pruned
-Took 0.002s to close glyph list over 'cmap'
-Added gid0 to subset
-Closing glyph list over 'MATH': 7 glyphs before
-Glyph names: ['.notdef', 'A', 'a', 'd', 'e', 'r', 'w']
-Glyph IDs:   [0, 36, 68, 71, 72, 85, 90]
-Reading 'MATH' table from disk
-Decompiling 'MATH' table
-Closed glyph list over 'MATH': 7 glyphs after
-Glyph names: ['.notdef', 'A', 'a', 'd', 'e', 'r', 'w']
-Glyph IDs:   [0, 36, 68, 71, 72, 85, 90]
-Took 0.009s to close glyph list over 'MATH'
-Closing glyph list over 'glyf': 7 glyphs before
-Glyph names: ['.notdef', 'A', 'a', 'd', 'e', 'r', 'w']
-Glyph IDs:   [0, 36, 68, 71, 72, 85, 90]
-Closed glyph list over 'glyf': 7 glyphs after
-Glyph names: ['.notdef', 'A', 'a', 'd', 'e', 'r', 'w']
-Glyph IDs:   [0, 36, 68, 71, 72, 85, 90]
-Took 0.002s to close glyph list over 'glyf'
-Retaining 7 glyphs
-head subsetting not needed
-hhea subsetting not needed
-maxp subsetting not needed
-OS/2 subsetting not needed
-Reading 'hmtx' table from disk
-Decompiling 'hmtx' table
-Reading 'hhea' table from disk
-Decompiling 'hhea' table
-Took 0.005s to subset 'hmtx'
-hmtx subsetted
-Took 0.004s to subset 'cmap'
-cmap subsetted
-loca subsetting not needed
-Took 0.000s to subset 'post'
-post subsetted
-gasp subsetting not needed
-FFTM NOT subset; don't know how to subset
-Took 0.000s to subset 'MATH'
-MATH subsetted
-Reading 'GDEF' table from disk
-Decompiling 'GDEF' table
-Took 0.004s to subset 'GDEF'
-GDEF subsetted
-name subsetting not needed
-Took 0.002s to subset 'glyf'
-glyf subsetted
-Took 0.000s to subset GlyphOrder
-Took 0.000s to prune 'head'
-head pruned
-Reading 'OS/2' table from disk
-Decompiling 'OS/2' table
-OS/2 Unicode ranges pruned: [0]
-OS/2 CodePage ranges pruned: [0]
-Took 0.000s to prune 'glyf'
-glyf pruned
-Took 0.000s to prune 'GDEF'
-GDEF pruned
-Reading 'name' table from disk
-Decompiling 'name' table
-Reading 'gasp' table from disk
-Decompiling 'gasp' table
-Reading 'FFTM' table from disk
-Decompiling 'FFTM' table
-Took 0.002s to prune 'name'
-name pruned
-Reading 'maxp' table from disk
-Decompiling 'maxp' table
-Took 0.000s to load 'maxp'
-Took 0.000s to prune 'maxp'
-maxp pruned
-Reading 'cmap' table from disk
-Decompiling 'cmap' table
-Reading 'post' table from disk
-Decompiling 'post' table
-Took 0.002s to load 'cmap'
-Took 0.000s to prune 'cmap'
-cmap pruned
-prep dropped
-Took 0.000s to load 'post'
-Took 0.000s to prune 'post'
-post pruned
-GPOS dropped
-GSUB dropped
-Reading 'glyf' table from disk
-Decompiling 'glyf' table
-Reading 'loca' table from disk
-Decompiling 'loca' table
-Reading 'head' table from disk
-Decompiling 'head' table
-Took 0.003s to load 'glyf'
-Took 0.000s to prune 'glyf'
-glyf pruned
-Took 0.000s to close glyph list over 'cmap'
-Added gid0 to subset
-Closing glyph list over 'glyf': 36 glyphs before
-Glyph names: ['.notdef', 'A', 'C', 'D', 'E', 'F', 'H', 'I', 'M', 'N', 'O', 'R', 'S', 'T', 'V', 'W', 'a', 'b', 'c', 'colon', 'd', 'e', 'i', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 'space', 't', 'u', 'v']
-Glyph IDs:   [0, 1, 26, 32, 36, 56, 65, 69, 93, 94, 100, 128, 132, 140, 165, 166, 190, 214, 215, 221, 225, 259, 276, 280, 286, 287, 294, 319, 321, 322, 326, 334, 339, 359, 596, 633]
-Closed glyph list over 'glyf': 39 glyphs after
-Glyph names: ['.notdef', 'A', 'C', 'D', 'E', 'F', 'H', 'I', 'M', 'N', 'O', 'R', 'S', 'T', 'V', 'W', 'a', 'b', 'c', 'colon', 'd', 'dotlessi', 'e', 'i', 'k', 'l', 'm', 'n', 'o', 'p', 'period', 'q', 'r', 's', 'space', 't', 'u', 'uni0307', 'v']
-Glyph IDs:   [0, 1, 26, 32, 36, 56, 65, 69, 93, 94, 100, 128, 132, 140, 165, 166, 190, 214, 215, 221, 225, 259, 260, 276, 280, 286, 287, 294, 319, 321, 322, 326, 334, 339, 359, 594, 596, 633, 700]
-Took 0.002s to close glyph list over 'glyf'
-Retaining 39 glyphs
-head subsetting not needed
-hhea subsetting not needed
-maxp subsetting not needed
-OS/2 subsetting not needed
-Reading 'hmtx' table from disk
-Decompiling 'hmtx' table
-Reading 'hhea' table from disk
-Decompiling 'hhea' table
-Took 0.002s to subset 'hmtx'
-hmtx subsetted
-Took 0.000s to subset 'cmap'
-cmap subsetted
-loca subsetting not needed
-Took 0.000s to subset 'post'
-post subsetted
-gasp subsetting not needed
-STAT subsetting not needed
-Reading 'GDEF' table from disk
-Decompiling 'GDEF' table
-Took 0.001s to subset 'GDEF'
-GDEF subsetted
-name subsetting not needed
-Took 0.001s to subset 'glyf'
-glyf subsetted
-Took 0.000s to subset GlyphOrder
-Took 0.000s to prune 'head'
-head pruned
-Reading 'OS/2' table from disk
-Decompiling 'OS/2' table
-OS/2 Unicode ranges pruned: [0]
-OS/2 CodePage ranges pruned: [0]
-Took 0.002s to prune 'glyf'
-glyf pruned
-Took 0.000s to prune 'GDEF'
-GDEF pruned
-Reading 'name' table from disk
-Decompiling 'name' table
-Reading 'gasp' table from disk
-Decompiling 'gasp' table
-Reading 'STAT' table from disk
-Decompiling 'STAT' table
-Took 0.002s to prune 'name'
-name pruned
-Reading 'maxp' table from disk
-Decompiling 'maxp' table
-Took 0.000s to load 'maxp'
-Took 0.000s to prune 'maxp'
-maxp pruned
-Reading 'cmap' table from disk
-Decompiling 'cmap' table
-Reading 'post' table from disk
-Decompiling 'post' table
-Took 0.003s to load 'cmap'
-Took 0.000s to prune 'cmap'
-cmap pruned
-fpgm dropped
-prep dropped
-cvt  dropped
-Took 0.000s to load 'post'
-Took 0.000s to prune 'post'
-post pruned
-GPOS dropped
-GSUB dropped
-Reading 'glyf' table from disk
-Decompiling 'glyf' table
-Reading 'loca' table from disk
-Decompiling 'loca' table
-Reading 'head' table from disk
-Decompiling 'head' table
-Took 0.003s to load 'glyf'
-Took 0.000s to prune 'glyf'
-glyf pruned
-Took 0.000s to close glyph list over 'cmap'
-Added gid0 to subset
-Closing glyph list over 'glyf': 38 glyphs before
-Glyph names: ['.notdef', 'A', 'C', 'D', 'I', 'M', 'O', 'R', 'S', 'T', 'a', 'c', 'colon', 'd', 'e', 'eight', 'fi', 'g', 'h', 'i', 'l', 'm', 'n', 'o', 'one', 'percent', 'period', 'q', 'r', 's', 'six', 'space', 't', 'three', 'u', 'y', 'z', 'zero']
-Glyph IDs:   [0, 3, 8, 17, 19, 20, 22, 25, 27, 29, 36, 38, 39, 44, 48, 50, 53, 54, 55, 68, 70, 71, 72, 74, 75, 76, 79, 80, 81, 82, 84, 85, 86, 87, 88, 92, 93, 904]
-Closed glyph list over 'glyf': 39 glyphs after
-Glyph names: ['.notdef', 'A', 'C', 'D', 'I', 'M', 'O', 'R', 'S', 'T', 'a', 'c', 'colon', 'd', 'e', 'eight', 'f', 'fi', 'g', 'h', 'i', 'l', 'm', 'n', 'o', 'one', 'percent', 'period', 'q', 'r', 's', 'six', 'space', 't', 'three', 'u', 'y', 'z', 'zero']
-Glyph IDs:   [0, 3, 8, 17, 19, 20, 22, 25, 27, 29, 36, 38, 39, 44, 48, 50, 53, 54, 55, 68, 70, 71, 72, 73, 74, 75, 76, 79, 80, 81, 82, 84, 85, 86, 87, 88, 92, 93, 904]
-Took 0.002s to close glyph list over 'glyf'
-Retaining 39 glyphs
-head subsetting not needed
-hhea subsetting not needed
-maxp subsetting not needed
-OS/2 subsetting not needed
-Reading 'hmtx' table from disk
-Decompiling 'hmtx' table
-Reading 'hhea' table from disk
-Decompiling 'hhea' table
-Took 0.002s to subset 'hmtx'
-hmtx subsetted
-Took 0.000s to subset 'cmap'
-cmap subsetted
-loca subsetting not needed
-Took 0.000s to subset 'post'
-post subsetted
-gasp subsetting not needed
-STAT subsetting not needed
-Reading 'GDEF' table from disk
-Decompiling 'GDEF' table
-Took 0.002s to subset 'GDEF'
-GDEF subsetted
-name subsetting not needed
-Took 0.001s to subset 'glyf'
-glyf subsetted
-Took 0.000s to subset GlyphOrder
-Took 0.000s to prune 'head'
-head pruned
-Reading 'OS/2' table from disk
-Decompiling 'OS/2' table
-OS/2 Unicode ranges pruned: [0, 62]
-OS/2 CodePage ranges pruned: [0]
-Took 0.001s to prune 'glyf'
-glyf pruned
-Took 0.000s to prune 'GDEF'
-GDEF pruned
-Reading 'name' table from disk
-Decompiling 'name' table
-Reading 'gasp' table from disk
-Decompiling 'gasp' table
-Reading 'STAT' table from disk
-Decompiling 'STAT' table
-Took 0.002s to prune 'name'
-name pruned
-Reading 'maxp' table from disk
-Decompiling 'maxp' table
-Took 0.000s to load 'maxp'
-Took 0.000s to prune 'maxp'
-maxp pruned
-Reading 'cmap' table from disk
-Decompiling 'cmap' table
-Reading 'post' table from disk
-Decompiling 'post' table
-Took 0.003s to load 'cmap'
-Took 0.000s to prune 'cmap'
-cmap pruned
-fpgm dropped
-prep dropped
-cvt  dropped
-Took 0.000s to load 'post'
-Took 0.000s to prune 'post'
-post pruned
-GPOS dropped
-GSUB dropped
-Reading 'glyf' table from disk
-Decompiling 'glyf' table
-Reading 'loca' table from disk
-Decompiling 'loca' table
-Reading 'head' table from disk
-Decompiling 'head' table
-Took 0.003s to load 'glyf'
-Took 0.000s to prune 'glyf'
-glyf pruned
-Took 0.000s to close glyph list over 'cmap'
-Added gid0 to subset
-Closing glyph list over 'glyf': 52 glyphs before
-Glyph names: ['.notdef', 'A', 'B', 'C', 'D', 'E', 'F', 'M', 'O', 'P', 'R', 'S', 'T', 'U', 'W', 'a', 'b', 'c', 'comma', 'd', 'e', 'eight', 'f', 'fi', 'five', 'four', 'g', 'h', 'hyphen', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'one', 'p', 'period', 'q', 'r', 's', 'seven', 'space', 't', 'two', 'u', 'v', 'w', 'x', 'y', 'zero']
-Glyph IDs:   [0, 3, 15, 16, 17, 19, 20, 21, 23, 24, 26, 27, 36, 37, 38, 39, 40, 41, 48, 50, 51, 53, 54, 55, 56, 58, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 904]
-Closed glyph list over 'glyf': 52 glyphs after
-Glyph names: ['.notdef', 'A', 'B', 'C', 'D', 'E', 'F', 'M', 'O', 'P', 'R', 'S', 'T', 'U', 'W', 'a', 'b', 'c', 'comma', 'd', 'e', 'eight', 'f', 'fi', 'five', 'four', 'g', 'h', 'hyphen', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'one', 'p', 'period', 'q', 'r', 's', 'seven', 'space', 't', 'two', 'u', 'v', 'w', 'x', 'y', 'zero']
-Glyph IDs:   [0, 3, 15, 16, 17, 19, 20, 21, 23, 24, 26, 27, 36, 37, 38, 39, 40, 41, 48, 50, 51, 53, 54, 55, 56, 58, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 904]
-Took 0.002s to close glyph list over 'glyf'
-Retaining 52 glyphs
-head subsetting not needed
-hhea subsetting not needed
-maxp subsetting not needed
-OS/2 subsetting not needed
-Reading 'hmtx' table from disk
-Decompiling 'hmtx' table
-Reading 'hhea' table from disk
-Decompiling 'hhea' table
-Took 0.002s to subset 'hmtx'
-hmtx subsetted
-Took 0.000s to subset 'cmap'
-cmap subsetted
-loca subsetting not needed
-Took 0.000s to subset 'post'
-post subsetted
-gasp subsetting not needed
-STAT subsetting not needed
-Reading 'GDEF' table from disk
-Decompiling 'GDEF' table
-Took 0.001s to subset 'GDEF'
-GDEF subsetted
-name subsetting not needed
-Took 0.001s to subset 'glyf'
-glyf subsetted
-Took 0.000s to subset GlyphOrder
-Took 0.000s to prune 'head'
-head pruned
-Reading 'OS/2' table from disk
-Decompiling 'OS/2' table
-OS/2 Unicode ranges pruned: [0, 62]
-OS/2 CodePage ranges pruned: [0]
-Took 0.001s to prune 'glyf'
-glyf pruned
-Took 0.000s to prune 'GDEF'
-GDEF pruned
-Reading 'name' table from disk
-Decompiling 'name' table
-Reading 'gasp' table from disk
-Decompiling 'gasp' table
-Reading 'STAT' table from disk
-Decompiling 'STAT' table
-Took 0.002s to prune 'name'
-name pruned
-Reading 'maxp' table from disk
-Decompiling 'maxp' table
-Took 0.000s to load 'maxp'
-Took 0.000s to prune 'maxp'
-maxp pruned
-Reading 'cmap' table from disk
-Decompiling 'cmap' table
-Reading 'post' table from disk
-Decompiling 'post' table
-Took 0.016s to load 'cmap'
-Took 0.000s to prune 'cmap'
-cmap pruned
-fpgm dropped
-prep dropped
-cvt  dropped
-kern dropped
-Took 0.000s to load 'post'
-Took 0.000s to prune 'post'
-post pruned
-GPOS dropped
-GSUB dropped
-Reading 'glyf' table from disk
-Decompiling 'glyf' table
-Reading 'loca' table from disk
-Decompiling 'loca' table
-Reading 'head' table from disk
-Decompiling 'head' table
-Took 0.012s to load 'glyf'
-Took 0.000s to prune 'glyf'
-glyf pruned
-Took 0.002s to close glyph list over 'cmap'
-Added gid0 to subset
-Closing glyph list over 'glyf': 2 glyphs before
-Glyph names: ['.notdef', 'uni2713']
-Glyph IDs:   [0, 4004]
-Closed glyph list over 'glyf': 2 glyphs after
-Glyph names: ['.notdef', 'uni2713']
-Glyph IDs:   [0, 4004]
-Took 0.003s to close glyph list over 'glyf'
-Retaining 2 glyphs
-head subsetting not needed
-hhea subsetting not needed
-maxp subsetting not needed
-OS/2 subsetting not needed
-Reading 'hmtx' table from disk
-Decompiling 'hmtx' table
-Reading 'hhea' table from disk
-Decompiling 'hhea' table
-Took 0.010s to subset 'hmtx'
+Took 0.006s to subset 'hmtx'
 hmtx subsetted
 Took 0.006s to subset 'cmap'
 cmap subsetted
@@ -915,10 +515,10 @@ gasp subsetting not needed
 FFTM NOT subset; don't know how to subset
 Reading 'GDEF' table from disk
 Decompiling 'GDEF' table
-Took 0.006s to subset 'GDEF'
+Took 0.007s to subset 'GDEF'
 GDEF subsetted
 name subsetting not needed
-Took 0.006s to subset 'glyf'
+Took 0.012s to subset 'glyf'
 glyf subsetted
 Took 0.000s to subset GlyphOrder
 Took 0.000s to prune 'head'
@@ -927,7 +527,7 @@ Reading 'OS/2' table from disk
 Decompiling 'OS/2' table
 OS/2 Unicode ranges pruned: [47]
 OS/2 CodePage ranges pruned: [0]
-Took 0.001s to prune 'glyf'
+Took 0.005s to prune 'glyf'
 glyf pruned
 Took 0.000s to prune 'GDEF'
 GDEF pruned
@@ -937,11 +537,11 @@ Reading 'gasp' table from disk
 Decompiling 'gasp' table
 Reading 'FFTM' table from disk
 Decompiling 'FFTM' table
-Took 0.002s to prune 'name'
+Took 0.003s to prune 'name'
 name pruned
 Reading 'maxp' table from disk
 Decompiling 'maxp' table
-Took 0.000s to load 'maxp'
+Took 0.001s to load 'maxp'
 Took 0.000s to prune 'maxp'
 maxp pruned
 Reading 'cmap' table from disk
@@ -965,7 +565,7 @@ Reading 'loca' table from disk
 Decompiling 'loca' table
 Reading 'head' table from disk
 Decompiling 'head' table
-Took 0.003s to load 'glyf'
+Took 0.004s to load 'glyf'
 Took 0.000s to prune 'glyf'
 glyf pruned
 Took 0.000s to close glyph list over 'cmap'
@@ -986,1030 +586,7 @@ Reading 'hmtx' table from disk
 Decompiling 'hmtx' table
 Reading 'hhea' table from disk
 Decompiling 'hhea' table
-Took 0.004s to subset 'hmtx'
-hmtx subsetted
-Took 0.000s to subset 'cmap'
-cmap subsetted
-loca subsetting not needed
-Took 0.000s to subset 'post'
-post subsetted
-gasp subsetting not needed
-STAT subsetting not needed
-Reading 'GDEF' table from disk
-Decompiling 'GDEF' table
-Took 0.002s to subset 'GDEF'
-GDEF subsetted
-name subsetting not needed
-Took 0.000s to subset 'glyf'
-glyf subsetted
-Took 0.000s to subset GlyphOrder
-Took 0.001s to prune 'head'
-head pruned
-Reading 'OS/2' table from disk
-Decompiling 'OS/2' table
-OS/2 Unicode ranges pruned: [0]
-OS/2 CodePage ranges pruned: [0]
-Took 0.000s to prune 'glyf'
-glyf pruned
-Took 0.000s to prune 'GDEF'
-GDEF pruned
-Reading 'name' table from disk
-Decompiling 'name' table
-Reading 'gasp' table from disk
-Decompiling 'gasp' table
-Reading 'STAT' table from disk
-Decompiling 'STAT' table
-Took 0.003s to prune 'name'
-name pruned
-Not Found: /geoserver/web/
-Not Found: /.git/config
-Not Found: /ab2g
-Not Found: /ab2h
-Not Found: /alive.php
-Not Found: /t4
-Not Found: /favicon.ico
-Not Found: /teorema505
-Related Courses: [{'id': 1, 'course_name': 'Backend development', 'end_enrol': datetime.date(2026, 4, 15)}, {'id': 2, 'course_name': 'Digital Marketing', 'end_enrol': datetime.date(2025, 4, 30)}, {'id': 3, 'course_name': 'Big Data Developer', 'end_enrol': datetime.date(2025, 5, 9)}, {'id': 4, 'course_name': 'Build Powerful Web Applications with Django', 'end_enrol': datetime.date(2025, 5, 9)}, {'id': 5, 'course_name': 'Front End Developer', 'end_enrol': datetime.date(2025, 5, 9)}]
-Course Data: {'course_name': 'Backend development', 'hour': '20', 'course_id': 1, 'num_enrollments': 2, 'course_slug': 'backend-development', 'course_image': '/media/courses/full.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'category': 'Software Development', 'language': 'en', 'average_rating': 4.0, 'review_count': 1, 'full_star_range': range(0, 4), 'half_star': False, 'empty_star_range': range(0, 1)}
-Course Data: {'course_name': 'Big Data Developer', 'hour': '50', 'course_id': 3, 'num_enrollments': 0, 'course_slug': 'big-data-developer', 'course_image': '/media/courses/courses/1655222979950.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'category': 'Data and Big Data', 'language': 'en', 'average_rating': 0, 'review_count': 0, 'full_star_range': range(0, 0), 'half_star': False, 'empty_star_range': range(0, 5)}
-Course Data: {'course_name': 'Build Powerful Web Applications with Django', 'hour': '40', 'course_id': 4, 'num_enrollments': 2, 'course_slug': 'build-powerful-web-applications-with-django', 'course_image': '/media/courses/1_8KbfPuoQAkos7dutGw7pPg.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'category': 'Software Development', 'language': 'en', 'average_rating': 0, 'review_count': 0, 'full_star_range': range(0, 0), 'half_star': False, 'empty_star_range': range(0, 5)}
-Course Data: {'course_name': 'Digital Marketing', 'hour': '60', 'course_id': 2, 'num_enrollments': 0, 'course_slug': 'digital-marketing', 'course_image': '/media/courses/courses/9d4efcf5-1a48-4b06-b7fa-41eab22b7146.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'category': 'Digital Marketing', 'language': 'en', 'average_rating': 0, 'review_count': 0, 'full_star_range': range(0, 0), 'half_star': False, 'empty_star_range': range(0, 5)}
-Course Data: {'course_name': 'Front End Developer', 'hour': '30', 'course_id': 5, 'num_enrollments': 2, 'course_slug': 'front-end-developer', 'course_image': '/media/courses/courses/1721174916441.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'category': 'Software Development', 'language': 'en', 'average_rating': 0, 'review_count': 0, 'full_star_range': range(0, 0), 'half_star': False, 'empty_star_range': range(0, 5)}
-Not Found: /.env
-Not Found: /.env
-Not Found: /robots.txt
-Not Found: /Portal0000.htm
-Not Found: /scripts/WPnBr.dll
-Not Found: /login.php
-Not Found: /dniapi/userInfos
-Not Found: /__Additional
-Not Found: /webui
-Not Found: /index.jsa
-Not Found: /health
-Not Found: /webui
-Not Found: /CSS/Miniweb.css
-Not Found: /Portal/Portal.mwsl
-Method Not Allowed: /
-Not Found: /QAYq
-Not Found: /api/v2/about
-Not Found: /nmaplowercheck1745840683
-Not Found: /docs/cplugError.html/
-Not Found: /admin.shtml
-Not Found: /webui
-Not Found: /localstart.shtml
-Not Found: /sdk
-Not Found: /HNAP1
-Not Found: /pools/default/buckets
-Not Found: /owa/
-Not Found: /.git/HEAD
-Not Found: /user
-Not Found: /admin.html
-Not Found: /owa/
-Method Not Allowed: /
-Not Found: /owa/
-Not Found: /home.cgi
-Not Found: /dana-cached/hc/HostCheckerInstaller.osx
-Not Found: /dana-na/nc/nc_gina_ver.txt
-Not Found: /start.cfm
-Not Found: /owa/
-Not Found: /+CSCOE+/logon.html
-Not Found: /indice.aspx
-Not Found: /CFIDE/componentutils/
-Not Found: /geoserver/index.html
-Not Found: /base.html
-Not Found: /geoserver/
-Not Found: /geoserver/web/wicket/bookmarkable/org.geoserver.web.AboutGeoServerPage
-Not Found: /admin.pl
-Not Found: /Account/Login
-Not Found: /cgi-bin/info.cgi
-Not Found: /base.asp
-Not Found: /xml/info.xml
-Not Found: /magento_version
-Not Found: /home.shtml
-Not Found: /api/v1/check-version
-Not Found: /start.aspx
-Not Found: /fog/management/index.php
-Not Found: /helpdesk/WebObjects/Helpdesk.woa
-Not Found: /admin.jsa
-Not Found: /cluster/list.query
-Not Found: /apps/zxtm/login.cgi
-Not Found: /menu.cgi
-Not Found: /api/server/version
-Not Found: /administrator/manifests/files/joomla.xml
-Not Found: /localstart.pl
-Not Found: /language/en-GB/en-GB.xml
-Not Found: /versa/login
-Not Found: /admin.cgi
-Not Found: /login.html
-Not Found: /p/login/
-Not Found: /main.jsa
-Not Found: /api/version
-Not Found: /portal/
-Not Found: /admin.aspx
-Not Found: /status
-Not Found: /indice.pl
-Not Found: /info.asp
-Not Found: /cgi-bin/param.cgi
-Not Found: /default.aspx
-Not Found: /lms/db
-Not Found: /ext-js/app/common/zld_product_spec.js
-Not Found: /base.shtml
-Not Found: /login/login.html
-Not Found: /allversions
-Not Found: /indice.jhtml
-Not Found: /versions
-Not Found: /r-seenet/index.php
-Not Found: /inicio.jsp
-Not Found: /api/vip/i18n/api/v2/translation/products/vRNIUI/versions/1
-Not Found: /home.html
-Not Found: /tos/index.php
-Not Found: /localstart.jhtml
-Not Found: /localstart.cfm
-Not Found: /WebApp/js/UI_String.js
-Not Found: /base.jsp
-Not Found: /menu.aspx
-Not Found: /officescan/console/html/localization.js
-Not Found: /default.jhtml
-Not Found: /inicio.cgi
-Not Found: /IPCamDesc.xml
-Not Found: /index.shtml
-Not Found: /inicio.cfm
-Not Found: /api/v1.0/environment
-Not Found: /index.jsp
-Not Found: /cslu/v1/core/conf
-Not Found: /base.inc
-Not Found: /localstart.jsp
-Not Found: /CHANGELOG.txt
-Not Found: /inicio.shtml
-Not Found: /readme.txt
-Not Found: /base.cgi
-Not Found: /indice.cfm
-Not Found: /javascript/validation/OEM.js
-Not Found: /base.cfm
-Not Found: /default.shtml
-Not Found: /build.gradle
-Not Found: /home.pl
-Not Found: /webportal.cgi
-Not Found: /localstart.aspx
-Not Found: /home.aspx
-Not Found: /css/eonweb.css
-Not Found: /home.php
-Not Found: /base.aspx
-Not Found: /centreon/api/latest/platform/versions
-Not Found: /default.asp
-Not Found: /home.asp
-Not Found: /css/elfinder.min.css
-Not Found: /indice.php
-Not Found: /menu.jsa
-Not Found: /indice.jsp
-Not Found: /indice.cgi
-Not Found: /menu.html
-Not Found: /indice.jsa
-Not Found: /base.pl
-Not Found: /indice.html
-Not Found: /main.html
-Not Found: /indice.asp
-Not Found: /index.html
-Not Found: /admin.cfm
-Not Found: /main.shtml
-Not Found: /inicio.php
-Not Found: /main.asp
-Not Found: /index.asp
-Not Found: /home.jsp
-Not Found: /inicio.jhtml
-Not Found: /home.jhtml
-Not Found: /inicio.html
-Not Found: /start.asp
-Not Found: /base.jsa
-Not Found: /base.jhtml
-Not Found: /main.php
-Not Found: /inicio.aspx
-Not Found: /inicio.asp
-Not Found: /index.aspx
-Not Found: /default.php
-Not Found: /localstart.php
-Not Found: /inicio.pl
-Not Found: /default.pl
-Not Found: /menu.jhtml
-Not Found: /base.php
-Not Found: /menu.jsp
-Not Found: /start.jsp
-Not Found: /.env.live
-Not Found: /www/.git/config
-Not Found: /.env.prod
-Not Found: /.env.dist
-Not Found: /api/.git/config
-Not Found: /.envrc
-Not Found: /.git/config
-Not Found: /.env.ci
-Not Found: /.env.prod.local
-Not Found: /.env.secret
-Not Found: /.env.staging.local
-Not Found: /.env.test
-Not Found: /config.json
-Not Found: /docker-compose.prod.yml
-Not Found: /src/.git/config
-Not Found: /config/.env
-Not Found: /configuration/.env
-Not Found: /project/.git/config
-Not Found: /server/.git/config
-Not Found: /static../.git/config
-Not Found: /.env.backup
-Not Found: /.env.bak
-Not Found: /.env.dev.local
-Not Found: /.env.development.local
-Not Found: /prod/.env
-Not Found: /assets../.git/config
-Not Found: /media../.git/config
-Not Found: /.env.local
-Not Found: /.env_sample
-Not Found: /.env
-Not Found: /.env.save
-Not Found: /.env.template
-Not Found: /dev/.git/config
-Not Found: /build/.env
-Not Found: /.env.uat
-Not Found: /cms/.git/config
-Not Found: /files/.git/config
-Not Found: /public/.git/config
-Not Found: /.env.qa
-Not Found: /core/.git/config
-Not Found: /.env.preprod
-Not Found: /.env.production.local
-Not Found: /settings/.env
-Not Found: /app/.git/config
-Not Found: /data/.git/config
-Not Found: /.env.production
-Not Found: /api/.env
-Not Found: /config/.git/config
-Not Found: /.env.testing
-Not Found: /.env.testing.local
-Not Found: /backup/.git/config
-Not Found: /.env.sandbox
-Not Found: /.aws/credentials
-Not Found: /.env.dev
-Not Found: /.env.config
-Not Found: /.env.default
-Not Found: /.env.stage
-Not Found: /_profiler/phpinfo
-Not Found: /.env
-Not Found: /.env
-Not Found: /actuator/gateway/routes
-Not Found: /5Dun
-Not Found: /xHEX
-Not Found: /aab8
-Not Found: /jquery-3.3.1.slim.min.js
-Not Found: /aab9
-Not Found: /jquery-3.3.2.slim.min.js
-Not Found: /.git/config
-Not Found: /.git/refs/
-Not Found: /.env
-Forbidden (Referer checking failed - no Referer.): /
-Not Found: /.env
-Forbidden (Referer checking failed - no Referer.): /
-Not Found: /.git/refs/heads/
-Not Found: /.git/config
-Not Found: /robots.txt
-Not Found: /hello.world
-Not Found: /vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
-Not Found: /vendor/phpunit/phpunit/Util/PHP/eval-stdin.php
-Not Found: /vendor/phpunit/src/Util/PHP/eval-stdin.php
-Not Found: /vendor/phpunit/Util/PHP/eval-stdin.php
-Not Found: /vendor/phpunit/phpunit/LICENSE/eval-stdin.php
-Not Found: /vendor/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
-Not Found: /phpunit/phpunit/src/Util/PHP/eval-stdin.php
-Not Found: /phpunit/phpunit/Util/PHP/eval-stdin.php
-Not Found: /phpunit/src/Util/PHP/eval-stdin.php
-Not Found: /phpunit/Util/PHP/eval-stdin.php
-Not Found: /lib/phpunit/phpunit/src/Util/PHP/eval-stdin.php
-Not Found: /lib/phpunit/phpunit/Util/PHP/eval-stdin.php
-Not Found: /lib/phpunit/src/Util/PHP/eval-stdin.php
-Not Found: /lib/phpunit/Util/PHP/eval-stdin.php
-Not Found: /lib/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
-Not Found: /laravel/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
-Not Found: /www/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
-Not Found: /ws/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
-Not Found: /yii/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
-Not Found: /zend/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
-Not Found: /ws/ec/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
-Not Found: /V2/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
-Not Found: /tests/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
-Not Found: /test/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
-Not Found: /testing/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
-Not Found: /api/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
-Not Found: /demo/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
-Not Found: /cms/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
-Not Found: /crm/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
-Not Found: /backup/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
-Not Found: /blog/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
-Not Found: /workspace/drupal/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
-Not Found: /panel/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
-Not Found: /public/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
-Not Found: /apps/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
-Not Found: /app/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php
-Not Found: /index.php
-Not Found: /public/index.php
-Not Found: /index.php
-Not Found: /index.php
-Not Found: /containers/json
-Not Found: /favicon.ico
-Not Found: /favicon.ico
-Not Found: /favicon.ico
-Not Found: /ads.txt
-Not Found: /app-ads.txt
-Not Found: /sellers.json
-Not Found: /ads.txt
-Not Found: /app-ads.txt
-Not Found: /sellers.json
-Not Found: /.env
-Not Found: /.git/config
-Not Found: /.env
-Not Found: /.env
-Not Found: /actuator/gateway/routes
-Not Found: /favicon.ico
-Not Found: /.env
-Forbidden (Referer checking failed - no Referer.): /
-Not Found: /favicon.ico
-Not Found: /ecp/Current/exporttool/microsoft.exchange.ediscovery.exporttool.application
-Not Found: /.env
-Forbidden: /search/
-Forbidden: /search/
-Not Found: /aaa9
-Not Found: /aab8
-Not Found: /favicon.ico
-Not Found: /favicon.ico
-Internal Server Error: /popular_courses/
-Traceback (most recent call last):
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
-    response = get_response(request)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django_ratelimit/decorators.py", line 27, in _wrapped
-    return fn(request, *args, **kw)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/views/decorators/http.py", line 64, in inner
-    return func(request, *args, **kwargs)
-  File "/home/TIM/mysite/authentication/views.py", line 846, in popular_courses
-    return JsonResponse({'courses': courses_list})
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/response.py", line 733, in __init__
-    data = json.dumps(data, cls=encoder, **json_dumps_params)
-  File "/usr/lib/python3.10/json/__init__.py", line 238, in dumps
-    **kw).encode(obj)
-  File "/usr/lib/python3.10/json/encoder.py", line 199, in encode
-    chunks = self.iterencode(o, _one_shot=True)
-  File "/usr/lib/python3.10/json/encoder.py", line 257, in iterencode
-    return _iterencode(o, 0)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/serializers/json.py", line 106, in default
-    return super().default(o)
-  File "/usr/lib/python3.10/json/encoder.py", line 179, in default
-    raise TypeError(f'Object of type {o.__class__.__name__} '
-TypeError: Object of type Universiti is not JSON serializable
-Not Found: /favicon.ico
-Internal Server Error: /course_list/
-Traceback (most recent call last):
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
-    response = get_response(request)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django_ratelimit/decorators.py", line 27, in _wrapped
-    return fn(request, *args, **kw)
-  File "/home/TIM/mysite/authentication/views.py", line 214, in course_list
-    return render(request, 'home/course_list.html', context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
-    content = loader.render_to_string(template_name, context, request, using=using)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 62, in render_to_string
-    return template.render(context, request)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 107, in render
-    return self.template.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 171, in render
-    return self._render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
-    return self.nodelist.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in render
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in <listcomp>
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
-    return self.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 159, in render
-    return compiled_parent._render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
-    return self.nodelist.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in render
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in <listcomp>
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
-    return self.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 65, in render
-    result = block.nodelist.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in render
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in <listcomp>
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
-    return self.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 243, in render
-    nodelist.append(node.render_annotated(context))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
-    return self.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 480, in render
-    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/base.py", line 88, in reverse
-    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
-    raise NoReverseMatch(msg)
-django.urls.exceptions.NoReverseMatch: Reverse for 'org_partner' with arguments '('',)' not found. 1 pattern(s) tried: ['org\\-partner/(?P<slug>[-a-zA-Z0-9_]+)/\\Z']
-Not Found: /system/.env
-Not Found: /dev/.env
-Not Found: /api/v1/.env
-Not Found: /api/v2/.env
-Internal Server Error: /course_list/
-Traceback (most recent call last):
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
-    response = get_response(request)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django_ratelimit/decorators.py", line 27, in _wrapped
-    return fn(request, *args, **kw)
-  File "/home/TIM/mysite/authentication/views.py", line 214, in course_list
-    return render(request, 'home/course_list.html', context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
-    content = loader.render_to_string(template_name, context, request, using=using)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 62, in render_to_string
-    return template.render(context, request)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 107, in render
-    return self.template.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 171, in render
-    return self._render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
-    return self.nodelist.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in render
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in <listcomp>
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
-    return self.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 159, in render
-    return compiled_parent._render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
-    return self.nodelist.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in render
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in <listcomp>
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
-    return self.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 65, in render
-    result = block.nodelist.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in render
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in <listcomp>
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
-    return self.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 243, in render
-    nodelist.append(node.render_annotated(context))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
-    return self.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 480, in render
-    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/base.py", line 88, in reverse
-    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
-    raise NoReverseMatch(msg)
-django.urls.exceptions.NoReverseMatch: Reverse for 'org_partner' with arguments '('',)' not found. 1 pattern(s) tried: ['org\\-partner/(?P<slug>[-a-zA-Z0-9_]+)/\\Z']
-Not Found: /app/config/.env
-Not Found: /staging/.env
-Not Found: /main/.env
-Related Courses: [{'id': 1, 'course_name': 'Backend development', 'end_enrol': datetime.date(2026, 4, 15)}, {'id': 2, 'course_name': 'Digital Marketing', 'end_enrol': datetime.date(2025, 4, 30)}, {'id': 3, 'course_name': 'Big Data Developer', 'end_enrol': datetime.date(2025, 5, 9)}, {'id': 4, 'course_name': 'Build Powerful Web Applications with Django', 'end_enrol': datetime.date(2025, 5, 9)}, {'id': 5, 'course_name': 'Front End Developer', 'end_enrol': datetime.date(2025, 5, 9)}]
-Course Data: {'course_name': 'Backend development', 'hour': '20', 'course_id': 1, 'num_enrollments': 2, 'course_slug': 'backend-development', 'course_image': '/media/courses/full.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'category': 'Software Development', 'language': 'en', 'average_rating': 4.0, 'review_count': 1, 'full_star_range': range(0, 4), 'half_star': False, 'empty_star_range': range(0, 1)}
-Course Data: {'course_name': 'Big Data Developer', 'hour': '50', 'course_id': 3, 'num_enrollments': 0, 'course_slug': 'big-data-developer', 'course_image': '/media/courses/courses/1655222979950.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'category': 'Data and Big Data', 'language': 'en', 'average_rating': 0, 'review_count': 0, 'full_star_range': range(0, 0), 'half_star': False, 'empty_star_range': range(0, 5)}
-Course Data: {'course_name': 'Build Powerful Web Applications with Django', 'hour': '40', 'course_id': 4, 'num_enrollments': 2, 'course_slug': 'build-powerful-web-applications-with-django', 'course_image': '/media/courses/1_8KbfPuoQAkos7dutGw7pPg.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'category': 'Software Development', 'language': 'en', 'average_rating': 0, 'review_count': 0, 'full_star_range': range(0, 0), 'half_star': False, 'empty_star_range': range(0, 5)}
-Course Data: {'course_name': 'Digital Marketing', 'hour': '60', 'course_id': 2, 'num_enrollments': 0, 'course_slug': 'digital-marketing', 'course_image': '/media/courses/courses/9d4efcf5-1a48-4b06-b7fa-41eab22b7146.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'category': 'Digital Marketing', 'language': 'en', 'average_rating': 0, 'review_count': 0, 'full_star_range': range(0, 0), 'half_star': False, 'empty_star_range': range(0, 5)}
-Course Data: {'course_name': 'Front End Developer', 'hour': '30', 'course_id': 5, 'num_enrollments': 2, 'course_slug': 'front-end-developer', 'course_image': '/media/courses/courses/1721174916441.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'category': 'Software Development', 'language': 'en', 'average_rating': 0, 'review_count': 0, 'full_star_range': range(0, 0), 'half_star': False, 'empty_star_range': range(0, 5)}
-Related Courses: [{'id': 1, 'course_name': 'Backend development', 'end_enrol': datetime.date(2026, 4, 15)}, {'id': 2, 'course_name': 'Digital Marketing', 'end_enrol': datetime.date(2025, 4, 30)}, {'id': 3, 'course_name': 'Big Data Developer', 'end_enrol': datetime.date(2025, 5, 9)}, {'id': 4, 'course_name': 'Build Powerful Web Applications with Django', 'end_enrol': datetime.date(2025, 5, 9)}, {'id': 5, 'course_name': 'Front End Developer', 'end_enrol': datetime.date(2025, 5, 9)}]
-Course Data: {'course_name': 'Backend development', 'hour': '20', 'course_id': 1, 'num_enrollments': 2, 'course_slug': 'backend-development', 'course_image': '/media/courses/full.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'category': 'Software Development', 'language': 'en', 'average_rating': 4.0, 'review_count': 1, 'full_star_range': range(0, 4), 'half_star': False, 'empty_star_range': range(0, 1)}
-Course Data: {'course_name': 'Big Data Developer', 'hour': '50', 'course_id': 3, 'num_enrollments': 0, 'course_slug': 'big-data-developer', 'course_image': '/media/courses/courses/1655222979950.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'category': 'Data and Big Data', 'language': 'en', 'average_rating': 0, 'review_count': 0, 'full_star_range': range(0, 0), 'half_star': False, 'empty_star_range': range(0, 5)}
-Course Data: {'course_name': 'Build Powerful Web Applications with Django', 'hour': '40', 'course_id': 4, 'num_enrollments': 2, 'course_slug': 'build-powerful-web-applications-with-django', 'course_image': '/media/courses/1_8KbfPuoQAkos7dutGw7pPg.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'category': 'Software Development', 'language': 'en', 'average_rating': 0, 'review_count': 0, 'full_star_range': range(0, 0), 'half_star': False, 'empty_star_range': range(0, 5)}
-Course Data: {'course_name': 'Digital Marketing', 'hour': '60', 'course_id': 2, 'num_enrollments': 0, 'course_slug': 'digital-marketing', 'course_image': '/media/courses/courses/9d4efcf5-1a48-4b06-b7fa-41eab22b7146.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'category': 'Digital Marketing', 'language': 'en', 'average_rating': 0, 'review_count': 0, 'full_star_range': range(0, 0), 'half_star': False, 'empty_star_range': range(0, 5)}
-Course Data: {'course_name': 'Front End Developer', 'hour': '30', 'course_id': 5, 'num_enrollments': 2, 'course_slug': 'front-end-developer', 'course_image': '/media/courses/courses/1721174916441.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'category': 'Software Development', 'language': 'en', 'average_rating': 0, 'review_count': 0, 'full_star_range': range(0, 0), 'half_star': False, 'empty_star_range': range(0, 5)}
-Related Courses: [{'id': 1, 'course_name': 'Backend development', 'end_enrol': datetime.date(2026, 4, 15)}, {'id': 2, 'course_name': 'Digital Marketing', 'end_enrol': datetime.date(2025, 4, 30)}, {'id': 3, 'course_name': 'Big Data Developer', 'end_enrol': datetime.date(2025, 5, 9)}, {'id': 4, 'course_name': 'Build Powerful Web Applications with Django', 'end_enrol': datetime.date(2025, 5, 9)}, {'id': 5, 'course_name': 'Front End Developer', 'end_enrol': datetime.date(2025, 5, 9)}]
-Course Data: {'course_name': 'Backend development', 'hour': '20', 'course_id': 1, 'num_enrollments': 2, 'course_slug': 'backend-development', 'course_image': '/media/courses/full.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'partner_kode': 'UOOx', 'category': 'Software Development', 'language': 'en', 'average_rating': 4.0, 'review_count': 1, 'full_star_range': range(0, 4), 'half_star': False, 'empty_star_range': range(0, 1)}
-Course Data: {'course_name': 'Big Data Developer', 'hour': '50', 'course_id': 3, 'num_enrollments': 0, 'course_slug': 'big-data-developer', 'course_image': '/media/courses/courses/1655222979950.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'partner_kode': 'UOOx', 'category': 'Data and Big Data', 'language': 'en', 'average_rating': 0, 'review_count': 0, 'full_star_range': range(0, 0), 'half_star': False, 'empty_star_range': range(0, 5)}
-Course Data: {'course_name': 'Build Powerful Web Applications with Django', 'hour': '40', 'course_id': 4, 'num_enrollments': 2, 'course_slug': 'build-powerful-web-applications-with-django', 'course_image': '/media/courses/1_8KbfPuoQAkos7dutGw7pPg.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'partner_kode': 'UOOx', 'category': 'Software Development', 'language': 'en', 'average_rating': 0, 'review_count': 0, 'full_star_range': range(0, 0), 'half_star': False, 'empty_star_range': range(0, 5)}
-Course Data: {'course_name': 'Digital Marketing', 'hour': '60', 'course_id': 2, 'num_enrollments': 0, 'course_slug': 'digital-marketing', 'course_image': '/media/courses/courses/9d4efcf5-1a48-4b06-b7fa-41eab22b7146.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'partner_kode': 'UOOx', 'category': 'Digital Marketing', 'language': 'en', 'average_rating': 0, 'review_count': 0, 'full_star_range': range(0, 0), 'half_star': False, 'empty_star_range': range(0, 5)}
-Course Data: {'course_name': 'Front End Developer', 'hour': '30', 'course_id': 5, 'num_enrollments': 2, 'course_slug': 'front-end-developer', 'course_image': '/media/courses/courses/1721174916441.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'partner_kode': 'UOOx', 'category': 'Software Development', 'language': 'en', 'average_rating': 0, 'review_count': 0, 'full_star_range': range(0, 0), 'half_star': False, 'empty_star_range': range(0, 5)}
-Related Courses: [{'id': 1, 'course_name': 'Backend development', 'end_enrol': datetime.date(2026, 4, 15)}, {'id': 2, 'course_name': 'Digital Marketing', 'end_enrol': datetime.date(2025, 4, 30)}, {'id': 3, 'course_name': 'Big Data Developer', 'end_enrol': datetime.date(2025, 5, 9)}, {'id': 4, 'course_name': 'Build Powerful Web Applications with Django', 'end_enrol': datetime.date(2025, 5, 9)}, {'id': 5, 'course_name': 'Front End Developer', 'end_enrol': datetime.date(2025, 5, 9)}]
-Course Data: {'course_name': 'Backend development', 'hour': '20', 'course_id': 1, 'num_enrollments': 2, 'course_slug': 'backend-development', 'course_image': '/media/courses/full.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'partner_kode': 'UOOx', 'category': 'Software Development', 'language': 'en', 'average_rating': 4.0, 'review_count': 1, 'full_star_range': range(0, 4), 'half_star': False, 'empty_star_range': range(0, 1)}
-Course Data: {'course_name': 'Big Data Developer', 'hour': '50', 'course_id': 3, 'num_enrollments': 0, 'course_slug': 'big-data-developer', 'course_image': '/media/courses/courses/1655222979950.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'partner_kode': 'UOOx', 'category': 'Data and Big Data', 'language': 'en', 'average_rating': 0, 'review_count': 0, 'full_star_range': range(0, 0), 'half_star': False, 'empty_star_range': range(0, 5)}
-Course Data: {'course_name': 'Build Powerful Web Applications with Django', 'hour': '40', 'course_id': 4, 'num_enrollments': 2, 'course_slug': 'build-powerful-web-applications-with-django', 'course_image': '/media/courses/1_8KbfPuoQAkos7dutGw7pPg.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'partner_kode': 'UOOx', 'category': 'Software Development', 'language': 'en', 'average_rating': 0, 'review_count': 0, 'full_star_range': range(0, 0), 'half_star': False, 'empty_star_range': range(0, 5)}
-Course Data: {'course_name': 'Digital Marketing', 'hour': '60', 'course_id': 2, 'num_enrollments': 0, 'course_slug': 'digital-marketing', 'course_image': '/media/courses/courses/9d4efcf5-1a48-4b06-b7fa-41eab22b7146.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'partner_kode': 'UOOx', 'category': 'Digital Marketing', 'language': 'en', 'average_rating': 0, 'review_count': 0, 'full_star_range': range(0, 0), 'half_star': False, 'empty_star_range': range(0, 5)}
-Course Data: {'course_name': 'Front End Developer', 'hour': '30', 'course_id': 5, 'num_enrollments': 2, 'course_slug': 'front-end-developer', 'course_image': '/media/courses/courses/1721174916441.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'partner_kode': 'UOOx', 'category': 'Software Development', 'language': 'en', 'average_rating': 0, 'review_count': 0, 'full_star_range': range(0, 0), 'half_star': False, 'empty_star_range': range(0, 5)}
-Related Courses: [{'id': 1, 'course_name': 'Backend development', 'end_enrol': datetime.date(2026, 4, 15)}, {'id': 2, 'course_name': 'Digital Marketing', 'end_enrol': datetime.date(2025, 4, 30)}, {'id': 3, 'course_name': 'Big Data Developer', 'end_enrol': datetime.date(2025, 5, 9)}, {'id': 4, 'course_name': 'Build Powerful Web Applications with Django', 'end_enrol': datetime.date(2025, 5, 9)}, {'id': 5, 'course_name': 'Front End Developer', 'end_enrol': datetime.date(2025, 5, 9)}]
-Course Data: {'course_name': 'Backend development', 'hour': '20', 'course_id': 1, 'num_enrollments': 2, 'course_slug': 'backend-development', 'course_image': '/media/courses/full.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'partner_kode': 'UOOx', 'category': 'Software Development', 'language': 'en', 'average_rating': 4.0, 'review_count': 1, 'full_star_range': range(0, 4), 'half_star': False, 'empty_star_range': range(0, 1)}
-Course Data: {'course_name': 'Big Data Developer', 'hour': '50', 'course_id': 3, 'num_enrollments': 0, 'course_slug': 'big-data-developer', 'course_image': '/media/courses/courses/1655222979950.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'partner_kode': 'UOOx', 'category': 'Data and Big Data', 'language': 'en', 'average_rating': 0, 'review_count': 0, 'full_star_range': range(0, 0), 'half_star': False, 'empty_star_range': range(0, 5)}
-Course Data: {'course_name': 'Build Powerful Web Applications with Django', 'hour': '40', 'course_id': 4, 'num_enrollments': 2, 'course_slug': 'build-powerful-web-applications-with-django', 'course_image': '/media/courses/1_8KbfPuoQAkos7dutGw7pPg.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'partner_kode': 'UOOx', 'category': 'Software Development', 'language': 'en', 'average_rating': 0, 'review_count': 0, 'full_star_range': range(0, 0), 'half_star': False, 'empty_star_range': range(0, 5)}
-Course Data: {'course_name': 'Digital Marketing', 'hour': '60', 'course_id': 2, 'num_enrollments': 0, 'course_slug': 'digital-marketing', 'course_image': '/media/courses/courses/9d4efcf5-1a48-4b06-b7fa-41eab22b7146.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'partner_kode': 'UOOx', 'category': 'Digital Marketing', 'language': 'en', 'average_rating': 0, 'review_count': 0, 'full_star_range': range(0, 0), 'half_star': False, 'empty_star_range': range(0, 5)}
-Course Data: {'course_name': 'Front End Developer', 'hour': '30', 'course_id': 5, 'num_enrollments': 2, 'course_slug': 'front-end-developer', 'course_image': '/media/courses/courses/1721174916441.webp', 'instructor': 'Mr Instructor LMS', 'instructor_username': 'instructor', 'photo': '/media/profile_pics/hasbusiness-icon_a527bO4.webp', 'partner': <Universiti: University of Oxford>, 'partner_kode': 'UOOx', 'category': 'Software Development', 'language': 'en', 'average_rating': 0, 'review_count': 0, 'full_star_range': range(0, 0), 'half_star': False, 'empty_star_range': range(0, 5)}
-Related Courses: [{'id': 1, 'course_name': 'Backend development', 'end_enrol': datetime.date(2026, 4, 15)}, {'id': 2, 'course_name': 'Digital Marketing', 'end_enrol': datetime.date(2025, 4, 30)}, {'id': 3, 'course_name': 'Big Data Developer', 'end_enrol': datetime.date(2025, 5, 9)}, {'id': 4, 'course_name': 'Build Powerful Web Applications with Django', 'end_enrol': datetime.date(2025, 5, 9)}, {'id': 5, 'course_name': 'Front End Developer', 'end_enrol': datetime.date(2025, 5, 9)}]
-Forbidden: /search/
-Forbidden: /search/
-Forbidden: /search/
-Not Found: /robots.txt
-Not Found: /robots.txt
-Forbidden: /search/
-Forbidden: /search/
-Forbidden: /search/
-Internal Server Error: /
-Traceback (most recent call last):
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
-    response = get_response(request)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/TIM/mysite/authentication/views.py", line 914, in home
-    return render(request, 'home/index.html', {
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
-    content = loader.render_to_string(template_name, context, request, using=using)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 61, in render_to_string
-    template = get_template(template_name, using=using)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 15, in get_template
-    return engine.get_template(template_name)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 79, in get_template
-    return Template(self.engine.get_template(template_name), self)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 177, in get_template
-    template, origin = self.find_template(template_name)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 159, in find_template
-    template = loader.get_template(name, skip=skip)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/cached.py", line 57, in get_template
-    template = super().get_template(template_name, skip)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/base.py", line 28, in get_template
-    return Template(
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 154, in __init__
-    self.nodelist = self.compile_nodelist()
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 196, in compile_nodelist
-    nodelist = parser.parse()
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
-    raise self.error(token, e)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
-    compiled_result = compile_func(self, token)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 295, in do_extends
-    nodelist = parser.parse()
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
-    raise self.error(token, e)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
-    compiled_result = compile_func(self, token)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 234, in do_block
-    nodelist = parser.parse(("endblock",))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
-    raise self.error(token, e)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
-    compiled_result = compile_func(self, token)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 862, in do_for
-    nodelist_loop = parser.parse(
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 489, in parse
-    raise self.error(token, e)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 487, in parse
-    filter_expression = self.compile_filter(token.contents)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 605, in compile_filter
-    return FilterExpression(token, self)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 701, in __init__
-    filter_func = parser.find_filter(filter_name)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 611, in find_filter
-    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
-django.template.exceptions.TemplateSyntaxError: Invalid filter: 'truncate_words'
-Not Found: /robots.txt
-Not Found: /robots.txt
-Not Found: /.env
-Forbidden: /search/
-Partner logo found: https://ini.icei.ac.id/media/logos/oxford.png
-QR code generated: https://ini.icei.ac.id/media/qrcodes/certificate_55aa1ce9-3a29-4735-b178-cea724635f49.png
-Certificate 55aa1ce9-3a29-4735-b178-cea724635f49 saved for user learn
-Step 1 - Fetching and parsing HTML - HTML string
-Step 2 - Fetching and parsing CSS - CSS string
-Step 2 - Fetching and parsing CSS - https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@400;700&display=swap
-Ignored `pointer-events: none` at 204:13, the property does not apply for the print media.
-Step 3 - Applying CSS
-Step 4 - Creating formatting structure
-Step 5 - Creating layout - Page 1
-Step 5 - Creating layout - Page 2
-Failed to load image at 'https://ini.icei.ac.id/static/images/signature.png': HTTPError: HTTP Error 404: Not Found
-Error while loading image:
-Traceback (most recent call last):
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/weasyprint/urls.py", line 258, in fetch
-    result = url_fetcher(url)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/weasyprint/urls.py", line 223, in default_url_fetcher
-    response = urlopen(
-  File "/usr/lib/python3.10/urllib/request.py", line 216, in urlopen
-    return opener.open(url, data, timeout)
-  File "/usr/lib/python3.10/urllib/request.py", line 525, in open
-    response = meth(req, response)
-  File "/usr/lib/python3.10/urllib/request.py", line 634, in http_response
-    response = self.parent.error(
-  File "/usr/lib/python3.10/urllib/request.py", line 563, in error
-    return self._call_chain(*args)
-  File "/usr/lib/python3.10/urllib/request.py", line 496, in _call_chain
-    result = func(*args)
-  File "/usr/lib/python3.10/urllib/request.py", line 643, in http_error_default
-    raise HTTPError(req.full_url, code, msg, hdrs, fp)
-urllib.error.HTTPError: HTTP Error 404: Not Found
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/weasyprint/images.py", line 301, in get_image_from_uri
-    with fetch(url_fetcher, url) as result:
-  File "/usr/lib/python3.10/contextlib.py", line 135, in __enter__
-    return next(self.gen)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/weasyprint/urls.py", line 260, in fetch
-    raise URLFetchingError(f'{type(exception).__name__}: {exception}')
-weasyprint.urls.URLFetchingError: HTTPError: HTTP Error 404: Not Found
-Step 6 - Creating PDF
-Step 7 - Adding PDF metadata
-Reading 'maxp' table from disk
-Decompiling 'maxp' table
-Took 0.001s to load 'maxp'
-Took 0.000s to prune 'maxp'
-maxp pruned
-Reading 'cmap' table from disk
-Decompiling 'cmap' table
-Reading 'post' table from disk
-Decompiling 'post' table
-Took 0.003s to load 'cmap'
-Took 0.000s to prune 'cmap'
-cmap pruned
-prep dropped
-Took 0.000s to load 'post'
-Took 0.000s to prune 'post'
-post pruned
-GPOS dropped
-GSUB dropped
-Reading 'glyf' table from disk
-Decompiling 'glyf' table
-Reading 'loca' table from disk
-Decompiling 'loca' table
-Reading 'head' table from disk
-Decompiling 'head' table
-Took 0.003s to load 'glyf'
-Took 0.000s to prune 'glyf'
-glyf pruned
-Took 0.000s to close glyph list over 'cmap'
-Added gid0 to subset
-Closing glyph list over 'glyf': 29 glyphs before
-Glyph names: ['.notdef', 'A', 'C', 'E', 'F', 'I', 'L', 'M', 'N', 'O', 'P', 'R', 'T', 'a', 'c', 'd', 'e', 'f', 'fi', 'h', 'i', 'l', 'm', 'n', 'o', 'r', 'space', 't', 'v']
-Glyph IDs:   [0, 1, 26, 36, 56, 69, 87, 93, 94, 100, 125, 128, 140, 190, 215, 221, 225, 246, 255, 259, 280, 286, 287, 294, 322, 334, 359, 387, 633]
-Closed glyph list over 'glyf': 31 glyphs after
-Glyph names: ['.notdef', 'A', 'C', 'E', 'F', 'I', 'L', 'M', 'N', 'O', 'P', 'R', 'T', 'a', 'c', 'd', 'dotlessi', 'e', 'f', 'fi', 'h', 'i', 'l', 'm', 'n', 'o', 'r', 'space', 't', 'uni0307', 'v']
-Glyph IDs:   [0, 1, 26, 36, 56, 69, 87, 93, 94, 100, 125, 128, 140, 190, 215, 221, 225, 246, 255, 259, 260, 280, 286, 287, 294, 322, 334, 359, 387, 633, 700]
-Took 0.002s to close glyph list over 'glyf'
-Retaining 31 glyphs
-head subsetting not needed
-hhea subsetting not needed
-maxp subsetting not needed
-OS/2 subsetting not needed
-Reading 'hmtx' table from disk
-Decompiling 'hmtx' table
-Reading 'hhea' table from disk
-Decompiling 'hhea' table
-Took 0.002s to subset 'hmtx'
-hmtx subsetted
-Took 0.000s to subset 'cmap'
-cmap subsetted
-loca subsetting not needed
-Took 0.000s to subset 'post'
-post subsetted
-gasp subsetting not needed
-STAT subsetting not needed
-Reading 'GDEF' table from disk
-Decompiling 'GDEF' table
-Took 0.003s to subset 'GDEF'
-GDEF subsetted
-name subsetting not needed
-Took 0.002s to subset 'glyf'
-glyf subsetted
-Took 0.000s to subset GlyphOrder
-Took 0.000s to prune 'head'
-head pruned
-Reading 'OS/2' table from disk
-Decompiling 'OS/2' table
-OS/2 Unicode ranges pruned: [0, 62]
-OS/2 CodePage ranges pruned: [0]
-Took 0.001s to prune 'glyf'
-glyf pruned
-Took 0.000s to prune 'GDEF'
-GDEF pruned
-Reading 'name' table from disk
-Decompiling 'name' table
-Reading 'gasp' table from disk
-Decompiling 'gasp' table
-Reading 'STAT' table from disk
-Decompiling 'STAT' table
-Took 0.002s to prune 'name'
-name pruned
-Reading 'maxp' table from disk
-Decompiling 'maxp' table
-Took 0.000s to load 'maxp'
-Took 0.000s to prune 'maxp'
-maxp pruned
-Reading 'cmap' table from disk
-Decompiling 'cmap' table
-Reading 'post' table from disk
-Decompiling 'post' table
-Took 0.012s to load 'cmap'
-Took 0.000s to prune 'cmap'
-cmap pruned
-prep dropped
-Took 0.000s to load 'post'
-Took 0.000s to prune 'post'
-post pruned
-GPOS dropped
-GSUB dropped
-Reading 'glyf' table from disk
-Decompiling 'glyf' table
-Reading 'loca' table from disk
-Decompiling 'loca' table
-Reading 'head' table from disk
-Decompiling 'head' table
-Took 0.011s to load 'glyf'
-Took 0.000s to prune 'glyf'
-glyf pruned
-Took 0.001s to close glyph list over 'cmap'
-Added gid0 to subset
-Closing glyph list over 'glyf': 54 glyphs before
-Glyph names: ['.notdef', 'A', 'C', 'D', 'E', 'F', 'I', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'a', 'ampersand', 'b', 'c', 'colon', 'd', 'e', 'eight', 'f', 'five', 'four', 'g', 'h', 'hyphen.case', 'i', 'j', 'k', 'l', 'm', 'n', 'nine', 'o', 'one', 'p', 'period', 'r', 's', 'seven', 'six', 'space', 't', 'three', 'two', 'u', 'v', 'w', 'x', 'y', 'z', 'zero']
-Glyph IDs:   [0, 2, 73, 84, 95, 137, 197, 321, 375, 384, 397, 411, 424, 456, 507, 578, 586, 597, 614, 647, 658, 670, 689, 719, 727, 736, 766, 773, 790, 843, 852, 871, 888, 913, 978, 982, 991, 996, 1020, 1339, 1340, 1341, 1343, 1344, 1345, 1347, 1348, 1349, 1350, 1423, 1469, 1500, 1503, 1747]
-Closed glyph list over 'glyf': 58 glyphs after
-Glyph names: ['.notdef', 'A', 'C', 'D', 'E', 'F', 'I', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'a', 'ampersand', 'b', 'c', 'colon', 'd', 'dotlessi', 'e', 'eight', 'f', 'five', 'four', 'g', 'h', 'hyphen', 'hyphen.case', 'i', 'j', 'k', 'l', 'm', 'n', 'nine', 'o', 'one', 'p', 'period', 'r', 's', 'seven', 'six', 'space', 't', 'three', 'two', 'u', 'uni0237', 'uni0307', 'v', 'w', 'x', 'y', 'z', 'zero']
-Glyph IDs:   [0, 2, 73, 84, 95, 137, 197, 321, 375, 384, 397, 411, 424, 456, 507, 578, 586, 597, 614, 647, 658, 670, 689, 690, 711, 719, 727, 736, 766, 773, 790, 843, 852, 871, 888, 913, 978, 982, 991, 996, 1020, 1339, 1340, 1341, 1343, 1344, 1345, 1347, 1348, 1349, 1350, 1423, 1457, 1469, 1500, 1503, 1747, 2645]
-Took 0.002s to close glyph list over 'glyf'
-Retaining 58 glyphs
-head subsetting not needed
-hhea subsetting not needed
-maxp subsetting not needed
-OS/2 subsetting not needed
-Reading 'hmtx' table from disk
-Decompiling 'hmtx' table
-Reading 'hhea' table from disk
-Decompiling 'hhea' table
-Took 0.004s to subset 'hmtx'
-hmtx subsetted
-Took 0.002s to subset 'cmap'
-cmap subsetted
-loca subsetting not needed
-Took 0.000s to subset 'post'
-post subsetted
-gasp subsetting not needed
-STAT subsetting not needed
-Reading 'GDEF' table from disk
-Decompiling 'GDEF' table
-Took 0.003s to subset 'GDEF'
-GDEF subsetted
-name subsetting not needed
-Took 0.051s to subset 'glyf'
-glyf subsetted
-Took 0.000s to subset GlyphOrder
-Took 0.000s to prune 'head'
-head pruned
-Reading 'OS/2' table from disk
-Decompiling 'OS/2' table
-OS/2 Unicode ranges pruned: [0, 60]
-OS/2 CodePage ranges pruned: [0]
-Took 0.002s to prune 'glyf'
-glyf pruned
-Took 0.000s to prune 'GDEF'
-GDEF pruned
-Reading 'name' table from disk
-Decompiling 'name' table
-Reading 'gasp' table from disk
-Decompiling 'gasp' table
-Reading 'STAT' table from disk
-Decompiling 'STAT' table
-Took 0.002s to prune 'name'
-name pruned
-Reading 'maxp' table from disk
-Decompiling 'maxp' table
-Took 0.000s to load 'maxp'
-Took 0.000s to prune 'maxp'
-maxp pruned
-Reading 'cmap' table from disk
-Decompiling 'cmap' table
-Reading 'post' table from disk
-Decompiling 'post' table
-Took 0.009s to load 'cmap'
-Took 0.000s to prune 'cmap'
-cmap pruned
-prep dropped
-Took 0.000s to load 'post'
-Took 0.000s to prune 'post'
-post pruned
-GPOS dropped
-GSUB dropped
-Reading 'glyf' table from disk
-Decompiling 'glyf' table
-Reading 'loca' table from disk
-Decompiling 'loca' table
-Reading 'head' table from disk
-Decompiling 'head' table
-Took 0.005s to load 'glyf'
-Took 0.000s to prune 'glyf'
-glyf pruned
-Took 0.001s to close glyph list over 'cmap'
-Added gid0 to subset
-Closing glyph list over 'glyf': 49 glyphs before
-Glyph names: ['.notdef', 'A', 'B', 'C', 'D', 'E', 'H', 'I', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'a', 'at', 'b', 'c', 'd', 'e', 'eight', 'f', 'g', 'h', 'i', 'j', 'l', 'm', 'n', 'o', 'p', 'period', 'r', 's', 'six', 'space', 't', 'three', 'u', 'v', 'w', 'x', 'y', 'zero']
-Glyph IDs:   [0, 2, 65, 73, 84, 95, 161, 197, 292, 300, 321, 375, 384, 397, 411, 424, 456, 459, 466, 507, 578, 586, 597, 614, 647, 658, 670, 689, 719, 736, 766, 773, 790, 843, 852, 871, 888, 913, 978, 982, 991, 996, 1339, 1343, 1347, 1349, 1443, 1500, 1747]
-Closed glyph list over 'glyf': 52 glyphs after
-Glyph names: ['.notdef', 'A', 'B', 'C', 'D', 'E', 'H', 'I', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'a', 'at', 'b', 'c', 'd', 'dotlessi', 'e', 'eight', 'f', 'g', 'h', 'i', 'j', 'l', 'm', 'n', 'o', 'p', 'period', 'r', 's', 'six', 'space', 't', 'three', 'u', 'uni0237', 'uni0307', 'v', 'w', 'x', 'y', 'zero']
-Glyph IDs:   [0, 2, 65, 73, 84, 95, 161, 197, 292, 300, 321, 375, 384, 397, 411, 424, 456, 459, 466, 507, 578, 586, 597, 614, 647, 658, 670, 689, 690, 711, 719, 736, 766, 773, 790, 843, 852, 871, 888, 913, 978, 982, 991, 996, 1339, 1343, 1347, 1349, 1443, 1500, 1747, 2645]
-Took 0.002s to close glyph list over 'glyf'
-Retaining 52 glyphs
-head subsetting not needed
-hhea subsetting not needed
-maxp subsetting not needed
-OS/2 subsetting not needed
-Reading 'hmtx' table from disk
-Decompiling 'hmtx' table
-Reading 'hhea' table from disk
-Decompiling 'hhea' table
-Took 0.003s to subset 'hmtx'
-hmtx subsetted
-Took 0.002s to subset 'cmap'
-cmap subsetted
-loca subsetting not needed
-Took 0.000s to subset 'post'
-post subsetted
-gasp subsetting not needed
-STAT subsetting not needed
-Reading 'GDEF' table from disk
-Decompiling 'GDEF' table
-Took 0.003s to subset 'GDEF'
-GDEF subsetted
-name subsetting not needed
-Took 0.002s to subset 'glyf'
-glyf subsetted
-Took 0.000s to subset GlyphOrder
-Took 0.000s to prune 'head'
-head pruned
-Reading 'OS/2' table from disk
-Decompiling 'OS/2' table
-OS/2 Unicode ranges pruned: [0]
-OS/2 CodePage ranges pruned: [0]
-Took 0.002s to prune 'glyf'
-glyf pruned
-Took 0.000s to prune 'GDEF'
-GDEF pruned
-Reading 'name' table from disk
-Decompiling 'name' table
-Reading 'gasp' table from disk
-Decompiling 'gasp' table
-Reading 'STAT' table from disk
-Decompiling 'STAT' table
-Took 0.002s to prune 'name'
-name pruned
-Not Found: /geoserver
-Not Found: /favicon.ico
-Not Found: /robots.txt
-Not Found: /favicon.ico
-Not Found: /favicon.ico
-Not Found: /robots.txt
-Forbidden: /search/
-Not Found: /.env
-Internal Server Error: /verify/55aa1ce9-3a29-4735-b178-cea724635f49/
-Traceback (most recent call last):
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 510, in parse
-    compile_func = self.tags[command]
-KeyError: 'static'
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
-    response = get_response(request)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/TIM/mysite/courses/views.py", line 2675, in verify_certificate
-    return render(request, 'courses/verify_certificate.html', context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
-    content = loader.render_to_string(template_name, context, request, using=using)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 61, in render_to_string
-    template = get_template(template_name, using=using)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 15, in get_template
-    return engine.get_template(template_name)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 79, in get_template
-    return Template(self.engine.get_template(template_name), self)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 177, in get_template
-    template, origin = self.find_template(template_name)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 159, in find_template
-    template = loader.get_template(name, skip=skip)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/cached.py", line 57, in get_template
-    template = super().get_template(template_name, skip)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/base.py", line 28, in get_template
-    return Template(
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 154, in __init__
-    self.nodelist = self.compile_nodelist()
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 196, in compile_nodelist
-    nodelist = parser.parse()
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 512, in parse
-    self.invalid_block_tag(token, command, parse_until)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 573, in invalid_block_tag
-    raise self.error(
-django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 30: 'static'. Did you forget to register or load this tag?
-Forbidden: /search/
-Not Found: /assets/img/icon/certificate.svg
-Forbidden: /search/
-Not Found: /.env
-Forbidden (Referer checking failed - no Referer.): /
-Not Found: /robots.txt
-Not Found: /robots.txt
-Partner logo found: https://ini.icei.ac.id/media/logos/oxford.png
-QR code generated: https://ini.icei.ac.id/media/qrcodes/certificate_7911c854-b717-4e60-8659-8e5ced8b8127.png
-Certificate 7911c854-b717-4e60-8659-8e5ced8b8127 saved for user learn
-Step 1 - Fetching and parsing HTML - HTML string
-Step 2 - Fetching and parsing CSS - CSS string
-Step 2 - Fetching and parsing CSS - https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@400;700&display=swap
-Ignored `pointer-events: none` at 204:13, the property does not apply for the print media.
-Step 3 - Applying CSS
-Step 4 - Creating formatting structure
-Step 5 - Creating layout - Page 1
-Step 5 - Creating layout - Page 2
-Failed to load image at 'https://ini.icei.ac.id/static/images/signature.png': HTTPError: HTTP Error 404: Not Found
-Error while loading image:
-Traceback (most recent call last):
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/weasyprint/urls.py", line 258, in fetch
-    result = url_fetcher(url)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/weasyprint/urls.py", line 223, in default_url_fetcher
-    response = urlopen(
-  File "/usr/lib/python3.10/urllib/request.py", line 216, in urlopen
-    return opener.open(url, data, timeout)
-  File "/usr/lib/python3.10/urllib/request.py", line 525, in open
-    response = meth(req, response)
-  File "/usr/lib/python3.10/urllib/request.py", line 634, in http_response
-    response = self.parent.error(
-  File "/usr/lib/python3.10/urllib/request.py", line 563, in error
-    return self._call_chain(*args)
-  File "/usr/lib/python3.10/urllib/request.py", line 496, in _call_chain
-    result = func(*args)
-  File "/usr/lib/python3.10/urllib/request.py", line 643, in http_error_default
-    raise HTTPError(req.full_url, code, msg, hdrs, fp)
-urllib.error.HTTPError: HTTP Error 404: Not Found
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/weasyprint/images.py", line 301, in get_image_from_uri
-    with fetch(url_fetcher, url) as result:
-  File "/usr/lib/python3.10/contextlib.py", line 135, in __enter__
-    return next(self.gen)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/weasyprint/urls.py", line 260, in fetch
-    raise URLFetchingError(f'{type(exception).__name__}: {exception}')
-weasyprint.urls.URLFetchingError: HTTPError: HTTP Error 404: Not Found
-Step 6 - Creating PDF
-Step 7 - Adding PDF metadata
-Reading 'maxp' table from disk
-Decompiling 'maxp' table
-Took 0.001s to load 'maxp'
-Took 0.000s to prune 'maxp'
-maxp pruned
-Reading 'cmap' table from disk
-Decompiling 'cmap' table
-Reading 'post' table from disk
-Decompiling 'post' table
-Took 0.003s to load 'cmap'
-Took 0.000s to prune 'cmap'
-cmap pruned
-prep dropped
-Took 0.000s to load 'post'
-Took 0.000s to prune 'post'
-post pruned
-GPOS dropped
-GSUB dropped
-Reading 'glyf' table from disk
-Decompiling 'glyf' table
-Reading 'loca' table from disk
-Decompiling 'loca' table
-Reading 'head' table from disk
-Decompiling 'head' table
-Took 0.003s to load 'glyf'
-Took 0.000s to prune 'glyf'
-glyf pruned
-Took 0.000s to close glyph list over 'cmap'
-Added gid0 to subset
-Closing glyph list over 'glyf': 28 glyphs before
-Glyph names: ['.notdef', 'A', 'C', 'E', 'F', 'I', 'L', 'M', 'N', 'O', 'P', 'R', 'T', 'a', 'c', 'd', 'e', 'f', 'fi', 'h', 'i', 'm', 'n', 'o', 'r', 'space', 't', 'v']
-Glyph IDs:   [0, 1, 26, 36, 56, 69, 87, 93, 94, 100, 125, 128, 140, 190, 215, 221, 225, 246, 255, 259, 286, 287, 294, 322, 334, 359, 387, 633]
-Closed glyph list over 'glyf': 30 glyphs after
-Glyph names: ['.notdef', 'A', 'C', 'E', 'F', 'I', 'L', 'M', 'N', 'O', 'P', 'R', 'T', 'a', 'c', 'd', 'dotlessi', 'e', 'f', 'fi', 'h', 'i', 'm', 'n', 'o', 'r', 'space', 't', 'uni0307', 'v']
-Glyph IDs:   [0, 1, 26, 36, 56, 69, 87, 93, 94, 100, 125, 128, 140, 190, 215, 221, 225, 246, 255, 259, 260, 286, 287, 294, 322, 334, 359, 387, 633, 700]
-Took 0.002s to close glyph list over 'glyf'
-Retaining 30 glyphs
-head subsetting not needed
-hhea subsetting not needed
-maxp subsetting not needed
-OS/2 subsetting not needed
-Reading 'hmtx' table from disk
-Decompiling 'hmtx' table
-Reading 'hhea' table from disk
-Decompiling 'hhea' table
-Took 0.002s to subset 'hmtx'
+Took 0.001s to subset 'hmtx'
 hmtx subsetted
 Took 0.000s to subset 'cmap'
 cmap subsetted
@@ -2030,9 +607,9 @@ Took 0.000s to prune 'head'
 head pruned
 Reading 'OS/2' table from disk
 Decompiling 'OS/2' table
-OS/2 Unicode ranges pruned: [0, 62]
+OS/2 Unicode ranges pruned: [0]
 OS/2 CodePage ranges pruned: [0]
-Took 0.001s to prune 'glyf'
+Took 0.000s to prune 'glyf'
 glyf pruned
 Took 0.000s to prune 'GDEF'
 GDEF pruned
@@ -2044,342 +621,135 @@ Reading 'STAT' table from disk
 Decompiling 'STAT' table
 Took 0.003s to prune 'name'
 name pruned
-Reading 'maxp' table from disk
-Decompiling 'maxp' table
-Took 0.000s to load 'maxp'
-Took 0.000s to prune 'maxp'
-maxp pruned
-Reading 'cmap' table from disk
-Decompiling 'cmap' table
-Reading 'post' table from disk
-Decompiling 'post' table
-Took 0.011s to load 'cmap'
-Took 0.000s to prune 'cmap'
-cmap pruned
-prep dropped
-Took 0.000s to load 'post'
-Took 0.000s to prune 'post'
-post pruned
-GPOS dropped
-GSUB dropped
-Reading 'glyf' table from disk
-Decompiling 'glyf' table
-Reading 'loca' table from disk
-Decompiling 'loca' table
-Reading 'head' table from disk
-Decompiling 'head' table
-Took 0.006s to load 'glyf'
-Took 0.000s to prune 'glyf'
-glyf pruned
-Took 0.001s to close glyph list over 'cmap'
-Added gid0 to subset
-Closing glyph list over 'glyf': 54 glyphs before
-Glyph names: ['.notdef', 'A', 'C', 'D', 'E', 'F', 'I', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'a', 'ampersand', 'b', 'c', 'colon', 'd', 'e', 'eight', 'f', 'five', 'four', 'g', 'h', 'hyphen.case', 'i', 'j', 'k', 'l', 'm', 'n', 'nine', 'o', 'one', 'p', 'period', 'r', 's', 'seven', 'six', 'space', 't', 'three', 'two', 'u', 'v', 'w', 'x', 'y', 'z', 'zero']
-Glyph IDs:   [0, 2, 73, 84, 95, 137, 197, 321, 375, 384, 397, 411, 424, 456, 507, 578, 586, 597, 614, 647, 658, 670, 689, 719, 727, 736, 766, 773, 790, 843, 852, 871, 888, 913, 978, 982, 991, 996, 1020, 1339, 1340, 1341, 1343, 1344, 1345, 1347, 1348, 1349, 1350, 1423, 1469, 1500, 1503, 1747]
-Closed glyph list over 'glyf': 58 glyphs after
-Glyph names: ['.notdef', 'A', 'C', 'D', 'E', 'F', 'I', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'a', 'ampersand', 'b', 'c', 'colon', 'd', 'dotlessi', 'e', 'eight', 'f', 'five', 'four', 'g', 'h', 'hyphen', 'hyphen.case', 'i', 'j', 'k', 'l', 'm', 'n', 'nine', 'o', 'one', 'p', 'period', 'r', 's', 'seven', 'six', 'space', 't', 'three', 'two', 'u', 'uni0237', 'uni0307', 'v', 'w', 'x', 'y', 'z', 'zero']
-Glyph IDs:   [0, 2, 73, 84, 95, 137, 197, 321, 375, 384, 397, 411, 424, 456, 507, 578, 586, 597, 614, 647, 658, 670, 689, 690, 711, 719, 727, 736, 766, 773, 790, 843, 852, 871, 888, 913, 978, 982, 991, 996, 1020, 1339, 1340, 1341, 1343, 1344, 1345, 1347, 1348, 1349, 1350, 1423, 1457, 1469, 1500, 1503, 1747, 2645]
-Took 0.002s to close glyph list over 'glyf'
-Retaining 58 glyphs
-head subsetting not needed
-hhea subsetting not needed
-maxp subsetting not needed
-OS/2 subsetting not needed
-Reading 'hmtx' table from disk
-Decompiling 'hmtx' table
-Reading 'hhea' table from disk
-Decompiling 'hhea' table
-Took 0.005s to subset 'hmtx'
-hmtx subsetted
-Took 0.003s to subset 'cmap'
-cmap subsetted
-loca subsetting not needed
-Took 0.000s to subset 'post'
-post subsetted
-gasp subsetting not needed
-STAT subsetting not needed
-Reading 'GDEF' table from disk
-Decompiling 'GDEF' table
-Took 0.004s to subset 'GDEF'
-GDEF subsetted
-name subsetting not needed
-Took 0.003s to subset 'glyf'
-glyf subsetted
-Took 0.000s to subset GlyphOrder
-Took 0.000s to prune 'head'
-head pruned
-Reading 'OS/2' table from disk
-Decompiling 'OS/2' table
-OS/2 Unicode ranges pruned: [0, 60]
-OS/2 CodePage ranges pruned: [0]
-Took 0.001s to prune 'glyf'
-glyf pruned
-Took 0.000s to prune 'GDEF'
-GDEF pruned
-Reading 'name' table from disk
-Decompiling 'name' table
-Reading 'gasp' table from disk
-Decompiling 'gasp' table
-Reading 'STAT' table from disk
-Decompiling 'STAT' table
-Took 0.002s to prune 'name'
-name pruned
-Reading 'maxp' table from disk
-Decompiling 'maxp' table
-Took 0.000s to load 'maxp'
-Took 0.000s to prune 'maxp'
-maxp pruned
-Reading 'cmap' table from disk
-Decompiling 'cmap' table
-Reading 'post' table from disk
-Decompiling 'post' table
-Took 0.010s to load 'cmap'
-Took 0.000s to prune 'cmap'
-cmap pruned
-prep dropped
-Took 0.000s to load 'post'
-Took 0.000s to prune 'post'
-post pruned
-GPOS dropped
-GSUB dropped
-Reading 'glyf' table from disk
-Decompiling 'glyf' table
-Reading 'loca' table from disk
-Decompiling 'loca' table
-Reading 'head' table from disk
-Decompiling 'head' table
-Took 0.006s to load 'glyf'
-Took 0.000s to prune 'glyf'
-glyf pruned
-Took 0.001s to close glyph list over 'cmap'
-Added gid0 to subset
-Closing glyph list over 'glyf': 49 glyphs before
-Glyph names: ['.notdef', 'A', 'B', 'C', 'D', 'E', 'H', 'I', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'a', 'at', 'b', 'c', 'd', 'e', 'eight', 'f', 'g', 'h', 'i', 'j', 'l', 'm', 'n', 'o', 'p', 'period', 'r', 's', 'six', 'space', 't', 'three', 'u', 'v', 'w', 'x', 'y', 'zero']
-Glyph IDs:   [0, 2, 65, 73, 84, 95, 161, 197, 292, 300, 321, 375, 384, 397, 411, 424, 456, 459, 466, 507, 578, 586, 597, 614, 647, 658, 670, 689, 719, 736, 766, 773, 790, 843, 852, 871, 888, 913, 978, 982, 991, 996, 1339, 1343, 1347, 1349, 1443, 1500, 1747]
-Closed glyph list over 'glyf': 52 glyphs after
-Glyph names: ['.notdef', 'A', 'B', 'C', 'D', 'E', 'H', 'I', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'a', 'at', 'b', 'c', 'd', 'dotlessi', 'e', 'eight', 'f', 'g', 'h', 'i', 'j', 'l', 'm', 'n', 'o', 'p', 'period', 'r', 's', 'six', 'space', 't', 'three', 'u', 'uni0237', 'uni0307', 'v', 'w', 'x', 'y', 'zero']
-Glyph IDs:   [0, 2, 65, 73, 84, 95, 161, 197, 292, 300, 321, 375, 384, 397, 411, 424, 456, 459, 466, 507, 578, 586, 597, 614, 647, 658, 670, 689, 690, 711, 719, 736, 766, 773, 790, 843, 852, 871, 888, 913, 978, 982, 991, 996, 1339, 1343, 1347, 1349, 1443, 1500, 1747, 2645]
-Took 0.002s to close glyph list over 'glyf'
-Retaining 52 glyphs
-head subsetting not needed
-hhea subsetting not needed
-maxp subsetting not needed
-OS/2 subsetting not needed
-Reading 'hmtx' table from disk
-Decompiling 'hmtx' table
-Reading 'hhea' table from disk
-Decompiling 'hhea' table
-Took 0.004s to subset 'hmtx'
-hmtx subsetted
-Took 0.002s to subset 'cmap'
-cmap subsetted
-loca subsetting not needed
-Took 0.000s to subset 'post'
-post subsetted
-gasp subsetting not needed
-STAT subsetting not needed
-Reading 'GDEF' table from disk
-Decompiling 'GDEF' table
-Took 0.003s to subset 'GDEF'
-GDEF subsetted
-name subsetting not needed
-Took 0.002s to subset 'glyf'
-glyf subsetted
-Took 0.000s to subset GlyphOrder
-Took 0.000s to prune 'head'
-head pruned
-Reading 'OS/2' table from disk
-Decompiling 'OS/2' table
-OS/2 Unicode ranges pruned: [0]
-OS/2 CodePage ranges pruned: [0]
-Took 0.001s to prune 'glyf'
-glyf pruned
-Took 0.000s to prune 'GDEF'
-GDEF pruned
-Reading 'name' table from disk
-Decompiling 'name' table
-Reading 'gasp' table from disk
-Decompiling 'gasp' table
-Reading 'STAT' table from disk
-Decompiling 'STAT' table
-Took 0.002s to prune 'name'
-name pruned
-Forbidden: /search/
-Internal Server Error: /learner/learn/
+Internal Server Error: /reports/user-progress/
 Traceback (most recent call last):
   File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
     response = get_response(request)
   File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/TIM/mysite/learner/views.py", line 105, in learner_detail
-    return render(request, 'learner/learner_detail.html', context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
-    content = loader.render_to_string(template_name, context, request, using=using)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 62, in render_to_string
-    return template.render(context, request)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 107, in render
-    return self.template.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 171, in render
-    return self._render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
-    return self.nodelist.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in render
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in <listcomp>
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
-    return self.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 159, in render
-    return compiled_parent._render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
-    return self.nodelist.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in render
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in <listcomp>
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
-    return self.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 65, in render
-    result = block.nodelist.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in render
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in <listcomp>
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
-    return self.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 480, in render
-    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/base.py", line 88, in reverse
-    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
-    raise NoReverseMatch(msg)
-django.urls.exceptions.NoReverseMatch: Reverse for 'profile' not found. 'profile' is not a valid view function or pattern name.
-Internal Server Error: /learner/learn/
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 1717, in user_micro_progress_report
+    average_progress = update_microcredential_progress(user, microcredential)  # Progres rata-rata MicroCredential
+NameError: name 'update_microcredential_progress' is not defined
+Invalid referer:  from IP 
+Forbidden: /search/
+Invalid referer:  from IP 
+Forbidden: /search/
+Internal Server Error: /reports/user-progress/
 Traceback (most recent call last):
   File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
     response = get_response(request)
   File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/TIM/mysite/learner/views.py", line 109, in learner_detail
-    return render(request, 'learner/learner_detail.html', context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
-    content = loader.render_to_string(template_name, context, request, using=using)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 62, in render_to_string
-    return template.render(context, request)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 107, in render
-    return self.template.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 171, in render
-    return self._render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
-    return self.nodelist.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in render
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in <listcomp>
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
-    return self.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 159, in render
-    return compiled_parent._render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
-    return self.nodelist.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in render
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in <listcomp>
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
-    return self.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 65, in render
-    result = block.nodelist.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in render
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in <listcomp>
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
-    return self.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 480, in render
-    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/base.py", line 88, in reverse
-    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
-    raise NoReverseMatch(msg)
-django.urls.exceptions.NoReverseMatch: Reverse for 'profile' not found. 'profile' is not a valid view function or pattern name.
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 1719, in user_micro_progress_report
+    average_progress = update_microcredential_progress(user, microcredential)  # Progres rata-rata MicroCredential
+  File "/home/TIM/mysite/courses/views.py", line 1682, in update_microcredential_progress
+    total_progress += progress  # Tambahkan progres kursus
+TypeError: unsupported operand type(s) for +=: 'decimal.Decimal' and 'float'
+Invalid referer:  from IP 
 Forbidden: /search/
-Internal Server Error: /learner/learn/
+Internal Server Error: /reports/user-progress/
 Traceback (most recent call last):
   File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
     response = get_response(request)
   File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/TIM/mysite/learner/views.py", line 109, in learner_detail
-    return render(request, 'learner/learner_detail.html', context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
-    content = loader.render_to_string(template_name, context, request, using=using)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 62, in render_to_string
-    return template.render(context, request)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 107, in render
-    return self.template.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 171, in render
-    return self._render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
-    return self.nodelist.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in render
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in <listcomp>
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
-    return self.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 159, in render
-    return compiled_parent._render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
-    return self.nodelist.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in render
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in <listcomp>
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
-    return self.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 65, in render
-    result = block.nodelist.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in render
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in <listcomp>
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
-    return self.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 480, in render
-    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 1750, in user_micro_progress_report
+    average_progress = update_microcredential_progress(user, microcredential)
+  File "/home/TIM/mysite/courses/views.py", line 1690, in update_microcredential_progress
+    score_percentage = score_data.percentage
+AttributeError: 'Score' object has no attribute 'percentage'
+Internal Server Error: /reports/user-progress/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 1722, in user_micro_progress_report
+    return redirect('microcredential_report')  # Ganti dengan URL yang sesuai
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 49, in redirect
+    return redirect_class(resolve_url(to, *args, **kwargs))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 180, in resolve_url
+    return reverse(to, args=args, kwargs=kwargs)
   File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/base.py", line 88, in reverse
     return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
   File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
     raise NoReverseMatch(msg)
-django.urls.exceptions.NoReverseMatch: Reverse for 'profile' not found. 'profile' is not a valid view function or pattern name.
-Not Found: /odinhttpcall1745900705
-Not Found: /sdk
-Not Found: /HNAP1
-Not Found: /evox/about
-Forbidden (Referer checking failed - no Referer.): /
+django.urls.exceptions.NoReverseMatch: Reverse for 'microcredential_report' not found. 'microcredential_report' is not a valid view function or pattern name.
+Invalid referer:  from IP 
 Forbidden: /search/
+Invalid referer:  from IP 
 Forbidden: /search/
-Not Found: /.well-known/traffic-advice
-Not Found: /course-detail/1/full-stack-development/
+Internal Server Error: /reports/user-progress/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 1725, in user_micro_progress_report
+    return redirect('microcredential_report')  # Ganti dengan URL yang sesuai
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 49, in redirect
+    return redirect_class(resolve_url(to, *args, **kwargs))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 180, in resolve_url
+    return reverse(to, args=args, kwargs=kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'microcredential_report' not found. 'microcredential_report' is not a valid view function or pattern name.
+Internal Server Error: /reports/user-progress/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 1722, in user_micro_progress_report
+    microcredentials = MicroCredential.objects.filter(user=user)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1476, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1494, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1501, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1609, in add_q
+    clause, _ = self._add_q(q_object, self.used_aliases)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1641, in _add_q
+    child_clause, needed_inner = self.build_filter(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1491, in build_filter
+    lookups, parts, reffed_expression = self.solve_lookup_type(arg, summarize)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1303, in solve_lookup_type
+    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1768, in names_to_path
+    raise FieldError(
+django.core.exceptions.FieldError: Cannot resolve keyword 'user' into field. Choices are: author, author_id, category, category_id, created_at, description, edited_on, end_date, enrollments, id, image, microcredentialcomment, min_total_score, required_courses, reviews, slug, start_date, status, title, user_progress, users
+Not Found: /course-detail/3/big-data-developer/course-wishlist.html
+Not Found: /course-detail/4/build-powerful-web-applications-with-django/course-wishlist.html
+Not Found: /course-detail/1/backend-development/course-wishlist.html
+Internal Server Error: /reports/user-progress/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 1750, in user_micro_progress_report
+    average_progress = update_microcredential_progress(user, microcredential)
+  File "/home/TIM/mysite/courses/views.py", line 1690, in update_microcredential_progress
+    score_percentage = score_data.percentage
+AttributeError: 'Score' object has no attribute 'percentage'
+Invalid referer:  from IP 
 Forbidden: /search/
-Forbidden: /search/
-Not Found: /.git/config
-Forbidden: /search/
-Forbidden: /search/
-Forbidden: /search/
-Forbidden: /search/
-Forbidden: /search/
-Forbidden: /search/
-Forbidden: /search/
-Not Found: /.env
-Forbidden: /search/
-Forbidden: /search/
-Forbidden: /search/
-Forbidden: /search/
-Not Found: /robots.txt
-Not Found: /robots.txt
-Forbidden: /search/
-Method Not Allowed: /
-User 4 deleted their search history.
-User 4 deleted their search history.

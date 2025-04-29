@@ -15,68 +15,87 @@
                     </form>
                 </div>
 
-                   <table class="table table-hover">
-                      <thead>
-                          <tr>
-                              <th scope="col">Title</th>
-                              <th scope="col">enroll</th>
-                              <th scope="col">Actions</th>
-                          </tr>
-                      </thead>
-                      <tbody>
-                          {% for microcredential in page_obj %}
-                          <tr>
-                              <td><a href="{% url 'courses:microcredential-detail' microcredential.pk %}">{{ microcredential.title }}</a></td>
-                               <td>{{ microcredential.num_enrollments }}</td>
-                              <td>
-                                  <a href="{% url 'courses:microcredential-update' microcredential.pk %}" class="btn btn-warning btn-sm">Edit</a>
-                                  <a href="{% url 'courses:microcredential-delete' microcredential.pk %}" class="btn btn-danger btn-sm">Delete</a>
-                              </td>
-                          </tr>
-                          {% empty %}
-                          <tr>
-                              <td colspan="2">No microcredentials found.</td>
-                          </tr>
-                          {% endfor %}
-                      </tbody>
-                  </table>
+                    {% if page_obj.object_list %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover bg-white">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Title</th>
+                            <th>Courses</th>
+                            <th>Participants</th>
+                            <th>Average Rating</th>
+                            <th>Reviews</th>
+                            <th>Status</th>
+                            <th>Duration</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for mc in page_obj.object_list %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'courses:micro_detail' mc.id mc.slug %}">
+                                        {{ mc.title }}
+                                    </a><br>
+                                    <small class="text-muted">{{ mc.category.name }}</small>
+                                </td>
+                                <td>{{ mc.num_courses }}</td>
+                                <td><a href="{% url 'courses:user_micro_progress_report' %}">{{ mc.num_enrollments }}</a></td>
+                                <td>
+                                    {% if mc.avg_rating %}
+                                        {{ mc.avg_rating|floatformat:1 }} / 5
+                                    {% else %}
+                                        <span class="text-muted">Belum ada</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ mc.num_reviews }}</td>
+                                <td>
+                                    <span class="badge {% if mc.status == 'active' %}bg-success{% elif mc.status == 'draft' %}bg-warning{% else %}bg-secondary{% endif %}">
+                                        {{ mc.status|capfirst }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if mc.start_date and mc.end_date %}
+                                        {{ mc.start_date }} - {{ mc.end_date }}
+                                    {% else %}
+                                        <span class="text-muted">Tidak ditentukan</span>
+                                    {% endif %}
+                                </td>
+                                 <td><a href="{% url 'courses:microcredential-update' mc.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                                 {% if mc.status != 'active' %}
+                                    <a href="{% url 'courses:microcredential-delete' mc.pk %}" class="btn btn-danger btn-sm">Delete</a>
+                                {% endif %}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
 
-
-
-                  <!-- Pagination -->
-                        <nav>
-                            <ul class="pagination justify-content-center">
-                                {% if page_obj.has_previous %}
-                                <li class="page-item">
-                                    <a class="page-link" href="?page=1&search={{ search_query }}" aria-label="First">
-                                        <span aria-hidden="true">&laquo;&laquo;</span>
-                                    </a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}&search={{ search_query }}" aria-label="Previous">
-                                        <span aria-hidden="true">&laquo;</span>
-                                    </a>
-                                </li>
-                                {% endif %}
-
-                                <li class="page-item active" aria-current="page">
-                                    <span class="page-link">{{ page_obj.number }}</span>
-                                </li>
-
-                                {% if page_obj.has_next %}
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{ page_obj.next_page_number }}&search={{ search_query }}" aria-label="Next">
-                                        <span aria-hidden="true">&raquo;</span>
-                                    </a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&search={{ search_query }}" aria-label="Last">
-                                        <span aria-hidden="true">&raquo;&raquo;</span>
-                                    </a>
-                                </li>
-                                {% endif %}
-                            </ul>
-                        </nav>
+            <!-- Pagination -->
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}&search={{ search_query }}">&laquo;</a>
+                        </li>
+                    {% endif %}
+                    {% for num in page_obj.paginator.page_range %}
+                        <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                            <a class="page-link" href="?page={{ num }}&search={{ search_query }}">{{ num }}</a>
+                        </li>
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}&search={{ search_query }}">&raquo;</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% else %}
+            <div class="alert alert-info text-center">
+                Tidak ada MicroCredential yang ditemukan.
+            </div>
+        {% endif %}
                         
             
 

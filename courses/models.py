@@ -768,7 +768,7 @@ class UserMicroCredential(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.microcredential}"
-from django.db import models
+
 
 class MicroCredentialReview(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="microcredential_reviews")

@@ -1,0 +1,40 @@
+{% extends 'home/tes.html' %}
+{% block content %}
+<div class="container py-5">
+    <h2>User MicroCredential Progress Report</h2>
+    <table class="table table-bordered table-striped mt-4">
+        <thead class="table-dark">
+            <tr>
+                <th>User</th>
+                <th>MicroCredential</th>
+                <th>Course</th>
+                <th>Score (%)</th>
+                <th>Treshold</th>
+                <th>Status</th>
+                <th>Progress</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for progress in progress_list %}
+                <tr>
+                    <td>{{ progress.user.username }}</td>
+                    <td>{{ progress.microcredential.title }}</td>
+                    <td>{{ progress.course.course_name }}</td>
+                    <td>{{ progress.progress|floatformat:2 }}%</td>
+                    <td>{{ progress.score|floatformat:2 }}</td>
+                    <td>{{ progress.completed|yesno:"Yes,No" }}</td>
+                    <td>
+                        {% if progress.microcredential.average_progress %}
+                            {{ progress.microcredential.average_progress }}%
+                        {% else %}
+                            Not Available
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="7" class="text-center">No progress data found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

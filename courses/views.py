@@ -14,7 +14,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import MicroCredentialCommentForm,MicroCredentialReviewForm,LTIExternalToolForm,CoursePriceForm,CourseRatingForm,SosPostForm,MicroCredentialForm,AskOraForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from .utils import user_has_passed_course,check_for_blacklisted_keywords,is_suspicious
 from django.http import JsonResponse
-from .models import MicroCredentialComment,MicroCredentialReview,UserMicroProgress,SearchHistory,Certificate,LTIExternalTool,Course,CourseRating,Like,SosPost,Hashtag,UserProfile,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
+from .models import UserMicroCredential,MicroCredentialComment,MicroCredentialReview,UserMicroProgress,SearchHistory,Certificate,LTIExternalTool,Course,CourseRating,Like,SosPost,Hashtag,UserProfile,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
 from authentication.models import CustomUser, Universiti
 from blog.models import BlogPost
 from django.template.loader import render_to_string
@@ -63,7 +63,7 @@ from oauthlib.common import to_unicode  # For encoding utilities
 import hmac
 import hashlib
 import base64
-
+from decimal import Decimal, ROUND_DOWN
 import logging
 
 @login_required
@@ -1646,24 +1646,88 @@ def listmic(request):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
 
-    # Pencarian berdasarkan query parameter 'search'
+    # Search logic
     search_query = request.GET.get('search', '')
+    microcredentials = MicroCredential.objects.all()
     if search_query:
-        # Filter berdasarkan pencarian
-        microcredentials = MicroCredential.objects.filter(title__icontains=search_query)
-    else:
-        # Ambil semua microcredential jika tidak ada pencarian
-        microcredentials = MicroCredential.objects.all()
+        microcredentials = microcredentials.filter(title__icontains=search_query)
 
-    # Mengambil data microcredentials dan menghitung jumlah peserta yang terdaftar
-    microcredentials = microcredentials.annotate(num_enrollments=Count('enrollments'))
+    # Annotate dengan perhitungan yang akurat
+    microcredentials = microcredentials.annotate(
+        num_enrollments=Count('enrollments', distinct=True),
+        avg_rating=Avg('reviews__rating'),
+        num_courses=Count('required_courses', distinct=True),
+        num_reviews=Count('reviews', distinct=True)
+    )
 
-    # Pagination: Menampilkan 10 microcredentials per halaman
+    # Pagination
     paginator = Paginator(microcredentials, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'micro/list_micro.html', {'page_obj': page_obj, 'search_query': search_query})
+    return render(request, 'micro/list_micro.html', {
+        'page_obj': page_obj,
+        'search_query': search_query,
+    })
+
+def update_microcredential_progress(user, microcredential):
+    total_courses = microcredential.required_courses.all()
+    completed_courses = 0
+    total_progress = Decimal('0')
+
+    for course in total_courses:
+        try:
+            # Dapatkan progres dari CourseProgress dan pastikan untuk mengonversinya ke Decimal
+            progress = Decimal(CourseProgress.objects.get(user=user, course=course).progress_percentage)
+            total_progress += progress
+
+            # Jika progres sudah 100%, tandai sebagai selesai
+            if progress == Decimal('100.00'):
+                completed_courses += 1
+        except CourseProgress.DoesNotExist:
+            continue
+
+    # Hitung rata-rata progres dan pastikan untuk membulatkan ke 2 desimal
+    if total_courses:
+        average_progress = total_progress / len(total_courses)
+    else:
+        average_progress = Decimal('0')
+
+    # Pembulatan rata-rata progres ke 2 angka desimal
+    average_progress = average_progress.quantize(Decimal('0.01'), rounding=ROUND_DOWN)
+
+    # Periksa apakah semua kursus sudah selesai
+    if completed_courses == len(total_courses):
+        # Tandai MicroCredential sebagai selesai
+        user_microcredential = UserMicroCredential.objects.get(user=user, microcredential=microcredential)
+        user_microcredential.completed = True
+        user_microcredential.save()
+
+    return average_progress
+
+@login_required
+def user_micro_progress_report(request):
+    """
+    Laporan progres microcredential untuk pengguna.
+    """
+    progress_list = UserMicroProgress.objects.select_related(
+        'user', 'course', 'microcredential'
+    ).order_by('user__username', 'microcredential__title')
+
+    # Proses untuk setiap UserMicroProgress
+    for progress in progress_list:
+        microcredential = progress.microcredential
+        user = progress.user
+
+        # Hitung rata-rata progres microcredential
+        average_progress = update_microcredential_progress(user, microcredential)
+
+        # Update data progres rata-rata jika diperlukan
+        progress.microcredential.average_progress = average_progress
+
+    return render(request, 'micro/user_micro_progress.html', {
+        'progress_list': progress_list
+    })
 
 
 def calculate_score_for_user_and_course(user, course):
