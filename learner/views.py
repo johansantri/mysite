@@ -20,72 +20,72 @@ from django.db.models import Avg, Prefetch
 
 def learner_detail(request, username):
     """
-    Menampilkan nama, foto, daftar kursus yang lulus, informasi instructor, dan detail pengguna untuk akses publik
+    Menampilkan profil learner secara publik, termasuk kursus yang diselesaikan (lulus),
+    informasi instructor jika ada, dan progres belajar.
     """
-    # Dapatkan learner berdasarkan username
     learner = get_object_or_404(CustomUser, username=username)
 
-    # Ambil semua enrollment untuk learner
-    enrollments = Enrollment.objects.filter(user=learner).select_related('course').prefetch_related(
-        Prefetch('course__sections__materials', queryset=Material.objects.all()),
-        Prefetch('course__sections__assessments', queryset=Assessment.objects.all())
-    )
+    # Ambil semua enrollment dan prefetch relasi yang diperlukan
+    enrollments = Enrollment.objects.filter(user=learner).select_related('course')
 
-    # Ambil instructor jika ada
+    # Jika learner juga instructor, ambil profil instructor-nya
     instructor = Instructor.objects.filter(user=learner).first()
 
-    # Siapkan data kursus yang lulus
     completed_courses_data = []
+
     for enrollment in enrollments:
         course = enrollment.course
 
-        # Hitung progress berdasarkan material dan asesmen
-        materials = Material.objects.filter(section__courses=course)
+        # Hitung progress materi
+        materials = Material.objects.filter(section__courses=course).distinct()
         total_materials = materials.count()
         materials_read = MaterialRead.objects.filter(user=learner, material__in=materials).count()
         materials_read_percentage = (materials_read / total_materials * 100) if total_materials > 0 else 0
 
-        assessments = Assessment.objects.filter(section__courses=course)
+        # Hitung progress assessment
+        assessments = Assessment.objects.filter(section__courses=course).distinct()
         total_assessments = assessments.count()
         assessments_completed = AssessmentRead.objects.filter(user=learner, assessment__in=assessments).count()
         assessments_completed_percentage = (assessments_completed / total_assessments * 100) if total_assessments > 0 else 0
 
+        # Gabungkan progress keseluruhan
         progress = (materials_read_percentage + assessments_completed_percentage) / 2 if (total_materials + total_assessments) > 0 else 0
 
-        # Update CourseProgress
-        course_progress, created = CourseProgress.objects.get_or_create(user=learner, course=course)
+        # Simpan atau update ke model CourseProgress
+        course_progress, _ = CourseProgress.objects.get_or_create(user=learner, course=course)
         course_progress.progress_percentage = progress
         course_progress.save()
 
-        # Ambil grade range untuk menentukan passing threshold
-        grade_range = GradeRange.objects.filter(course=course).first()
-        passing_threshold = grade_range.min_grade if grade_range else 0
+        # Ambil ambang batas kelulusan
+        grade_range = GradeRange.objects.filter(course=course, name='Pass').first()
+        passing_threshold = grade_range.min_grade if grade_range else Decimal('52.00')
 
-        # Hitung skor total
-        total_score = Decimal(0)
-        total_max_score = Decimal(0)
+        # Hitung nilai akhir
+        total_score = Decimal('0')
+        total_max_score = Decimal('0')
+
         for assessment in assessments:
-            score_value = Decimal(0)
-            total_correct_answers = 0
+            score_value = Decimal('0')
             total_questions = assessment.questions.count()
-            if total_questions > 0:  # Multiple choice
-                for question in assessment.questions.all():
-                    answers = QuestionAnswer.objects.filter(question=question, user=learner)
-                    total_correct_answers += answers.filter(choice__is_correct=True).count()
-                score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight) if total_questions > 0 else 0
-            else:  # AskOra
-                askora_submissions = Submission.objects.filter(askora__assessment=assessment, user=learner)
-                if askora_submissions.exists():
-                    latest_submission = askora_submissions.order_by('-submitted_at').first()
-                    assessment_score = AssessmentScore.objects.filter(submission=latest_submission).first()
+
+            if total_questions > 0:
+                correct_answers = QuestionAnswer.objects.filter(
+                    user=learner, question__assessment=assessment, choice__is_correct=True
+                ).count()
+                score_value = (Decimal(correct_answers) / Decimal(total_questions)) * assessment.weight
+            else:
+                submission = Submission.objects.filter(askora__assessment=assessment, user=learner).order_by('-submitted_at').first()
+                if submission:
+                    assessment_score = AssessmentScore.objects.filter(submission=submission).first()
                     if assessment_score:
-                        score_value = Decimal(assessment_score.final_score)
-            total_score += score_value
+                        score_value = assessment_score.final_score
+
+            total_score += min(score_value, assessment.weight)
             total_max_score += assessment.weight
 
-        overall_percentage = (total_score / total_max_score) * 100 if total_max_score > 0 else 0
+        overall_percentage = (total_score / total_max_score * 100) if total_max_score > 0 else 0
 
-        # Tentukan apakah kursus lulus
+        # Penentu apakah kursus dianggap selesai/lulus
         is_completed = progress == 100 and overall_percentage >= passing_threshold
 
         if is_completed:
@@ -93,12 +93,14 @@ def learner_detail(request, username):
                 'enrollment': enrollment,
                 'progress': progress,
                 'overall_percentage': overall_percentage,
+                'threshold': passing_threshold,
+                'total_score': total_score,
             })
 
-    # Data untuk template
     context = {
         'learner': learner,
         'completed_courses': completed_courses_data,
         'instructor': instructor,
     }
+
     return render(request, 'learner/learner.html', context)

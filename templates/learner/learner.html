@@ -3,134 +3,119 @@
 {% load static %}
 {% load custom_filters %}
 
-
 {% block content %}
 <div class="container py-5">
     <div class="row justify-content-center">
         <!-- Profil Learner -->
         <div class="col-lg-8">
-            <div class="card shadow-lg border-0 profile-card transition-hover">
-                <div class="card-body p-4 position-relative overflow-hidden">
-                    <!-- Background Gradient -->
+            <div class="card profile-card transition-hover">
+                <div class="card-body p-4 p-md-5 position-relative">
                     <div class="profile-gradient"></div>
                     
                     <div class="row align-items-center position-relative">
-                        <div class="col-md-4 text-center">
-                            <div class="avatar-wrapper">
+                        <div class="col-md-4 text-center mb-4 mb-md-0">
+                            <div class="avatar-wrapper mx-auto">
                                 <img src="{% if learner.photo %}{{ learner.photo.url }}{% else %}{% static 'img/default-avatar.png' %}{% endif %}" 
-                                     class="rounded-circle mb-3 avatar-img animate__animated animate__zoomIn" 
+                                     class="rounded-circle avatar-img" 
                                      alt="Profile">
                             </div>
-                            <h3 class="fw-bold text-white username mt-3 animate__animated animate__fadeInDown">{{ learner.username }}</h3>
+                            <h3 class="fw-bold text-white mt-3">{{ learner.username }}</h3>
                         </div>
                         <div class="col-md-8 text-white">
-                            <h5 class="fw-semibold mb-3 animate__animated animate__fadeInDown">Personal Information</h5>
-                            <ul class="list-unstyled info-list">
+                            <h5 class="fw-semibold mb-4">Personal Information</h5>
+                            <div class="row g-3">
                                 {% if learner.gender %}
-                                    <li><i class="fas fa-venus-mars me-2"></i><strong>Gender:</strong> {{ learner.get_gender_display }}</li>
+                                    <div class="col-12 col-sm-6"><div class="info-item"><i class="fas fa-venus-mars me-2"></i><span>{{ learner.get_gender_display }}</span></div></div>
                                 {% endif %}
                                 {% if learner.education %}
-                                    <li><i class="fas fa-graduation-cap me-2"></i><strong>Education:</strong> {{ learner.get_education_display }}</li>
+                                    <div class="col-12 col-sm-6"><div class="info-item"><i class="fas fa-graduation-cap me-2"></i><span>{{ learner.get_education_display }}</span></div></div>
                                 {% endif %}
                                 {% if learner.country %}
-                                    <li><i class="fas fa-globe me-2"></i><strong>Country:</strong> {{ learner.country }}</li>
+                                    <div class="col-12 col-sm-6"><div class="info-item"><i class="fas fa-globe me-2"></i><span>{{ learner.country }}</span></div></div>
                                 {% endif %}
                                 {% if learner.birth %}
-                                    <li><i class="fas fa-birthday-cake me-2"></i><strong>Birth Date:</strong> {{ learner.birth|mask_year }}</li>
+                                    <div class="col-12 col-sm-6"><div class="info-item"><i class="fas fa-birthday-cake me-2"></i><span>{{ learner.birth|mask_year }}</span></div></div>
                                 {% endif %}
                                 {% if learner.phone %}
-                                    <li><i class="fas fa-phone me-2"></i><strong>Phone:</strong> {{ learner.phone |mask_phone }}</li>
+                                    <div class="col-12 col-sm-6"><div class="info-item"><i class="fas fa-phone me-2"></i><span>{{ learner.phone|mask_phone }}</span></div></div>
                                 {% endif %}
                                 {% if learner.hobby %}
-                                    <li><i class="fas fa-heart me-2"></i><strong>Hobby:</strong> {{ learner.hobby }}</li>
+                                    <div class="col-12 col-sm-6"><div class="info-item"><i class="fas fa-heart me-2"></i><span>{{ learner.hobby }}</span></div></div>
                                 {% endif %}
                                 {% if learner.university %}
-                                    <li><i class="fas fa-university me-2"></i><strong>University:</strong> {{ learner.university.name }}</li>
+                                    <div class="col-12 col-sm-6"><div class="info-item"><i class="fas fa-university me-2"></i><span>{{ learner.university.name }}</span></div></div>
                                 {% endif %}
-                            </ul>
+                            </div>
 
-                            <!-- Sosial Media -->
                             {% if learner.tiktok or learner.youtube or learner.facebook or learner.instagram or learner.linkedin or learner.twitter %}
-                                <h5 class="fw-semibold mt-4 mb-3 animate__animated animate__fadeInUp">Connect With Me</h5>
+                                <h5 class="fw-semibold mt-5 mb-3">Connect With Me</h5>
                                 <div class="social-links d-flex gap-2 flex-wrap">
-                                    {% if learner.tiktok %}
-                                        <a href="{{ learner.tiktok }}" target="_blank" class="social-btn tiktok animate__animated animate__bounceIn"><i class="fab fa-tiktok"></i></a>
-                                    {% endif %}
-                                    {% if learner.youtube %}
-                                        <a href="{{ learner.youtube }}" target="_blank" class="social-btn youtube animate__animated animate__bounceIn"><i class="fab fa-youtube"></i></a>
-                                    {% endif %}
-                                    {% if learner.facebook %}
-                                        <a href="{{ learner.facebook }}" target="_blank" class="social-btn facebook animate__animated animate__bounceIn"><i class="fab fa-facebook"></i></a>
-                                    {% endif %}
-                                    {% if learner.instagram %}
-                                        <a href="{{ learner.instagram }}" target="_blank" class="social-btn instagram animate__animated animate__bounceIn"><i class="fab fa-instagram"></i></a>
-                                    {% endif %}
-                                    {% if learner.linkedin %}
-                                        <a href="{{ learner.linkedin }}" target="_blank" class="social-btn linkedin animate__animated animate__bounceIn"><i class="fab fa-linkedin"></i></a>
-                                    {% endif %}
-                                    {% if learner.twitter %}
-                                        <a href="{{ learner.twitter }}" target="_blank" class="social-btn twitter animate__animated animate__bounceIn"><i class="fab fa-twitter"></i></a>
-                                    {% endif %}
+                                    {% if learner.tiktok %}<a href="{{ learner.tiktok }}" target="_blank" class="social-btn tiktok"><i class="fab fa-tiktok"></i></a>{% endif %}
+                                    {% if learner.youtube %}<a href="{{ learner.youtube }}" target="_blank" class="social-btn youtube"><i class="fab fa-youtube"></i></a>{% endif %}
+                                    {% if learner.facebook %}<a href="{{ learner.facebook }}" target="_blank" class="social-btn facebook"><i class="fab fa-facebook"></i></a>{% endif %}
+                                    {% if learner.instagram %}<a href="{{ learner.instagram }}" target="_blank" class="social-btn instagram"><i class="fab fa-instagram"></i></a>{% endif %}
+                                    {% if learner.linkedin %}<a href="{{ learner.linkedin }}" target="_blank" class="social-btn linkedin"><i class="fab fa-linkedin"></i></a>{% endif %}
+                                    {% if learner.twitter %}<a href="{{ learner.twitter }}" target="_blank" class="social-btn twitter"><i class="fab fa-twitter"></i></a>{% endif %}
                                 </div>
                             {% endif %}
                         </div>
                     </div>
 
-                    <!-- Informasi Instructor -->
                     {% if instructor %}
-                        <div class="instructor-section mt-4 p-3 rounded bg-white shadow-sm animate__animated animate__fadeIn">
+                        <div class="instructor-section mt-5 p-4 rounded bg-white shadow-sm">
                             <h5 class="fw-semibold text-success mb-3">Instructor Profile</h5>
-                            <p class="text-muted">{{ instructor.bio }}</p>
-                            <ul class="list-unstyled text-muted">
-                                <li><i class="fas fa-laptop-code me-2"></i><strong>Technology:</strong> {{ instructor.tech }}</li>
-                                <li><i class="fas fa-brain me-2"></i><strong>Expertise:</strong> {{ instructor.expertise }}</li>
-                                <li><i class="fas fa-clock me-2"></i><strong>Experience:</strong> {{ instructor.experience_years }} years</li>
-                            </ul>
+                            <p class="text-muted mb-3">{{ instructor.bio }}</p>
+                            <div class="row g-3">
+                                <div class="col-12 col-sm-4"><div class="info-item"><i class="fas fa-laptop-code me-2"></i><span>{{ instructor.tech }}</span></div></div>
+                                <div class="col-12 col-sm-4"><div class="info-item"><i class="fas fa-brain me-2"></i><span>{{ instructor.expertise }}</span></div></div>
+                                <div class="col-12 col-sm-4"><div class="info-item"><i class="fas fa-clock me-2"></i><span>{{ instructor.experience_years }} years</span></div></div>
+                            </div>
                         </div>
                     {% endif %}
                 </div>
             </div>
 
             <!-- Daftar Kursus dan Partner -->
-            <div class="card shadow-lg border-0 mt-4 course-card transition-hover">
-                <div class="card-header bg-gradient-primary text-white p-3 position-relative overflow-hidden">
-                    <h4 class="mb-0 animate__animated animate__fadeInLeft">Completed Courses</h4>
-                    <div class="header-gradient"></div>
+            <div class="card course-card mt-4 transition-hover">
+                <div class="card-header bg-gradient-primary text-white p-3">
+                    <h4 class="mb-0 position-relative">Completed Courses</h4>
                 </div>
-                <div class="card-body p-4">
+                <div class="card-body p-4 p-md-5">
                     <div class="row g-4">
-                        <!-- Kursus -->
-                        <div class="col-md-{% if instructor %}8{% else %}12{% endif %}">
+                       <div class="col-md-{% if instructor %}8{% else %}12{% endif %}">
                             {% if completed_courses %}
                                 <div class="row g-3">
                                     {% for course_data in completed_courses %}
-                                        <div class="col-md-6">
+                                        <div class="col-12 col-sm-6">
                                             <a href="{% url 'courses:course_lms_detail' course_data.enrollment.course.id course_data.enrollment.course.slug %}" 
-                                               class="course-item d-flex align-items-center text-decoration-none text-dark p-3 rounded bg-light shadow-sm transition-hover animate__animated animate__fadeInUp">
-                                                <i class="fas fa-certificate text-success me-2"></i>
-                                                <h6 class="fw-semibold mb-0 flex-grow-1">{{ course_data.enrollment.course.course_name }}</h6>
-                                                <span class="badge bg-success ms-2">{{ course_data.overall_percentage|floatformat:0 }}%</span>
+                                            class="course-item d-flex align-items-center text-decoration-none p-3 rounded shadow-sm"
+                                            title="Score: {{ course_data.total_score|floatformat:1 }} | Threshold: {{ course_data.threshold|floatformat:1 }} | Completion: {{ course_data.overall_percentage|floatformat:0 }}%">
+                                                <i class="fas fa-check-circle text-success me-3"></i>
+                                                <div class="flex-grow-1">
+                                                    <h6 class="fw-semibold mb-0">{{ course_data.enrollment.course.course_name }}</h6>
+                                                    <small class="text-muted">
+                                                        Score: {{ course_data.total_score|floatformat:1 }} /
+                                                        Threshold: {{ course_data.threshold|floatformat:1 }}
+                                                    </small>
+                                                </div>
+                                                <span class="badge bg-success">{{ course_data.overall_percentage|floatformat:0 }}%</span>
                                             </a>
                                         </div>
                                     {% endfor %}
                                 </div>
                             {% else %}
-                                <p class="text-muted text-center animate__animated animate__fadeIn">
-                                    <i class="fas fa-exclamation-circle me-2"></i>No completed courses yet.
-                                </p>
+                                <p class="text-muted text-center"><i class="fas fa-exclamation-circle me-2"></i>No completed courses yet.</p>
                             {% endif %}
                         </div>
 
-                        <!-- Partner (jika ada instructor) -->
+
                         {% if instructor %}
                             <div class="col-md-4">
-                                <div class="partner-section p-3 bg-light rounded shadow-sm animate__animated animate__fadeInRight transition-hover">
+                                <div class="partner-section p-4 rounded shadow-sm">
                                     <h5 class="fw-semibold text-primary mb-3">Partner Organization</h5>
                                     <div class="d-flex align-items-center">
-                                        <i class="fas fa-building text-primary me-2 fs-4"></i>
-                                        <p class="text-muted mb-0">
-                                            <strong>{{ instructor.provider.name }}</strong>
-                                        </p>
+                                        <i class="fas fa-building text-primary me-3 fs-4"></i>
+                                        <p class="mb-0"><strong>{{ instructor.provider.name }}</strong></p>
                                     </div>
                                 </div>
                             </div>
@@ -138,99 +123,114 @@
                     </div>
                 </div>
             </div>
+
+            {% if completed_courses %}
+                <!-- Tombol Share -->
+                <div class="mt-5">
+                    <h5 class="fw-semibold text-black mb-3">Share This Profile</h5>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" 
+                        target="_blank" class="btn btn-sm btn-primary"><i class="fab fa-facebook-f me-1"></i> Facebook</a>
+                        <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text=Lihat%20profil%20{{ learner.username }}" 
+                        target="_blank" class="btn btn-sm btn-info text-white"><i class="fab fa-twitter me-1"></i> Twitter</a>
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" 
+                        target="_blank" class="btn btn-sm btn-secondary"><i class="fab fa-linkedin-in me-1"></i> LinkedIn</a>
+                    </div>
+                </div>
+            {% endif %}
+
+            
         </div>
     </div>
 </div>
 
-
 <style>
 /* static/css/learner.css */
 .profile-card {
-    background: #ffffff;
-    border-radius: 15px;
+    border-radius: 1rem;
     overflow: hidden;
-    position: relative;
+    background: #fff;
 }
 
 .profile-gradient {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg,rgb(255, 0, 0) 0%, #00d4ff 100%);
+    inset: 0;
+    background: linear-gradient(135deg, #ff4d4d 0%, #00d4ff 100%);
     opacity: 0.9;
     z-index: 0;
 }
 
 .profile-card .card-body {
+    position: relative;
     z-index: 1;
 }
 
 .avatar-wrapper {
-    position: relative;
-    display: inline-block;
+    width: 150px;
+    height: 150px;
 }
 
 .avatar-img {
-    width: 150px;
-    height: 150px;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    border: 5px solid #fff;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    border: 4px solid #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     transition: transform 0.3s ease;
 }
 
 .avatar-wrapper:hover .avatar-img {
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
 
 .username {
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-.info-list li {
-    margin-bottom: 10px;
-    padding: 5px 10px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+.info-item {
+    background: rgba(255,255,255,0.15);
+    padding: 0.75rem;
+    border-radius: 0.5rem;
     transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
-.info-list li:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateX(5px);
+.info-item:hover {
+    background: rgba(255,255,255,0.25);
+    transform: translateX(4px);
 }
 
 .social-btn {
-    width: 40px;
-    height: 40px;
-    line-height: 40px;
-    text-align: center;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 50%;
-    font-size: 18px;
+    font-size: 1.1rem;
     transition: all 0.3s ease;
 }
 
 .social-btn:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-.tiktok { background: #000; color: #fff; border: none; }
-.youtube { background: #ff0000; color: #fff; border: none; }
-.facebook { background: #3b5998; color: #fff; border: none; }
-.instagram { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: #fff; border: none; }
-.linkedin { background: #0077b5; color: #fff; border: none; }
-.twitter { background: #1da1f2; color: #fff; border: none; }
+.tiktok { background: #000; color: #fff; }
+.youtube { background: #ff0000; color: #fff; }
+.facebook { background: #3b5998; color: #fff; }
+.instagram { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: #fff; }
+.linkedin { background: #0077b5; color: #fff; }
+.twitter { background: #1da1f2; color: #fff; }
 
 .instructor-section {
-    position: relative;
-    z-index: 1;
+    background: #f8f9fa;
 }
 
 .course-card {
-    border-radius: 15px;
+    border-radius: 1rem;
     overflow: hidden;
 }
 
@@ -238,41 +238,26 @@
     background: linear-gradient(90deg, #007bff, #0056b3);
 }
 
-.header-gradient {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg,rgb(255, 0, 0) 0%, #00d4ff 100%);
-    opacity: 0.8;
-    z-index: 0;
-}
-
-.course-card .card-header {
-    z-index: 1;
-}
-
 .course-item {
+    background: #fff !important;
     transition: all 0.3s ease;
-    background: #f8f9fa !important;
+    border: 1px solid #e9ecef;
 }
 
 .course-item:hover {
-    background: #e9ecef !important;
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
 }
 
 .partner-section {
-    background: #f8f9fa;
+    background: #fff;
+    border: 1px solid #e9ecef;
     transition: all 0.3s ease;
 }
 
 .partner-section:hover {
-    background: #e9ecef;
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .transition-hover {
@@ -280,29 +265,40 @@
 }
 
 .transition-hover:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-8px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15) !important;
 }
 
 @media (max-width: 768px) {
-    .avatar-img {
+    .avatar-wrapper {
         width: 120px;
         height: 120px;
     }
-    
+
     .social-btn {
-        width: 35px;
-        height: 35px;
-        line-height: 35px;
-        font-size: 16px;
+        width: 34px;
+        height: 34px;
+        font-size: 1rem;
     }
-    
+
     .course-item {
-        padding: 1.5rem !important;
+        padding: 1rem !important;
     }
 
     .partner-section {
         margin-top: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .profile-card .card-body,
+    .course-card .card-body {
+        padding: 1.5rem !important;
+    }
+
+    .avatar-wrapper {
+        width: 100px;
+        height: 100px;
     }
 }
 </style>

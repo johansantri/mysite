@@ -249,7 +249,7 @@
         
         <div class="main-section">
             <div class="content">Awarded to</div>
-            <div class="name">{{ user.username }}</div>
+            <div class="name">{{ user.first_name }} {{ user.last_name }}</div>
             <div class="content">for excellence in</div>
             <div class="course">{{ course.course_name }}</div>
             <div class="content">offered by <strong>{% if course.org_partner %}{{ course.org_partner.name }}{% else %}Our Institution{% endif %}</strong></div>

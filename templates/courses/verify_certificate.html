@@ -3,10 +3,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>Certificate of Completion</title>
 
-  <meta name="description" content="Certificate of Completion for {{ certificate.course.course_name }}. Awarded to {{ certificate.user.first_name }} {{ certificate.user.last_name }} by {{ certificate.partner.name|default:'Our Institution' }}.">
-  <meta property="og:type" content="website">
+  <meta name="description" content="Certificate for {{ certificate.course.course_name }}. Awarded to {{ certificate.user.first_name }} {{ certificate.user.last_name }}">
   <meta property="og:title" content="Certificate of Completion">
   <meta property="og:description" content="Awarded to {{ certificate.user.first_name }} {{ certificate.user.last_name }} for completing {{ certificate.course.course_name }}">
   <meta property="og:image" content="{{ base_url }}static/assets/img/icon/certificate.svg">
@@ -15,12 +15,10 @@
   <meta name="twitter:title" content="Certificate of Completion">
   <meta name="twitter:description" content="Awarded to {{ certificate.user.first_name }} {{ certificate.user.last_name }} for completing {{ certificate.course.course_name }}">
   <meta name="twitter:image" content="{{ base_url }}static/assets/img/icon/certificate.svg">
-  <meta name="twitter:url" content="{{ request.build_absolute_uri }}">
-  <link rel="canonical" href="{{ request.build_absolute_uri }}">
-  <link rel="icon" href="{% static 'assets/img/icon/badge.svg' %}" sizes="32x32" type="image/svg+xml">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
-  <title>Certificate of Completion</title>
+  <link rel="icon" href="{% static 'assets/img/icon/badge.svg' %}" sizes="32x32" type="image/svg+xml">
+  <link rel="canonical" href="{{ request.build_absolute_uri }}">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
   <style>
     body {
@@ -32,28 +30,32 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
+      box-sizing: border-box;
     }
 
     .certificate-wrapper {
       width: 900px;
+      max-width: 100%;
       background: #fff;
       border: 8px solid #D4A017;
-      padding: 60px 50px;
+      padding: 80px 50px;
       text-align: center;
-      box-shadow: 0 0 25px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
       position: relative;
-      margin-bottom: 40px;
+      margin: 20px;
+      box-sizing: border-box;
     }
 
     .certificate-wrapper::after {
       content: '';
       position: absolute;
-      top: 20px;
-      bottom: 20px;
-      left: 20px;
-      right: 20px;
-      border: 2px dashed #ccc;
+      top: 15px;
+      bottom: 15px;
+      left: 15px;
+      right: 15px;
+      border: 1px dashed #e0e0e0;
       pointer-events: none;
+      opacity: 0.6;
     }
 
     .certificate-title {
@@ -67,15 +69,15 @@
     .subtitle {
       font-size: 18px;
       color: #4B5E7A;
-      margin-bottom: 40px;
+      margin-bottom: 30px;
       text-transform: uppercase;
-      letter-spacing: 2px;
+      letter-spacing: 1.5px;
     }
 
     .recipient {
       font-size: 22px;
       color: #1B263B;
-      margin: 40px 0 10px;
+      margin: 30px 0 10px;
     }
 
     .highlight {
@@ -87,59 +89,60 @@
     }
 
     .detail-line {
-      font-size: 18px;
+      font-size: 16px;
       color: #1B263B;
       margin: 8px 0;
     }
 
     .footer {
-      margin-top: 50px;
+      margin-top: 40px;
       font-size: 14px;
       color: #4B5E7A;
-      border-top: 1px solid #ccc;
-      padding-top: 20px;
+      border-top: 1px solid #e0e0e0;
+      padding-top: 15px;
     }
 
     .logo {
       position: absolute;
-      top: 30px;
-      left: 30px;
+      top: 20px;
+      left: 20px;
       width: 80px;
       height: 80px;
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
-      background-image: url('{{ partner_logo_url }}');
+      background-image: url("{% if certificate.partner.logo %}{{ base_url.rstrip }}/media/{{ certificate.partner.logo }}{% else %}{{ base_url }}static/images/default_logo.png{% endif %}");
     }
 
     .seal {
       position: absolute;
-      top: 30px;
-      right: 30px;
+      top: 20px;
+      right: 20px;
       width: 100px;
       height: 100px;
       background-image: url('{{ base_url }}static/assets/img/icon/certificate.svg');
       background-size: cover;
-      opacity: 0.8;
+      opacity: 0.7;
     }
 
     .social-share {
-      margin-top: 30px;
+      margin-top: 25px;
       display: flex;
       justify-content: center;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
     .social-share a {
       text-decoration: none;
-      padding: 10px 20px;
+      padding: 8px 16px;
       border-radius: 5px;
       color: white;
-      font-size: 18px;
-      transition: all 0.3s ease;
+      font-size: 16px;
+      transition: transform 0.2s ease, opacity 0.2s ease;
       display: inline-flex;
       align-items: center;
+      gap: 6px;
     }
 
     .facebook {
@@ -147,7 +150,7 @@
     }
 
     .twitter {
-      background-color: #1da1f2;
+      background-color:rgb(0, 0, 0);
     }
 
     .linkedin {
@@ -155,76 +158,183 @@
     }
 
     .social-share a:hover {
-      opacity: 0.8;
+      transform: translateY(-2px);
+      opacity: 0.9;
     }
 
-    /* Responsive Tweaks */
+    /* Responsive Design */
     @media (max-width: 1024px) {
       .certificate-wrapper {
-        width: 85%;
-        padding: 40px;
+        width: 90%;
+        padding: 50px 30px;
+      }
+
+      .certificate-title {
+        font-size: 32px;
+      }
+
+      .highlight {
+        font-size: 24px;
+      }
+
+      .recipient {
+        font-size: 20px;
+      }
+
+      .logo, .seal {
+        width: 70px;
+        height: 70px;
+        top: 15px;
+      }
+
+      .logo {
+        left: 15px;
       }
 
       .seal {
-        width: 90px;
-        height: 90px;
-        top: 20px;
-        right: 20px;
-        bottom: unset;
+        right: 15px;
       }
     }
 
     @media (max-width: 768px) {
       .certificate-wrapper {
         width: 95%;
-        padding: 30px;
+        padding: 40px 20px;
+        margin: 15px;
       }
 
       .certificate-title {
-        font-size: 26px;
+        font-size: 28px;
       }
 
       .highlight {
-        font-size: 20px;
+        font-size: 22px;
+      }
+
+      .recipient {
+        font-size: 18px;
+      }
+
+      .subtitle {
+        font-size: 16px;
+      }
+
+      .detail-line {
+        font-size: 14px;
+      }
+
+      .logo, .seal {
+        width: 60px;
+        height: 60px;
+        top: 10px;
+      }
+
+      .logo {
+        left: 10px;
       }
 
       .seal {
-        width: 80px;
-        height: 80px;
-        top: 20px;
-        right: 20px;
+        right: 10px;
       }
 
       .social-share a {
-        font-size: 16px;
-        padding: 8px 15px;
+        font-size: 14px;
+        padding: 6px 12px;
       }
     }
 
     @media (max-width: 480px) {
       .certificate-wrapper {
         width: 100%;
-        padding: 20px;
+        padding: 30px 15px;
+        margin: 10px;
+        border-width: 6px;
       }
 
       .certificate-title {
-        font-size: 22px;
+        font-size: 18px;
+      }
+
+      .highlight {
+        font-size: 18px;
       }
 
       .recipient {
         font-size: 16px;
       }
 
+      .subtitle {
+        font-size: 14px;
+        letter-spacing: 1px;
+      }
+
+      .detail-line {
+        font-size: 13px;
+      }
+
+      .footer {
+        font-size: 12px;
+        margin-top: 30px;
+      }
+
+      .logo, .seal {
+        width: 50px;
+        height: 50px;
+        top: 8px;
+      }
+
+      .logo {
+        left: 8px;
+      }
+
       .seal {
-        width: 40px;
-        height: 40px;
-        top: 15px;
-        right: 15px;
+        right: 8px;
+      }
+
+      .social-share {
+        gap: 6px;
       }
 
       .social-share a {
+        font-size: 13px;
+        padding: 5px 10px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .certificate-wrapper {
+        padding: 20px 10px;
+      }
+
+      .certificate-title {
+        font-size: 20px;
+      }
+
+      .highlight {
+        font-size: 18px;
+      }
+
+      .recipient {
         font-size: 14px;
-        padding: 6px 12px;
+      }
+
+      .subtitle {
+        font-size: 12px;
+      }
+
+      .detail-line {
+        font-size: 12px;
+      }
+
+      .logo, .seal {
+        width: 40px;
+        height: 40px;
+        top: 5px;
+      }
+
+      .social-share a {
+        font-size: 12px;
+        padding: 4px 8px;
       }
     }
   </style>
@@ -248,9 +358,9 @@
     </div>
 
     <div class="social-share">
-      <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" class="facebook" target="_blank">Facebook</a>
-      <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}" class="twitter" target="_blank">X</a>
-      <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" class="linkedin" target="_blank">LinkedIn</a>
+      <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" class="facebook" target="_blank">facebook</a>
+      <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}" class="twitter" target="_blank">x</a>
+      <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" class="linkedin" target="_blank">linkedin</a>
     </div>
   </div>
 </body>
