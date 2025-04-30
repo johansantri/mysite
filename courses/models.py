@@ -841,16 +841,16 @@ class MicroClaim(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)  
     microcredential = models.ForeignKey(MicroCredential, on_delete=models.CASCADE)
     claim_date = models.DateTimeField(auto_now_add=True)  
-    certificate_id = models.CharField(max_length=255, unique=True)  
-    verified = models.BooleanField(default=False)  
+    certificate_id = models.CharField(max_length=255, unique=True)  # e.g., CERT-1-4
+    certificate_uuid = models.UUIDField(unique=True, default=uuid.uuid4)  # untuk QR code
+    verified = models.BooleanField(default=False)
 
     def verify_claim(self):
-        # Logika untuk memverifikasi klaim (misalnya, memeriksa status tertentu)
         self.verified = True
         self.save()
 
     def __str__(self):
-        return f"{self.user.get_full_name} - {self.microcredential.title}"
+        return f"{self.user.get_full_name()} - {self.microcredential.title}"
     
 class Assessment(models.Model):
     name = models.CharField(max_length=255)

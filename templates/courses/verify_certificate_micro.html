@@ -1,43 +1,399 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verifikasi Sertifikat</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>MicroCredential Certificate Verification</title>
+
+  <!-- SEO and Social Media Metadata -->
+  <meta name="description" content="Verification for {{ certificate.microcredential.title }}. Awarded to {{ certificate.user.get_full_name }}">
+  <meta property="og:title" content="MicroCredential Certificate Verification">
+  <meta property="og:description" content="Verification for {{ certificate.microcredential.title }} awarded to {{ certificate.user.get_full_name }}">
+  <meta property="og:image" content="{{ base_url }}static/assets/img/icon/certificate.svg">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="MicroCredential Certificate Verification">
+  <meta name="twitter:description" content="Verification for {{ certificate.microcredential.title }} awarded to {{ certificate.user.get_full_name }}">
+  <meta name="twitter:image" content="{{ base_url }}static/assets/img/icon/certificate.svg">
+
+  <link rel="icon" href="{% static 'assets/img/icon/badge.svg' %}" sizes="32x32" type="image/svg+xml">
+  <link rel="canonical" href="{{ request.build_absolute_uri }}">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <!-- Font Awesome untuk Ikon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f7f9fb;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+      color: #1B263B;
+    }
+
+    .certificate-wrapper {
+      width: 900px;
+      max-width: 100%;
+      background: #fff;
+      border: 8px solid #D4A017;
+      padding: 80px 50px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      position: relative;
+      margin: 20px;
+    }
+
+    .certificate-wrapper::after {
+      content: '';
+      position: absolute;
+      top: 15px;
+      bottom: 15px;
+      left: 15px;
+      right: 15px;
+      border: 1px dashed #e0e0e0;
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    .certificate-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
+      color: #1B263B;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 18px;
+      color: #4B5E7A;
+      margin-bottom: 30px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+
+    .recipient {
+      font-size: 22px;
+      color: #1B263B;
+      margin: 30px 0 10px;
+      font-weight: 600;
+    }
+
+    .highlight {
+      font-size: 26px;
+      font-weight: 700;
+      color: #D4A017;
+      font-family: 'Playfair Display', serif;
+      margin: 10px 0 20px;
+    }
+
+    .detail-line {
+      font-size: 16px;
+      color: #1B263B;
+      margin: 8px 0;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+      margin: 10px 0;
+    }
+
+    .status-icon {
+      font-size: 20px;
+      width: 24px;
+      height: 24px;
+      line-height: 24px;
+      text-align: center;
+      border-radius: 50%;
+    }
+
+    .verified .status-icon {
+      background: #0095F6; /* Warna biru Instagram/X */
+      color: #ffffff;
+    }
+
+    .not-verified .status-icon {
+      background: #b91c1c; /* Merah untuk not verified */
+      color: #ffffff;
+    }
+
+    .footer {
+      margin-top: 40px;
+      font-size: 14px;
+      color: #4B5E7A;
+      border-top: 1px solid #e0e0e0;
+      padding-top: 15px;
+    }
+
+    .logo {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 80px;
+      height: 80px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-image: url('{% static "assets/img/icon/default_logo.png" %}');
+    }
+
+    .seal {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 100px;
+      height: 100px;
+      background-image: url('{% static "assets/img/icon/certificate.svg" %}');
+      background-size: cover;
+      opacity: 0.7;
+    }
+
+    .social-share {
+      margin-top: 25px;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .social-share a {
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      color: white;
+      font-size: 16px;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .facebook {
+      background-color: #3b5998;
+    }
+
+    .twitter {
+      background-color: #000000;
+    }
+
+    .linkedin {
+      background-color: #0077b5;
+    }
+
+    .social-share a:hover {
+      transform: translateY(-2px);
+      opacity: 0.9;
+    }
+
+    .button {
+      display: inline-block;
+      text-decoration: none;
+      background: #D4A017;
+      color: #ffffff;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: 500;
+      margin-top: 20px;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .button:hover {
+      background: #b38b14;
+      transform: translateY(-2px);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .certificate-wrapper {
+        width: 90%;
+        padding: 50px 30px;
+      }
+      .certificate-title {
+        font-size: 32px;
+      }
+      .highlight {
+        font-size: 24px;
+      }
+      .recipient {
+        font-size: 20px;
+      }
+      .logo, .seal {
+        width: 70px;
+        height: 70px;
+        top: 15px;
+      }
+      .status-icon {
+        font-size: 18px;
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .certificate-wrapper {
+        width: 95%;
+        padding: 40px 20px;
+        margin: 15px;
+      }
+      .certificate-title {
+        font-size: 28px;
+      }
+      .highlight {
+        font-size: 22px;
+      }
+      .recipient {
+        font-size: 18px;
+      }
+      .subtitle {
+        font-size: 16px;
+      }
+      .detail-line {
+        font-size: 14px;
+      }
+      .logo, .seal {
+        width: 60px;
+        height: 60px;
+        top: 10px;
+      }
+      .status-icon {
+        font-size: 16px;
+        width: 18px;
+        height: 18px;
+        line-height: 18px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .certificate-wrapper {
+        width: 100%;
+        padding: 30px 15px;
+        margin: 10px;
+        border-width: 6px;
+      }
+      .certificate-title {
+        font-size: 24px;
+      }
+      .highlight {
+        font-size: 20px;
+      }
+      .recipient {
+        font-size: 16px;
+      }
+      .subtitle {
+        font-size: 14px;
+      }
+      .detail-line {
+        font-size: 13px;
+      }
+      .footer {
+        font-size: 12px;
+      }
+      .logo, .seal {
+        width: 50px;
+        height: 50px;
+        top: 8px;
+      }
+      .status-icon {
+        font-size: 14px;
+        width: 16px;
+        height: 16px;
+        line-height: 16px;
+      }
+      .social-share a {
+        font-size: 13px;
+        padding: 5px 10px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .certificate-wrapper {
+        padding: 20px 10px;
+      }
+      .certificate-title {
+        font-size: 20px;
+      }
+      .highlight {
+        font-size: 18px;
+      }
+      .recipient {
+        font-size: 14px;
+      }
+      .subtitle {
+        font-size: 12px;
+      }
+      .detail-line {
+        font-size: 12px;
+      }
+      .social-share a {
+        font-size: 12px;
+        padding: 4px 8px;
+      }
+      .status-icon {
+        font-size: 12px;
+        width: 14px;
+        height: 14px;
+        line-height: 14px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Verifikasi Sertifikat</h1>
-
-        <div class="certificate-info">
-            <h2>{{ certificate.microcredential.title }}</h2>
-            <p>Nama Pemegang Sertifikat: {{ certificate.user.get_full_name }}</p>
-            <p>ID Sertifikat: <strong>{{ certificate.certificate_id }}</strong></p>
-            <p>Tanggal Klaim: {{ certificate.claim_date|date:"d F Y, H:i" }}</p>
-            <p>Status Verifikasi: 
-                {% if certificate.verified %}
-                    <span style="color: green;">Terverifikasi</span>
-                {% else %}
-                    <span style="color: red;">Belum Terverifikasi</span>
-                {% endif %}
-            </p>
-
-            <div class="verification-status">
-                {% if certificate.verified %}
-                    <p>Sertifikat ini sudah terverifikasi.</p>
-                {% else %}
-                    <p>Sertifikat ini belum terverifikasi. Untuk memverifikasinya, hubungi administrator.</p>
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="qr-code">
-            <h3>QR Code untuk Verifikasi</h3>
-            <img src="{{ certificate.certificate_id|add:'/' }}qrcodes/certificate_{{ certificate.certificate_id }}.png" alt="QR Code Sertifikat">
-        </div>
-
-        <a href="{% url 'home' %}" class="btn-back">Kembali ke Beranda</a>
+  <div class="certificate-wrapper">
+    <div class="logo"></div>
+    <div class="seal"></div>
+    <div class="certificate-title">MicroCredential Certificate Verification</div>
+    <div class="subtitle">This certifies that</div>
+    <div class="recipient"><strong>{{ certificate.user.get_full_name }}</strong></div>
+    <div class="subtitle">has successfully completed</div>
+    <div class="highlight">{{ certificate.microcredential.title }}</div>
+    <div class="detail-line">Certificate ID: <strong>{{ certificate.certificate_id }}</strong></div>
+    <div class="detail-line">UUID: <strong>{{ certificate.id }}</strong></div>
+    <div class="detail-line">Date Claimed: <strong>{{ certificate.claim_date }}</strong></div>
+    <div class="detail-line">
+      Status:
+      {% if certificate.verified %}
+        <span class="status verified">
+          <i class="fas fa-check-circle status-icon"></i> Verified
+        </span>
+      {% else %}
+        <span class="status not-verified">
+          <i class="fas fa-times-circle status-icon"></i> Not Verified
+        </span>
+      {% endif %}
     </div>
+
+    {% if not certificate.verified %}
+      <div class="detail-line">This certificate has not been verified. Please contact the certificate issuer for more information.</div>
+    {% else %}
+      <div class="detail-line">This certificate has been verified and is valid proof of MicroCredential completion.</div>
+    {% endif %}
+
+    <div class="footer">
+      Verified by {{ certificate.microcredential.title|default:"Our Institution" }} · This is an official document.
+    </div>
+
+    <a href="{% url 'courses:micro_detail' id=certificate.microcredential.id slug=certificate.microcredential.slug %}" class="button">View MicroCredential Details</a>
+
+    <div class="social-share">
+      <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" class="facebook" target="_blank">Facebook</a>
+      <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}" class="twitter" target="_blank">X</a>
+      <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" class="linkedin" target="_blank">LinkedIn</a>
+    </div>
+  </div>
 </body>
 </html>

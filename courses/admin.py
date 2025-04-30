@@ -1,8 +1,26 @@
 from django.contrib import admin
 from . import models 
-from .models import  UserMicroProgress,MicroCredentialComment,LTIExternalTool,Submission,CourseRating,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
+from .models import  MicroClaim,UserMicroProgress,MicroCredentialComment,LTIExternalTool,Submission,CourseRating,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
 from import_export.admin import ImportExportModelAdmin
 from django.utils.html import format_html
+# Kelas admin untuk model MicroClaim
+class MicroClaimAdmin(admin.ModelAdmin):
+    list_display = ('user', 'microcredential', 'claim_date', 'certificate_id', 'verified')  # Menampilkan kolom yang ingin ditampilkan di daftar
+    search_fields = ('user__username', 'microcredential__title', 'certificate_id')  # Kolom yang bisa dicari
+    list_filter = ('verified', 'claim_date')  # Filter untuk mempermudah pencarian
+    ordering = ('-claim_date',)  # Mengurutkan berdasarkan tanggal klaim terbaru
+
+    # Opsi untuk memverifikasi klaim langsung dari admin panel
+    actions = ['verify_claim_action']
+
+    def verify_claim_action(self, request, queryset):
+        # Menambahkan aksi untuk memverifikasi klaim langsung dari admin
+        updated_count = queryset.update(verified=True)
+        self.message_user(request, f'{updated_count} klaim telah diverifikasi.')
+    verify_claim_action.short_description = "Verifikasi klaim yang dipilih"
+
+# Mendaftarkan model MicroClaim dan kelas admin-nya
+admin.site.register(MicroClaim, MicroClaimAdmin)
 
 class UserMicroProgressAdmin(admin.ModelAdmin):
     list_display = ('user', 'course', 'microcredential', 'progress', 'score', 'completed', 'completed_at')
