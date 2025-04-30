@@ -361,7 +361,7 @@
     <div class="recipient"><strong>{{ certificate.user.get_full_name }}</strong></div>
     <div class="subtitle">has successfully completed</div>
     <div class="highlight">{{ certificate.microcredential.title }}</div>
-    <div class="detail-line">Certificate ID: <strong>{{ certificate.certificate_id }}</strong></div>
+   
     <div class="detail-line">UUID: <strong>{{ certificate.id }}</strong></div>
     <div class="detail-line">Date Claimed: <strong>{{ certificate.claim_date }}</strong></div>
     <div class="detail-line">
@@ -388,6 +388,24 @@
     </div>
 
     <a href="{% url 'courses:micro_detail' id=certificate.microcredential.id slug=certificate.microcredential.slug %}" class="button">View MicroCredential Details</a>
+
+    {% if message %}
+        <p><strong>{{ message }}</strong></p>
+    {% endif %}
+
+    {% if not certificate.verified %}
+        <p>This certificate is not verified yet.</p>
+        
+        <form method="post">
+            {% csrf_token %}
+            <label for="email">Enter your email to verify:</label>
+            <input type="email" name="email" id="email" required>
+            <button type="submit">Verify</button>
+        </form>
+    {% else %}
+        <p>This certificate has already been verified.</p>
+    {% endif %}
+
 
     <div class="social-share">
       <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" class="facebook" target="_blank">Facebook</a>

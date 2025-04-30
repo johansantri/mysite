@@ -1717,13 +1717,30 @@ def generate_microcredential_certificate(request, id):
     return response
 
 def verify_certificate_micro(request, certificate_id):
+    # Ambil MicroClaim berdasarkan certificate_uuid yang diberikan
     certificate = get_object_or_404(MicroClaim, certificate_uuid=certificate_id)
 
-    # Tandai sebagai tervalidasi jika belum
-    if not certificate.verified:
-        certificate.verified = True
-        certificate.save()
+    # Jika form disubmit dan email yang dimasukkan cocok
+    if request.method == 'POST':
+        input_email = request.POST.get('email')  # Ambil email dari form
+        # Periksa apakah email yang dimasukkan sesuai dengan email pengguna yang mengklaim sertifikat
+        if input_email == certificate.user.email:
+            if not certificate.verified:
+                certificate.verified = True
+                certificate.save()
+            message = "Certificate verified successfully."
+        else:
+            message = "The email you entered does not match. Verification failed."
 
+        # Kirim pesan status ke template
+        context = {
+            'certificate': certificate,
+            'message': message,
+            'base_url': request.build_absolute_uri('/')
+        }
+        return render(request, 'courses/verify_certificate_micro.html', context)
+
+    # Jika GET request (halaman pertama kali dimuat), tampilkan form tanpa perubahan
     context = {
         'certificate': certificate,
         'base_url': request.build_absolute_uri('/')
