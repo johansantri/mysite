@@ -24,6 +24,7 @@
     <div class="card shadow-sm border-0 animate__animated animate__fadeIn">
         <div class="card-body p-0">
             <div class="table-responsive">
+             <a href="?download=csv" class="btn btn-primary">Download CSV</a>
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-dark">
                         <tr>
@@ -53,7 +54,10 @@
                                 <td>{{ enrollment.user.last_name }}</td>
                                 <td>{{ enrollment.user.get_gender_display }}</td>
                                 <td>{{ enrollment.user.birth|date:"M d, Y" }}</td>
-                                <td>{{ enrollment.user.address }}</td>
+                                <td style="max-width: 200px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;" title="{{ enrollment.user.address }}">
+                                    {{ enrollment.user.address|truncatechars:20 }}
+                                </td>
+
                                 <td>{{ enrollment.user.country }}</td>
                                 <td>****{{ enrollment.user.phone|slice:"-4:" }}</td>
                                 <td>{{ enrollment.user.get_education_display }}</td>
