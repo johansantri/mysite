@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifikasi Sertifikat</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Verifikasi Sertifikat</h1>
+
+        <div class="certificate-info">
+            <h2>{{ certificate.microcredential.title }}</h2>
+            <p>Nama Pemegang Sertifikat: {{ certificate.user.get_full_name }}</p>
+            <p>ID Sertifikat: <strong>{{ certificate.certificate_id }}</strong></p>
+            <p>Tanggal Klaim: {{ certificate.claim_date|date:"d F Y, H:i" }}</p>
+            <p>Status Verifikasi: 
+                {% if certificate.verified %}
+                    <span style="color: green;">Terverifikasi</span>
+                {% else %}
+                    <span style="color: red;">Belum Terverifikasi</span>
+                {% endif %}
+            </p>
+
+            <div class="verification-status">
+                {% if certificate.verified %}
+                    <p>Sertifikat ini sudah terverifikasi.</p>
+                {% else %}
+                    <p>Sertifikat ini belum terverifikasi. Untuk memverifikasinya, hubungi administrator.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="qr-code">
+            <h3>QR Code untuk Verifikasi</h3>
+            <img src="{{ certificate.certificate_id|add:'/' }}qrcodes/certificate_{{ certificate.certificate_id }}.png" alt="QR Code Sertifikat">
+        </div>
+
+        <a href="{% url 'home' %}" class="btn-back">Kembali ke Beranda</a>
+    </div>
+</body>
+</html>

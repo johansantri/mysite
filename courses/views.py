@@ -14,7 +14,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import MicroCredentialCommentForm,MicroCredentialReviewForm,LTIExternalToolForm,CoursePriceForm,CourseRatingForm,SosPostForm,MicroCredentialForm,AskOraForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from .utils import user_has_passed_course,check_for_blacklisted_keywords,is_suspicious
 from django.http import JsonResponse
-from .models import UserMicroCredential,MicroCredentialComment,MicroCredentialReview,UserMicroProgress,SearchHistory,Certificate,LTIExternalTool,Course,CourseRating,Like,SosPost,Hashtag,UserProfile,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
+from .models import MicroClaim,UserMicroCredential,MicroCredentialComment,MicroCredentialReview,UserMicroProgress,SearchHistory,Certificate,LTIExternalTool,Course,CourseRating,Like,SosPost,Hashtag,UserProfile,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
 from authentication.models import CustomUser, Universiti
 from blog.models import BlogPost
 from django.template.loader import render_to_string
@@ -1578,16 +1578,14 @@ def microcredential_detail(request, slug):
 
 
 # Configure weasyprint logging
+logger = logging.getLogger(__name__)
 logging.getLogger('weasyprint').setLevel(logging.DEBUG)
 
 def generate_microcredential_certificate(request, id):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
 
-    # Get microcredential
     microcredential = get_object_or_404(MicroCredential, id=id)
-
-    # Check if user has passed the microcredential and collect course grades
     required_courses = microcredential.required_courses.all()
     total_user_score = Decimal(0)
     total_max_score = Decimal(0)
@@ -1613,20 +1611,16 @@ def generate_microcredential_certificate(request, id):
                     total_correct_answers += answers.filter(choice__is_correct=True).count()
                 if not answers_exist:
                     course_completed = False
-                if total_questions > 0:
-                    score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
+                score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
             else:
-                askora_submissions = Submission.objects.filter(
-                    askora__assessment=assessment,
-                    user=request.user
-                )
-                if not askora_submissions.exists():
+                submissions = Submission.objects.filter(askora__assessment=assessment, user=request.user)
+                if not submissions.exists():
                     course_completed = False
                 else:
-                    latest_submission = askora_submissions.order_by('-submitted_at').first()
-                    assessment_score = AssessmentScore.objects.filter(submission=latest_submission).first()
-                    if assessment_score:
-                        score_value = Decimal(assessment_score.final_score)
+                    latest = submissions.order_by('-submitted_at').first()
+                    score_obj = AssessmentScore.objects.filter(submission=latest).first()
+                    if score_obj:
+                        score_value = Decimal(score_obj.final_score)
 
             score_value = min(score_value, Decimal(assessment.weight))
             course_score += score_value
@@ -1641,20 +1635,32 @@ def generate_microcredential_certificate(request, id):
             'name': course.course_name,
             'grade_point': grade_point.quantize(Decimal('0.01')),
         })
-
         total_user_score += course_score
         total_max_score += course_max_score
 
-    microcredential_passed = all_courses_completed and total_user_score >= Decimal(microcredential.min_total_score)
-
-    if not microcredential_passed:
+    if not (all_courses_completed and total_user_score >= Decimal(microcredential.min_total_score)):
         return render(request, 'error_template.html', {'message': 'You have not yet completed this MicroCredential.'})
 
-    # Build absolute URLs for images
     base_url = request.build_absolute_uri('/')
+    certificate_id = f"CERT-{microcredential.id}-{request.user.id}"
+    certificate_uuid = str(uuid.uuid4())
+
+    # Buat QR Code
+    verification_url = f"{base_url.rstrip('/')}/verify-micro/{certificate_uuid}/"
+    qr = qrcode.QRCode(version=1, box_size=10, border=4)
+    qr.add_data(verification_url)
+    qr.make(fit=True)
+    qr_img = qr.make_image(fill_color="black", back_color="white")
+
+    qr_dir = os.path.join(settings.MEDIA_ROOT, 'qrcodes')
+    os.makedirs(qr_dir, exist_ok=True)
+    qr_path = os.path.join(qr_dir, f'certificate_{certificate_uuid}.png')
+    qr_img.save(qr_path)
+
+    qr_code_url = f"{base_url.rstrip('/')}{settings.MEDIA_URL}qrcodes/certificate_{certificate_uuid}.png"
+
     microcredential_image_absolute_url = (
-        f"{base_url.rstrip('/')}{microcredential.image.url}"
-        if microcredential.image else None
+        f"{base_url.rstrip('/')}{microcredential.image.url}" if microcredential.image else None
     )
     author_photo_absolute_url = (
         f"{base_url.rstrip('/')}{microcredential.author.photo.url}"
@@ -1662,10 +1668,6 @@ def generate_microcredential_certificate(request, id):
         else None
     )
 
-    # Generate certificate ID
-    certificate_id = f"CERT-{microcredential.id}-{request.user.id}"
-
-    # Debug context
     context = {
         'microcredential': microcredential,
         'user': request.user,
@@ -1675,14 +1677,12 @@ def generate_microcredential_certificate(request, id):
         'course_grades': course_grades,
         'certificate_id': certificate_id,
         'min_total_score': microcredential.min_total_score,
+        'qr_code_url': qr_code_url,
+        'certificate_uuid': certificate_uuid,
     }
-    logger = logging.getLogger(__name__)
-    logger.debug(f"Certificate context: {context}")
 
-    # Render template
     html_content = render_to_string('learner/microcredential_certificate.html', context)
 
-    # Generate PDF
     try:
         pdf = HTML(string=html_content, base_url=base_url).write_pdf()
     except Exception as e:
@@ -1690,10 +1690,25 @@ def generate_microcredential_certificate(request, id):
         return render(request, 'error_template.html', {'message': f'Error generating PDF: {str(e)}'})
 
     filename = f"certificate_{microcredential.slug}.pdf"
+    existing_claim = MicroClaim.objects.filter(user=request.user, microcredential=microcredential).first()
+
+    if not existing_claim:
+        MicroClaim.objects.create(
+            user=request.user,
+            microcredential=microcredential,
+            certificate_id=certificate_id,  # Gunakan certificate_id yang sudah dibuat sebelumnya
+        )
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
     return response
 
+def verify_certificate_micro(request, certificate_id):
+    certificate = get_object_or_404(MicroClaim, certificate_id=certificate_id)
+    context = {
+        'certificate': certificate,
+        'base_url': request.build_absolute_uri('/')
+    }
+    return render(request, 'courses/verify_certificate_micro.html', context)
 
 def deletemic(request, pk):
     if not request.user.is_authenticated:

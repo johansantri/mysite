@@ -78,6 +78,7 @@ urlpatterns = [
     #sertifikat
     path('certificate/<int:course_id>/', views.generate_certificate, name='generate_certificate'),
     path('verify/<uuid:certificate_id>/', views.verify_certificate, name='verify_certificate'),
+    path('verify-micro/<uuid:certificate_id>/', views.verify_certificate_micro, name='verify_certificate_micro'),
     path('submit-answer/<int:askora_id>/', views.submit_answer, name='submit_answer'),
     path('submit-peer-review/<int:submission_id>/', views.submit_peer_review, name='submit_peer_review'),
 

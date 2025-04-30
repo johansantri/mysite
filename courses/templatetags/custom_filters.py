@@ -1,7 +1,10 @@
 from django import template
+import base64
 import random
 from datetime import datetime
 from courses.models import Course  # ✅ Tambahkan ini
+from io import BytesIO
+from PIL import Image  # Pastikan ini ada
 register = template.Library()
 
 @register.filter
@@ -67,3 +70,15 @@ def add_class(value, class_name):
 def to(value):
     """Returns a range from 1 to the given value."""
     return range(1, value + 1)
+
+@register.filter
+def base64encode(value):
+    """
+    Mengonversi gambar menjadi string base64.
+    Pastikan `value` adalah objek gambar PIL (Pillow).
+    """
+    if isinstance(value, Image.Image):
+        buffer = BytesIO()
+        value.save(buffer, format="PNG")
+        return base64.b64encode(buffer.getvalue()).decode('utf-8')
+    return value
