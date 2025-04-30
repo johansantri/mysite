@@ -65,6 +65,135 @@ import hashlib
 import base64
 from decimal import Decimal, ROUND_DOWN
 import logging
+from django.core.exceptions import PermissionDenied
+
+@login_required
+def microcredential_report_view(request, microcredential_id):
+    if not request.user.is_staff:
+        raise PermissionDenied("You do not have permission to access this report.")
+
+    micro = get_object_or_404(MicroCredential, id=microcredential_id)
+    enrollments = MicroCredentialEnrollment.objects.filter(microcredential=micro)
+    total_participants = enrollments.count()
+    required_courses = micro.required_courses.all()
+
+    participants_data = []
+    for enrollment in enrollments:
+        user = enrollment.user
+        user_micro = UserMicroCredential.objects.filter(user=user, microcredential=micro).first()
+        completed = user_micro.completed if user_micro else False
+        certificate_id = user_micro.certificate_id if user_micro else "N/A"
+        issued_at = user_micro.issued_at if user_micro else None
+
+        country = user.country if user.country else "N/A"
+        gender = user.gender if user.gender else "N/A"
+        university = user.university.name if user.university else "N/A"
+        full_name = f"{user.first_name} {user.last_name}".strip() or user.username
+
+        course_progress = []
+        total_user_score = Decimal(0)
+        total_max_score = Decimal(0)
+        all_courses_completed = True
+
+        for course in required_courses:
+            assessments = Assessment.objects.filter(section__courses=course)
+            course_score = Decimal(0)
+            course_max_score = Decimal(0)
+            course_completed = True
+
+            for assessment in assessments:
+                score_value = Decimal(0)
+                total_questions = assessment.questions.count()
+                if total_questions > 0:
+                    total_correct_answers = 0
+                    answers_exist = False
+                    for question in assessment.questions.all():
+                        answers = QuestionAnswer.objects.filter(question=question, user=user)
+                        if answers.exists():
+                            answers_exist = True
+                        total_correct_answers += answers.filter(choice__is_correct=True).count()
+                    if not answers_exist:
+                        course_completed = False
+                    if total_questions > 0:
+                        score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
+                else:
+                    askora_submissions = Submission.objects.filter(askora__assessment=assessment, user=user)
+                    if not askora_submissions.exists():
+                        course_completed = False
+                    else:
+                        latest_submission = askora_submissions.order_by('-submitted_at').first()
+                        assessment_score = AssessmentScore.objects.filter(submission=latest_submission).first()
+                        if assessment_score:
+                            score_value = Decimal(assessment_score.final_score)
+
+                score_value = min(score_value, Decimal(assessment.weight))
+                course_score += score_value
+                course_max_score += assessment.weight
+
+            course_score = course_score.quantize(Decimal('1'), rounding=ROUND_DOWN)
+            course_max_score = course_max_score.quantize(Decimal('1'), rounding=ROUND_DOWN)
+            min_score = Decimal(micro.get_min_score(course) or 0).quantize(Decimal('1'), rounding=ROUND_DOWN)
+            course_passed = course_completed and course_score >= min_score
+
+            course_progress.append({
+                'course_name': course.course_name,
+                'user_score': course_score,
+                'max_score': course_max_score,
+                'min_score': min_score,
+                'completed': course_completed,
+                'passed': course_passed,
+            })
+
+            total_user_score += course_score
+            total_max_score += course_max_score
+            if not course_passed:
+                all_courses_completed = False
+
+        total_user_score = total_user_score.quantize(Decimal('1'), rounding=ROUND_DOWN)
+        total_max_score = total_max_score.quantize(Decimal('1'), rounding=ROUND_DOWN)
+        microcredential_passed = all_courses_completed and total_user_score >= Decimal(micro.min_total_score)
+
+        participants_data.append({
+            'full_name': full_name,
+            'email': getattr(user, 'email', 'N/A'),
+            'country': country,
+            'gender': gender,
+            'university': university,
+            'total_user_score': total_user_score,
+            'total_max_score': total_max_score,
+            'min_total_score': micro.min_total_score,
+            'microcredential_passed': microcredential_passed,
+            'completed': completed,
+            'certificate_id': certificate_id,
+            'issued_at': issued_at,
+            'course_progress': course_progress,
+        })
+
+    # PAGINATION
+    per_page = 25
+    paginator = Paginator(participants_data, per_page)
+    page = request.GET.get('page')
+
+    try:
+        participants_page = paginator.page(page)
+    except PageNotAnInteger:
+        participants_page = paginator.page(1)
+    except EmptyPage:
+        participants_page = paginator.page(paginator.num_pages)
+
+    context = {
+        'report': {
+            'microcredential_title': micro.title,
+            'microcredential_id': micro.id,
+            'total_participants': total_participants,
+            'min_total_score': micro.min_total_score,
+            'participants': participants_page,
+        },
+        'current_date': timezone.now().date(),
+    }
+
+    return render(request, 'micro/microcredential_report.html', context)
+
 
 @login_required
 def add_microcredential_review(request, microcredential_id):
@@ -1670,64 +1799,7 @@ def listmic(request):
         'search_query': search_query,
     })
 
-def update_microcredential_progress(user, microcredential):
-    total_courses = microcredential.required_courses.all()
-    completed_courses = 0
-    total_progress = Decimal('0')
 
-    for course in total_courses:
-        try:
-            # Dapatkan progres dari CourseProgress dan pastikan untuk mengonversinya ke Decimal
-            progress = Decimal(CourseProgress.objects.get(user=user, course=course).progress_percentage)
-            total_progress += progress
-
-            # Jika progres sudah 100%, tandai sebagai selesai
-            if progress == Decimal('100.00'):
-                completed_courses += 1
-        except CourseProgress.DoesNotExist:
-            continue
-
-    # Hitung rata-rata progres dan pastikan untuk membulatkan ke 2 desimal
-    if total_courses:
-        average_progress = total_progress / len(total_courses)
-    else:
-        average_progress = Decimal('0')
-
-    # Pembulatan rata-rata progres ke 2 angka desimal
-    average_progress = average_progress.quantize(Decimal('0.01'), rounding=ROUND_DOWN)
-
-    # Periksa apakah semua kursus sudah selesai
-    if completed_courses == len(total_courses):
-        # Tandai MicroCredential sebagai selesai
-        user_microcredential = UserMicroCredential.objects.get(user=user, microcredential=microcredential)
-        user_microcredential.completed = True
-        user_microcredential.save()
-
-    return average_progress
-
-@login_required
-def user_micro_progress_report(request):
-    """
-    Laporan progres microcredential untuk pengguna.
-    """
-    progress_list = UserMicroProgress.objects.select_related(
-        'user', 'course', 'microcredential'
-    ).order_by('user__username', 'microcredential__title')
-
-    # Proses untuk setiap UserMicroProgress
-    for progress in progress_list:
-        microcredential = progress.microcredential
-        user = progress.user
-
-        # Hitung rata-rata progres microcredential
-        average_progress = update_microcredential_progress(user, microcredential)
-
-        # Update data progres rata-rata jika diperlukan
-        progress.microcredential.average_progress = average_progress
-
-    return render(request, 'micro/user_micro_progress.html', {
-        'progress_list': progress_list
-    })
 
 
 def calculate_score_for_user_and_course(user, course):

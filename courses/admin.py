@@ -1,8 +1,28 @@
 from django.contrib import admin
 from . import models 
-from .models import  MicroCredentialComment,LTIExternalTool,Submission,CourseRating,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
+from .models import  UserMicroProgress,MicroCredentialComment,LTIExternalTool,Submission,CourseRating,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
 from import_export.admin import ImportExportModelAdmin
 from django.utils.html import format_html
+
+class UserMicroProgressAdmin(admin.ModelAdmin):
+    list_display = ('user', 'course', 'microcredential', 'progress', 'score', 'completed', 'completed_at')
+    list_filter = ('course', 'microcredential', 'completed')  # Filter berdasarkan course, microcredential, atau status selesai
+    search_fields = ('user__username', 'course__name', 'microcredential__name')  # Mencari berdasarkan username, course, atau microcredential
+    ordering = ('-completed_at',)  # Urutkan berdasarkan waktu penyelesaian, yang terbaru lebih dulu
+    date_hierarchy = 'completed_at'  # Memungkinkan pemfilteran berdasarkan tanggal
+
+    # Jika Anda ingin menambahkan form untuk mengatur beberapa nilai terkait, bisa menambahkan fieldsets atau readonly_fields
+    # fieldsets = (
+    #     (None, {
+    #         'fields': ('user', 'course', 'microcredential', 'progress', 'score', 'completed', 'completed_at')
+    #     }),
+    # )
+    
+    # Misalnya, hanya bisa mengedit status progress di admin panel:
+    readonly_fields = ('user', 'course', 'microcredential', 'completed_at')  # Contoh readonly fields
+
+# Mendaftarkan model UserMicroProgress ke panel admin
+admin.site.register(UserMicroProgress, UserMicroProgressAdmin)
 
 class MicroCredentialCommentAdmin(admin.ModelAdmin):
     list_display = ('user', 'microcredential', 'created_at', 'likes', 'dislikes', 'is_spam', 'parent')  # Menampilkan field yang relevan di daftar admin

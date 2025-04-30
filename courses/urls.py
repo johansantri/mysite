@@ -94,7 +94,7 @@ urlpatterns = [
     path('microcredential/<int:id>/<slug:slug>/detail/', views.micro_detail, name='micro_detail'),
     path('microcredential/<int:microcredential_id>/add-review/', views.add_microcredential_review, name='add_microcredential_review'),
     path('microcredential/<int:microcredential_id>/<slug:slug>/add_comment/', views.add_comment_microcredential, name='add_comment_microcredential'),
-    path('reports/user-progress/', views.user_micro_progress_report, name='user_micro_progress_report'),
+    path('microcredential/<int:microcredential_id>/report/', views.microcredential_report_view, name='microcredential_report'),
 
     path('comment/<int:comment_id>/reply/', views.reply_comment, name='reply_comment'),
     path('sosial/', views.create_and_list_sos_posts, name='create_and_list_sos_posts'),

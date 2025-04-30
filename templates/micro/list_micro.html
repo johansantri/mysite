@@ -40,7 +40,7 @@
                                     <small class="text-muted">{{ mc.category.name }}</small>
                                 </td>
                                 <td>{{ mc.num_courses }}</td>
-                                <td><a href="{% url 'courses:user_micro_progress_report' %}">{{ mc.num_enrollments }}</a></td>
+                                <td><a href="{% url 'courses:microcredential_report' mc.id %}">{{ mc.num_enrollments }}</a></td>
                                 <td>
                                     {% if mc.avg_rating %}
                                         {{ mc.avg_rating|floatformat:1 }} / 5
