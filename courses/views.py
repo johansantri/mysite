@@ -81,9 +81,10 @@ def microcredential_report_view(request, microcredential_id):
     for enrollment in enrollments:
         user = enrollment.user
         user_micro = UserMicroCredential.objects.filter(user=user, microcredential=micro).first()
+        micro_claim = MicroClaim.objects.filter(user=user, microcredential=micro).first()
         completed = user_micro.completed if user_micro else False
         certificate_id = user_micro.certificate_id if user_micro else "N/A"
-        issued_at = user_micro.issued_at if user_micro else None
+        issued_at = micro_claim.issued_at if micro_claim else None 
 
         country = user.country if user.country else "N/A"
         gender = user.gender if user.gender else "N/A"
@@ -153,9 +154,16 @@ def microcredential_report_view(request, microcredential_id):
         total_max_score = total_max_score.quantize(Decimal('1'), rounding=ROUND_DOWN)
         microcredential_passed = all_courses_completed and total_user_score >= Decimal(micro.min_total_score)
 
+        # CEK APAKAH SUDAH KLAIM SERTIFIKAT
+        micro_claim = MicroClaim.objects.filter(user=user, microcredential=micro).first()
+        has_claimed = bool(micro_claim)
+        certificate_claim_id = micro_claim.certificate_id if micro_claim else "N/A"
+        claim_verified = micro_claim.verified if micro_claim else False
+        claimed_at = micro_claim.claim_date if micro_claim else None
+
         participants_data.append({
             'full_name': full_name,
-            'email': getattr(user, 'email', 'N/A'),
+            'email': user.email,
             'country': country,
             'gender': gender,
             'university': university,
@@ -164,8 +172,11 @@ def microcredential_report_view(request, microcredential_id):
             'min_total_score': micro.min_total_score,
             'microcredential_passed': microcredential_passed,
             'completed': completed,
-            'certificate_id': certificate_id,
+            'certificate_id': certificate_claim_id,
             'issued_at': issued_at,
+            'claimed': has_claimed,
+            'verified': claim_verified,
+            'claimed_at': claimed_at,
             'course_progress': course_progress,
         })
 
@@ -1839,7 +1850,7 @@ def listmic(request):
         avg_rating=Avg('reviews__rating'),
         num_courses=Count('required_courses', distinct=True),
         num_reviews=Count('reviews', distinct=True)
-    )
+    ).order_by('-id')  # <-- Tambahkan ini untuk menghindari warning
 
     # Pagination
     paginator = Paginator(microcredentials, 10)
@@ -1850,6 +1861,7 @@ def listmic(request):
         'page_obj': page_obj,
         'search_query': search_query,
     })
+
 
 
 

@@ -844,6 +844,7 @@ class MicroClaim(models.Model):
     certificate_id = models.CharField(max_length=255, unique=True)  # e.g., CERT-1-4
     certificate_uuid = models.UUIDField(unique=True, default=uuid.uuid4)  # untuk QR code
     verified = models.BooleanField(default=False)
+    issued_at = models.DateTimeField(default=timezone.now)  # ⬅️ Tambahkan ini
 
     def verify_claim(self):
         self.verified = True
