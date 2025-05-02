@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     'csp',
     'mathfilters',
     'blog',
+    'licensing',
  
     
 ]

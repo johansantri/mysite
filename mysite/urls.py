@@ -26,6 +26,7 @@ urlpatterns = [
     path('', include('instructor.urls', namespace='instructor')),
     path('', include('learner.urls', namespace='learner')),
     path('', include('blog.urls', namespace='blog')),
+    path('', include('licensing.urls', namespace='licensing')),
     path('admin/', admin.site.urls),
     path('captcha/', include('captcha.urls')),
     path('accounts/',include("allauth.urls")),
