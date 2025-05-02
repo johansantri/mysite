@@ -272,9 +272,16 @@ class BlogDetailView(DetailView):
             for tag in tags
         ]
         
-        context['related_courses'] = self.object.related_courses.filter(
-            id__isnull=False, slug__isnull=False
-        ).exclude(slug='')
+        courses = self.object.related_courses.filter(
+            status_course__status='published',  # <- tambahkan filter ini
+            id__isnull=False,
+            slug__isnull=False
+        ).exclude(slug='').order_by('-id')  # agar versi terbaru muncul lebih dulu
+
+            
+        # Gunakan slug untuk menghindari kursus duplikat (ID yang berbeda, slug yang sama)
+        unique_courses = {course.slug: course for course in courses}.values()
+        context['related_courses'] = list(unique_courses)
         
         return context
 
