@@ -24,7 +24,7 @@
                         <thead>
                             <tr>
                                 <th>Course Name</th>
-                                <th>Enrollment Date</th>
+                                <th> Enrollment Date</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -36,12 +36,17 @@
                                 <td>
                                     {% with last_access=last_access_map|get_item:enrollment.course.id %}
                                         {% if last_access %}
-                                        <a href="{% url 'courses:course_learn' enrollment.user.username enrollment.course.slug %}{% if last_access.material %}?material_id={{ last_access.material.id }}{% elif last_access.assessment %}?assessment_id={{ last_access.assessment.id }}{% endif %}" class="btn btn-success btn-sm">Resume</a>
+                                            <a href="{% url 'courses:course_learn' enrollment.user.username enrollment.course.slug %}{% if last_access.material %}?material_id={{ last_access.material.id }}{% elif last_access.assessment %}?assessment_id={{ last_access.assessment.id }}{% endif %}" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-play-circle"></i> Resume
+                                            </a>
                                         {% else %}
-                                        <a href="{% url 'courses:course_learn' enrollment.user.username enrollment.course.slug %}" class="btn btn-success btn-sm">Get Started</a>
+                                            <a href="{% url 'courses:course_learn' enrollment.user.username enrollment.course.slug %}" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-rocket"></i> Get Started
+                                            </a>
                                         {% endif %}
                                     {% endwith %}
                                 </td>
+
 
                             </tr>
                             {% endfor %}
