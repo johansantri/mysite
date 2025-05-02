@@ -25,13 +25,15 @@
                             <tr>
                                 <th>Course Name</th>
                                 <th>Enrollment Date</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for enrollment in page_obj %}
                             <tr>
-                                <td><a href="{% url 'courses:course_learn' enrollment.user.username enrollment.course.slug %}">{{ enrollment.course.course_name }}</a></td>
+                                <td><a href="{% url 'courses:course_lms_detail' enrollment.course.id enrollment.course.slug %}">{{ enrollment.course.course_name }}</a></td>
                                 <td>{{ enrollment.enrolled_at|date:"d M Y" }}</td>
+                                <td><a href="{% url 'courses:course_learn' enrollment.user.username enrollment.course.slug %}" class="btn btn-success btn-sm">Get started</a></td>
                             </tr>
                             {% endfor %}
                         </tbody>
