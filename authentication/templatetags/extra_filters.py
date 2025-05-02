@@ -26,3 +26,7 @@ def truncate_words(value, word_count=20):
     if len(words) > word_count:
         return ' '.join(words[:word_count]) + '...'
     return value
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)

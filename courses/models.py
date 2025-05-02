@@ -444,7 +444,8 @@ class Course(models.Model):
     def has_been_rated_by(self, user):
         return self.ratings.filter(user=user).exists()
 
-    
+
+
 class PricingType(models.Model):
     name = models.CharField(max_length=50, unique=True)  # Nama pricing type (contoh: 'Regular Price', 'Discount')
     description = models.TextField(blank=True, null=True)  # Deskripsi opsional
@@ -1228,3 +1229,14 @@ class SearchHistory(models.Model):
 
     class Meta:
         ordering = ['-search_date']
+
+
+class LastAccessCourse(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    material = models.ForeignKey(Material, null=True, blank=True, on_delete=models.SET_NULL)
+    assessment = models.ForeignKey(Assessment, null=True, blank=True, on_delete=models.SET_NULL)
+    last_viewed_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('user', 'course')

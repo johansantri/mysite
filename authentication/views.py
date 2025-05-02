@@ -22,7 +22,7 @@ from django.urls import reverse
 from django.core.mail import send_mail
 from authentication.forms import  Userprofile, UserPhoto
 from .models import Profile
-from courses.models import SearchHistory,Instructor,CourseRating,Partner,Assessment,GradeRange,AssessmentRead,Material, MaterialRead, Submission,AssessmentScore,QuestionAnswer,CourseStatus,Enrollment,MicroCredential, MicroCredentialEnrollment,Course, Enrollment, Category,CourseProgress
+from courses.models import LastAccessCourse,SearchHistory,Instructor,CourseRating,Partner,Assessment,GradeRange,AssessmentRead,Material, MaterialRead, Submission,AssessmentScore,QuestionAnswer,CourseStatus,Enrollment,MicroCredential, MicroCredentialEnrollment,Course, Enrollment, Category,CourseProgress
 from django.http import HttpResponse,JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseForbidden
@@ -50,36 +50,34 @@ import logging
 
 def about(request):
     return render(request, 'home/about.html')
+
+
 def mycourse(request):
     if request.user.is_authenticated:
-        # Mengambil semua kursus yang diambil oleh user yang sedang login
         courses = Enrollment.objects.filter(user=request.user)
-    
-        # Jika metode bukan GET, batalkan
+
         if request.method != 'GET':
             return HttpResponseNotAllowed("Metode tidak diperbolehkan")
         
-        # Pencarian (Search)
         search_query = request.GET.get('search', '')
-        
         if search_query:
-            # Menambahkan filter pencarian berdasarkan nama kursus
             courses = courses.filter(Q(course__course_name__icontains=search_query))
 
-        # Ordering the courses by enrolled_at or any relevant field
-        courses = courses.order_by('-enrolled_at')  # Adjust this field based on your needs
-
-        # Pagination
-        paginator = Paginator(courses, 10)  # 10 item per halaman
+        courses = courses.order_by('-enrolled_at')
+        paginator = Paginator(courses, 10)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
 
-        # Render template dengan data kursus dan pagination
+        # Ambil semua LastAccess untuk user ini
+        last_access_list = LastAccessCourse.objects.filter(user=request.user)
+        last_access_map = { la.course_id: la for la in last_access_list }
+
         return render(request, 'learner/mycourse_list.html', {
             'page_obj': page_obj,
-            'search_query': search_query
+            'search_query': search_query,
+            'last_access_map': last_access_map,
         })
-          
+
     return redirect("/login/?next=%s" % request.path)
 
 def microcredential_list(request):
