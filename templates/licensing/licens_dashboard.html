@@ -4,6 +4,12 @@
     <div class="container mt-5">
         <h1 class="mb-4">License Dashboard</h1>
 
+        <!-- Form Pencarian -->
+        <form method="GET" class="mb-4">
+            {{ search_form.as_p }}
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+
         <!-- Active Licenses Section -->
         <div class="mb-4">
             <h2>Active Licenses</h2>
@@ -16,6 +22,7 @@
                             <th>Start Date</th>
                             <th>Expiry Date</th>
                             <th>Status</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -25,14 +32,9 @@
                                 <td>{{ license.get_license_type_display }}</td>
                                 <td>{{ license.start_date }}</td>
                                 <td>{{ license.expiry_date }}</td>
+                                <td><span class="badge bg-success">Active</span></td>
                                 <td>
-                                    {% if license.is_expired %}
-                                        <span class="badge bg-danger">Expired</span>
-                                    {% elif license.is_approaching_expiry %}
-                                        <span class="badge bg-warning">Approaching Expiry</span>
-                                    {% else %}
-                                        <span class="badge bg-success">Active</span>
-                                    {% endif %}
+                                    <a href="{% url 'licensing:delete_license' license.id %}" class="btn btn-danger">Delete</a>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -43,65 +45,69 @@
             {% endif %}
         </div>
 
-        <!-- Expired Licenses Section -->
+        <!-- Invitations Section -->
         <div class="mb-4">
-            <h2>Expired Licenses</h2>
-            {% if expired_licenses %}
+            <h2>Active Invitations</h2>
+            {% if active_invitations %}
                 <table class="table table-bordered table-striped">
                     <thead class="table-dark">
                         <tr>
-                            <th>Name</th>
-                            <th>Type</th>
-                            <th>Start Date</th>
-                            <th>Expiry Date</th>
+                            <th>Email</th>
+                            <th>License</th>
                             <th>Status</th>
+                            <th>Invitation Date</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for license in expired_licenses %}
+                        {% for invitation in active_invitations %}
                             <tr>
-                                <td>{{ license.name }}</td>
-                                <td>{{ license.get_license_type_display }}</td>
-                                <td>{{ license.start_date }}</td>
-                                <td>{{ license.expiry_date }}</td>
-                                <td><span class="badge bg-danger">Expired</span></td>
+                                <td>{{ invitation.invitee_email }}</td>
+                                <td>{{ invitation.license.name }}</td>
+                                <td>{{ invitation.get_status_display }}</td>
+                                <td>{{ invitation.invitation_date }}</td>
+                                <td>
+                                    <a href="{% url 'licensing:resend_invitation' invitation.id %}" class="btn btn-warning">Resend</a>
+                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             {% else %}
-                <p>You have no expired licenses.</p>
+                <p>No active invitations.</p>
             {% endif %}
         </div>
 
-        <!-- Licenses Approaching Expiry Section -->
+        <!-- Accepted Invitations Section -->
         <div class="mb-4">
-            <h2>Licenses Approaching Expiry</h2>
-            {% if approaching_expiry %}
+            <h2>Accepted Invitations</h2>
+            {% if accepted_invitations %}
                 <table class="table table-bordered table-striped">
                     <thead class="table-dark">
                         <tr>
-                            <th>Name</th>
-                            <th>Type</th>
-                            <th>Start Date</th>
-                            <th>Expiry Date</th>
+                            <th>Email</th>
+                            <th>License</th>
                             <th>Status</th>
+                            <th>Invitation Date</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for license in approaching_expiry %}
+                        {% for invitation in accepted_invitations %}
                             <tr>
-                                <td>{{ license.name }}</td>
-                                <td>{{ license.get_license_type_display }}</td>
-                                <td>{{ license.start_date }}</td>
-                                <td>{{ license.expiry_date }}</td>
-                                <td><span class="badge bg-warning">Approaching Expiry</span></td>
+                                <td>{{ invitation.invitee_email }}</td>
+                                <td>{{ invitation.license.name }}</td>
+                                <td>{{ invitation.get_status_display }}</td>
+                                <td>{{ invitation.invitation_date }}</td>
+                                <td>
+                                    <a href="{% url 'licensing:delete_license' invitation.id %}" class="btn btn-danger">Delete</a>
+                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             {% else %}
-                <p>No licenses are approaching expiry in the next 7 days.</p>
+                <p>No accepted invitations.</p>
             {% endif %}
         </div>
 

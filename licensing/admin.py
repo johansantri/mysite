@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import License
+from .models import License,Invitation
 from django.utils.html import format_html
 from django.utils import timezone
 
@@ -62,3 +62,14 @@ class LicenseAdmin(admin.ModelAdmin):
 
 # Mendaftarkan model License dan kelas admin ke panel admin
 admin.site.register(License, LicenseAdmin)
+
+
+
+class InvitationAdmin(admin.ModelAdmin):
+    list_display = ('inviter', 'invitee_email', 'license', 'status', 'invitation_date', 'expiry_date')
+    list_filter = ('status', 'inviter', 'license')
+    search_fields = ('invitee_email', 'inviter__username')  # Memungkinkan pencarian berdasarkan email dan username inviter
+    ordering = ('-invitation_date',)  # Mengurutkan berdasarkan tanggal undangan, yang terbaru di atas
+    list_editable = ('status',)  # Memungkinkan edit status undangan langsung dari daftar
+
+admin.site.register(Invitation, InvitationAdmin)

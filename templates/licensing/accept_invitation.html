@@ -1,0 +1,15 @@
+<!-- accept_invitation.html -->
+{% extends 'home/base.html' %}
+{% block content %}
+  <h1>Accept Invitation</h1>
+
+  {% if messages %}
+    <ul>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <p>If you have an account, please <a href="{% url 'authentications:login' %}">login</a> to accept the invitation.</p>
+{% endblock %}

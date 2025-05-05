@@ -1,0 +1,25 @@
+{% extends 'home/base.html' %}
+{% block content %}
+  <div class="container mt-4">
+    <h1 class="mb-4">Send Invitation</h1>
+
+    <form method="post">
+      {% csrf_token %}
+      
+      <!-- Email Field -->
+      <div class="mb-3">
+        <label for="{{ form.invitee_emails.id_for_label }}" class="form-label">Invitee's Emails (separate by space or newline)</label>
+        <textarea class="form-control" id="{{ form.invitee_emails.id_for_label }}" name="{{ form.invitee_emails.name }}" rows="4" required>
+          {% if form.invitee_emails.value %}
+            {{ form.invitee_emails.value }}
+          {% endif %}
+        </textarea>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-primary">Send Invitation</button>
+    </form>
+
+    <a href="{% url 'licensing:licens_dashboard' %}" class="btn btn-link mt-3">Back to Dashboard</a>
+  </div>
+{% endblock %}
