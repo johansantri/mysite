@@ -2366,20 +2366,16 @@ def course_learn(request, username, slug):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
 
-    # Ambil course berdasarkan slug
     course = get_object_or_404(Course, slug=slug)
 
-    # Pastikan user yang mengakses adalah user yang benar
     if request.user.username != username:
         return redirect('authentication:course_list')
 
-    # Cek apakah user sudah terdaftar di kursus ini
     if not Enrollment.objects.filter(user=request.user, course=course).exists():
         return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
     
     course_name = course.course_name
 
-    # Ambil section, material, assessment, dan askora
     sections = Section.objects.filter(courses=course).prefetch_related(
         Prefetch('materials', queryset=Material.objects.all()),
         Prefetch('assessments', queryset=Assessment.objects.all().prefetch_related(
@@ -2390,7 +2386,6 @@ def course_learn(request, username, slug):
         ))
     )
 
-    # Buat daftar konten gabungan dengan informasi section
     combined_content = []
     for section in sections:
         for material in section.materials.all():
@@ -2400,11 +2395,9 @@ def course_learn(request, username, slug):
 
     total_content = len(combined_content)
 
-    # Ambil ID konten saat ini dari parameter URL
     material_id = request.GET.get('material_id')
     assessment_id = request.GET.get('assessment_id')
 
-    # Tentukan current_content
     current_content = None
     if not material_id and not assessment_id:
         current_content = combined_content[0] if combined_content else None
@@ -2415,9 +2408,6 @@ def course_learn(request, username, slug):
         assessment = get_object_or_404(Assessment, id=assessment_id)
         current_content = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
 
-    
-
-    # Handle comments and pagination based on current_content
     comments = None
     page_comments = []
     if current_content:
@@ -2450,29 +2440,26 @@ def course_learn(request, username, slug):
                 'assessment': assessment
             }
         )
-    
-    # Cek status assessment
+
     is_started = False
     is_expired = False
     remaining_time = 0
 
-    # Cek session jika sudah ada
-    session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
-    if session:
-        is_started = True
-        remaining_time = int((session.end_time - timezone.now()).total_seconds())
-        if remaining_time <= 0:
-            is_expired = True
-            remaining_time = 0
-    else:
-        # Jika duration_in_minutes = 0, anggap sudah mulai tanpa perlu "Setuju"
-        if assessment.duration_in_minutes == 0:
+    if assessment:
+        session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
+        if session:
             is_started = True
-            remaining_time = 0  # Tidak ada batas waktu
+            remaining_time = int((session.end_time - timezone.now()).total_seconds())
+            if remaining_time <= 0:
+                is_expired = True
+                remaining_time = 0
         else:
-            is_started = False
+            if assessment.duration_in_minutes == 0:
+                is_started = True
+                remaining_time = 0
+            else:
+                is_started = False
 
-    # Tentukan indeks konten saat ini
     current_index = -1
     if current_content:
         for i, content in enumerate(combined_content):
@@ -2482,20 +2469,16 @@ def course_learn(request, username, slug):
                 current_index = i
                 break
         if current_index == -1:
-            print("Warning: Current content not found in combined_content, defaulting to first content")
             current_index = 0
             current_content = combined_content[0] if combined_content else None
 
-    # Tentukan konten sebelumnya dan berikutnya
     previous_content = combined_content[current_index - 1] if current_index > 0 else None
     next_content = combined_content[current_index + 1] if current_index < len(combined_content) - 1 and current_index != -1 else None
     is_last_content = next_content is None
 
-    # Buat URL untuk navigasi
     previous_url = "#" if not previous_content else f"?{previous_content[0]}_id={previous_content[1].id}"
     next_url = "#" if not next_content else f"?{next_content[0]}_id={next_content[1].id}"
 
-    # Save track records
     if current_content:
         if current_content[0] == 'material':
             material = current_content[1]
@@ -2506,30 +2489,28 @@ def course_learn(request, username, slug):
             if not AssessmentRead.objects.filter(user=request.user, assessment=assessment).exists():
                 AssessmentRead.objects.create(user=request.user, assessment=assessment)
 
-    # Lacak kemajuan pengguna
     user_progress, created = CourseProgress.objects.get_or_create(user=request.user, course=course)
     if current_content and (current_index + 1) > user_progress.progress_percentage / 100 * total_content:
         user_progress.progress_percentage = (current_index + 1) / total_content * 100
         user_progress.save()
 
-    # Ambil skor terakhir dari pengguna
     score = Score.objects.filter(user=request.user.username, course=course).order_by('-date').first()
     user_grade = 'Fail'
     if score:
         score_percentage = (score.score / score.total_questions) * 100
         user_grade = calculate_grade(score_percentage, course)
 
-    # Hitung skor assessment dan status
     assessments = Assessment.objects.filter(section__courses=course)
     assessment_scores = []
     total_max_score = 0
-    total_score = 0  # Inisialisasi total_score
+    total_score = 0
     all_assessments_submitted = True
 
     grade_range = GradeRange.objects.filter(course=course).all()
     if grade_range:
-        passing_threshold = grade_range.filter(name='Pass').first().min_grade
-        max_grade = grade_range.filter(name='Pass').first().max_grade
+        pass_range = grade_range.filter(name='Pass').first()
+        passing_threshold = pass_range.min_grade
+        max_grade = pass_range.max_grade
     else:
         return render(request, 'error_template.html', {'message': 'Grade range not found for this course.'})
 
@@ -2537,7 +2518,7 @@ def course_learn(request, username, slug):
         score_value = Decimal(0)
         total_correct_answers = 0
         total_questions = assessment.questions.count()
-        if total_questions > 0:  # Assessment adalah multiple choice
+        if total_questions > 0:
             answers_exist = False
             for question in assessment.questions.all():
                 answers = QuestionAnswer.objects.filter(question=question, user=request.user)
@@ -2548,11 +2529,8 @@ def course_learn(request, username, slug):
                 all_assessments_submitted = False
             if total_questions > 0:
                 score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
-        else:  # Assessment adalah AskOra
-            askora_submissions = Submission.objects.filter(
-                askora__assessment=assessment,
-                user=request.user
-            )
+        else:
+            askora_submissions = Submission.objects.filter(askora__assessment=assessment, user=request.user)
             if not askora_submissions.exists():
                 all_assessments_submitted = False
             else:
@@ -2568,23 +2546,19 @@ def course_learn(request, username, slug):
             'weight': assessment.weight
         })
         total_max_score += assessment.weight
-        total_score += score_value  # Tambahkan ke total_score
+        total_score += score_value
 
-    total_score = min(total_score, total_max_score)  # Batasi dengan total_max_score
+    total_score = min(total_score, total_max_score)
     overall_percentage = (total_score / total_max_score) * 100 if total_max_score > 0 else 0
     passing_criteria_met = overall_percentage >= passing_threshold
     status = "Pass" if all_assessments_submitted and passing_criteria_met else "Fail"
 
-    # Persiapkan assessment_results
     assessment_results = [
         {'name': score['assessment'].name, 'max_score': score['weight'], 'score': score['score']}
         for score in assessment_scores
     ]
     assessment_results.append({'name': 'Total', 'max_score': total_max_score, 'score': total_score})
 
-    
-
-    # Ambil data AskOra dan Submission
     askoras = AskOra.objects.filter(assessment__section__courses=course)
     try:
         submissions = Submission.objects.filter(
@@ -2592,14 +2566,11 @@ def course_learn(request, username, slug):
             user=request.user
         )
     except Exception as e:
-        
         submissions = []
 
-    # Ambil pertanyaan dan jawaban untuk assessment
     questions = Question.objects.filter(assessment__in=assessments)
     answered_questions = {q.id: QuestionAnswer.objects.filter(user=request.user, question=q).first() for q in questions}
 
-    # Ambil submissions teman untuk direview
     peer_submissions = Submission.objects.filter(
         askora__in=AskOra.objects.filter(assessment__section__courses=course)
     ).exclude(user=request.user).prefetch_related('peer_reviews')
@@ -2612,7 +2583,6 @@ def course_learn(request, username, slug):
         assessment_weight = float(submission.askora.assessment.weight)
         max_peer_score = 5.0
 
-        # Cek apakah pengguna saat ini telah mengirimkan tugas untuk AskOra yang sama
         user_has_submitted = Submission.objects.filter(
             askora=submission.askora,
             user=request.user
@@ -2632,7 +2602,6 @@ def course_learn(request, username, slug):
             assessment_score.final_score = final_score
             assessment_score.save()
         except Exception as e:
-            print(f"Error saving assessment score: {e}")
             final_score = float(assessment_score.final_score or 0.0)
 
         peer_submissions_data.append({
@@ -2652,7 +2621,7 @@ def course_learn(request, username, slug):
         'course_progress': user_progress.progress_percentage,
         'user_grade': user_grade,
         'assessment_results': assessment_results,
-        'total_score': total_score,  # Skor total yang benar (97.00)
+        'total_score': total_score,
         'overall_percentage': overall_percentage,
         'total_weight': total_max_score,
         'status': status,
@@ -3182,6 +3151,8 @@ def instructor_profile(request, username):
         'total_participants': total_participants,  # Pass total participants to the template
     })
 #ernroll
+@login_required
+@require_POST
 def enroll_course(request, course_id):
     course = get_object_or_404(Course, id=course_id)
     response = course.enroll_user(request.user)
