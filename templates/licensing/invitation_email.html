@@ -1,7 +1,16 @@
-<!-- licensing/invitation_email.html -->
-<p>You have been invited to join the course.</p>
-<p>Please click the link below to accept or reject the invitation:</p>
-
-<p><a href="{{ link }}">Accept or Reject Invitation</a></p>
-
-<p>If you have any questions, feel free to contact us.</p>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Undangan Kursus</title>
+</head>
+<body>
+    <h2>Undangan untuk Bergabung!</h2>
+    <p>Kepada {{ invitation.invitee_email }},</p>
+    <p>Anda telah diundang untuk mengikuti kursus oleh {{ invitation.inviter.username }}.</p>
+    <p><strong>Lisensi:</strong> {{ invitation.license.name|default:"Tidak Ada Lisensi" }}</p>
+    <p>Klik tombol di bawah untuk menerima undangan:</p>
+    <a href="{{ accept_url }}" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Terima Undangan</a>
+    <p>Undangan ini berlaku hingga {{ invitation.expiry_date|date:"Y-m-d H:i" }}.</p>
+    <p>Terima kasih!</p>
+</body>
+</html>

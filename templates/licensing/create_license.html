@@ -1,0 +1,58 @@
+{% extends 'admin/base_site.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Buat Lisensi</h2>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="name" class="form-label">Nama Lisensi</label>
+            <input type="text" name="name" id="name" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="license_type" class="form-label">Tipe Lisensi</label>
+            <select name="license_type" id="license_type" class="form-select" required>
+                <option value="free">Gratis</option>
+                <option value="paid">Berbayar</option>
+                <option value="trial">Uji Coba</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="subscription_type" class="form-label">Tipe Langganan</label>
+            <select name="subscription_type" id="subscription_type" class="form-select" required>
+                <option value="free">Gratis</option>
+                <option value="paid">Berbayar</option>
+                <option value="trial">Uji Coba</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="subscription_frequency" class="form-label">Frekuensi Langganan</label>
+            <select name="subscription_frequency" id="subscription_frequency" class="form-select" required>
+                <option value="yearly">Tahunan</option>
+                <option value="monthly">Bulanan</option>
+                <option value="once">Sekali</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="max_users" class="form-label">Maksimum Pengguna</label>
+            <input type="number" name="max_users" id="max_users" class="form-control" value="20" required>
+        </div>
+        <div class="mb-3">
+            <label for="user_id" class="form-label">Pengguna Awal (misalnya, Admin PT A)</label>
+            <select name="user_id" id="user_id" class="form-select" required>
+                {% for user in users %}
+                    <option value="{{ user.id }}">{{ user.username }} ({{ user.email }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Buat Lisensi</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,115 +1,165 @@
 {% extends 'home/base.html' %}
-
 {% block content %}
-    <div class="container mt-5">
-        <h1 class="mb-4">License Dashboard</h1>
+<div class="container mt-5">
+    <h2 class="mb-4">Dashboard Lisensi</h2>
 
-        <!-- Form Pencarian -->
-        <form method="GET" class="mb-4">
-            {{ search_form.as_p }}
-            <button type="submit" class="btn btn-primary">Search</button>
-        </form>
+    <!-- Menampilkan pesan -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
 
-        <!-- Active Licenses Section -->
-        <div class="mb-4">
-            <h2>Active Licenses</h2>
-            {% if active_licenses %}
-                <table class="table table-bordered table-striped">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Name</th>
-                            <th>Type</th>
-                            <th>Start Date</th>
-                            <th>Expiry Date</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for license in active_licenses %}
-                            <tr>
-                                <td>{{ license.name }}</td>
-                                <td>{{ license.get_license_type_display }}</td>
-                                <td>{{ license.start_date }}</td>
-                                <td>{{ license.expiry_date }}</td>
-                                <td><span class="badge bg-success">Active</span></td>
-                                <td>
-                                    <a href="{% url 'licensing:delete_license' license.id %}" class="btn btn-danger">Delete</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <p>You have no active licenses.</p>
-            {% endif %}
-        </div>
-
-        <!-- Invitations Section -->
-        <div class="mb-4">
-            <h2>Active Invitations</h2>
-            {% if active_invitations %}
-                <table class="table table-bordered table-striped">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Email</th>
-                            <th>License</th>
-                            <th>Status</th>
-                            <th>Invitation Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for invitation in active_invitations %}
-                            <tr>
-                                <td>{{ invitation.invitee_email }}</td>
-                                <td>{{ invitation.license.name }}</td>
-                                <td>{{ invitation.get_status_display }}</td>
-                                <td>{{ invitation.invitation_date }}</td>
-                                <td>
-                                    <a href="{% url 'licensing:resend_invitation' invitation.id %}" class="btn btn-warning">Resend</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <p>No active invitations.</p>
-            {% endif %}
-        </div>
-
-        <!-- Accepted Invitations Section -->
-        <div class="mb-4">
-            <h2>Accepted Invitations</h2>
-            {% if accepted_invitations %}
-                <table class="table table-bordered table-striped">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Email</th>
-                            <th>License</th>
-                            <th>Status</th>
-                            <th>Invitation Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for invitation in accepted_invitations %}
-                            <tr>
-                                <td>{{ invitation.invitee_email }}</td>
-                                <td>{{ invitation.license.name }}</td>
-                                <td>{{ invitation.get_status_display }}</td>
-                                <td>{{ invitation.invitation_date }}</td>
-                                <td>
-                                    <a href="{% url 'licensing:delete_license' invitation.id %}" class="btn btn-danger">Delete</a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <p>No accepted invitations.</p>
-            {% endif %}
-        </div>
-
+    <!-- Statistik undangan -->
+    <div class="mb-3">
+        <p><strong>Statistik Undangan:</strong> {{ invitation_stats.pending }} Menunggu, {{ invitation_stats.accepted }} Diterima, {{ invitation_stats.expired }} Kadaluarsa</p>
     </div>
+
+    <!-- Bagian untuk menampilkan lisensi -->
+    <h3 class="mb-3">Lisensi Anda</h3>
+    {% if licenses %}
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">Nama</th>
+                        <th scope="col">Tipe</th>
+                        <th scope="col">Tanggal Mulai</th>
+                        <th scope="col">Tanggal Berakhir</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Pengguna</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for license in licenses %}
+                        <tr>
+                            <td>{{ license.name }}</td>
+                            <td>{{ license.get_license_type_display }}</td>
+                            <td>{{ license.start_date }}</td>
+                            <td>{{ license.expiry_date }}</td>
+                            <td>
+                                {% if license.status %}
+                                    <span class="badge bg-success">Aktif</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Tidak Aktif</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ license.users.count }} / {{ license.max_users }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            Tidak ada lisensi ditemukan. Silakan hubungi Super Admin untuk membuat lisensi.
+        </div>
+    {% endif %}
+
+    <!-- Bagian untuk menampilkan undangan -->
+    <h3 class="mb-3 mt-5">Undangan Anda</h3>
+
+    <!-- Form filter dan pencarian -->
+    <form method="GET" class="mb-3">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label for="statusFilter" class="form-label">Filter berdasarkan Status</label>
+                <select name="status" id="statusFilter" class="form-select">
+                    <option value="">Semua</option>
+                    <option value="pending" {% if status == 'pending' %}selected{% endif %}>Menunggu</option>
+                    <option value="accepted" {% if status == 'accepted' %}selected{% endif %}>Diterima</option>
+                    <option value="expired" {% if status == 'expired' %}selected{% endif %}>Kadaluarsa</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="searchInput" class="form-label">Cari berdasarkan Email</label>
+                <input type="text" name="search" id="searchInput" class="form-control" value="{{ search_query|default:'' }}" placeholder="Masukkan email...">
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary">Terapkan</button>
+                <a href="{% url 'licensing:licens_dashboard' %}" class="btn btn-secondary">Reset</a>
+            </div>
+        </div>
+    </form>
+
+    <!-- Tombol Undang Sekarang -->
+    <a href="{% url 'licensing:send_invitation' %}" class="btn btn-primary mb-3">
+        <i class="bi bi-plus-circle"></i> Undang Sekarang
+    </a>
+
+    <!-- Tabel undangan -->
+    {% if invitations %}
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">Email Penerima</th>
+                        <th scope="col">Lisensi</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Tanggal Undangan</th>
+                        <th scope="col">Tanggal Kadaluarsa</th>
+                        <th scope="col">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for invitation in invitations %}
+                        <tr>
+                            <td>{{ invitation.invitee_email }}</td>
+                            <td>{{ invitation.license.name|default:"Tidak Ada Lisensi" }}</td>
+                            <td>
+                                {% if invitation.status == 'pending' %}
+                                    <span class="badge bg-warning">Menunggu</span>
+                                {% elif invitation.status == 'accepted' %}
+                                    <span class="badge bg-success">Diterima</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Kadaluarsa</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ invitation.invitation_date|date:"Y-m-d H:i" }}</td>
+                            <td>{{ invitation.expiry_date|date:"Y-m-d H:i" }}</td>
+                            <td>
+                                {% if invitation.status != 'accepted' %}
+                                    <a href="{% url 'licensing:resend_invitation' invitation.id %}" class="btn btn-sm btn-info">
+                                        <i class="bi bi-arrow-repeat"></i> Kirim Ulang
+                                    </a>
+                                {% endif %}
+                                <a href="{% url 'licensing:cancel_invitation' invitation.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin membatalkan undangan ini?')">
+                                    <i class="bi bi-trash"></i> Batal
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Paginasi -->
+        <nav aria-label="Navigasi halaman">
+            <ul class="pagination">
+                {% if invitations.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ invitations.previous_page_number }}{% if status %}&status={{ status }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">Sebelumnya</a>
+                    </li>
+                {% endif %}
+                {% for num in invitations.paginator.page_range %}
+                    <li class="page-item {% if invitations.number == num %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}{% if status %}&status={{ status }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">{{ num }}</a>
+                    </li>
+                {% endfor %}
+                {% if invitations.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ invitations.next_page_number }}{% if status %}&status={{ status }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">Berikutnya</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            Tidak ada undangan yang dikirim.
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

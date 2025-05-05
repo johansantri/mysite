@@ -19,16 +19,16 @@ class License(models.Model):
         ('once', 'One-time'),
     ]
     
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='licenses', verbose_name='User')
-    name = models.CharField(max_length=255, verbose_name='License Name')  # Nama lisensi
+    users = models.ManyToManyField(CustomUser, related_name='licenses', verbose_name='Users')  # Ubah ke ManyToManyField
+    name = models.CharField(max_length=255, verbose_name='License Name')
     license_type = models.CharField(max_length=10, choices=LICENSE_TYPE_CHOICES, default='trial', verbose_name='License Type')
-    start_date = models.DateField(default=timezone.now, verbose_name='Start Date')  # Tanggal mulai lisensi
-    expiry_date = models.DateField(verbose_name='Expiry Date')  # Tanggal kadaluarsa lisensi
-    status = models.BooleanField(default=True, verbose_name='Status')  # Status lisensi, apakah aktif atau tidak
-    description = models.TextField(blank=True, null=True, verbose_name='Description')  # Deskripsi lisensi
-    university = models.ForeignKey(Universiti, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='University')  # Relasi dengan Universitas (Opsional)
+    start_date = models.DateField(default=timezone.now, verbose_name='Start Date')
+    expiry_date = models.DateField(verbose_name='Expiry Date')
+    status = models.BooleanField(default=True, verbose_name='Status')
+    description = models.TextField(blank=True, null=True, verbose_name='Description')
+    university = models.ForeignKey(Universiti, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='University')
+    max_users = models.PositiveIntegerField(default=20, verbose_name='Maximum Users')  # Batas maksimum pengguna
     
-    # Additional fields for subscription
     subscription_type = models.CharField(
         max_length=20,
         choices=LICENSE_TYPE_CHOICES,
@@ -38,38 +38,38 @@ class License(models.Model):
     subscription_frequency = models.CharField(
         max_length=20,
         choices=SUBSCRIPTION_FREQUENCY_CHOICES,
-        default='monthly',
+        default='yearly',  # Default ke yearly untuk PT A
         verbose_name='Subscription Frequency'
     )
     
     def __str__(self):
-        return f"{self.name} ({self.user.username})"
-
+        return f"{self.name}"
+    
     class Meta:
         verbose_name = 'License'
         verbose_name_plural = 'Licenses'
-
+    
     def is_expired(self):
-        """Menentukan apakah lisensi sudah kedaluwarsa."""
         return timezone.now().date() > self.expiry_date
-
+    
     def is_approaching_expiry(self, days=7):
-        """Menentukan apakah lisensi hampir kedaluwarsa dalam beberapa hari ke depan."""
         return self.expiry_date <= timezone.now().date() + timezone.timedelta(days=days)
-
+    
     def save(self, *args, **kwargs):
-        """Override untuk memeriksa apakah lisensi sudah kedaluwarsa dan menonaktifkan statusnya."""
         if self.is_expired():
-            self.status = False  # Menonaktifkan status jika lisensi sudah kedaluwarsa
+            self.status = False
         super().save(*args, **kwargs)
-
+    
     def extend_license(self):
-        """Memperpanjang lisensi berdasarkan frekuensi langganan (bulanan atau tahunan)."""
         if self.subscription_frequency == 'monthly':
-            self.expiry_date += timezone.timedelta(days=30)  # Menambah 30 hari untuk langganan bulanan
+            self.expiry_date += timezone.timedelta(days=30)
         elif self.subscription_frequency == 'yearly':
-            self.expiry_date += timezone.timedelta(days=365)  # Menambah 365 hari untuk langganan tahunan
+            self.expiry_date += timezone.timedelta(days=365)
         self.save()
+    
+    def can_add_user(self):
+        """Cek apakah masih bisa menambahkan pengguna berdasarkan max_users."""
+        return self.users.count() < self.max_users
 
 
 class Invitation(models.Model):
@@ -85,16 +85,15 @@ class Invitation(models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending', verbose_name='Status')
     invitation_date = models.DateTimeField(auto_now_add=True, verbose_name='Invitation Date')
     expiry_date = models.DateTimeField(default=timezone.now() + timezone.timedelta(days=7), verbose_name='Expiry Date')
-    token = models.CharField(max_length=255, blank=True, null=True, unique=True, verbose_name='Token')  # New field for token
+    token = models.CharField(max_length=255, blank=True, null=True, unique=True, verbose_name='Token')
 
     def save(self, *args, **kwargs):
         if not self.token:
-            self.token = str(uuid.uuid4())  # Generate a new token if not already present
+            self.token = str(uuid.uuid4())
         super().save(*args, **kwargs)
-
+    
     def __str__(self):
         return f"Invite from {self.inviter.username} to {self.invitee_email}"
-
+    
     def is_expired(self):
-        """Check if invitation has expired."""
         return timezone.now() > self.expiry_date
