@@ -1,7 +1,7 @@
 {% extends 'home/base.html' %}
 {% block content %}
 <div class="container mt-5">
-    <h2 class="mb-4">Dashboard Lisensi</h2>
+    <h2 class="mb-4">Dashboard Lisensi (PT A)</h2>
 
     <!-- Menampilkan pesan -->
     {% if messages %}
@@ -58,6 +58,59 @@
             Tidak ada lisensi ditemukan. Silakan hubungi Super Admin untuk membuat lisensi.
         </div>
     {% endif %}
+
+    <!-- Bagian untuk menampilkan kursus dan peserta -->
+    <h3 class="mb-3 mt-5">Kursus yang Diikuti Peserta</h3>
+    {% for license_data in license_course_data %}
+        <h4>Lisensi: {{ license_data.license.name }}</h4>
+        {% if license_data.courses %}
+            {% for course_data in license_data.courses %}
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h5>Kursus: {{ course_data.course.course_name }} ({{ course_data.enrollment_count }} Peserta)</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if course_data.enrollments %}
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th scope="col">Nama Peserta</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Tanggal Pendaftaran</th>
+                                            <th scope="col">Sertifikat Diterbitkan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for enrollment in course_data.enrollments %}
+                                            <tr>
+                                                <td>{{ enrollment.user.username }}</td>
+                                                <td>{{ enrollment.user.email }}</td>
+                                                <td>{{ enrollment.enrolled_at|date:"Y-m-d H:i" }}</td>
+                                                <td>
+                                                    {% if enrollment.certificate_issued %}
+                                                        <span class="badge bg-success">Ya</span>
+                                                    {% else %}
+                                                        <span class="badge bg-warning">Belum</span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <p>Tidak ada peserta yang mendaftar di kursus ini.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="alert alert-info" role="alert">
+                Tidak ada peserta yang mendaftar ke kursus dari lisensi ini.
+            </div>
+        {% endif %}
+    {% endfor %}
 
     <!-- Bagian untuk menampilkan undangan -->
     <h3 class="mb-3 mt-5">Undangan Anda</h3>

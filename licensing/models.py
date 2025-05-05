@@ -2,52 +2,41 @@ from django.db import models
 import uuid
 from django.contrib.auth import get_user_model
 from django.utils import timezone
-from authentication.models import CustomUser, Universiti
+from authentication.models import Universiti
 
 User = get_user_model()
 
 class License(models.Model):
     LICENSE_TYPE_CHOICES = [
-        ('free', 'Free'),
-        ('paid', 'Paid'),
-        ('trial', 'Trial'),
+        ('free', 'Gratis'),
+        ('paid', 'Berbayar'),
+        ('trial', 'Uji Coba'),
     ]
-    
     SUBSCRIPTION_FREQUENCY_CHOICES = [
-        ('monthly', 'Monthly'),
-        ('yearly', 'Yearly'),
-        ('once', 'One-time'),
+        ('monthly', 'Bulanan'),
+        ('yearly', 'Tahunan'),
+        ('once', 'Sekali'),
     ]
     
-    users = models.ManyToManyField(CustomUser, related_name='licenses', verbose_name='Users')  # Ubah ke ManyToManyField
-    name = models.CharField(max_length=255, verbose_name='License Name')
-    license_type = models.CharField(max_length=10, choices=LICENSE_TYPE_CHOICES, default='trial', verbose_name='License Type')
-    start_date = models.DateField(default=timezone.now, verbose_name='Start Date')
-    expiry_date = models.DateField(verbose_name='Expiry Date')
+    users = models.ManyToManyField(User, related_name='licenses', verbose_name='Pengguna')
+    name = models.CharField(max_length=255, verbose_name='Nama Lisensi')
+    license_type = models.CharField(max_length=10, choices=LICENSE_TYPE_CHOICES, default='trial', verbose_name='Tipe Lisensi')
+    start_date = models.DateField(default=timezone.now, verbose_name='Tanggal Mulai')
+    expiry_date = models.DateField(verbose_name='Tanggal Berakhir')
     status = models.BooleanField(default=True, verbose_name='Status')
-    description = models.TextField(blank=True, null=True, verbose_name='Description')
-    university = models.ForeignKey(Universiti, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='University')
-    max_users = models.PositiveIntegerField(default=20, verbose_name='Maximum Users')  # Batas maksimum pengguna
+    description = models.TextField(blank=True, null=True, verbose_name='Deskripsi')
+    university = models.ForeignKey(Universiti, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Universitas')
+    max_users = models.PositiveIntegerField(default=20, verbose_name='Maksimum Pengguna')
     
-    subscription_type = models.CharField(
-        max_length=20,
-        choices=LICENSE_TYPE_CHOICES,
-        default='paid',
-        verbose_name='Subscription Type'
-    )
-    subscription_frequency = models.CharField(
-        max_length=20,
-        choices=SUBSCRIPTION_FREQUENCY_CHOICES,
-        default='yearly',  # Default ke yearly untuk PT A
-        verbose_name='Subscription Frequency'
-    )
+    subscription_type = models.CharField(max_length=20, choices=LICENSE_TYPE_CHOICES, default='paid', verbose_name='Tipe Langganan')
+    subscription_frequency = models.CharField(max_length=20, choices=SUBSCRIPTION_FREQUENCY_CHOICES, default='yearly', verbose_name='Frekuensi Langganan')
     
     def __str__(self):
         return f"{self.name}"
     
     class Meta:
-        verbose_name = 'License'
-        verbose_name_plural = 'Licenses'
+        verbose_name = 'Lisensi'
+        verbose_name_plural = 'Lisensi'
     
     def is_expired(self):
         return timezone.now().date() > self.expiry_date
@@ -68,23 +57,21 @@ class License(models.Model):
         self.save()
     
     def can_add_user(self):
-        """Cek apakah masih bisa menambahkan pengguna berdasarkan max_users."""
         return self.users.count() < self.max_users
-
 
 class Invitation(models.Model):
     STATUS_CHOICES = [
-        ('pending', 'Pending'),
-        ('accepted', 'Accepted'),
-        ('expired', 'Expired'),
+        ('pending', 'Menunggu'),
+        ('accepted', 'Diterima'),
+        ('expired', 'Kadaluarsa'),
     ]
 
-    inviter = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='sent_invitations', verbose_name='Inviter')
-    invitee_email = models.EmailField(verbose_name='Invitee Email')
-    license = models.ForeignKey('License', on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Assigned License')
+    inviter = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_invitations', verbose_name='Pengundang')
+    invitee_email = models.EmailField(verbose_name='Email Penerima')
+    license = models.ForeignKey(License, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Lisensi Terkait')
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending', verbose_name='Status')
-    invitation_date = models.DateTimeField(auto_now_add=True, verbose_name='Invitation Date')
-    expiry_date = models.DateTimeField(default=timezone.now() + timezone.timedelta(days=7), verbose_name='Expiry Date')
+    invitation_date = models.DateTimeField(auto_now_add=True, verbose_name='Tanggal Undangan')
+    expiry_date = models.DateTimeField(default=timezone.now() + timezone.timedelta(days=7), verbose_name='Tanggal Kadaluarsa')
     token = models.CharField(max_length=255, blank=True, null=True, unique=True, verbose_name='Token')
 
     def save(self, *args, **kwargs):
@@ -93,7 +80,7 @@ class Invitation(models.Model):
         super().save(*args, **kwargs)
     
     def __str__(self):
-        return f"Invite from {self.inviter.username} to {self.invitee_email}"
+        return f"Undangan dari {self.inviter.username} ke {self.invitee_email}"
     
     def is_expired(self):
         return timezone.now() > self.expiry_date

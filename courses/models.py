@@ -1,6 +1,7 @@
 # models.py
 from django.db import models
 from authentication.models import CustomUser, Universiti
+from licensing.models import License
 from autoslug import AutoSlugField
 from django.utils.text import slugify
 import os
@@ -379,15 +380,26 @@ class Course(models.Model):
         return self.start_enrol <= today <= self.end_enrol if self.start_enrol and self.end_enrol else False
 
     def enroll_user(self, user):
-        """ Mendaftarkan user ke dalam course jika pendaftaran masih terbuka """
+        """Mendaftarkan user ke dalam course jika pendaftaran masih terbuka dan user memiliki lisensi aktif."""
+        # Cek apakah user memiliki lisensi aktif
+        has_active_license = License.objects.filter(
+            users=user,
+            status=True,
+            start_date__lte=timezone.now().date(),
+            expiry_date__gte=timezone.now().date()
+        ).exists()
+
+        if not has_active_license:
+            return {"status": "error", "message": "Anda memerlukan lisensi aktif untuk mendaftar ke kursus ini."}
+
         if not self.is_enrollment_open():
-            return {"status": "error", "message": "Enrollment is closed for this course."}
+            return {"status": "error", "message": "Pendaftaran untuk kursus ini telah ditutup."}
 
         enrollment, created = Enrollment.objects.get_or_create(user=user, course=self)
         if created:
-            return {"status": "success", "message": "Successfully enrolled in the course."}
+            return {"status": "success", "message": "Berhasil mendaftar ke kursus ini."}
         else:
-            return {"status": "info", "message": "You are already enrolled in this course."}
+            return {"status": "info", "message": "Anda sudah terdaftar di kursus ini."}
 
     def move_to_curation(self, message=None, user=None):
         if self.status_course.status != 'draft':

@@ -17,12 +17,20 @@ from django.core.exceptions import ValidationError
 import logging
 from datetime import timedelta
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from courses.models import Course, Enrollment
 
 logger = logging.getLogger(__name__)
 
+
 @login_required
 def licens_dashboard(request):
-    """Menampilkan dashboard lisensi untuk PT A (admin) yang mengelola undangan."""
+    """Menampilkan dashboard lisensi untuk PT A (admin) yang mengelola undangan dan melihat peserta kursus."""
+    if not request.user.is_subscription:
+        logger.warning(f"Pengalihan ke participant_dashboard untuk {request.user.email} karena bukan admin langganan (is_subscription=False)")
+        messages.error(request, "Akses ditolak. Hanya pengguna dengan status langganan yang dapat mengakses dashboard ini.")
+        return redirect('licensing:participant_dashboard')
+
+    logger.info(f"Pengguna {request.user.email} mengakses licens_dashboard (is_subscription=True)")
     invitations = Invitation.objects.filter(inviter=request.user)
 
     # Filter berdasarkan status
@@ -38,7 +46,7 @@ def licens_dashboard(request):
     # Urutkan berdasarkan tanggal undangan
     invitations = invitations.order_by('-invitation_date')
 
-    # Paginasi
+    # Paginasi untuk undangan
     paginator = Paginator(invitations, 10)
     page_number = request.GET.get('page')
     invitations_page = paginator.get_page(page_number)
@@ -53,12 +61,35 @@ def licens_dashboard(request):
         'expired': invitations.filter(status='expired').count(),
     }
 
+    # Ambil semua kursus yang diikuti oleh peserta dalam lisensi
+    license_course_data = []
+    for license in licenses:
+        # Ambil semua peserta dalam lisensi (kecuali PT A sendiri)
+        participants = license.users.exclude(id=request.user.id)
+        # Ambil semua enrollments untuk peserta ini
+        enrollments = Enrollment.objects.filter(user__in=participants)
+        # Kelompokkan enrollments berdasarkan kursus
+        courses = Course.objects.filter(enrollments__in=enrollments).distinct()
+        course_data = []
+        for course in courses:
+            course_enrollments = enrollments.filter(course=course)
+            course_data.append({
+                'course': course,
+                'enrollments': course_enrollments,
+                'enrollment_count': course_enrollments.count(),
+            })
+        license_course_data.append({
+            'license': license,
+            'courses': course_data,
+        })
+
     context = {
         'invitations': invitations_page,
         'licenses': licenses,
         'status': status,
         'search_query': search_query,
         'invitation_stats': invitation_stats,
+        'license_course_data': license_course_data,
     }
 
     return render(request, 'licensing/licens_dashboard.html', context)
@@ -66,9 +97,7 @@ def licens_dashboard(request):
 @login_required
 def participant_dashboard(request):
     """Menampilkan dashboard khusus untuk peserta."""
-    # Ambil semua lisensi yang terkait dengan peserta
     licenses = License.objects.filter(users=request.user)
-
     context = {
         'licenses': licenses,
     }
@@ -92,7 +121,6 @@ def resend_invitation(request, invitation_id):
         invitation.token = str(uuid.uuid4())
         invitation.status = 'pending'
     
-    # Kirim email ulang
     accept_url = request.build_absolute_uri(
         reverse('licensing:accept_invitation', kwargs={
             'uidb64': urlsafe_base64_encode(str(invitation.id).encode()),
@@ -113,6 +141,9 @@ def resend_invitation(request, invitation_id):
 @login_required
 def send_invitation(request):
     """View untuk PT A mengirim undangan ke satu atau banyak email."""
+    if not request.user.is_partner:
+        return redirect('licensing:participant_dashboard')
+
     if request.method == 'POST':
         form = InvitationForm(request.POST)
         if form.is_valid():
@@ -123,7 +154,6 @@ def send_invitation(request):
                 messages.error(request, "Harap masukkan setidaknya satu email yang valid.")
                 return render(request, 'licensing/send_invitation.html', {'form': form})
 
-            # Ambil lisensi terbaru yang terkait dengan pengguna (PT A)
             logger.info(f"Memeriksa lisensi untuk pengguna: {request.user.username} (ID: {request.user.id})")
             license = License.objects.filter(users=request.user, status=True).order_by('-start_date').first()
             if not license:
@@ -131,17 +161,14 @@ def send_invitation(request):
                 messages.error(request, "Tidak ditemukan lisensi aktif untuk akun Anda. Silakan hubungi Super Admin untuk membuat atau mengaktifkan lisensi.")
                 return redirect('licensing:licens_dashboard')
 
-            # Log informasi lisensi yang ditemukan
             logger.info(f"Lisensi ditemukan: {license.name} (ID: {license.id}, Status: {license.status}, Pengguna: {license.users.count()}/{license.max_users})")
 
-            # Periksa batas pengguna
             current_users = license.users.count()
             available_slots = license.max_users - current_users
             if len(email_list) > available_slots:
                 messages.error(request, f"Tidak dapat mengundang {len(email_list)} pengguna. Hanya {available_slots} slot tersedia.")
                 return render(request, 'licensing/send_invitation.html', {'form': form})
 
-            # Validasi dan kirim undangan
             validator = EmailValidator()
             for email in email_list:
                 try:
@@ -151,19 +178,16 @@ def send_invitation(request):
                     messages.warning(request, f"Email tidak valid dilewati: {email}")
                     continue
 
-                # Cek jika email sudah diundang
                 if Invitation.objects.filter(invitee_email=email, license=license, status__in=['pending', 'accepted']).exists():
                     messages.warning(request, f"Email {email} sudah diundang sebelumnya.")
                     continue
 
-                # Buat undangan
                 invitation = Invitation.objects.create(
                     inviter=request.user,
                     invitee_email=email,
                     license=license,
                 )
 
-                # Kirim email undangan
                 accept_url = request.build_absolute_uri(
                     reverse('licensing:accept_invitation', kwargs={
                         'uidb64': urlsafe_base64_encode(str(invitation.id).encode()),
@@ -191,33 +215,26 @@ def accept_invitation(request, uidb64, token):
         invitation_id = urlsafe_base64_decode(uidb64).decode()
         invitation = Invitation.objects.get(id=invitation_id, token=token)
 
-        # Periksa apakah undangan sudah kadaluarsa
         if invitation.is_expired():
             messages.error(request, "Undangan ini telah kadaluarsa.")
             return redirect('authentication:home')
 
-        # Periksa apakah undangan sudah diterima
         if invitation.status == 'accepted':
             messages.info(request, "Anda sudah menerima undangan ini.")
             return redirect('licensing:participant_dashboard')
 
-        # Jika pengguna sudah login
         if request.user.is_authenticated:
-            # Periksa batas pengguna
             if invitation.license and not invitation.license.can_add_user():
                 messages.error(request, "Lisensi ini telah mencapai batas maksimum pengguna.")
                 return redirect('authentication:home')
 
-            # Periksa jika pengguna sudah ada di lisensi
             if invitation.license and invitation.license.users.contains(request.user):
                 messages.info(request, "Anda sudah tergabung dalam lisensi ini.")
                 return redirect('licensing:participant_dashboard')
 
-            # Tandai undangan sebagai diterima
             invitation.status = 'accepted'
             invitation.save()
 
-            # Tambahkan pengguna ke lisensi
             if invitation.license:
                 try:
                     user = CustomUser.objects.get(email=invitation.invitee_email)
@@ -225,11 +242,11 @@ def accept_invitation(request, uidb64, token):
                     user = CustomUser.objects.create(
                         email=invitation.invitee_email,
                         username=invitation.invitee_email.split('@')[0],
+                        is_learner=True,
                     )
                     user.set_password("temporarypassword")
                     user.save()
 
-                    # Kirim email untuk reset kata sandi
                     token_generator = PasswordResetTokenGenerator()
                     reset_token = token_generator.make_token(user)
                     reset_url = request.build_absolute_uri(
@@ -245,10 +262,7 @@ def accept_invitation(request, uidb64, token):
                 invitation.license.users.add(user)
                 messages.success(request, f"Anda berhasil bergabung dalam kursus sebagai {user.username}!")
 
-            # Arahkan ke dashboard peserta
             return redirect('licensing:participant_dashboard')
-
-        # Jika belum login, arahkan ke halaman login
         else:
             return redirect('authentication:login')
 
@@ -269,6 +283,9 @@ def create_license(request):
 
         try:
             user = CustomUser.objects.get(id=user_id)
+            user.is_subscription = True  # Set sebagai admin langganan (PT A)
+            user.is_learner = False  # Pastikan bukan peserta
+            user.save()
             license = License.objects.create(
                 name=name,
                 license_type=license_type,
@@ -280,7 +297,7 @@ def create_license(request):
                 status=True,
             )
             license.users.add(user)
-            logger.info(f"Lisensi {license.name} (ID: {license.id}) dibuat untuk pengguna {user.username} (ID: {user.id})")
+            logger.info(f"Lisensi {license.name} (ID: {license.id}) dibuat untuk pengguna {user.username} (ID: {user.id}) dengan is_subscription=True")
             messages.success(request, f"Lisensi {name} berhasil dibuat untuk {user.username}.")
             return redirect('admin:licensing_license_changelist')
         except CustomUser.DoesNotExist:
