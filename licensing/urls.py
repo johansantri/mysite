@@ -10,5 +10,6 @@ urlpatterns = [
     path('invitation/cancel/<int:invitation_id>/', views.cancel_invitation, name='cancel_invitation'),
     path('invitation/resend/<int:invitation_id>/', views.resend_invitation, name='resend_invitation'),
     path('invitation/accept/<str:uidb64>/<str:token>/', views.accept_invitation, name='accept_invitation'),
+    path('invitation/delete/<int:invitation_id>/', views.delete_invitation, name='delete_invitation'),  # Baru
     path('create/', views.create_license, name='create_license'),
 ]

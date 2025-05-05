@@ -17,65 +17,69 @@ from django.core.exceptions import ValidationError
 import logging
 from datetime import timedelta
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from courses.models import Course, Enrollment
+from courses.models import Course, Enrollment,Certificate
 
 logger = logging.getLogger(__name__)
 
-
 @login_required
 def licens_dashboard(request):
-    """Menampilkan dashboard lisensi untuk PT A (admin) yang mengelola undangan dan melihat peserta kursus."""
+    # Pastikan pengguna adalah admin langganan (PT A)
     if not request.user.is_subscription:
         logger.warning(f"Pengalihan ke participant_dashboard untuk {request.user.email} karena bukan admin langganan (is_subscription=False)")
         messages.error(request, "Akses ditolak. Hanya pengguna dengan status langganan yang dapat mengakses dashboard ini.")
         return redirect('licensing:participant_dashboard')
 
     logger.info(f"Pengguna {request.user.email} mengakses licens_dashboard (is_subscription=True)")
-    invitations = Invitation.objects.filter(inviter=request.user)
 
-    # Filter berdasarkan status
-    status = request.GET.get('status')
+    # Ambil undangan
+    invitations = Invitation.objects.filter(inviter=request.user)
+    status = request.GET.get('status', '')
+    search_query = request.GET.get('search_query', '')
+
     if status:
         invitations = invitations.filter(status=status)
-
-    # Pencarian berdasarkan invitee_email
-    search_query = request.GET.get('search')
     if search_query:
         invitations = invitations.filter(invitee_email__icontains=search_query)
 
-    # Urutkan berdasarkan tanggal undangan
-    invitations = invitations.order_by('-invitation_date')
-
-    # Paginasi untuk undangan
-    paginator = Paginator(invitations, 10)
+    # Paginate invitations
+    paginator = Paginator(invitations, 10)  # 10 undangan per halaman
     page_number = request.GET.get('page')
     invitations_page = paginator.get_page(page_number)
 
-    # Ambil semua lisensi yang terkait dengan pengguna
-    licenses = License.objects.filter(users=request.user)
-
-    # Hitung statistik undangan
+    # Statistik undangan
     invitation_stats = {
-        'pending': invitations.filter(status='pending').count(),
-        'accepted': invitations.filter(status='accepted').count(),
-        'expired': invitations.filter(status='expired').count(),
+        'pending': Invitation.objects.filter(inviter=request.user, status='pending').count(),
+        'accepted': Invitation.objects.filter(inviter=request.user, status='accepted').count(),
+        'expired': Invitation.objects.filter(inviter=request.user, status='expired').count(),
     }
 
-    # Ambil semua kursus yang diikuti oleh peserta dalam lisensi
+    # Ambil lisensi dan data kursus
+    licenses = License.objects.filter(users=request.user)
     license_course_data = []
     for license in licenses:
-        # Ambil semua peserta dalam lisensi (kecuali PT A sendiri)
         participants = license.users.exclude(id=request.user.id)
-        # Ambil semua enrollments untuk peserta ini
-        enrollments = Enrollment.objects.filter(user__in=participants)
-        # Kelompokkan enrollments berdasarkan kursus
+        logger.info(f"Lisensi: {license.name}, Peserta: {[user.email for user in participants]}")
+        
+        enrollments = Enrollment.objects.filter(user__in=participants).select_related('user', 'course')
+        logger.info(f"Enrollments untuk {license.name}: {[(e.user.email, e.course.course_name) for e in enrollments]}")
+        
         courses = Course.objects.filter(enrollments__in=enrollments).distinct()
+        logger.info(f"Kursus untuk {license.name}: {[course.course_name for course in courses]}")
+        
         course_data = []
         for course in courses:
             course_enrollments = enrollments.filter(course=course)
+            # Siapkan data enrollment dengan informasi sertifikat
+            enrollment_data = []
+            for enrollment in course_enrollments:
+                certificate = Certificate.objects.filter(user=enrollment.user, course=course).first()
+                enrollment_data.append({
+                    'enrollment': enrollment,
+                    'certificate': certificate,
+                })
             course_data.append({
                 'course': course,
-                'enrollments': course_enrollments,
+                'enrollments': enrollment_data,
                 'enrollment_count': course_enrollments.count(),
             })
         license_course_data.append({
@@ -91,7 +95,6 @@ def licens_dashboard(request):
         'invitation_stats': invitation_stats,
         'license_course_data': license_course_data,
     }
-
     return render(request, 'licensing/licens_dashboard.html', context)
 
 @login_required
@@ -102,6 +105,18 @@ def participant_dashboard(request):
         'licenses': licenses,
     }
     return render(request, 'licensing/participant_dashboard.html', context)
+
+@login_required
+def delete_invitation(request, invitation_id):
+    try:
+        invitation = get_object_or_404(Invitation, id=invitation_id, inviter=request.user)
+        invitation.delete()
+        messages.success(request, "Undangan berhasil dihapus.")
+    except Exception as e:
+        logger.error(f"Error saat menghapus undangan ID {invitation_id}: {str(e)}")
+        messages.error(request, f"Terjadi kesalahan: {str(e)}")
+    return redirect('licensing:licens_dashboard')
+
 
 @login_required
 def cancel_invitation(request, invitation_id):
