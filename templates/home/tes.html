@@ -654,6 +654,12 @@
                                 <i class="bi bi-award"></i> Micro
                             </a>
                         </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'subscription_management' %}active{% endif %}" href="{% url 'licensing:subscription_management' %}">
+                                <i class="bi bi-star"></i> Subscriptions
+                            </a>
+                        </li>
                     {% else %}
                         <!-- Learner Menu -->
                         <li class="nav-item">

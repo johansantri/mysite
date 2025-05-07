@@ -1,4 +1,4 @@
-{% extends 'admin/base_site.html' %}
+{% extends 'home/tes.html' %}
 {% block content %}
 <div class="container mt-5">
     <h2>Buat Lisensi</h2>
@@ -54,5 +54,13 @@
         </div>
         <button type="submit" class="btn btn-primary">Buat Lisensi</button>
     </form>
+
+    <h3>Statistik Lisensi</h3>
+    <ul>
+        <li>Total Aktif: {{ total_licenses }}</li>
+        <li>Total Kadaluarsa: {{ total_expired_licenses }}</li>
+        <li>Mendekati Kadaluarsa (7 hari): {{ total_approaching_expiry }}</li>
+        <li>Lisensi yang Masih Ada Slot: {{ licenses_with_space|length }}</li>
+    </ul>
 </div>
 {% endblock %}

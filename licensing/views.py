@@ -19,6 +19,7 @@ import logging
 from datetime import timedelta
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from courses.models import Course, Enrollment,Certificate,MaterialRead,AssessmentRead
+from django.db.models import F
 
 logger = logging.getLogger(__name__)
 
@@ -475,7 +476,7 @@ def accept_invitation(request, uidb64, token):
         messages.error(request, "Tautan undangan tidak valid.")
         return redirect('authentication:home')
 
-@staff_member_required
+
 def create_license(request):
     """View untuk Super Admin membuat lisensi."""
     if request.method == 'POST':
@@ -488,9 +489,10 @@ def create_license(request):
 
         try:
             user = CustomUser.objects.get(id=user_id)
-            user.is_subscription = True  # Set sebagai admin langganan (PT A)
-            user.is_learner = False  # Pastikan bukan peserta
+            user.is_subscription = True
+            user.is_learner = False
             user.save()
+
             license = License.objects.create(
                 name=name,
                 license_type=license_type,
@@ -502,15 +504,67 @@ def create_license(request):
                 status=True,
             )
             license.users.add(user)
-            
+
             messages.success(request, f"Lisensi {name} berhasil dibuat untuk {user.username}.")
-            return redirect('admin:licensing_license_changelist')
+            return redirect('licensing:manage')
         except CustomUser.DoesNotExist:
-           
             messages.error(request, "Pengguna tidak ditemukan.")
         except Exception as e:
-            
             messages.error(request, f"Error saat membuat lisensi: {str(e)}")
 
+    # Ambil daftar pengguna
     users = CustomUser.objects.all()
-    return render(request, 'licensing/create_license.html', {'users': users})
+
+    # Tambahkan total statistik lisensi
+    today = timezone.now().date()
+    licenses = License.objects.all()
+    total_licenses = licenses.filter(status=True).count()
+    total_expired_licenses = licenses.filter(expiry_date__lt=today).count()
+    total_approaching_expiry = licenses.filter(expiry_date__gte=today, expiry_date__lte=today + timedelta(days=7)).count()
+    licenses_with_space = [lic for lic in licenses if lic.users.count() < lic.max_users]
+
+    context = {
+        'users': users,
+        'total_licenses': total_licenses,
+        'total_expired_licenses': total_expired_licenses,
+        'total_approaching_expiry': total_approaching_expiry,
+        'licenses_with_space': licenses_with_space,
+    }
+
+    return render(request, 'licensing/create_license.html', context)
+
+def subscription_management(request):
+    if not request.user.is_superuser:
+        return redirect('licensing:participant_dashboard')
+   
+    # Mengambil lisensi yang aktif dan menghitung jumlah pengguna
+    active_licenses = License.objects.annotate(num_users=Count('users')).filter(status=True)
+
+    # Lisensi yang kadaluarsa
+    expired_licenses = License.objects.filter(status=False)
+
+    # Lisensi yang masih ada space untuk pengguna
+    licenses_with_space = active_licenses.filter(num_users__lt=F('max_users'))
+
+    # Lisensi yang hampir kedaluwarsa (misalnya dalam 7 hari)
+    approaching_expiry_licenses = active_licenses.filter(
+        expiry_date__lte=timezone.now().date() + timedelta(days=7)
+    )
+
+    # Menghitung total lisensi
+    total_licenses = active_licenses.count()
+    total_expired_licenses = expired_licenses.count()
+    total_approaching_expiry = approaching_expiry_licenses.count()
+
+    # Kirimkan data ke template
+    context = {
+        'active_licenses': active_licenses,
+        'expired_licenses': expired_licenses,
+        'licenses_with_space': licenses_with_space,
+        'approaching_expiry_licenses': approaching_expiry_licenses,  # Menambahkan data lisensi hampir kedaluwarsa
+        'total_licenses': total_licenses,
+        'total_expired_licenses': total_expired_licenses,
+        'total_approaching_expiry': total_approaching_expiry,
+    }
+
+    return render(request, 'licensing/subscription_management.html', context)
