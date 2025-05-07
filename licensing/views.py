@@ -11,86 +11,239 @@ from django.template.loader import render_to_string
 from authentication.models import CustomUser
 from django.urls import reverse
 import uuid
+from django.db.models import Count,F
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError
 import logging
 from datetime import timedelta
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from courses.models import Course, Enrollment,Certificate
+from courses.models import Course, Enrollment,Certificate,MaterialRead,AssessmentRead
 
 logger = logging.getLogger(__name__)
 
 @login_required
 def licens_dashboard(request):
-    # Pastikan pengguna adalah admin langganan (PT A)
     if not request.user.is_subscription:
         messages.error(request, "Akses ditolak. Hanya pengguna dengan status langganan yang dapat mengakses dashboard ini.")
-        return redirect('licensing:participant_dashboard')
+        return redirect('authentication:home')
 
-    # Ambil lisensi
-    licenses = License.objects.filter(users=request.user)
+    # Ambil lisensi yang terkait dengan pengguna dan yang statusnya aktif
+    licenses = License.objects.filter(users=request.user, status=True).prefetch_related('users')
+    
+    total_enrollments = 0
+    total_passed = 0
+    total_participants = 0
+    all_courses = []
+
     license_course_data = []
+    now = timezone.now().date()
+    license_users = set()
+
     for license in licenses:
-        # Ambil kursus yang terkait dengan lisensi
-        courses = Course.objects.filter(enrollments__user__in=license.users.exclude(id=request.user.id)).distinct()
+        # Ambil pengguna lain selain current user
+        other_users = license.users.exclude(id=request.user.id)
+        
+        # Cek dan tampilkan informasi pengguna
+        user_count = license.users.count()
+        non_admin_count = other_users.count()
+        invited_users_count = Invitation.objects.filter(license=license, status='accepted').count()
+
+        # Tambahkan ke set peserta
+        license_users.update(user.id for user in other_users)
+
+        if user_count > license.max_users:
+            messages.warning(request, f"Lisensi {license.name} melebihi kapasitas pengguna ({user_count}/{license.max_users}).")
+
+        # Periksa jumlah pengguna non-admin dan undangan
+        expected_users = invited_users_count + 1  # +1 jika admin dihitung
+        if non_admin_count != invited_users_count:
+            messages.warning(
+                request, f"Jumlah pengguna non-admin ({non_admin_count}) di {license.name} "
+                         f"tidak sesuai dengan jumlah undangan diterima ({invited_users_count})."
+            )
+
+        # Hitung sisa hari
+        days_remaining = (license.expiry_date - now).days if license.expiry_date >= now else 0
+
+        # Ambil kursus yang terdaftar di lisensi ini
+        courses = Course.objects.filter(enrollments__user__in=other_users).select_related('org_partner').distinct()
+
+        # Hitung enrollments dan certificates untuk kursus-kursus ini
+        enrollment_count = Enrollment.objects.filter(user__in=other_users, course__in=courses).count()
+        total_enrollments += enrollment_count
+
+        passed_count = Certificate.objects.filter(user__in=other_users, course__in=courses).count()
+        total_passed += passed_count
+
+        # Data per kursus
         course_data = []
         for course in courses:
+            course_enrollment_count = Enrollment.objects.filter(course=course, user__in=other_users).count()
             course_data.append({
                 'course': course,
+                'enrollment_count': course_enrollment_count,
             })
+            all_courses.append({
+                'course': course,
+                'enrollment_count': course_enrollment_count,
+            })
+
         license_course_data.append({
             'license': license,
             'courses': course_data,
+            'enrollment_count': enrollment_count,
+            'passed_count': passed_count,
+            'days_remaining': days_remaining,
+            'user_count': user_count,
+            'non_admin_count': non_admin_count,
         })
 
+    # Total peserta berdasarkan pengguna yang terdaftar
+    total_participants = len(license_users)
+
+    # Validasi jumlah peserta dan undangan
+    accepted_invites_count = sum(
+        Invitation.objects.filter(license=license, status='accepted').count() for license in licenses
+    )
+    if total_participants != accepted_invites_count:
+        messages.warning(
+            request,
+            f"Total peserta ({total_participants}) tidak sesuai dengan jumlah undangan yang diterima."
+        )
+
+    # Hitung pass rate
+    pass_rate = round((total_passed / total_enrollments * 100), 2) if total_enrollments > 0 else 0
+
+    # Lisensi yang akan kedaluwarsa dalam 7 hari
+    expiring_licenses = licenses.filter(
+        expiry_date__gt=timezone.now(),
+        expiry_date__lte=timezone.now() + timedelta(days=7)
+    ).count()
+
+    for lic in licenses.filter(expiry_date__gt=timezone.now(), expiry_date__lte=timezone.now() + timedelta(days=7)):
+        messages.info(request, f"Lisensi kedaluwarsa dalam 7 hari: {lic.name} (Kedaluwarsa: {lic.expiry_date})")
+
+    # Menentukan kursus teratas berdasarkan jumlah enrollments
+    top_course = max(all_courses, key=lambda x: x['enrollment_count'], default=None) if all_courses else None
+
+    # Ambil 5 enrollment terbaru
+    recent_enrollments = Enrollment.objects.filter(
+        user__in=CustomUser.objects.filter(id__in=license_users),
+        course__in=Course.objects.filter(enrollments__user__in=CustomUser.objects.filter(id__in=license_users))
+    ).select_related('user', 'course').order_by('-enrolled_at')[:5]
+
+    # Kirimkan data ke template
     context = {
         'licenses': licenses,
         'license_course_data': license_course_data,
+        'total_enrollments': total_enrollments,
+        'total_passed': total_passed,
+        'total_participants': total_participants,
+        'pass_rate': pass_rate,
+        'expiring_licenses': expiring_licenses,
+        'top_course': top_course,
+        'recent_enrollments': recent_enrollments,
     }
+
     return render(request, 'licensing/licens_dashboard.html', context)
 
 
 @login_required
 def licens_learners(request):
-    # Pastikan pengguna adalah admin langganan (PT A)
     if not request.user.is_subscription:
         messages.error(request, "Akses ditolak. Hanya pengguna dengan status langganan yang dapat mengakses dashboard ini.")
-        return redirect('licensing:participant_dashboard')
+        return redirect('authentication:home')
 
-    # Ambil lisensi dan data kursus
     licenses = License.objects.filter(users=request.user)
     license_course_data = []
+
     for license in licenses:
         participants = license.users.exclude(id=request.user.id)
         enrollments = Enrollment.objects.filter(user__in=participants).select_related('user', 'course')
-        courses = Course.objects.filter(enrollments__in=enrollments).distinct()
-        
+        courses = Course.objects.filter(enrollments__in=enrollments).distinct().prefetch_related('sections__materials', 'sections__assessments')
+
         course_data = []
         for course in courses:
             course_enrollments = enrollments.filter(course=course)
-            # Siapkan data enrollment dengan informasi sertifikat
+            user_ids = course_enrollments.values_list('user_id', flat=True)
+
+            # Ambil semua sertifikat untuk course ini
+            certificates = Certificate.objects.filter(user_id__in=user_ids, course=course)
+            cert_map = {(c.user_id, c.course_id): c for c in certificates}
+
+            # Ambil semua section dari course ini
+            sections = course.sections.all()
+
+            # Ambil semua material dan assessment terkait section-section ini
+            section_ids = sections.values_list('id', flat=True)
+            material_reads = MaterialRead.objects.filter(
+                user_id__in=user_ids,
+                material__section_id__in=section_ids
+            ).order_by('-read_at')
+
+            last_material_map = {}
+            for mr in material_reads:
+                key = (mr.user_id, mr.material_id)
+                if key not in last_material_map:
+                    last_material_map[key] = mr.read_at
+
+            assessment_ids = []
+            for section in sections:
+                assessment_ids += list(section.assessments.values_list('id', flat=True))
+
+            assessment_reads = AssessmentRead.objects.filter(
+                user_id__in=user_ids,
+                assessment_id__in=assessment_ids
+            ).order_by('-completed_at')
+
+            last_assessment_map = {}
+            for ar in assessment_reads:
+                key = (ar.user_id, ar.assessment_id)
+                if key not in last_assessment_map:
+                    last_assessment_map[key] = ar.completed_at
+
             enrollment_data = []
             for enrollment in course_enrollments:
-                certificate = Certificate.objects.filter(user=enrollment.user, course=course).first()
-                enrollment_data.append({
-                    'enrollment': enrollment,
-                    'certificate': certificate,
-                })
+                for section in sections:
+                    for material in section.materials.all():
+                        last_accessed = last_material_map.get((enrollment.user_id, material.id))
+
+                        last_completed = None
+                        for assessment in section.assessments.all():
+                            time = last_assessment_map.get((enrollment.user_id, assessment.id))
+                            if time and (not last_completed or time > last_completed):
+                                last_completed = time
+
+                        enrollment_data.append({
+                            'enrollment': enrollment,
+                            'certificate': cert_map.get((enrollment.user_id, course.id)),
+                            'material': material,
+                            'last_accessed_material': last_accessed,
+                            'last_completed_assessment': last_completed,
+                        })
+
             course_data.append({
                 'course': course,
                 'enrollments': enrollment_data,
                 'enrollment_count': course_enrollments.count(),
             })
+
         license_course_data.append({
             'license': license,
             'courses': course_data,
         })
 
+    # Paginasi (misal 2 lisensi per halaman)
+    paginator = Paginator(license_course_data, 2)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'license_course_data': license_course_data,
+        'license_course_data': page_obj,
     }
     return render(request, 'licensing/licens_learners.html', context)
+
 
 
 
@@ -99,7 +252,7 @@ def licens_analytics(request):
     # Pastikan pengguna adalah admin langganan (PT A)
     if not request.user.is_subscription:
         messages.error(request, "Akses ditolak. Hanya pengguna dengan status langganan yang dapat mengakses dashboard ini.")
-        return redirect('licensing:participant_dashboard')
+        return redirect('authentication:home')
 
     # Ambil undangan
     invitations = Invitation.objects.filter(inviter=request.user)
@@ -143,6 +296,7 @@ def participant_dashboard(request):
     return render(request, 'licensing/participant_dashboard.html', context)
 
 @login_required
+
 def delete_invitation(request, invitation_id):
     try:
         invitation = get_object_or_404(Invitation, id=invitation_id, inviter=request.user)

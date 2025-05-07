@@ -2,42 +2,168 @@
 
 {% block content %}
 
-<h2>License Dashboard</h2>
-<p>Information about your licenses and related courses.</p>
 
-{% if licenses %}
-<div class="row">
-    {% for data in license_course_data %}
-    <div class="col-md-6 mb-4">
-        <div class="card">
-            <div class="card-header">
-                <h5>License: {{ data.license.name }}</h5>
-                <p>ID: {{ data.license.id }} | Active until: {{ data.license.expiry_date|date:"d M Y" }}</p>
+   
+
+    <h2>License Dashboard</h2>
+    <p>Overview of your licenses, enrollments, and performance metrics.</p>
+
+    
+    <!-- Statistik Utama -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Total Enrollments</h5>
+                    <p class="card-text">{{ total_enrollments }}</p>
+                </div>
             </div>
-            <div class="card-body">
-                <h6>Related Courses:</h6>
-                {% if data.courses %}
-                <ul class="list-group">
-                    {% for course_data in data.courses %}
-                    <li class="list-group-item">
-                        {{ course_data.course.title }}
-                    </li>
-                    {% empty %}
-                    <li class="list-group-item">No related courses.</li>
-                    {% endfor %}
-                </ul>
-                {% else %}
-                <p>No related courses for this license.</p>
-                {% endif %}
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Total Passed</h5>
+                    <p class="card-text">{{ total_passed }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Pass Rate</h5>
+                    <p class="card-text">{{ pass_rate }}%</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Total Participants</h5>
+                    <p class="card-text">{{ total_participants }}</p>
+                </div>
             </div>
         </div>
     </div>
-    {% endfor %}
-</div>
-{% else %}
-<div class="alert alert-info">
-    You currently have no active licenses.
-</div>
-{% endif %}
+
+    <!-- Statistik Tambahan -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Expiring Licenses (7 Days)</h5>
+                    <p class="card-text">{{ expiring_licenses }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Top Course</h5>
+                    <p class="card-text">
+                        {% if top_course %}
+                        <a href="{% url 'courses:course_lms_detail' id=top_course.course.id slug=top_course.course.slug %}">
+                            {{ top_course.course.course_name }}
+                            {% if top_course.course.org_partner %}
+                                | {{ top_course.course.org_partner.kode|default:top_course.course.org_partner.name|default:"Unknown" }}
+                            {% else %}
+                                | Unknown
+                            {% endif %}
+                        </a>
+                        ({{ top_course.enrollment_count }} enrollments)
+                        {% else %}
+                        No courses available
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Aktivitas Terbaru -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Recent Enrollments</h5>
+        </div>
+        <div class="card-body">
+            <ul class="list-group">
+                {% for enrollment in recent_enrollments %}
+                <li class="list-group-item">
+                    <a href="{% url 'learner:learner_detail' username=enrollment.user.username %}">
+                        {{ enrollment.user.get_full_name }}
+                    </a>
+                    enrolled in
+                    <a href="{% url 'courses:course_lms_detail' id=enrollment.course.id slug=enrollment.course.slug %}">
+                        {{ enrollment.course.course_name }}
+                    </a>
+                    on {{ enrollment.enrolled_at|date:"d M Y" }}
+                </li>
+                {% empty %}
+                <li class="list-group-item">No recent enrollments.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Daftar Lisensi dan Kursus -->
+    {% if licenses %}
+    <div class="row">
+        {% for data in license_course_data %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>
+                        License: {{ data.license.name }}
+                        {% if data.days_remaining <= 7 %}
+                        <span class="badge bg-danger ms-2">Expiring Soon</span>
+                        {% endif %}
+                    </h5>
+                    <p>
+                        ID: {{ data.license.id }} | 
+                        Type: {{ data.license.get_license_type_display }}<br>
+                        Active: {{ data.license.start_date|date:"d M Y" }} – {{ data.license.expiry_date|date:"d M Y" }} 
+                        ({{ data.days_remaining }} days remaining)<br>
+                        Users: {{ data.user_count }}/{{ data.license.max_users }} 
+                        (Non-admin: {{ data.non_admin_count }})
+                    </p>
+                </div>
+                <div class="card-body">
+                    {% if data.non_admin_count == 0 %}
+                    <p class="text-warning">No participants added yet.</p>
+                    {% endif %}
+
+                    <p><strong>Total Enrollments:</strong> {{ data.enrollment_count }}</p>
+                    <p><strong>Total Passed:</strong> {{ data.passed_count }}</p>
+                    <h6>Related Courses:</h6>
+                    {% if data.courses %}
+                    <ul class="list-group">
+                        {% for course_data in data.courses %}
+                        <li class="list-group-item">
+                            <a href="{% url 'courses:course_lms_detail' id=course_data.course.id slug=course_data.course.slug %}">
+                                {{ course_data.course.course_name }}
+                                {% if course_data.course.org_partner %}
+                                    | {{ course_data.course.org_partner.kode|default:course_data.course.org_partner.name|default:"Unknown" }}
+                                {% else %}
+                                    | Unknown
+                                {% endif %}
+                            </a>
+                            ({{ course_data.enrollment_count }} enrollments)
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item">No related courses.</li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p>No related courses for this license.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        You currently have no active licenses.
+    </div>
+    {% endif %}
 
 {% endblock %}

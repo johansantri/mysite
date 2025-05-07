@@ -6,51 +6,95 @@
 <p>Information about participants, enrollment, and certificates.</p>
 
 {% if license_course_data %}
-{% for data in license_course_data %}
-<div class="card mb-4">
-    <div class="card-header">
-        <h5>License: {{ data.license.name }}</h5>
-        <p>ID: {{ data.license.id }}</p>
+    {% for data in license_course_data %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>License: {{ data.license.name }}</h5>
+            <p>ID: {{ data.license.id }}</p>
+        </div>
+        <div class="card-body">
+            {% for course_data in data.courses %}
+            <h6>Course: {{ course_data.course.course_name }} ({{ course_data.enrollment_count }} participants)</h6>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Participant Name</th>
+                        <th>Email</th>
+                        <th>Course</th>
+                        <th>Certificate</th>
+                        <th>Last Accessed Material</th>
+                        <th>Last Completed Assessment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for enrollment_data in course_data.enrollments %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'learner:learner_detail' username=enrollment_data.enrollment.user.username %}" target="_blank">
+                                {{ enrollment_data.enrollment.user.get_full_name }}
+                            </a>
+                        </td>
+                        <td>{{ enrollment_data.enrollment.user.email }}</td>
+                        <td>
+                            <a href="{% url 'courses:course_lms_detail' id=enrollment_data.enrollment.course.id slug=enrollment_data.enrollment.course.slug %}" target="_blank">
+                                {{ enrollment_data.enrollment.course.course_name|title }} | {{ enrollment_data.enrollment.course.org_partner.name.kode|title }}
+                            </a>
+                        </td>
+                        <td>
+                            {% if enrollment_data.certificate %}
+                                Passed ({{ enrollment_data.certificate.issue_date|date:"Y-m-d" }}) | Score: {{ enrollment_data.certificate.total_score }}
+                            {% else %}
+                                Not Passed (No Certificate)
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if enrollment_data.last_accessed_material %}
+                                {{ enrollment_data.last_accessed_material|date:"Y-m-d H:i" }}
+                            {% else %}
+                                Not accessed yet
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if enrollment_data.last_completed_assessment %}
+                                {{ enrollment_data.last_completed_assessment|date:"Y-m-d H:i" }}
+                            {% else %}
+                                Not completed yet
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">No participants are enrolled in this course.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% empty %}
+            <p>No courses are associated with this license.</p>
+            {% endfor %}
+        </div>
     </div>
-    <div class="card-body">
-        {% for course_data in data.courses %}
-        <h6>Course: {{ course_data.course.title }} ({{ course_data.enrollment_count }} participants)</h6>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Participant Name</th>
-                    <th>Email</th>
-                    <th>Course</th>
-                    <th>Certificate</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for enrollment_data in course_data.enrollments %}
-                <tr>
-                    <td>{{ enrollment_data.enrollment.user.get_full_name }}</td>
-                    <td>{{ enrollment_data.enrollment.user.email }}</td>
-                    <td>{{ enrollment_data.enrollment.course.course_name|title }} | {{ enrollment_data.enrollment.course.org_partner.name.kode|title }}</td>
-                    <td>
-                        {% if enrollment_data.certificate %}
-                            Passed ({{ enrollment_data.certificate.issue_date|date:"Y-m-d" }}) | Score: {{ enrollment_data.certificate.total_score }}
-                        {% else %}
-                            Failed
-                        {% endif %}
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="4">No participants are enrolled in this course.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% empty %}
-        <p>No courses are associated with this license.</p>
-        {% endfor %}
+    {% endfor %}
+
+    <!-- Paginasi -->
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
     </div>
-</div>
-{% endfor %}
+
 {% else %}
 <div class="alert alert-info">
     No participant data available for your licenses.
