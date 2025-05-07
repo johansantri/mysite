@@ -25,46 +25,46 @@ logger = logging.getLogger(__name__)
 def licens_dashboard(request):
     # Pastikan pengguna adalah admin langganan (PT A)
     if not request.user.is_subscription:
-        logger.warning(f"Pengalihan ke participant_dashboard untuk {request.user.email} karena bukan admin langganan (is_subscription=False)")
         messages.error(request, "Akses ditolak. Hanya pengguna dengan status langganan yang dapat mengakses dashboard ini.")
         return redirect('licensing:participant_dashboard')
 
-    logger.info(f"Pengguna {request.user.email} mengakses licens_dashboard (is_subscription=True)")
+    # Ambil lisensi
+    licenses = License.objects.filter(users=request.user)
+    license_course_data = []
+    for license in licenses:
+        # Ambil kursus yang terkait dengan lisensi
+        courses = Course.objects.filter(enrollments__user__in=license.users.exclude(id=request.user.id)).distinct()
+        course_data = []
+        for course in courses:
+            course_data.append({
+                'course': course,
+            })
+        license_course_data.append({
+            'license': license,
+            'courses': course_data,
+        })
 
-    # Ambil undangan
-    invitations = Invitation.objects.filter(inviter=request.user)
-    status = request.GET.get('status', '')
-    search_query = request.GET.get('search_query', '')
-
-    if status:
-        invitations = invitations.filter(status=status)
-    if search_query:
-        invitations = invitations.filter(invitee_email__icontains=search_query)
-
-    # Paginate invitations
-    paginator = Paginator(invitations, 10)  # 10 undangan per halaman
-    page_number = request.GET.get('page')
-    invitations_page = paginator.get_page(page_number)
-
-    # Statistik undangan
-    invitation_stats = {
-        'pending': Invitation.objects.filter(inviter=request.user, status='pending').count(),
-        'accepted': Invitation.objects.filter(inviter=request.user, status='accepted').count(),
-        'expired': Invitation.objects.filter(inviter=request.user, status='expired').count(),
+    context = {
+        'licenses': licenses,
+        'license_course_data': license_course_data,
     }
+    return render(request, 'licensing/licens_dashboard.html', context)
+
+
+@login_required
+def licens_learners(request):
+    # Pastikan pengguna adalah admin langganan (PT A)
+    if not request.user.is_subscription:
+        messages.error(request, "Akses ditolak. Hanya pengguna dengan status langganan yang dapat mengakses dashboard ini.")
+        return redirect('licensing:participant_dashboard')
 
     # Ambil lisensi dan data kursus
     licenses = License.objects.filter(users=request.user)
     license_course_data = []
     for license in licenses:
         participants = license.users.exclude(id=request.user.id)
-        logger.info(f"Lisensi: {license.name}, Peserta: {[user.email for user in participants]}")
-        
         enrollments = Enrollment.objects.filter(user__in=participants).select_related('user', 'course')
-        logger.info(f"Enrollments untuk {license.name}: {[(e.user.email, e.course.course_name) for e in enrollments]}")
-        
         courses = Course.objects.filter(enrollments__in=enrollments).distinct()
-        logger.info(f"Kursus untuk {license.name}: {[course.course_name for course in courses]}")
         
         course_data = []
         for course in courses:
@@ -88,14 +88,50 @@ def licens_dashboard(request):
         })
 
     context = {
+        'license_course_data': license_course_data,
+    }
+    return render(request, 'licensing/licens_learners.html', context)
+
+
+
+@login_required
+def licens_analytics(request):
+    # Pastikan pengguna adalah admin langganan (PT A)
+    if not request.user.is_subscription:
+        messages.error(request, "Akses ditolak. Hanya pengguna dengan status langganan yang dapat mengakses dashboard ini.")
+        return redirect('licensing:participant_dashboard')
+
+    # Ambil undangan
+    invitations = Invitation.objects.filter(inviter=request.user)
+    status = request.GET.get('status', '')
+    search_query = request.GET.get('search_query', '')
+
+    if status:
+        invitations = invitations.filter(status=status)
+    if search_query:
+        invitations = invitations.filter(invitee_email__icontains=search_query)
+
+    # Paginate invitations
+    paginator = Paginator(invitations, 10)  # 10 undangan per halaman
+    page_number = request.GET.get('page')
+    invitations_page = paginator.get_page(page_number)
+
+    # Statistik undangan
+    invitation_stats = {
+        'pending': Invitation.objects.filter(inviter=request.user, status='pending').count(),
+        'accepted': Invitation.objects.filter(inviter=request.user, status='accepted').count(),
+        'expired': Invitation.objects.filter(inviter=request.user, status='expired').count(),
+    }
+
+    context = {
         'invitations': invitations_page,
-        'licenses': licenses,
         'status': status,
         'search_query': search_query,
         'invitation_stats': invitation_stats,
-        'license_course_data': license_course_data,
     }
-    return render(request, 'licensing/licens_dashboard.html', context)
+    return render(request, 'licensing/licens_analytics.html', context)
+
+
 
 @login_required
 def participant_dashboard(request):
@@ -156,7 +192,7 @@ def resend_invitation(request, invitation_id):
 @login_required
 def send_invitation(request):
     """View untuk PT A mengirim undangan ke satu atau banyak email."""
-    if not request.user.is_partner:
+    if not request.user.is_subscription:
         return redirect('licensing:participant_dashboard')
 
     if request.method == 'POST':
@@ -169,14 +205,14 @@ def send_invitation(request):
                 messages.error(request, "Harap masukkan setidaknya satu email yang valid.")
                 return render(request, 'licensing/send_invitation.html', {'form': form})
 
-            logger.info(f"Memeriksa lisensi untuk pengguna: {request.user.username} (ID: {request.user.id})")
+           
             license = License.objects.filter(users=request.user, status=True).order_by('-start_date').first()
             if not license:
                 logger.error(f"Tidak ditemukan lisensi aktif untuk pengguna: {request.user.username} (ID: {request.user.id})")
                 messages.error(request, "Tidak ditemukan lisensi aktif untuk akun Anda. Silakan hubungi Super Admin untuk membuat atau mengaktifkan lisensi.")
                 return redirect('licensing:licens_dashboard')
 
-            logger.info(f"Lisensi ditemukan: {license.name} (ID: {license.id}, Status: {license.status}, Pengguna: {license.users.count()}/{license.max_users})")
+           
 
             current_users = license.users.count()
             available_slots = license.max_users - current_users
@@ -189,7 +225,7 @@ def send_invitation(request):
                 try:
                     validator(email)
                 except ValidationError:
-                    logger.warning(f"Email tidak valid dilewati: {email}")
+                    
                     messages.warning(request, f"Email tidak valid dilewati: {email}")
                     continue
 
@@ -215,7 +251,7 @@ def send_invitation(request):
                 })
                 subject = f"Undangan Kursus dari {request.user.username}"
                 send_mail(subject, '', 'from@example.com', [email], html_message=html_message, fail_silently=True)
-                logger.info(f"Pengguna {request.user.username} mengirim undangan ke {email}")
+               
                 messages.success(request, f"Undangan dikirim ke {email}.")
 
             return redirect('licensing:licens_dashboard')
@@ -312,14 +348,14 @@ def create_license(request):
                 status=True,
             )
             license.users.add(user)
-            logger.info(f"Lisensi {license.name} (ID: {license.id}) dibuat untuk pengguna {user.username} (ID: {user.id}) dengan is_subscription=True")
+            
             messages.success(request, f"Lisensi {name} berhasil dibuat untuk {user.username}.")
             return redirect('admin:licensing_license_changelist')
         except CustomUser.DoesNotExist:
-            logger.error(f"Pengguna dengan ID {user_id} tidak ditemukan saat membuat lisensi.")
+           
             messages.error(request, "Pengguna tidak ditemukan.")
         except Exception as e:
-            logger.error(f"Error saat membuat lisensi: {str(e)}")
+            
             messages.error(request, f"Error saat membuat lisensi: {str(e)}")
 
     users = CustomUser.objects.all()

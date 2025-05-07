@@ -1,7 +1,7 @@
-{% extends 'home/base.html' %}
+{% extends 'home/tes.html' %}
 {% block content %}
-<div class="container mt-5">
-    <h2>Kirim Undangan</h2>
+
+    <h2>Send Invitations</h2>
     {% if messages %}
         {% for message in messages %}
             <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
@@ -18,10 +18,10 @@
             {% if form.invitee_emails.errors %}
                 <div class="text-danger">{{ form.invitee_emails.errors }}</div>
             {% endif %}
-            <small class="form-text text-muted">Masukkan satu email per baris atau pisahkan dengan koma.</small>
+            <small class="form-text text-muted">Enter one email per line or separate them with commas.</small>
         </div>
-        <button type="submit" class="btn btn-primary">Kirim Undangan</button>
-        <a href="{% url 'licensing:licens_dashboard' %}" class="btn btn-secondary">Batal</a>
+        <button type="submit" class="btn btn-primary">Send Invitation</button>
+        <a href="{% url 'licensing:licens_dashboard' %}" class="btn btn-secondary">Cancel</a>
     </form>
-</div>
+
 {% endblock %}

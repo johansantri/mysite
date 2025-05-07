@@ -1,195 +1,43 @@
-{% extends 'home/base.html' %}
+{% extends 'home/tes.html' %}
+
 {% block content %}
-<div class="container mt-5">
-    <h2>Dashboard Lisensi (PT A)</h2>
 
-    <!-- Statistik Undangan -->
-    <div class="card mb-4">
-        <div class="card-header">Statistik Undangan</div>
-        <div class="card-body">
-            <p>{{ invitation_stats.pending }} Menunggu, {{ invitation_stats.accepted }} Diterima, {{ invitation_stats.expired }} Kadaluarsa</p>
-        </div>
-    </div>
+<h2>License Dashboard</h2>
+<p>Information about your licenses and related courses.</p>
 
-    <!-- Lisensi Anda -->
-    <div class="card mb-4">
-        <div class="card-header">Lisensi Anda</div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Nama</th>
-                            <th>Tipe</th>
-                            <th>Tanggal Mulai</th>
-                            <th>Tanggal Berakhir</th>
-                            <th>Status</th>
-                            <th>Pengguna</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for license in licenses %}
-                            <tr>
-                                <td>{{ license.name }}</td>
-                                <td>{{ license.get_license_type_display }}</td>
-                                <td>{{ license.start_date|date:"M d, Y" }}</td>
-                                <td>
-                                    {% if license.expiry_date %}
-                                        {{ license.expiry_date|date:"M d, Y" }}
-                                    {% else %}
-                                        Tidak Tersedia
-                                    {% endif %}
-                                </td>
-                                <td>{{ license.status|yesno:"Aktif,Tidak Aktif" }}</td>
-                                <td>{{ license.users.count }} / {{ license.max_users }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+{% if licenses %}
+<div class="row">
+    {% for data in license_course_data %}
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>License: {{ data.license.name }}</h5>
+                <p>ID: {{ data.license.id }} | Active until: {{ data.license.expiry_date|date:"d M Y" }}</p>
             </div>
-        </div>
-    </div>
-
-    <!-- Kursus yang Diikuti Peserta -->
-    <div class="card mb-4">
-        <div class="card-header">Kursus yang Diikuti Peserta</div>
-        <div class="card-body">
-            {% for license_data in license_course_data %}
-                <h4>Lisensi: {{ license_data.license.name }}</h4>
-                {% if license_data.courses %}
-                    {% for course_data in license_data.courses %}
-                        <h5>Kursus: {{ course_data.course.course_name }} ({{ course_data.enrollment_count }} Peserta)</h5>
-                        <div class="table-responsive">
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Nama Peserta</th>
-                                        <th>Email</th>
-                                        <th>Tanggal Pendaftaran</th>
-                                        <th>Sertifikat Diterbitkan</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for enrollment_data in course_data.enrollments %}
-                                        <tr>
-                                            <td>{{ enrollment_data.enrollment.user.username }}</td>
-                                            <td>{{ enrollment_data.enrollment.user.email }}</td>
-                                            <td>
-                                                {% if enrollment_data.enrollment.enrolled_at %}
-                                                    {{ enrollment_data.enrollment.enrolled_at|date:"Y-m-d H:i" }}
-                                                {% else %}
-                                                    Tidak Tersedia
-                                                {% endif %}
-                                            </td>
-                                            <td>
-                                                {% if enrollment_data.certificate %}
-                                                    Sudah ({{ enrollment_data.certificate.issue_date|date:"Y-m-d" }})
-                                                {% else %}
-                                                    Belum
-                                                {% endif %}
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+            <div class="card-body">
+                <h6>Related Courses:</h6>
+                {% if data.courses %}
+                <ul class="list-group">
+                    {% for course_data in data.courses %}
+                    <li class="list-group-item">
+                        {{ course_data.course.title }}
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item">No related courses.</li>
                     {% endfor %}
+                </ul>
                 {% else %}
-                    <p>Tidak ada peserta yang mendaftar ke kursus dari lisensi ini.</p>
+                <p>No related courses for this license.</p>
                 {% endif %}
-            {% endfor %}
-        </div>
-    </div>
-
-    <!-- Undangan Anda -->
-    <div class="card mb-4">
-        <div class="card-header">Undangan Anda</div>
-        <div class="card-body">
-            <!-- Filter dan Pencarian -->
-            <form method="GET" class="mb-3">
-                <div class="row">
-                    <div class="col-md-4">
-                        <label for="status">Filter berdasarkan Status</label>
-                        <select name="status" id="status" class="form-control">
-                            <option value="">Semua</option>
-                            <option value="pending" {% if status == 'pending' %}selected{% endif %}>Menunggu</option>
-                            <option value="accepted" {% if status == 'accepted' %}selected{% endif %}>Diterima</option>
-                            <option value="expired" {% if status == 'expired' %}selected{% endif %}>Kadaluarsa</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="search_query">Cari berdasarkan Email</label>
-                        <input type="text" name="search_query" id="search_query" class="form-control" value="{{ search_query }}" placeholder="Masukkan email">
-                    </div>
-                    <div class="col-md-4 align-self-end">
-                        <button type="submit" class="btn btn-primary">Filter</button>
-                    </div>
-                </div>
-            </form>
-
-            <!-- Tabel Undangan -->
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Email Penerima</th>
-                            <th>Lisensi</th>
-                            <th>Status</th>
-                            <th>Tanggal Undangan</th>
-                            <th>Tanggal Kadaluarsa</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for invitation in invitations %}
-                            <tr>
-                                <td>{{ invitation.invitee_email }}</td>
-                                <td>{{ invitation.license.name }}</td>
-                                <td>{{ invitation.get_status_display }}</td>
-                                <td>{{ invitation.invitation_date|date:"Y-m-d H:i" }}</td>
-                                <td>{{ invitation.expiry_date|date:"Y-m-d H:i" }}</td>
-                                <td>
-                                    {% if invitation.status == 'pending' %}
-                                        <a href="{% url 'licensing:cancel_invitation' invitation.id %}" class="btn btn-sm btn-danger">Batalkan</a>
-                                    {% elif invitation.status == 'accepted' %}
-                                        <a href="{% url 'licensing:delete_invitation' invitation.id %}" class="btn btn-sm btn-warning">Hapus</a>
-                                    {% elif invitation.status == 'expired' %}
-                                        <a href="{% url 'licensing:resend_invitation' invitation.id %}" class="btn btn-sm btn-primary">Kirim Ulang</a>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
             </div>
-
-            <!-- Paginasi -->
-            {% if invitations.paginator.num_pages > 1 %}
-                <nav aria-label="Page navigation">
-                    <ul class="pagination">
-                        {% if invitations.has_previous %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ invitations.previous_page_number }}{% if status %}&status={{ status }}{% endif %}{% if search_query %}&search_query={{ search_query }}{% endif %}" aria-label="Previous">
-                                    <span aria-hidden="true">«</span>
-                                </a>
-                            </li>
-                        {% endif %}
-                        {% for num in invitations.paginator.page_range %}
-                            <li class="page-item {% if invitations.number == num %}active{% endif %}">
-                                <a class="page-link" href="?page={{ num }}{% if status %}&status={{ status }}{% endif %}{% if search_query %}&search_query={{ search_query }}{% endif %}">{{ num }}</a>
-                            </li>
-                        {% endfor %}
-                        {% if invitations.has_next %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ invitations.next_page_number }}{% if status %}&status={{ status }}{% endif %}{% if search_query %}&search_query={{ search_query }}{% endif %}" aria-label="Next">
-                                    <span aria-hidden="true">»</span>
-                                </a>
-                            </li>
-                        {% endif %}
-                    </ul>
-                </nav>
-            {% endif %}
         </div>
     </div>
+    {% endfor %}
 </div>
+{% else %}
+<div class="alert alert-info">
+    You currently have no active licenses.
+</div>
+{% endif %}
+
 {% endblock %}

@@ -4,7 +4,9 @@ from . import views
 app_name = 'licensing'
 
 urlpatterns = [
-    path('licensing/dashboard/', views.licens_dashboard, name='licens_dashboard'),
+    path('dashboard/', views.licens_dashboard, name='licens_dashboard'),
+    path('learners/', views.licens_learners, name='licens_learners'),
+    path('analytics/', views.licens_analytics, name='licens_analytics'),
     path('participant/dashboard/', views.participant_dashboard, name='participant_dashboard'),
     path('invitation/send/', views.send_invitation, name='send_invitation'),
     path('invitation/cancel/<int:invitation_id>/', views.cancel_invitation, name='cancel_invitation'),
