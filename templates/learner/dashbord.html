@@ -3,6 +3,12 @@
 
 {% block content %}
 
+      <!-- Welcome Section -->
+    <section class="welcome-section">
+        <h1>Hi, {{ request.user.username }}!</h1>
+        <p>Great to see you back. Let’s continue your learning journey or explore new courses to unlock your full potential!</p>
+    </section>
+
   <!-- Search Form -->
         <form method="GET" action="{% url 'authentication:dashbord' %}" class="mb-4">
             <div class="input-group">
@@ -52,7 +58,7 @@
                <!-- templates/learner/dashboard.html -->
              <!-- templates/learner/dashboard.html -->
                 {% load mathfilters %}
-                <div class="container py-5">
+               
                     <div class="mt-4">
                         <h4 class="fw-bold text-dark mb-4 position-relative d-inline-block">
                             Recently Enrolled Courses
@@ -131,7 +137,7 @@
                             </div>
                         {% endif %}
                     </div>
-                </div>
+                
                 <style>
                 /* Efek Transisi dan Hover */
                     .transition-hover {
@@ -236,6 +242,25 @@
                             r: 20;
                         }
                     }
+
+                     /* Welcome Section */
+                    .welcome-section {
+                        margin-bottom: 32px;
+                    }
+
+                    .welcome-section h1 {
+                        font-size: 1.75rem;
+                        font-weight: 700;
+                        color: #c8102e;
+                        margin-bottom: 8px;
+                    }
+
+                    .welcome-section p {
+                        font-size: 1rem;
+                        color: #666;
+                        line-height: 1.5;
+                    }
+                    
                 </style>
 
                 <!-- Pagination -->
