@@ -80,7 +80,7 @@
                         {% for course in course_details %}
                             <tr>
                                 <td>{{ course.course_name }}</td>
-                                <td>{{ course.total_score }} / {{ course.total_max_score }}</td>
+                                <td>{{ course.total_score|floatformat:2  }} / {{ course.total_max_score }}</td>
                                 <td>
                                     <span class="badge {% if course.status == 'Pass' %}bg-success{% else %}bg-danger{% endif %}">
                                         {{ course.status }}
