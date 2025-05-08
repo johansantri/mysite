@@ -1,48 +1,82 @@
 {% extends 'home/tes.html' %}
 
 {% block content %}
-<h2>Course Participants Dashboard</h2>
 
-{% if license_course_data %}
+    <h1 class="mb-4"><i class="bi bi-person-workspace"></i> Course Dashboard</h1>
+
+    <!-- Pencarian -->
+    <form method="get" class="row g-2 mb-4">
+        <div class="col-md-10 col-sm-9">
+            <input type="text" name="search" class="form-control" value="{{ search_query }}" placeholder="Search courses...">
+        </div>
+        <div class="col-md-2 col-sm-3">
+            <button type="submit" class="btn btn-success w-100">Search</button>
+        </div>
+    </form>
+
     {% for license_data in license_course_data %}
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5>License: {{ license_data.license.name }}</h5>
-                <p>ID: {{ license_data.license.id }}</p>
-            </div>
-            <div class="card-body">
-                <h6>Kursus yang terdaftar di Lisensi {{ license_data.license.name }}</h6>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Course Name</th>
-                            <th>Number of Participants</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for course_data in license_data.courses %}
-                            <tr>
-                                <td>
-                                    <a href="{% url 'licensing:course_detail' course_data.course.id %}">
-                                        {{ course_data.course.course_name }}
-                                    </a>
-                                </td>
-                                <td>{{ course_data.enrollment_count }}</td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="2">No courses available for this license.</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+        <h4 class="text-primary">{{ license_data.license.name }}</h4>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Course Name</th>
+                        <th>Participants</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course_data in license_data.courses %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ course_data.course.course_name }}</td>
+                        <td><i class="bi bi-people"></i> {{ course_data.enrollment_count }}</td>
+                        <td>
+                            <a href="{% url 'licensing:course_detail' course_data.course.id %}" class="btn btn-sm btn-outline-primary">
+                                View Details
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">No courses found for this license.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     {% endfor %}
-{% else %}
-    <div class="alert alert-info">
-        No licenses available for your user.
-    </div>
-{% endif %}
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <nav aria-label="Course page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}">&laquo; First</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">Previous</a>
+            </li>
+            {% endif %}
+
+            <li class="page-item active">
+                <span class="page-link">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+            </li>
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">Next</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}">Last &raquo;</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
 
 {% endblock %}

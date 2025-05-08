@@ -510,20 +510,25 @@
                         </div>
 
                         <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.url_name == 'dasbord' %}active{% endif %}" href="{% url 'licensing:licens_dashboard' %}" aria-current="page">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'licens_dashboard' %}active{% endif %}" href="{% url 'licensing:licens_dashboard' %}" aria-current="page">
                                 <i class="bi bi-speedometer"></i> Subscriptions
                             </a>
                         </li>
                        
                         <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.url_name == 'partner_view' %}active{% endif %}" href="{% url 'licensing:licens_analytics' %}">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'licens_analytics' %}active{% endif %}" href="{% url 'licensing:licens_analytics' %}">
                                 <i class="bi™bi bi-people"></i> Analitycs
                             </a>
                         </li>
                         
                         <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.url_name == 'all-user' %}active{% endif %}" href="{% url 'licensing:licens_learners' %}">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'licens_learners' %}active{% endif %}" href="{% url 'licensing:licens_learners' %}">
                                 <i class="bi bi-person-workspace"></i> Learner
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'course_participants_dashboard' %}active{% endif %}" href="{% url 'licensing:course_participants_dashboard' %}">
+                                <i class="bi bi-journal-bookmark"></i> Courses
                             </a>
                         </li>
                     {% elif user.is_instructor %}

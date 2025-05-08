@@ -301,24 +301,35 @@ def course_participants_dashboard(request):
 
     # Menyiapkan data kursus dan peserta
     license_course_data = []
-    
+
     for license in licenses:
         # Ambil pengguna yang terdaftar di lisensi ini selain pengguna yang sedang login
         participants = license.users.exclude(id=request.user.id)
-        
-        # Ambil kursus yang terdaftar di lisensi ini
-        courses = Course.objects.filter(enrollments__user__in=participants).distinct()
-        
-        # Menyimpan data kursus dan peserta
+
+        # Ambil kursus yang terdaftar di lisensi ini dengan jumlah peserta
+        courses = Course.objects.filter(enrollments__user__in=participants).annotate(
+            enrollment_count=Count('enrollments')
+        ).distinct()
+
+        # Pencarian kursus berdasarkan query parameter 'search'
+        search_query = request.GET.get('search', '')
+        if search_query:
+            courses = courses.filter(course_name__icontains=search_query)
+
+        # Urutkan kursus berdasarkan jumlah peserta (descending) dan course_name sebagai tiebreaker
+        courses = courses.order_by('-enrollment_count', 'course_name')
+
+        # Pagination untuk kursus
+        page_number = request.GET.get('page')
+        paginator = Paginator(courses, 10)  # Menampilkan 10 kursus per halaman
+        page_obj = paginator.get_page(page_number)
+
+        # Menyusun data kursus dan peserta
         course_data = []
-        for course in courses:
-            # Hitung jumlah peserta yang terdaftar di kursus ini
-            course_enrollment_count = Enrollment.objects.filter(course=course, user__in=participants).count()
-            
-            # Tambahkan data kursus dan jumlah peserta
+        for course in page_obj.object_list:
             course_data.append({
                 'course': course,
-                'enrollment_count': course_enrollment_count,
+                'enrollment_count': course.enrollment_count,
             })
 
         # Menyimpan data kursus yang terkait dengan lisensi
@@ -330,12 +341,18 @@ def course_participants_dashboard(request):
     # Kirim data ke template
     context = {
         'license_course_data': license_course_data,
+        'search_query': search_query,
+        'page_obj': page_obj,
     }
+
     return render(request, 'licensing/course_participants_dashboard.html', context)
 
 
 @login_required
 def course_detail(request, course_id):
+    if not request.user.is_subscription:
+        messages.error(request, "Akses ditolak. Hanya pengguna dengan status langganan yang dapat mengakses dashboard ini.")
+        return redirect('authentication:home')
     # Get the course by course_id
     course = get_object_or_404(Course, id=course_id)
 
@@ -437,6 +454,9 @@ def course_detail(request, course_id):
 
 @login_required
 def participant_dashboard(request):
+    if not request.user.is_subscription:
+        messages.error(request, "Akses ditolak. Hanya pengguna dengan status langganan yang dapat mengakses dashboard ini.")
+        return redirect('authentication:home')
     """Menampilkan dashboard khusus untuk peserta."""
     licenses = License.objects.filter(users=request.user)
     context = {
@@ -447,6 +467,9 @@ def participant_dashboard(request):
 @login_required
 
 def delete_invitation(request, invitation_id):
+    if not request.user.is_subscription:
+        messages.error(request, "Akses ditolak. Hanya pengguna dengan status langganan yang dapat mengakses dashboard ini.")
+        return redirect('authentication:home')
     try:
         invitation = get_object_or_404(Invitation, id=invitation_id, inviter=request.user)
         invitation.delete()
@@ -459,6 +482,9 @@ def delete_invitation(request, invitation_id):
 
 @login_required
 def cancel_invitation(request, invitation_id):
+    if not request.user.is_subscription:
+        messages.error(request, "Akses ditolak. Hanya pengguna dengan status langganan yang dapat mengakses dashboard ini.")
+        return redirect('authentication:home')
     """Menghapus undangan tertentu."""
     invitation = get_object_or_404(Invitation, id=invitation_id, inviter=request.user)
     invitation.delete()
@@ -467,6 +493,9 @@ def cancel_invitation(request, invitation_id):
 
 @login_required
 def resend_invitation(request, invitation_id):
+    if not request.user.is_subscription:
+        messages.error(request, "Akses ditolak. Hanya pengguna dengan status langganan yang dapat mengakses dashboard ini.")
+        return redirect('authentication:home')
     """Mengirim ulang undangan tertentu."""
     invitation = get_object_or_404(Invitation, id=invitation_id, inviter=request.user)
     
