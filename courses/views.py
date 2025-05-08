@@ -17,6 +17,7 @@ from django.http import JsonResponse
 from .models import LastAccessCourse,MicroClaim,UserMicroCredential,MicroCredentialComment,MicroCredentialReview,UserMicroProgress,SearchHistory,Certificate,LTIExternalTool,Course,CourseRating,Like,SosPost,Hashtag,UserProfile,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
 from authentication.models import CustomUser, Universiti
 from blog.models import BlogPost
+from licensing.models import License
 from django.template.loader import render_to_string
 from django.views.decorators.cache import cache_page
 from django.urls import reverse
@@ -813,19 +814,67 @@ def reorder_section(request):
 # views.py
 @login_required
 def course_list_enroll(request, id):
+    logger.info('Memulai course_list_enroll untuk course ID %s oleh pengguna %s', id, request.user)
+
     # Mencari course berdasarkan ID
     course = get_object_or_404(Course, id=id)
 
+    # Pemeriksaan keamanan: hanya admin atau pemilik course yang diizinkan
+    if not (request.user.is_staff or License.objects.filter(course=course, users=request.user).exists()):
+        logger.warning('Akses ditolak untuk pengguna %s pada course ID %s', request.user, id)
+        messages.error(request, "Akses ditolak. Anda tidak memiliki izin untuk melihat data peserta kursus ini.")
+        return redirect('authentication:home')
+
     # Mengambil daftar enrollments terkait kursus
     enrollments = course.enrollments.all()
+    logger.info('Menemukan %d enrollment untuk course %s', enrollments.count(), course.course_name)
 
     # Menyiapkan list untuk detail user dan statusnya
     enrollment_details = []
 
-    # Pencarian berdasarkan username
+    # Pencarian berdasarkan email, first_name, atau last_name
     search_query = request.GET.get('search', '')
     if search_query:
-        enrollments = enrollments.filter(user__username__icontains=search_query)
+        enrollments = enrollments.filter(
+            Q(user__email__icontains=search_query) |
+            Q(user__first_name__icontains=search_query) |
+            Q(user__last_name__icontains=search_query)
+        )
+
+    # Ambil semua section dari course ini
+    sections = course.sections.all()
+    section_ids = sections.values_list('id', flat=True)
+
+    # Ambil semua material dan assessment terkait section-section ini
+    user_ids = enrollments.values_list('user_id', flat=True)
+    
+    # Ambil data MaterialRead untuk waktu terakhir akses material
+    material_reads = MaterialRead.objects.filter(
+        user_id__in=user_ids,
+        material__section_id__in=section_ids
+    ).order_by('-read_at')
+    
+    last_material_map = {}
+    for mr in material_reads:
+        key = (mr.user_id, mr.material_id)
+        if key not in last_material_map:
+            last_material_map[key] = mr.read_at
+
+    # Ambil data AssessmentRead untuk waktu terakhir menyelesaikan assessment
+    assessment_ids = []
+    for section in sections:
+        assessment_ids += list(section.assessments.values_list('id', flat=True))
+    
+    assessment_reads = AssessmentRead.objects.filter(
+        user_id__in=user_ids,
+        assessment_id__in=assessment_ids
+    ).order_by('-completed_at')
+    
+    last_assessment_map = {}
+    for ar in assessment_reads:
+        key = (ar.user_id, ar.assessment_id)
+        if key not in last_assessment_map:
+            last_assessment_map[key] = ar.completed_at
 
     for enrollment in enrollments:
         user = enrollment.user
@@ -833,7 +882,7 @@ def course_list_enroll(request, id):
         # Ambil total skor dan status dari setiap kursus
         total_max_score = 0
         total_score = 0
-        all_assessments_submitted = True  # Untuk memastikan semua asesmen diselesaikan
+        all_assessments_submitted = True
 
         # Ambil grade range untuk kursus tersebut
         grade_range = GradeRange.objects.filter(course=course).first()
@@ -841,6 +890,9 @@ def course_list_enroll(request, id):
 
         # Hitung skor dari asesmen
         assessments = Assessment.objects.filter(section__courses=course)
+        if not assessments.exists():
+            logger.warning('Tidak ada assessment untuk course %s, total_max_score = 0', course.course_name)
+
         for assessment in assessments:
             score_value = Decimal(0)
             total_correct_answers = 0
@@ -869,27 +921,59 @@ def course_list_enroll(request, id):
         progress_percentage = course_progress.progress_percentage if course_progress else 0
 
         # Tentukan status kelulusan
-        status = "Fail"  # Default status
+        status = "Fail"
         if progress_percentage == 100 and all_assessments_submitted and overall_percentage >= passing_threshold:
             status = "Pass"
+
+        # Ambil waktu terakhir akses material dan assessment untuk user ini
+        last_accessed_material = None
+        last_completed_assessment = None
+        
+        for section in sections:
+            for material in section.materials.all():
+                time = last_material_map.get((user.id, material.id))
+                if time and (not last_accessed_material or time > last_accessed_material):
+                    last_accessed_material = time
+
+            for assessment in section.assessments.all():
+                time = last_assessment_map.get((user.id, assessment.id))
+                if time and (not last_completed_assessment or time > last_completed_assessment):
+                    last_completed_assessment = time
 
         # Tambahkan detail user ke daftar enrollment_details
         enrollment_details.append({
             'user': user,
+            'email': user.email,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'last_login': user.last_login,
+            'gender': getattr(user, 'gender', 'N/A'),
+            'birth': getattr(user, 'birth', 'N/A'),
+            'address': getattr(user, 'address', 'N/A'),
+            'country': getattr(user, 'country', 'N/A'),
+            'phone': getattr(user, 'phone', 'N/A'),
+            'education': getattr(user, 'education', 'N/A'),
+            'university': getattr(user, 'university', 'N/A'),
             'total_score': total_score,
             'total_max_score': total_max_score,
             'status': status,
             'progress_percentage': progress_percentage,
             'overall_percentage': overall_percentage,
+            'last_accessed_material': last_accessed_material,
+            'last_completed_assessment': last_completed_assessment,
         })
 
+    if not enrollments.exists():
+        logger.info('Tidak ada enrollment untuk course %s', course.course_name)
+
     # Pagination untuk hasil peserta
-    paginator = Paginator(enrollment_details, 10)  # 10 peserta per halaman
+    paginator = Paginator(enrollment_details, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
     # Cek apakah ada permintaan untuk mengunduh CSV
     if request.GET.get('download') == 'csv':
+        logger.info('Mengunduh CSV untuk course %s', course.course_name)
         return download_enrollment_data(course, enrollment_details)
 
     # Menampilkan data dalam template
@@ -899,42 +983,50 @@ def course_list_enroll(request, id):
         'search_query': search_query,
     })
 
+
 def download_enrollment_data(course, enrollment_details):
-    # Menentukan nama file berdasarkan nama kursus dan tanggal saat ini
-    current_date = datetime.now().strftime('%Y-%m-%d')  # Format tanggal: YYYY-MM-DD
-    filename = f"{course.course_name.replace(' ', '_')}_{current_date}.csv"  # Mengganti spasi dengan _ pada nama kursus
-
-    # Membuat response HTTP untuk CSV
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    response['Content-Disposition'] = f'attachment; filename="{course.course_name}_enrollments.csv"'
 
-    # Menulis data ke file CSV
     writer = csv.writer(response)
-    writer.writerow(['Username', 'Email', 'First Name', 'Last Name', 'Gender', 'Date of Birth', 'Address', 'Country', 'Phone', 'Education', 'University', 'Total Score', 'Status', 'Progress', 'Overall Percentage'])
-    
+    writer.writerow([
+        'Name', 'Email', 'Last Login', 'Gender', 'Birth', 'Address', 'Country',
+        'Phone', 'Education', 'University', 'Score', 'Status', 'Progress', 'Overall %',
+        'Last Accessed Material', 'Last Completed Assessment'
+    ])
+
     for enrollment in enrollment_details:
-        birth_date = enrollment['user'].birth
-        formatted_birth_date = birth_date.strftime('%b %d, %Y') if birth_date else 'Unknown'  # Cek apakah birth_date ada
+        full_name = f"{enrollment.get('first_name', '')} {enrollment.get('last_name', '')}".strip()
+
+        # Handle last login
+        last_login = enrollment.get('last_login')
+        last_login_str = last_login.strftime('%Y-%m-%d %H:%M:%S') if last_login else ''
+
+        # Handle birth
+        birth = enrollment.get('birth')
+        birth_str = birth if birth and birth != 'N/A' else ''
 
         writer.writerow([
-            enrollment['user'].username,
-            enrollment['user'].email,
-            enrollment['user'].first_name,
-            enrollment['user'].last_name,
-            enrollment['user'].get_gender_display(),
-            formatted_birth_date,  # Menambahkan pengecekan birth date
-            enrollment['user'].address,
-            enrollment['user'].country,
-            '********' + str(enrollment['user'].phone)[-4:],  # Show last 4 digits of phone
-            enrollment['user'].get_education_display(),
-            enrollment['user'].university,
-            f"{enrollment['total_score']} / {enrollment['total_max_score']}",
-            enrollment['status'],
-            f"{enrollment['progress_percentage']}%",
-            f"{enrollment['overall_percentage']}%"
+            full_name,
+            enrollment.get('email', ''),
+            last_login_str,
+            enrollment.get('gender', ''),
+            birth_str,
+            enrollment.get('address', ''),
+            enrollment.get('country', ''),
+            enrollment.get('phone', ''),
+            enrollment.get('education', ''),
+            enrollment.get('university', ''),
+            f"{enrollment.get('total_score', 0)} / {enrollment.get('total_max_score', 0)}",
+            enrollment.get('status', ''),
+            f"{enrollment.get('progress_percentage', 0)}%",
+            f"{enrollment.get('overall_percentage', 0):.2f}%",
+            enrollment['last_accessed_material'].strftime('%Y-%m-%d %H:%M:%S') if enrollment.get('last_accessed_material') else '',
+            enrollment['last_completed_assessment'].strftime('%Y-%m-%d %H:%M:%S') if enrollment.get('last_completed_assessment') else '',
         ])
 
     return response
+
 
 @login_required
 def submit_rating(request, id, slug):
