@@ -820,7 +820,12 @@ def course_list_enroll(request, id):
     course = get_object_or_404(Course, id=id)
 
     # Pemeriksaan keamanan: hanya admin atau pemilik course yang diizinkan
-    if not (request.user.is_staff or License.objects.filter(course=course, users=request.user).exists()):
+    if not (
+        request.user.is_staff or 
+        (course.instructor and course.instructor.user == request.user)
+    ):
+
+
         logger.warning('Akses ditolak untuk pengguna %s pada course ID %s', request.user, id)
         messages.error(request, "Akses ditolak. Anda tidak memiliki izin untuk melihat data peserta kursus ini.")
         return redirect('authentication:home')
