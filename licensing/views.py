@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.utils import timezone
 from .models import Invitation, License
-from .forms import InvitationForm
+from .forms import InvitationForm, LicenseForm
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -477,22 +477,30 @@ def accept_invitation(request, uidb64, token):
         return redirect('authentication:home')
 
 
-def create_license(request):
-    """View untuk Super Admin membuat lisensi."""
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        license_type = request.POST.get('license_type')
-        subscription_type = request.POST.get('subscription_type')
-        subscription_frequency = request.POST.get('subscription_frequency')
-        max_users = request.POST.get('max_users', 20)
-        user_id = request.POST.get('user_id')
 
-        try:
-            user = CustomUser.objects.get(id=user_id)
+def create_license(request):
+    if not request.user.is_superuser:
+        messages.error(request, "Access denied. Only users with a subscription status can access this dashboard.")
+        return redirect('authentication:home')
+
+    if request.method == 'POST':
+        form = LicenseForm(request.POST)
+
+        if form.is_valid():
+            # Extract form data
+            name = form.cleaned_data['name']
+            license_type = form.cleaned_data['license_type']
+            subscription_type = form.cleaned_data['subscription_type']
+            subscription_frequency = form.cleaned_data['subscription_frequency']
+            max_users = form.cleaned_data['max_users']
+            user = form.cleaned_data['email']  # Get the user based on the email
+
+            # Update user status
             user.is_subscription = True
             user.is_learner = False
             user.save()
 
+            # Create the license
             license = License.objects.create(
                 name=name,
                 license_type=license_type,
@@ -503,35 +511,22 @@ def create_license(request):
                 max_users=max_users,
                 status=True,
             )
+            
+            # Add user to the license
             license.users.add(user)
 
-            messages.success(request, f"Lisensi {name} berhasil dibuat untuk {user.username}.")
-            return redirect('licensing:manage')
-        except CustomUser.DoesNotExist:
-            messages.error(request, "Pengguna tidak ditemukan.")
-        except Exception as e:
-            messages.error(request, f"Error saat membuat lisensi: {str(e)}")
+            messages.success(request, f"License {name} successfully created for {user.username}.")
+            return redirect('licensing:manage')  # Redirect to the license management page
 
-    # Ambil daftar pengguna
-    users = CustomUser.objects.all()
+        else:
+            # If the form is not valid, show the errors
+            messages.error(request, "There was an error with the form. Please check again.")
+            # Print errors to the console (optional for debugging purposes)
+            print(form.errors)
+    else:
+        form = LicenseForm()
 
-    # Tambahkan total statistik lisensi
-    today = timezone.now().date()
-    licenses = License.objects.all()
-    total_licenses = licenses.filter(status=True).count()
-    total_expired_licenses = licenses.filter(expiry_date__lt=today).count()
-    total_approaching_expiry = licenses.filter(expiry_date__gte=today, expiry_date__lte=today + timedelta(days=7)).count()
-    licenses_with_space = [lic for lic in licenses if lic.users.count() < lic.max_users]
-
-    context = {
-        'users': users,
-        'total_licenses': total_licenses,
-        'total_expired_licenses': total_expired_licenses,
-        'total_approaching_expiry': total_approaching_expiry,
-        'licenses_with_space': licenses_with_space,
-    }
-
-    return render(request, 'licensing/create_license.html', context)
+    return render(request, 'licensing/create_license.html', {'form': form})
 
 def subscription_management(request):
     if not request.user.is_superuser:

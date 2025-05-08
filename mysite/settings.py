@@ -466,10 +466,26 @@ LOGGING = {
     'loggers': {
         '': {
             'handlers': ['console', 'file'],
-            'level': 'INFO',
+            'level': 'WARNING',
+        },
+        'django.request': {
+            'handlers': ['console', 'file'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.security': {
+            'handlers': ['console', 'file'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+        'middleware.log_disallowed_host': {
+            'handlers': ['console', 'file'],
+            'level': 'WARNING',
+            'propagate': False,
         },
     },
 }
+
 
 
 CONTENT_SECURITY_POLICY = {
