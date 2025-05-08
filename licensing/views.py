@@ -24,6 +24,7 @@ from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 import datetime
+from django.db.models import Q
 
 logger = logging.getLogger(__name__)
 
@@ -289,6 +290,149 @@ def licens_analytics(request):
     }
     return render(request, 'licensing/licens_analytics.html', context)
 
+@login_required
+def course_participants_dashboard(request):
+    if not request.user.is_subscription:
+        messages.error(request, "Akses ditolak. Hanya pengguna dengan status langganan yang dapat mengakses dashboard ini.")
+        return redirect('authentication:home')
+
+    # Ambil lisensi yang terkait dengan pengguna dan statusnya aktif
+    licenses = License.objects.filter(users=request.user, status=True).prefetch_related('users')
+
+    # Menyiapkan data kursus dan peserta
+    license_course_data = []
+    
+    for license in licenses:
+        # Ambil pengguna yang terdaftar di lisensi ini selain pengguna yang sedang login
+        participants = license.users.exclude(id=request.user.id)
+        
+        # Ambil kursus yang terdaftar di lisensi ini
+        courses = Course.objects.filter(enrollments__user__in=participants).distinct()
+        
+        # Menyimpan data kursus dan peserta
+        course_data = []
+        for course in courses:
+            # Hitung jumlah peserta yang terdaftar di kursus ini
+            course_enrollment_count = Enrollment.objects.filter(course=course, user__in=participants).count()
+            
+            # Tambahkan data kursus dan jumlah peserta
+            course_data.append({
+                'course': course,
+                'enrollment_count': course_enrollment_count,
+            })
+
+        # Menyimpan data kursus yang terkait dengan lisensi
+        license_course_data.append({
+            'license': license,
+            'courses': course_data,
+        })
+
+    # Kirim data ke template
+    context = {
+        'license_course_data': license_course_data,
+    }
+    return render(request, 'licensing/course_participants_dashboard.html', context)
+
+
+@login_required
+def course_detail(request, course_id):
+    # Get the course by course_id
+    course = get_object_or_404(Course, id=course_id)
+
+    # Check if the user has licenses related to the course
+    licenses = License.objects.filter(users=request.user)
+    license_ids = licenses.values_list('id', flat=True)
+
+    # Get enrollments for the course that are related to the licenses the user has
+    enrollments = Enrollment.objects.filter(course=course, user__licenses__in=license_ids).select_related('user')
+
+    # Get all certificates for the course
+    certificates = Certificate.objects.filter(user__in=enrollments.values_list('user_id', flat=True), course=course)
+    cert_map = {(c.user_id, c.course_id): c for c in certificates}
+
+    # Get all sections for the course
+    sections = course.sections.all()
+    section_ids = sections.values_list('id', flat=True)
+
+    # Get all material reads
+    user_ids = enrollments.values_list('user_id', flat=True)
+    material_reads = MaterialRead.objects.filter(
+        user_id__in=user_ids,
+        material__section_id__in=section_ids
+    ).order_by('-read_at')
+
+    last_material_map = {}
+    for mr in material_reads:
+        key = (mr.user_id, mr.material_id)
+        if key not in last_material_map:
+            last_material_map[key] = mr.read_at
+
+    # Get all assessment reads
+    assessment_ids = []
+    for section in sections:
+        assessment_ids += list(section.assessments.values_list('id', flat=True))
+
+    assessment_reads = AssessmentRead.objects.filter(
+        user_id__in=user_ids,
+        assessment_id__in=assessment_ids
+    ).order_by('-completed_at')
+
+    last_assessment_map = {}
+    for ar in assessment_reads:
+        key = (ar.user_id, ar.assessment_id)
+        if key not in last_assessment_map:
+            last_assessment_map[key] = ar.completed_at
+
+    # Handle search query
+    search_query = request.GET.get('search', '')
+    if search_query:
+        enrollments = enrollments.filter(
+            Q(user__first_name__icontains=search_query) | 
+            Q(user__last_name__icontains=search_query) | 
+            Q(user__email__icontains=search_query)
+        )
+
+    # **Order the enrollments queryset to prevent UnorderedObjectListWarning**
+    enrollments = enrollments.order_by('enrolled_at')  # Order by enrolled_at (or other field)
+
+    # Pagination for participants
+    page = request.GET.get('page', 1)
+    participants_per_page = 10  # Adjust the number of participants per page as needed
+    paginator = Paginator(enrollments, participants_per_page)
+    participants_data = paginator.get_page(page)
+
+    # Process participants data for the course
+    participants_data_list = []
+    for enrollment in participants_data:
+        last_accessed = None
+        last_completed = None
+
+        # Check all materials and assessments for this participant
+        for section in sections:
+            for material in section.materials.all():
+                time = last_material_map.get((enrollment.user_id, material.id))
+                if time and (not last_accessed or time > last_accessed):
+                    last_accessed = time
+
+            for assessment in section.assessments.all():
+                time = last_assessment_map.get((enrollment.user_id, assessment.id))
+                if time and (not last_completed or time > last_completed):
+                    last_completed = time
+
+        participants_data_list.append({
+            'enrollment': enrollment,
+            'certificate': cert_map.get((enrollment.user_id, course.id)),
+            'last_accessed_material': last_accessed,
+            'last_completed_assessment': last_completed,
+        })
+
+    context = {
+        'course': course,
+        'participants_data': participants_data_list,
+        'search_query': search_query,
+    }
+
+    return render(request, 'licensing/course_detail.html', context)
 
 
 @login_required

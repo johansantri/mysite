@@ -1,1 +1,22 @@
-WARNING 2025-05-08 05:18:19,597 log Forbidden (Referer checking failed - no Referer.): /
+ERROR 2025-05-08 06:18:04,364 log Internal Server Error: /course-detail/1/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/licensing/views.py", line 405, in course_detail
+    last_score = certificate.score  # Skor diambil dari sertifikat
+AttributeError: 'Certificate' object has no attribute 'score'
+ERROR 2025-05-08 06:34:33,368 log Internal Server Error: /course-detail/1/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/licensing/views.py", line 389, in course_detail
+    Q(user__first_name__icontains=search_query) |
+NameError: name 'Q' is not defined

@@ -13,7 +13,8 @@ urlpatterns = [
     path('invitation/resend/<int:invitation_id>/', views.resend_invitation, name='resend_invitation'),
     path('invitation/accept/<str:uidb64>/<str:token>/', views.accept_invitation, name='accept_invitation'),
     path('invitation/delete/<int:invitation_id>/', views.delete_invitation, name='delete_invitation'),  # Baru
-  
+    path('course-participants-dashboard/', views.course_participants_dashboard, name='course_participants_dashboard'),
+    path('course-detail/<int:course_id>/', views.course_detail, name='course_detail'),
     path('create/', views.license_create, name='license_create'),
     path('update/<int:pk>/', views.license_update, name='license_update'),
     path('manage/', views.subscription_management, name='subscription_management'),

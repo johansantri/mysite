@@ -1,0 +1,48 @@
+{% extends 'home/tes.html' %}
+
+{% block content %}
+<h2>Course Participants Dashboard</h2>
+
+{% if license_course_data %}
+    {% for license_data in license_course_data %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>License: {{ license_data.license.name }}</h5>
+                <p>ID: {{ license_data.license.id }}</p>
+            </div>
+            <div class="card-body">
+                <h6>Kursus yang terdaftar di Lisensi {{ license_data.license.name }}</h6>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Course Name</th>
+                            <th>Number of Participants</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for course_data in license_data.courses %}
+                            <tr>
+                                <td>
+                                    <a href="{% url 'licensing:course_detail' course_data.course.id %}">
+                                        {{ course_data.course.course_name }}
+                                    </a>
+                                </td>
+                                <td>{{ course_data.enrollment_count }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="2">No courses available for this license.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <div class="alert alert-info">
+        No licenses available for your user.
+    </div>
+{% endif %}
+
+{% endblock %}
