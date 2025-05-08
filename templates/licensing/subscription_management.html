@@ -5,7 +5,7 @@
     
     <!-- Tautan untuk menambahkan subscription -->
     <div class="mb-4">
-        <a href="{% url 'licensing:create_license' %}" class="btn btn-primary">
+        <a href="{% url 'licensing:license_create' %}" class="btn btn-primary">
             <i class="bi bi-plus-circle"></i> Add Subscription
         </a>
     </div>
@@ -77,24 +77,30 @@
             <thead>
                 <tr>
                     <th>Name</th>
+                    <th>pelanggan</th>
                     <th>Type</th>
                     <th>Start Date</th>
                     <th>Expiry Date</th>
                     <th>Max Users</th>
                     <th>Current Users</th>
                     <th>Status</th>
+                     <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 {% for license in licenses_with_space %}
                     <tr>
-                        <td>{{ license.name }}</td>
+                        <td>{{ license.name }} </td>
+                        <td>{{ license.users.first.email }}</td>
                         <td>{{ license.license_type }}</td>
                         <td>{{ license.start_date }}</td>
                         <td>{{ license.expiry_date }}</td>
                         <td>{{ license.max_users }}</td>
                         <td>{{ license.users.count }}</td>
                         <td>{{ license.status|yesno:"Active,Inactive" }}</td>
+                        <td>
+                            <a href="{% url 'licensing:license_update' license.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>

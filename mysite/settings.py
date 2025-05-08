@@ -221,7 +221,7 @@ EMAIL_HOST_USER = 'indonesialokal@gmail.com'  # Ganti dengan alamat email Anda
 EMAIL_HOST_PASSWORD = 'vdee kfzo dyvk idsa'  # Ganti dengan password aplikasi Gmail Anda
 
 # Email pengirim default untuk email otomatis
-DEFAULT_FROM_EMAIL = 'Django Test Email Address'
+DEFAULT_FROM_EMAIL = 'Informasi dari LMSku'
 
 
 
@@ -487,6 +487,7 @@ LOGGING = {
 }
 
 
+SITE_URL = 'https://ini.icei.ac.id'
 
 CONTENT_SECURITY_POLICY = {
     'DIRECTIVES': {

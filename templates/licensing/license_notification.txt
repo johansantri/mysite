@@ -1,0 +1,20 @@
+Halo {{ user.get_full_name|default:user.email }},
+
+{% if is_update %}
+Lisensi Anda telah diperbarui dengan detail berikut:
+{% else %}
+Lisensi baru telah dibuat untuk Anda dengan detail berikut:
+{% endif %}
+
+Nama Lisensi: {{ license.name }}
+Tipe Lisensi: {{ license.get_license_type_display }}
+Tanggal Mulai: {{ license.start_date }}
+Tanggal Berakhir: {{ license.expiry_date }}
+Total lisensi Pengguna: {{ license.max_users }}
+Status Langganan: Aktif
+
+Terima kasih telah menggunakan layanan kami!
+
+Lihat detail lisensi di: {{ site_url }}
+
+Hubungi kami di support@company.com jika ada pertanyaan.

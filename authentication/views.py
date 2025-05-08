@@ -1075,7 +1075,7 @@ def register_view(request):
                 'token': token,
             })
             # Versi teks biasa sebagai fallback
-            plain_message = f"Hi {user.username},\nPlease activate your account by visiting: http://{current_site.domain}/activate/{uid}/{token}/"
+            plain_message = f"Hi {user.username},\nPlease activate your account by visiting: https://{current_site.domain}/activate/{uid}/{token}/"
 
             # Menggunakan EmailMultiAlternatives
             email = EmailMultiAlternatives(
@@ -1104,6 +1104,7 @@ def activate_account(request, uidb64, token):
     if user is not None and default_token_generator.check_token(user, token):
         user.is_active = True  # Set user to active
         user.save()
+        user.backend = 'django.contrib.auth.backends.ModelBackend'
         login(request, user)  # Automatically log the user in after activation
         return redirect('authentication:home')  # Redirect to the home page after login
     else:

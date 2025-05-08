@@ -20,6 +20,10 @@ from datetime import timedelta
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from courses.models import Course, Enrollment,Certificate,MaterialRead,AssessmentRead
 from django.db.models import F
+from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -478,55 +482,109 @@ def accept_invitation(request, uidb64, token):
 
 
 
-def create_license(request):
+@login_required
+def license_create(request):
+    # Pastikan pengguna adalah admin langganan (PT A)
     if not request.user.is_superuser:
-        messages.error(request, "Access denied. Only users with a subscription status can access this dashboard.")
+        messages.error(request, "Akses ditolak. Hanya pengguna dengan status langganan yang dapat mengakses dashboard ini.")
         return redirect('authentication:home')
-
+    
     if request.method == 'POST':
         form = LicenseForm(request.POST)
-
         if form.is_valid():
-            # Extract form data
-            name = form.cleaned_data['name']
-            license_type = form.cleaned_data['license_type']
-            subscription_type = form.cleaned_data['subscription_type']
-            subscription_frequency = form.cleaned_data['subscription_frequency']
-            max_users = form.cleaned_data['max_users']
-            user = form.cleaned_data['email']  # Get the user based on the email
-
-            # Update user status
-            user.is_subscription = True
-            user.is_learner = False
-            user.save()
-
-            # Create the license
-            license = License.objects.create(
-                name=name,
-                license_type=license_type,
-                subscription_type=subscription_type,
-                subscription_frequency=subscription_frequency,
-                start_date=timezone.now().date(),
-                expiry_date=timezone.now().date() + timedelta(days=365),
-                max_users=max_users,
-                status=True,
-            )
+            license = form.save()  # Simpan form dan dapatkan instance
+            user = form.cleaned_data['user_email']  # Dapatkan objek user dari clean_user_email
             
-            # Add user to the license
-            license.users.add(user)
+            # Kontekst untuk template
+            context = {
+                'subject': 'Lisensi Baru Telah Dibuat',
+                'user': user,
+                'license': license,
+                'is_update': False,
+                'site_url': settings.SITE_URL,  # Misalnya: 'https://yourdomain.com'
+                'year': datetime.datetime.now().year,
+            }
 
-            messages.success(request, f"License {name} successfully created for {user.username}.")
-            return redirect('licensing:manage')  # Redirect to the license management page
+            # Render template
+            html_content = render_to_string('licensing/license_notification.html', context)
+            text_content = render_to_string('licensing/license_notification.txt', context)
 
+            # Kirim email
+            email = EmailMultiAlternatives(
+                subject=context['subject'],
+                body=text_content,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=[user.email],
+            )
+            email.attach_alternative(html_content, "text/html")
+
+            try:
+                email.send()
+                messages.success(request, 'Lisensi berhasil dibuat dan notifikasi email telah dikirim.')
+            except Exception as e:
+                messages.warning(request, f'Lisensi berhasil dibuat, tetapi gagal mengirim email: {str(e)}')
+
+            return redirect('licensing:subscription_management')
         else:
-            # If the form is not valid, show the errors
-            messages.error(request, "There was an error with the form. Please check again.")
-            # Print errors to the console (optional for debugging purposes)
-            print(form.errors)
+            messages.error(request, 'Terdapat kesalahan pada form.')
     else:
         form = LicenseForm()
+    return render(request, 'licensing/license_form.html', {'form': form, 'title': 'Buat Lisensi'})
 
-    return render(request, 'licensing/create_license.html', {'form': form})
+@login_required
+def license_update(request, pk):
+    # Pastikan pengguna adalah admin langganan (PT A)
+    if not request.user.is_superuser:
+        messages.error(request, "Akses ditolak. Hanya pengguna dengan status langganan yang dapat mengakses dashboard ini.")
+        return redirect('authentication:home')
+    license = get_object_or_404(License, pk=pk)
+    if request.method == 'POST':
+        form = LicenseForm(request.POST, instance=license)
+        if form.is_valid():
+            license = form.save()  # Simpan form dan dapatkan instance
+            user = form.cleaned_data['user_email']  # Dapatkan objek user dari clean_user_email
+            
+            # Kontekst untuk template
+            context = {
+                'subject': 'Lisensi Telah Diperbarui',
+                'user': user,
+                'license': license,
+                'is_update': True,
+                'site_url': settings.SITE_URL,  # Misalnya: 'https://yourdomain.com'
+                'year': datetime.datetime.now().year,
+            }
+
+            # Render template
+            html_content = render_to_string('licensing/license_notification.html', context)
+            text_content = render_to_string('licensing/license_notification.txt', context)
+
+            # Kirim email
+            email = EmailMultiAlternatives(
+                subject=context['subject'],
+                body=text_content,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=[user.email],
+            )
+            email.attach_alternative(html_content, "text/html")
+
+            try:
+                email.send()
+                messages.success(request, 'Lisensi berhasil diperbarui dan notifikasi email telah dikirim.')
+            except Exception as e:
+                messages.warning(request, f'Lisensi berhasil diperbarui, tetapi gagal mengirim email: {str(e)}')
+
+            return redirect('licensing:subscription_management')
+        else:
+            messages.error(request, 'Terdapat kesalahan pada form.')
+    else:
+        # Prepopulate user_email dengan email pengguna pertama (jika ada)
+        initial_email = license.users.first().email if license.users.exists() else ''
+        form = LicenseForm(instance=license, initial={'user_email': initial_email})
+    return render(request, 'licensing/license_form.html', {'form': form, 'title': 'Edit Lisensi'})
+
+
+
+
 
 def subscription_management(request):
     if not request.user.is_superuser:
