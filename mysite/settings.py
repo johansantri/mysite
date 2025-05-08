@@ -454,33 +454,45 @@ CKEDITOR_5_FILE_UPLOAD_PERMISSION = "staff","is_partner","is_instructor",'authen
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
         },
+    },
+    'handlers': {
         'file': {
-            'class': 'logging.FileHandler',
+            'class': 'logging.handlers.RotatingFileHandler',
             'filename': 'debug.log',
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 5,
+            'formatter': 'verbose',
         },
     },
     'loggers': {
         '': {
-            'handlers': ['console', 'file'],
-            'level': 'WARNING',
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': True,
         },
         'django.request': {
-            'handlers': ['console', 'file'],
+            'handlers': ['file'],
             'level': 'ERROR',
             'propagate': False,
         },
         'django.security': {
-            'handlers': ['console', 'file'],
+            'handlers': ['file'],
             'level': 'WARNING',
             'propagate': False,
         },
         'middleware.log_disallowed_host': {
-            'handlers': ['console', 'file'],
+            'handlers': ['file'],
             'level': 'WARNING',
+            'propagate': False,
+        },
+        'your_app': {  # Ganti dengan nama aplikasi Anda
+            'handlers': ['file'],
+            'level': 'INFO',
             'propagate': False,
         },
     },
