@@ -2,14 +2,14 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2>Rating untuk {{ course.course_name }}</h2>
+    <h2>Rating for {{ course.course_name }}</h2>
 
     <form method="post">
         {% csrf_token %}
         
-        <!-- Rating dengan bintang -->
+        <!-- Star Rating -->
         <div class="mb-3">
-            <label for="id_rating" class="form-label">Beri Rating (1-5)</label>
+            <label for="id_rating" class="form-label">Rate (1-5)</label>
             <div class="rating ms-auto">
                 <i class="fas fa-star" data-value="1"></i>
                 <i class="fas fa-star" data-value="2"></i>
@@ -20,13 +20,13 @@
             </div>
         </div>
 
-        <!-- Komentar -->
+        <!-- Comment -->
         <div class="mb-3">
-            <label for="id_comment" class="form-label">Komentar (opsional)</label>
+            <label for="id_comment" class="form-label">Comment (optional)</label>
             {{ form.comment }}
         </div>
 
-        <button type="submit" class="btn btn-primary">Kirim Rating</button>
+        <button type="submit" class="btn btn-primary">Submit Rating</button>
     </form>
 </div>
 <style>
@@ -37,15 +37,15 @@
 }
 
 .rating i:hover, .rating i.selected {
-    color: #f39c12; /* Warna bintang yang dipilih */
+    color: #f39c12; /* Selected star color */
 }
 
 .rating .fa-star {
-    color: #ddd; /* Warna bintang yang tidak dipilih */
+    color: #ddd; /* Unselected star color */
 }
 
 </style>
-<!-- Tambahkan script JS untuk interaktivitas -->
+<!-- Add JS script for interactivity -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const stars = document.querySelectorAll('.rating i');

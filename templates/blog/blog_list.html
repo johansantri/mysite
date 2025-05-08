@@ -30,18 +30,7 @@
           {% for post in posts %}
           <div class="col-md-4">
             <div class="card border-0 shadow-sm h-100">
-              <div class="position-relative">
-                {% if post.image %}
-                  <img src="{{ post.image.url }}" class="img-fluid w-100 rounded-top" alt="{{ post.title|truncatewords:6 }}">
-                {% endif %}
-                {% if post.category %}
-                  <a href="{% url 'blog:category-posts' slug=post.category.slug %}" rel="canonical"
-                     class="badge text-white position-absolute bottom-0 end-0 m-3 px-3 py-2 shadow-sm rounded-pill d-inline-block"
-                     style="background-color: rgba(255, 0, 0, 0.6); max-width: 75%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                    {{ post.category.name }}
-                  </a>
-                {% endif %}
-              </div>
+              
 
               <div class="card-body d-flex flex-column">
                 <h5 class="card-title fw-semibold">

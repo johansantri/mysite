@@ -3,11 +3,55 @@
 
 {% block content %}
 
-      <!-- Welcome Section -->
-    <section class="welcome-section">
-        <h1>Hi, {{ request.user.username }}!</h1>
-        <p>Great to see you back. Let’s continue your learning journey or explore new courses to unlock your full potential!</p>
-    </section>
+      <section class="welcome-section ">
+    <div class="row">
+        <!-- Kolom Kiri: Teks Selamat Datang dalam Card -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h1 class="display-4">Hi, {{ request.user.username }}!</h1>
+                    <p class="lead">Great to see you back. Let’s continue your learning journey or explore new courses to unlock your full potential!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kolom Kanan: Informasi Lisensi dalam Card -->
+        <div class="col-md-6 mb-4">
+            <!-- Card untuk Licenses -->
+            {% if user.licenses.all %}
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">Your Active Licenses</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">You are currently under the following license(s):</p>
+                        <ul class="list-group">
+                            {% for license in user.licenses.all %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    {{ license.name }}
+                                    <span class="badge bg-{{ license.status|yesno:'success,danger' }}">{{ license.status|yesno:'Active,Inactive' }}</span>
+                                    
+                                    <!-- Tanggal Mulai dan Berakhir -->
+                                    <div class="small text-muted">
+                                        <div><strong>Start Date:</strong> {{ license.start_date|date:"F j, Y" }}</div>
+                                        <div><strong>End Date:</strong> {{ license.expiry_date|date:"F j, Y" }}</div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% else %}
+               
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+
+
+
+
 
   <!-- Search Form -->
         <form method="GET" action="{% url 'authentication:dashbord' %}" class="mb-4">
