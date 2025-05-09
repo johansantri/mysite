@@ -3,7 +3,7 @@
 {% load extra_custom_filters %}
 {% block content %}
 
-<div class="container mt-4">
+
     <h2>Komentar pada Kursus Anda</h2>
     
     {% for comment in comments %}
@@ -69,6 +69,6 @@
             <a href="?page={{ comments.paginator.num_pages }}" class="btn btn-outline-secondary btn-sm ms-2">Terakhir</a>
         {% endif %}
     </div>
-</div>
+
 
 {% endblock %}

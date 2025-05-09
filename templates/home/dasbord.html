@@ -2,149 +2,187 @@
 {% load static %}
 
 {% block content %}
+<div class="container-fluid py-4">
+    <!-- Dashboard Header -->
+    <div class="mb-4">
+        <h2 class="fw-bold text-dark">Dashboard Overview</h2>
+        <p class="text-muted">Monitor your key metrics and recent activities</p>
+    </div>
 
-<!-- Dashboard Grid -->
-<div class="row justify-content-center g-3">
-    <!-- Enrolled Section -->
-    <div class="col-lg-4 col-md-6">
-        <div class="card text-center shadow-sm">
-            <div class="card-body">
-                <h5>Enrolled</h5>
-                <h2>{{ total_enrollments }}</h2>
+    <!-- Dashboard Grid -->
+    <div class="row g-4 mb-5">
+        <!-- Enrolled Section -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-check text-primary fs-2 mb-3"></i>
+                    <h5 class="card-title fw-semibold text-dark">Enrolled</h5>
+                    <h2 class="card-text text-primary fw-bold">{{ total_enrollments }}</h2>
+                </div>
             </div>
         </div>
-    </div>
-    <!-- Active Courses Section -->
-    <div class="col-lg-4 col-md-6">
-        <div class="card text-center shadow-sm">
-            <div class="card-body">
-                <h5>Active Courses</h5>
-                <h2>{{ total_published_courses }}</h2>
+
+        <!-- Active Courses Section -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
+                <div class="card-body text-center">
+                    <i class="bi bi-book text-success fs-2 mb-3"></i>
+                    <h5 class="card-title fw-semibold text-dark">Active Courses</h5>
+                    <h2 class="card-text text-success fw-bold">{{ total_published_courses }}</h2>
+                </div>
             </div>
         </div>
+
+        <!-- Partner Section -->
+        {% if not user.is_instructor and not user.is_partner %}
+        <div class="col-lg-4 col-md-6">
+            <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
+                <div class="card-body text-center">
+                    <i class="bi bi-people text-warning fs-2 mb-3"></i>
+                    <h5 class="card-title fw-semibold text-dark">Partner</h5>
+                    <h2 class="card-text text-warning fw-bold">
+                        {% if user.is_superuser %}
+                            {{ total_partners }}
+                        {% else %}
+                            0
+                        {% endif %}
+                    </h2>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Students Section -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
+                <div class="card-body text-center">
+                    <i class="bi bi-mortarboard text-info fs-2 mb-3"></i>
+                    <h5 class="card-title fw-semibold text-dark">Students</h5>
+                    <h2 class="card-text text-info fw-bold">{{ total_learners }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Courses Section -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
+                <div class="card-body text-center">
+                    <i class="bi bi-collection-play text-danger fs-2 mb-3"></i>
+                    <h5 class="card-title fw-semibold text-dark">Courses</h5>
+                    <h2 class="card-text text-danger fw-bold">{{ total_courses }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructors Section -->
+        {% if not user.is_instructor %}
+        <div class="col-lg-4 col-md-6">
+            <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-workspace text-secondary fs-2 mb-3"></i>
+                    <h5 class="card-title fw-semibold text-dark">Instructors</h5>
+                    <h2 class="card-text text-secondary fw-bold">{{ total_instructors }}</h2>
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
-    <!-- Partner Section -->
-    <div class="col-lg-4 col-md-6">
-        <div class="card text-center shadow-sm">
-            <div class="card-body">
-                <h5>Partner</h5>
-                {% if user.is_superuser %}
-                    <h2>{{ total_partners }}</h2>
-                {% elif user.is_partner %}
-                    <h2>1</h2> <!-- Partner only sees their own organization -->
+
+    <!-- Partner-Specific Reports -->
+    {% if request.user.is_partner %}
+    <div class="mb-5">
+        <h4 class="fw-semibold text-dark mb-3">Partner Reports</h4>
+        <div class="d-flex flex-wrap gap-3">
+            <a href="{% url 'partner:partner_course_ratings' %}" class="btn btn-outline-info shadow-sm rounded-pill px-4 py-2 transition-all hover-scale">
+                <i class="bi bi-star-half me-2"></i> Rating Report
+            </a>
+            <a href="{% url 'partner:partner_enrollments' %}" class="btn btn-outline-primary shadow-sm rounded-pill px-4 py-2 transition-all hover-scale">
+                <i class="bi bi-person-plus me-2"></i> Enrolled Users
+            </a>
+            <a href="{% url 'partner:partner_course_comments' %}" class="btn btn-outline-warning shadow-sm rounded-pill px-4 py-2 transition-all hover-scale">
+                <i class="bi bi-chat-left-dots me-2"></i> Comments Reports
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Recently Created Courses Table -->
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <h4 class="fw-semibold text-dark mb-4">Recently Created Courses</h4>
+            <div class="table-responsive">
+                {% if courses_created_today %}
+                <table class="table table-hover table-bordered align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Courses</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for course in courses_created_today %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'partner:course_lms_detail' course.id course.slug %}" class="text-primary text-decoration-none">
+                                    {{ course.course_name }}
+                                </a>
+                            </td>
+                            <td>{{ course.created_at|date:"F j, Y" }}</td>
+                            <td>
+                                <span class="badge bg-{% if course.status_course == 'Published' %}success{% elif course.status_course == 'Draft' %}warning{% else %}danger{% endif %}">
+                                    {{ course.status_course }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
                 {% else %}
-                    <h2>0</h2> <!-- Instructors or other users don't manage partners -->
+                <p class="text-muted">No courses created today.</p>
                 {% endif %}
             </div>
         </div>
     </div>
-    <!-- Students Section -->
-    <div class="col-lg-4 col-md-6">
-        <div class="card text-center shadow-sm">
-            <div class="card-body">
-                <h5>Students</h5>
-                <h2>{{ total_learners }}</h2>
-            </div>
-        </div>
-    </div>
-    <!-- Courses Section -->
-    <div class="col-lg-4 col-md-6">
-        <div class="card text-center shadow-sm">
-            <div class="card-body">
-                <h5>Courses</h5>
-                <h2>{{ total_courses }}</h2>
-            </div>
-        </div>
-    </div>
-    <!-- Instructors Section -->
-    <div class="col-lg-4 col-md-6">
-        <div class="card text-center shadow-sm">
-            <div class="card-body">
-                <h5>Instructors</h5>
-                <h2>{{ total_instructors }}</h2>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- /Dashboard Grid -->
 
-<!-- Partner-Specific Reports -->
-{% if request.user.is_partner %}
-    <div class="d-flex justify-content-start gap-3 mt-4">
-        <a href="{% url 'partner:partner_course_ratings' %}" class="badge bg-info text-dark p-3 shadow-sm rounded">
-            <i class="bi bi-star-half me-1"></i> Rating Report
-        </a>
-        <a href="{% url 'partner:partner_enrollments' %}" class="badge bg-primary p-3 shadow-sm rounded">
-            <i class="bi bi-person-plus me-1"></i> Enrolled Users
-        </a>
-        <a href="{% url 'partner:partner_course_comments' %}" class="badge bg-warning p-3 shadow-sm rounded">
-            <i class="bi bi-chat-left-dots me-1"></i> Comments reports
-        </a>
-    </div>
-{% else %}
-    <div class="alert alert-warning mt-4">
-        You do not have access to these reports.
-    </div>
-{% endif %}
-
-<br>
-
-<!-- Recently Created Courses Table -->
-<div class="instructor-course-table">
-    <div class="dashboard-title">
-        <h4>Recently Created Courses</h4>
-    </div>
-    <div class="table-responsive custom-table">
-        {% if courses_created_today %}
-            <table class="table table-bordered table-striped mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th>Courses</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for course in courses_created_today %}
-                    <tr>
-                        <td><a href="{% url 'partner:course_lms_detail' course.id course.slug %}">{{ course.course_name }}</a></td>
-                        <td>{{ course.created_at|date:"F j, Y" }}</td>
-                        <td>{{ course.status_course }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p>No courses created today.</p>
-        {% endif %}
-    </div>
-</div>
-
-<!-- Pagination Links -->
-<nav aria-label="Page navigation">
-    <ul class="pagination justify-content-center">
-        {% if courses_created_today.has_previous %}
+    <!-- Pagination Links -->
+    {% if courses_created_today.has_other_pages %}
+    <nav aria-label="Pagination" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if courses_created_today.has_previous %}
             <li class="page-item">
                 <a class="page-link" href="?courses_page=1">First</a>
             </li>
             <li class="page-item">
                 <a class="page-link" href="?courses_page={{ courses_created_today.previous_page_number }}">Previous</a>
             </li>
-        {% endif %}
+            {% endif %}
 
-        <li class="page-item disabled">
-            <span class="page-link">Page {{ courses_created_today.number }} of {{ courses_created_today.paginator.num_pages }}</span>
-        </li>
+            <li class="page-item disabled">
+                <span class="page-link">Page {{ courses_created_today.number }} of {{ courses_created_today.paginator.num_pages }}</span>
+            </li>
 
-        {% if courses_created_today.has_next %}
+            {% if courses_created_today.has_next %}
             <li class="page-item">
                 <a class="page-link" href="?courses_page={{ courses_created_today.next_page_number }}">Next</a>
             </li>
             <li class="page-item">
                 <a class="page-link" href="?courses_page={{ courses_created_today.paginator.num_pages }}">Last</a>
             </li>
-        {% endif %}
-    </ul>
-</nav>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
 
+<!-- Custom CSS -->
+<style>
+.transition-all {
+    transition: all 0.3s ease;
+}
+.hover-scale:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+</style>
 {% endblock content %}
