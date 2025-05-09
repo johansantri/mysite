@@ -4,3 +4,16 @@ INFO 2025-05-09 00:51:44,702 views Memulai course_list_enroll untuk course ID 1 
 INFO 2025-05-09 00:51:44,706 views Menemukan 4 enrollment untuk course Backend development
 INFO 2025-05-09 00:52:15,583 views Memulai course_list_enroll untuk course ID 1 oleh pengguna partner
 WARNING 2025-05-09 00:52:15,587 views Akses ditolak untuk pengguna partner pada course ID 1
+ERROR 2025-05-09 02:04:24,242 log Internal Server Error: /all-user/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 60, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django_ratelimit/decorators.py", line 27, in _wrapped
+    return fn(request, *args, **kw)
+  File "/home/TIM/mysite/authentication/views.py", line 403, in all_user
+    'partners': partners,
+UnboundLocalError: local variable 'partners' referenced before assignment

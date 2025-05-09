@@ -313,11 +313,12 @@ def user_detail(request, user_id):
 def all_user(request):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
-    
+    partners = None  # <--- inisialisasi aman di awal
     # Role-based filtering
     if request.user.is_superuser:
         # Superuser can access all users
         users = CustomUser.objects.all().order_by('-date_joined')
+        partners = Partner.objects.all() if request.user.is_superuser else None
     elif request.user.is_partner:
         # Partner can only access users related to their university, excluding superusers
         if request.user.university:
@@ -373,6 +374,14 @@ def all_user(request):
         users = users.order_by('-total_courses')
     elif sort_courses == 'least':
         users = users.order_by('total_courses')
+
+    partner_filter = request.GET.get('partner')
+    if request.user.is_superuser and partner_filter:
+        partner = Partner.objects.filter(id=partner_filter).first()
+        if partner:
+            users = users.filter(university=partner.name)
+
+
     # Annotate the total courses enrolled by each user
     users = users.annotate(total_courses=Count('enrollments'))
 
@@ -391,6 +400,7 @@ def all_user(request):
         'status_filter': status_filter,
         'date_from': date_from,
         'date_to': date_to,
+        'partners': partners,
     }
 
     return render(request, 'authentication/all_user.html', context)

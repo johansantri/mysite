@@ -46,7 +46,16 @@
                         <option value="most" {% if request.GET.sort_courses == 'most' %}selected{% endif %}>Most Enrolled</option>
                         <option value="least" {% if request.GET.sort_courses == 'least' %}selected{% endif %}>Least Enrolled</option>
                     </select>
-
+                    {% if request.user.is_superuser %}
+                        <select name="partner" class="form-select shadow-sm" style="max-width: 200px;">
+                            <option value="">-- Filter by Partner --</option>
+                            {% for partner in partners %}
+                                <option value="{{ partner.id }}" {% if request.GET.partner == partner.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ partner.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    {% endif %}
 
                     <input type="date" class="form-control shadow-sm" name="date_from"
                         value="{{ request.GET.date_from }}" placeholder="Dari Tanggal" style="max-width: 200px;">
