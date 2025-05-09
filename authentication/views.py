@@ -323,7 +323,8 @@ def all_user(request):
         if request.user.university:
             users = CustomUser.objects.filter(
                 university=request.user.university, 
-                is_superuser=False
+                is_superuser=False,
+                 is_learner=True
             ).order_by('-date_joined')
         else:
             # If the partner has no associated university, deny access

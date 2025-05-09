@@ -451,11 +451,7 @@
                                 <li><a class="dropdown-item" href="{% url 'courses:microcredential-list' %}">Micro</a></li>
                             </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.url_name == 'partner_view' %}active{% endif %}" href="{% url 'courses:partner_view' %}">
-                                <i class="bi™bi bi-people"></i> Partner
-                            </a>
-                        </li>
+                        
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'instructor_view' %}active{% endif %}" href="{% url 'courses:instructor_view' %}">
                                 <i class="bi bi-person-lines-fill"></i> Instructor
@@ -466,7 +462,11 @@
                                 <i class="bi bi-person-workspace"></i> Learner
                             </a>
                         </li>
-
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'partner_view' %}active{% endif %}" href="{% url 'courses:partner_view' %}">
+                                <i class="bi bi-gear"></i> Setting
+                            </a>
+                        </li>
                     {% elif user.is_subscription %}
                         <div class="user-profile">
                             <div class="d-flex align-items-center mb-4">

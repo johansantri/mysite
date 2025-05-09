@@ -814,7 +814,7 @@ def reorder_section(request):
 # views.py
 @login_required
 def course_list_enroll(request, id):
-    logger.info('Memulai course_list_enroll untuk course ID %s oleh pengguna %s', id, request.user)
+    
 
     # Mencari course berdasarkan ID
     course = get_object_or_404(Course, id=id)
@@ -822,17 +822,18 @@ def course_list_enroll(request, id):
     # Pemeriksaan keamanan: hanya admin atau pemilik course yang diizinkan
     if not (
         request.user.is_staff or 
-        (course.instructor and course.instructor.user == request.user)
+        (course.instructor and course.instructor.user == request.user) or
+        getattr(request.user, 'is_partner', False)
     ):
 
 
-        logger.warning('Akses ditolak untuk pengguna %s pada course ID %s', request.user, id)
+        
         messages.error(request, "Akses ditolak. Anda tidak memiliki izin untuk melihat data peserta kursus ini.")
         return redirect('authentication:home')
 
     # Mengambil daftar enrollments terkait kursus
     enrollments = course.enrollments.all()
-    logger.info('Menemukan %d enrollment untuk course %s', enrollments.count(), course.course_name)
+    
 
     # Menyiapkan list untuk detail user dan statusnya
     enrollment_details = []
