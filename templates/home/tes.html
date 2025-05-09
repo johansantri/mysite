@@ -4,229 +4,417 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LMS - Home</title>
+    <title>LMSKu - Dashboard</title>
 
     <!-- CSS Libraries -->
-     <link rel="icon" href="{% static 'assets/img/icon/badge.svg' %}" sizes="32x32" type="image/svg+xml">
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" integrity="sha512-jnSuA4Ss2PkkikSOLtYs8BlYIeeIK1h99ty4YfvRPAlzr377vr3CXDb7sb7eEEBYjDtcYj+AjBH3FLv5uSJuXg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI=" crossorigin="anonymous">
+    <link rel="icon" href="{% static 'assets/img/icon/badge.svg' %}" sizes="32x32" type="image/svg+xml">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/2.0.4/htmx.min.js" integrity="sha512-2kIcAizYXhIn8TzUvqzEDZNuDZ+aW7yE/+f1HJHXFjQcGNfv1kqzJSTBRBSlOgp6B/KZsz1K0a3ZTqP9dnxioQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-   
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.16.1/dist/sweetalert2.min.css">
 
     <!-- Custom CSS -->
     <style>
         :root {
             --sidebar-width: 280px;
-            --primary-color: #263238; /* Abu-abu gelap netral */
-            --secondary-color: #26a69a; /* Teal untuk aksen */
-            --accent-color: #ffa726; /* Oranye untuk menu aktif */
-            --text-color: #eceff1; /* Abu-abu terang untuk teks */
-            --bg-color: #ffffff; /* Putih untuk konten */
-            --dark-mode-bg: #37474f; /* Mode gelap untuk sidebar */
-            --dark-mode-text: #b0bec5;
+            --sidebar-bg: #1e293b;
+            --sidebar-text: #f1f5f9;
+            --primary-color: #3b82f6;
+            --secondary-color: #f97316;
+            --transition: all 0.3s ease;
+            --bg-light: #f8fafc;
+            --bg-dark: #0f172a;
+            --text-light: #1e293b;
+            --text-dark: #e2e8f0;
+            --card-bg-light: #ffffff;
+            --card-bg-dark: #1e293b;
+            --table-bg-light: #f8f9fa;
+            --table-bg-dark: #334155;
+            --table-text-light: #1e293b;
+            --table-text-dark: #e2e8f0;
+            --input-bg-light: #ffffff;
+            --input-bg-dark: #2d3748;
+            --input-text-light: #1e293b;
+            --input-text-dark: #e2e8f0;
+            --input-border-light: #ced4da;
+            --input-border-dark: #4b5563;
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
+            background: var(--bg-light);
+            color: var(--text-light);
+            transition: var(--transition);
+            overflow-x: hidden;
             margin: 0;
-            transition: background-color 0.3s;
         }
 
         body.dark-mode {
-            background-color: var(--dark-mode-bg);
-        }
-
-        body.dark-mode .main-content {
-            background-color: var(--dark-mode-bg);
-            color: var(--dark-mode-text);
+            background: var(--bg-dark);
+            color: var(--text-dark);
         }
 
         /* Sidebar */
         .sidebar {
             width: var(--sidebar-width);
+            background: var(--sidebar-bg);
+            color: var(--sidebar-text);
             position: fixed;
             top: 0;
             bottom: 0;
             left: 0;
-            background-color: var(--primary-color);
-            color: var(--text-color);
-            transition: transform 0.3s ease-in-out;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
+            z-index: 1030;
+            transition: var(--transition);
             overflow-y: auto;
-        }
-
-        .sidebar.collapsed {
-            transform: translateX(-100%);
-        }
-
-        .sidebar.show {
-            transform: translateX(0);
-        }
-
-        .sidebar-content {
-            padding: 2rem 1.5rem;
-            flex-grow: 1;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            height: 100vh;
         }
 
         .sidebar-header {
-            padding: 1rem 1.5rem;
+            padding: 1rem;
+            background: linear-gradient(180deg, #1e293b, #172135);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
+        .sidebar-content {
+            padding: 1.5rem;
+        }
+
         .user-profile img {
-            width: 48px;
-            height: 48px;
+            width: 60px;
+            height: 60px;
             object-fit: cover;
-            border: 2px solid var(--secondary-color);
-            transition: transform 0.2s;
+            border: 2px solid var(--primary-color);
+            transition: var(--transition);
         }
 
         .user-profile img:hover {
-            transform: scale(1.1);
+            transform: scale(1.05);
         }
 
         .nav-link {
-            color: var(--text-color);
-            padding: 0.75rem 1rem;
-            border-radius: 0.25rem;
-            transition: all 0.2s;
-            position: relative;
+            color: var(--sidebar-text);
+            padding: 0.75rem 1.25rem;
+            border-radius: 10px;
             display: flex;
             align-items: center;
+            transition: var(--transition);
         }
 
-        .nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .nav-link.active {
-            background-color: var(--accent-color);
-            color: #212529;
-        }
-
-        .nav-link.active::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background-color: #212529;
-        }
-
-        .nav-link i {
-            margin-right: 0.75rem;
-            font-size: 1.2rem;
-        }
-
-        .nav-link.active i {
-            transform: scale(1.1);
+        .nav-link:hover, .nav-link.active {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary-color);
         }
 
         .dropdown-menu {
-            background-color: var(--primary-color);
+            background: #334155;
             border: none;
-            border-radius: 0.25rem;
+            border-radius: 10px;
+            margin-left: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .dropdown-item {
-            color: var(--text-color);
+            color: var(--sidebar-text);
             padding: 0.5rem 1.5rem;
+            transition: var(--transition);
         }
 
         .dropdown-item:hover {
-            background-color: var(--secondary-color);
-            color: #212529;
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--primary-color);
         }
 
-        /* Sidebar Footer */
         .sidebar-footer {
             padding: 1.5rem;
-            background-color: rgba(0, 0, 0, 0.2);
-            position: sticky;
-            bottom: 0;
-            z-index: 1;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
         }
 
-        .sidebar-footer .nav-link {
-            padding: 0.5rem 1rem;
-            border-radius: 0.25rem;
+        .footer-link {
+            color: var(--sidebar-text);
+            padding: 0.75rem 1.25rem;
+            border-radius: 10px;
+            transition: var(--transition);
         }
 
-        .sidebar-footer .nav-link:hover {
-            background-color: var(--secondary-color);
-            color: #212529;
+        .footer-link:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary-color);
         }
 
         /* Main Content */
         .main-content {
             margin-left: var(--sidebar-width);
             padding: 2rem;
-            transition: margin-left 0.3s ease-in-out;
-            min-height: 100vh;
-            background-color: var(--bg-color);
+            transition: var(--transition);
+            background: var(--bg-light);
         }
 
-        /* Hamburger Button */
-        .navbar-toggler {
-            background-color: var(--secondary-color);
-            color: #212529;
-            border-radius: 0.25rem;
-            width: 48px;
-            height: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-            z-index: 1100;
+        .dark-mode .main-content {
+            background: var(--bg-dark);
         }
 
-        .navbar-toggler[aria-expanded="true"] .bi-list {
-            display: none;
+        /* Cards */
+        .card {
+            background: var(--card-bg-light);
+            transition: var(--transition);
         }
 
-        .navbar-toggler[aria-expanded="true"] .bi-x-lg {
-            display: inline-block;
+        .dark-mode .card {
+            background: var(--card-bg-dark);
+            border-color: #334155;
         }
 
-        .navbar-toggler .bi-x-lg {
-            display: none;
+        /* Text Colors */
+        .text-dark {
+            color: var(--text-light) !important;
         }
 
+        .dark-mode .text-dark {
+            color: var(--text-dark) !important;
+        }
+
+        .text-muted {
+            color: #6c757d !important;
+        }
+
+        .dark-mode .text-muted {
+            color: #94a3b8 !important;
+        }
+
+        /* Tables */
+        .table {
+            background: var(--table-bg-light);
+            color: var(--table-text-light);
+            transition: var(--transition);
+        }
+
+        .dark-mode .table {
+            background: var(--table-bg-dark);
+            color: var(--table-text-dark);
+        }
+
+        .table thead th {
+            background: var(--table-bg-light);
+            color: var(--table-text-light);
+        }
+
+        .dark-mode .table thead th {
+            background: #2d3748;
+            color: var(--table-text-dark);
+        }
+
+        .table-hover tbody tr:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .dark-mode .table-hover tbody tr:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Form Elements */
+        .form-control, .form-select {
+            background: var(--input-bg-light);
+            color: var(--input-text-light);
+            border-color: var(--input-border-light);
+            transition: var(--transition);
+        }
+
+        .dark-mode .form-control, .dark-mode .form-select {
+            background: var(--input-bg-dark);
+            color: var(--input-text-dark);
+            border-color: var(--input-border-dark);
+        }
+
+        .form-control::placeholder {
+            color: #6c757d;
+        }
+
+        .dark-mode .form-control::placeholder {
+            color: #94a3b8;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .dark-mode .btn-primary {
+            background: #2563eb;
+            border-color: #2563eb;
+        }
+
+        .btn-success {
+            background: #22c55e;
+            border-color: #22c55e;
+        }
+
+        .dark-mode .btn-success {
+            background: #16a34a;
+            border-color: #16a34a;
+        }
+
+        .btn-outline-info, .btn-outline-primary, .btn-outline-warning {
+            transition: var(--transition);
+        }
+
+        .dark-mode .btn-outline-info {
+            color: #67e8f9;
+            border-color: #67e8f9;
+        }
+
+        .dark-mode .btn-outline-primary {
+            color: #93c5fd;
+            border-color: #93c5fd;
+        }
+
+        .dark-mode .btn-outline-warning {
+            color: #fdba74;
+            border-color: #fdba74;
+        }
+
+        /* Badges */
+        .badge.bg-primary {
+            background: var(--primary-color) !important;
+        }
+
+        .dark-mode .badge.bg-primary {
+            background: #2563eb !important;
+        }
+
+        .badge.bg-success {
+            background: #22c55e !important;
+        }
+
+        .dark-mode .badge.bg-success {
+            background: #16a34a !important;
+        }
+
+        .badge.bg-warning {
+            background: #f97316 !important;
+        }
+
+        .dark-mode .badge.bg-warning {
+            background: #ea580c !important;
+        }
+
+        .badge.bg-danger {
+            background: #ef4444 !important;
+        }
+
+        .dark-mode .badge.bg-danger {
+            background: #dc2626 !important;
+        }
+
+        /* Pagination */
+        .page-link {
+            background: var(--card-bg-light);
+            color: var(--text-light);
+            border-color: var(--input-border-light);
+        }
+
+        .dark-mode .page-link {
+            background: var(--card-bg-dark);
+            color: var(--text-dark);
+            border-color: var(--input-border-dark);
+        }
+
+        .page-item.active .page-link {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .dark-mode .page-item.active .page-link {
+            background: #2563eb;
+            border-color: #2563eb;
+        }
+
+        /* Mobile Styles */
         @media (max-width: 991.98px) {
             .sidebar {
-                width: 100%;
+                width: 280px;
                 transform: translateX(-100%);
+                z-index: 1040;
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
             }
 
             .main-content {
                 margin-left: 0;
                 padding: 1rem;
-                padding-top: 80px; /* Space for hamburger */
-            }
-
-            .sidebar-header {
-                padding: 1rem;
             }
 
             .navbar-toggler {
-                margin-left: 0.5rem;
+                position: fixed;
+                top: 0.75rem;
+                left: 0.75rem;
+                z-index: 1050;
+                background: var(--primary-color);
+                color: white;
+                border: none;
+                padding: 0.5rem 0.75rem;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+                font-size: 1.25rem;
             }
 
-            .sidebar-footer .navbar-nav {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 0.5rem;
+            .navbar-toggler i.bi-x-lg {
+                display: none;
             }
+
+            .navbar-toggler.show i.bi-list {
+                display: none;
+            }
+
+            .navbar-toggler.show i.bi-x-lg {
+                display: inline;
+            }
+        }
+
+        /* Animations */
+        .transition-all {
+            transition: var(--transition);
+        }
+
+        .hover-scale:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        /* Progress Section */
+        .progress-section .progress {
+            height: 10px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .progress-bar {
+            background: var(--primary-color);
+            transition: width 0.5s ease-in-out;
+        }
+
+        /* Alerts */
+        .alert-container {
+            max-width: 100%;
+        }
+
+        .alert {
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background: var(--card-bg-light);
+        }
+
+        .dark-mode .alert {
+            background: var(--card-bg-dark);
+            color: var(--text-dark);
         }
 
         /* Course Content */
@@ -234,115 +422,54 @@
             font-size: 0.9rem;
         }
 
-        .progress-section {
-            margin-top: 1.5rem;
+        .course-content .badge {
+            font-size: 0.75rem;
+            padding: 0.35em 0.65em;
         }
 
-        .progress-bar {
-            background-color: var(--secondary-color);
-        }
-
-        /* Accessibility */
-        .nav-link:focus, .dropdown-item:focus {
-            outline: 2px solid var(--secondary-color);
-            outline-offset: 2px;
-        }
-
-        /* Confetti Scoped Styles */
-        .js-container {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .js-container__confetti {
+        /* Confetti Container */
+        .js-container__confetti-item {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
             z-index: 10;
         }
 
-        .js-container__confetti-item {
-            position: absolute;
-            border-radius: 50%;
-            opacity: 0.8;
-        }
-
         .js-container__confetti-item--animation-slow {
-            animation: confettiFallSlow 3s linear forwards;
+            animation: confetti-slow 4s ease-in-out forwards;
         }
 
         .js-container__confetti-item--animation-medium {
-            animation: confettiFallMedium 2s linear forwards;
+            animation: confetti-medium 3s ease-in-out forwards;
         }
 
         .js-container__confetti-item--animation-fast {
-            animation: confettiFallFast 1.5s linear forwards;
+            animation: confetti-fast 2s ease-in-out forwards;
         }
 
-        @keyframes confettiFallSlow {
-            0% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 0.8;
-            }
-            100% {
-                transform: translateY(100vh) rotate(720deg);
-                opacity: 0;
-            }
+        @keyframes confetti-slow {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
         }
 
-        @keyframes confettiFallMedium {
-            0% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 0.8;
-            }
-            100% {
-                transform: translateY(100vh) rotate(540deg);
-                opacity: 0;
-            }
+        @keyframes confetti-medium {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(1080deg); opacity: 0; }
         }
 
-        @keyframes confettiFallFast {
-            0% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 0.8;
-            }
-            100% {
-                transform: translateY(100vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        /* Dark Mode Toggle */
-        .dark-mode-toggle {
-            background-color: var(--secondary-color);
-            color: #212529;
-            border: none;
-            border-radius: 0.25rem;
-            padding: 0.5rem;
-            cursor: pointer;
-            z-index: 1100;
-        }
-
-        @media (max-width: 991.98px) {
-            .dark-mode-toggle {
-                position: fixed;
-                bottom: 1rem;
-                right: 1rem;
-            }
+        @keyframes confetti-fast {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(1440deg); opacity: 0; }
         }
     </style>
 </head>
 
 <body class="{% if request.session.dark_mode %}dark-mode{% endif %}">
     <!-- Sidebar -->
-    <nav class="sidebar collapse" id="sidebarMenu" aria-label="Main navigation">
-        <!-- Mobile Header -->
-        <div class="sidebar-header d-flex d-lg-none">
-            <span class="text-white fs-4">Menu</span>
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Close sidebar">
+    <nav class="sidebar collapse show" id="sidebarMenu" aria-label="Main navigation">
+        <!-- Sidebar Header -->
+        <div class="sidebar-header">
+            <span class="text-white fs-4 fw-bold">LMSKu</span>
+            <button class="navbar-toggler border-0 d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Close sidebar">
+                <i class="bi bi-list"></i>
                 <i class="bi bi-x-lg"></i>
             </button>
         </div>
@@ -351,237 +478,104 @@
         <div class="sidebar-content">
             {% if user.is_authenticated %}
                 <!-- User Profile -->
-                {% if not user.is_partner and not user.is_instructor and not user.is_superuser and not user.is_subscription %}
-                    <div class="user-profile">
-                        <div class="d-flex align-items-center mb-4">
-                            <a href="{% url 'authentication:edit-photo' request.user.id %}" aria-label="Edit profile photo">
-                                {% if request.user.photo %}
-                                    <img src="{{ request.user.photo.url }}" alt="User Avatar" class="rounded-circle me-3">
+                <div class="user-profile mb-4">
+                    <div class="d-flex align-items-center">
+                        <a href="{% url 'authentication:edit-photo' request.user.id %}" aria-label="Edit profile photo" class="transition-all hover-scale">
+                            {% if request.user.photo %}
+                                <img src="{{ request.user.photo.url }}" alt="User Avatar" class="rounded-circle me-3">
+                            {% else %}
+                                <img src="{% static 'assets/img/user/user1.jpg' %}" alt="User Image" class="rounded-circle me-3">
+                            {% endif %}
+                        </a>
+                        <div>
+                            <p class="mb-0 text-white fw-bold">
+                                <a href="{% url 'authentication:profile' request.user.username %}" class="text-white text-decoration-none transition-all hover-scale">{{ request.user.first_name }} {{ request.user.last_name }}</a>
+                            </p>
+                            <small class="text-muted">{{ request.user.hobby|default:"No hobby set" }}</small>
+                            <span class="badge bg-secondary text-white mt-2 d-inline-block">
+                                {% if request.user.is_superuser %}
+                                    Superuser
+                                {% elif request.user.is_partner %}
+                                    Partner
+                                {% elif request.user.is_instructor %}
+                                    Instructor
+                                {% elif request.user.is_member %}
+                                    Member
+                                {% elif request.user.is_subscription %}
+                                    Subscription
+                                {% elif request.user.is_audit %}
+                                    Audit
+                                {% elif request.user.is_learner %}
+                                    <a href="{% url 'courses:instructor_add' %}" class="text-white text-decoration-none">Become an Instructor</a>
                                 {% else %}
-                                    <img src="{% static 'assets/img/user/user1.jpg' %}" alt="User Image" class="rounded-circle me-3">
+                                    <a href="{% url 'courses:instructor_add' %}" class="text-white text-decoration-none">Become an Instructor</a>
                                 {% endif %}
-                            </a>
-                            <div>
-                                <p class="mb-0 text-white fw-bold">
-                                    <a href="{% url 'authentication:profile' request.user.username %}" class="text-white text-decoration-none">{{ request.user.first_name }} {{ request.user.last_name }}</a>
-                                </p>
-                                <small class="text-muted">{{ request.user.hobby }}</small>
-                                {% if not user.university %}
-                                    <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
-                                {% else %}
-                                    <span class="badge bg-warning text-dark mt-1 d-inline-block">
-                                        {% if request.user.is_superuser %}
-                                            Superuser
-                                        {% elif request.user.is_partner %}
-                                            Partner
-                                        {% elif request.user.is_instructor %}
-                                            Instructor
-                                        {% elif request.user.is_member %}
-                                            Member
-                                        {% elif request.user.is_subscription %}
-                                            Subscription
-                                        {% elif request.user.is_audit %}
-                                            Audit
-                                        {% elif request.user.is_learner %}
-                                            <a href="{% url 'courses:instructor_add' %}" class="text-dark text-decoration-none">Become an instructor</a>
-                                        {% else %}
-                                            <a href="{% url 'courses:instructor_add' %}" class="text-dark text-decoration-none">Become an instructor</a>
-                                        {% endif %}
-                                    </span>
-                                {% endif %}
-                            </div>
+                            </span>
                         </div>
                     </div>
-                {% endif %}
+                </div>
 
-                <ul class="nav flex-column">
+                <ul class="nav flex-column gap-1">
                     {% if user.is_partner %}
-                        <div class="user-profile">
-                            <div class="d-flex align-items-center mb-4">
-                                <a href="{% url 'authentication:edit-photo' request.user.id %}" aria-label="Edit profile photo">
-                                    {% if request.user.photo %}
-                                        <img src="{{ request.user.photo.url }}" alt="User Avatar" class="rounded-circle me-3">
-                                    {% else %}
-                                        <img src="{% static 'assets/img/user/user1.jpg' %}" alt="User Image" class="rounded-circle me-3">
-                                    {% endif %}
-                                </a>
-                                <div>
-                                    <p class="mb-0 text-white fw-bold">
-                                        <a href="{% url 'authentication:profile' request.user.username %}" class="text-white text-decoration-none">{{ request.user.first_name }} {{ request.user.last_name }}</a>
-                                    </p>
-                                    <small class="text-muted">{{ request.user.hobby }}</small>
-                                    {% if not user.university %}
-                                        <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
-                                    {% else %}
-                                        <span class="badge bg-warning text-dark mt-1 d-inline-block">
-                                            {% if request.user.is_superuser %}
-                                                Superuser
-                                            {% elif request.user.is_partner %}
-                                                Partner
-                                            {% elif request.user.is_instructor %}
-                                                Instructor
-                                            {% elif request.user.is_member %}
-                                                Member
-                                            {% elif request.user.is_subscription %}
-                                                Subscription
-                                            {% elif request.user.is_audit %}
-                                                Audit
-                                            {% elif request.user.is_learner %}
-                                                Learner
-                                            {% else %}
-                                                <a href="{% url 'courses:instructor_add' %}" class="text-dark text-decoration-none">Become an instructor</a>
-                                            {% endif %}
-                                        </span>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'dasbord' %}active{% endif %}" href="{% url 'authentication:dasbord' %}" aria-current="page">
-                                <i class="bi bi-speedometer"></i> Dashboard
+                                <i class="bi bi-speedometer me-2"></i> Dashboard
                             </a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle {% if request.resolver_match.url_name in 'course_view,microcredential-list' %}active{% endif %}" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-laptop"></i> Material
+                                <i class="bi bi-laptop me-2"></i> Material
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="{% url 'courses:course_view' %}">Course</a></li>
                                 <li><a class="dropdown-item" href="{% url 'courses:microcredential-list' %}">Micro</a></li>
                             </ul>
                         </li>
-                        
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'instructor_view' %}active{% endif %}" href="{% url 'courses:instructor_view' %}">
-                                <i class="bi bi-person-lines-fill"></i> Instructor
+                                <i class="bi bi-person-lines-fill me-2"></i> Instructor
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'all-user' %}active{% endif %}" href="{% url 'authentication:all-user' %}">
-                                <i class="bi bi-person-workspace"></i> Learner
+                                <i class="bi bi-person-workspace me-2"></i> Learner
                             </a>
                         </li>
-                        
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'partner_view' %}active{% endif %}" href="{% url 'courses:partner_view' %}">
-                                <i class="bi bi-gear"></i> Setting
+                                <i class="bi bi-gear me-2"></i> Setting
                             </a>
                         </li>
                     {% elif user.is_subscription %}
-                        <div class="user-profile">
-                            <div class="d-flex align-items-center mb-4">
-                                <a href="{% url 'authentication:edit-photo' request.user.id %}" aria-label="Edit profile photo">
-                                    {% if request.user.photo %}
-                                        <img src="{{ request.user.photo.url }}" alt="User Avatar" class="rounded-circle me-3">
-                                    {% else %}
-                                        <img src="{% static 'assets/img/user/user1.jpg' %}" alt="User Image" class="rounded-circle me-3">
-                                    {% endif %}
-                                </a>
-                                <div>
-                                    <p class="mb-0 text-white fw-bold">
-                                        <a href="{% url 'authentication:profile' request.user.username %}" class="text-white text-decoration-none">{{ request.user.first_name }} {{ request.user.last_name }}</a>
-                                    </p>
-                                    <small class="text-muted">{{ request.user.hobby }}</small>
-                                    {% if not user.university %}
-                                        <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
-                                    {% else %}
-                                        <span class="badge bg-warning text-dark mt-1 d-inline-block">
-                                            {% if request.user.is_superuser %}
-                                                Superuser
-                                            {% elif request.user.is_partner %}
-                                                Partner
-                                            {% elif request.user.is_instructor %}
-                                                Instructor
-                                            {% elif request.user.is_member %}
-                                                Member
-                                            {% elif request.user.is_subscription %}
-                                                Subscription
-                                            {% elif request.user.is_audit %}
-                                                Audit
-                                            {% elif request.user.is_learner %}
-                                                Learner
-                                            {% else %}
-                                                <a href="{% url 'courses:instructor_add' %}" class="text-dark text-decoration-none">Become an instructor</a>
-                                            {% endif %}
-                                        </span>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'licens_dashboard' %}active{% endif %}" href="{% url 'licensing:licens_dashboard' %}" aria-current="page">
-                                <i class="bi bi-speedometer"></i> Subscriptions
+                                <i class="bi bi-speedometer me-2"></i> Subscriptions
                             </a>
                         </li>
-                       
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'licens_analytics' %}active{% endif %}" href="{% url 'licensing:licens_analytics' %}">
-                                <i class="bi™bi bi-people"></i> Analitycs
+                                <i class="bi bi-people me-2"></i> Analytics
                             </a>
                         </li>
-                        
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'licens_learners' %}active{% endif %}" href="{% url 'licensing:licens_learners' %}">
-                                <i class="bi bi-person-workspace"></i> Learner
+                                <i class="bi bi-person-workspace me-2"></i> Learner
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'course_participants_dashboard' %}active{% endif %}" href="{% url 'licensing:course_participants_dashboard' %}">
-                                <i class="bi bi-journal-bookmark"></i> Courses
+                                <i class="bi bi-journal-bookmark me-2"></i> Courses
                             </a>
                         </li>
                     {% elif user.is_instructor %}
-                        <div class="user-profile">
-                            <div class="d-flex align-items-center mb-4">
-                                <a href="{% url 'authentication:edit-photo' request.user.id %}" aria-label="Edit profile photo">
-                                    {% if request.user.photo %}
-                                        <img src="{{ request.user.photo.url }}" alt="User Avatar" class="rounded-circle me-3">
-                                    {% else %}
-                                        <img src="{% static 'assets/img/user/user1.jpg' %}" alt="User Image" class="rounded-circle me-3">
-                                    {% endif %}
-                                </a>
-                                <div>
-                                    <p class="mb-0 text-white fw-bold">
-                                        <a href="{% url 'authentication:profile' request.user.username %}" class="text-white text-decoration-none">{{ request.user.first_name }} {{ request.user.last_name }}</a>
-                                    </p>
-                                    <small class="text-muted">{{ request.user.hobby }}</small>
-                                    {% if not user.university %}
-                                        <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
-                                    {% else %}
-                                        <span class="badge bg-warning text-dark mt-1 d-inline-block">
-                                            {% if request.user.is_superuser %}
-                                                Superuser
-                                            {% elif request.user.is_partner %}
-                                                Partner
-                                            {% elif request.user.is_instructor %}
-                                                Instructor
-                                            {% elif request.user.is_member %}
-                                                Member
-                                            {% elif request.user.is_subscription %}
-                                                Subscription
-                                            {% elif request.user.is_audit %}
-                                                Audit
-                                            {% elif request.user.is_learner %}
-                                                Learner
-                                            {% else %}
-                                                <a href="{% url 'courses:instructor_add' %}" class="text-dark text-decoration-none">Become an instructor</a>
-                                            {% endif %}
-                                        </span>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'dasbord' %}active{% endif %}" href="{% url 'authentication:dasbord' %}" aria-current="page">
-                                <i class="bi bi-speedometer"></i> Dashboard
+                                <i class="bi bi-speedometer me-2"></i> Dashboard
                             </a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle {% if request.resolver_match.url_name in 'course_view,instructor_learning_report' %}active{% endif %}" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-book"></i> Course
+                                <i class="bi bi-book me-2"></i> Course
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="{% url 'courses:course_view' %}">My Course</a></li>
@@ -589,93 +583,51 @@
                             </ul>
                         </li>
                     {% elif user.is_superuser %}
-                        <div class="user-profile">
-                            <div class="d-flex align-items-center mb-4">
-                                <a href="{% url 'authentication:edit-photo' request.user.id %}" aria-label="Edit profile photo">
-                                    {% if request.user.photo %}
-                                        <img src="{{ request.user.photo.url }}" alt="User Avatar" class="rounded-circle me-3">
-                                    {% else %}
-                                        <img src="{% static 'assets/img/user/user1.jpg' %}" alt="User Image" class="rounded-circle me-3">
-                                    {% endif %}
-                                </a>
-                                <div>
-                                    <p class="mb-0 text-white fw-bold">
-                                        <a href="{% url 'authentication:profile' request.user.username %}" class="text-white text-decoration-none">{{ request.user.first_name }} {{ request.user.last_name }}</a>
-                                    </p>
-                                    <small class="text-muted">{{ request.user.hobby }}</small>
-                                    {% if not user.university %}
-                                        <p class="mb-0 text-white fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</p>
-                                    {% else %}
-                                        <span class="badge bg-warning text-dark mt-1 d-inline-block">
-                                            {% if request.user.is_superuser %}
-                                                Superuser
-                                            {% elif request.user.is_partner %}
-                                                Partner
-                                            {% elif request.user.is_instructor %}
-                                                Instructor
-                                            {% elif request.user.is_member %}
-                                                Member
-                                            {% elif request.user.is_subscription %}
-                                                Subscription
-                                            {% elif request.user.is_audit %}
-                                                Audit
-                                            {% elif request.user.is_learner %}
-                                                Learner
-                                            {% else %}
-                                                <a href="{% url 'courses:instructor_add' %}" class="text-dark text-decoration-none">Become an instructor</a>
-                                            {% endif %}
-                                        </span>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'dasbord' %}active{% endif %}" href="{% url 'authentication:dasbord' %}" aria-current="page">
-                                <i class="bi bi-speedometer"></i> Dashboard
+                                <i class="bi bi-speedometer me-2"></i> Dashboard
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'partner_view' %}active{% endif %}" href="{% url 'courses:partner_view' %}">
-                                <i class="bi bi-people"></i> Partner
+                                <i class="bi bi-people me-2"></i> Partner
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'instructor_view' %}active{% endif %}" href="{% url 'courses:instructor_view' %}">
-                                <i class="bi bi-person-lines-fill"></i> Instructor
+                                <i class="bi bi-person-lines-fill me-2"></i> Instructor
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'all-user' %}active{% endif %}" href="{% url 'authentication:all-user' %}">
-                                <i class="bi bi-person-workspace"></i> Learner
+                                <i class="bi bi-person-workspace me-2"></i> Learner
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'course_view' %}active{% endif %}" href="{% url 'courses:course_view' %}">
-                                <i class="bi bi-book"></i> Course
+                                <i class="bi bi-book me-2"></i> Course
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'microcredential-list' %}active{% endif %}" href="{% url 'courses:microcredential-list' %}">
-                                <i class="bi bi-award"></i> Micro
+                                <i class="bi bi-award me-2"></i> Micro
                             </a>
                         </li>
-
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'subscription_management' %}active{% endif %}" href="{% url 'licensing:subscription_management' %}">
-                                <i class="bi bi-star"></i> Subscriptions
+                                <i class="bi bi-star me-2"></i> Subscriptions
                             </a>
                         </li>
                     {% else %}
                         <!-- Learner Menu -->
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'dashbord' %}active{% endif %}" href="{% url 'authentication:dashbord' %}">
-                                <i class="bi bi-speedometer"></i> Dashboard
+                                <i class="bi bi-speedometer me-2"></i> Dashboard
                             </a>
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle {% if request.resolver_match.url_name in 'mycourse,microcredential' %}active{% endif %}" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-person"></i> {{ request.user.username|capfirst }}
+                                <i class="bi bi-person me-2"></i> {{ request.user.username|capfirst }}
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="{% url 'authentication:mycourse' %}">My Course</a></li>
@@ -689,55 +641,55 @@
                 {% if not request.user.is_partner and not user.is_instructor and not user.is_superuser and request.resolver_match.url_name == 'course_learn' %}
                 <ul class="nav flex-column course-content mt-4">
                     <li class="nav-item">
-                        <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="collapse" data-bs-target="#courseContent" aria-expanded="false" aria-controls="courseContent">
-                            <i class="bi bi-ui-checks"></i> Course Content
+                        <a class="nav-link dropdown-toggle text-white fw-semibold" href="#" data-bs-toggle="collapse" data-bs-target="#courseContent" aria-expanded="false" aria-controls="courseContent">
+                            <i class="bi bi-ui-checks me-2"></i> Course Content
                         </a>
                         <ul class="collapse nav flex-column ms-3" id="courseContent">
                             {% for i in sections %}
                                 {% if not i.children.all and not i.materials.all and not i.assessments.all %}
                                     <li class="nav-item">
                                         <a class="nav-link text-white" href="#" aria-disabled="true">
-                                            <i class="bi bi-circle-fill"></i> {{ i.title }} (No content available)
+                                            <i class="bi bi-circle-fill me-2"></i> {{ i.title }} (No content)
                                         </a>
                                     </li>
                                 {% else %}
                                     <li class="nav-item">
                                         <a class="nav-link text-white collapsed" data-bs-toggle="collapse" href="#section-{{ i.id }}" aria-expanded="false" aria-controls="section-{{ i.id }}">
-                                            <i class="bi bi-folder-fill"></i> {{ i.title }}
+                                            <i class="bi bi-folder-fill me-2"></i> {{ i.title }}
                                         </a>
                                         <ul class="collapse nav flex-column ms-3" id="section-{{ i.id }}">
                                             {% for obj in i.children.all %}
                                                 {% if not obj.children.all %}
                                                     <li class="nav-item">
                                                         <a class="nav-link text-white collapsed" data-bs-toggle="collapse" href="#subsection-{{ obj.id }}" aria-expanded="false" aria-controls="subsection-{{ obj.id }}">
-                                                            <i class="bi bi-folder"></i> {{ obj.title }}
+                                                            <i class="bi bi-folder me-2"></i> {{ obj.title }}
                                                         </a>
                                                         <ul class="collapse nav flex-column ms-3" id="subsection-{{ obj.id }}">
                                                             {% for material in obj.materials.all %}
                                                                 <li class="nav-item">
                                                                     <a class="nav-link text-white" href="?material_id={{ material.id }}">
-                                                                        <i class="bi bi-file-earmark-text"></i> {{ material.title }}
-                                                                        <span>{{ material.duration }}</span>
+                                                                        <i class="bi bi-file-earmark-text me-2"></i> {{ material.title }}
+                                                                        <span class="badge bg-primary ms-2">{{ material.duration }}</span>
                                                                     </a>
                                                                 </li>
                                                             {% empty %}
                                                                 <li class="nav-item">
                                                                     <a class="nav-link text-white" href="#" aria-disabled="true">
-                                                                        <i class="bi bi-info-circle"></i> No materials available
+                                                                        <i class="bi bi-info-circle me-2"></i> No materials
                                                                     </a>
                                                                 </li>
                                                             {% endfor %}
                                                             {% for assessment in obj.assessments.all %}
                                                                 <li class="nav-item">
                                                                     <a class="nav-link text-white" href="?assessment_id={{ assessment.id }}">
-                                                                        <i class="bi bi-check-square"></i> {{ assessment.name | safe }}
-                                                                        <span>{{ assessment.weight }}%</span>
+                                                                        <i class="bi bi-check-square me-2"></i> {{ assessment.name | safe }}
+                                                                        <span class="badge bg-warning ms-2">{{ assessment.weight }}%</span>
                                                                     </a>
                                                                 </li>
                                                             {% empty %}
                                                                 <li class="nav-item">
                                                                     <a class="nav-link text-white" href="#" aria-disabled="true">
-                                                                        <i class="bi bi-info-circle"></i> No assessments available
+                                                                        <i class="bi bi-info-circle me-2"></i> No assessments
                                                                     </a>
                                                                 </li>
                                                             {% endfor %}
@@ -746,13 +698,13 @@
                                                 {% else %}
                                                     <li class="nav-item">
                                                         <a class="nav-link text-white collapsed" data-bs-toggle="collapse" href="#subsection-{{ obj.id }}" aria-expanded="false" aria-controls="subsection-{{ obj.id }}">
-                                                            <i class="bi bi-folder"></i> {{ obj.title }}
+                                                            <i class="bi bi-folder me-2"></i> {{ obj.title }}
                                                         </a>
                                                         <ul class="collapse nav flex-column ms-3" id="subsection-{{ obj.id }}">
                                                             {% for subobj in obj.children.all %}
                                                                 <li class="nav-item">
                                                                     <a class="nav-link text-white" href="?section_id={{ subobj.id }}">
-                                                                        <i class="bi bi-play-circle"></i> {{ subobj.title }}
+                                                                        <i class="bi bi-play-circle me-2"></i> {{ subobj.title }}
                                                                     </a>
                                                                 </li>
                                                             {% endfor %}
@@ -763,16 +715,16 @@
                                             {% for material in i.materials.all %}
                                                 <li class="nav-item">
                                                     <a class="nav-link text-white" href="?material_id={{ material.id }}">
-                                                        <i class="bi bi-file-earmark-text"></i> {{ material.title }}
-                                                        <span>{{ material.duration }}</span>
+                                                        <i class="bi bi-file-earmark-text me-2"></i> {{ material.title }}
+                                                        <span class="badge bg-primary ms-2">{{ material.duration }}</span>
                                                     </a>
                                                 </li>
                                             {% endfor %}
                                             {% for assessment in i.assessments.all %}
                                                 <li class="nav-item">
                                                     <a class="nav-link text-white" href="?assessment_id={{ assessment.id }}">
-                                                        <i class="bi bi-check-square"></i> {{ assessment.name | safe }}
-                                                        <span>{{ assessment.weight }}%</span>
+                                                        <i class="bi bi-check-square me-2"></i> {{ assessment.name | safe }}
+                                                        <span class="badge bg-warning ms-2">{{ assessment.weight }}%</span>
                                                     </a>
                                                 </li>
                                             {% endfor %}
@@ -784,38 +736,27 @@
                     </li>
 
                     <!-- Progress Section for Learner -->
-                    <div class="progress-section">
-                        <p class="text-center text-white mb-2">Progress: {{ course_progress|floatformat:0 }}%</p>
+                    <div class="progress-section mt-4">
+                        <p class="text-center text-white mb-2 fw-semibold">Progress: {{ course_progress|floatformat:0 }}%</p>
                         <div class="progress mb-3">
-                            <div class="progress-bar" 
-                                 role="progressbar" 
-                                 style="width: {{ course_progress|default:0 }}%" 
-                                 aria-valuenow="{{ course_progress|default:0 }}" 
-                                 aria-valuemin="0" 
-                                 aria-valuemax="100">
-                            </div>
+                            <div class="progress-bar" role="progressbar" style="width: {{ course_progress|default:0 }}%" aria-valuenow="{{ course_progress|default:0 }}" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
 
                         <div class="js-container position-relative">
-                            <p class="text-center text-white">
+                            <div class="text-center mb-4">
                                 {% if course_progress == 100 and status == 'Fail' %}
-                                    <div class="text-center mb-4">
-                                        <span class="text-danger fw-bold">Unfortunately, you did not pass the course, {{ request.user.username }}!</span>
-                                        <p class="text-white">Passing Threshold: <span class="fw-bold">{{ passing_threshold }}</span></p>
-                                        <p class="text-white">Your Score: <span class="fw-bold">{{ total_score|floatformat:2 }}</span>
-                                        <br>Maybe your final score is greater than the threshold, but you must pass all assessments</p>
-                                    </div>
+                                    <span class="text-danger fw-bold">Sorry, you did not pass, {{ request.user.username }}!</span>
+                                    <p class="text-white">Threshold: <span class="fw-bold">{{ passing_threshold }}</span></p>
+                                    <p class="text-white">Your Score: <span class="fw-bold">{{ total_score|floatformat:2 }}</span></p>
+                                    <p class="text-white small">You must pass all assessments.</p>
                                 {% elif status == 'Pass' %}
-                                    <div class="text-center mb-4">
-                                        <span class="text-success fw-bold">Congratulations 🎈 {{ request.user.username }}! 🎉</span>
-                                        <p class="text-white">Threshold: <span class="fw-bold">{{ passing_threshold }}</span>
-                                        Score: <span class="fw-bold">{{ total_score|floatformat:2 }}</span></p>
-                                        <a href="{% url 'courses:generate_certificate' course.id %}" class="btn btn-success btn-sm">
-                                            <i class="bi bi-patch-check"></i> Certificate
-                                        </a>
-                                    </div>
+                                    <span class="text-success fw-bold">Congratulations, {{ request.user.username }}! 🎉</span>
+                                    <p class="text-white">Threshold: <span class="fw-bold">{{ passing_threshold }}</span> | Score: <span class="fw-bold">{{ total_score|floatformat:2 }}</span></p>
+                                    <a href="{% url 'courses:generate_certificate' course.id %}" class="btn btn-success btn-sm rounded-pill transition-all hover-scale">
+                                        <i class="bi bi-patch-check me-1"></i> Get Certificate
+                                    </a>
                                 {% endif %}
-                            </p>
+                            </div>
                             <div class="js-container__confetti"></div>
                         </div>
 
@@ -851,38 +792,37 @@
 
         <!-- Sidebar Footer -->
         <footer class="sidebar-footer">
-            <nav class="navbar navbar-expand navbar-light">
-                <div class="d-flex flex-column gap-2 w-100">
-                    <ul class="navbar-nav flex-column gap-2">
-                        <li class="nav-item">
-                            <a href="{% url 'authentication:home' %}" class="nav-link footer-link d-flex align-items-center">
-                                <i class="bi bi-house-fill me-2"></i> HOME
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'courses:create_and_list_sos_posts' %}" class="nav-link footer-link d-flex align-items-center">
-                                <i class="bi bi-chat-dots-fill me-2"></i> SOSIAL
-                            </a>
-                        </li>
-
-                         <li class="nav-item">
-                            {% if request.user.is_superuser or request.user.is_staff or request.user.is_partner or request.user.is_instructor %}
-                                <a href="{% url 'blog:blog-list-admin' %}" class="nav-link footer-link d-flex align-items-center">
-                                    <i class="bi bi-pencil-fill me-2"></i> Blog
-                                </a>
-                            {% endif %}
-                        </li>
-
-                    </ul>
-                    <div class="nav-item">
-                        <a href="{% url 'authentication:logout' %}" class="nav-link footer-link d-flex align-items-center bg-danger text-white">
-                            <i class="bi bi-box-arrow-right me-2"></i> LOGOUT
+            <ul class="nav flex-column gap-2">
+                <li class="nav-item">
+                    <a href="{% url 'authentication:home' %}" class="nav-link footer-link d-flex align-items-center transition-all hover-scale">
+                        <i class="bi bi-house-fill me-2"></i> Home
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'courses:create_and_list_sos_posts' %}" class="nav-link footer-link d-flex align-items-center transition-all hover-scale">
+                        <i class="bi bi-chat-dots-fill me-2"></i> Social
+                    </a>
+                </li>
+                {% if request.user.is_superuser or request.user.is_staff or request.user.is_partner or request.user.is_instructor %}
+                    <li class="nav-item">
+                        <a href="{% url 'blog:blog-list-admin' %}" class="nav-link footer-link d-flex align-items-center transition-all hover-scale">
+                            <i class="bi bi-pencil-fill me-2"></i> Blog
                         </a>
-                    </div>
-                </div>
-            </nav>
+                    </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a href="#" class="nav-link footer-link d-flex align-items-center transition-all hover-scale dark-mode-toggle">
+                        <i class="bi bi-moon me-2"></i> Dark Mode
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'authentication:logout' %}" class="nav-link footer-link d-flex align-items-center bg-danger text-white rounded-pill transition-all hover-scale">
+                        <i class="bi bi-box-arrow-right me-2"></i> Logout
+                    </a>
+                </li>
+            </ul>
             {% if messages %}
-                <div class="alert-container mb-3">
+                <div class="alert-container mt-3">
                     {% for message in messages %}
                         <div class="alert alert-{{ message.tags }} alert-dismissible fade show rounded-3" role="alert">
                             {{ message }}
@@ -892,7 +832,7 @@
                 </div>
             {% endif %}
             <div class="text-center mt-3">
-                <p class="mb-0 text-white">© 2025 LMSKu. All rights reserved.</p>
+                <p class="mb-0 text-white small">© 2025 LMSKu. All rights reserved.</p>
             </div>
         </footer>
     </nav>
@@ -903,74 +843,78 @@
             <i class="bi bi-list"></i>
             <i class="bi bi-x-lg"></i>
         </button>
-        <button class="dark-mode-toggle d-lg-none" aria-label="Toggle dark mode">
-            <i class="bi bi-moon"></i>
-        </button>
         {% block content %}
         {% endblock %}
     </div>
 
     <!-- Scripts -->
-    
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous" def></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.min.js" integrity="sha384-VQqxDN0EQCkWoxt/0vsQvZswzTHUVOImccYmSyhJTp7kGtPed0Qcx8rK9h9YEgx+" crossorigin="anonymous" def></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.6/Sortable.min.js" integrity="sha512-csIng5zcB+XpulRUa+ev1zKo7zRNGpEaVfNB9On1no9KYTEY/rLGAEEpvgdw6nim1WdTuihZY1eqZ31K7/fZjw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha512-uURl+ZXMBrF4AwGaWmEetzrd+J5/8NRkWAvJx5sbPSSuOb0bZLqf+tOzniObO00BjHa/dD7gub9oCGMLPQHtQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.16.1/sweetalert2.min.js" integrity="sha512-LGHBR+kJ5jZSIzhhdfytPoEHzgaYuTRifq9g5l6ja6/k9NAOsAi5dQh4zQF6JIRB8cAYxTRedERUF+97/KuivQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.16.1/sweetalert2.min.js" integrity="sha512-LGHBR+kJ5jZSIzhhdfytPoEHzgaYuTRifq9g5l6ja6/k9NAOsAi5dQh4zQF6JIRB8cAYxTRedERUF+97/KuivQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.16.1/dist/sweetalert2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.3/dist/htmx.min.js"></script>
+
     {% block scripts %}
-
     {% endblock %}
-     <script>
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-    
-        htmx.onLoad(function() {
-            document.body.addEventListener('htmx:configRequest', function(evt) {
-                evt.detail.headers['X-CSRFToken'] = getCookie('new_csrf_cookie_name');
-            });
-        });
-    </script>
-    
+
     <script>
-    
         document.addEventListener('DOMContentLoaded', function() {
-            // Sidebar toggle for desktop
+            // Sidebar toggle
+            const sidebarToggler = document.querySelector('.navbar-toggler');
+            const sidebar = document.querySelector('#sidebarMenu');
+
+            // Ensure sidebar is visible on desktop by default
             if (window.innerWidth >= 992) {
-                document.getElementById('sidebarMenu').classList.add('show');
+                sidebar.classList.add('show');
             }
 
-            // Dark mode persistence
-            const darkModeToggle = document.querySelector('.dark-mode-toggle');
+            sidebarToggler.addEventListener('click', function() {
+                this.classList.toggle('show');
+                sidebar.classList.toggle('show');
+            });
+
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', function(event) {
+                if (window.innerWidth < 992 && sidebar.classList.contains('show') && !sidebar.contains(event.target) && !sidebarToggler.contains(event.target)) {
+                    sidebar.classList.remove('show');
+                    sidebarToggler.classList.remove('show');
+                }
+            });
+
+            // Dark mode toggle
+            const darkModeToggles = document.querySelectorAll('.dark-mode-toggle');
             const body = document.body;
             const isDarkMode = localStorage.getItem('darkMode') === 'true';
 
             if (isDarkMode) {
                 body.classList.add('dark-mode');
-                darkModeToggle.querySelector('i').classList.replace('bi-moon', 'bi-sun');
+                darkModeToggles.forEach(toggle => {
+                    const icon = toggle.querySelector('i');
+                    icon.classList.replace('bi-moon', 'bi-sun');
+                    toggle.innerHTML = '<i class="bi bi-sun me-2"></i> Light Mode';
+                });
             }
 
-            darkModeToggle.addEventListener('click', () => {
-                body.classList.toggle('dark-mode');
-                const isDark = body.classList.contains('dark-mode');
-                localStorage.setItem('darkMode', isDark);
-                const icon = darkModeToggle.querySelector('i');
-                icon.classList.toggle('bi-moon');
-                icon.classList.toggle('bi-sun');
+            darkModeToggles.forEach(toggle => {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    body.classList.toggle('dark-mode');
+                    const isDark = body.classList.contains('dark-mode');
+                    localStorage.setItem('darkMode', isDark);
+                    darkModeToggles.forEach(t => {
+                        const icon = t.querySelector('i');
+                        if (isDark) {
+                            icon.classList.replace('bi-moon', 'bi-sun');
+                            t.innerHTML = '<i class="bi bi-sun me-2"></i> Light Mode';
+                        } else {
+                            icon.classList.replace('bi-sun', 'bi-moon');
+                            t.innerHTML = '<i class="bi bi-moon me-2"></i> Dark Mode';
+                        }
+                    });
+                });
             });
 
             // Confetti effect
@@ -981,7 +925,7 @@
                         this.el = el;
                         this.containerEl = null;
                         this.confettiFrequency = 10;
-                        this.confettiColors = ['#EF2964', '#00C09D', '#2D87B0', '#48485E', '#EFFF1D'];
+                        this.confettiColors = ['#3b82f6', '#f97316', '#22c55e', '#ec4899', '#facc15'];
                         this.confettiAnimations = ['slow', 'medium', 'fast'];
                         this._setupElements();
                         this._renderConfetti();
@@ -1024,30 +968,29 @@
                 }
             {% endif %}
         });
-    </script>
 
-     <script>
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
+        // HTMX CSRF Token
+        if (typeof htmx !== 'undefined') {
+            htmx.onLoad(function() {
+                document.body.addEventListener('htmx:configRequest', function(evt) {
+                    function getCookie(name) {
+                        let cookieValue = null;
+                        if (document.cookie && document.cookie !== '') {
+                            const cookies = document.cookie.split(';');
+                            for (let i = 0; i < cookies.length; i++) {
+                                const cookie = cookies[i].trim();
+                                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                    break;
+                                }
+                            }
+                        }
+                        return cookieValue;
                     }
-                }
-            }
-            return cookieValue;
-        }
-    
-        htmx.onLoad(function() {
-            document.body.addEventListener('htmx:configRequest', function(evt) {
-                evt.detail.headers['X-CSRFToken'] = getCookie('new_csrf_cookie_name');
+                    evt.detail.headers['X-CSRFToken'] = getCookie('new_csrf_cookie_name');
+                });
             });
-        });
+        }
     </script>
-    
 </body>
 </html>

@@ -5,7 +5,7 @@
 <div class="container-fluid py-4">
     <!-- Dashboard Header -->
     <div class="mb-4">
-        <h2 class="fw-bold text-dark">Dashboard Overview</h2>
+        <h2 class="fw-bold">Dashboard Overview</h2>
         <p class="text-muted">Monitor your key metrics and recent activities</p>
     </div>
 
@@ -16,7 +16,7 @@
             <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
                 <div class="card-body text-center">
                     <i class="bi bi-person-check text-primary fs-2 mb-3"></i>
-                    <h5 class="card-title fw-semibold text-dark">Enrolled</h5>
+                    <h5 class="card-title fw-semibold">Enrolled</h5>
                     <h2 class="card-text text-primary fw-bold">{{ total_enrollments }}</h2>
                 </div>
             </div>
@@ -27,7 +27,7 @@
             <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
                 <div class="card-body text-center">
                     <i class="bi bi-book text-success fs-2 mb-3"></i>
-                    <h5 class="card-title fw-semibold text-dark">Active Courses</h5>
+                    <h5 class="card-title fw-semibold">Active Courses</h5>
                     <h2 class="card-text text-success fw-bold">{{ total_published_courses }}</h2>
                 </div>
             </div>
@@ -39,7 +39,7 @@
             <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
                 <div class="card-body text-center">
                     <i class="bi bi-people text-warning fs-2 mb-3"></i>
-                    <h5 class="card-title fw-semibold text-dark">Partner</h5>
+                    <h5 class="card-title fw-semibold">Partner</h5>
                     <h2 class="card-text text-warning fw-bold">
                         {% if user.is_superuser %}
                             {{ total_partners }}
@@ -57,7 +57,7 @@
             <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
                 <div class="card-body text-center">
                     <i class="bi bi-mortarboard text-info fs-2 mb-3"></i>
-                    <h5 class="card-title fw-semibold text-dark">Students</h5>
+                    <h5 class="card-title fw-semibold">Students</h5>
                     <h2 class="card-text text-info fw-bold">{{ total_learners }}</h2>
                 </div>
             </div>
@@ -68,7 +68,7 @@
             <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
                 <div class="card-body text-center">
                     <i class="bi bi-collection-play text-danger fs-2 mb-3"></i>
-                    <h5 class="card-title fw-semibold text-dark">Courses</h5>
+                    <h5 class="card-title fw-semibold">Courses</h5>
                     <h2 class="card-text text-danger fw-bold">{{ total_courses }}</h2>
                 </div>
             </div>
@@ -80,7 +80,7 @@
             <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
                 <div class="card-body text-center">
                     <i class="bi bi-person-workspace text-secondary fs-2 mb-3"></i>
-                    <h5 class="card-title fw-semibold text-dark">Instructors</h5>
+                    <h5 class="card-title fw-semibold">Instructors</h5>
                     <h2 class="card-text text-secondary fw-bold">{{ total_instructors }}</h2>
                 </div>
             </div>
@@ -91,7 +91,7 @@
     <!-- Partner-Specific Reports -->
     {% if request.user.is_partner %}
     <div class="mb-5">
-        <h4 class="fw-semibold text-dark mb-3">Partner Reports</h4>
+        <h4 class="fw-semibold mb-3">Partner Reports</h4>
         <div class="d-flex flex-wrap gap-3">
             <a href="{% url 'partner:partner_course_ratings' %}" class="btn btn-outline-info shadow-sm rounded-pill px-4 py-2 transition-all hover-scale">
                 <i class="bi bi-star-half me-2"></i> Rating Report
@@ -109,11 +109,11 @@
     <!-- Recently Created Courses Table -->
     <div class="card shadow-sm border-0">
         <div class="card-body">
-            <h4 class="fw-semibold text-dark mb-4">Recently Created Courses</h4>
+            <h4 class="fw-semibold mb-4">Recently Created Courses</h4>
             <div class="table-responsive">
                 {% if courses_created_today %}
                 <table class="table table-hover table-bordered align-middle">
-                    <thead class="table-light">
+                    <thead>
                         <tr>
                             <th>Courses</th>
                             <th>Date</th>
@@ -174,15 +174,4 @@
     </nav>
     {% endif %}
 </div>
-
-<!-- Custom CSS -->
-<style>
-.transition-all {
-    transition: all 0.3s ease;
-}
-.hover-scale:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
-}
-</style>
 {% endblock content %}

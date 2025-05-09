@@ -3,9 +3,9 @@
 
 {% block content %}
 <!-- Kontainer Utama -->
-
+<div class="container-fluid py-4">
     <!-- Judul -->
-    <h1 class="display-5 fw-bold text-danger mb-4">learner Area</h1>
+    <h1 class="display-5 fw-bold text-danger mb-4">Learner Area</h1>
 
     {% if request.user.is_superuser or request.user.is_partner %}
     <!-- Toolbar dan Pencarian untuk Superuser atau Partner -->
@@ -18,7 +18,6 @@
                     <a href="{% url 'partner:partner_enrollments'%}" class="btn btn-success btn-sm shadow-sm">
                         <i class="bi bi-arrow-left-right me-1"></i>Enrollment Direction
                     </a>
-                  
                 </div>
                 {% endif %}
 
@@ -26,7 +25,7 @@
                 <form method="get" class="d-flex flex-wrap align-items-center gap-2 w-100">
                     <div class="flex-grow-1">
                         <input class="form-control shadow-sm" type="search" value="{{ request.GET.search }}"
-                            name="search" placeholder="search by email" aria-label="Search Learner">
+                            name="search" placeholder="Search by email" aria-label="Search Learner">
                     </div>
                     <select name="status" class="form-select shadow-sm" style="max-width: 200px;">
                         <option value="">-- Status --</option>
@@ -38,7 +37,6 @@
                         <option value="male" {% if request.GET.gender == 'male' %}selected{% endif %}>Male</option>
                         <option value="female" {% if request.GET.gender == 'female' %}selected{% endif %}>Female</option>
                     </select>
-
                     <select name="sort_courses" class="form-select shadow-sm" style="max-width: 200px;">
                         <option value="">-- Sort by Courses --</option>
                         <option value="most" {% if request.GET.sort_courses == 'most' %}selected{% endif %}>Most Enrolled</option>
@@ -54,7 +52,6 @@
                             {% endfor %}
                         </select>
                     {% endif %}
-
                     <input type="date" class="form-control shadow-sm" name="date_from"
                         value="{{ request.GET.date_from }}" placeholder="Dari Tanggal" style="max-width: 200px;">
                     <input type="date" class="form-control shadow-sm" name="date_to"
@@ -72,7 +69,7 @@
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-bordered table-hover align-middle mb-0">
-                    <thead class="table-dark text-center">
+                    <thead class="text-center">
                         <tr>
                             <th scope="col">Username</th>
                             <th scope="col">Email</th>
@@ -85,10 +82,9 @@
                                 <th scope="col">Staff</th>
                                 <th scope="col">Partner</th>
                                 <th scope="col">Instructor</th>
-                                <th scope="col">subscription</th>
+                                <th scope="col">Subscription</th>
                             {% endif %}
                             <th scope="col">Status</th>
-
                         </tr>
                     </thead>
                     <tbody>
@@ -137,14 +133,14 @@
                             </td>
                             {% endif %}
                             <td>
-                                <span class="badge {% if user.is_active %}bg-primary{% else %}bg-warning text-dark{% endif %}">
+                                <span class="badge {% if user.is_active %}bg-primary{% else %}bg-warning{% endif %}">
                                     {{ user.is_active|yesno:"Active,Inactive" }}
                                 </span>
                             </td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="{% if request.user.is_superuser %}10{% else %}5{% endif %}" class="text-center text-muted py-3">
+                            <td colspan="{% if request.user.is_superuser %}12{% else %}7{% endif %}" class="text-center text-muted py-3">
                                 <i class="bi bi-info-circle me-2"></i>Tidak ada pengguna yang ditemukan.
                             </td>
                         </tr>
@@ -165,12 +161,12 @@
                 <ul class="pagination justify-content-center justify-content-md-end mb-0">
                     {% if users.has_previous %}
                     <li class="page-item">
-                        <a class="page-link" href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}" aria-label="First">
+                        <a class="page-link" href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}{% if request.GET.gender %}&gender={{ request.GET.gender }}{% endif %}{% if request.GET.sort_courses %}&sort_courses={{ request.GET.sort_courses }}{% endif %}{% if request.GET.partner %}&partner={{ request.GET.partner }}{% endif %}" aria-label="First">
                             <i class="bi bi-chevron-double-left"></i>
                         </a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ users.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}" aria-label="Previous">
+                        <a class="page-link" href="?page={{ users.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}{% if request.GET.gender %}&gender={{ request.GET.gender }}{% endif %}{% if request.GET.sort_courses %}&sort_courses={{ request.GET.sort_courses }}{% endif %}{% if request.GET.partner %}&partner={{ request.GET.partner }}{% endif %}" aria-label="Previous">
                             <i class="bi bi-chevron-left"></i>
                         </a>
                     </li>
@@ -185,18 +181,18 @@
 
                     {% for num in users.paginator.page_range %}
                     <li class="page-item {% if users.number == num %}active{% endif %}">
-                        <a class="page-link" href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}">{{ num }}</a>
+                        <a class="page-link" href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}{% if request.GET.gender %}&gender={{ request.GET.gender }}{% endif %}{% if request.GET.sort_courses %}&sort_courses={{ request.GET.sort_courses }}{% endif %}{% if request.GET.partner %}&partner={{ request.GET.partner }}{% endif %}">{{ num }}</a>
                     </li>
                     {% endfor %}
 
                     {% if users.has_next %}
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ users.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}" aria-label="Next">
+                        <a class="page-link" href="?page={{ users.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}{% if request.GET.gender %}&gender={{ request.GET.gender }}{% endif %}{% if request.GET.sort_courses %}&sort_courses={{ request.GET.sort_courses }}{% endif %}{% if request.GET.partner %}&partner={{ request.GET.partner }}{% endif %}" aria-label="Next">
                             <i class="bi bi-chevron-right"></i>
                         </a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ users.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}" aria-label="Last">
+                        <a class="page-link" href="?page={{ users.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}{% if request.GET.gender %}&gender={{ request.GET.gender }}{% endif %}{% if request.GET.sort_courses %}&sort_courses={{ request.GET.sort_courses }}{% endif %}{% if request.GET.partner %}&partner={{ request.GET.partner }}{% endif %}" aria-label="Last">
                             <i class="bi bi-chevron-double-right"></i>
                         </a>
                     </li>
@@ -213,5 +209,5 @@
         </div>
     </div>
     {% endif %}
-
+</div>
 {% endblock %}
