@@ -86,7 +86,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     #'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
-    'audit.middleware.CurrentUserMiddleware', #audit
+    'audit.middleware.CurrentUserMiddleware',
+    'audit.middleware.AuditLogMiddleware',
 ]
 
 ROOT_URLCONF = 'mysite.urls'
@@ -492,10 +493,17 @@ LOGGING = {
             'level': 'WARNING',
             'propagate': False,
         },
-        'your_app': {  # Ganti dengan nama aplikasi Anda
-            'handlers': ['file'],
-            'level': 'INFO',
-            'propagate': False,
+        'loggers': {
+            'audit.middleware': {
+                'handlers': ['console'],
+                'level': 'ERROR',
+                'propagate': False,
+            },
+            'audit.signals': {
+                'handlers': ['console'],
+                'level': 'ERROR',
+                'propagate': False,
+            },
         },
     },
 }

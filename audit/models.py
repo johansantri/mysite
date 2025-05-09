@@ -11,19 +11,26 @@ class AuditLog(models.Model):
         ('delete', 'Delete'),
     )
 
-    user = models.ForeignKey(CustomUser, null=True, blank=True, on_delete=models.SET_NULL, db_index=True)
-    action = models.CharField(max_length=10, choices=ACTIONS)
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.CharField(max_length=255)  # Can be int or UUID, hence CharField
+    user = models.ForeignKey(
+        CustomUser,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        db_index=True,
+    )
+    action = models.CharField(max_length=10, choices=ACTIONS, db_index=True)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, db_index=True)
+    object_id = models.CharField(max_length=255, db_index=True)
     content_object = GenericForeignKey('content_type', 'object_id')
-    timestamp = models.DateTimeField(default=now)
+    timestamp = models.DateTimeField(default=now, db_index=True)
     changes = models.JSONField(null=True, blank=True)
-
-    # Additional fields
     ip_address = models.GenericIPAddressField(null=True, blank=True)
-    device_info = models.CharField(max_length=255, null=True, blank=True)
-    user_agent = models.CharField(max_length=255, null=True, blank=True)
+    user_agent = models.CharField(max_length=500, null=True, blank=True)  # Diperpanjang
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['content_type', 'object_id']),
+        ]
 
     def __str__(self):
         return f"{self.user} {self.action} {self.content_type} {self.object_id} at {self.timestamp}"
-
