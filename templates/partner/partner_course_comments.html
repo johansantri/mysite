@@ -1,0 +1,74 @@
+{% extends 'home/tes.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block content %}
+
+<div class="container mt-4">
+    <h2>Komentar pada Kursus Anda</h2>
+    
+    {% for comment in comments %}
+        <div class="card shadow-sm mb-3">
+            <div class="card-body">
+                <!-- Menampilkan Nama Kursus yang Dikomentari -->
+                <p><strong>{{ comment.user.username }}</strong> pada <em>{{ comment.created_at|date:"d M Y H:i" }}</em></p>
+                <p><strong>Kursus: </strong>{{ comment.course.course_name }}</p> <!-- Menambahkan nama kursus -->
+                <p>{{ comment.content }}</p>
+
+                <!-- List balasan -->
+                {% with replies=comment.get_replies|slice:":3" %}
+                    {% for reply in replies %}
+                        <div class="card mt-3 ms-4">
+                            <div class="card-body">
+                                <p><strong>{{ reply.user.username }}</strong> balas:</p>
+                                <p>{{ reply.content }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    
+                    {% if comment.get_replies|length > 3 %}
+                        <button class="btn btn-link mt-2" data-bs-toggle="collapse" data-bs-target="#replies-{{ comment.id }}" aria-expanded="false" aria-controls="replies-{{ comment.id }}">
+                            Lihat lebih banyak balasan
+                        </button>
+                        <div class="collapse" id="replies-{{ comment.id }}">
+                            {% for reply in comment.get_replies|slice:"3:" %}
+                                <div class="card mt-3 ms-4">
+                                    <div class="card-body">
+                                        <p><strong>{{ reply.user.username }}</strong> balas:</p>
+                                        <p>{{ reply.content }}</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+
+                <!-- Form balasan -->
+                <form method="post" class="mt-3">
+                    {% csrf_token %}
+                    <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                    <div class="mb-3">
+                        <textarea name="content" rows="2" class="form-control" required placeholder="Tulis balasan..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm">Balas</button>
+                </form>
+            </div>
+        </div>
+    {% empty %}
+        <p>Tidak ada komentar untuk kursus Anda.</p>
+    {% endfor %}
+
+    <!-- Paginasi untuk Komentar -->
+    <div class="d-flex justify-content-center mt-4">
+        {% if comments.has_previous %}
+            <a href="?page=1" class="btn btn-outline-secondary btn-sm">Pertama</a>
+            <a href="?page={{ comments.previous_page_number }}" class="btn btn-outline-secondary btn-sm ms-2">Sebelumnya</a>
+        {% endif %}
+
+        {% if comments.has_next %}
+            <a href="?page={{ comments.next_page_number }}" class="btn btn-outline-secondary btn-sm ms-2">Selanjutnya</a>
+            <a href="?page={{ comments.paginator.num_pages }}" class="btn btn-outline-secondary btn-sm ms-2">Terakhir</a>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

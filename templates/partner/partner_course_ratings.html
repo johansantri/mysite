@@ -1,0 +1,54 @@
+{% extends 'home/tes.html' %}
+{% load custom_filters %}
+{% block content %}
+<h3><i class="bi bi-star-half"></i> Course Ratings Report</h3>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-light">
+        <tr>
+            <th>#</th>
+            <th>Course</th>
+            <th>Average</th>
+            <th>Count</th>
+            <th>Comments</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for course in course_rating_data %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td> <a href="{% url 'courses:course_lms_detail' id=course.id slug=course.slug %}" target="_blank">
+                    {{ course.course_name }}
+                </a>
+            </td>
+            <td>{{ course.avg_rating|floatformat:1|default:"-" }} ⭐</td>
+            <td>{{ course.rating_count }}</td>
+            <td>
+                {% with course_ratings_details|get_item:course.id as ratings %}
+                    {% if ratings %}
+                        <ul>
+                            {% for rating in ratings %}
+                                <li>
+                                    <strong>{{ rating.user.username }} ({{ rating.rating }}⭐):</strong> 
+                                    {% if rating.comment %}
+                                        "{{ rating.comment }}"
+                                    {% else %}
+                                        <em>No comment</em>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <em>No ratings yet</em>
+                    {% endif %}
+                {% endwith %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">No courses found or no ratings yet.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
