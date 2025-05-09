@@ -11,10 +11,11 @@ register = template.Library()
 def get_item(dictionary, key):
     """Filter untuk mengambil nilai dari dictionary berdasarkan key"""
     return dictionary.get(key)
+
 @register.filter
 def randomize(queryset):
-    # Konversi queryset ke list dan acak
-    items = list(queryset)
+    """Mengacak urutan elemen dalam list atau queryset"""
+    items = list(queryset)  # pastikan queryset diubah menjadi list
     random.shuffle(items)
     return items
 

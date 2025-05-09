@@ -1,6 +1,7 @@
 {% extends 'home/tes.html' %}
+{% load extra_filters %}
 {% load static %}
-{% load custom_filters %}
+
 {% block content %}
    <!-- Sidebar menu-->
    <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
@@ -147,8 +148,9 @@
                       {% csrf_token %}
                       <input type="text" name="honeypot" style="display:none;" />
                       <input type="hidden" name="start_time" id="start_time" value="{{ current_time }}">
-          
+                    
                       <ul style="list-style: none; padding-left: 0;">
+                      
                         {% for question in current_content.1.questions.all|randomize %}
                           <li class="question" style="margin-bottom: 30px;">
                             <div style="display: inline-block; margin-left: 10px; padding: 10px; background-color: #e9ecef; border-radius: 8px; font-size: 18px; color: #555;">

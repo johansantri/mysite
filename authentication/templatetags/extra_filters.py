@@ -1,9 +1,24 @@
 # myapp/templatetags/extra_filters.py
 
 from django import template
-
+import random
+from django.utils.translation import get_language_info
 register = template.Library()
-
+@register.filter
+def get_language_name(language_code):
+    """Mengambil nama bahasa berdasarkan kode bahasa"""
+    try:
+        return get_language_info(language_code)['name']
+    except KeyError:
+        return language_code  # Kembalikan kode bahasa jika tidak ditemukan
+    
+@register.filter
+def randomize(queryset):
+    """Mengacak urutan elemen dalam list atau queryset"""
+    items = list(queryset)  # pastikan queryset diubah menjadi list
+    random.shuffle(items)
+    return items
+   
 @register.filter
 def split(value, arg):
     """
