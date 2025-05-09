@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     'mathfilters',
     'blog',
     'licensing',
+    'audit',#audit user
  
     
 ]
@@ -85,6 +86,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     #'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    'audit.middleware.CurrentUserMiddleware', #audit
 ]
 
 ROOT_URLCONF = 'mysite.urls'

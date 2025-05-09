@@ -1,179 +1,413 @@
-WARNING 2025-05-09 06:46:22,238 log Forbidden (Referer checking failed - no Referer.): /
-ERROR 2025-05-09 06:48:37,159 log Internal Server Error: /microcredential/1/full-stack-web-developer/detail/
+ERROR 2025-05-09 09:59:33,147 log Internal Server Error: /login/
 Traceback (most recent call last):
   File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
     response = get_response(request)
   File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/TIM/mysite/courses/views.py", line 1484, in micro_detail
-    return render(request, 'micro/micro_detail.html', context)
+  File "/home/TIM/mysite/authentication/views.py", line 1080, in login_view
+    return render(request, 'authentication/login.html', {'form': form})
   File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
     content = loader.render_to_string(template_name, context, request, using=using)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 61, in render_to_string
-    template = get_template(template_name, using=using)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 15, in get_template
-    return engine.get_template(template_name)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 79, in get_template
-    return Template(self.engine.get_template(template_name), self)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 177, in get_template
-    template, origin = self.find_template(template_name)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 159, in find_template
-    template = loader.get_template(name, skip=skip)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/cached.py", line 57, in get_template
-    template = super().get_template(template_name, skip)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/base.py", line 28, in get_template
-    return Template(
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 154, in __init__
-    self.nodelist = self.compile_nodelist()
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 196, in compile_nodelist
-    nodelist = parser.parse()
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
-    raise self.error(token, e)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
-    compiled_result = compile_func(self, token)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 295, in do_extends
-    nodelist = parser.parse()
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
-    raise self.error(token, e)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
-    compiled_result = compile_func(self, token)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 234, in do_block
-    nodelist = parser.parse(("endblock",))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
-    raise self.error(token, e)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
-    compiled_result = compile_func(self, token)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 862, in do_for
-    nodelist_loop = parser.parse(
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
-    raise self.error(token, e)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
-    compiled_result = compile_func(self, token)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 861, in do_for
-    sequence = parser.compile_filter(bits[in_index + 1])
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 605, in compile_filter
-    return FilterExpression(token, self)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 701, in __init__
-    filter_func = parser.find_filter(filter_name)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 611, in find_filter
-    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
-django.template.exceptions.TemplateSyntaxError: Invalid filter: 'to'
-ERROR 2025-05-09 06:48:50,630 log Internal Server Error: /microcredential/1/full-stack-web-developer/detail/
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1073, in render
+    return render_value_in_context(output, context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1050, in render_value_in_context
+    value = str(value)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/forms/utils.py", line 55, in render
+    return mark_safe(renderer.render(template, context))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/forms/renderers.py", line 29, in render
+    return template.render(context, request=request).strip()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1067, in render
+    output = self.filter_expression.resolve(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 718, in resolve
+    obj = self.var.resolve(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 850, in resolve
+    value = self._resolve_lookup(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 917, in _resolve_lookup
+    current = current()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/forms/utils.py", line 63, in as_field_group
+    return self.render()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/forms/utils.py", line 55, in render
+    return mark_safe(renderer.render(template, context))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/forms/renderers.py", line 29, in render
+    return template.render(context, request=request).strip()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1008, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1073, in render
+    return render_value_in_context(output, context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1050, in render_value_in_context
+    value = str(value)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/forms/utils.py", line 79, in __str__
+    return self.as_widget()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/forms/boundfield.py", line 108, in as_widget
+    return widget.render(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/captcha/fields.py", line 128, in render
+    self.fetch_captcha_store(name, value, attrs, self.generator)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/captcha/fields.py", line 68, in fetch_captcha_store
+    key = CaptchaStore.generate_key(generator)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/captcha/models.py", line 60, in generate_key
+    store = cls.objects.create(challenge=challenge, response=response)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 679, in create
+    obj.save(force_insert=True, using=self.db)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/captcha/models.py", line 47, in save
+    super().save(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/base.py", line 892, in save
+    self.save_base(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/base.py", line 1013, in save_base
+    post_save.send(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/dispatch/dispatcher.py", line 189, in send
+    response = receiver(signal=self, sender=sender, **named)
+  File "/home/TIM/mysite/audit/signals.py", line 31, in log_create_or_update
+    AuditLog.objects.create(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 677, in create
+    obj = self.model(**kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/base.py", line 543, in __init__
+    _setattr(self, field.name, rel_obj)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/fields/related_descriptors.py", line 287, in __set__
+    raise ValueError(
+ValueError: Cannot assign "<SimpleLazyObject: <django.contrib.auth.models.AnonymousUser object at 0x7e3f26ff2620>>": "AuditLog.user" must be a "CustomUser" instance.
+INFO 2025-05-09 10:01:57,794 views Partner logo found: https://ini.icei.ac.id/media/logos/oxford.png
+INFO 2025-05-09 10:01:57,822 views QR code generated: https://ini.icei.ac.id/media/qrcodes/certificate_6deb37ba-c826-404a-8c61-81855cd48400.png
+INFO 2025-05-09 10:01:57,847 views Certificate 6deb37ba-c826-404a-8c61-81855cd48400 saved for user learn
+INFO 2025-05-09 10:01:57,854 __init__ Step 1 - Fetching and parsing HTML - HTML string
+INFO 2025-05-09 10:01:57,881 __init__ Step 2 - Fetching and parsing CSS - CSS string
+INFO 2025-05-09 10:01:57,886 __init__ Step 2 - Fetching and parsing CSS - https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@400;700&display=swap
+DEBUG 2025-05-09 10:01:59,538 __init__ Ignored `pointer-events: none` at 204:13, the property does not apply for the print media.
+INFO 2025-05-09 10:01:59,540 __init__ Step 3 - Applying CSS
+INFO 2025-05-09 10:01:59,547 document Step 4 - Creating formatting structure
+INFO 2025-05-09 10:01:59,738 page Step 5 - Creating layout - Page 1
+INFO 2025-05-09 10:01:59,859 page Step 5 - Creating layout - Page 2
+ERROR 2025-05-09 10:01:59,977 images Failed to load image at 'https://ini.icei.ac.id/static/images/signature.png': HTTPError: HTTP Error 404: Not Found
+DEBUG 2025-05-09 10:01:59,977 images Error while loading image:
 Traceback (most recent call last):
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
-    response = get_response(request)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/TIM/mysite/courses/views.py", line 1484, in micro_detail
-    return render(request, 'micro/micro_detail.html', context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
-    content = loader.render_to_string(template_name, context, request, using=using)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 61, in render_to_string
-    template = get_template(template_name, using=using)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 15, in get_template
-    return engine.get_template(template_name)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 79, in get_template
-    return Template(self.engine.get_template(template_name), self)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 177, in get_template
-    template, origin = self.find_template(template_name)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 159, in find_template
-    template = loader.get_template(name, skip=skip)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/cached.py", line 57, in get_template
-    template = super().get_template(template_name, skip)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/base.py", line 28, in get_template
-    return Template(
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 154, in __init__
-    self.nodelist = self.compile_nodelist()
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 196, in compile_nodelist
-    nodelist = parser.parse()
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
-    raise self.error(token, e)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
-    compiled_result = compile_func(self, token)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 295, in do_extends
-    nodelist = parser.parse()
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
-    raise self.error(token, e)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
-    compiled_result = compile_func(self, token)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 234, in do_block
-    nodelist = parser.parse(("endblock",))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
-    raise self.error(token, e)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
-    compiled_result = compile_func(self, token)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 862, in do_for
-    nodelist_loop = parser.parse(
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
-    raise self.error(token, e)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
-    compiled_result = compile_func(self, token)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 861, in do_for
-    sequence = parser.compile_filter(bits[in_index + 1])
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 605, in compile_filter
-    return FilterExpression(token, self)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 701, in __init__
-    filter_func = parser.find_filter(filter_name)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 611, in find_filter
-    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
-django.template.exceptions.TemplateSyntaxError: Invalid filter: 'to'
-ERROR 2025-05-09 06:51:26,107 log Internal Server Error: /microcredential/1/full-stack-web-developer/detail/
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/weasyprint/urls.py", line 258, in fetch
+    result = url_fetcher(url)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/weasyprint/urls.py", line 223, in default_url_fetcher
+    response = urlopen(
+  File "/usr/lib/python3.10/urllib/request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "/usr/lib/python3.10/urllib/request.py", line 525, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.10/urllib/request.py", line 634, in http_response
+    response = self.parent.error(
+  File "/usr/lib/python3.10/urllib/request.py", line 563, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python3.10/urllib/request.py", line 496, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.10/urllib/request.py", line 643, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 404: Not Found
+
+During handling of the above exception, another exception occurred:
+
 Traceback (most recent call last):
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
-    response = get_response(request)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/TIM/mysite/courses/views.py", line 1484, in micro_detail
-    return render(request, 'micro/micro_detail.html', context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
-    content = loader.render_to_string(template_name, context, request, using=using)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 61, in render_to_string
-    template = get_template(template_name, using=using)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 15, in get_template
-    return engine.get_template(template_name)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 79, in get_template
-    return Template(self.engine.get_template(template_name), self)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 177, in get_template
-    template, origin = self.find_template(template_name)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 159, in find_template
-    template = loader.get_template(name, skip=skip)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/cached.py", line 57, in get_template
-    template = super().get_template(template_name, skip)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/base.py", line 28, in get_template
-    return Template(
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 154, in __init__
-    self.nodelist = self.compile_nodelist()
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 196, in compile_nodelist
-    nodelist = parser.parse()
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
-    raise self.error(token, e)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
-    compiled_result = compile_func(self, token)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 295, in do_extends
-    nodelist = parser.parse()
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
-    raise self.error(token, e)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
-    compiled_result = compile_func(self, token)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 234, in do_block
-    nodelist = parser.parse(("endblock",))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
-    raise self.error(token, e)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
-    compiled_result = compile_func(self, token)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 862, in do_for
-    nodelist_loop = parser.parse(
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
-    raise self.error(token, e)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
-    compiled_result = compile_func(self, token)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 861, in do_for
-    sequence = parser.compile_filter(bits[in_index + 1])
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 605, in compile_filter
-    return FilterExpression(token, self)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 701, in __init__
-    filter_func = parser.find_filter(filter_name)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 611, in find_filter
-    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
-django.template.exceptions.TemplateSyntaxError: Invalid filter: 'to'
-WARNING 2025-05-09 08:45:04,146 log Forbidden (Referer checking failed - no Referer.): /
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/weasyprint/images.py", line 301, in get_image_from_uri
+    with fetch(url_fetcher, url) as result:
+  File "/usr/lib/python3.10/contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/weasyprint/urls.py", line 260, in fetch
+    raise URLFetchingError(f'{type(exception).__name__}: {exception}')
+weasyprint.urls.URLFetchingError: HTTPError: HTTP Error 404: Not Found
+INFO 2025-05-09 10:01:59,984 __init__ Step 6 - Creating PDF
+INFO 2025-05-09 10:02:00,044 __init__ Step 7 - Adding PDF metadata
+DEBUG 2025-05-09 10:02:00,047 ttFont Reading 'maxp' table from disk
+DEBUG 2025-05-09 10:02:00,048 ttFont Decompiling 'maxp' table
+DEBUG 2025-05-09 10:02:00,048 loggingTools Took 0.001s to load 'maxp'
+DEBUG 2025-05-09 10:02:00,048 loggingTools Took 0.000s to prune 'maxp'
+INFO 2025-05-09 10:02:00,048 __init__ maxp pruned
+DEBUG 2025-05-09 10:02:00,052 ttFont Reading 'cmap' table from disk
+DEBUG 2025-05-09 10:02:00,052 ttFont Decompiling 'cmap' table
+DEBUG 2025-05-09 10:02:00,053 ttFont Reading 'post' table from disk
+DEBUG 2025-05-09 10:02:00,053 ttFont Decompiling 'post' table
+DEBUG 2025-05-09 10:02:00,054 loggingTools Took 0.002s to load 'cmap'
+DEBUG 2025-05-09 10:02:00,055 loggingTools Took 0.000s to prune 'cmap'
+INFO 2025-05-09 10:02:00,055 __init__ cmap pruned
+INFO 2025-05-09 10:02:00,055 __init__ prep dropped
+DEBUG 2025-05-09 10:02:00,055 loggingTools Took 0.000s to load 'post'
+DEBUG 2025-05-09 10:02:00,056 loggingTools Took 0.000s to prune 'post'
+INFO 2025-05-09 10:02:00,056 __init__ post pruned
+INFO 2025-05-09 10:02:00,057 __init__ GPOS dropped
+INFO 2025-05-09 10:02:00,057 __init__ GSUB dropped
+DEBUG 2025-05-09 10:02:00,058 ttFont Reading 'glyf' table from disk
+DEBUG 2025-05-09 10:02:00,058 ttFont Decompiling 'glyf' table
+DEBUG 2025-05-09 10:02:00,058 ttFont Reading 'loca' table from disk
+DEBUG 2025-05-09 10:02:00,058 ttFont Decompiling 'loca' table
+DEBUG 2025-05-09 10:02:00,058 ttFont Reading 'head' table from disk
+DEBUG 2025-05-09 10:02:00,059 ttFont Decompiling 'head' table
+DEBUG 2025-05-09 10:02:00,060 loggingTools Took 0.003s to load 'glyf'
+DEBUG 2025-05-09 10:02:00,061 loggingTools Took 0.000s to prune 'glyf'
+INFO 2025-05-09 10:02:00,061 __init__ glyf pruned
+DEBUG 2025-05-09 10:02:00,061 loggingTools Took 0.000s to close glyph list over 'cmap'
+INFO 2025-05-09 10:02:00,061 __init__ Added gid0 to subset
+INFO 2025-05-09 10:02:00,061 __init__ Closing glyph list over 'glyf': 28 glyphs before
+INFO 2025-05-09 10:02:00,062 __init__ Glyph names: ['.notdef', 'A', 'C', 'E', 'F', 'I', 'L', 'M', 'N', 'O', 'P', 'R', 'T', 'a', 'c', 'd', 'e', 'f', 'fi', 'h', 'i', 'm', 'n', 'o', 'r', 'space', 't', 'v']
+INFO 2025-05-09 10:02:00,062 __init__ Glyph IDs:   [0, 1, 26, 36, 56, 69, 87, 93, 94, 100, 125, 128, 140, 190, 215, 221, 225, 246, 255, 259, 286, 287, 294, 322, 334, 359, 387, 633]
+INFO 2025-05-09 10:02:00,062 __init__ Closed glyph list over 'glyf': 30 glyphs after
+INFO 2025-05-09 10:02:00,063 __init__ Glyph names: ['.notdef', 'A', 'C', 'E', 'F', 'I', 'L', 'M', 'N', 'O', 'P', 'R', 'T', 'a', 'c', 'd', 'dotlessi', 'e', 'f', 'fi', 'h', 'i', 'm', 'n', 'o', 'r', 'space', 't', 'uni0307', 'v']
+INFO 2025-05-09 10:02:00,063 __init__ Glyph IDs:   [0, 1, 26, 36, 56, 69, 87, 93, 94, 100, 125, 128, 140, 190, 215, 221, 225, 246, 255, 259, 260, 286, 287, 294, 322, 334, 359, 387, 633, 700]
+DEBUG 2025-05-09 10:02:00,063 loggingTools Took 0.002s to close glyph list over 'glyf'
+INFO 2025-05-09 10:02:00,064 __init__ Retaining 30 glyphs
+INFO 2025-05-09 10:02:00,065 __init__ head subsetting not needed
+INFO 2025-05-09 10:02:00,065 __init__ hhea subsetting not needed
+INFO 2025-05-09 10:02:00,065 __init__ maxp subsetting not needed
+INFO 2025-05-09 10:02:00,065 __init__ OS/2 subsetting not needed
+DEBUG 2025-05-09 10:02:00,066 ttFont Reading 'hmtx' table from disk
+DEBUG 2025-05-09 10:02:00,066 ttFont Decompiling 'hmtx' table
+DEBUG 2025-05-09 10:02:00,066 ttFont Reading 'hhea' table from disk
+DEBUG 2025-05-09 10:02:00,066 ttFont Decompiling 'hhea' table
+DEBUG 2025-05-09 10:02:00,067 loggingTools Took 0.002s to subset 'hmtx'
+INFO 2025-05-09 10:02:00,067 __init__ hmtx subsetted
+DEBUG 2025-05-09 10:02:00,068 loggingTools Took 0.000s to subset 'cmap'
+INFO 2025-05-09 10:02:00,068 __init__ cmap subsetted
+INFO 2025-05-09 10:02:00,068 __init__ loca subsetting not needed
+DEBUG 2025-05-09 10:02:00,068 loggingTools Took 0.000s to subset 'post'
+INFO 2025-05-09 10:02:00,069 __init__ post subsetted
+INFO 2025-05-09 10:02:00,069 __init__ gasp subsetting not needed
+INFO 2025-05-09 10:02:00,069 __init__ STAT subsetting not needed
+DEBUG 2025-05-09 10:02:00,069 ttFont Reading 'GDEF' table from disk
+DEBUG 2025-05-09 10:02:00,070 ttFont Decompiling 'GDEF' table
+DEBUG 2025-05-09 10:02:00,071 loggingTools Took 0.001s to subset 'GDEF'
+INFO 2025-05-09 10:02:00,071 __init__ GDEF subsetted
+INFO 2025-05-09 10:02:00,071 __init__ name subsetting not needed
+DEBUG 2025-05-09 10:02:00,072 loggingTools Took 0.001s to subset 'glyf'
+INFO 2025-05-09 10:02:00,072 __init__ glyf subsetted
+DEBUG 2025-05-09 10:02:00,072 loggingTools Took 0.000s to subset GlyphOrder
+DEBUG 2025-05-09 10:02:00,072 loggingTools Took 0.000s to prune 'head'
+INFO 2025-05-09 10:02:00,073 __init__ head pruned
+DEBUG 2025-05-09 10:02:00,073 ttFont Reading 'OS/2' table from disk
+DEBUG 2025-05-09 10:02:00,073 ttFont Decompiling 'OS/2' table
+INFO 2025-05-09 10:02:00,074 __init__ OS/2 Unicode ranges pruned: [0, 62]
+INFO 2025-05-09 10:02:00,074 __init__ OS/2 CodePage ranges pruned: [0]
+DEBUG 2025-05-09 10:02:00,076 loggingTools Took 0.001s to prune 'glyf'
+INFO 2025-05-09 10:02:00,076 __init__ glyf pruned
+DEBUG 2025-05-09 10:02:00,076 loggingTools Took 0.000s to prune 'GDEF'
+INFO 2025-05-09 10:02:00,077 __init__ GDEF pruned
+DEBUG 2025-05-09 10:02:00,077 ttFont Reading 'name' table from disk
+DEBUG 2025-05-09 10:02:00,077 ttFont Decompiling 'name' table
+DEBUG 2025-05-09 10:02:00,078 ttFont Reading 'gasp' table from disk
+DEBUG 2025-05-09 10:02:00,078 ttFont Decompiling 'gasp' table
+DEBUG 2025-05-09 10:02:00,078 ttFont Reading 'STAT' table from disk
+DEBUG 2025-05-09 10:02:00,078 ttFont Decompiling 'STAT' table
+DEBUG 2025-05-09 10:02:00,079 loggingTools Took 0.002s to prune 'name'
+INFO 2025-05-09 10:02:00,079 __init__ name pruned
+DEBUG 2025-05-09 10:02:00,096 ttFont Reading 'maxp' table from disk
+DEBUG 2025-05-09 10:02:00,096 ttFont Decompiling 'maxp' table
+DEBUG 2025-05-09 10:02:00,096 loggingTools Took 0.000s to load 'maxp'
+DEBUG 2025-05-09 10:02:00,096 loggingTools Took 0.000s to prune 'maxp'
+INFO 2025-05-09 10:02:00,097 __init__ maxp pruned
+DEBUG 2025-05-09 10:02:00,097 ttFont Reading 'cmap' table from disk
+DEBUG 2025-05-09 10:02:00,097 ttFont Decompiling 'cmap' table
+DEBUG 2025-05-09 10:02:00,098 ttFont Reading 'post' table from disk
+DEBUG 2025-05-09 10:02:00,099 ttFont Decompiling 'post' table
+DEBUG 2025-05-09 10:02:00,109 loggingTools Took 0.012s to load 'cmap'
+DEBUG 2025-05-09 10:02:00,109 loggingTools Took 0.000s to prune 'cmap'
+INFO 2025-05-09 10:02:00,109 __init__ cmap pruned
+INFO 2025-05-09 10:02:00,109 __init__ prep dropped
+DEBUG 2025-05-09 10:02:00,110 loggingTools Took 0.000s to load 'post'
+DEBUG 2025-05-09 10:02:00,110 loggingTools Took 0.000s to prune 'post'
+INFO 2025-05-09 10:02:00,110 __init__ post pruned
+INFO 2025-05-09 10:02:00,110 __init__ GPOS dropped
+INFO 2025-05-09 10:02:00,111 __init__ GSUB dropped
+DEBUG 2025-05-09 10:02:00,111 ttFont Reading 'glyf' table from disk
+DEBUG 2025-05-09 10:02:00,111 ttFont Decompiling 'glyf' table
+DEBUG 2025-05-09 10:02:00,111 ttFont Reading 'loca' table from disk
+DEBUG 2025-05-09 10:02:00,112 ttFont Decompiling 'loca' table
+DEBUG 2025-05-09 10:02:00,112 ttFont Reading 'head' table from disk
+DEBUG 2025-05-09 10:02:00,112 ttFont Decompiling 'head' table
+DEBUG 2025-05-09 10:02:00,117 loggingTools Took 0.006s to load 'glyf'
+DEBUG 2025-05-09 10:02:00,118 loggingTools Took 0.000s to prune 'glyf'
+INFO 2025-05-09 10:02:00,118 __init__ glyf pruned
+DEBUG 2025-05-09 10:02:00,119 loggingTools Took 0.000s to close glyph list over 'cmap'
+INFO 2025-05-09 10:02:00,119 __init__ Added gid0 to subset
+INFO 2025-05-09 10:02:00,119 __init__ Closing glyph list over 'glyf': 53 glyphs before
+INFO 2025-05-09 10:02:00,119 __init__ Glyph names: ['.notdef', 'A', 'C', 'D', 'E', 'F', 'I', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'a', 'ampersand', 'b', 'c', 'colon', 'd', 'e', 'eight', 'f', 'five', 'g', 'h', 'hyphen.case', 'i', 'j', 'k', 'l', 'm', 'n', 'nine', 'o', 'one', 'p', 'period', 'r', 's', 'seven', 'six', 'space', 't', 'three', 'two', 'u', 'v', 'w', 'x', 'y', 'z', 'zero']
+INFO 2025-05-09 10:02:00,120 __init__ Glyph IDs:   [0, 2, 73, 84, 95, 137, 197, 321, 375, 384, 397, 411, 424, 456, 507, 578, 586, 597, 614, 647, 658, 670, 689, 719, 727, 736, 766, 773, 790, 843, 852, 871, 888, 913, 978, 982, 991, 996, 1020, 1339, 1340, 1341, 1343, 1345, 1347, 1348, 1349, 1350, 1423, 1469, 1500, 1503, 1747]
+INFO 2025-05-09 10:02:00,120 __init__ Closed glyph list over 'glyf': 57 glyphs after
+INFO 2025-05-09 10:02:00,121 __init__ Glyph names: ['.notdef', 'A', 'C', 'D', 'E', 'F', 'I', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'a', 'ampersand', 'b', 'c', 'colon', 'd', 'dotlessi', 'e', 'eight', 'f', 'five', 'g', 'h', 'hyphen', 'hyphen.case', 'i', 'j', 'k', 'l', 'm', 'n', 'nine', 'o', 'one', 'p', 'period', 'r', 's', 'seven', 'six', 'space', 't', 'three', 'two', 'u', 'uni0237', 'uni0307', 'v', 'w', 'x', 'y', 'z', 'zero']
+INFO 2025-05-09 10:02:00,121 __init__ Glyph IDs:   [0, 2, 73, 84, 95, 137, 197, 321, 375, 384, 397, 411, 424, 456, 507, 578, 586, 597, 614, 647, 658, 670, 689, 690, 711, 719, 727, 736, 766, 773, 790, 843, 852, 871, 888, 913, 978, 982, 991, 996, 1020, 1339, 1340, 1341, 1343, 1345, 1347, 1348, 1349, 1350, 1423, 1457, 1469, 1500, 1503, 1747, 2645]
+DEBUG 2025-05-09 10:02:00,121 loggingTools Took 0.002s to close glyph list over 'glyf'
+INFO 2025-05-09 10:02:00,124 __init__ Retaining 57 glyphs
+INFO 2025-05-09 10:02:00,125 __init__ head subsetting not needed
+INFO 2025-05-09 10:02:00,125 __init__ hhea subsetting not needed
+INFO 2025-05-09 10:02:00,125 __init__ maxp subsetting not needed
+INFO 2025-05-09 10:02:00,125 __init__ OS/2 subsetting not needed
+DEBUG 2025-05-09 10:02:00,125 ttFont Reading 'hmtx' table from disk
+DEBUG 2025-05-09 10:02:00,126 ttFont Decompiling 'hmtx' table
+DEBUG 2025-05-09 10:02:00,126 ttFont Reading 'hhea' table from disk
+DEBUG 2025-05-09 10:02:00,126 ttFont Decompiling 'hhea' table
+DEBUG 2025-05-09 10:02:00,129 loggingTools Took 0.003s to subset 'hmtx'
+INFO 2025-05-09 10:02:00,129 __init__ hmtx subsetted
+DEBUG 2025-05-09 10:02:00,131 loggingTools Took 0.002s to subset 'cmap'
+INFO 2025-05-09 10:02:00,131 __init__ cmap subsetted
+INFO 2025-05-09 10:02:00,131 __init__ loca subsetting not needed
+DEBUG 2025-05-09 10:02:00,131 loggingTools Took 0.000s to subset 'post'
+INFO 2025-05-09 10:02:00,132 __init__ post subsetted
+INFO 2025-05-09 10:02:00,132 __init__ gasp subsetting not needed
+INFO 2025-05-09 10:02:00,132 __init__ STAT subsetting not needed
+DEBUG 2025-05-09 10:02:00,132 ttFont Reading 'GDEF' table from disk
+DEBUG 2025-05-09 10:02:00,132 ttFont Decompiling 'GDEF' table
+DEBUG 2025-05-09 10:02:00,135 loggingTools Took 0.002s to subset 'GDEF'
+INFO 2025-05-09 10:02:00,135 __init__ GDEF subsetted
+INFO 2025-05-09 10:02:00,135 __init__ name subsetting not needed
+DEBUG 2025-05-09 10:02:00,138 loggingTools Took 0.003s to subset 'glyf'
+INFO 2025-05-09 10:02:00,138 __init__ glyf subsetted
+DEBUG 2025-05-09 10:02:00,138 loggingTools Took 0.000s to subset GlyphOrder
+DEBUG 2025-05-09 10:02:00,139 loggingTools Took 0.000s to prune 'head'
+INFO 2025-05-09 10:02:00,139 __init__ head pruned
+DEBUG 2025-05-09 10:02:00,139 ttFont Reading 'OS/2' table from disk
+DEBUG 2025-05-09 10:02:00,139 ttFont Decompiling 'OS/2' table
+INFO 2025-05-09 10:02:00,140 __init__ OS/2 Unicode ranges pruned: [0, 60]
+INFO 2025-05-09 10:02:00,141 __init__ OS/2 CodePage ranges pruned: [0]
+DEBUG 2025-05-09 10:02:00,142 loggingTools Took 0.001s to prune 'glyf'
+INFO 2025-05-09 10:02:00,142 __init__ glyf pruned
+DEBUG 2025-05-09 10:02:00,143 loggingTools Took 0.000s to prune 'GDEF'
+INFO 2025-05-09 10:02:00,143 __init__ GDEF pruned
+DEBUG 2025-05-09 10:02:00,143 ttFont Reading 'name' table from disk
+DEBUG 2025-05-09 10:02:00,143 ttFont Decompiling 'name' table
+DEBUG 2025-05-09 10:02:00,144 ttFont Reading 'gasp' table from disk
+DEBUG 2025-05-09 10:02:00,144 ttFont Decompiling 'gasp' table
+DEBUG 2025-05-09 10:02:00,144 ttFont Reading 'STAT' table from disk
+DEBUG 2025-05-09 10:02:00,144 ttFont Decompiling 'STAT' table
+DEBUG 2025-05-09 10:02:00,145 loggingTools Took 0.002s to prune 'name'
+INFO 2025-05-09 10:02:00,145 __init__ name pruned
+DEBUG 2025-05-09 10:02:00,256 ttFont Reading 'maxp' table from disk
+DEBUG 2025-05-09 10:02:00,256 ttFont Decompiling 'maxp' table
+DEBUG 2025-05-09 10:02:00,257 loggingTools Took 0.001s to load 'maxp'
+DEBUG 2025-05-09 10:02:00,257 loggingTools Took 0.000s to prune 'maxp'
+INFO 2025-05-09 10:02:00,257 __init__ maxp pruned
+DEBUG 2025-05-09 10:02:00,257 ttFont Reading 'cmap' table from disk
+DEBUG 2025-05-09 10:02:00,257 ttFont Decompiling 'cmap' table
+DEBUG 2025-05-09 10:02:00,259 ttFont Reading 'post' table from disk
+DEBUG 2025-05-09 10:02:00,259 ttFont Decompiling 'post' table
+DEBUG 2025-05-09 10:02:00,267 loggingTools Took 0.009s to load 'cmap'
+DEBUG 2025-05-09 10:02:00,267 loggingTools Took 0.000s to prune 'cmap'
+INFO 2025-05-09 10:02:00,267 __init__ cmap pruned
+INFO 2025-05-09 10:02:00,267 __init__ prep dropped
+DEBUG 2025-05-09 10:02:00,267 loggingTools Took 0.000s to load 'post'
+DEBUG 2025-05-09 10:02:00,268 loggingTools Took 0.000s to prune 'post'
+INFO 2025-05-09 10:02:00,268 __init__ post pruned
+INFO 2025-05-09 10:02:00,268 __init__ GPOS dropped
+INFO 2025-05-09 10:02:00,268 __init__ GSUB dropped
+DEBUG 2025-05-09 10:02:00,268 ttFont Reading 'glyf' table from disk
+DEBUG 2025-05-09 10:02:00,269 ttFont Decompiling 'glyf' table
+DEBUG 2025-05-09 10:02:00,269 ttFont Reading 'loca' table from disk
+DEBUG 2025-05-09 10:02:00,269 ttFont Decompiling 'loca' table
+DEBUG 2025-05-09 10:02:00,269 ttFont Reading 'head' table from disk
+DEBUG 2025-05-09 10:02:00,269 ttFont Decompiling 'head' table
+DEBUG 2025-05-09 10:02:00,274 loggingTools Took 0.005s to load 'glyf'
+DEBUG 2025-05-09 10:02:00,274 loggingTools Took 0.000s to prune 'glyf'
+INFO 2025-05-09 10:02:00,274 __init__ glyf pruned
+DEBUG 2025-05-09 10:02:00,275 loggingTools Took 0.000s to close glyph list over 'cmap'
+INFO 2025-05-09 10:02:00,275 __init__ Added gid0 to subset
+INFO 2025-05-09 10:02:00,275 __init__ Closing glyph list over 'glyf': 49 glyphs before
+INFO 2025-05-09 10:02:00,275 __init__ Glyph names: ['.notdef', 'A', 'B', 'C', 'D', 'E', 'H', 'I', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'a', 'at', 'b', 'c', 'd', 'e', 'eight', 'f', 'g', 'h', 'i', 'j', 'l', 'm', 'n', 'o', 'p', 'period', 'r', 's', 'six', 'space', 't', 'three', 'u', 'v', 'w', 'x', 'y', 'zero']
+INFO 2025-05-09 10:02:00,276 __init__ Glyph IDs:   [0, 2, 65, 73, 84, 95, 161, 197, 292, 300, 321, 375, 384, 397, 411, 424, 456, 459, 466, 507, 578, 586, 597, 614, 647, 658, 670, 689, 719, 736, 766, 773, 790, 843, 852, 871, 888, 913, 978, 982, 991, 996, 1339, 1343, 1347, 1349, 1443, 1500, 1747]
+INFO 2025-05-09 10:02:00,276 __init__ Closed glyph list over 'glyf': 52 glyphs after
+INFO 2025-05-09 10:02:00,277 __init__ Glyph names: ['.notdef', 'A', 'B', 'C', 'D', 'E', 'H', 'I', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'a', 'at', 'b', 'c', 'd', 'dotlessi', 'e', 'eight', 'f', 'g', 'h', 'i', 'j', 'l', 'm', 'n', 'o', 'p', 'period', 'r', 's', 'six', 'space', 't', 'three', 'u', 'uni0237', 'uni0307', 'v', 'w', 'x', 'y', 'zero']
+INFO 2025-05-09 10:02:00,277 __init__ Glyph IDs:   [0, 2, 65, 73, 84, 95, 161, 197, 292, 300, 321, 375, 384, 397, 411, 424, 456, 459, 466, 507, 578, 586, 597, 614, 647, 658, 670, 689, 690, 711, 719, 736, 766, 773, 790, 843, 852, 871, 888, 913, 978, 982, 991, 996, 1339, 1343, 1347, 1349, 1443, 1500, 1747, 2645]
+DEBUG 2025-05-09 10:02:00,277 loggingTools Took 0.002s to close glyph list over 'glyf'
+INFO 2025-05-09 10:02:00,280 __init__ Retaining 52 glyphs
+INFO 2025-05-09 10:02:00,280 __init__ head subsetting not needed
+INFO 2025-05-09 10:02:00,280 __init__ hhea subsetting not needed
+INFO 2025-05-09 10:02:00,280 __init__ maxp subsetting not needed
+INFO 2025-05-09 10:02:00,281 __init__ OS/2 subsetting not needed
+DEBUG 2025-05-09 10:02:00,281 ttFont Reading 'hmtx' table from disk
+DEBUG 2025-05-09 10:02:00,281 ttFont Decompiling 'hmtx' table
+DEBUG 2025-05-09 10:02:00,281 ttFont Reading 'hhea' table from disk
+DEBUG 2025-05-09 10:02:00,281 ttFont Decompiling 'hhea' table
+DEBUG 2025-05-09 10:02:00,284 loggingTools Took 0.003s to subset 'hmtx'
+INFO 2025-05-09 10:02:00,284 __init__ hmtx subsetted
+DEBUG 2025-05-09 10:02:00,286 loggingTools Took 0.002s to subset 'cmap'
+INFO 2025-05-09 10:02:00,286 __init__ cmap subsetted
+INFO 2025-05-09 10:02:00,287 __init__ loca subsetting not needed
+DEBUG 2025-05-09 10:02:00,287 loggingTools Took 0.000s to subset 'post'
+INFO 2025-05-09 10:02:00,287 __init__ post subsetted
+INFO 2025-05-09 10:02:00,287 __init__ gasp subsetting not needed
+INFO 2025-05-09 10:02:00,287 __init__ STAT subsetting not needed
+DEBUG 2025-05-09 10:02:00,288 ttFont Reading 'GDEF' table from disk
+DEBUG 2025-05-09 10:02:00,288 ttFont Decompiling 'GDEF' table
+DEBUG 2025-05-09 10:02:00,290 loggingTools Took 0.002s to subset 'GDEF'
+INFO 2025-05-09 10:02:00,290 __init__ GDEF subsetted
+INFO 2025-05-09 10:02:00,290 __init__ name subsetting not needed
+DEBUG 2025-05-09 10:02:00,293 loggingTools Took 0.002s to subset 'glyf'
+INFO 2025-05-09 10:02:00,293 __init__ glyf subsetted
+DEBUG 2025-05-09 10:02:00,293 loggingTools Took 0.000s to subset GlyphOrder
+DEBUG 2025-05-09 10:02:00,294 loggingTools Took 0.000s to prune 'head'
+INFO 2025-05-09 10:02:00,294 __init__ head pruned
+DEBUG 2025-05-09 10:02:00,294 ttFont Reading 'OS/2' table from disk
+DEBUG 2025-05-09 10:02:00,294 ttFont Decompiling 'OS/2' table
+INFO 2025-05-09 10:02:00,295 __init__ OS/2 Unicode ranges pruned: [0]
+INFO 2025-05-09 10:02:00,295 __init__ OS/2 CodePage ranges pruned: [0]
+DEBUG 2025-05-09 10:02:00,297 loggingTools Took 0.001s to prune 'glyf'
+INFO 2025-05-09 10:02:00,297 __init__ glyf pruned
+DEBUG 2025-05-09 10:02:00,297 loggingTools Took 0.000s to prune 'GDEF'
+INFO 2025-05-09 10:02:00,297 __init__ GDEF pruned
+DEBUG 2025-05-09 10:02:00,298 ttFont Reading 'name' table from disk
+DEBUG 2025-05-09 10:02:00,298 ttFont Decompiling 'name' table
+DEBUG 2025-05-09 10:02:00,298 ttFont Reading 'gasp' table from disk
+DEBUG 2025-05-09 10:02:00,298 ttFont Decompiling 'gasp' table
+DEBUG 2025-05-09 10:02:00,299 ttFont Reading 'STAT' table from disk
+DEBUG 2025-05-09 10:02:00,299 ttFont Decompiling 'STAT' table
+DEBUG 2025-05-09 10:02:00,300 loggingTools Took 0.002s to prune 'name'
+INFO 2025-05-09 10:02:00,300 __init__ name pruned
