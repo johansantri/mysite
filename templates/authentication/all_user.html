@@ -78,6 +78,7 @@
                                 <th scope="col">Staff</th>
                                 <th scope="col">Partner</th>
                                 <th scope="col">Instructor</th>
+                                <th scope="col">subscription</th>
                             {% endif %}
                             <th scope="col">Status</th>
 
@@ -120,6 +121,11 @@
                             <td>
                                 <span class="badge {% if user.is_instructor %}bg-success{% else %}bg-danger{% endif %}">
                                     <i class="bi {% if user.is_instructor %}bi-check{% else %}bi-x{% endif %}"></i>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge {% if user.is_subscription %}bg-success{% else %}bg-danger{% endif %}">
+                                    <i class="bi {% if user.is_subscription %}bi-check{% else %}bi-x{% endif %}"></i>
                                 </span>
                             </td>
                             {% endif %}
