@@ -28,13 +28,26 @@
                 <form method="get" class="d-flex flex-wrap align-items-center gap-2 w-100">
                     <div class="flex-grow-1">
                         <input class="form-control shadow-sm" type="search" value="{{ request.GET.search }}"
-                            name="search" placeholder="Cari Pengguna" aria-label="Search Learner">
+                            name="search" placeholder="search by email" aria-label="Search Learner">
                     </div>
                     <select name="status" class="form-select shadow-sm" style="max-width: 200px;">
-                        <option value="">-- Pilih Status --</option>
+                        <option value="">-- Status --</option>
                         <option value="active" {% if request.GET.status == 'active' %}selected{% endif %}>Active</option>
                         <option value="inactive" {% if request.GET.status == 'inactive' %}selected{% endif %}>Inactive</option>
                     </select>
+                    <select name="gender" class="form-select shadow-sm" style="max-width: 200px;">
+                        <option value="">-- Gender --</option>
+                        <option value="male" {% if request.GET.gender == 'male' %}selected{% endif %}>Male</option>
+                        <option value="female" {% if request.GET.gender == 'female' %}selected{% endif %}>Female</option>
+                    </select>
+
+                    <select name="sort_courses" class="form-select shadow-sm" style="max-width: 200px;">
+                        <option value="">-- Sort by Courses --</option>
+                        <option value="most" {% if request.GET.sort_courses == 'most' %}selected{% endif %}>Most Enrolled</option>
+                        <option value="least" {% if request.GET.sort_courses == 'least' %}selected{% endif %}>Least Enrolled</option>
+                    </select>
+
+
                     <input type="date" class="form-control shadow-sm" name="date_from"
                         value="{{ request.GET.date_from }}" placeholder="Dari Tanggal" style="max-width: 200px;">
                     <input type="date" class="form-control shadow-sm" name="date_to"
@@ -56,16 +69,18 @@
                         <tr>
                             <th scope="col">Username</th>
                             <th scope="col">Email</th>
-                            <th scope="col">Organisasi</th>
-                            <th scope="col">Total</th>
-                            <th scope="col">Bergabung & Login Terakhir</th>
+                            <th scope="col">Gender</th>
+                            <th scope="col">Organization</th>
+                            <th scope="col">Enrolled Courses</th>
+                            <th scope="col">Joined & Last Login</th>
                             {% if request.user.is_superuser %}
-                            <th scope="col">Admin</th>
-                            <th scope="col">Staff</th>
-                            <th scope="col">Partner</th>
-                            <th scope="col">Instruktur</th>
+                                <th scope="col">Admin</th>
+                                <th scope="col">Staff</th>
+                                <th scope="col">Partner</th>
+                                <th scope="col">Instructor</th>
                             {% endif %}
                             <th scope="col">Status</th>
+
                         </tr>
                     </thead>
                     <tbody>
@@ -77,6 +92,7 @@
                                 </a>
                             </td>
                             <td>{{ user.email|default:"-" }}</td>
+                            <td>{{ user.gender|default:"-" }}</td>
                             <td>{{ user.university|default:"-" }}</td>
                             <td>{{ user.total_courses|default:0 }}</td>
                             <td>

@@ -361,6 +361,18 @@ def all_user(request):
     if date_to:
         users = users.filter(date_joined__lte=date_to)
 
+    gender_filter = request.GET.get('gender')  # atau request.POST.get() jika pakai POST
+    if gender_filter:
+        users = users.filter(gender=gender_filter)
+
+
+    sort_courses = request.GET.get('sort_courses')
+    users = users.annotate(total_courses=Count('enrollments'))
+
+    if sort_courses == 'most':
+        users = users.order_by('-total_courses')
+    elif sort_courses == 'least':
+        users = users.order_by('total_courses')
     # Annotate the total courses enrolled by each user
     users = users.annotate(total_courses=Count('enrollments'))
 
