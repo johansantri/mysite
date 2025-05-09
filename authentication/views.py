@@ -562,6 +562,7 @@ def dasbord(request):
 
     return render(request, 'home/dasbord.html', context)
 
+
 @login_required
 @ratelimit(key='ip', rate='100/h')
 def dashbord(request):
