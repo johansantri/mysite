@@ -4,13 +4,8 @@ from django.contrib.contenttypes.models import ContentType
 from .models import AuditLog
 from .middleware import get_current_user
 from decimal import Decimal
-import uuid
 from authentication.models import CustomUser
 from django.db.models import Q
-from django.core.paginator import Paginator
-from django.utils import timezone
-from django.contrib import messages
-from django.shortcuts import redirect, render
 
 def convert_decimal_to_float(obj):
     if isinstance(obj, Decimal):
@@ -45,6 +40,16 @@ def log_create_or_update(sender, instance, created, **kwargs):
 
     content_type = ContentType.objects.get_for_model(sender)
 
+    # Pastikan request ada dalam kwargs dan memiliki attribute audit_log_info
+    request = kwargs.get('request')
+    if request and hasattr(request, 'audit_log_info'):
+        ip_address = request.audit_log_info.get('ip_address', None)
+        user_agent = request.audit_log_info.get('user_agent', None)
+    else:
+        ip_address = None
+        user_agent = None
+        # Anda bisa menambahkan logging atau handling lain jika diperlukan
+
     if created:
         # Catat create
         AuditLog.objects.create(
@@ -52,7 +57,9 @@ def log_create_or_update(sender, instance, created, **kwargs):
             action='create',
             content_type=content_type,
             object_id=str(instance.pk),  # ID objek (bisa UUID atau integer)
-            changes=None  # Tidak ada perubahan untuk create
+            changes=None,  # Tidak ada perubahan untuk create
+            ip_address=ip_address,
+            user_agent=user_agent,
         )
     else:
         try:
@@ -68,7 +75,9 @@ def log_create_or_update(sender, instance, created, **kwargs):
             action='update',
             content_type=content_type,
             object_id=str(instance.pk),  # ID objek yang dimodifikasi
-            changes=changes
+            changes=changes,
+            ip_address=ip_address,
+            user_agent=user_agent,
         )
 
 @receiver(post_delete)
@@ -83,11 +92,23 @@ def log_delete(sender, instance, **kwargs):
 
     content_type = ContentType.objects.get_for_model(sender)
 
+    # Pastikan request ada dalam kwargs dan memiliki attribute audit_log_info
+    request = kwargs.get('request')
+    if request and hasattr(request, 'audit_log_info'):
+        ip_address = request.audit_log_info.get('ip_address', None)
+        user_agent = request.audit_log_info.get('user_agent', None)
+    else:
+        ip_address = None
+        user_agent = None
+        # Anda bisa menambahkan logging atau handling lain jika diperlukan
+
     # Catat delete
     AuditLog.objects.create(
         user=user_instance,  
         action='delete',
         content_type=content_type,
         object_id=str(instance.pk),  # ID objek yang dihapus
-        changes=None  # Tidak ada perubahan untuk delete
+        changes=None,  # Tidak ada perubahan untuk delete
+        ip_address=ip_address,
+        user_agent=user_agent,
     )
