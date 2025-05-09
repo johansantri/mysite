@@ -39,6 +39,10 @@
             --input-text-dark: #e2e8f0;
             --input-border-light: #ced4da;
             --input-border-dark: #4b5563;
+            --modal-bg-light: #ffffff;
+            --modal-bg-dark: #1e293b;
+            --list-group-bg-light: #ffffff;
+            --list-group-bg-dark: #1e293b;
         }
 
         body {
@@ -160,12 +164,12 @@
         }
 
         /* Cards */
-        .card {
+        .card, .field-card {
             background: var(--card-bg-light);
             transition: var(--transition);
         }
 
-        .dark-mode .card {
+        .dark-mode .card, .dark-mode .field-card {
             background: var(--card-bg-dark);
             border-color: #334155;
         }
@@ -206,6 +210,16 @@
 
         .dark-mode .table thead th {
             background: #2d3748;
+            color: var(--table-text-dark);
+        }
+
+        .table td {
+            background: var(--table-bg-light);
+            color: var(--table-text-light);
+        }
+
+        .dark-mode .table td {
+            background: var(--table-bg-dark);
             color: var(--table-text-dark);
         }
 
@@ -333,6 +347,43 @@
         .dark-mode .page-item.active .page-link {
             background: #2563eb;
             border-color: #2563eb;
+        }
+
+        /* Modals */
+        .modal-content {
+            background: var(--modal-bg-light);
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+
+        .dark-mode .modal-content {
+            background: var(--modal-bg-dark);
+            color: var(--text-dark);
+            border-color: #334155;
+        }
+
+        /* List Group */
+        .list-group-item {
+            background: var(--list-group-bg-light);
+            color: var(--text-light);
+            border-color: var(--input-border-light);
+            transition: var(--transition);
+        }
+
+        .dark-mode .list-group-item {
+            background: var(--list-group-bg-dark);
+            color: var(--text-dark);
+            border-color: var(--input-border-dark);
+        }
+
+        /* Container Fluid */
+        .container-fluid {
+            background: var(--bg-light);
+            transition: var(--transition);
+        }
+
+        .dark-mode .container-fluid {
+            background: var(--bg-dark);
         }
 
         /* Mobile Styles */
@@ -464,7 +515,7 @@
 
 <body class="{% if request.session.dark_mode %}dark-mode{% endif %}">
     <!-- Sidebar -->
-    <nav class="sidebar collapse show" id="sidebarMenu" aria-label="Main navigation">
+    <nav class="sidebar collapse" id="sidebarMenu" aria-label="Main navigation">
         <!-- Sidebar Header -->
         <div class="sidebar-header">
             <span class="text-white fs-4 fw-bold">LMSKu</span>
@@ -764,7 +815,7 @@
 
                         <div class="container px-0">
                             <div class="table-responsive">
-                                <table class="table table-dark table-hover table-bordered table-sm">
+                                <table class="table table-hover table-bordered table-sm">
                                     <thead>
                                         <tr class="text-center">
                                             <th scope="col" class="py-1">Assessment</th>
@@ -840,8 +891,7 @@
     <!-- Main Content -->
     <div class="main-content">
         <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle sidebar">
-            <i class="bi bi-list"></i>
-            <i class="bi bi-x-lg"></i>
+            <i class="bi bi-three-dots-vertical"></i>
         </button>
         {% block content %}
         {% endblock %}
@@ -866,8 +916,11 @@
             const sidebarToggler = document.querySelector('.navbar-toggler');
             const sidebar = document.querySelector('#sidebarMenu');
 
-            // Ensure sidebar is visible on desktop by default
-            if (window.innerWidth >= 992) {
+            // Hide sidebar by default on mobile
+            if (window.innerWidth < 992) {
+                sidebar.classList.remove('show');
+                sidebarToggler.classList.remove('show');
+            } else {
                 sidebar.classList.add('show');
             }
 

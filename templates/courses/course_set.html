@@ -1,74 +1,37 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm custom-navbar">
-  <div class="container-fluid">
-    <a class="navbar-brand fw-bold text-dark" href="{% url 'courses:studio' course.id %}">
+<!-- Menu container -->
+<div class="d-flex justify-content-between align-items-center p-3 shadow-sm bg-light rounded">
+  <!-- Judul -->
+  <div class="fw-bold">
+    <a href="{% url 'courses:studio' course.id %}" class="text-dark text-decoration-none">
       {{ course.course_name }}
     </a>
-
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-      data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-      aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <!-- Content Dropdown -->
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-            data-bs-toggle="dropdown" aria-expanded="false">
-            Content
-          </a>
-          <ul class="dropdown-menu shadow" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="{% url 'courses:studio' course.id %}">Outline</a></li>
-            <li><a class="dropdown-item" href="{% url 'instructor:studios' course.id %}">Status Curation</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a href="{% url 'courses:self_course' username=request.user.username id=course.id slug=course.slug %}" class="dropdown-item">Access Course</a></li>
-          </ul>
-        </li>
-
-        <!-- Settings Dropdown -->
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownSetting" role="button"
-            data-bs-toggle="dropdown" aria-expanded="false">
-            Settings
-          </a>
-          <ul class="dropdown-menu shadow" aria-labelledby="navbarDropdownSetting">
-            <li><a class="dropdown-item" href="{% url 'courses:course_profile' course.id %}">Schedule</a></li>
-            <li><a class="dropdown-item" href="{% url 'courses:course_grade' course.id %}">Grading</a></li>
-            <li><a class="dropdown-item" href="{% url 'courses:course_team' course.id %}">Team</a></li>
-            {% if request.user.is_superuser or request.user.is_partner %}
-              <li><a class="dropdown-item" href="{% url 'courses:course_instructor' course.id %}">Instructor</a></li>
-            {% endif %}
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="{% url 'courses:add_course_price' course.id %}">Price</a></li>
-          </ul>
-        </li>
-      </ul>
-    </div>
   </div>
-</nav>
 
+  <!-- Ikon Titik Tiga sebagai Dropdown -->
+  <div class="dropdown">
+    <button class="btn btn-light border-0" type="button" id="moreMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+      &#8942; <!-- Unicode titik tiga vertikal (⋮) -->
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="moreMenuButton">
+      <li><a class="dropdown-item" href="{% url 'courses:studio' course.id %}">Outline</a></li>
+      <li><a class="dropdown-item" href="{% url 'instructor:studios' course.id %}">Status Curation</a></li>
+      <li><hr class="dropdown-divider"></li>
+      <li><a class="dropdown-item" href="{% url 'courses:self_course' username=request.user.username id=course.id slug=course.slug %}">Access Course</a></li>
+      <li><a class="dropdown-item" href="{% url 'courses:course_profile' course.id %}">Schedule</a></li>
+      <li><a class="dropdown-item" href="{% url 'courses:course_grade' course.id %}">Grading</a></li>
+      <li><a class="dropdown-item" href="{% url 'courses:course_team' course.id %}">Team</a></li>
+      {% if request.user.is_superuser or request.user.is_partner %}
+        <li><a class="dropdown-item" href="{% url 'courses:course_instructor' course.id %}">Instructor</a></li>
+      {% endif %}
+      <li><hr class="dropdown-divider"></li>
+      <li><a class="dropdown-item" href="{% url 'courses:add_course_price' course.id %}">Price</a></li>
+    </ul>
+  </div>
+</div>
 <style>
-  /* Scoped only to this navbar */
-  .custom-navbar .nav-item .nav-link {
-    color: #343a40 !important;
-    font-weight: 600;
-    transition: color 0.2s ease;
-  }
-
-  .custom-navbar .nav-item .nav-link:hover,
-  .custom-navbar .nav-item .nav-link:focus {
-    color: #0d6efd !important; /* Bootstrap primary blue */
-    text-decoration: none;
-  }
-
-  .custom-navbar .dropdown-menu .dropdown-item {
-    font-weight: 500;
-    transition: all 0.2s ease;
-  }
-
-  .custom-navbar .dropdown-menu .dropdown-item:hover {
-    background-color: #f8f9fa;
-    color: #0d6efd;
-  }
+button#moreMenuButton {
+  font-size: 1.5rem;
+  line-height: 1;
+  padding: 0 0.5rem;
+}
 </style>
