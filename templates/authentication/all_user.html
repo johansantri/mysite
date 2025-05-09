@@ -13,14 +13,12 @@
         <div class="card-body">
             <!-- Toolbar -->
             <div class="d-flex flex-wrap align-items-center mb-3">
-                {% if request.user.is_superuser %}
+                {% if request.user.is_partner %}
                 <div class="btn-group me-3 mb-2 mb-md-0">
-                    <a href="#" class="btn btn-success shadow-sm">
-                        <i class="bi bi-person-plus me-1"></i>Add Learner
+                    <a href="{% url 'partner:partner_enrollments'%}" class="btn btn-success btn-sm shadow-sm">
+                        <i class="bi bi-arrow-left-right me-1"></i>Enrollment Direction
                     </a>
-                    <button type="button" class="btn btn-outline-secondary shadow-sm">
-                        <i class="bi bi-download me-1"></i>Export
-                    </button>
+                  
                 </div>
                 {% endif %}
 
