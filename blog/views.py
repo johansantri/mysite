@@ -32,6 +32,12 @@ class BlogPostCreateView(LoginRequiredMixin, CreateView):
         return kwargs
 
     def dispatch(self, *args, **kwargs):
+        # Cek apakah user memiliki izin yang diperlukan
+        if not (self.request.user.is_superuser or self.request.user.is_staff or self.request.user.is_partner or self.request.user.is_instructor):
+            messages.error(self.request, 'You do not have permission to create a blog post.')
+            return redirect('blog:blog-list-admin')  # Atau halaman lain sesuai kebutuhan
+
+        # Cek apakah user sudah mencapai batas postingan per jam
         recent_post = BlogPost.objects.filter(
             author=self.request.user,
             date_posted__gte=timezone.now() - timedelta(hours=1)
@@ -39,9 +45,11 @@ class BlogPostCreateView(LoginRequiredMixin, CreateView):
         if recent_post >= 5:
             messages.error(self.request, 'You have reached the limit of 5 posts per hour. Please try again later.')
             return redirect('blog:blog-list-admin')
+
         return super().dispatch(*args, **kwargs)
 
     def form_valid(self, form):
+        # Set author sebagai user yang sedang login
         form.instance.author = self.request.user
         messages.success(self.request, 'Blog post created successfully!')
         return super().form_valid(form)
@@ -49,7 +57,7 @@ class BlogPostCreateView(LoginRequiredMixin, CreateView):
     def form_invalid(self, form):
         messages.error(self.request, 'There was an error creating the blog post. Please check the form.')
         return super().form_invalid(form)
-
+    
 class BlogPostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = BlogPost
     form_class = BlogPostForm
@@ -58,7 +66,8 @@ class BlogPostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         post = self.get_object()
-        return self.request.user == post.author or self.request.user.is_superuser
+        # Pengecekan jika user yang sedang login adalah author post atau memiliki status yang diizinkan
+        return self.request.user == post.author or self.request.user.is_superuser or self.request.user.is_staff or self.request.user.is_partner or self.request.user.is_instructor
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -66,13 +75,21 @@ class BlogPostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return kwargs
 
     def dispatch(self, *args, **kwargs):
+        # Pengecekan apakah user sudah mencapai batas edit per jam
         recent_edits = BlogPost.objects.filter(
             author=self.request.user,
             date_updated__gte=timezone.now() - timedelta(hours=1)
         ).count()
+
         if recent_edits >= 10:
             messages.error(self.request, 'You have reached the limit of 10 edits per hour. Please try again later.')
             return redirect('blog:blog-list-admin')
+
+        # Pengecekan hak akses: jika user tidak diperbolehkan mengedit, redirect ke halaman lain
+        if not (self.request.user.is_superuser or self.request.user.is_staff or self.request.user.is_partner or self.request.user.is_instructor):
+            messages.error(self.request, 'You do not have permission to edit this blog post.')
+            return redirect('blog:blog-list-admin')
+
         return super().dispatch(*args, **kwargs)
 
     def form_valid(self, form):
@@ -89,8 +106,8 @@ class BlogPostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     success_url = reverse_lazy('blog:blog-list-admin')
 
     def test_func(self):
-        post = self.get_object()
-        return self.request.user == post.author or self.request.user.is_superuser
+        # Hanya 'superuser' yang dapat menghapus artikel
+        return self.request.user.is_superuser
 
     def dispatch(self, *args, **kwargs):
         # Rate-limiting: cek jumlah penghapusan (status='deleted') dalam 1 jam
@@ -99,9 +116,11 @@ class BlogPostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             status='deleted',
             date_updated__gte=timezone.now() - timedelta(hours=1)
         ).count()
+
         if recent_deletions >= 5:
             messages.error(self.request, 'You have reached the limit of 5 deletions per hour. Please try again later.')
             return redirect('blog:blog-list-admin')
+
         return super().dispatch(*args, **kwargs)
 
     def delete(self, request, *args, **kwargs):

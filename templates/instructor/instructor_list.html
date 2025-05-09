@@ -19,18 +19,25 @@
                   <tr>
                     
                     <th>Username</th>
-                    <th>university</th>
-                    <th>total course</th>
+                    <th>Phone</td>
+                    <th>Gender</td>
+                    <th>Birth</td>
+                    <th>University</th>
+                    <th>Total course</th>
                     <th>Status</th>
                     
                     <th>Experience</th>
+                    <th>Last access</th>
                     <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
                     {% for instructor in instructors %}
                     <tr>
-                        <td><a href="{% url 'courses:instructor_detail' instructor.id %}"> {{instructor.user.email }}</a></td>
+                        <td>{{instructor.user.email }}</td>
+                        <td>{{instructor.user.phone }}</td>
+                        <td>{{instructor.user.gender }}</td>
+                        <td>{{instructor.user.birth }}</td>
                         <td>{{ instructor.user.university }}</td>
                          <td>{{ instructor.num_courses }}</td>
                         <td>  {% if instructor.status == 'Pending' %}
@@ -44,6 +51,7 @@
                       {% endif %}</td>
                         
                         <td>{{ instructor.experience_years }} years</td>
+                        <td>{{ instructor.user.last_login|date:"d M Y H:i" }}</td>
                         <td><a href="{% url 'courses:instructor_detail' instructor.id %}" class="btn btn-info btn-sm"><i class="bi bi-info-circle-fill"></i></a> 
                           <a href="{% url 'courses:instructor_check' instructor.id %}" class="btn btn-success btn-sm"><i class="bi bi-check"></i></a> 
                         
