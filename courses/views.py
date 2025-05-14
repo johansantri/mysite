@@ -5069,6 +5069,8 @@ def partner_detail(request, partner_id):
 #org partner from lms
 logger = logging.getLogger(__name__)
 
+
+
 def org_partner(request, slug):
     partner = get_object_or_404(Partner, name__slug=slug)
     search_query = request.GET.get('search', '')
@@ -5088,8 +5090,6 @@ def org_partner(request, slug):
         ).select_related(
             'category', 'instructor__user', 'org_partner'
         ).prefetch_related('enrollments')
-
-        #logger.debug(f"Related Courses: {list(related_courses.values('id', 'course_name', 'end_enrol'))}")
 
         if search_query:
             related_courses = related_courses.filter(course_name__icontains=search_query)
@@ -5123,7 +5123,8 @@ def org_partner(request, slug):
         unique_users=Count('enrollments__user', distinct=True)
     )['unique_users'] or 0
 
-    # Siapkan data hanya untuk kursus di halaman saat ini
+    total_reviews = 0  # Initialize total_reviews
+    total_rating_sum = 0  # Initialize total rating sum
     courses_data = []
     total_enrollments = 0
 
@@ -5137,7 +5138,17 @@ def org_partner(request, slug):
         total_enrollments += num_enrollments
 
         review_qs = CourseRating.objects.filter(course=course)
-        average_rating = round(review_qs.aggregate(avg=Avg('rating'))['avg'] or 0, 1)
+        review_count = review_qs.count()
+        total_reviews += review_count
+
+        # Sum all ratings to calculate average
+        total_rating_sum += review_qs.aggregate(total_rating=Sum('rating'))['total_rating'] or 0
+
+        if review_count > 0:
+            average_rating = round(total_rating_sum / review_count, 1)
+        else:
+            average_rating = 0
+
         full_stars = int(average_rating)
         half_star = (average_rating % 1) >= 0.5
         empty_stars = 5 - full_stars - (1 if half_star else 0)
@@ -5157,21 +5168,25 @@ def org_partner(request, slug):
             'category': course.category.name if course.category else None,
             'language': course.language,
             'average_rating': average_rating,
-            'review_count': review_qs.count(),
+            'review_count': review_count,
             'full_star_range': range(full_stars),
             'half_star': half_star,
             'empty_star_range': range(empty_stars),
         }
         courses_data.append(course_data)
-        #logger.debug(f"Course Data: {course_data}")
+
+    # Now calculate the total reviews and total ratings for the partner
+    average_rating_all_courses = round(total_rating_sum / total_reviews, 1) if total_reviews > 0 else 0
 
     context = {
         'partner': partner,
         'page_obj': page_obj,
-        'courses': courses_data,  # Gunakan courses_data untuk iterasi di template
+        'courses': courses_data,
         'total_courses': related_courses.count(),
         'unique_learners': unique_learners,
         'total_enrollments': total_enrollments,
+        'total_reviews': total_reviews,
+        'average_rating': average_rating_all_courses,
         'search_query': search_query,
         'selected_category': selected_category,
         'categories': list(categories.values('id', 'name', 'course_count')),
@@ -5179,6 +5194,8 @@ def org_partner(request, slug):
     }
 
     return render(request, 'partner/org_partner.html', context)
+
+
 
 def search_users(request):
     term = request.GET.get('q', '')
