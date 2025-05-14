@@ -124,7 +124,7 @@
                         {% for course in courses_created_today %}
                         <tr>
                             <td>
-                                <a href="{% url 'partner:course_lms_detail' course.id course.slug %}" class="text-primary text-decoration-none">
+                                <a href="{% url 'courses:course_lms_detail' course.id course.slug %}" class="text-primary text-decoration-none">
                                     {{ course.course_name }}
                                 </a>
                             </td>

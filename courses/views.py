@@ -2965,7 +2965,7 @@ def verify_certificate(request, certificate_id):
 
 #re-runs course
 def course_reruns(request, id):
-    """ View for creating a re-run of a course, along with related data like CoursePrice, Assessments, and Materials """
+    """ View for creating a re-run of a course, along with related data like CoursePrice, Assessments, Materials, and GradeRange """
 
     course = get_object_or_404(Course, id=id)
 
@@ -2974,14 +2974,14 @@ def course_reruns(request, id):
         archive_status = CourseStatus.objects.get(status='archived')
         draft_status = CourseStatus.objects.get(status='draft')
     except CourseStatus.DoesNotExist:
-        # Handle the case where the 'archived' status doesn't exist
-        messages.error(request, "The 'archived' status is missing. Please check your data.")
+        messages.error(request, "The 'archived' or 'draft' status is missing. Please check your data.")
         return redirect('courses:studio', id=course.id)
 
     # Check if the course status is 'archived'
     if course.status_course != archive_status:
         messages.warning(request, "Only archived courses can be re-run.")
         return redirect('courses:studio', id=course.id)
+
     # Check if the user has permission to create a re-run for this course
     if not (request.user.is_superuser or request.user == course.org_partner.user or request.user == course.instructor.user):
         messages.error(request, "You do not have permission to create a re-run for this course.")
@@ -2996,9 +2996,9 @@ def course_reruns(request, id):
 
             # Check if a re-run already exists for today
             existing_rerun = Course.objects.filter(
-                course_name=course.course_name,  # Same course name
-                course_run__startswith="Run",  # Check if it's a re-run
-                created_at__date=today  # Check if it's the same day
+                course_name=course.course_name,
+                course_run__startswith="Run",
+                created_at__date=today
             ).exists()
 
             if existing_rerun:
@@ -3012,12 +3012,13 @@ def course_reruns(request, id):
             new_course.status_course = draft_status
             new_course.slug = f"{slugify(new_course.course_name)}-{new_course.course_run.lower().replace(' ', '-')}"
             new_course.created_at = timezone.now()
-            new_course.author = request.user  # Set the user who creates the new course
+            new_course.author = request.user
             
-            # Set Instructor and other fields from the original course
+            # Set fields from the original course
             new_course.instructor = course.instructor
             new_course.language = course.language
             new_course.image = course.image
+            new_course.link_video = course.link_video
             new_course.description = course.description
             new_course.sort_description = course.sort_description
             new_course.hour = course.hour
@@ -3045,80 +3046,97 @@ def course_reruns(request, id):
                     ice_earning=course_price.ice_earning
                 )
 
-           
-            # Copy the Sections and related Materials, Assessments for the new course
-            for section in course.sections.all():
-                # Create a new section title based on the original section's title and course_run
-                new_section_title = f"{section.title}"
+            # Copy GradeRange related to the original course
+            grade_range_mapping = {}
+            for grade_range in course.grade_ranges.all():
+                new_grade_range = GradeRange.objects.create(
+                    course=new_course,
+                    name=grade_range.name,
+                    min_grade=grade_range.min_grade,
+                    max_grade=grade_range.max_grade,
+                    created_at=grade_range.created_at
+                )
+                grade_range_mapping[grade_range.id] = new_grade_range
 
+            # Copy the Sections and related Materials, Assessments, and AskOra
+            for section in course.sections.all():
                 # Check if the new section already exists for this course (avoid duplicates)
                 existing_section = Section.objects.filter(
-                    title=new_section_title, courses=new_course
+                    title=section.title,
+                    courses=new_course,
+                    parent__title=section.parent.title if section.parent else None
                 ).first()
 
-                # If section doesn't exist, create a new one
                 if not existing_section:
-                    # If the original section has a parent, copy it over as well
                     parent_section = None
                     if section.parent:
-                        # If the section has a parent, get the new parent section from the new course
                         parent_section = Section.objects.filter(
-                            title=f"{section.parent.title}",
+                            title=section.parent.title,
                             courses=new_course
                         ).first()
 
                     # Create the new section
                     new_section = Section.objects.create(
-                        parent=parent_section,  # Link to the parent section if it exists
-                        title=new_section_title,
-                        slug=f"{section.slug}",  # Ensure the slug is unique
-                        courses=new_course  # Link the new section to the new course
+                        parent=parent_section,
+                        title=section.title,
+                        courses=new_course,
+                        order=section.order  # Copy the order field
                     )
 
                     # Copy the materials associated with the section
                     for material in section.materials.all():
                         Material.objects.create(
-                            section=new_section,  # Link the material to the new section
+                            section=new_section,
                             title=material.title,
                             description=material.description,
-                            created_at=material.created_at  # Copy the creation date, if needed
+                            created_at=material.created_at
                         )
 
                     # Copy the assessments associated with the section
                     for assessment in section.assessments.all():
                         new_assessment = Assessment.objects.create(
                             name=assessment.name,
-                            section=new_section,  # Link the assessment to the new section
+                            section=new_section,
                             weight=assessment.weight,
                             description=assessment.description,
                             flag=assessment.flag,
-                            grade_range=assessment.grade_range,
-                            created_at=assessment.created_at  # Copy the creation date, if needed
+                            duration_in_minutes=assessment.duration_in_minutes,
+                            grade_range=grade_range_mapping.get(assessment.grade_range.id) if assessment.grade_range else None,
+                            created_at=assessment.created_at
                         )
 
                         # Copy the questions associated with the assessment
                         for question in assessment.questions.all():
                             new_question = Question.objects.create(
-                                assessment=new_assessment,  # Link the question to the new assessment
+                                assessment=new_assessment,
                                 text=question.text,
-                                created_at=question.created_at  # Copy the creation date, if needed
+                                created_at=question.created_at
                             )
 
                             # Copy the choices associated with the question
                             for choice in question.choices.all():
                                 Choice.objects.create(
-                                    question=new_question,  # Link the choice to the new question
+                                    question=new_question,
                                     text=choice.text,
-                                    is_correct=choice.is_correct  # Copy whether the choice is correct
+                                    is_correct=choice.is_correct
                                 )
 
+                        # Copy the AskOra associated with the assessment
+                        for ask_ora in assessment.ask_oras.all():
+                            AskOra.objects.create(
+                                assessment=new_assessment,
+                                title=ask_ora.title,
+                                question_text=ask_ora.question_text,
+                                response_deadline=ask_ora.response_deadline,
+                                created_at=ask_ora.created_at
+                            )
 
             messages.success(request, f"Re-run of course '{new_course.course_name}' created successfully!")
             return redirect('courses:studio', id=new_course.id)
 
         else:
             messages.error(request, "There was an error with the form. Please correct the errors below.")
-            print(form.errors)  # Optional: print form errors for debugging
+            print(form.errors)  # Debugging form errors
 
     else:
         form = CourseRerunForm(instance=course)
