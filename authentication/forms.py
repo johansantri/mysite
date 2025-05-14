@@ -5,6 +5,7 @@ from authentication.models import CustomUser, Universiti
 import re
 from .models import CustomUser
 from django.core.exceptions import ValidationError
+import imghdr
 
 class RegistrationForm(forms.ModelForm):
     password1 = forms.CharField(
@@ -127,24 +128,32 @@ class Userprofile(forms.ModelForm):
 
        
 class UserPhoto(UserChangeForm):
-
     class Meta:
-
         model = CustomUser
-
         fields = ['photo']
 
-
     def __init__(self, *args, **kwargs):
-
-        super(UserPhoto, self).__init__(*args, **kwargs)  # Correct superclass call
-
+        super(UserPhoto, self).__init__(*args, **kwargs)
         self.fields['photo'].widget.attrs.update({
-
             'class': 'form-control',
-
-            'placeholder': 'Upload your photo',  # More relevant placeholder
-
-            'required': True  # Set required as a boolean
-
+            'placeholder': 'Upload your photo',
+            'required': True
         })
+
+    def clean_photo(self):
+        photo = self.cleaned_data.get('photo')
+        if not photo:
+            raise ValidationError("Foto wajib diunggah.")
+
+        if photo.size > 100 * 1024:
+            raise ValidationError("Ukuran file tidak boleh lebih dari 100KB.")
+
+        # Validasi tipe file
+        if not photo.content_type.startswith('image/'):
+            raise ValidationError("Hanya file gambar yang diperbolehkan.")
+
+        # Validasi format file (opsional, lebih ketat)
+        if imghdr.what(photo) not in ['jpeg', 'png','webp']:
+            raise ValidationError("Format gambar tidak dikenali atau tidak didukung.")
+
+        return photo
