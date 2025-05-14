@@ -6,7 +6,7 @@ from django.forms import inlineformset_factory
 from django.core.cache import cache
 from .models import MicroCredentialComment,MicroCredentialReview,LTIExternalTool,Course,SosPost,CourseStatus,CourseRating,MicroCredential, AskOra,Partner,Category, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment,PricingType, CoursePrice
 from django_ckeditor_5.widgets import CKEditor5Widget
-
+import os
 from authentication.models import CustomUser, Universiti
 import logging
 from django.utils.text import slugify
@@ -430,48 +430,48 @@ class ProfilForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ProfilForm, self).__init__(*args, **kwargs)
 
-    def save(self, commit=True):
-        course = super(ProfilForm, self).save(commit=False)
+    
+def save(self, commit=True):
+    course = super(ProfilForm, self).save(commit=False)
 
-        # If the image field has changed, delete the old image
-        if self.cleaned_data.get('image') and course.pk:
-            old_course = Course.objects.get(pk=course.pk)
-            if old_course.image != self.cleaned_data['image']:
-                old_course.delete_old_image()
+    if self.cleaned_data.get('image') and course.pk:
+        old_course = Course.objects.get(pk=course.pk)
+        old_image_path = old_course.image.name  # Simpan path lama
+        if old_course.image != self.cleaned_data['image']:
+            old_course.delete_old_image()
+    else:
+        old_image_path = None
 
-        # Convert and resize image
-        if self.cleaned_data.get('image'):
-            image_file = self.cleaned_data['image']
-            image = PILImage.open(image_file)
+    if self.cleaned_data.get('image'):
+        image_file = self.cleaned_data['image']
+        image = PILImage.open(image_file)
 
-            # Resize the image to 150x150 pixels using LANCZOS resampling
-            image = image.resize((1200, 628), PILImage.Resampling.LANCZOS)
+        image = image.resize((1200, 628), PILImage.Resampling.LANCZOS)
+        image_io = io.BytesIO()
+        image.save(image_io, format='WEBP', quality=100)
+        image_io.seek(0)
 
-            # Save the image to a BytesIO object to work with it in memory
-            image_io = io.BytesIO()
-            
-            # Ensure the image is saved as WebP with a compression quality
-            image.save(image_io, format='WEBP', quality=100)  # Adjust quality if needed
-            
+        while image_io.tell() > 100 * 1024:
+            image_io.seek(0)
+            image.save(image_io, format='WEBP', quality=90)
             image_io.seek(0)
 
-            # Check if image size exceeds 100KB, and adjust quality until it's within limit
-            while image_io.tell() > 100 * 1024:  # 100KB in bytes
-                image_io.seek(0)  # Reset the pointer
-                image.save(image_io, format='WEBP', quality=100)  # Decrease quality if necessary
-                image_io.seek(0)
-            
-            # Create a new ContentFile to save the WebP image
-            webp_image_file = ContentFile(image_io.read(), name=image_file.name.rsplit('.', 1)[0] + '.webp')
+        # Gunakan nama dan path lama jika ada
+        if old_image_path:
+            base_dir = os.path.dirname(old_image_path)  # direktori lama
+            new_image_name = os.path.splitext(os.path.basename(old_image_path))[0] + '.webp'
+            final_path = os.path.join(base_dir, new_image_name)
+        else:
+            new_image_name = image_file.name.rsplit('.', 1)[0] + '.webp'
+            final_path = new_image_name  # akan disimpan di path default
 
-            # Save the processed image file to the course instance
-            course.image.save(webp_image_file.name, webp_image_file, save=False)
+        webp_image_file = ContentFile(image_io.read(), name=final_path)
+        course.image.save(webp_image_file.name, webp_image_file, save=False)
 
-        if commit:
-            course.save()
+    if commit:
+        course.save()
 
-        return course
-
+    return course
 class CourseForm(forms.ModelForm):
     class Meta:
         model = Course
