@@ -4950,34 +4950,36 @@ def partnerView(request):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
 
-    # Get the search query from the GET request
     query = request.GET.get('q', '')
 
-    # Superusers see all partners, others see only their own
+    # Base queryset
     posts = Partner.objects.all() if request.user.is_superuser else Partner.objects.filter(user_id=request.user.id)
 
-    # Apply the search filter if the query is provided
     if query:
         posts = posts.filter(
-            Q(name__name__icontains=query) |  # Filter by the 'name' field inside the related Univer model
-            Q(user__email__icontains=query) |  # Filter by email of the related User model
-            Q(phone__icontains=query)  # Filter by phone number
+            Q(name__icontains=query) |
+            Q(user__email__icontains=query) |
+            Q(phone__icontains=query)
         )
 
-    # Pagination: Ensure to paginate before fetching data
-    paginator = Paginator(posts, 10)  # Show 10 posts per page
+    # Annotate with course count, learner count, and average rating
+    posts = posts.annotate(
+        total_courses=Count('courses', distinct=True),  # Total courses for the partner
+        total_learners=Count('courses__enrollments', distinct=True),  # Total learners enrolled in the courses
+        average_rating=Avg('courses__ratings__rating')  # Average rating for the courses
+    )
+
+    paginator = Paginator(posts, 10)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
 
-    # Context to send to template
     context = {
-        'count': posts.count(),  # Total number of partners
-        'page': page,  # Current page object for pagination
-        'query': query  # Pass the query to the template for display in search input
+        'count': posts.count(),
+        'page': page,
+        'query': query
     }
 
     return render(request, 'partner/partner_view.html', context)
-
 
 #detail_partner
 def partner_detail(request, partner_id):

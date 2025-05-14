@@ -32,6 +32,9 @@
                             <th>Name</th>
                             <th>Email</th>
                             <th>Phone</th>
+                             <th>Course</th>
+                              <th>Learners</th>
+                               <th>Rating</th>
                             <th>Join Date</th>
                             <th>Actions</th>
                         </tr>
@@ -42,6 +45,9 @@
                             <td><a href="{% url 'courses:partner_detail' partner.id %}">{{ partner.name }}</a></td>
                             <td>{{ partner.user.email }}</td>
                             <td>{{ partner.phone }}</td>
+                            <td>{{ partner.total_courses }}</td>
+                            <td>{{ partner.total_learners }}</td>
+                            <td>{{ partner.average_rating|default:"0.0" }}</td>
                             <td>{{ partner.created_ad }}</td>
                             <td>{% if request.user.is_superuser or request.user.is_staff %}
                                 <!-- Jika user adalah superuser atau staff -->
