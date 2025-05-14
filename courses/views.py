@@ -625,7 +625,6 @@ def launch_lti(request, idcourse, idsection, idlti, id_lti_tool):
 
 
 
-
 logger = logging.getLogger(__name__)
 
 @login_required

@@ -9,7 +9,7 @@
     <p>Tool LTI akan diluncurkan dengan parameter berikut:</p>
   
 
-          <form id="lti_launch_form" action="{{ launch_url }}" method="POST">
+             <form id="lti_launch_form" action="{{ launch_url }}" method="POST">
         {% for key, value in lti_params.items %}
             <input type="hidden" name="{{ key }}" value="{{ value }}">
         {% endfor %}
