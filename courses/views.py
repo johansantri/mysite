@@ -8,7 +8,7 @@ from django.core.files.base import ContentFile
 from django.core.cache import cache
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models import Q
+from django.db.models import Q,OuterRef, Subquery, IntegerField
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from .forms import MicroCredentialCommentForm,MicroCredentialReviewForm,LTIExternalToolForm,CoursePriceForm,CourseRatingForm,SosPostForm,MicroCredentialForm,AskOraForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
@@ -4945,44 +4945,48 @@ def update_partner(request, partner_id):
 
 #partner view
 #@cache_page(60 * 5)
-
 def partnerView(request):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
 
     query = request.GET.get('q', '')
 
-    # Base queryset
-    posts = Partner.objects.all() if request.user.is_superuser else Partner.objects.filter(user_id=request.user.id)
+    # Ambil semua partner (jika superuser) atau hanya milik user saat ini
+    partners = Partner.objects.all() if request.user.is_superuser else Partner.objects.filter(user_id=request.user.id)
 
+    # Filter berdasarkan pencarian
     if query:
-        posts = posts.filter(
+        partners = partners.filter(
             Q(name__icontains=query) |
             Q(user__email__icontains=query) |
             Q(phone__icontains=query)
         )
 
-    # Annotate with course count, learner count, and average rating
-    posts = posts.annotate(
-        total_courses=Count('courses', distinct=True),  # Total courses for the partner
-        total_learners=Count('courses__enrollments', distinct=True),  # Total learners enrolled in the courses
-        average_rating=Avg('courses__ratings__rating')  # Average rating for the courses
+    # Annotasi jumlah kursus, peserta unik, dan rating rata-rata
+    partners = partners.annotate(
+        total_courses=Count('courses', distinct=True),
+        total_learners=Count('courses__enrollments__user', distinct=True),
+        average_rating=Avg('courses__ratings__rating')
     )
 
-    paginator = Paginator(posts, 10)
+    paginator = Paginator(partners, 10)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
 
     context = {
-        'count': posts.count(),
+        'count': partners.count(),
         'page': page,
         'query': query
     }
 
     return render(request, 'partner/partner_view.html', context)
 
+
 #detail_partner
 def partner_detail(request, partner_id):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+
     # Retrieve the partner using the provided partner_id
     partner = get_object_or_404(Partner, id=partner_id)
 
@@ -5030,15 +5034,21 @@ def partner_detail(request, partner_id):
     categories_with_courses = Category.objects.filter(category_courses__org_partner_id=partner.id).distinct()
 
     # --- Calculate unique learners across all courses ---
-    # Count unique users who are enrolled in any of the courses of this partner
     unique_learners = Enrollment.objects.filter(course__in=related_courses).values('user').distinct().count()
+
+    # --- Calculate total reviews and average rating across all courses ---
+    course_ids = related_courses.values_list('id', flat=True)
+    total_reviews = CourseRating.objects.filter(course_id__in=course_ids).count()  # Total reviews
+    average_rating = CourseRating.objects.filter(course_id__in=course_ids).aggregate(
+        avg_rating=Avg('rating')
+    )['avg_rating'] or 0  # Average rating, default to 0 if no ratings exist
 
     # Pagination setup
     page_number = request.GET.get('page')
     paginator = Paginator(related_courses, 10)
     page_obj = paginator.get_page(page_number)
 
-    # Context data, including learner_count for each course and unique learner count
+    # Context data
     context = {
         'partner': partner,
         'page_obj': page_obj,
@@ -5048,7 +5058,9 @@ def partner_detail(request, partner_id):
         'selected_category': selected_category,
         'categories': categories_with_courses,  # Only categories with courses
         'sort_by': sort_by,
-        'unique_learners': unique_learners  # Add unique learners to the context
+        'unique_learners': unique_learners,  # Add unique learners to the context
+        'total_reviews': total_reviews,  # Add total reviews to the context
+        'average_rating': round(average_rating, 1),  # Add average rating to the context
     }
 
     return render(request, 'partner/partner_detail.html', context)

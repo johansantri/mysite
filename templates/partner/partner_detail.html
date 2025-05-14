@@ -21,20 +21,30 @@
 
         <!-- Stats Section -->
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-4">
-            <div class="d-flex flex-row flex-wrap justify-content-between align-items-center gap-4">
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-4">
+                <!-- Learners Section -->
                 <div class="text-center mb-4 mb-md-0">
                     <p class="text-muted mb-1">Learners</p>
                     <p class="h4 fw-bold">{{ unique_learners }}</p>
                 </div>
+
+                <!-- Reviews Section -->
                 <div class="text-center mb-4 mb-md-0">
                     <p class="text-muted mb-1">Reviews</p>
-                    <p class="h4 fw-bold">0</p>
+                    <p class="h4 fw-bold">
+                        {{ total_reviews }}
+                        <small class="text-muted">{{ average_rating }}/5</small>
+                    </p>
                 </div>
+
+                <!-- Courses Section -->
                 <div class="text-center mb-4 mb-md-0">
-                    <p class="text-muted mb-1">Course</p>
+                    <p class="text-muted mb-1">Courses</p>
                     <p class="h4 fw-bold">{{ total_courses }}</p>
                 </div>
             </div>
+
+
             
             <div class="d-flex mt-3 mt-md-0">
                 <a href="#" class="text-danger me-2"><i class="fab fa-facebook-f"></i></a>
@@ -92,38 +102,65 @@
                 
                 <div class="row">
                     <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Course Name</th>
-                                    <th>Image</th>
-                                    <th>Price</th>
-                                    <th>Participants</th>
-                                    
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for course in page_obj %}
-                                <tr>
-                                    <td><a href="{% url 'courses:course_lms_detail' course.id course.slug %}" class="text-decoration-none">{{ course.course_name }}</a></td>
-                                    <td>
-                                        {% if course.image %}
-                                        <img src="{{ course.image.url }}" alt="Course image" class="img-fluid" width="100" height="60"/>
-                                    {% else %}
-                                        <span>No Image Available</span>
-                                    {% endif %}
-                                    </td>
-                                    <td class="text-success fw-bold">Free</td>
-                                    <td class="text-muted">{{ course.learner_count }}</td>
-                                    
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="5" class="text-center">No related courses found.</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                             <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Course Name</th>
+                                            <th>Image</th>
+                                            <th>Price</th>
+                                            <th>Participants</th>
+                                            <th>Status</th>
+                                            <th>Rating</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for course in page_obj %}
+                                            <tr>
+                                                <td>
+                                                    <a href="{% url 'courses:course_lms_detail' course.id course.slug %}" class="text-decoration-none text-primary">{{ course.course_name }}</a>
+                                                </td>
+                                                <td>
+                                                    {% if course.image %}
+                                                        <img src="{{ course.image.url }}" alt="Course image" class="img-fluid rounded" width="100" height="60" />
+                                                    {% else %}
+                                                        <span class="text-muted">No Image Available</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td class="text-success fw-bold">Free</td>
+                                                <td class="text-muted">{{ course.learner_count }}</td>
+                                               <td>
+                                                    {% if course.status_course %}
+                                                        {% with status=course.status_course.status %}
+                                                            {% if status == 'draft' %}
+                                                                <span class="badge bg-secondary">{{ course.status_course.get_status_display }}</span>
+                                                            {% elif status == 'curation' %}
+                                                                <span class="badge bg-warning">{{ course.status_course.get_status_display }}</span>
+                                                            {% elif status == 'published' %}
+                                                                <span class="badge bg-success">{{ course.status_course.get_status_display }}</span>
+                                                            {% elif status == 'archived' %}
+                                                                <span class="badge bg-danger">{{ course.status_course.get_status_display }}</span>
+                                                            {% else %}
+                                                                <span class="badge bg-light text-dark">Unknown</span>
+                                                            {% endif %}
+                                                        {% endwith %}
+                                                    {% else %}
+                                                        <span class="badge bg-light text-dark">No Status</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <div>
+                                                        <span class="fw-bold">{{ course.average_rating }} ⭐</span>
+                                                        <small class="text-muted">({{ course.total_reviews }} reviews)</small>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% empty %}
+                                            <tr>
+                                                <td colspan="6" class="text-center text-muted">No related courses found.</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
                     </div>
                     <!--pagination control-->
                     <div class="pagination justify-content-center mt-4">
