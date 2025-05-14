@@ -41,13 +41,14 @@ class MicroCredentialReviewForm(forms.ModelForm):
 class LTIExternalToolForm(forms.ModelForm):
     class Meta:
         model = LTIExternalTool
-        fields = ['name', 'launch_url', 'consumer_key']  # Hanya menampilkan 3 field ini
+        fields = ['name', 'launch_url', 'consumer_key', 'shared_secret']
 
     def clean_launch_url(self):
         launch_url = self.cleaned_data.get('launch_url')
         if not launch_url.startswith("https://"):
             raise forms.ValidationError("Launch URL harus dimulai dengan 'https://'")
         return launch_url
+
 
 
 class CourseRatingForm(forms.ModelForm):

@@ -519,7 +519,7 @@ CONTENT_SECURITY_POLICY = {
         # Izinkan permintaan (AJAX, WebSocket, fetch, dsb) hanya ke domain sendiri dan ke Moodle
         'connect-src': (
             "'self'",  # domain aplikasi ini sendiri
-            "https://idols.ui.ac.id",  # domain Moodle untuk integrasi LTI
+            "https://pakaimata.h5p.com",  # domain Moodle untuk integrasi LTI
         ),
 
         # Default untuk semua jenis resource, kecuali yang punya aturan khusus di bawah
@@ -541,7 +541,8 @@ CONTENT_SECURITY_POLICY = {
         'frame-src': (
             "'self'",
             "https://idols.ui.ac.id",  # Moodle iframe
-            "https://www.youtube-nocookie.com",  # Izinkan YouTube iframe (tanpa cookie)
+            "https://www.youtube-nocookie.com",
+            "https://pakaimata.h5p.com",  # Izinkan YouTube iframe (tanpa cookie)
         ),
 
         # Izinkan gambar dari domain sendiri dan dari inline base64 (data:)
@@ -582,6 +583,7 @@ CONTENT_SECURITY_POLICY = {
             "'self'",
             "https://vclass.unila.ac.id",  # domain Moodle tujuan POST LTI
             "https://idols.ui.ac.id",
+            "https://pakaimata.h5p.com",
         ),
     }
 }

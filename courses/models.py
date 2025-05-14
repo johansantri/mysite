@@ -20,7 +20,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.core.files.storage import default_storage
 import uuid
-
+from django.contrib.postgres.fields import JSONField 
 
 class UserProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
@@ -1210,12 +1210,14 @@ class Like(models.Model):
 
 
 class LTIExternalTool(models.Model):
-    name = models.CharField(max_length=255)  # Nama LTI tool, contoh: "Moodle" atau "Quiz Tool"
-    launch_url = models.URLField()  # URL untuk peluncuran LTI
-    consumer_key = models.CharField(max_length=255, null=True, blank=True)  # Kunci konsumen, opsional
-    shared_secret = models.CharField(max_length=255)  # Secret key untuk autentikasi
     assessment = models.ForeignKey(Assessment, on_delete=models.CASCADE, related_name='lti_tools')
-    lti_passport = models.CharField(max_length=255, blank=True, null=True) 
+    name = models.CharField(max_length=255)
+    launch_url = models.URLField()
+    consumer_key = models.CharField(max_length=255)
+    shared_secret = models.CharField(max_length=255)
+    custom_params = models.JSONField(blank=True, null=True, default=dict)  # Gunakan JSONField dari django.db.models
+    created_at = models.DateTimeField(auto_now_add=True)
+
     def __str__(self):
         return self.name
 
