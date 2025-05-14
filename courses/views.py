@@ -1936,6 +1936,10 @@ def listmic(request):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
 
+    if not (request.user.is_staff or request.user.is_superuser):
+        messages.error(request, "You do not have permission to add this microcredential.")
+        return redirect('authentication:dasbord')
+
     # Search logic
     search_query = request.GET.get('search', '')
     microcredentials = MicroCredential.objects.all()
@@ -1948,7 +1952,7 @@ def listmic(request):
         avg_rating=Avg('reviews__rating'),
         num_courses=Count('required_courses', distinct=True),
         num_reviews=Count('reviews', distinct=True)
-    ).order_by('-id')  # <-- Tambahkan ini untuk menghindari warning
+    ).order_by('-id')
 
     # Pagination
     paginator = Paginator(microcredentials, 10)
@@ -3289,102 +3293,89 @@ def draft_lms(request, id):
 def course_lms_detail(request, id, slug):
     # Fetch the course by id and slug
     course = get_object_or_404(Course, id=id, slug=slug)
-    
+
     # Get the 'published' CourseStatus
     try:
         published_status = CourseStatus.objects.get(status='published')
     except CourseStatus.DoesNotExist:
         return redirect('/')  # Redirect if the 'published' status doesn't exist
-    
-    # Check if the course's status is 'published' and still active
-    if course.status_course != published_status or course.end_enrol < timezone.now().date():
-        return redirect('/')  # Redirect to homepage if not published or not active
-    
-    # Check if the user is enrolled in the course
+
+    # Check enrollment
+    is_enrolled = False
     if request.user.is_authenticated:
         is_enrolled = course.enrollments.filter(user=request.user).exists()
-    else:
-        is_enrolled = False
+
+    # Restrict access only for users not enrolled and course is not available
+    if not is_enrolled and (course.status_course != published_status or course.end_enrol < timezone.now().date()):
+        return redirect('/')
 
     # Get similar courses based on the category and level (only published and active courses)
     similar_courses = Course.objects.filter(
         category=course.category,
         status_course=published_status,
-        end_enrol__gte=timezone.now().date()  # Gunakan date untuk DateField
+        end_enrol__gte=timezone.now().date()
     ).exclude(id=course.id)[:5]
 
     # Get all comments for the course, excluding replies (parent is None)
     comments = CourseComment.objects.filter(course=course, parent=None).order_by('-created_at')
 
-    # Get replies for each comment and sub-replies for each reply
     for comment in comments:
-        # Fetch replies for each comment
         replies = comment.replies.all().order_by('-created_at')
         for reply in replies:
-            # Fetch sub-replies for each reply
             sub_replies = reply.replies.all().order_by('-created_at')
-            reply.sub_replies = sub_replies  # Store the sub-replies in the reply object
+            reply.sub_replies = sub_replies
 
     # Fetch sections with related materials for the current course
     section_data = Section.objects.filter(
         parent=None, courses=course
     ).prefetch_related('materials')
 
-    # Perhitungan untuk kursus saat ini
-    total_sections = section_data.count()  # Jumlah section utama (parent=None)
-    total_materials = sum(section.materials.count() for section in section_data)  # Total material di semua section
-    total_students = course.enrollments.count()  # Jumlah peserta di kursus ini
-    total_effort_hours = course.hour if course.hour else "N/A"  # Effort dari field hour
+    total_sections = section_data.count()
+    total_materials = sum(section.materials.count() for section in section_data)
+    total_students = course.enrollments.count()
+    total_effort_hours = course.hour if course.hour else "N/A"
 
-    # Perhitungan untuk semua kursus yang dimiliki instruktur
+    # Perhitungan untuk semua kursus milik instruktur
     instructor = course.instructor
     instructor_courses = Course.objects.filter(
         instructor=instructor,
         status_course=published_status,
-        end_enrol__gte=timezone.now().date()  # Gunakan date untuk DateField
+        end_enrol__gte=timezone.now().date()
     )
-    
-    # 1. Total Course milik instruktur
+
     instructor_total_courses = instructor_courses.count()
+    instructor_total_students = sum(c.enrollments.count() for c in instructor_courses)
 
-    # 2. Total Peserta dari semua kursus instruktur
-    instructor_total_students = sum(course.enrollments.count() for course in instructor_courses)
-
-    # 3. Total Jam (Effort) dari semua kursus instruktur
     instructor_total_effort_hours = 0
     for c in instructor_courses:
-        if c.hour and c.hour.isdigit():  # Pastikan hour adalah angka
+        if c.hour and str(c.hour).isdigit():
             instructor_total_effort_hours += int(c.hour)
-    
-    # 4. Total Section dan Material dari semua kursus instruktur
-    instructor_sections = Section.objects.filter(courses__in=instructor_courses, parent=None).prefetch_related('materials')
+
+    instructor_sections = Section.objects.filter(
+        courses__in=instructor_courses, parent=None
+    ).prefetch_related('materials')
     instructor_total_sections = instructor_sections.count()
     instructor_total_materials = sum(section.materials.count() for section in instructor_sections)
 
-    # Retrieve reviews for the course and paginate them
+    # Reviews and ratings
     reviews = CourseRating.objects.filter(course=course).order_by('-created_at')
-    
-    paginator = Paginator(reviews, 5)  # Show 5 reviews per page
+    paginator = Paginator(reviews, 5)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    
-    # If user is authenticated, check if they've already rated
+
     if request.user.is_authenticated:
         user_has_rated = CourseRating.objects.filter(user=request.user, course=course).exists()
     else:
         user_has_rated = False
-       
-    # Calculate star ratings
-    average_rating = course.average_rating
-    full_stars = int(average_rating)  # Number of full stars
-    half_star = (average_rating % 1) >= 0.5  # Check if there's a half star
-    empty_stars = 5 - (full_stars + (1 if half_star else 0))  # Calculate empty stars
 
-    # Create ranges for full, half, and empty stars
+    average_rating = course.average_rating
+    full_stars = int(average_rating)
+    half_star = (average_rating % 1) >= 0.5
+    empty_stars = 5 - (full_stars + (1 if half_star else 0))
+
     full_star_range = range(full_stars)
     empty_star_range = range(empty_stars)
 
-    # Render the course detail page with additional data
     return render(request, 'home/course_detail.html', {
         'course': course,
         'is_enrolled': is_enrolled,
@@ -3395,23 +3386,20 @@ def course_lms_detail(request, id, slug):
         'total_materials': total_materials,
         'total_students': total_students,
         'total_effort_hours': total_effort_hours,
-        # Data instruktur
         'instructor': instructor,
         'instructor_total_courses': instructor_total_courses,
         'instructor_total_students': instructor_total_students,
         'instructor_total_effort_hours': instructor_total_effort_hours,
         'instructor_total_sections': instructor_total_sections,
         'instructor_total_materials': instructor_total_materials,
-        # Review
-        'reviews': page_obj, 
+        'reviews': page_obj,
         'user_has_rated': user_has_rated,
-        'range': range(1, 6),  # Pass range for looping stars
+        'range': range(1, 6),
         'full_star_range': full_star_range,
         'half_star': half_star,
         'empty_star_range': empty_star_range,
         'average_rating': average_rating
     })
-
 
 
 logger = logging.getLogger(__name__)
