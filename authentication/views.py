@@ -47,6 +47,10 @@ import html
 import re
 from django.views.decorators.http import require_http_methods
 import logging
+from django.views.decorators.http import condition
+from django.utils.decorators import decorator_from_middleware
+from utils.security import SecurityHeadersMiddleware, is_safe_slug
+from django.utils.timezone import now
 
 def about(request):
     return render(request, 'home/about.html')
@@ -114,33 +118,50 @@ def microcredential_list(request):
 
 
 #course_list lms
-@ratelimit(key='ip', rate='100/h')
+logger = logging.getLogger(__name__)
+secure_view = decorator_from_middleware(SecurityHeadersMiddleware)
+
+def get_latest_course_update(request, *args, **kwargs):
+    latest = Course.objects.order_by('-edited_on').first()
+    return latest.updated_at if latest else None
+
+@condition(last_modified_func=get_latest_course_update)
+@secure_view
+@ratelimit(key='ip', rate='100/h', block=True)
 @cache_page(60 * 15)  # Cache the page for 15 minutes
 def course_list(request):
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
 
+    logger.info("Access course_list from IP %s with filters: category=%s, language=%s, level=%s",
+        request.META.get('REMOTE_ADDR'),
+        request.GET.getlist('category'),
+        request.GET.get('language'),
+        request.GET.get('level'),
+    )
+
     published_status = CourseStatus.objects.filter(status='published').first()
     if not published_status:
         return HttpResponseNotFound("Status 'published' tidak ditemukan")
 
-    # Ambil courses dengan select_related dan prefetch_related untuk optimasi query
     courses = Course.objects.filter(
         status_course=published_status,
-        end_enrol__gte=timezone.now()
+        end_enrol__gte=now()
     ).select_related(
         'category', 'instructor__user', 'org_partner'
     ).prefetch_related('enrollments')
 
-    category_filter = request.GET.getlist('category')
+    category_filter = [
+        c for c in request.GET.getlist('category') if is_safe_slug(c)
+    ]
     language_filter = request.GET.get('language')
-    level_filter = request.GET.get('level')  # Menangkap filter level
+    level_filter = request.GET.get('level')
 
     if category_filter:
         courses = courses.filter(category__in=category_filter)
     if language_filter:
         courses = courses.filter(language=language_filter)
-    if level_filter:  # Menambahkan filter level
+    if level_filter:
         courses = courses.filter(level=level_filter)
 
     paginator = Paginator(courses, 9)
@@ -151,22 +172,21 @@ def course_list(request):
     except (PageNotAnInteger, EmptyPage):
         page_obj = paginator.get_page(1)
 
-    # Kategori dengan jumlah course
     categories = Category.objects.filter(
         category_courses__status_course=published_status,
-        category_courses__end_enrol__gte=timezone.now()
+        category_courses__end_enrol__gte=now()
     ).annotate(course_count=Count('category_courses')).distinct()
 
-    # Daftar bahasa unik dari hasil courses terfilter
     language_codes = courses.values_list('language', flat=True).distinct()
     all_languages = dict(Course.choice_language)
-    language_options = [{'code': code, 'name': all_languages.get(code, code)} for code in language_codes]
+    language_options = [
+        {'code': code, 'name': all_languages.get(code, code)}
+        for code in language_codes
+    ]
 
-    # Siapkan data untuk ditampilkan
     courses_data = []
     total_enrollments = 0
 
-    # Ambil ratings dan enrollments terkait
     for course in page_obj:
         review_qs = CourseRating.objects.filter(course=course)
         average_rating = round(review_qs.aggregate(avg=Avg('rating'))['avg'] or 0, 1)
@@ -188,10 +208,10 @@ def course_list(request):
             'instructor_username': course.instructor.user.username if course.instructor else None,
             'photo': course.instructor.user.photo.url if course.instructor and course.instructor.user.photo else None,
             'partner': course.org_partner.name if course.org_partner else None,
-            'partner_kode': course.org_partner.name.kode if course.org_partner else None,
+            'partner_kode': course.org_partner.kode if course.org_partner else None,
             'category': course.category.name if course.category else None,
-            'language': course.get_language_display(),  # ← ini
-            'level': course.level,  # Menambahkan level ke data
+            'language': course.get_language_display(),
+            'level': course.level,
             'average_rating': average_rating,
             'review_count': review_qs.count(),
             'full_star_range': range(full_stars),
@@ -210,13 +230,12 @@ def course_list(request):
         'end_index': page_obj.end_index(),
         'category_filter': category_filter,
         'language_filter': language_filter,
-        'level_filter': level_filter,  # Menambahkan level_filter ke context
+        'level_filter': level_filter,
         'categories': list(categories.values('id', 'name', 'course_count')),
         'language_options': language_options,
     }
 
     return render(request, 'home/course_list.html', context)
-
 
 
 
