@@ -869,6 +869,8 @@ def popular_courses(request):
     return JsonResponse({'courses': courses_list})
 
 
+@ratelimit(key='ip', rate='1000/h', block=True)
+@require_GET
 def home(request):
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
@@ -1057,6 +1059,7 @@ def logout_view(request):
 
 
 # Login view
+@ratelimit(key='ip', rate='100/h')
 def login_view(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -1081,6 +1084,7 @@ def login_view(request):
     return render(request, 'authentication/login.html', {'form': form})
 
 # Register view
+@ratelimit(key='ip', rate='100/h')
 def register_view(request):
     if request.method == "POST":
         form = RegistrationForm(request.POST)
@@ -1119,6 +1123,7 @@ def register_view(request):
         form = RegistrationForm()
     return render(request, 'authentication/register.html', {'form': form})
 
+@ratelimit(key='ip', rate='100/h')
 # Account activation view
 def activate_account(request, uidb64, token):
     try:
@@ -1138,7 +1143,7 @@ def activate_account(request, uidb64, token):
         return HttpResponse('Activation link is invalid or expired.')
 
 
-
+@ratelimit(key='ip', rate='100/h')
 # Custom Password Reset View
 def custom_password_reset(request):
     form = PasswordResetForm(request.POST or None)
@@ -1193,10 +1198,13 @@ def custom_password_reset(request):
     # Tampilkan form jika bukan POST atau form tidak valid
     return render(request, 'authentication/password_reset.html', {'form': form})
 
+@ratelimit(key='ip', rate='100/h')
 # Custom Password Reset Done View
 def custom_password_reset_done(request):
     return render(request, 'x/password_reset_done.html')
 
+
+@ratelimit(key='ip', rate='100/h')
 # Custom Password Reset Confirm View
 def custom_password_reset_confirm(request, uidb64, token):
     try:
@@ -1220,6 +1228,8 @@ def custom_password_reset_confirm(request, uidb64, token):
     else:
         return render(request, 'authentication/password_reset_invalid.html')
 
+
+@ratelimit(key='ip', rate='100/h')
 # Custom Password Reset Complete View
 def custom_password_reset_complete(request):
     return render(request, 'authentication/password_reset_complete.html')
