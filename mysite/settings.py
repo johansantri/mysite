@@ -25,18 +25,18 @@ SECRET_KEY = 'django-insecure-*t=li&h7o=sj40!ic&)p+8!fy3p@*tfg+mz6!xuftigv_qa9yy
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-#ALLOWED_HOSTS = ['127.0.0.1','localhost']
-ALLOWED_HOSTS = ['127.0.0.1','localhost','ini.icei.ac.id','20.11.247.222']
-SESSION_COOKIE_SECURE = True
+DEBUG = True  # Diubah menjadi True untuk development
+ALLOWED_HOSTS = ['localhost','127.0.0.1']  # Hanya localhost dan 127.0.0.1 untuk development
+
+# Menonaktifkan pengaturan keamanan untuk development
+SESSION_COOKIE_SECURE = False  # Diubah menjadi False untuk development
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
-CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = False  # Diubah menjadi False untuk development
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SAMESITE = 'Lax'
 
-SECURE_SSL_REDIRECT = True
-#SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_SSL_REDIRECT = False  # Diubah menjadi False untuk development
 RATELIMIT_IP_META_KEY = 'HTTP_X_REAL_IP'
 CSRF_TRUSTED_ORIGINS = ['https://ini.icei.ac.id']
 ALLOWED_REFERER = 'https://ini.icei.ac.id'
@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     'partner',
     'import_export',
     'django_ckeditor_5',
-    'django_ratelimit',
+    # 'django_ratelimit',  # Komentari untuk development lokal
     'django.contrib.sites',  # Required by django-allauth
     'allauth',
     'allauth.account',
@@ -72,8 +72,6 @@ INSTALLED_APPS = [
     'blog',
     'licensing',
     'audit',#audit user
- 
-    
 ]
 
 MIDDLEWARE = [
@@ -124,14 +122,15 @@ DATABASES = {
     }
 }
 
+# Menggunakan Dummy Cache atau Local Memory Cache untuk development
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
-        'LOCATION': '127.0.0.1:11211',
-
-  # Pastikan Memcached berjalan pada IP dan port ini
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
 }
+
+# Matikan Rate Limiting
+RATELIMIT_ENABLE = False
 
 
 
@@ -471,46 +470,49 @@ LOGGING = {
             'backupCount': 5,
             'formatter': 'verbose',
         },
+        'console': {  # Tambahkan console handler untuk development
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
     },
     'loggers': {
         '': {
-            'handlers': ['file'],
+            'handlers': ['file', 'console'],  # Tambahkan console untuk development
             'level': 'INFO',
             'propagate': True,
         },
         'django.request': {
-            'handlers': ['file'],
+            'handlers': ['file', 'console'],  # Tambahkan console untuk development
             'level': 'ERROR',
             'propagate': False,
         },
         'django.security': {
-            'handlers': ['file'],
+            'handlers': ['file', 'console'],  # Tambahkan console untuk development
             'level': 'WARNING',
             'propagate': False,
         },
         'middleware.log_disallowed_host': {
-            'handlers': ['file'],
+            'handlers': ['file', 'console'],  # Tambahkan console untuk development
             'level': 'WARNING',
             'propagate': False,
         },
-        'loggers': {
-            'audit.middleware': {
-                'handlers': ['console'],
-                'level': 'ERROR',
-                'propagate': False,
-            },
-            'audit.signals': {
-                'handlers': ['console'],
-                'level': 'ERROR',
-                'propagate': False,
-            },
+        'audit.middleware': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'audit.signals': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': False,
         },
     },
 }
 
 
-SITE_URL = 'https://ini.icei.ac.id'
+SITE_URL = 'localhost:8000'  # Diubah untuk development lokal
 
+# Longgarkan CSP untuk development lokal
 CONTENT_SECURITY_POLICY = {
     'DIRECTIVES': {
         # Hanya izinkan <base> tag mengarah ke domain sendiri
@@ -587,5 +589,3 @@ CONTENT_SECURITY_POLICY = {
         ),
     }
 }
-
-

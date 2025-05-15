@@ -1326,3 +1326,1750 @@ DEBUG 2025-05-15 01:38:03,567 ttFont Reading 'STAT' table from disk
 DEBUG 2025-05-15 01:38:03,567 ttFont Decompiling 'STAT' table
 DEBUG 2025-05-15 01:38:03,568 loggingTools Took 0.003s to prune 'name'
 INFO 2025-05-15 01:38:03,568 __init__ name pruned
+INFO 2025-05-15 08:53:48,206 autoreload Watching for file changes with StatReloader
+ERROR 2025-05-15 08:53:53,855 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 935, in home
+    return render(request, 'home/index.html', {
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2025-05-15 08:54:01,140 log Internal Server Error: /login/
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 1081, in login_view
+    return render(request, 'authentication/login.html', {'form': form})
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 199, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2025-05-15 08:54:36,650 log Internal Server Error: /login/
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 1081, in login_view
+    return render(request, 'authentication/login.html', {'form': form})
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+INFO 2025-05-15 08:57:04,799 autoreload C:\laragon\www\mysite\mysite\settings.py changed, reloading.
+INFO 2025-05-15 08:57:06,340 autoreload Watching for file changes with StatReloader
+ERROR 2025-05-15 08:57:09,592 log Internal Server Error: /login/
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 1081, in login_view
+    return render(request, 'authentication/login.html', {'form': form})
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2025-05-15 08:57:13,474 log Internal Server Error: /login/
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 1081, in login_view
+    return render(request, 'authentication/login.html', {'form': form})
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2025-05-15 08:57:18,013 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 935, in home
+    return render(request, 'home/index.html', {
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 199, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+INFO 2025-05-15 08:57:34,540 autoreload C:\laragon\www\mysite\mysite\settings.py changed, reloading.
+INFO 2025-05-15 08:57:36,016 autoreload Watching for file changes with StatReloader
+ERROR 2025-05-15 08:57:39,239 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 935, in home
+    return render(request, 'home/index.html', {
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+INFO 2025-05-15 09:00:06,036 autoreload C:\laragon\www\mysite\mysite\settings.py changed, reloading.
+INFO 2025-05-15 09:00:07,404 autoreload Watching for file changes with StatReloader
+ERROR 2025-05-15 09:00:11,850 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 935, in home
+    return render(request, 'home/index.html', {
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2025-05-15 09:01:32,939 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 935, in home
+    return render(request, 'home/index.html', {
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2025-05-15 09:05:09,303 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 935, in home
+    return render(request, 'home/index.html', {
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+INFO 2025-05-15 09:06:46,214 autoreload C:\laragon\www\mysite\mysite\settings.py changed, reloading.
+INFO 2025-05-15 09:06:47,845 autoreload Watching for file changes with StatReloader
+ERROR 2025-05-15 09:06:50,964 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 935, in home
+    return render(request, 'home/index.html', {
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+INFO 2025-05-15 09:07:13,836 autoreload C:\laragon\www\mysite\mysite\settings.py changed, reloading.
+INFO 2025-05-15 09:07:15,385 autoreload Watching for file changes with StatReloader
+INFO 2025-05-15 09:07:23,689 autoreload C:\laragon\www\mysite\mysite\settings.py changed, reloading.
+INFO 2025-05-15 09:07:25,305 autoreload Watching for file changes with StatReloader
+ERROR 2025-05-15 09:07:28,386 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 935, in home
+    return render(request, 'home/index.html', {
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2025-05-15 09:07:35,033 log Internal Server Error: /login/
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 1081, in login_view
+    return render(request, 'authentication/login.html', {'form': form})
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+INFO 2025-05-15 09:09:20,725 autoreload C:\laragon\www\mysite\mysite\settings.py changed, reloading.
+INFO 2025-05-15 09:09:22,712 autoreload Watching for file changes with StatReloader
+INFO 2025-05-15 09:09:28,784 autoreload C:\laragon\www\mysite\mysite\settings.py changed, reloading.
+INFO 2025-05-15 09:09:30,362 autoreload Watching for file changes with StatReloader
+ERROR 2025-05-15 09:09:37,235 log Internal Server Error: /login/
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 1081, in login_view
+    return render(request, 'authentication/login.html', {'form': form})
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2025-05-15 09:09:40,992 log Internal Server Error: /login/
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 1081, in login_view
+    return render(request, 'authentication/login.html', {'form': form})
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 199, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2025-05-15 09:09:42,675 log Internal Server Error: /login/
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 1081, in login_view
+    return render(request, 'authentication/login.html', {'form': form})
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+INFO 2025-05-15 09:09:48,299 autoreload C:\laragon\www\mysite\mysite\settings.py changed, reloading.
+INFO 2025-05-15 09:09:49,814 autoreload Watching for file changes with StatReloader
+ERROR 2025-05-15 09:09:53,809 log Internal Server Error: /login/
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 1081, in login_view
+    return render(request, 'authentication/login.html', {'form': form})
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2025-05-15 09:32:42,481 log Internal Server Error: /login/
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 1081, in login_view
+    return render(request, 'authentication/login.html', {'form': form})
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2025-05-15 09:33:07,061 log Internal Server Error: /login/
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 1081, in login_view
+    return render(request, 'authentication/login.html', {'form': form})
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+INFO 2025-05-15 09:33:41,012 autoreload C:\laragon\www\mysite\mysite\settings.py changed, reloading.
+INFO 2025-05-15 09:33:42,694 autoreload Watching for file changes with StatReloader
+ERROR 2025-05-15 09:33:49,216 log Internal Server Error: /login/
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 1081, in login_view
+    return render(request, 'authentication/login.html', {'form': form})
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2025-05-15 09:33:59,951 log Internal Server Error: /admin/login/
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 220, in _get_response
+    response = response.render()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\response.py", line 114, in render
+    self.content = self.rendered_content
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2025-05-15 09:34:10,674 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 935, in home
+    return render(request, 'home/index.html', {
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 199, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2025-05-15 09:35:51,800 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 935, in home
+    return render(request, 'home/index.html', {
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+INFO 2025-05-15 09:36:55,279 autoreload C:\laragon\www\mysite\mysite\settings.py changed, reloading.
+INFO 2025-05-15 09:36:56,712 autoreload Watching for file changes with StatReloader
+ERROR 2025-05-15 09:37:00,990 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 935, in home
+    return render(request, 'home/index.html', {
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2025-05-15 10:07:57,675 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 935, in home
+    return render(request, 'home/index.html', {
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2025-05-15 10:08:02,395 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 935, in home
+    return render(request, 'home/index.html', {
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 199, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+INFO 2025-05-15 10:08:44,190 autoreload C:\laragon\www\mysite\mysite\settings.py changed, reloading.
+INFO 2025-05-15 10:08:46,414 autoreload Watching for file changes with StatReloader
+INFO 2025-05-15 10:08:54,595 autoreload C:\laragon\www\mysite\mysite\settings.py changed, reloading.
+INFO 2025-05-15 10:08:56,353 autoreload Watching for file changes with StatReloader
+INFO 2025-05-15 10:11:23,630 autoreload C:\laragon\www\mysite\mysite\settings.py changed, reloading.
+INFO 2025-05-15 10:11:25,033 autoreload Watching for file changes with StatReloader
+ERROR 2025-05-15 10:11:37,387 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 935, in home
+    return render(request, 'home/index.html', {
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+INFO 2025-05-15 10:13:01,065 autoreload Watching for file changes with StatReloader
+ERROR 2025-05-15 10:13:11,159 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 935, in home
+    return render(request, 'home/index.html', {
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2025-05-15 10:13:17,386 log Internal Server Error: /login/
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 1081, in login_view
+    return render(request, 'authentication/login.html', {'form': form})
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 199, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2025-05-15 10:13:24,134 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 935, in home
+    return render(request, 'home/index.html', {
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+INFO 2025-05-15 10:13:52,625 autoreload C:\laragon\www\mysite\mysite\settings.py changed, reloading.
+INFO 2025-05-15 10:13:54,049 autoreload Watching for file changes with StatReloader
+ERROR 2025-05-15 10:13:58,177 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 935, in home
+    return render(request, 'home/index.html', {
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2025-05-15 10:14:02,209 log Internal Server Error: /login/
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 1081, in login_view
+    return render(request, 'authentication/login.html', {'form': form})
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 199, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2025-05-15 10:15:04,641 log Internal Server Error: /login/
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 1081, in login_view
+    return render(request, 'authentication/login.html', {'form': form})
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2025-05-15 10:15:11,142 log Internal Server Error: /login/
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 1081, in login_view
+    return render(request, 'authentication/login.html', {'form': form})
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2025-05-15 10:15:23,524 log Internal Server Error: /login/
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 1081, in login_view
+    return render(request, 'authentication/login.html', {'form': form})
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2025-05-15 10:28:43,630 log Internal Server Error: /login/
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 1081, in login_view
+    return render(request, 'authentication/login.html', {'form': form})
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2025-05-15 11:01:39,647 log Internal Server Error: /login/
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 1081, in login_view
+    return render(request, 'authentication/login.html', {'form': form})
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+INFO 2025-05-15 11:17:51,260 autoreload Watching for file changes with StatReloader
+ERROR 2025-05-15 11:17:59,610 log Internal Server Error: /login/
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 1081, in login_view
+    return render(request, 'authentication/login.html', {'form': form})
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2025-05-15 11:18:05,473 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 935, in home
+    return render(request, 'home/index.html', {
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 199, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2025-05-15 11:25:38,598 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 935, in home
+    return render(request, 'home/index.html', {
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2025-05-15 11:27:27,843 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 935, in home
+    return render(request, 'home/index.html', {
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+ERROR 2025-05-15 11:28:34,108 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 935, in home
+    return render(request, 'home/index.html', {
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+INFO 2025-05-15 11:28:52,788 autoreload C:\laragon\www\mysite\mysite\settings.py changed, reloading.
+INFO 2025-05-15 11:28:54,679 autoreload Watching for file changes with StatReloader
+ERROR 2025-05-15 11:28:59,802 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 935, in home
+    return render(request, 'home/index.html', {
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\cache\backends\memcached.py", line 75, in get
+    return self._cache.get(key, default)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 347, in get
+    return self._run_cmd("get", key, default, default=default, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 322, in _run_cmd
+    return self._safely_run_func(client, func, default_val, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\hash.py", line 211, in _safely_run_func
+    result = func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 687, in get
+    return self._fetch_cmd(b"get", [key], False, key_prefix=self.key_prefix).get(
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 1133, in _fetch_cmd
+    self._connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\pymemcache\client\base.py", line 424, in _connect
+    sock.connect(sockaddr)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+INFO 2025-05-15 11:30:49,717 autoreload C:\laragon\www\mysite\mysite\settings.py changed, reloading.
+INFO 2025-05-15 11:30:51,224 autoreload Watching for file changes with StatReloader
+INFO 2025-05-15 11:32:37,161 autoreload C:\laragon\www\mysite\mysite\settings.py changed, reloading.
+INFO 2025-05-15 11:32:38,567 autoreload Watching for file changes with StatReloader
+INFO 2025-05-15 11:33:09,507 autoreload Watching for file changes with StatReloader
+ERROR 2025-05-15 11:33:16,517 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django_redis\cache.py", line 29, in _decorator
+    return method(self, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django_redis\cache.py", line 99, in _get
+    return self.client.get(key, default=default, version=version, client=client)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django_redis\client\default.py", line 260, in get
+    raise ConnectionInterrupted(connection=client) from e
+django_redis.exceptions.ConnectionInterrupted: Redis ConnectionError: Error 10061 connecting to 127.0.0.1:6379. No connection could be made because the target machine actively refused it.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 935, in home
+    return render(request, 'home/index.html', {
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django_redis\cache.py", line 92, in get
+    value = self._get(key, default, version, client)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django_redis\cache.py", line 36, in _decorator
+    raise e.__cause__
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django_redis\client\default.py", line 258, in get
+    value = client.get(key)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\redis\commands\core.py", line 1829, in get
+    return self.execute_command("GET", name, keys=[name])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\redis\client.py", line 622, in execute_command
+    return self._execute_command(*args, **options)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\redis\client.py", line 628, in _execute_command
+    conn = self.connection or pool.get_connection()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\redis\utils.py", line 188, in wrapper
+    return func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\redis\connection.py", line 1522, in get_connection
+    connection.connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\redis\connection.py", line 379, in connect
+    self.connect_check_health(check_health=True)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\redis\connection.py", line 391, in connect_check_health
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error 10061 connecting to 127.0.0.1:6379. No connection could be made because the target machine actively refused it.
+INFO 2025-05-15 11:36:35,716 autoreload C:\laragon\www\mysite\mysite\settings.py changed, reloading.
+INFO 2025-05-15 11:36:37,504 autoreload Watching for file changes with StatReloader
+INFO 2025-05-15 11:38:10,146 autoreload C:\laragon\www\mysite\mysite\settings.py changed, reloading.
+INFO 2025-05-15 11:38:11,456 autoreload Watching for file changes with StatReloader
+INFO 2025-05-15 11:43:54,141 autoreload C:\laragon\www\mysite\mysite\settings.py changed, reloading.
+INFO 2025-05-15 11:43:56,292 autoreload Watching for file changes with StatReloader
+INFO 2025-05-15 11:44:25,011 autoreload C:\laragon\www\mysite\mysite\settings.py changed, reloading.
+INFO 2025-05-15 11:44:26,985 autoreload Watching for file changes with StatReloader
+ERROR 2025-05-15 11:44:31,361 log Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django_redis\cache.py", line 29, in _decorator
+    return method(self, *args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django_redis\cache.py", line 99, in _get
+    return self.client.get(key, default=default, version=version, client=client)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django_redis\client\default.py", line 260, in get
+    raise ConnectionInterrupted(connection=client) from e
+django_redis.exceptions.ConnectionInterrupted: Redis ConnectionError: Error 10061 connecting to 127.0.0.1:6379. No connection could be made because the target machine actively refused it.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\laragon\www\mysite\authentication\views.py", line 935, in home
+    return render(request, 'home/index.html', {
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\base.py", line 169, in render
+    with context.bind_template(self):
+  File "C:\laragon\bin\python\python-3.10\lib\contextlib.py", line 135, in __enter__
+    return next(self.gen)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django\template\context.py", line 256, in bind_template
+    context = processor(self.request)
+  File "C:\laragon\www\mysite\authentication\context_processors.py", line 12, in search_history_context
+    search_history = cache.get(cache_key, [])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django_redis\cache.py", line 92, in get
+    value = self._get(key, default, version, client)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django_redis\cache.py", line 36, in _decorator
+    raise e.__cause__
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\django_redis\client\default.py", line 258, in get
+    value = client.get(key)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\redis\commands\core.py", line 1829, in get
+    return self.execute_command("GET", name, keys=[name])
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\redis\client.py", line 622, in execute_command
+    return self._execute_command(*args, **options)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\redis\client.py", line 628, in _execute_command
+    conn = self.connection or pool.get_connection()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\redis\utils.py", line 188, in wrapper
+    return func(*args, **kwargs)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\redis\connection.py", line 1522, in get_connection
+    connection.connect()
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\redis\connection.py", line 379, in connect
+    self.connect_check_health(check_health=True)
+  File "C:\laragon\bin\python\python-3.10\lib\site-packages\redis\connection.py", line 391, in connect_check_health
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error 10061 connecting to 127.0.0.1:6379. No connection could be made because the target machine actively refused it.
+INFO 2025-05-15 11:45:13,859 autoreload C:\laragon\www\mysite\mysite\settings.py changed, reloading.
+INFO 2025-05-15 11:45:15,630 autoreload Watching for file changes with StatReloader
