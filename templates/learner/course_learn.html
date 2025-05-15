@@ -187,13 +187,13 @@
           
       
                   {% endif %}
-                </div>
-              {% endif %}
+                </div>                
+                {% endif %}
 
                 <!-- Open Response Questions (AskOra) -->
                 {% if not current_content.1.questions.exists %}
                   <div class="askora-item" style="padding: 20px; background-color: #f9f9f9;">
-                    <h3 class="h5" style="color: rgb(2, 2, 2); font-size: 24px;">Assessment: {{ current_content.1.name }}</h3>
+                    <h3 class="h5" style="color: rgb(2, 2, 2); font-size: 24px;">Assessmentx: {{ current_content.1.name }}</h3>
                     <ul style="list-style: none; padding-left: 0;">
                       {% for ask_ora in current_content.1.ask_oras.all %}
                         <li class="question" style="margin-bottom: 30px;">
@@ -249,7 +249,6 @@
                         <li style="font-size: 16px; color: #555;">No open response questions available.</li>
                       {% endfor %}
                     </ul>
-
                     <!-- Peer Review Submissions -->
                     <h3 style="font-size: 18px; color: #555; margin-top: 20px;">Peer Review Submissions</h3>
                     <ul style="list-style: none; padding-left: 0;">
@@ -297,7 +296,33 @@
                     </ul>
                   </div>
                 {% endif %}
+
+
+                <!-- LTI -->
+
+                
+                {% if not current_content.2.questions.exists %}
+                  <div class="askora-item" style="padding: 20px; background-color: #f9f9f9;">
+                    
+                    <ul style="list-style: none; padding-left: 0;">
+                      {% if current_content.1.lti_tools.exists %}
+                        {% for tool in current_content.1.lti_tools.all %}
+                          <li>
+                            {{ tool.name }} –
+                            <a href="{{ tool.launch_url }}" target="_blank">Launch</a>
+                          </li>
+                        {% endfor %}
+                      {% else %}
+                        <li style="font-size: 16px; color: #555;">No LTI tools for this assessment.</li>
+                      {% endif %}
+                    </ul>
+                  </div>
+                {% endif %}
+
+
+
               {% endif %}
+              
 
               <!-- Navigation buttons for content -->
               <div class="d-flex justify-content-between" style="margin-top: 30px;">

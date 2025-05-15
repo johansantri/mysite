@@ -2477,7 +2477,8 @@ def course_learn(request, username, slug):
             Prefetch('questions', queryset=Question.objects.all().prefetch_related(
                 Prefetch('choices', queryset=Choice.objects.all())
             )),
-            Prefetch('ask_oras', queryset=AskOra.objects.all())
+            Prefetch('ask_oras', queryset=AskOra.objects.all()),
+            Prefetch('lti_tools', queryset=LTIExternalTool.objects.all())
         ))
     )
 
@@ -2705,7 +2706,7 @@ def course_learn(request, username, slug):
             'final_score': final_score,
             'can_review': user_has_submitted
         })
-
+    lti_tools = LTIExternalTool.objects.filter(assessment__section__courses=course)
     context = {
         'course': course,
         'course_name': course_name,
@@ -2732,6 +2733,7 @@ def course_learn(request, username, slug):
         'answered_questions': answered_questions,
         'askoras': askoras,
         'submissions': submissions,
+        'lti_tools': lti_tools,
         'peer_submissions_data': peer_submissions_data,
     }
 
