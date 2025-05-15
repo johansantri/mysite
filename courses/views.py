@@ -37,6 +37,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Prefetch
 import time
 import re
+from django.db import DatabaseError
+from django.views.decorators.csrf import csrf_protect
+import bleach
 import html  # Tambahkan impor ini
 from django.db import IntegrityError
 from django.middleware.csrf import get_token
@@ -1477,53 +1480,135 @@ def micro_detail(request, id, slug):
     return render(request, 'micro/micro_detail.html', context)
 
 
-def add_comment_microcredential(request, microcredential_id, slug):
-    # Mengecek apakah pengguna sudah login
-    if not request.user.is_authenticated:
-        return redirect("/login/?next=%s" % request.path)
-    
-    # Ambil data MicroCredential
-    microcredential = get_object_or_404(MicroCredential, id=microcredential_id, slug=slug)
+logger = logging.getLogger(__name__)
 
-    if request.method == 'POST':
-        # Mengecek apakah request mencurigakan (bot detection)
+# Form untuk validasi input komentar
+class CommentForm(forms.Form):
+    content = forms.CharField(max_length=1000, min_length=1, strip=True)
+    parent_id = forms.IntegerField(required=False)
+    honeypot = forms.CharField(required=False, widget=forms.HiddenInput)  # Honeypot untuk bot detection
+
+    def clean_content(self):
+        content = self.cleaned_data['content']
+        # Sanitasi HTML menggunakan bleach
+        cleaned_content = bleach.clean(content, tags=['p', 'br', 'strong', 'em'], strip=True)
+        if len(cleaned_content.strip()) == 0:
+            raise ValidationError("Comment cannot be empty after sanitization.")
+        return cleaned_content
+
+    def clean_honeypot(self):
+        honeypot = self.cleaned_data['honeypot']
+        if honeypot:
+            raise ValidationError("Suspicious activity detected.")
+        return honeypot
+
+# Fungsi untuk mendeteksi aktivitas mencurigakan (bot detection)
+def is_suspicious(request):
+    user_agent = request.META.get('HTTP_USER_AGENT', '').lower()
+    # Contoh pemeriksaan sederhana: User-Agent kosong atau mencurigakan
+    if not user_agent or 'bot' in user_agent or 'crawler' in user_agent:
+        logger.warning("Suspicious request detected: Invalid User-Agent", extra={'user_agent': user_agent})
+        return True
+    # Periksa honeypot melalui form
+    return False
+
+# Fungsi untuk memeriksa kata kunci terlarang
+def contains_blacklisted_keywords(content):
+    blacklist = ['<script>', 'javascript:', 'onerror', 'onload', 'viagra', 'casino']  # Sesuaikan
+    content_lower = content.lower()
+    for keyword in blacklist:
+        if keyword in content_lower:
+            logger.warning("Blacklisted keyword detected: %s", keyword)
+            return True
+    return False
+
+# Fungsi untuk memeriksa spam berdasarkan cooldown
+def is_spam(user, cache_key_prefix="comment_spam"):
+    from django.core.cache import cache
+    cache_key = f"{cache_key_prefix}:{user.id}"
+    last_comment_time = cache.get(cache_key)
+    if last_comment_time:
+        cooldown_seconds = 30  # Cooldown 30 detik
+        if (timezone.now() - last_comment_time).total_seconds() < cooldown_seconds:
+            logger.warning("Spam detected: User %s posting too frequently", user.id)
+            return True
+    cache.set(cache_key, timezone.now(), timeout=60)  # Cache selama 60 detik
+    return False
+
+# Kunci untuk rate-limiting
+def get_ratelimit_key(group, request):
+    user_agent = request.META.get('HTTP_USER_AGENT', 'unknown')
+    return f"{request.META.get('REMOTE_ADDR')}:{user_agent}"
+
+@ratelimit(key=get_ratelimit_key, rate='10/m', block=True)  # Batasi 10 permintaan per menit
+@csrf_protect
+@require_POST  # Hanya izinkan POST
+def add_comment_microcredential(request, microcredential_id, slug):
+    try:
+        # Mengecek apakah pengguna sudah login
+        if not request.user.is_authenticated:
+            return redirect(f"/login/?next={request.path}")
+
+        # Ambil data MicroCredential
+        microcredential = get_object_or_404(MicroCredential, id=microcredential_id, slug=slug)
+
+        # Validasi form
+        form = CommentForm(request.POST)
+        if not form.is_valid():
+            logger.warning("Invalid comment form submission: %s", form.errors)
+            messages.warning(request, "Invalid comment data.")
+            return redirect('courses:micro_detail', id=microcredential.id, slug=microcredential.slug)
+
+        # Deteksi bot melalui is_suspicious
         if is_suspicious(request):
+            logger.warning("Suspicious activity detected for user %s", request.user.id)
             messages.warning(request, "Suspicious activity detected. Comment not posted.")
             return redirect('courses:micro_detail', id=microcredential.id, slug=microcredential.slug)
 
-        content = request.POST.get('content')
-        parent_id = request.POST.get('parent_id')
+        content = form.cleaned_data['content']
+        parent_id = form.cleaned_data['parent_id']
         parent_comment = None
 
-        # Menentukan apakah ini komentar balasan
+        # Validasi parent_id jika ada
         if parent_id:
-            parent_comment = get_object_or_404(MicroCredentialComment, id=parent_id)
+            try:
+                parent_comment = MicroCredentialComment.objects.get(id=parent_id, microcredential=microcredential)
+            except MicroCredentialComment.DoesNotExist:
+                logger.warning("Invalid parent comment ID: %s", parent_id)
+                messages.warning(request, "Invalid parent comment.")
+                return redirect('courses:micro_detail', id=microcredential.id, slug=microcredential.slug)
 
-        # Membuat objek komentar
+        # Periksa kata kunci terlarang
+        if contains_blacklisted_keywords(content):
+            messages.warning(request, "Your comment contains blacklisted content.")
+            return redirect('courses:micro_detail', id=microcredential.id, slug=microcredential.slug)
+
+        # Periksa spam
+        if is_spam(request.user):
+            messages.warning(request, "You are posting too frequently. Please wait a moment before posting again.")
+            return redirect('courses:micro_detail', id=microcredential.id, slug=microcredential.slug)
+
+        # Buat dan simpan komentar
         comment = MicroCredentialComment(
             user=request.user,
             content=content,
             microcredential=microcredential,
             parent=parent_comment
         )
-
-        # Memeriksa apakah komentar mengandung kata kunci terlarang
-        if comment.contains_blacklisted_keywords():
-            messages.warning(request, "Your comment contains blacklisted content.")
-            return redirect('courses:micro_detail', id=microcredential.id, slug=microcredential.slug)
-
-        # Memeriksa apakah komentar adalah spam berdasarkan cooldown
-        if comment.is_spam():
-            messages.warning(request, "You are posting too frequently. Please wait a moment before posting again.")
-            return redirect('courses:micro_detail', id=microcredential.id, slug=microcredential.slug)
-
-        # Simpan komentar ke database
         comment.save()
 
         messages.success(request, 'Your comment has been posted.')
         return redirect('courses:micro_detail', id=microcredential.id, slug=microcredential.slug)
+
+    except DatabaseError:
+        logger.exception("Database error in add_comment_microcredential")
+        messages.error(request, "A server error occurred. Please try again later.")
+        return redirect('courses:micro_detail', id=microcredential.id, slug=microcredential.slug)
+    except Exception as e:
+        logger.exception("Unexpected error in add_comment_microcredential: %s", str(e))
+        messages.error(request, "An unexpected error occurred.")
+        return redirect('courses:micro_detail', id=microcredential.id, slug=microcredential.slug)
     
-    return redirect('courses:micro_detail', id=microcredential.id, slug=microcredential.slug)
 
 def reply_comment(request, comment_id):
     if not request.user.is_authenticated:

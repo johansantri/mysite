@@ -47,10 +47,11 @@ import html
 import re
 from django.views.decorators.http import require_http_methods
 import logging
-from django.views.decorators.http import condition
-from django.utils.decorators import decorator_from_middleware
-from utils.security import SecurityHeadersMiddleware, is_safe_slug
-from django.utils.timezone import now
+from django.views.decorators.vary import vary_on_headers
+from django.core.exceptions import ValidationError
+from django.http import HttpResponseServerError, HttpResponseBadRequest
+from django.db import DatabaseError
+from django.utils.text import slugify
 
 def about(request):
     return render(request, 'home/about.html')
@@ -117,125 +118,189 @@ def microcredential_list(request):
 
 
 
-#course_list lms
 logger = logging.getLogger(__name__)
-secure_view = decorator_from_middleware(SecurityHeadersMiddleware)
 
-def get_latest_course_update(request, *args, **kwargs):
-    latest = Course.objects.order_by('-edited_on').first()
-    return latest.updated_at if latest else None
+# Fungsi untuk menghasilkan kunci rate-limiting
+def get_ratelimit_key(group, request):
+    user_agent = request.META.get('HTTP_USER_AGENT', 'unknown')
+    key = f"{request.META.get('REMOTE_ADDR')}:{user_agent}"
+    logger.debug("Rate limit key generated: %s", key)
+    return key
 
-@condition(last_modified_func=get_latest_course_update)
-@secure_view
-@ratelimit(key='ip', rate='100/h', block=True)
-@cache_page(60 * 15)  # Cache the page for 15 minutes
-def course_list(request):
-    if request.method != 'GET':
-        return HttpResponseNotAllowed(['GET'])
+# Fungsi validasi untuk language
+def validate_language(value):
+    if value not in dict(Course.choice_language):
+        raise ValidationError(f"Invalid language: {value}")
+    return value
 
-    logger.info("Access course_list from IP %s with filters: category=%s, language=%s, level=%s",
-        request.META.get('REMOTE_ADDR'),
-        request.GET.getlist('category'),
-        request.GET.get('language'),
-        request.GET.get('level'),
-    )
+# Fungsi validasi untuk level
+def validate_level(value):
+    valid_levels = ['beginner', 'intermediate', 'advanced']  # Sesuaikan dengan model
+    if value not in valid_levels:
+        raise ValidationError(f"Invalid level: {value}")
+    return value
 
-    published_status = CourseStatus.objects.filter(status='published').first()
-    if not published_status:
-        return HttpResponseNotFound("Status 'published' tidak ditemukan")
-
-    courses = Course.objects.filter(
-        status_course=published_status,
-        end_enrol__gte=now()
-    ).select_related(
-        'category', 'instructor__user', 'org_partner'
-    ).prefetch_related('enrollments')
-
-    category_filter = [
-        c for c in request.GET.getlist('category') if is_safe_slug(c)
-    ]
-    language_filter = request.GET.get('language')
-    level_filter = request.GET.get('level')
-
-    if category_filter:
-        courses = courses.filter(category__in=category_filter)
-    if language_filter:
-        courses = courses.filter(language=language_filter)
-    if level_filter:
-        courses = courses.filter(level=level_filter)
-
-    paginator = Paginator(courses, 9)
-    page_number = request.GET.get('page', 1)
-
+# Fungsi validasi untuk category_filter
+def validate_category_ids(category_ids):
     try:
-        page_obj = paginator.get_page(page_number)
-    except (PageNotAnInteger, EmptyPage):
-        page_obj = paginator.get_page(1)
+        # Konversi ke integer dan pastikan valid
+        valid_ids = [int(cat_id) for cat_id in category_ids if cat_id.strip()]
+        # Verifikasi bahwa ID ada di database
+        existing_ids = set(Category.objects.filter(id__in=valid_ids).values_list('id', flat=True))
+        return [cat_id for cat_id in valid_ids if cat_id in existing_ids]
+    except (ValueError, TypeError):
+        return []
 
-    categories = Category.objects.filter(
-        category_courses__status_course=published_status,
-        category_courses__end_enrol__gte=now()
-    ).annotate(course_count=Count('category_courses')).distinct()
+@ratelimit(key=get_ratelimit_key, rate='100/h', block=True)
+@cache_page(60 * 15)
+@vary_on_headers('Accept-Language', 'Cookie')
+def course_list(request):
+    try:
+        # Batasi hanya metode GET
+        if request.method != 'GET':
+            return HttpResponseNotAllowed(['GET'])
 
-    language_codes = courses.values_list('language', flat=True).distinct()
-    all_languages = dict(Course.choice_language)
-    language_options = [
-        {'code': code, 'name': all_languages.get(code, code)}
-        for code in language_codes
-    ]
+        # Validasi dan sanitasi input
+        raw_category_filter = request.GET.getlist('category')[:10]  # Batasi 10 kategori
+        category_filter = validate_category_ids(raw_category_filter)
+        if raw_category_filter and not category_filter:
+            return HttpResponseBadRequest("Invalid category filter")
 
-    courses_data = []
-    total_enrollments = 0
+        language_filter = request.GET.get('language')
+        level_filter = request.GET.get('level')
+        page_number = request.GET.get('page', 1)
 
-    for course in page_obj:
-        review_qs = CourseRating.objects.filter(course=course)
-        average_rating = round(review_qs.aggregate(avg=Avg('rating'))['avg'] or 0, 1)
-        full_stars = int(average_rating)
-        half_star = (average_rating % 1) >= 0.5
-        empty_stars = 5 - full_stars - (1 if half_star else 0)
+        if language_filter:
+            try:
+                language_filter = validate_language(language_filter)
+            except ValidationError:
+                return HttpResponseBadRequest("Invalid language filter")
+        if level_filter:
+            try:
+                level_filter = validate_level(level_filter)
+            except ValidationError:
+                return HttpResponseBadRequest("Invalid level filter")
 
-        num_enrollments = course.enrollments.count()
-        total_enrollments += num_enrollments
-
-        courses_data.append({
-            'course_name': course.course_name,
-            'hour': course.hour,
-            'course_id': course.id,
-            'num_enrollments': num_enrollments,
-            'course_slug': course.slug,
-            'course_image': course.image.url if course.image else None,
-            'instructor': course.instructor.user.get_full_name() if course.instructor else None,
-            'instructor_username': course.instructor.user.username if course.instructor else None,
-            'photo': course.instructor.user.photo.url if course.instructor and course.instructor.user.photo else None,
-            'partner': course.org_partner.name if course.org_partner else None,
-            'partner_kode': course.org_partner.kode if course.org_partner else None,
-            'category': course.category.name if course.category else None,
-            'language': course.get_language_display(),
-            'level': course.level,
-            'average_rating': average_rating,
-            'review_count': review_qs.count(),
-            'full_star_range': range(full_stars),
-            'half_star': half_star,
-            'empty_star_range': range(empty_stars),
+        # Logging akses
+        logger.info("Access course_list", extra={
+            'ip': request.META.get('REMOTE_ADDR'),
+            'category': category_filter[:3],  # Batasi jumlah kategori yang dicatat
+            'language': language_filter,
+            'level': level_filter,
         })
 
-    context = {
-        'courses': courses_data,
-        'page_obj': page_obj,
-        'total_courses': courses.count(),
-        'total_enrollments': total_enrollments,
-        'total_pages': paginator.num_pages,
-        'current_page': page_obj.number,
-        'start_index': page_obj.start_index(),
-        'end_index': page_obj.end_index(),
-        'category_filter': category_filter,
-        'language_filter': language_filter,
-        'level_filter': level_filter,
-        'categories': list(categories.values('id', 'name', 'course_count')),
-        'language_options': language_options,
-    }
+        # Ambil status published
+        published_status = CourseStatus.objects.filter(status='published').first()
+        if not published_status:
+            return HttpResponseNotFound("Status 'published' tidak ditemukan")
 
-    return render(request, 'home/course_list.html', context)
+        # Query courses dengan optimasi
+        courses = Course.objects.filter(
+            status_course=published_status,
+            end_enrol__gte=timezone.now()
+        ).select_related(
+            'category', 'instructor__user', 'org_partner'
+        ).prefetch_related('enrollments')
+
+        # Terapkan filter
+        if category_filter:
+            courses = courses.filter(category__id__in=category_filter)  # Gunakan id secara eksplisit
+        if language_filter:
+            courses = courses.filter(language=language_filter)
+        if level_filter:
+            courses = courses.filter(level=level_filter)
+
+        # Paginasi
+        paginator = Paginator(courses, 9)
+        try:
+            page_number = int(page_number)
+            if page_number < 1 or page_number > 100:  # Batasi halaman maksimum
+                page_number = 1
+            page_obj = paginator.get_page(page_number)
+        except (PageNotAnInteger, EmptyPage, ValueError):
+            page_obj = paginator.get_page(1)
+
+        # Cache kategori
+        cache_key_categories = 'categories'
+        categories = cache.get(cache_key_categories)
+        if not categories:
+            categories = Category.objects.filter(
+                category_courses__status_course=published_status,
+                category_courses__end_enrol__gte=timezone.now()
+            ).annotate(course_count=Count('category_courses')).distinct()[:50]
+            cache.set(cache_key_categories, list(categories.values('id', 'name', 'course_count')), 60 * 60)
+
+        # Cache daftar bahasa
+        cache_key_languages = 'language_options'
+        language_options = cache.get(cache_key_languages)
+        if not language_options:
+            language_codes = courses.values_list('language', flat=True).distinct()[:50]
+            all_languages = dict(Course.choice_language)
+            language_options = [{'code': code, 'name': all_languages.get(code, code)} for code in language_codes]
+            cache.set(cache_key_languages, language_options, 60 * 60)
+
+        # Siapkan data courses
+        courses_data = []
+        total_enrollments = 0
+
+        for course in page_obj:
+            review_qs = CourseRating.objects.filter(course=course)
+            average_rating = round(review_qs.aggregate(avg=Avg('rating'))['avg'] or 0, 1)
+            full_stars = int(average_rating)
+            half_star = (average_rating % 1) >= 0.5
+            empty_stars = 5 - full_stars - (1 if half_star else 0)
+
+            num_enrollments = course.enrollments.count()
+            total_enrollments += num_enrollments
+
+            courses_data.append({
+                'course_name': course.course_name,
+                'hour': course.hour,
+                'course_id': course.id,
+                'num_enrollments': num_enrollments,
+                'course_slug': course.slug,
+                'course_image': course.image.url if course.image else None,
+                'instructor': course.instructor.user.get_full_name() if course.instructor else None,
+                'instructor_username': course.instructor.user.username if course.instructor else None,
+                'photo': course.instructor.user.photo.url if course.instructor and course.instructor.user.photo else None,
+                'partner': course.org_partner.name if course.org_partner else None,
+                'partner_kode': course.org_partner.name.kode if course.org_partner else None,
+                'category': course.category.name if course.category else None,
+                'language': course.get_language_display(),
+                'level': course.level,
+                'average_rating': average_rating,
+                'review_count': review_qs.count(),
+                'full_star_range': range(full_stars),
+                'half_star': half_star,
+                'empty_star_range': range(empty_stars),
+            })
+
+        # Konteks untuk template
+        context = {
+            'courses': courses_data,
+            'page_obj': page_obj,
+            'total_courses': courses.count(),
+            'total_enrollments': total_enrollments,
+            'total_pages': paginator.num_pages,
+            'current_page': page_obj.number,
+            'start_index': page_obj.start_index(),
+            'end_index': page_obj.end_index(),
+            'category_filter': category_filter,
+            'language_filter': language_filter,
+            'level_filter': level_filter,
+            'categories': list(categories) if isinstance(categories, list) else list(categories.values('id', 'name', 'course_count')),
+            'language_options': language_options,
+        }
+
+        return render(request, 'home/course_list.html', context)
+
+    except DatabaseError:
+        logger.exception("Database error in course_list")
+        return HttpResponseServerError("Terjadi kesalahan pada server. Silakan coba lagi nanti.")
+    except Exception as e:
+        logger.exception("Unexpected error in course_list: %s", str(e))
+        return HttpResponseServerError("Terjadi kesalahan yang tidak terduga.")
+
 
 
 
