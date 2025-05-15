@@ -57,7 +57,7 @@ def mycourse(request):
         courses = Enrollment.objects.filter(user=request.user)
 
         if request.method != 'GET':
-            return HttpResponseNotAllowed("Metode tidak diperbolehkan")
+            return HttpResponseNotAllowed(['GET'])
         
         search_query = request.GET.get('search', '')
         if search_query:
@@ -86,7 +86,7 @@ def microcredential_list(request):
         microcredentials = MicroCredentialEnrollment.objects.filter(user=request.user)
         # Jika metode bukan GET, batalkan
         if request.method != 'GET':
-            return HttpResponseNotAllowed("Metode tidak diperbolehkan")
+            return HttpResponseNotAllowed(['GET'])
         
         # Pencarian (Search)
         search_query = request.GET.get('search', '')
@@ -118,7 +118,7 @@ def microcredential_list(request):
 @cache_page(60 * 15)  # Cache the page for 15 minutes
 def course_list(request):
     if request.method != 'GET':
-        return HttpResponseNotAllowed("Metode tidak diperbolehkan")
+        return HttpResponseNotAllowed(['GET'])
 
     published_status = CourseStatus.objects.filter(status='published').first()
     if not published_status:
@@ -815,7 +815,7 @@ def edit_profile_save(request, pk):
 @require_GET
 def popular_courses(request):
     now = timezone.now().date()
-
+    
     try:
         published_status = CourseStatus.objects.get(status='published')
     except CourseStatus.DoesNotExist:
@@ -871,7 +871,7 @@ def popular_courses(request):
 
 def home(request):
     if request.method != 'GET':
-        return HttpResponseNotAllowed("Metode tidak diperbolehkan")
+        return HttpResponseNotAllowed(['GET'])
 
     published_status = CourseStatus.objects.filter(status='published').first()
 

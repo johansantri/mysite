@@ -27,7 +27,7 @@ urlpatterns = [
     path('', include('learner.urls', namespace='learner')),
     path('', include('blog.urls', namespace='blog')),
     path('', include('licensing.urls', namespace='licensing')),
-    path('admin/', admin.site.urls),
+    path('kuruk/', admin.site.urls),
     path('captcha/', include('captcha.urls')),
     path('accounts/',include("allauth.urls")),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
