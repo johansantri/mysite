@@ -1168,7 +1168,7 @@ def category_course_list(request, slug):
     return render(request, 'courses/course_list.html', context)
 
 @csrf_protect
-@require_POST
+
 def search_posts(request):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
@@ -1205,7 +1205,6 @@ def search_posts(request):
     return HttpResponse(html if html else '<p>No posts found for this search.</p>')
 
 @csrf_protect
-@require_POST
 def posts_by_hashtag(request, hashtag):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
