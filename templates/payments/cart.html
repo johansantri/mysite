@@ -25,6 +25,8 @@
         <div class="text-end">
             <h4>Total: IDR {{ total_price|intcomma }}</h4>
             <a href="{% url 'payments:checkout' %}" class="btn btn-success mt-2">Proceed to Checkout</a>
+            <a href="{% url 'payments:transaction_history' %}">My Transactions</a>
+
         </div>
     {% else %}
         <p>Your cart is empty.</p>

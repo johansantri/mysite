@@ -856,6 +856,12 @@
                         <i class="bi bi-chat-dots-fill me-2"></i> Social
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'payments:transaction_history' %}" class="nav-link footer-link d-flex align-items-center transition-all hover-scale">
+                         <i class="bi bi-cash-stack"></i>  Transaction
+                    </a>
+                </li>
                 {% if request.user.is_superuser or request.user.is_staff or request.user.is_partner or request.user.is_instructor %}
                     <li class="nav-item">
                         <a href="{% url 'blog:blog-list-admin' %}" class="nav-link footer-link d-flex align-items-center transition-all hover-scale">

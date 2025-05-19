@@ -8,4 +8,5 @@ urlpatterns = [
     path('cart/', views.view_cart, name='view_cart'),  # contoh tampilan cart
     path('checkout/', views.checkout, name='checkout'),
     path('cart/delete/<int:pk>/', views.cart_item_delete, name='cart_item_delete'),
+    path('transactions/', views.transaction_history, name='transaction_history'),
 ]

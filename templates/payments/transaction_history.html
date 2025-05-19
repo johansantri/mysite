@@ -1,0 +1,98 @@
+{% extends 'home/tes.html' %}
+{% load humanize %}
+{% block content %}
+
+    <h2 class="mb-4">Transaction History</h2>
+
+    {% if transactions %}
+        <!-- Filter Status -->
+        <div class="mb-4">
+            <a href="?status=all" class="btn btn-sm {% if selected_status == 'all' %}btn-primary{% else %}btn-outline-primary{% endif %}">All</a>
+            <a href="?status=paid" class="btn btn-sm {% if selected_status == 'paid' %}btn-success{% else %}btn-outline-success{% endif %}">Paid</a>
+            <a href="?status=pending" class="btn btn-sm {% if selected_status == 'pending' %}btn-warning text-dark{% else %}btn-outline-warning{% endif %}">Pending</a>
+            <a href="?status=failed" class="btn btn-sm {% if selected_status == 'failed' %}btn-danger{% else %}btn-outline-danger{% endif %}">Failed</a>
+        </div>
+
+        <!-- Summary Info -->
+        <div class="row mb-4">
+            <div class="col-md-4 mb-2">
+                <div class="card shadow-sm border-0 bg-info">
+                    <div class="card-body text-center">
+                        <h5 class="mb-1">Total Transactions</h5>
+                        <h4 class="fw-bold">{{ total_transactions }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-2">
+                <div class="card shadow-sm border-0 bg-success text-white">
+                    <div class="card-body text-center">
+                        <h5 class="mb-1">Total Paid</h5>
+                        <h4 class="fw-bold">IDR {{ total_paid|intcomma }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-2">
+                <div class="card shadow-sm border-0 bg-warning text-dark">
+                    <div class="card-body text-center">
+                        <h5 class="mb-1">Total Pending</h5>
+                        <h4 class="fw-bold">IDR {{ total_pending|intcomma }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transaction List -->
+        {% for tx in transactions %}
+            <div class="card shadow-sm mb-4 border-start border-4 
+                {% if tx.status == 'paid' %}
+                    border-success
+                {% elif tx.status == 'pending' %}
+                    border-warning
+                {% else %}
+                    border-danger
+                {% endif %}
+            ">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="mb-0">
+                            <i class="bi 
+                                {% if tx.status == 'paid' %}bi-check-circle-fill text-success
+                                {% elif tx.status == 'pending' %}bi-hourglass-split text-warning
+                                {% else %}bi-x-circle-fill text-danger{% endif %}
+                            me-2"></i>
+                            TXN-{{ tx.id|stringformat:"05d" }}
+                        </h5>
+                        <span class="badge 
+                            {% if tx.status == 'paid' %}bg-success
+                            {% elif tx.status == 'pending' %}bg-warning text-dark
+                            {% else %}bg-danger{% endif %}
+                        ">
+                            {{ tx.status|title }}
+                        </span>
+                    </div>
+                    <p class="mb-1"><strong>Total:</strong> IDR {{ tx.total_amount|intcomma }}</p>
+                    <p class="mb-1"><strong>Date:</strong> {{ tx.created_at|date:"d M Y, H:i" }}</p>
+                    {% if tx.description %}
+                        <p class="mb-1"><strong>Description:</strong> {{ tx.description }}</p>
+                    {% endif %}
+                    <p class="mb-1"><strong>Courses:</strong></p>
+                    <ul class="ps-3 mb-0">
+                        {% for course in tx.courses.all %}
+                            <li>
+                                <a href="{% url 'courses:course_lms_detail' course.id course.slug %}" class="text-decoration-none">
+                                    {{ course.course_name }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-info">
+            You have no transactions yet.
+            <a href="{% url 'authentication:course_list' %}" class="alert-link">Browse courses</a> to get started.
+        </div>
+    {% endif %}
+
+{% endblock %}

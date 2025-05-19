@@ -1,7 +1,7 @@
 # payments/views.py
 
 from django.shortcuts import render
-
+from django.db.models import Sum
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404, redirect
@@ -98,3 +98,23 @@ def cart_item_delete(request, pk):
     item = get_object_or_404(CartItem, pk=pk, user=request.user)
     item.delete()
     return redirect('payments:view_cart')
+
+@login_required
+def transaction_history(request):
+    status_filter = request.GET.get('status', 'all')
+    transactions = Transaction.objects.filter(user=request.user)
+
+    if status_filter in ['paid', 'pending', 'failed']:
+        transactions = transactions.filter(status=status_filter)
+
+    total_paid = transactions.filter(status='paid').aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+    total_pending = transactions.filter(status='pending').aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+
+    context = {
+        'transactions': transactions.order_by('-created_at'),
+        'total_transactions': transactions.count(),
+        'total_paid': total_paid,
+        'total_pending': total_pending,
+        'selected_status': status_filter
+    }
+    return render(request, 'payments/transaction_history.html', context)
