@@ -1167,7 +1167,8 @@ def category_course_list(request, slug):
 
     return render(request, 'courses/course_list.html', context)
 
-
+@csrf_protect
+@require_POST
 def search_posts(request):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
@@ -1203,7 +1204,8 @@ def search_posts(request):
     
     return HttpResponse(html if html else '<p>No posts found for this search.</p>')
 
-
+@csrf_protect
+@require_POST
 def posts_by_hashtag(request, hashtag):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
@@ -1305,7 +1307,8 @@ def load_more_posts(request):
         return HttpResponse(html if html else '<p>No more posts to load.</p>')
     return HttpResponse(status=400)
 
-
+@csrf_protect
+@require_POST
 def create_post(request):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
@@ -1343,7 +1346,8 @@ def create_post(request):
         else:
             return HttpResponse(render_to_string('messages.html', {'message': "Form tidak valid!", 'type': 'error'}))
     return HttpResponse(status=400)
-
+@csrf_protect
+@require_POST
 def like_post(request, post_id):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
@@ -1376,7 +1380,8 @@ def like_post(request, post_id):
 
     return HttpResponse(status=400)
 
-
+@csrf_protect
+@require_POST
 
 def reply_post(request, post_id):
     try:

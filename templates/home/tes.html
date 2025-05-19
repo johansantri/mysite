@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
     <title>LMSKu - Dashboard</title>
 
     <!-- CSS Libraries -->
@@ -909,6 +910,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/2.0.4/htmx.min.js" integrity="sha512-2kIcAizYXhIn8TzUvqzEDZNuDZ+aW7yE/+f1HJHXFjQcGNfv1kqzJSTBRBSlOgp6B/KZsz1K0a3ZTqP9dnxioQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     {% block scripts %}
+    
     {% endblock %}
 
     <script>
@@ -1023,28 +1025,18 @@
             {% endif %}
         });
 
-        // HTMX CSRF Token
-        if (typeof htmx !== 'undefined') {
-            htmx.onLoad(function() {
-                document.body.addEventListener('htmx:configRequest', function(evt) {
-                    function getCookie(name) {
-                        let cookieValue = null;
-                        if (document.cookie && document.cookie !== '') {
-                            const cookies = document.cookie.split(';');
-                            for (let i = 0; i < cookies.length; i++) {
-                                const cookie = cookies[i].trim();
-                                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                                    break;
-                                }
-                            }
-                        }
-                        return cookieValue;
-                    }
-                    evt.detail.headers['X-CSRFToken'] = getCookie('new_csrf_cookie_name');
-                });
-            });
+        
+
+        
+    </script>
+    <!-- script CSRF berikutnya -->
+    <script>
+    document.body.addEventListener('htmx:configRequest', function(evt) {
+        const token = document.querySelector('meta[name="csrf-token"]')?.content;
+        if (token) {
+            evt.detail.headers['X-CSRFToken'] = token;
         }
+    });
     </script>
 </body>
 </html>
