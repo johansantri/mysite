@@ -21,6 +21,10 @@ from django.utils.translation import gettext_lazy as _
 from django.core.files.storage import default_storage
 import uuid
 from django.contrib.postgres.fields import JSONField 
+from payments.models import Payment
+from licensing.models import Invitation
+import logging
+logger = logging.getLogger(__name__)
 
 class UserProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
@@ -159,137 +163,48 @@ class CourseStatusHistory(models.Model):
 
 
 class Course(models.Model):
-    # Daftar bahasa dalam format pilihan (ISO 639-1)
     choice_language = [
-        ('ab', 'Abkhazian'),
-        ('aa', 'Afar'),
-        ('af', 'Afrikaans'),
-        ('sq', 'Albanian'),
-        ('am', 'Amharic'),
-        ('ar', 'Arabic'),
-        ('hy', 'Armenian'),
-        ('as', 'Assamese'),
-        ('av', 'Avaric'),
-        ('ae', 'Avestan'),
-        ('ay', 'Aymara'),
-        ('az', 'Azerbaijani'),
-        ('bm', 'Bambara'),
-        ('ba', 'Bashkir'),
-        ('eu', 'Basque'),
-        ('be', 'Belarusian'),
-        ('bn', 'Bengali'),
-        ('bh', 'Bihari'),
-        ('bi', 'Bislama'),
-        ('bs', 'Bosnian'),
-        ('br', 'Breton'),
-        ('bg', 'Bulgarian'),
-        ('my', 'Burmese'),
-        ('ca', 'Catalan'),
-        ('ch', 'Chamorro'),
-        ('ce', 'Chechen'),
-        ('ny', 'Chichewa'),
-        ('zh', 'Chinese'),
-        ('cu', 'Church Slavic'),
-        ('cv', 'Chuvash'),
-        ('kw', 'Cornish'),
-        ('co', 'Corsican'),
-        ('cr', 'Cree'),
-        ('hr', 'Croatian'),
-        ('cs', 'Czech'),
-        ('da', 'Danish'),
-        ('dv', 'Divehi'),
-        ('nl', 'Dutch'),
-        ('dz', 'Dzongkha'),
-        ('en', 'English'),
-        ('eo', 'Esperanto'),
-        ('et', 'Estonian'),
-        ('ee', 'Ewe'),
-        ('fo', 'Faroese'),
-        ('fj', 'Fijian'),
-        ('fi', 'Finnish'),
-        ('fr', 'French'),
-        ('ff', 'Fulah'),
-        ('de', 'German'),
-        ('ga', 'Irish'),
-        ('gl', 'Galician'),
-        ('gn', 'Guarani'),
-        ('gu', 'Gujarati'),
-        ('ht', 'Haitian Creole'),
-        ('ha', 'Hausa'),
-        ('he', 'Hebrew'),
-        ('hi', 'Hindi'),
-        ('ho', 'Hiri Motu'),
-        ('hu', 'Hungarian'),
-        ('is', 'Icelandic'),
-        ('id', 'Indonesian'),
-        ('ia', 'Interlingua'),
-        ('ie', 'Interlingue'),
-        ('iu', 'Inuktitut'),
-        ('it', 'Italian'),
-        ('ja', 'Japanese'),
-        ('jw', 'Javanese'),
-        ('kn', 'Kannada'),
-        ('kr', 'Kanuri'),
-        ('ks', 'Kashmiri'),
-        ('km', 'Khmer'),
-        ('ki', 'Kikuyu'),
-        ('rw', 'Kinyarwanda'),
-        ('ky', 'Kyrgyz'),
-        ('ko', 'Korean'),
-        ('la', 'Latin'),
-        ('lv', 'Latvian'),
-        ('lt', 'Lithuanian'),
-        ('lb', 'Luxembourgish'),
-        ('mk', 'Macedonian'),
-        ('ml', 'Malayalam'),
-        ('mr', 'Marathi'),
-        ('my', 'Mongolian'),
-        ('ne', 'Nepali'),
-        ('no', 'Norwegian'),
-        ('oc', 'Occitan'),
-        ('or', 'Odia'),
-        ('om', 'Oromo'),
-        ('ps', 'Pashto'),
-        ('fa', 'Persian'),
-        ('pl', 'Polish'),
-        ('pt', 'Portuguese'),
-        ('pa', 'Punjabi'),
-        ('qu', 'Quechua'),
-        ('ro', 'Romanian'),
-        ('rm', 'Romansh'),
-        ('ru', 'Russian'),
-        ('sr', 'Serbian'),
-        ('si', 'Sinhala'),
-        ('sk', 'Slovak'),
-        ('sl', 'Slovenian'),
-        ('es', 'Spanish'),
-        ('su', 'Sundanese'),
-        ('sw', 'Swahili'),
-        ('sv', 'Swedish'),
-        ('tl', 'Tagalog'),
-        ('tg', 'Tajik'),
-        ('ta', 'Tamil'),
-        ('te', 'Telugu'),
-        ('th', 'Thai'),
-        ('tr', 'Turkish'),
-        ('uk', 'Ukrainian'),
-        ('ur', 'Urdu'),
-        ('uz', 'Uzbek'),
-        ('vi', 'Vietnamese'),
-        ('cy', 'Welsh'),
-        ('xh', 'Xhosa'),
-        ('yi', 'Yiddish'),
-        ('zu', 'Zulu'),
+        ('ab', 'Abkhazian'), ('aa', 'Afar'), ('af', 'Afrikaans'), ('sq', 'Albanian'), ('am', 'Amharic'),
+        ('ar', 'Arabic'), ('hy', 'Armenian'), ('as', 'Assamese'), ('av', 'Avaric'), ('ae', 'Avestan'),
+        ('ay', 'Aymara'), ('az', 'Azerbaijani'), ('bm', 'Bambara'), ('ba', 'Bashkir'), ('eu', 'Basque'),
+        ('be', 'Belarusian'), ('bn', 'Bengali'), ('bh', 'Bihari'), ('bi', 'Bislama'), ('bs', 'Bosnian'),
+        ('br', 'Breton'), ('bg', 'Bulgarian'), ('my', 'Burmese'), ('ca', 'Catalan'), ('ch', 'Chamorro'),
+        ('ce', 'Chechen'), ('ny', 'Chichewa'), ('zh', 'Chinese'), ('cu', 'Church Slavic'), ('cv', 'Chuvash'),
+        ('kw', 'Cornish'), ('co', 'Corsican'), ('cr', 'Cree'), ('hr', 'Croatian'), ('cs', 'Czech'),
+        ('da', 'Danish'), ('dv', 'Divehi'), ('nl', 'Dutch'), ('dz', 'Dzongkha'), ('en', 'English'),
+        ('eo', 'Esperanto'), ('et', 'Estonian'), ('ee', 'Ewe'), ('fo', 'Faroese'), ('fj', 'Fijian'),
+        ('fi', 'Finnish'), ('fr', 'French'), ('ff', 'Fulah'), ('de', 'German'), ('ga', 'Irish'),
+        ('gl', 'Galician'), ('gn', 'Guarani'), ('gu', 'Gujarati'), ('ht', 'Haitian Creole'), ('ha', 'Hausa'),
+        ('he', 'Hebrew'), ('hi', 'Hindi'), ('ho', 'Hiri Motu'), ('hu', 'Hungarian'), ('is', 'Icelandic'),
+        ('id', 'Indonesian'), ('ia', 'Interlingua'), ('ie', 'Interlingue'), ('iu', 'Inuktitut'), ('it', 'Italian'),
+        ('ja', 'Japanese'), ('jw', 'Javanese'), ('kn', 'Kannada'), ('kr', 'Kanuri'), ('ks', 'Kashmiri'),
+        ('km', 'Khmer'), ('ki', 'Kikuyu'), ('rw', 'Kinyarwanda'), ('ky', 'Kyrgyz'), ('ko', 'Korean'),
+        ('la', 'Latin'), ('lv', 'Latvian'), ('lt', 'Lithuanian'), ('lb', 'Luxembourgish'), ('mk', 'Macedonian'),
+        ('ml', 'Malayalam'), ('mr', 'Marathi'), ('my', 'Mongolian'), ('ne', 'Nepali'), ('no', 'Norwegian'),
+        ('oc', 'Occitan'), ('or', 'Odia'), ('om', 'Oromo'), ('ps', 'Pashto'), ('fa', 'Persian'),
+        ('pl', 'Polish'), ('pt', 'Portuguese'), ('pa', 'Punjabi'), ('qu', 'Quechua'), ('ro', 'Romanian'),
+        ('rm', 'Romansh'), ('ru', 'Russian'), ('sr', 'Serbian'), ('si', 'Sinhala'), ('sk', 'Slovak'),
+        ('sl', 'Slovenian'), ('es', 'Spanish'), ('su', 'Sundanese'), ('sw', 'Swahili'), ('sv', 'Swedish'),
+        ('tl', 'Tagalog'), ('tg', 'Tajik'), ('ta', 'Tamil'), ('te', 'Telugu'), ('th', 'Thai'),
+        ('tr', 'Turkish'), ('uk', 'Ukrainian'), ('ur', 'Urdu'), ('uz', 'Uzbek'), ('vi', 'Vietnamese'),
+        ('cy', 'Welsh'), ('xh', 'Xhosa'), ('yi', 'Yiddish'), ('zu', 'Zulu'),
     ]
+    PAYMENT_MODEL_CHOICES = [
+        ('buy_first', 'Buy first, then enroll'),
+        ('pay_for_exam', 'Enroll first, pay at exam'),
+        ('pay_for_certificate', 'Enroll & take exam first, pay at certificate claim'),
+        ('free', 'Free'),
+    ]
+
     course_name = models.CharField(max_length=250)
     course_number = models.CharField(max_length=250, blank=True)
     course_run = models.CharField(max_length=250, blank=True)
     slug = models.CharField(max_length=250, blank=True)
-    org_partner = models.ForeignKey(Partner, on_delete=models.CASCADE, related_name="courses")
-    instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE, related_name="courses", null=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="category_courses")
+    org_partner = models.ForeignKey('Partner', on_delete=models.CASCADE, related_name="courses")
+    instructor = models.ForeignKey('Instructor', on_delete=models.CASCADE, related_name="courses", null=True)
+    category = models.ForeignKey('Category', on_delete=models.CASCADE, related_name="category_courses")
     level = models.CharField(max_length=10, choices=[('basic', 'Basic'), ('middle', 'Middle'), ('advanced', 'Advanced')], default='basic', null=True, blank=True)
-    status_course = models.ForeignKey(CourseStatus, on_delete=models.CASCADE, related_name="courses")  # Hubungkan dengan CourseStatus
+    status_course = models.ForeignKey('CourseStatus', on_delete=models.CASCADE, related_name="courses")
     created_at = models.DateTimeField(auto_now_add=True)
     edited_on = models.DateTimeField(auto_now=True)
     image = models.ImageField(upload_to='courses/', blank=True, null=True)
@@ -298,55 +213,162 @@ class Course(models.Model):
     sort_description = models.CharField(max_length=150, null=True, blank=True)
     hour = models.CharField(max_length=2, null=True, blank=True)
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    language = models.CharField(
-        max_length=2,
-        choices=choice_language,
-        default='id'  # Bahasa Indonesia sebagai default
-    )
+    language = models.CharField(max_length=2, choices=choice_language, default='id')
     start_date = models.DateField(null=True)
     end_date = models.DateField(null=True)
     start_enrol = models.DateField(null=True)
     end_enrol = models.DateField(null=True)
+    payment_model = models.CharField(max_length=20, choices=PAYMENT_MODEL_CHOICES, default='buy_first')
 
     def save(self, *args, **kwargs):
-        # Pastikan setiap kursus memiliki entri CourseStatus saat pertama kali dibuat
         if not self.pk and not self.status_course:
             self.status_course = CourseStatus.objects.create(
                 status='draft',
-                manual_message="Course created as Draft."
+                manual_message="Kursus dibuat sebagai Draft."
             )
+        self.delete_old_image()
         super().save(*args, **kwargs)
 
+    def get_course_price(self, partner=None, price_type=None):
+        course_price = self.prices.filter(partner=partner if partner else self.org_partner)
+        if price_type:
+            course_price = course_price.filter(price_type=price_type)
+        else:
+            peta_tipe_harga = {
+                'buy_first': 'Buy Directly',
+                'pay_for_exam': 'Pay at Exam',
+                'pay_for_certificate': 'Pay at Certificate',
+                'free': 'Free'
+            }
+            try:
+                nama_tipe_harga = peta_tipe_harga.get(self.payment_model, 'Buy Directly')
+                tipe_harga_default = PricingType.objects.get(name=nama_tipe_harga)
+                course_price = course_price.filter(price_type=tipe_harga_default)
+            except PricingType.DoesNotExist:
+                return None
+        return course_price.first()
+
+    
+    
+    logger = logging.getLogger(__name__)
+
+    def enroll_user(self, user, partner=None, price_type=None):
+        logger.debug(f"Enrolling user {user.email} (ID: {user.id}) for course {self.course_name} (ID: {self.id}) with payment_model {self.payment_model}")
+
+        # Cek apakah pendaftaran masih terbuka
+        if not self.is_enrollment_open():
+            logger.error(f"Enrollment closed for course {self.course_name}")
+            return {"status": "error", "message": "Pendaftaran untuk kursus ini telah ditutup."}
+
+        # Logika untuk peserta umum jika kursus gratis
+        if self.payment_model == 'free':
+            enrollment, created = Enrollment.objects.get_or_create(user=user, course=self)
+            if created:
+                logger.info(f"User {user.email} enrolled in free course {self.course_name}")
+                return {"status": "success", "message": "Berhasil mendaftar ke kursus ini secara gratis."}
+            logger.info(f"User {user.email} already enrolled in free course {self.course_name}")
+            return {"status": "info", "message": "Anda sudah terdaftar di kursus ini."}
+
+        # Dapatkan harga kursus (hanya untuk non-free)
+        course_price = self.get_course_price(partner, price_type)
+        if not course_price:
+            logger.error(f"No course price found for course {self.course_name}, partner {partner}, price_type {price_type}")
+            return {"status": "error", "message": "Harga kursus tidak ditemukan untuk mitra atau tipe harga ini."}
+
+        if self.payment_model == 'buy_first':
+            payment = Payment.objects.filter(
+                user=user, course=self, status='completed', payment_model='buy_first'
+            ).first()
+            if not payment:
+                logger.error(f"No completed payment found for user {user.email} in course {self.course_name}")
+                return {"status": "error", "message": "Pembayaran diperlukan sebelum mendaftar ke kursus ini."}
+            enrollment, created = Enrollment.objects.get_or_create(user=user, course=self, payment=payment)
+            if created:
+                logger.info(f"User {user.email} enrolled in paid course {self.course_name} with payment ID {payment.id}")
+                return {"status": "success", "message": "Berhasil mendaftar ke kursus ini."}
+            logger.info(f"User {user.email} already enrolled in paid course {self.course_name}")
+            return {"status": "info", "message": "Anda sudah terdaftar di kursus ini."}
+
+        else:  # pay_for_exam atau pay_for_certificate
+            enrollment, created = Enrollment.objects.get_or_create(user=user, course=self)
+            if created:
+                logger.info(f"User {user.email} enrolled in course {self.course_name} with model {self.payment_model}")
+                return {"status": "success", "message": "Berhasil mendaftar ke kursus ini."}
+            logger.info(f"User {user.email} already enrolled in course {self.course_name}")
+            return {"status": "info", "message": "Anda sudah terdaftar di kursus ini."}
+
+    def can_access_assessment(self, user, partner=None, price_type=None):
+        enrollment = Enrollment.objects.filter(user=user, course=self).first()
+        if not enrollment:
+            return {"status": "error", "message": "Anda belum terdaftar di kursus ini."}
+
+        course_price = self.get_course_price(partner, price_type)
+        if not course_price:
+            return {"status": "error", "message": "Harga kursus tidak ditemukan untuk mitra atau tipe harga ini."}
+
+        if self.payment_model in ['free', 'buy_first', 'pay_for_certificate']:
+            return {"status": "success", "message": "Anda dapat mengakses ujian."}
+
+        elif self.payment_model == 'pay_for_exam':
+            payment = Payment.objects.filter(
+                user=user, course=self, status='completed', payment_model='pay_for_exam'
+            ).first()
+            if not payment:
+                return {"status": "error", "message": "Pembayaran diperlukan untuk mengakses ujian."}
+            enrollment.payment = payment
+            enrollment.save()
+            return {"status": "success", "message": "Anda dapat mengakses ujian."}
+
+    def can_claim_certificate(self, user, partner=None, price_type=None):
+        enrollment = Enrollment.objects.filter(user=user, course=self).first()
+        if not enrollment:
+            return {"status": "error", "message": "Anda belum terdaftar di kursus ini."}
+
+        progress = CourseProgress.objects.filter(user=user, course=self).first()
+        if not progress or not progress.grade:
+            return {"status": "error", "message": "Anda belum lulus kursus ini."}
+
+        if enrollment.certificate_issued:
+            return {"status": "info", "message": "Sertifikat sudah diterbitkan."}
+
+        course_price = self.get_course_price(partner, price_type)
+        if not course_price:
+            return {"status": "error", "message": "Harga kursus tidak ditemukan untuk mitra atau tipe harga ini."}
+
+        if self.payment_model in ['free', 'buy_first', 'pay_for_exam']:
+            enrollment.certificate_issued = True
+            enrollment.save()
+            return {"status": "success", "message": "Sertifikat berhasil diterbitkan."}
+
+        elif self.payment_model == 'pay_for_certificate':
+            payment = Payment.objects.filter(
+                user=user, course=self, status='completed', payment_model='pay_for_certificate'
+            ).first()
+            if not payment:
+                return {"status": "error", "message": "Pembayaran diperlukan untuk mengklaim sertifikat."}
+            enrollment.payment = payment
+            enrollment.certificate_issued = True
+            enrollment.save()
+            return {"status": "success", "message": "Sertifikat berhasil diterbitkan."}
+
     def change_status(self, new_status, changed_by, message=None):
-        """
-        Mengubah status kursus dan mencatat riwayat perubahan.
-        Hanya memperbarui entri CourseStatus yang sudah ada.
-        Hanya mencatat di CourseStatusHistory jika status benar-benar berubah.
-        """
-        # Ambil status baru dari CourseStatus berdasarkan status yang diinginkan
         try:
-            status = CourseStatus.objects.get(status=new_status)  # Dapatkan status dari CourseStatus berdasarkan nama
+            status = CourseStatus.objects.get(status=new_status)
         except CourseStatus.DoesNotExist:
             raise ValueError(f"Status {new_status} tidak ditemukan di CourseStatus")
 
-        # Periksa apakah status baru sama dengan status saat ini
         if self.status_course == status:
-            # Jika status tidak berubah, hanya perbarui manual_message jika ada
             if message and message != self.status_course.manual_message:
                 self.status_course.manual_message = message
                 self.status_course.save()
-            return  # Tidak perlu mencatat di CourseStatusHistory
+            return
 
-        # Perbarui status dan pesan pada entri CourseStatus yang sudah ada
         self.status_course = status
         if message:
             self.status_course.manual_message = message
         self.status_course.save()
+        self.save()
 
-        # Simpan perubahan pada objek Course
-        self.save()  # Pastikan objek Course disimpan untuk memperbarui status_course
-
-        # Catat riwayat perubahan di CourseStatusHistory hanya jika status berubah
         CourseStatusHistory.objects.create(
             course=self,
             status=new_status,
@@ -355,92 +377,53 @@ class Course(models.Model):
         )
 
     def __str__(self):
-        return self.course_name 
+        return self.course_name
 
     def delete_old_image(self):
-        """Hapus gambar lama jika sudah diganti."""
-        if self.pk:  # Pastikan instance sudah ada di database
+        if self.pk:
             old_image = Course.objects.filter(pk=self.pk).values_list('image', flat=True).first()
-            if old_image and old_image != self.image.name:
-                # Gunakan default_storage untuk menangani file, ini bekerja dengan berbagai jenis penyimpanan (lokal, cloud, dsb)
-                old_image_path = old_image  # Path relatif terhadap MEDIA_ROOT (atau direktori penyimpanan Anda)
-
-                # Hapus file lama menggunakan default_storage
-                if default_storage.exists(old_image_path):  # Pastikan file lama ada
-                    default_storage.delete(old_image_path)  # Menghapus file lama
-
-    def save(self, *args, **kwargs):
-        # Hapus gambar lama sebelum menyimpan data baru
-        self.delete_old_image()
-        super().save(*args, **kwargs)
+            if old_image and old_image != self.image.name and default_storage.exists(old_image):
+                default_storage.delete(old_image)
 
     def is_enrollment_open(self):
-        """ Cek apakah periode enrollment masih terbuka """
         today = date.today()
         return self.start_enrol <= today <= self.end_enrol if self.start_enrol and self.end_enrol else False
 
-    def enroll_user(self, user):
-        """Mendaftarkan user ke dalam course jika pendaftaran masih terbuka dan user memiliki lisensi aktif."""
-        # Cek apakah user memiliki lisensi aktif
-        has_active_license = License.objects.filter(
-            users=user,
-            status=True,
-            start_date__lte=timezone.now().date(),
-            expiry_date__gte=timezone.now().date()
-        ).exists()
-
-        if not has_active_license:
-            return {"status": "error", "message": "Anda memerlukan lisensi aktif untuk mendaftar ke kursus ini."}
-
-        if not self.is_enrollment_open():
-            return {"status": "error", "message": "Pendaftaran untuk kursus ini telah ditutup."}
-
-        enrollment, created = Enrollment.objects.get_or_create(user=user, course=self)
-        if created:
-            return {"status": "success", "message": "Berhasil mendaftar ke kursus ini."}
-        else:
-            return {"status": "info", "message": "Anda sudah terdaftar di kursus ini."}
-
     def move_to_curation(self, message=None, user=None):
         if self.status_course.status != 'draft':
-            raise ValidationError('Course is not in the correct stage for curation.')
+            raise ValidationError('Kursus tidak dalam tahap yang sesuai untuk kurasi.')
         self.status_course.status = 'curation'
         if message:
-            self.status_course.set_message(message)  # Set pesan manual
+            self.status_course.manual_message = message
         self.status_course.save()
-
-        # Simpan riwayat perubahan status
-        CourseStatusHistory.objects.create(course=self, status=self.status_course.status, manual_message=message, changed_by=user)
-
-        return {"status": "info", "message": "The course is now under curation.", "manual_message": self.status_course.manual_message}
+        CourseStatusHistory.objects.create(
+            course=self, status=self.status_course.status, manual_message=message, changed_by=user
+        )
+        return {"status": "info", "message": "Kursus sedang dalam kurasi.", "manual_message": self.status_course.manual_message}
 
     def publish_course(self, message=None, user=None):
         if self.status_course.status != 'curation':
-            raise ValidationError('Course is not in the correct stage for publishing.')
+            raise ValidationError('Kursus tidak dalam tahap yang sesuai untuk dipublikasikan.')
         self.status_course.status = 'published'
         if message:
-            self.status_course.set_message(message)  # Set pesan manual
+            self.status_course.manual_message = message
         self.status_course.save()
-
-        # Simpan riwayat perubahan status
-        CourseStatusHistory.objects.create(course=self, status=self.status_course.status, manual_message=message, changed_by=user)
-
-        return {"status": "success", "message": "The course has been successfully published.", "manual_message": self.status_course.manual_message}
+        CourseStatusHistory.objects.create(
+            course=self, status=self.status_course.status, manual_message=message, changed_by=user
+        )
+        return {"status": "success", "message": "Kursus berhasil dipublikasikan.", "manual_message": self.status_course.manual_message}
 
     def archive_course(self, message=None, user=None):
         if self.status_course.status != 'published':
-            raise ValidationError('Course cannot be archived before being published.')
+            raise ValidationError('Kursus tidak dapat diarsipkan sebelum dipublikasikan.')
         self.status_course.status = 'archived'
         if message:
-            self.status_course.set_message(message)  # Set pesan manual
+            self.status_course.manual_message = message
         self.status_course.save()
-
-        # Simpan riwayat perubahan status
-        CourseStatusHistory.objects.create(course=self, status=self.status_course.status, manual_message=message, changed_by=user)
-
-        return {"status": "info", "message": "The course has been archived.", "manual_message": self.status_course.manual_message}
-    
-    
+        CourseStatusHistory.objects.create(
+            course=self, status=self.status_course.status, manual_message=message, changed_by=user
+        )
+        return {"status": "info", "message": "Kursus telah diarsipkan.", "manual_message": self.status_course.manual_message}
 
     @property
     def average_rating(self):
@@ -449,13 +432,12 @@ class Course(models.Model):
             return round(sum(r.rating for r in ratings) / ratings.count(), 1)
         return 0
 
-
     @property
     def total_reviews(self):
         return self.ratings.count()
+
     def has_been_rated_by(self, user):
         return self.ratings.filter(user=user).exists()
-
 
 
 class PricingType(models.Model):
@@ -607,13 +589,16 @@ class Enrollment(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='enrollments')
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='enrollments')
     enrolled_at = models.DateTimeField(auto_now_add=True)
-    certificate_issued = models.BooleanField(default=False)  
+    certificate_issued = models.BooleanField(default=False)
+    payment = models.ForeignKey(
+        'payments.Payment', on_delete=models.SET_NULL, null=True, blank=True, related_name='enrollments'
+    )
 
     def __str__(self):
         return f"{self.user.username} enrolled in {self.course.course_name}"
-    
+
     class Meta:
-        unique_together = ('user', 'course')  # User hanya bisa mendaftar 1x ke tiap course
+        unique_together = ('user', 'course')
 
 class CourseRating(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='ratings')
@@ -1254,3 +1239,4 @@ class LastAccessCourse(models.Model):
 
     class Meta:
         unique_together = ('user', 'course')
+

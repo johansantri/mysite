@@ -1,4 +1,5 @@
 {% extends 'home/base.html' %}
+{% load humanize %}
 {% load static %}
 {% block content %}
 
@@ -506,14 +507,41 @@
                                         </a>
                                     {% endif %}
                                 </div>
+                                
+
                                 <div class="video-details text-center">
-                                    <div class="course-fee mb-3">
-                                        <h2 class="fw-bold text-dark mb-1">FREE</h2>
-                                        <p class="text-muted mb-0"><span class="text-decoration-line-through">$99.00</span> <span class="badge bg-danger text-white rounded-3">50% off</span></p>
-                                    </div>
+                                    {% with course_price=course.get_course_price %}
+                                        <div class="course-fee mb-3">
+                                            {% if course.payment_model == 'free' %}
+                                                <h2 class="fw-bold text-dark mb-1">Free</h2>
+                                                <p class="text-muted mb-0">Full access without charge</p>
+                                            {% else %}
+                                                <h2 class="fw-bold text-dark mb-1">IDR {{ course_price.user_payment|intcomma }}</h2>
+                                                {% if course_price.discount_percent > 0 %}
+                                                    <p class="text-muted mb-0">
+                                                        <span class="text-decoration-line-through">IDR {{ course_price.normal_price|intcomma}}</span>
+                                                        <span class="badge bg-danger text-white rounded-3">{{ course_price.discount_percent }}% off</span>
+                                                    </p>
+                                                {% endif %}
+                                                <p class="text-muted mb-0">
+                                                    {% if course.payment_model == 'buy_first' %}
+                                                        Payment required for enrollment
+                                                    {% elif course.payment_model == 'pay_for_exam' %}
+                                                        Free to enroll, pay at exam
+                                                    {% elif course.payment_model == 'pay_for_certificate' %}
+                                                        Free to enroll and take exam, pay at certificate claim
+                                                    {% endif %}
+                                                </p>
+                                            {% endif %}
+                                        </div>
+                                    {% endwith %}
+                                    
+                                    <!-- Wishlist and Share -->
                                     <div class="row gx-2 mb-3">
                                         <div class="col-6">
-                                            <a href="course-wishlist.html" class="btn btn-outline-danger w-100 rounded-3 transition-hover"><i class="fas fa-heart me-1"></i> Wishlist</a>
+                                            <a href="#" class="btn btn-outline-danger w-100 rounded-3 transition-hover">
+                                                <i class="fas fa-heart me-1"></i> Wishlist
+                                            </a>
                                         </div>
                                         <div class="col-6">
                                             <button class="btn btn-outline-secondary w-100 rounded-3 transition-hover" onclick="openShareWindow()">
@@ -521,19 +549,44 @@
                                             </button>
                                         </div>
                                     </div>
+                                    
+                                    <!-- Display messages from the messages framework -->
+                                    {% for message in messages %}
+                                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                            {{ message }}
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        </div>
+                                    {% endfor %}
+                                    
+                                    <!-- Enroll or Add to Cart button -->
                                     {% if request.user.is_authenticated %}
                                         {% if is_enrolled %}
                                             <a href="{% url 'courses:course_learn' request.user.username course.slug %}" class="btn btn-danger w-100 rounded-3 transition-hover">Start Course</a>
                                         {% else %}
-                                            <form id="enrollForm" method="POST" action="{% url 'courses:enroll' course.id %}">
-                                                {% csrf_token %}
-                                                <button type="submit" class="btn btn-outline-secondary w-100 rounded-3 transition-hover">Enroll Now</button>
-                                            </form>
+                                            {% with course_price=course.get_course_price %}
+                                                {% if course.payment_model == 'free' %}
+                                                    <!-- Direct Enroll for Free Courses -->
+                                                    <form id="enrollForm" method="POST" action="{% url 'courses:enroll' course.id %}">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-outline-secondary w-100 rounded-3 transition-hover">Enroll Now</button>
+                                                    </form>
+                                                {% else %}
+                                                    <!-- Add to Cart for Paid Courses -->
+                                                    <form method="POST" action="{% url 'payments:add_to_cart' course.id %}">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-danger w-100 rounded-3 transition-hover">Add to Cart</button>
+                                                    </form>
+                                                {% endif %}
+                                            {% endwith %}
                                         {% endif %}
                                     {% else %}
-                                        <a href="{% url 'authentication:register' %}" class="btn btn-danger w-100 rounded-3 transition-hover">Join Now</a>
+                                        <a href="{% url 'authentication:register' %}?next={% url 'courses:course_lms_detail' id=course.id slug=course.slug %}" class="btn btn-danger w-100 rounded-3 transition-hover">Join Now</a>
                                     {% endif %}
                                 </div>
+
+
+
+
                             </div>
                         </div>
                     </div>

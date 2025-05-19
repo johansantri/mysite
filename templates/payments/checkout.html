@@ -1,0 +1,28 @@
+{% extends 'home/base.html' %}
+{% load humanize %}
+{% block content %}
+<div class="container my-5">
+    <h2>Checkout</h2>
+    {% if cart_items %}
+        <ul class="list-group mb-3">
+            {% for item in cart_items %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>{{ item.course.course_name }}</span>
+                    <strong>IDR {{ item.course.get_course_price.user_payment|floatformat:0 }}</strong>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <h4 class="mb-4">Total: IDR {{ total_price|floatformat:0 }}</h4>
+
+        <form method="POST" novalidate>
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success">Pay Now</button>
+            <a href="{% url 'payments:view_cart' %}" class="btn btn-secondary ms-2">Back to Cart</a>
+        </form>
+    {% else %}
+        <p>Your cart is empty. Please add courses before proceeding to checkout.</p>
+        <a href="{% url 'authentication:course_list' %}" class="btn btn-primary mt-3">Browse Courses</a>
+    {% endif %}
+</div>
+{% endblock %}

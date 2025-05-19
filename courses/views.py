@@ -71,7 +71,7 @@ from decimal import Decimal, ROUND_DOWN
 import logging
 from django.core.exceptions import PermissionDenied
 from oauthlib.oauth1 import Client as OAuth1Client
-
+from payments.models import Payment
 
 @login_required
 def microcredential_report_view(request, microcredential_id):
@@ -3359,15 +3359,33 @@ def instructor_profile(request, username):
 @require_POST
 def enroll_course(request, course_id):
     course = get_object_or_404(Course, id=course_id)
-    response = course.enroll_user(request.user)
-     # Check the response and use Django's messages framework to display the message
+    partner = course.org_partner
+    price_type_map = {
+        'buy_first': 'Buy Directly',
+        'pay_for_exam': 'Pay at Exam',
+        'pay_for_certificate': 'Pay at Certificate',
+        'free': 'Free'
+    }
+    try:
+        price_type = PricingType.objects.get(name=price_type_map.get(course.payment_model, 'Buy Directly'))
+    except PricingType.DoesNotExist:
+        messages.error(request, f"Price type for {course.payment_model} not found. Please contact admin.")
+        return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
+
+    response = course.enroll_user(request.user, partner=partner, price_type=price_type)
+
     if response["status"] == "success":
-        messages.success(request, response["message"])  # Display success message
+        messages.success(request, response["message"])
+        return redirect('courses:course_learn', username=request.user.username, slug=course.slug)
     elif response["status"] == "error":
-        messages.error(request, response["message"])  # Display error message
+        if course.payment_model == 'buy_first' and "Payment required" in response["message"]:
+            return redirect('payments:process_payment', course_id=course.id)
+        messages.error(request, response["message"])
     else:
-        messages.info(request, response["message"])  # Display info message
-    return redirect('courses:course_lms_detail',id=course.id, slug=course.slug)
+        messages.info(request, response["message"])
+
+    return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
+
 
 def draft_lms(request, id):
     if not request.user.is_authenticated:

@@ -72,6 +72,8 @@ INSTALLED_APPS = [
     'blog',
     'licensing',
     'audit',#audit user
+    'payments',#semua pembayaran
+    'django.contrib.humanize',
  
     
 ]
@@ -105,6 +107,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'authentication.context_processors.search_history_context',
+                'payments.context_processors.cart_item_count', 
             ],
         },
     },
