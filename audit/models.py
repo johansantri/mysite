@@ -26,6 +26,8 @@ class AuditLog(models.Model):
     changes = models.JSONField(null=True, blank=True)
     ip_address = models.GenericIPAddressField(null=True, blank=True)
     user_agent = models.CharField(max_length=500, null=True, blank=True)  # Diperpanjang
+    device_type = models.CharField(max_length=50, null=True, blank=True)
+    request_path = models.CharField(max_length=2048, null=True, blank=True)
 
     class Meta:
         indexes = [

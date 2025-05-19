@@ -4,7 +4,7 @@ from authentication.models import CustomUser
 from django.db.models import Count
 
 class AuditLogAdmin(admin.ModelAdmin):
-    list_display = ('user', 'action', 'content_type', 'timestamp', 'object_id')
+    list_display = ('user', 'action', 'content_type', 'timestamp', 'object_id','device_type')
     list_filter = ('action', 'user', 'timestamp')
     search_fields = ('content_type__model', 'user__username')
 
