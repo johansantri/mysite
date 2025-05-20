@@ -27,9 +27,9 @@ from django.http import HttpResponse,JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseForbidden
 from django.core.cache import cache
-from django.db.models import Avg, Count,Q,FloatField
+from django.db.models import Avg, Count,Q,FloatField,Case, When, CharField, Value
 from django.core import serializers
-from django.db.models import Count
+import random
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_protect
 from decimal import Decimal
@@ -151,6 +151,9 @@ def validate_category_ids(category_ids):
     except (ValueError, TypeError):
         return []
 
+
+
+
 @ratelimit(key=get_ratelimit_key, rate='100/h', block=True)
 @cache_page(60 * 15)
 @vary_on_headers('Accept-Language', 'Cookie')
@@ -161,14 +164,19 @@ def course_list(request):
             return HttpResponseNotAllowed(['GET'])
 
         # Validasi dan sanitasi input
-        raw_category_filter = request.GET.getlist('category')[:10]  # Batasi 10 kategori
+        raw_category_filter = request.GET.getlist('category')[:10]
         category_filter = validate_category_ids(raw_category_filter)
         if raw_category_filter and not category_filter:
             return HttpResponseBadRequest("Invalid category filter")
 
         language_filter = request.GET.get('language')
         level_filter = request.GET.get('level')
-        page_number = request.GET.get('page', 1)
+        try:
+            page_number = int(request.GET.get('page', 1))
+            if page_number < 1 or page_number > 100:
+                raise ValueError
+        except ValueError:
+            return HttpResponseBadRequest("Invalid page number")
 
         if language_filter:
             try:
@@ -181,17 +189,22 @@ def course_list(request):
             except ValidationError:
                 return HttpResponseBadRequest("Invalid level filter")
 
-        # Logging akses
-        logger.info("Access course_list", extra={
-            'ip': request.META.get('REMOTE_ADDR'),
-            'category': category_filter[:3],  # Batasi jumlah kategori yang dicatat
-            'language': language_filter,
-            'level': level_filter,
-        })
+        # Logging sampling
+        if random.random() < 0.1:
+            logger.info("Access course_list", extra={
+                'ip': request.META.get('REMOTE_ADDR'),
+                'category': category_filter[:3],
+                'language': language_filter,
+                'level': level_filter,
+            })
 
         # Ambil status published
-        published_status = CourseStatus.objects.filter(status='published').first()
-        if not published_status:
+        try:
+            published_status = CourseStatus.objects.filter(status='published').first()
+            if not published_status:
+                raise CourseStatus.DoesNotExist
+        except CourseStatus.DoesNotExist:
+            logger.error("Published status not found")
             return HttpResponseNotFound("Status 'published' tidak ditemukan")
 
         # Query courses dengan optimasi
@@ -200,25 +213,49 @@ def course_list(request):
             end_enrol__gte=timezone.now()
         ).select_related(
             'category', 'instructor__user', 'org_partner'
-        ).prefetch_related('enrollments')
+        ).prefetch_related('enrollments').annotate(
+            avg_rating=Avg('ratings__rating', default=0),
+            enrollment_count=Count('enrollments'),
+            review_count=Count('ratings'),
+            language_display=Case(
+                *[When(language=k, then=Value(v)) for k, v in Course.choice_language],
+                output_field=CharField()
+            )
+        ).only(
+            'course_name', 'hour', 'id', 'slug', 'image',
+            'instructor__user__first_name', 'instructor__user__last_name', 'instructor__user__username',
+            'instructor__user__photo', 'org_partner__name', 'org_partner__name__kode',
+            'category__name', 'language', 'level'
+        )
 
         # Terapkan filter
         if category_filter:
-            courses = courses.filter(category__id__in=category_filter)  # Gunakan id secara eksplisit
+            courses = courses.filter(category__id__in=category_filter)
         if language_filter:
             courses = courses.filter(language=language_filter)
+
+       
+
         if level_filter:
             courses = courses.filter(level=level_filter)
 
+        # Cache hitungan total
+        cache_key_total = f'course_count_{category_filter}_{language_filter}_{level_filter}'
+        total_courses = cache.get(cache_key_total)
+        if total_courses is None:
+            total_courses = courses.count()
+            cache.set(cache_key_total, total_courses, 60 * 15)
+
         # Paginasi
         paginator = Paginator(courses, 9)
-        try:
-            page_number = int(page_number)
-            if page_number < 1 or page_number > 100:  # Batasi halaman maksimum
-                page_number = 1
-            page_obj = paginator.get_page(page_number)
-        except (PageNotAnInteger, EmptyPage, ValueError):
-            page_obj = paginator.get_page(1)
+        cache_key_page = f'course_page_{category_filter}_{language_filter}_{level_filter}_{page_number}'
+        page_obj = cache.get(cache_key_page)
+        if not page_obj:
+            try:
+                page_obj = paginator.get_page(page_number)
+                cache.set(cache_key_page, page_obj, 60 * 15)
+            except (PageNotAnInteger, EmptyPage):
+                page_obj = paginator.get_page(1)
 
         # Cache kategori
         cache_key_categories = 'categories'
@@ -240,46 +277,37 @@ def course_list(request):
             cache.set(cache_key_languages, language_options, 60 * 60)
 
         # Siapkan data courses
-        courses_data = []
-        total_enrollments = 0
-
-        for course in page_obj:
-            review_qs = CourseRating.objects.filter(course=course)
-            average_rating = round(review_qs.aggregate(avg=Avg('rating'))['avg'] or 0, 1)
-            full_stars = int(average_rating)
-            half_star = (average_rating % 1) >= 0.5
-            empty_stars = 5 - full_stars - (1 if half_star else 0)
-
-            num_enrollments = course.enrollments.count()
-            total_enrollments += num_enrollments
-
-            courses_data.append({
+        total_enrollments = sum(course.enrollment_count for course in page_obj)
+        courses_data = [
+            {
                 'course_name': course.course_name,
                 'hour': course.hour,
                 'course_id': course.id,
-                'num_enrollments': num_enrollments,
+                'num_enrollments': course.enrollment_count,
                 'course_slug': course.slug,
                 'course_image': course.image.url if course.image else None,
                 'instructor': course.instructor.user.get_full_name() if course.instructor else None,
                 'instructor_username': course.instructor.user.username if course.instructor else None,
                 'photo': course.instructor.user.photo.url if course.instructor and course.instructor.user.photo else None,
                 'partner': course.org_partner.name if course.org_partner else None,
-                'partner_kode': course.org_partner.name.kode if course.org_partner else None,
+                'partner_kode': course.org_partner.name.kode if course.org_partner and course.org_partner.name else None,
+
                 'category': course.category.name if course.category else None,
-                'language': course.get_language_display(),
+                'language': course.language_display,
                 'level': course.level,
-                'average_rating': average_rating,
-                'review_count': review_qs.count(),
-                'full_star_range': range(full_stars),
-                'half_star': half_star,
-                'empty_star_range': range(empty_stars),
-            })
+                'average_rating': round(course.avg_rating or 0, 1),
+                'review_count': course.review_count,
+                'full_star_range': range(int(course.avg_rating or 0)),
+                'half_star': (course.avg_rating % 1) >= 0.5 if course.avg_rating else False,
+                'empty_star_range': range(5 - int(course.avg_rating or 0) - (1 if (course.avg_rating % 1) >= 0.5 else 0)),
+            } for course in page_obj
+        ]
 
         # Konteks untuk template
         context = {
             'courses': courses_data,
             'page_obj': page_obj,
-            'total_courses': courses.count(),
+            'total_courses': total_courses,
             'total_enrollments': total_enrollments,
             'total_pages': paginator.num_pages,
             'current_page': page_obj.number,
@@ -288,7 +316,7 @@ def course_list(request):
             'category_filter': category_filter,
             'language_filter': language_filter,
             'level_filter': level_filter,
-            'categories': list(categories) if isinstance(categories, list) else list(categories.values('id', 'name', 'course_count')),
+            'categories': list(categories),
             'language_options': language_options,
         }
 
