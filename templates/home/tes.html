@@ -859,7 +859,7 @@
 
                 <li class="nav-item">
                     <a href="{% url 'payments:transaction_history' %}" class="nav-link footer-link d-flex align-items-center transition-all hover-scale">
-                         <i class="bi bi-cash-stack"></i>  Transaction
+                         <i class="bi bi-cash-stack"></i> &nbsp; My Transaction
                     </a>
                 </li>
                 {% if request.user.is_superuser or request.user.is_staff or request.user.is_partner or request.user.is_instructor %}

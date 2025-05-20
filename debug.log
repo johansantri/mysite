@@ -2,3 +2,28 @@ INFO 2025-05-19 08:40:36,791 views Access course_list
 INFO 2025-05-19 08:43:19,407 views User 4 deleted their search history.
 INFO 2025-05-19 09:02:46,119 views Access course_list
 INFO 2025-05-19 09:20:38,652 views Access course_list
+ERROR 2025-05-19 09:43:11,674 exception Invalid HTTP_HOST header: 'bahisliongiris.info'. You may need to add 'bahisliongiris.info' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'bahisliongiris.info'. You may need to add 'bahisliongiris.info' to ALLOWED_HOSTS.
+INFO 2025-05-19 10:31:08,687 views Access course_list
+WARNING 2025-05-19 11:19:19,132 log Forbidden (Referer checking failed - no Referer.): /
+INFO 2025-05-19 14:48:25,728 views Access course_list
+WARNING 2025-05-19 15:17:54,046 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-05-19 19:20:04,359 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-05-19 19:20:04,373 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-05-19 19:20:05,402 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-05-19 19:20:06,348 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-05-19 19:32:23,328 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-05-19 20:30:56,979 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-05-19 20:32:48,919 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-05-19 21:25:12,332 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-05-19 21:33:22,917 log Forbidden (Referer checking failed - no Referer.): /
+INFO 2025-05-19 23:52:14,994 views Access course_list
