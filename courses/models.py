@@ -220,6 +220,14 @@ class Course(models.Model):
     end_enrol = models.DateField(null=True)
     payment_model = models.CharField(max_length=20, choices=PAYMENT_MODEL_CHOICES, default='buy_first')
 
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['status_course', 'end_enrol']),
+            models.Index(fields=['category', 'language', 'level']),
+            models.Index(fields=['org_partner']),
+        ]
+    
     def save(self, *args, **kwargs):
         if not self.pk and not self.status_course:
             self.status_course = CourseStatus.objects.create(
