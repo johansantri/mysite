@@ -12,63 +12,66 @@
 {% endblock %}
 
 {% block content %}
-<main class="bg-light py-5">
-    <div class="container">
-        <!-- Partner Info Section (Tidak Diubah, Hanya Ditampilkan untuk Konteks) -->
-        <section class="card border-0 shadow-sm rounded-3 p-4 mb-5 animate__animated animate__fadeIn" aria-labelledby="partner-title">
-            <div class="row align-items-center">
-                <div class="col-12 col-md-3 text-center text-md-start mb-4 mb-md-0">
+<main class="bg-gray-100 py-8 font-sans">
+    <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <!-- Partner Info Section -->
+        <section class="bg-white rounded-xl shadow-md p-6 mb-6 animate-fade animate-duration-500" aria-labelledby="partner-title">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                <div class="md:col-span-3 text-center md:text-left">
                     {% if partner.logo %}
-                        <img src="{{ partner.logo.url }}" alt="Logo of {{ partner.name }}"
-                             class="img-fluid rounded-circle shadow-sm"
-                             style="width: 120px; height: 120px; object-fit: cover;">
+                        <img src="{{ partner.logo.url }}" 
+                             alt="Logo of {{ partner.name }}"
+                             class="w-32 h-32 rounded-full shadow-md object-cover mx-auto md:mx-0">
                     {% else %}
-                        <img src="https://via.placeholder.com/120" alt="Default logo for {{ partner.name }}"
-                             class="img-fluid rounded-circle shadow-sm"
-                             style="width: 120px; height: 120px;">
+                        <img src="https://via.placeholder.com/120" 
+                             alt="Default logo for {{ partner.name }}"
+                             class="w-32 h-32 rounded-full shadow-md mx-auto md:mx-0">
                     {% endif %}
                 </div>
-                <div class="col-12 col-md-9">
-                    <h1 class="h3 fw-bold text-dark mb-2" id="partner-title">{{ partner.name }}</h1>
-                    <p class="text-muted small mb-2">
-                        <i class="bi bi-building me-2"></i>{{ partner.kode }} | 
-                        <i class="bi bi-calendar-event me-2"></i>Join: {{ partner.created_ad|date:"F j, Y" }}
+                <div class="md:col-span-9">
+                    <h1 class="text-2xl font-bold text-gray-900 mb-2" id="partner-title">{{ partner.name }}</h1>
+                    <p class="text-gray-500 text-sm mb-2">
+                        <i class="fas fa-building mr-2"></i>{{ partner.kode }} | 
+                        <i class="fas fa-calendar-alt mr-2"></i>Join: {{ partner.created_ad|date:"F j, Y" }}
                     </p>
-                    <p class="text-dark mb-3" style="line-height: 1.6;">{{ partner.description | safe }}</p>
-                    <div class="d-flex flex-wrap gap-3 text-dark small">
-                        <span><i class="bi bi-geo-alt-fill me-2 text-primary"></i>{{ partner.address | safe }}</span>
-                        <span><i class="bi bi-telephone-fill me-2 text-primary"></i>{{ partner.phone | safe }}</span>
-                        <span><i class="bi bi-envelope-fill me-2 text-primary"></i>{{ partner.email | safe }}</span>
-                        <span><i class="bi bi-person-fill me-2 text-primary"></i>{{ partner.user.email | safe }}</span>
+                    <p class="text-gray-900 mb-4 leading-relaxed">{{ partner.description | safe }}</p>
+                    <div class="flex flex-wrap gap-4 text-gray-900 text-sm">
+                        <span><i class="fas fa-map-marker-alt mr-2 text-red-500"></i>{{ partner.address | safe }}</span>
+                        <span><i class="fas fa-phone-alt mr-2 text-red-500"></i>{{ partner.phone | safe }}</span>
+                        <span><i class="fas fa-envelope mr-2 text-red-500"></i>{{ partner.email | safe }}</span>
+                        <span><i class="fas fa-user mr-2 text-red-500"></i>{{ partner.user.email | safe }}</span>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Stats and Social Section -->
-        <section class="row g-4 mb-5 animate__animated animate__fadeInUp" aria-labelledby="stats-title">
-            <div class="col-12 col-md-8">
-                <h2 class="visually-hidden" id="stats-title">Partner Statistics</h2>
-                <div class="d-flex flex-wrap justify-content-center justify-content-md-start gap-3">
+        <section x-data="{ showTooltip: '' }" class="grid grid-cols-1 md:grid-cols-12 gap-6 mb-6 animate-fade animate-duration-500 animate-delay-200" aria-labelledby="stats-title">
+            <div class="md:col-span-8">
+                <h2 class="sr-only" id="stats-title">Partner Statistics</h2>
+                <div class="flex flex-wrap justify-center md:justify-start gap-4">
                     <!-- Learners -->
-                    <div class="card-stats d-flex align-items-center px-3 py-2 bg-white rounded-3 shadow-sm border border-light"
-                         style="min-width: 100px;"
-                         data-bs-toggle="tooltip" data-bs-placement="top" title="Total Learners">
-                        <i class="bi bi-person-circle fs-4 text-primary me-2"></i>
+                    <div class="flex items-center px-4 py-3 bg-white rounded-lg shadow-md border border-gray-100 hover:shadow-lg transition-shadow"
+                         @mouseenter="showTooltip = 'learners'" @mouseleave="showTooltip = ''">
+                        <i class="fas fa-users text-2xl text-red-500 mr-3"></i>
                         <div>
-                            <p class="fw-bold text-dark mb-0" style="font-size: 1.1rem;">{{ unique_learners }}</p>
-                            <small class="text-muted">Learners</small>
+                            <p class="font-bold text-gray-900 text-lg">{{ unique_learners }}</p>
+                            <small class="text-gray-500">Learners</small>
+                        </div>
+                        <div x-show="showTooltip === 'learners'" 
+                             x-transition 
+                             class="absolute z-10 mt-2 px-3 py-2 text-sm text-white bg-gray-900 rounded-lg shadow-sm">
+                            Total Learners
                         </div>
                     </div>
 
                     <!-- Reviews -->
-                    <div class="card-stats d-flex align-items-center px-3 py-2 bg-white rounded-3 shadow-sm border border-light"
-                         style="min-width: 100px;"
-                         data-bs-toggle="tooltip" data-bs-placement="top" title="Total Reviews">
-                        <i class="bi bi-star-fill fs-4 text-warning me-2"></i>
+                    <div class="flex items-center px-4 py-3 bg-white rounded-lg shadow-md border border-gray-100 hover:shadow-lg transition-shadow"
+                         @mouseenter="showTooltip = 'reviews'" @mouseleave="showTooltip = ''">
+                        <i class="fas fa-star text-2xl text-yellow-400 mr-3"></i>
                         <div>
-                            <p class="fw-bold text-dark mb-0" style="font-size: 1.1rem;">{{ total_reviews }}</p>
-                            <small class="text-muted">
+                            <p class="font-bold text-gray-900 text-lg">{{ total_reviews }}</p>
+                            <small class="text-gray-500">
                                 {% if total_reviews > 0 %}
                                     {{ average_rating }}/5
                                 {% else %}
@@ -76,64 +79,82 @@
                                 {% endif %}
                             </small>
                         </div>
+                        <div x-show="showTooltip === 'reviews'" 
+                             x-transition 
+                             class="absolute z-10 mt-2 px-3 py-2 text-sm text-white bg-gray-900 rounded-lg shadow-sm">
+                            Total Reviews
+                        </div>
                     </div>
 
                     <!-- Courses -->
-                    <div class="card-stats d-flex align-items-center px-3 py-2 bg-white rounded-3 shadow-sm border border-light"
-                         style="min-width: 100px;"
-                         data-bs-toggle="tooltip" data-bs-placement="top" title="Total Courses">
-                        <i class="bi bi-book-fill fs-4 text-success me-2"></i>
+                    <div class="flex items-center px-4 py-3 bg-white rounded-lg shadow-md border border-gray-100 hover:shadow-lg transition-shadow"
+                         @mouseenter="showTooltip = 'courses'" @mouseleave="showTooltip = ''">
+                        <i class="fas fa-book text-2xl text-green-600 mr-3"></i>
                         <div>
-                            <p class="fw-bold text-dark mb-0" style="font-size: 1.1rem;">{{ total_courses }}</p>
-                            <small class="text-muted">Courses</small>
+                            <p class="font-bold text-gray-900 text-lg">{{ total_courses }}</p>
+                            <small class="text-gray-500">Courses</small>
+                        </div>
+                        <div x-show="showTooltip === 'courses'" 
+                             x-transition 
+                             class="absolute z-10 mt-2 px-3 py-2 text-sm text-white bg-gray-900 rounded-lg shadow-sm">
+                            Total Courses
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-12 col-md-4">
-                <div class="d-flex justify-content-center justify-content-md-end gap-3">
-                    <a href="#" class="text-primary fs-5" aria-label="Visit our Facebook page"><i class="bi bi-facebook"></i></a>
-                    <a href="#" class="text-primary fs-5" aria-label="Visit our Twitter page"><i class="bi bi-twitter-x"></i></a>
-                    <a href="#" class="text-primary fs-5" aria-label="Visit our LinkedIn page"><i class="bi bi-linkedin"></i></a>
-                    <a href="#" class="text-primary fs-5" aria-label="Visit our Instagram page"><i class="bi bi-instagram"></i></a>
+            <div class="md:col-span-4">
+                <div class="flex justify-center md:justify-end gap-4">
+                    <a href="#" class="text-red-500 text-xl hover:text-red-600 hover:-translate-y-0.5 transition-transform" 
+                       aria-label="Visit our Facebook page"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-red-500 text-xl hover:text-red-600 hover:-translate-y-0.5 transition-transform" 
+                       aria-label="Visit our Twitter page"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-red-500 text-xl hover:text-red-600 hover:-translate-y-0.5 transition-transform" 
+                       aria-label="Visit our LinkedIn page"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="text-red-500 text-xl hover:text-red-600 hover:-translate-y-0.5 transition-transform" 
+                       aria-label="Visit our Instagram page"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
         </section>
-        <hr class="my-5 border-light">
+        <hr class="my-6 border-gray-200">
 
-        <!-- Search and Courses Section (Tidak Diubah, Hanya Ditampilkan untuk Konteks) -->
-        <div class="row g-4">
+        <!-- Search and Courses Section -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
             <!-- Sidebar -->
-            <aside class="col-12 col-md-3">
-                <div class="sticky-top" style="top: 20px;">
+            <aside class="md:col-span-3">
+                <div class="sticky top-5">
                     <!-- Search Form -->
                     <form method="get" action="{% url 'courses:org_partner' partner.name.slug %}">
-                        <div class="input-group mb-4 animate__animated animate__fadeIn">
-                            <input type="search" class="form-control rounded-start-3 border-light shadow-sm"
-                                   name="search" placeholder="Find courses..." value="{{ search_query }}"
+                        <div class="flex mb-6 animate-fade animate-duration-500">
+                            <input type="search" 
+                                   class="w-full border border-gray-200 rounded-l-lg shadow-sm p-3 focus:border-red-500 focus:ring focus:ring-red-100 transition-colors" 
+                                   name="search" 
+                                   placeholder="Find courses..." 
+                                   value="{{ search_query }}"
                                    aria-label="Search courses">
-                            <button class="btn btn-primary rounded-end-3 shadow-sm" type="submit" aria-label="Submit search">
-                                <i class="bi bi-search"></i>
+                            <button class="bg-red-500 text-white px-4 py-3 rounded-r-lg hover:bg-red-600 transition-colors" 
+                                    type="submit" 
+                                    aria-label="Submit search">
+                                <i class="fas fa-search"></i>
                             </button>
                         </div>
                     </form>
 
                     <!-- Categories -->
-                    <div class="card border-0 shadow-sm rounded-3 p-4 animate__animated animate__fadeInUp">
-                        <h2 class="h6 fw-bold text-dark mb-4">Categories</h2>
-                        <ul class="list-unstyled">
-                            <li class="mb-2">
-                                <a href="?category="
-                                   class="d-flex align-items-center p-2 rounded-3 text-decoration-none {% if selected_category == '' %}bg-primary text-white{% else %}text-dark{% endif %}">
-                                    <i class="bi bi-grid-fill me-2"></i> All
+                    <div class="bg-white rounded-xl shadow-md p-6 animate-fade animate-duration-500 animate-delay-100">
+                        <h2 class="text-lg font-bold text-gray-900 mb-4">Categories</h2>
+                        <ul class="space-y-2">
+                            <li>
+                                <a href="?category=" 
+                                   class="flex items-center p-2 rounded-lg text-sm {% if selected_category == '' %}bg-red-500 text-white{% else %}text-gray-900 hover:bg-gray-100 hover:translate-x-1{% endif %} transition-all">
+                                    <i class="fas fa-th mr-2"></i> All
                                 </a>
                             </li>
                             {% for category in categories %}
-                            <li class="mb-2">
-                                <a href="?category={{ category.name }}"
-                                   class="d-flex align-items-center p-2 rounded-3 text-decoration-none {% if selected_category == category.name %}bg-primary text-white{% else %}text-dark{% endif %}">
-                                    <i class="bi bi-folder-fill me-2"></i> {{ category.name }}
+                            <li>
+                                <a href="?category={{ category.name }}" 
+                                   class="flex items-center p-2 rounded-lg text-sm {% if selected_category == category.name %}bg-red-500 text-white{% else %}text-gray-900 hover:bg-gray-100 hover:translate-x-1{% endif %} transition-all">
+                                    <i class="fas fa-folder mr-2"></i> {{ category.name }}
                                 </a>
                             </li>
                             {% endfor %}
@@ -143,11 +164,14 @@
             </aside>
 
             <!-- Courses Section -->
-            <section class="col-12 col-md-9" aria-labelledby="courses-title">
+            <section class="md:col-span-9" aria-labelledby="courses-title">
                 <form method="get" action="{% url 'courses:org_partner' partner.name.slug %}">
-                    <div class="d-flex justify-content-between align-items-center mb-4 animate__animated animate__fadeIn">
-                        <h2 class="h4 fw-bold text-dark" id="courses-title">Courses</h2>
-                        <select class="form-select w-auto rounded-3 border-light shadow-sm" name="sort_by" onchange="this.form.submit()" aria-label="Sort courses">
+                    <div class="flex flex-col sm:flex-row justify-between items-center mb-6 animate-fade animate-duration-500">
+                        <h2 class="text-xl font-bold text-gray-900" id="courses-title">Courses</h2>
+                        <select class="border border-gray-200 rounded-lg shadow-sm p-2 focus:border-red-500 focus:ring focus:ring-red-100 transition-colors" 
+                                name="sort_by" 
+                                onchange="this.form.submit()" 
+                                aria-label="Sort courses">
                             <option value="name" {% if sort_by == 'name' %}selected{% endif %}>Sort by Name</option>
                             <option value="date" {% if sort_by == 'date' %}selected{% endif %}>Sort by Date</option>
                             <option value="learners" {% if sort_by == 'learners' %}selected{% endif %}>Sort by Learners</option>
@@ -157,134 +181,130 @@
                     <input type="hidden" name="category" value="{{ selected_category }}">
                 </form>
 
-                <div class="row g-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {% for course in courses %}
-                    <article class="col-12 col-md-6 col-lg-4">
-                        <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}" class="text-decoration-none" aria-label="View details for {{ course.course_name }}">
-                            <div class="card h-100 border-0 shadow-sm rounded-3 course-card animate__animated animate__fadeInUp">
-                                <div class="position-relative overflow-hidden" style="height: 180px;">
-                                    {% if course.course_image %}
-                                        <img src="{{ course.course_image }}"
-                                             alt="Thumbnail for {{ course.course_name }}"
-                                             class="img-fluid transition-scale w-100 h-100"
-                                             style="object-fit: cover;">
+                    <article>
+                        <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}" 
+                           class="block bg-white rounded-xl shadow-md hover:shadow-lg hover:-translate-y-1 transition-all animate-fade animate-duration-500 animate-delay-200" 
+                           aria-label="View details for {{ course.course_name }}">
+                            <div class="relative overflow-hidden h-44">
+                                {% if course.course_image %}
+                                    <img src="{{ course.course_image }}"
+                                         alt="Thumbnail for {{ course.course_name }}"
+                                         class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+                                {% else %}
+                                    <img src="https://via.placeholder.com/300x180"
+                                         alt="Default thumbnail for {{ course.course_name }}"
+                                         class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+                                {% endif %}
+                                <span class="absolute top-2 right-2 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded-lg">
+                                    {{ course.language|upper }}
+                                </span>
+                            </div>
+                            <div class="p-4 flex flex-col">
+                                <h3 class="text-base font-bold text-gray-900 mb-3 truncate" title="{{ course.course_name }}">
+                                    {{ course.course_name }}
+                                </h3>
+                                <div class="flex items-center mb-3">
+                                    {% if course.photo %}
+                                        <img src="{{ course.photo }}"
+                                             alt="Photo of instructor {{ course.instructor }}"
+                                             class="w-7 h-7 rounded-full mr-2 object-cover">
                                     {% else %}
-                                        <img src="https://via.placeholder.com/300x180"
-                                             alt="Default thumbnail for {{ course.course_name }}"
-                                             class="img-fluid transition-scale w-100 h-100"
-                                             style="object-fit: cover;">
+                                        <img src="https://via.placeholder.com/28"
+                                             alt="Default instructor photo"
+                                             class="w-7 h-7 rounded-full mr-2">
                                     {% endif %}
-                                    <span class="badge bg-primary text-white position-absolute top-0 end-0 m-2 rounded-3">
-                                        {{ course.language|upper }}
+                                    <span class="text-gray-500 text-sm truncate">
+                                        {{ course.instructor|default:"No Instructor" }}
                                     </span>
                                 </div>
-                                <div class="card-body p-4 d-flex flex-column">
-                                    <h3 class="h6 fw-bold mb-3 text-dark text-truncate" title="{{ course.course_name }}">
-                                        {{ course.course_name }}
-                                    </h3>
-                                    <div class="d-flex align-items-center mb-3">
-                                        {% if course.photo %}
-                                            <img src="{{ course.photo }}"
-                                                 alt="Photo of instructor {{ course.instructor }}"
-                                                 class="rounded-circle me-2"
-                                                 style="width: 28px; height: 28px; object-fit: cover;">
-                                        {% else %}
-                                            <img src="https://via.placeholder.com/28"
-                                                 alt="Default instructor photo"
-                                                 class="rounded-circle me-2"
-                                                 style="width: 28px; height: 28px;">
-                                        {% endif %}
-                                        <span class="text-muted small text-truncate">
-                                            {{ course.instructor|default:"No Instructor" }}
-                                        </span>
-                                    </div>
-                                    <div class="d-flex flex-wrap gap-2 mb-3">
-                                        <span class="badge bg-light text-dark border rounded-3">
-                                            <i class="bi bi-people-fill me-1"></i> {{ course.num_enrollments }} Learners
-                                        </span>
-                                        <span class="badge bg-light text-dark border rounded-3">
-                                            <i class="bi bi-clock-fill me-1"></i> {{ course.hour|default:"N/A" }} Hours
-                                        </span>
-                                    </div>
-                                    <div class="d-flex align-items-center mb-2">
-                                        <div class="text-warning me-2">
-                                            {% for _ in course.full_star_range %}
-                                                <i class="bi bi-star-fill fa-sm"></i>
-                                            {% endfor %}
-                                            {% if course.half_star %}
-                                                <i class="bi bi-star-half fa-sm"></i>
-                                            {% endif %}
-                                            {% for _ in course.empty_star_range %}
-                                                <i class="bi bi-star fa-sm"></i>
-                                            {% endfor %}
-                                        </div>
-                                        <span class="text-muted small">
-                                            ({{ course.average_rating }} / {{ course.review_count }})
-                                        </span>
-                                    </div>
-                                    <p class="text-dark fw-bold mb-0">Free</p>
+                                <div class="flex flex-wrap gap-2 mb-3">
+                                    <span class="bg-gray-100 text-gray-900 text-xs font-medium px-2 py-1 rounded-lg border border-gray-200">
+                                        <i class="fas fa-users mr-1"></i> {{ course.num_enrollments }} Learners
+                                    </span>
+                                    <span class="bg-gray-100 text-gray-900 text-xs font-medium px-2 py-1 rounded-lg border border-gray-200">
+                                        <i class="fas fa-clock mr-1"></i> {{ course.hour|default:"N/A" }} Hours
+                                    </span>
                                 </div>
+                                <div class="flex items-center mb-2">
+                                    <div class="text-yellow-400 mr-2 flex">
+                                        {% for _ in course.full_star_range %}
+                                            <i class="fas fa-star text-sm"></i>
+                                        {% endfor %}
+                                        {% if course.half_star %}
+                                            <i class="fas fa-star-half-alt text-sm"></i>
+                                        {% endif %}
+                                        {% for _ in course.empty_star_range %}
+                                            <i class="far fa-star text-sm"></i>
+                                        {% endfor %}
+                                    </div>
+                                    <span class="text-gray-500 text-sm">
+                                        ({{ course.average_rating }} / {{ course.review_count }})
+                                    </span>
+                                </div>
+                                <p class="text-gray-900 font-bold text-sm mb-0">Free</p>
                             </div>
                         </a>
                     </article>
                     {% empty %}
-                    <div class="col-12 text-center py-5">
-                        <p class="text-muted fs-5 animate__animated animate__fadeIn">No related courses found.</p>
+                    <div class="col-span-full text-center py-8 animate-fade animate-duration-500">
+                        <p class="text-gray-500 text-lg">No related courses found.</p>
                     </div>
                     {% endfor %}
                 </div>
 
-                <nav class="d-flex justify-content-center mt-5 animate__animated animate__fadeIn" aria-label="Course Pagination">
-                    <ul class="pagination gap-2">
+                <nav class="flex justify-center mt-8 animate-fade animate-duration-500" aria-label="Course Pagination">
+                    <ul class="flex gap-2">
                         {% if page_obj.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link rounded-3 shadow-sm px-3 py-1 text-primary border-light"
+                        <li>
+                            <a class="inline-flex px-3 py-1 rounded-lg text-red-500 border border-gray-200 hover:bg-red-500 hover:text-white transition-colors"
                                href="?page=1&category={{ selected_category }}&search={{ search_query }}&sort_by={{ sort_by }}"
                                aria-label="First page">
-                                <i class="bi bi-chevron-double-left"></i>
+                                <i class="fas fa-angle-double-left"></i>
                             </a>
                         </li>
-                        <li class="page-item">
-                            <a class="page-link rounded-3 shadow-sm px-3 py-1 text-primary border-light"
+                        <li>
+                            <a class="inline-flex px-3 py-1 rounded-lg text-red-500 border border-gray-200 hover:bg-red-500 hover:text-white transition-colors"
                                href="?page={{ page_obj.previous_page_number }}&category={{ selected_category }}&search={{ search_query }}&sort_by={{ sort_by }}"
                                aria-label="Previous page">
-                                <i class="bi bi-chevron-left"></i>
+                                <i class="fas fa-angle-left"></i>
                             </a>
                         </li>
                         {% else %}
-                        <li class="page-item disabled">
-                            <span class="page-link rounded-3 shadow-sm px-3 py-1 text-muted border-light"><i class="bi bi-chevron-double-left"></i></span>
+                        <li>
+                            <span class="inline-flex px-3 py-1 rounded-lg text-gray-400 border border-gray-200"><i class="fas fa-angle-double-left"></i></span>
                         </li>
-                        <li class="page-item disabled">
-                            <span class="page-link rounded-3 shadow-sm px-3 py-1 text-muted border-light"><i class="bi bi-chevron-left"></i></span>
+                        <li>
+                            <span class="inline-flex px-3 py-1 rounded-lg text-gray-400 border border-gray-200"><i class="fas fa-angle-left"></i></span>
                         </li>
                         {% endif %}
-                        <li class="page-item disabled">
-                            <span class="page-link bg-primary text-white rounded-3 shadow-sm px-4 py-1">
+                        <li>
+                            <span class="inline-flex px-4 py-1 rounded-lg bg-red-500 text-white shadow-md">
                                 {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
                             </span>
                         </li>
                         {% if page_obj.has_next %}
-                        <li class="page-item">
-                            <a class="page-link rounded-3 shadow-sm px-3 py-1 text-primary border-light"
+                        <li>
+                            <a class="inline-flex px-3 py-1 rounded-lg text-red-500 border border-gray-200 hover:bg-red-500 hover:text-white transition-colors"
                                href="?page={{ page_obj.next_page_number }}&category={{ selected_category }}&search={{ search_query }}&sort_by={{ sort_by }}"
                                aria-label="Next page">
-                                <i class="bi bi-chevron-right"></i>
+                                <i class="fas fa-angle-right"></i>
                             </a>
                         </li>
-                        <li class="page-item">
-                            <a class="page-link rounded-3 shadow-sm px-3 py-1 text-primary border-light"
+                        <li>
+                            <a class="inline-flex px-3 py-1 rounded-lg text-red-500 border border-gray-200 hover:bg-red-500 hover:text-white transition-colors"
                                href="?page={{ page_obj.paginator.num_pages }}&category={{ selected_category }}&search={{ search_query }}&sort_by={{ sort_by }}"
                                aria-label="Last page">
-                                <i class="bi bi-chevron-double-right"></i>
+                                <i class="fas fa-angle-double-right"></i>
                             </a>
                         </li>
                         {% else %}
-                        <li class="page-item disabled">
-                            <span class="page-link rounded-3 shadow-sm px-3 py-1 text-muted border-light"><i class="bi bi-chevron-right"></i></span>
+                        <li>
+                            <span class="inline-flex px-3 py-1 rounded-lg text-gray-400 border border-gray-200"><i class="fas fa-angle-right"></i></span>
                         </li>
-                        <li class="page-item disabled">
-                            <span class="page-link rounded-3 shadow-sm px-3 py-1 text-muted border-light"><i class="bi bi-chevron-double-right"></i></span>
+                        <li>
+                            <span class="inline-flex px-3 py-1 rounded-lg text-gray-400 border border-gray-200"><i class="fas fa-angle-double-right"></i></span>
                         </li>
                         {% endif %}
                     </ul>
@@ -293,195 +313,4 @@
         </div>
     </div>
 </main>
-
-<!-- Custom CSS -->
-<style>
-/* General Styles */
-body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    background-color: #f8f9fa;
-}
-
-.container {
-    max-width: 1200px;
-}
-
-/* Card Styles */
-.card {
-    background-color: #ffffff;
-    border-radius: 12px !important;
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
-}
-
-.card-stats {
-    transition: box-shadow 0.3s ease, background-color 0.3s ease;
-}
-
-.card-stats:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
-    background-color: #f8f9fa;
-}
-
-.course-card:hover {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1) !important;
-    transform: translateY(-3px);
-}
-
-.course-card img.transition-scale {
-    transition: transform 0.3s ease;
-}
-
-.course-card:hover img.transition-scale {
-    transform: scale(1.05);
-}
-
-.course-card .badge {
-    font-size: 0.75rem;
-    padding: 0.5em 1em;
-}
-
-.course-card h3 {
-    font-size: 1rem;
-    line-height: 1.5;
-}
-
-.course-card .text-muted {
-    font-size: 0.85rem;
-}
-
-/* Partner Info Section */
-.card.shadow-sm {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-/* Search Form */
-.input-group .form-control {
-    border: 1px solid #e9ecef;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.input-group .form-control:focus {
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.1);
-}
-
-.input-group .btn-primary {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
-}
-
-.input-group .btn-primary:hover {
-    background-color: #0b5ed7;
-    border-color: #0a58ca;
-}
-
-/* Category Sidebar */
-.card .list-unstyled li a {
-    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
-}
-
-.card .list-unstyled li a:hover {
-    background-color: #f1f3f5;
-    transform: translateX(5px);
-}
-
-/* Pagination */
-.pagination .page-link {
-    border: none;
-    color: #0d6efd;
-    font-weight: 500;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.pagination .page-link:hover {
-    background-color: #0d6efd;
-    color: white;
-}
-
-.pagination .page-link.disabled {
-    color: #6c757d;
-    background-color: transparent;
-}
-
-/* Social Icons */
-.text-primary:hover {
-    color: #0b5ed7 !important;
-    transform: translateY(-2px);
-}
-
-/* Responsive Adjustments */
-@media (max-width: 767.98px) {
-    .container {
-        padding-left: 15px;
-        padding-right: 15px;
-    }
-
-    .card.shadow-sm {
-        padding: 15px !important;
-    }
-
-    .h3.fw-bold {
-        font-size: 1.75rem !important;
-    }
-
-    .course-card h3 {
-        font-size: 0.95rem;
-    }
-
-    .course-card .badge {
-        font-size: 0.7rem;
-    }
-
-    .card-stats {
-        padding: 10px !important;
-        min-width: 90px !important;
-    }
-
-    .card-stats p {
-        font-size: 1rem !important;
-    }
-
-    .card-stats small {
-        font-size: 0.7rem !important;
-    }
-
-    .card .list-unstyled li a {
-        font-size: 0.9rem;
-    }
-
-    .pagination .page-link {
-        padding: 0.5rem 0.9rem;
-        font-size: 0.95rem;
-    }
-}
-
-/* Accessibility */
-.visually-hidden {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    border: 0;
-}
-
-/* Tooltip Styling */
-.tooltip-inner {
-    background-color: #343a40;
-    color: #fff;
-    font-size: 0.8rem;
-}
-</style>
-
-<!-- Initialize Tooltips -->
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
-});
-</script>
 {% endblock %}

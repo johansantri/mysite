@@ -6,27 +6,41 @@ import re
 from .models import CustomUser
 from django.core.exceptions import ValidationError
 import imghdr
+from captcha.fields import CaptchaField
+
 
 class RegistrationForm(forms.ModelForm):
     password1 = forms.CharField(
-        label="Password",  # Ubah label di sini
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Enter your password'})
+        label="Password",
+        widget=forms.PasswordInput(attrs={
+            'class': 'w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+            'placeholder': 'Enter your password'
+        })
     )
     password2 = forms.CharField(
-        label="Confirm Password",  # Ubah label di sini
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm your password'})
+        label="Confirm Password",
+        widget=forms.PasswordInput(attrs={
+            'class': 'w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+            'placeholder': 'Confirm your password'
+        })
     )
-    captcha = CaptchaField()  # This assumes you have django-recaptcha installed
+    captcha = CaptchaField()  # widget default sudah oke
 
     class Meta:
         model = CustomUser
         fields = ['email', 'username', 'password1', 'password2', 'captcha']
 
         widgets = {
-            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter your email'}),
-            'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your username'}),
-            # password widgets are already added above
+            'email': forms.EmailInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+                'placeholder': 'Enter your email'
+            }),
+            'username': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500',
+                'placeholder': 'Enter your username'
+            }),
         }
+
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")
@@ -39,10 +53,16 @@ class RegistrationForm(forms.ModelForm):
 
 class LoginForm(forms.Form):
     email = forms.EmailField(
-    widget=forms.EmailInput(attrs={'placeholder': 'Enter your email', 'class': 'form-control'})
+        widget=forms.EmailInput(attrs={
+            'placeholder': 'Enter your email',
+            'class': 'w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+        })
     )
     password = forms.CharField(
-    widget=forms.PasswordInput(attrs={'placeholder': 'Enter your password', 'class': 'form-control'})
+        widget=forms.PasswordInput(attrs={
+            'placeholder': 'Enter your password',
+            'class': 'w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+        })
     )
     captcha = CaptchaField()  # Add the captcha field here
 

@@ -6,329 +6,38 @@
 <meta name="keywords" content="{{ post.tags.all|join:', ' }}, {{ post.category.name|default:'blog' }}, education, technology">
 <meta name="robots" content="index, follow">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-<style>
-  /* Font dan Reset */
-  body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    line-height: 1.6;
-  }
-
-  /* Section Styling */
-  .blog-detail-section {
-    background: #f8f9fa;
-    padding: 2rem 0;
-  }
-
-  /* Blog Post Card */
-  .blog-post-card {
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  }
-  .blog-post-card img {
-    object-fit: cover;
-    width: 100%;
-  }
-  .blog-post-card .no-image-placeholder {
-    height: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    background: #6c757d;
-  }
-  .blog-post-card h1 {
-    color: #b02a37;
-    font-weight: 700;
-  }
-
-  /* Comment Section */
-  .comment-card {
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  }
-  .comment-card img {
-    object-fit: cover;
-  }
-  .reply-form {
-    transition: opacity 0.3s ease;
-  }
-
-  /* Sidebar Cards */
-  .sidebar-card {
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  }
-  .sidebar-card h5 {
-    color: #b02a37;
-  }
-  .sidebar-card a {
-    color: #6c757d;
-    transition: color 0.3s ease;
-  }
-  .sidebar-card a:hover {
-    color: #b02a37;
-  }
-
-  /* Related Posts Section */
-  .related-posts-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border-radius: 12px;
-    overflow: hidden;
-    background: #fff;
-  }
-  .related-posts-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  }
-  .related-posts-card img {
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
-    height: 150px;
-    width: 100%;
-  }
-  .related-posts-card .no-image-placeholder {
-    height: 150px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-  }
-  .related-posts-card .card-body {
-    padding: 1rem;
-  }
-  .related-posts-card .card-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #212529;
-  }
-  .related-posts-card .btn {
-    border-radius: 8px;
-    padding: 0.4rem 0.8rem;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-  .related-posts-card .btn:hover {
-    background-color: #b02a37;
-    color: #fff;
-    border-color: #b02a37;
-  }
-
-  /* Badge Tags */
-  .badge-tag {
-    font-size: 0.8rem;
-    padding: 0.3rem 0.6rem;
-    border-radius: 20px;
-    transition: background-color 0.3s ease;
-  }
-  .badge-tag:hover {
-    background-color: #0d6efd;
-    text-decoration: none;
-  }
-
-  /* Animasi Fade-In */
-  .related-posts-card {
-    opacity: 0;
-    animation: fadeIn 0.5s ease forwards;
-  }
-  .related-posts-card:nth-child(odd) {
-    animation-delay: 0.1s;
-  }
-  .related-posts-card:nth-child(even) {
-    animation-delay: 0.2s;
-  }
-  @keyframes fadeIn {
-    to {
-      opacity: 1;
-    }
-  }
-
-  /* Mobile-Specific Adjustments for Blog Detail */
-  @media (max-width: 767.98px) {
-    /* Minimize container padding and ensure full width */
-    .container {
-      padding-left: 4px !important;
-      padding-right: 4px !important;
-      margin-left: 0 !important;
-      margin-right: 0 !important;
-      max-width: 100% !important;
-    }
-
-    /* Remove all margins and padding from cards */
-    .blog-post-card,
-    .comment-card,
-    .sidebar-card,
-    .related-posts-card {
-      margin: 0 !important;
-      padding: 4px !important;
-      border-radius: 8px;
-      width: 100% !important;
-    }
-
-    /* Adjust card body for minimal padding */
-    .blog-post-card .card-body,
-    .comment-card .card-body,
-    .sidebar-card .card-body,
-    .related-posts-card .card-body {
-      padding: 8px !important;
-      margin: 0 !important;
-    }
-
-    /* Reorder title, image, and metadata */
-    .blog-post-card .card-body {
-      display: flex;
-      flex-direction: column;
-      padding: 8px !important;
-    }
-    .blog-post-card h1 {
-      order: 1;
-      font-size: 1.4rem;
-      margin: 0 0 1rem 0;
-    }
-    .image-wrapper {
-      order: 2;
-      width: 100%;
-      margin: 0 0 1rem 0;
-      padding: 0 !important;
-    }
-    .metadata-wrapper {
-      order: 3;
-      width: 100%;
-      margin: 0;
-      padding: 0 !important;
-    }
-    .blog-content {
-      order: 4;
-      margin: 0 !important;
-      padding: 0 !important;
-    }
-    .blog-post-card .card-body > div:last-child { /* Share buttons */
-      order: 5;
-      margin: 0;
-      padding: 0;
-    }
-
-    /* Optimize image size for mobile */
-    .blog-post-card img,
-    .blog-post-card .no-image-placeholder {
-      width: 100%;
-      height: 150px;
-      object-fit: cover;
-      border-radius: 8px;
-      margin: 0 !important;
-    }
-
-    /* Ensure content is full-width and readable */
-    .blog-content {
-      font-size: 0.95rem;
-      line-height: 1.5;
-      margin: 0 !important;
-      padding: 0 !important;
-    }
-
-    /* Remove row gutters and ensure full-width columns */
-    .row {
-      margin-left: 0 !important;
-      margin-right: 0 !important;
-      padding: 0 !important;
-    }
-    .row > * {
-      padding-left: 0 !important;
-      padding-right: 0 !important;
-      margin: 0 !important;
-    }
-    .related-posts .col-md-6,
-    .related-posts .col-lg-4 {
-      width: 100%;
-      padding: 0 !important;
-      margin: 0 !important;
-    }
-
-    /* Related posts and comments */
-    .related-posts .row,
-    .comment-card ul {
-      margin: 0 !important;
-      padding: 0 !important;
-    }
-    .related-posts-card img,
-    .related-posts-card .no-image-placeholder {
-      height: 120px;
-      margin: 0 !important;
-    }
-    .related-posts-card .card-title {
-      font-size: 0.9rem;
-    }
-
-    /* Sidebar adjustments */
-    .sidebar-card {
-      margin-top: 1rem !important;
-      margin-left: 0 !important;
-      margin-right: 0 !important;
-    }
-
-    /* Comment section */
-    .comment-card h3 {
-      font-size: 1.2rem;
-    }
-    .comment-card img {
-      width: 40px;
-      height: 40px;
-    }
-
-    /* Ensure section padding is minimal */
-    .blog-detail-section {
-      padding: 1rem 0 !important;
-    }
-  }
-
-  /* Extra small devices (phones < 576px) */
-  @media (max-width: 575.98px) {
-    .blog-post-card h1 {
-      font-size: 1.25rem;
-    }
-    .blog-post-card img,
-    .blog-post-card .no-image-placeholder {
-      height: 120px;
-    }
-    .blog-content {
-      font-size: 0.9rem;
-    }
-    .related-posts-card img,
-    .related-posts-card .no-image-placeholder {
-      height: 100px;
-    }
-  }
-</style>
 {% endblock %}
 
 {% block content %}
-<section class="blog-detail-section py-5">
-  <div class="container">
-    <div class="row g-4">
+<section class="py-8 bg-gray-100" style="font-family: 'Inter', system-ui, -apple-system, sans-serif;">
+  <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <!-- Blog Detail -->
-      <div class="col-lg-8">
-        <div class="blog-post-card card border-0 shadow-sm rounded-3 mb-4">
-          <div class="card-body p-5">
+      <div class="lg:col-span-2">
+        <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 mb-6">
+          <div class="p-4 md:p-6">
             <!-- Title -->
-            <h1 class="fw-bold mb-3 fs-3">{{ post.title }}</h1>
+            <h1 class="text-2xl md:text-3xl font-bold text-red-600 mb-3">{{ post.title }}</h1>
             
             <!-- Image and Metadata Container -->
-            <div class="row g-4 align-items-start">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <!-- Image -->
-              <div class="col-md-4 image-wrapper">
+              <div class="md:col-span-1">
                 {% if post.image %}
-                  <img src="{{ post.image.url }}" class="img-fluid rounded-3 w-100" alt="{{ post.title }}">
+                  <img src="{{ post.image.url }}" class="w-full rounded-lg object-cover h-40 md:h-48" alt="{{ post.title }}">
                 {% else %}
-                  <div class="no-image-placeholder bg-secondary text-white text-center py-5 rounded-3">No Image</div>
+                  <div class="w-full h-40 md:h-48 bg-gray-500 text-white flex items-center justify-center rounded-lg text-center">
+                    No Image
+                  </div>
                 {% endif %}
               </div>
               
               <!-- Metadata -->
-              <div class="col-md-8 metadata-wrapper">
-                <p class="text-muted small mb-3">
+              <div class="md:col-span-2">
+                <p class="text-gray-500 text-sm mb-3">
                   By {{ post.author|default:"Unknown" }} |
                   {{ post.date_posted|date:"F d, Y" }} |
-                  <a href="{{ post.category.get_absolute_url }}" rel="canonical" class="text-decoration-none text-primary">
+                  <a href="{{ post.category.get_absolute_url }}" rel="canonical" class="text-blue-600 hover:underline">
                     {{ post.category|default:"Uncategorized" }}
                   </a> |
                   {{ post.views }} View{{ post.views|pluralize }} |
@@ -338,66 +47,73 @@
             </div>
 
             <!-- Content -->
-            <div class="blog-content mt-4 mb-4">{{ post.content|safe }}</div>
+            <div class="mt-4 mb-4 text-gray-800 leading-relaxed">{{ post.content|safe }}</div>
 
             <!-- Share Buttons -->
-            <div>
+            <div class="flex gap-2">
               <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ post.title }}"
-                 class="btn btn-sm btn-outline-primary me-2">Share on Twitter</a>
+                 class="px-3 py-1 border border-blue-600 text-blue-600 rounded-lg text-sm hover:bg-blue-600 hover:text-white transition-all duration-300">
+                Share on Twitter
+              </a>
               <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}"
-                 class="btn btn-sm btn-outline-primary">Share on Facebook</a>
+                 class="px-3 py-1 border border-blue-600 text-blue-600 rounded-lg text-sm hover:bg-blue-600 hover:text-white transition-all duration-300">
+                Share on Facebook
+              </a>
             </div>
           </div>
         </div>
 
         <!-- Comment Section -->
-        <div class="comment-card card border-0 shadow-sm rounded-3 mb-5">
-          <div class="card-body p-4">
-            <h3 class="fw-bold text-primary mb-4">Comments ({{ post.number_of_comments }})</h3>
+        <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 mb-6">
+          <div class="p-4">
+            <h3 class="text-xl font-bold text-blue-600 mb-4">Comments ({{ post.number_of_comments }})</h3>
 
             {% if comments %}
-              <ul class="list-unstyled">
+              <ul class="list-none">
                 {% for comment in comments %}
-                <li class="mb-4 {% if comment.parent %}ms-4{% endif %}">
-                  <div class="d-flex align-items-start">
+                <li class="mb-4 {% if comment.parent %}ml-4{% endif %}">
+                  <div class="flex items-start">
                     <!-- Foto profil -->
                     <img src="{% if comment.author and comment.author.photo %}{{ comment.author.photo.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}" 
                          alt="Avatar for {{ comment.author.username|default:'Anonymous' }}" 
-                         class="rounded-circle me-3 mt-1" width="48" height="48">
+                         class="w-12 h-12 rounded-full mr-3 mt-1 object-cover">
 
                     <!-- Konten komentar -->
-                    <div class="flex-grow-1">
-                      <div class="d-flex justify-content-between align-items-center">
-                        <h6 class="mb-0 fw-semibold text-primary">{{ comment.author.username|default:"Anonymous" }}</h6>
-                        <small class="text-muted">{{ comment.date_posted|date:"F d, Y, H:i" }}</small>
+                    <div class="flex-grow">
+                      <div class="flex justify-between items-center">
+                        <h6 class="mb-0 font-semibold text-blue-600">{{ comment.author.username|default:"Anonymous" }}</h6>
+                        <small class="text-gray-500">{{ comment.date_posted|date:"F d, Y, H:i" }}</small>
                       </div>
-                      <p class="mt-2 mb-2">{{ comment.content }}</p>
-                      <button type="button" class="small text-muted btn btn-link p-0" onclick="showReplyForm('{{ comment.id }}')">Reply</button>
+                      <p class="mt-2 mb-2 text-gray-800">{{ comment.content }}</p>
+                      <button type="button" class="text-sm text-gray-500 hover:text-blue-600 transition-colors" 
+                              onclick="showReplyForm('{{ comment.id }}')">Reply</button>
 
                       <!-- Formulir balasan -->
-                      <form method="POST" class="mt-3 reply-form" id="reply-form-{{ comment.id }}" style="display: none;">
+                      <form method="POST" class="mt-3 hidden" id="reply-form-{{ comment.id }}">
                         {% csrf_token %}
                         <input type="hidden" name="parent_id" value="{{ comment.id }}">
                         {% if comment_form.errors %}
-                          <div class="alert alert-danger">{{ comment_form.errors }}</div>
+                          <div class="bg-red-50 text-red-800 p-2 rounded-lg mb-2">{{ comment_form.errors }}</div>
                         {% endif %}
                         <div class="mb-2">{{ comment_form.content }}</div>
-                        <button type="submit" class="btn btn-sm btn-outline-primary">Submit Reply</button>
+                        <button type="submit" class="px-3 py-1 border border-blue-600 text-blue-600 rounded-lg text-sm hover:bg-blue-600 hover:text-white transition-all duration-300">
+                          Submit Reply
+                        </button>
                       </form>
 
                       <!-- Balasan -->
                       {% for reply in comment.replies.all %}
-                      <div class="mt-4 ms-4">
-                        <div class="d-flex align-items-start">
+                      <div class="mt-4 ml-4">
+                        <div class="flex items-start">
                           <img src="{% if reply.author and reply.author.photo %}{{ reply.author.photo.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}" 
                                alt="Avatar for {{ reply.author.username|default:'Anonymous' }}" 
-                               class="rounded-circle me-2 mt-1" width="40" height="40">
-                          <div class="flex-grow-1">
-                            <div class="d-flex justify-content-between align-items-center">
-                              <h6 class="mb-0 fw-semibold text-primary">{{ reply.author.username|default:"Anonymous" }}</h6>
-                              <small class="text-muted">{{ reply.date_posted|date:"F d, Y, H:i" }}</small>
+                               class="w-10 h-10 rounded-full mr-2 mt-1 object-cover">
+                          <div class="flex-grow">
+                            <div class="flex justify-between items-center">
+                              <h6 class="mb-0 font-semibold text-blue-600">{{ reply.author.username|default:"Anonymous" }}</h6>
+                              <small class="text-gray-500">{{ reply.date_posted|date:"F d, Y, H:i" }}</small>
                             </div>
-                            <p class="mt-2 mb-2">{{ reply.content }}</p>
+                            <p class="mt-2 mb-2 text-gray-800">{{ reply.content }}</p>
                           </div>
                         </div>
                       </div>
@@ -408,67 +124,73 @@
                 {% endfor %}
               </ul>
               {% if comments.has_previous or comments.has_next %}
-                <div class="pagination">
-                  <ul class="pagination justify-content-center">
-                    {% if comments.has_previous %}
-                      <li class="page-item">
-                        <a href="?page={{ comments.previous_page_number }}" class="page-link" aria-label="Previous">Previous</a>
-                      </li>
-                    {% else %}
-                      <li class="page-item disabled">
-                        <span class="page-link" aria-label="Previous">Previous</span>
-                      </li>
-                    {% endif %}
-                    {% if comments.has_next %}
-                      <li class="page-item">
-                        <a href="?page={{ comments.next_page_number }}" class="page-link" aria-label="Next">Next</a>
-                      </li>
-                    {% else %}
-                      <li class="page-item disabled">
-                        <span class="page-link" aria-label="Next">Next</span>
-                      </li>
-                    {% endif %}
-                  </ul>
+                <div class="flex justify-center gap-2 mt-4">
+                  {% if comments.has_previous %}
+                    <a href="?page={{ comments.previous_page_number }}" 
+                       class="px-3 py-1 border border-blue-600 text-blue-600 rounded-lg text-sm hover:bg-blue-600 hover:text-white transition-all duration-300">
+                      Previous
+                    </a>
+                  {% else %}
+                    <span class="px-3 py-1 border border-gray-300 text-gray-400 rounded-lg text-sm cursor-not-allowed">
+                      Previous
+                    </span>
+                  {% endif %}
+                  {% if comments.has_next %}
+                    <a href="?page={{ comments.next_page_number }}" 
+                       class="px-3 py-1 border border-blue-600 text-blue-600 rounded-lg text-sm hover:bg-blue-600 hover:text-white transition-all duration-300">
+                      Next
+                    </a>
+                  {% else %}
+                    <span class="px-3 py-1 border border-gray-300 text-gray-400 rounded-lg text-sm cursor-not-allowed">
+                      Next
+                    </span>
+                  {% endif %}
                 </div>
               {% endif %}
             {% else %}
-              <p class="text-muted">No comments yet. Be the first to comment!</p>
+              <p class="text-gray-500">No comments yet. Be the first to comment!</p>
             {% endif %}
 
             <!-- Form Komentar Baru -->
-            <h4 class="mt-5 mb-3 fw-bold text-primary">Leave a Comment</h4>
+            <h4 class="mt-6 mb-3 text-lg font-bold text-blue-600">Leave a Comment</h4>
             <form method="POST">
               {% csrf_token %}
               {% if comment_form.errors %}
-                <div class="alert alert-danger">{{ comment_form.errors }}</div>
+                <div class="bg-red-50 text-red-800 p-2 rounded-lg mb-2">{{ comment_form.errors }}</div>
               {% endif %}
               <div class="mb-3">{{ comment_form.content }}</div>
-              <button type="submit" class="btn btn-primary">Submit Comment</button>
+              <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300">
+                Submit Comment
+              </button>
             </form>
           </div>
         </div>
 
         <!-- Related Posts Section -->
         {% if related_posts %}
-          <div class="related-posts mb-5">
-            <h3 class="fw-bold text-primary mb-4">Related Posts</h3>
-            <div class="row g-4">
+          <div class="mb-6">
+            <h3 class="text-xl font-bold text-blue-600 mb-4">Related Posts</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {% for related_post in related_posts %}
-                <div class="col-12 col-md-6 col-lg-4">
-                  <div class="related-posts-card card border-0 shadow-sm h-100">
-                    {% if related_post.image %}
-                      <img src="{{ related_post.image.url }}" class="card-img-top" alt="{{ related_post.title }}">
-                    {% else %}
-                      <div class="no-image-placeholder bg-secondary text-white text-center rounded-top-3">No Image</div>
-                    {% endif %}
-                    <div class="card-body d-flex flex-column">
-                      <h5 class="card-title fw-semibold">{{ related_post.title }}</h5>
-                      <p class="small text-muted mb-2">
-                        By {{ related_post.author|default:"Unknown" }} | {{ related_post.date_posted|date:"M d, Y" }}
-                      </p>
-                      <div class="mt-auto">
-                        <a href="{% url 'blog:blog-detail' slug=related_post.slug %}" rel="canonical" class="btn btn-outline-primary w-100">Read More</a>
-                      </div>
+                <div class="bg-white rounded-xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 animate-fade-in">
+                  {% if related_post.image %}
+                    <img src="{{ related_post.image.url }}" class="w-full h-36 object-cover rounded-t-xl" alt="{{ related_post.title }}">
+                  {% else %}
+                    <div class="w-full h-36 bg-gray-500 text-white flex items-center justify-center rounded-t-xl text-center">
+                      No Image
+                    </div>
+                  {% endif %}
+                  <div class="p-4 flex flex-col">
+                    <h5 class="text-base font-semibold text-gray-900">{{ related_post.title }}</h5>
+                    <p class="text-sm text-gray-500 mb-2">
+                      By {{ related_post.author|default:"Unknown" }} | {{ related_post.date_posted|date:"M d, Y" }}
+                    </p>
+                    <div class="mt-auto">
+                      <a href="{% url 'blog:blog-detail' slug=related_post.slug %}" 
+                         rel="canonical" 
+                         class="block w-full px-3 py-1 border border-blue-600 text-blue-600 rounded-lg text-sm text-center hover:bg-blue-600 hover:text-white transition-all duration-300">
+                        Read More
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -476,12 +198,18 @@
             </div>
 
             <!-- Pagination untuk Related Posts -->
-            <div class="pagination mt-3">
+            <div class="flex justify-center gap-2 mt-4">
               {% if related_posts.has_previous %}
-                <a href="?page={{ related_posts.previous_page_number }}" class="btn btn-outline-primary">Previous</a>
+                <a href="?page={{ related_posts.previous_page_number }}" 
+                   class="px-3 py-1 border border-blue-600 text-blue-600 rounded-lg text-sm hover:bg-blue-600 hover:text-white transition-all duration-300">
+                  Previous
+                </a>
               {% endif %}
               {% if related_posts.has_next %}
-                <a href="?page={{ related_posts.next_page_number }}" class="btn btn-outline-primary">Next</a>
+                <a href="?page={{ related_posts.next_page_number }}" 
+                   class="px-3 py-1 border border-blue-600 text-blue-600 rounded-lg text-sm hover:bg-blue-600 hover:text-white transition-all duration-300">
+                  Next
+                </a>
               {% endif %}
             </div>
           </div>
@@ -489,50 +217,56 @@
       </div>
 
       <!-- Sidebar -->
-      <div class="col-lg-4">
-        <div class="sidebar-card card border-0 rounded-3 shadow-sm p-4 mb-4">
-          <h5 class="fw-bold text-primary mb-3">Categories</h5>
-          <ul class="list-unstyled">
+      <div class="lg:col-span-1">
+        <div class="bg-white rounded-xl shadow-md p-4 mb-4">
+          <h5 class="text-lg font-bold text-red-600 mb-3">Categories</h5>
+          <ul class="list-none">
             {% for cat_data in categories %}
               <li class="mb-2">
-                <a href="{{ cat_data.url }}" rel="canonical" class="text-decoration-none {% if post.category == cat_data.category %}fw-bold{% endif %}">
+                <a href="{{ cat_data.url }}" 
+                   rel="canonical" 
+                   class="text-gray-500 hover:text-red-600 transition-colors {% if post.category == cat_data.category %}font-bold{% endif %}">
                   {{ cat_data.category.name }} ({{ cat_data.post_count }})
                 </a>
               </li>
             {% empty %}
-              <li class="text-muted">No categories available.</li>
+              <li class="text-gray-500">No categories available.</li>
             {% endfor %}
           </ul>
         </div>
 
-        <div class="sidebar-card card border-0 rounded-3 shadow-sm p-4 mb-4">
-          <h5 class="fw-bold text-primary mb-3">Popular Tags</h5>
-          <div>
+        <div class="bg-white rounded-xl shadow-md p-4 mb-4">
+          <h5 class="text-lg font-bold text-red-600 mb-3">Popular Tags</h5>
+          <div class="flex flex-wrap gap-1">
             {% for tag_data in tags %}
-              <a href="{{ tag_data.tag.get_absolute_url }}" rel="canonical" class="badge bg-secondary text-white badge-tag me-1 mb-1">
+              <a href="{{ tag_data.tag.get_absolute_url }}" 
+                 rel="canonical" 
+                 class="inline-block bg-gray-500 text-white text-xs font-medium px-2 py-1 rounded-full hover:bg-blue-600 transition-all duration-300">
                 #{{ tag_data.tag.name }} ({{ tag_data.post_count }})
               </a>
             {% empty %}
-              <span class="text-muted">No tags available.</span>
+              <span class="text-gray-500">No tags available.</span>
             {% endfor %}
           </div>
         </div>
 
         {% if related_courses %}
-        <div class="sidebar-card card border-0 shadow-sm rounded-3 p-4">
-          <h5 class="fw-bold text-primary mb-3">Related Courses</h5>
-          <div class="row g-3">
+        <div class="bg-white rounded-xl shadow-md p-4">
+          <h5 class="text-lg font-bold text-red-600 mb-3">Related Courses</h5>
+          <div class="grid grid-cols-1 gap-3">
             {% for course in related_courses %}
-            <div class="col-12">
-              <div class="card border-0 rounded-3 h-100">
-                {% if course.image %}
-                  <img src="{{ course.image.url }}" class="card-img-top rounded-top-3" alt="{{ course.course_name }}">
-                {% endif %}
-                <div class="card-body">
-                  <h6 class="fw-semibold text-primary">{{ course.course_name }}</h6>
-                  <p class="text-muted small mb-2">Instructor: {{ course.instructor|default:"Unknown" }}</p>
-                  <a href="{% url 'courses:course_lms_detail' id=course.id slug=course.slug %}" rel="canonical" class="btn btn-sm btn-outline-danger w-100">View Course</a>
-                </div>
+            <div class="bg-white rounded-lg shadow-sm">
+              {% if course.image %}
+                <img src="{{ course.image.url }}" class="w-full h-32 object-cover rounded-t-lg" alt="{{ course.course_name }}">
+              {% endif %}
+              <div class="p-3">
+                <h6 class="font-semibold text-blue-600">{{ course.course_name }}</h6>
+                <p class="text-sm text-gray-500 mb-2">Instructor: {{ course.instructor|default:"Unknown" }}</p>
+                <a href="{% url 'courses:course_lms_detail' id=course.id slug=course.slug %}" 
+                   rel="canonical" 
+                   class="block w-full px-3 py-1 border border-red-600 text-red-600 rounded-lg text-sm text-center hover:bg-red-600 hover:text-white transition-all duration-300">
+                  View Course
+                </a>
               </div>
             </div>
             {% endfor %}
@@ -544,17 +278,5 @@
   </div>
 </section>
 
-{% block extra_js %}
-<script>
-function showReplyForm(commentId) {
-  // Hide all reply forms
-  document.querySelectorAll('.reply-form').forEach(form => form.style.display = 'none');
-  // Show the target reply form
-  const targetForm = document.getElementById(`reply-form-${commentId}`);
-  if (targetForm) {
-    targetForm.style.display = 'block';
-  }
-}
-</script>
-{% endblock %}
+
 {% endblock %}

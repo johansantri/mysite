@@ -45,3 +45,10 @@ def truncate_words(value, word_count=20):
 @register.filter
 def get_item(dictionary, key):
     return dictionary.get(key)
+
+@register.filter
+def index(lst, i):
+    try:
+        return lst[int(i)]
+    except (IndexError, ValueError, TypeError):
+        return ''

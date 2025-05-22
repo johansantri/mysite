@@ -1,72 +1,57 @@
 {% extends 'home/base.html' %}
 {% load static %}
 {% block content %}
-<style>
-  #id_captcha_1 {
-    display: block;
-    width: 100%;
-    padding: 0.375rem 0.75rem;
-    font-size: 1rem;
-    line-height: 1.5;
-    color: #495057;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid #ced4da;
-    border-radius: 0.375rem;
-    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-  }
 
-  #id_captcha_1:focus {
-    border-color: #86b7fe;
-    outline: 0;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-  }
-</style>
 
 <!-- Main Wrapper -->
-<div class="container-fluid d-flex justify-content-center align-items-center min-vh-100">
+<div class="flex items-center justify-center min-h-screen bg-gray-100 px-4">
+  <div class="flex flex-col md:flex-row bg-white rounded-2xl shadow-lg overflow-hidden w-full max-w-5xl">
 
-    <div class="row w-100">
-
-        <!-- Login Banner Section -->
-        <div class="col-md-6 d-none d-md-flex justify-content-center align-items-center">
-            <div class="text-center">
-                <img src="{% static 'assets/img/login-img.png' %}" class="img-fluid mb-3" alt="Logo">
-                <h2>Welcome to <br>DreamsLMS Courses</h2>
-                <p class="text-muted">Start your learning journey with us. Unlock endless possibilities!</p>
-            </div>
-        </div>
-
-        <!-- Login Form Section -->
-        <div class="col-md-6 bg-light p-4 rounded-3 shadow-sm">
-            <div class="text-center mb-4">
-                
-                <div class="mt-2">
-                    <a href="{% url 'authentication:home' %}" class="text-decoration-none text-muted">Back to Home</a>
-                </div>
-            </div>
-
-            <h1 class="h4 text-center mb-3">Register to Your Account</h1>
-            
-            <form method="post">
-                {% csrf_token %}
-                
-                <div class="form-group mb-3">
-                    {{ form }}
-                </div>
-                
-                <div class="d-grid">
-                    <button class="btn btn-primary btn-lg" type="submit">Sign Up</button>
-                </div>
-            </form>
-
-            <div class="text-center mt-3">
-                <p class="mb-0">Already have an account? <a href="{% url 'authentication:login' %}" class="text-primary">Login</a></p>
-                <p>Forgot Password? <a href="{% url 'authentication:password_reset' %}" class="text-primary">Reset Password</a></p>
-            </div>
-        </div>
-        
+    <!-- Left: Login Banner -->
+    <div class="hidden md:flex md:w-1/2 items-center justify-center bg-gray-50 p-6">
+      <div class="text-center">
+        <img src="{% static 'assets/img/login-img.png' %}" class="mx-auto mb-4 max-w-xs" alt="Logo">
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">Welcome to<br>DreamsLMS Courses</h2>
+        <p class="text-gray-500">Start your learning journey with us. Unlock endless possibilities!</p>
+      </div>
     </div>
-</div>
 
+    <!-- Right: Login Form -->
+    <div class="w-full md:w-1/2 p-8">
+      <div class="mb-4 text-center">
+        <a href="{% url 'authentication:home' %}" class="text-sm text-gray-500 hover:text-gray-700 underline">← Back to Home</a>
+      </div>
+
+      <h1 class="text-xl font-semibold text-center text-gray-700 mb-6">Register to Your Account</h1>
+
+      <form method="post" class="space-y-4">
+        {% csrf_token %}
+
+        <!-- Render all fields -->
+        <div class="space-y-4">
+          {{ form }}
+        </div>
+
+        <!-- Submit Button -->
+        <div>
+          <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200">
+            Sign Up
+          </button>
+        </div>
+      </form>
+
+      <!-- Footer Links -->
+      <div class="text-center mt-6 space-y-2 text-sm text-gray-600">
+        <p>
+          Already have an account?
+          <a href="{% url 'authentication:login' %}" class="text-blue-600 hover:underline">Login</a>
+        </p>
+        <p>
+          Forgot Password?
+          <a href="{% url 'authentication:password_reset' %}" class="text-blue-600 hover:underline">Reset Password</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

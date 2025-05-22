@@ -8,13 +8,13 @@
 {% endblock %}
 
 {% block content %}
-<section class="py-5 bg-light">
-  <div class="container">
-    <div class="row">
+<section class="py-10 bg-gray-100">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col lg:flex-row gap-8">
       <!-- Blog Content -->
-      <div class="col-lg-9">
-        <div class="text-center mb-5">
-          <h1 class="fw-bold text-danger">
+      <div class="w-full lg:w-2/3">
+        <div class="text-center mb-10">
+          <h1 class="text-3xl font-bold text-red-600">
             {% if current_category %}
               {{ current_category.name }}
             {% elif current_tag %}
@@ -23,89 +23,97 @@
               Our Blog
             {% endif %}
           </h1>
-          <p class="text-muted">Explore stories, insights, and ideas from our team and community.</p>
+          <p class="text-gray-500 mt-2">Explore stories, insights, and ideas from our team and community.</p>
         </div>
 
-        <div class="row g-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {% for post in posts %}
-          <div class="col-md-4">
-            <div class="card border-0 shadow-sm h-100">
-              
+          <div class="bg-white rounded shadow-sm flex flex-col h-full">
+            <div class="p-4 flex flex-col flex-1">
+              <h2 class="text-lg font-semibold mb-1">
+                <a href="{% url 'blog:blog-detail' slug=post.slug %}" class="text-gray-800 hover:text-blue-600">
+                  {{ post.title|truncatewords:10 }}
+                </a>
+              </h2>
+              <p class="text-sm text-gray-500 mb-2">
+                By {{ post.author|default:"Unknown" }} • {{ post.date_posted|date:"M d, Y" }}
+              </p>
+              <p class="text-gray-600 text-sm mb-4">{{ post.content|safe|truncatewords:25 }}</p>
 
-              <div class="card-body d-flex flex-column">
-                <h5 class="card-title fw-semibold">
-                  <a href="{% url 'blog:blog-detail' slug=post.slug %}" rel="canonical" class="text-dark text-decoration-none">
-                    {{ post.title|truncatewords:10 }}
-                  </a>
-                </h5>
-                <p class="small text-muted mb-2">
-                  By {{ post.author|default:"Unknown" }} • {{ post.date_posted|date:"M d, Y" }}
-                </p>
-                <p class="card-text text-muted">{{ post.content|safe|truncatewords:25 }}</p>
-
-                <div class="mt-auto">
-                  <a href="{% url 'blog:blog-detail' slug=post.slug %}" class="btn btn-outline-primary w-100">Read More</a>
-                </div>
+              <div class="mt-auto">
+                <a href="{% url 'blog:blog-detail' slug=post.slug %}" class="inline-block w-full text-center text-sm text-blue-500 border border-blue-500 rounded px-4 py-2 hover:bg-blue-500 hover:text-white transition">
+                  Read More
+                </a>
               </div>
             </div>
           </div>
           {% empty %}
-          <div class="col-12">
-            <div class="alert alert-warning text-center">No posts found in this section.</div>
+          <div class="col-span-1 md:col-span-2 lg:col-span-3">
+            <div class="text-center bg-yellow-100 border border-yellow-300 text-yellow-800 py-4 px-6 rounded">
+              No posts found in this section.
+            </div>
           </div>
           {% endfor %}
         </div>
 
         <!-- Pagination -->
         {% if is_paginated %}
-        <nav class="mt-5" aria-label="Blog pagination">
-          <ul class="pagination justify-content-center">
+        <nav class="mt-10 flex justify-center">
+          <ul class="inline-flex items-center space-x-1">
             {% if page_obj.has_previous %}
-              <li class="page-item">
-                <a rel="canonical" class="page-link" href="?page={{ page_obj.previous_page_number }}">«</a>
+              <li>
+                <a href="?page={{ page_obj.previous_page_number }}"
+                  class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-200">«</a>
               </li>
             {% endif %}
             {% for num in page_obj.paginator.page_range %}
-              <li class="page-item {% if page_obj.number == num %}active{% endif %}">
-                <a rel="canonical" class="page-link" href="?page={{ num }}">{{ num }}</a>
+              <li>
+                <a href="?page={{ num }}"
+                  class="px-3 py-1 border rounded {% if page_obj.number == num %}bg-blue-500 text-white{% else %}border-gray-300 hover:bg-gray-200{% endif %}">
+                  {{ num }}
+                </a>
               </li>
             {% endfor %}
             {% if page_obj.has_next %}
-              <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.next_page_number }}">»</a>
+              <li>
+                <a href="?page={{ page_obj.next_page_number }}"
+                  class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-200">»</a>
               </li>
             {% endif %}
           </ul>
         </nav>
+
         {% endif %}
       </div>
 
       <!-- Sidebar -->
-      <div class="col-lg-3">
-        <div class="mb-4 p-4 bg-white rounded shadow-sm">
-          <h4 class="fw-bold mb-3 text-primary">Categories</h4>
-          <ul class="list-unstyled">
+      <div class="w-full lg:w-1/3 space-y-6">
+        <!-- Categories -->
+        <div class="bg-white p-6 rounded shadow-sm">
+          <h3 class="text-xl font-semibold text-blue-600 mb-4">Categories</h3>
+          <ul class="space-y-2">
             {% for cat_data in categories %}
-              <li class="mb-2">
-                <a rel="canonical" href="{{ cat_data.url }}" class="text-decoration-none {% if current_category == cat_data.category %}fw-bold text-dark{% endif %}">
+              <li>
+                <a href="{{ cat_data.url }}" class="block text-gray-700 hover:text-blue-500 {% if current_category == cat_data.category %}font-bold{% endif %}">
                   {{ cat_data.category.name }} ({{ cat_data.post_count }})
                 </a>
               </li>
             {% empty %}
-              <li class="text-muted">No categories available.</li>
+              <li class="text-gray-400">No categories available.</li>
             {% endfor %}
           </ul>
         </div>
 
-        <div class="p-4 bg-white rounded shadow-sm">
-          <h4 class="fw-bold mb-3 text-primary">Popular Tags</h4>
-          <div class="d-flex flex-wrap gap-2">
+        <!-- Tags -->
+        <div class="bg-white p-6 rounded shadow-sm">
+          <h3 class="text-xl font-semibold text-blue-600 mb-4">Popular Tags</h3>
+          <div class="flex flex-wrap gap-2">
             {% for tag_data in tags %}
-              <a rel="canonical" href="{{ tag_data.tag.get_absolute_url }}" class="badge bg-secondary text-white">
+              <a href="{{ tag_data.tag.get_absolute_url }}" class="text-sm bg-gray-700 text-white px-3 py-1 rounded hover:bg-gray-800 transition">
                 #{{ tag_data.tag.name }} ({{ tag_data.post_count }})
               </a>
             {% empty %}
-              <span class="text-muted">No tags available.</span>
+              <span class="text-gray-400">No tags available.</span>
             {% endfor %}
           </div>
         </div>

@@ -1103,7 +1103,7 @@ def home(request):
                     category_courses__end_enrol__gte=timezone.now()
                 )
             )
-        ).order_by('-num_courses')[:4]
+        ).order_by('-num_courses')[:5]
 
         # Microcredential aktif
         popular_microcredentials = MicroCredential.objects.filter(
@@ -1138,6 +1138,13 @@ def home(request):
     page_number = request.GET.get('partner_page')
     page_obj = partner_paginator.get_page(page_number)
 
+    tw_colors = [
+    "bg-green-100 text-green-700 hover:border-green-500",
+    "bg-blue-100 text-blue-700 hover:border-blue-500",
+    "bg-yellow-100 text-yellow-700 hover:border-yellow-500",
+    "bg-teal-100 text-teal-700 hover:border-teal-500",
+    "bg-purple-100 text-purple-700 hover:border-purple-500",
+    ]
     return render(request, 'home/index.html', {
         'popular_categories': popular_categories,
         'popular_microcredentials': popular_microcredentials,
@@ -1148,6 +1155,7 @@ def home(request):
         'total_courses': total_courses,
         'instructors': instructors_page,
         'latest_articles': latest_articles,
+        'tw_colors': tw_colors,
     })
 
 logger = logging.getLogger(__name__)

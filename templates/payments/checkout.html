@@ -1,28 +1,37 @@
 {% extends 'home/base.html' %}
 {% load humanize %}
 {% block content %}
-<div class="container my-5">
-    <h2>Checkout</h2>
+<div class="max-w-3xl mx-auto px-4 py-8">
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">Checkout</h2>
+
     {% if cart_items %}
-        <ul class="list-group mb-3">
+        <ul class="divide-y divide-gray-200 border border-gray-200 rounded-xl mb-6 bg-white shadow-sm">
             {% for item in cart_items %}
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>{{ item.course.course_name }}</span>
-                    <strong>IDR {{ item.course.get_course_price.user_payment|floatformat:0 }}</strong>
+                <li class="flex justify-between items-center px-4 py-3">
+                    <span class="text-gray-700">{{ item.course.course_name }}</span>
+                    <strong class="text-gray-900">IDR {{ item.course.get_course_price.user_payment|floatformat:0 }}</strong>
                 </li>
             {% endfor %}
         </ul>
 
-        <h4 class="mb-4">Total: IDR {{ total_price|floatformat:0 }}</h4>
+        <h4 class="text-xl font-semibold text-gray-800 mb-4">Total: IDR {{ total_price|floatformat:0 }}</h4>
 
-        <form method="POST" novalidate>
+        <form method="POST" novalidate class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
             {% csrf_token %}
-            <button type="submit" class="btn btn-success">Pay Now</button>
-            <a href="{% url 'payments:view_cart' %}" class="btn btn-secondary ms-2">Back to Cart</a>
+            <button type="submit" class="bg-green-600 text-white px-5 py-2 rounded-md hover:bg-green-700 transition text-sm font-medium">
+                Pay Now
+            </button>
+            <a href="{% url 'payments:view_cart' %}" class="bg-gray-200 text-gray-800 px-5 py-2 rounded-md hover:bg-gray-300 transition text-sm font-medium">
+                Back to Cart
+            </a>
         </form>
     {% else %}
-        <p>Your cart is empty. Please add courses before proceeding to checkout.</p>
-        <a href="{% url 'authentication:course_list' %}" class="btn btn-primary mt-3">Browse Courses</a>
+        <div class="bg-yellow-50 border-l-4 border-yellow-400 text-yellow-700 p-4 rounded-lg">
+            <p class="mb-2">Your cart is empty. Please add courses before proceeding to checkout.</p>
+            <a href="{% url 'authentication:course_list' %}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded-md mt-2 hover:bg-blue-700 transition">
+                Browse Courses
+            </a>
+        </div>
     {% endif %}
 </div>
 {% endblock %}

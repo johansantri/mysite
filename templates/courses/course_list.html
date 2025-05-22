@@ -1,6 +1,6 @@
-<!-- templates/learner/courses.html -->
 {% extends 'home/base.html' %}
 {% load static %}
+
 {% block content %}
 
 <!-- 
@@ -19,89 +19,90 @@
     {% endif %}
 -->
 
-<section class="py-5 bg-light">
-    <div class="container">
+<section class="py-8 bg-gray-100">
+    <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <!-- Page Title -->
-        <div class="text-center my-5">
-            <h1 class="display-4 mb-3">Courses in <strong style="color: #b02a37;">{{ category.name }}</strong></h1>
-            <p class="lead text-muted">Explore top-tier courses curated for your learning needs.</p>
+        <div class="text-center my-8">
+            <h1 class="text-4xl sm:text-5xl font-bold mb-3">
+                Courses in <strong class="text-red-600">{{ category.name }}</strong>
+            </h1>
+            <p class="text-lg sm:text-xl text-gray-500">Explore top-tier courses curated for your learning needs.</p>
         </div>
 
         <!-- Course List -->
-        <div class="course-list">
+        <div class="flex flex-col gap-6">
             {% for course in courses %}
-                <div class="course-item d-flex p-3 mb-3 rounded-3 bg-white shadow-sm transition-hover position-relative flex-column flex-md-row">
+                <div class="flex flex-col md:flex-row p-4 bg-white rounded-lg shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 relative">
                     <!-- Course Image -->
-                    <div class="course-image-wrapper me-md-3 mb-3 mb-md-0 position-relative">
+                    <div class="relative w-full md:w-48 h-32 md:h-auto flex-shrink-0 mb-4 md:mb-0 md:mr-4">
                         <img src="{{ course.course_image }}" 
-                             class="rounded-3" 
+                             class="w-full h-full object-cover rounded-lg hover:scale-105 transition-transform duration-300" 
                              alt="{{ course.course_name }}" 
                              loading="lazy">
-                        <span class="free-label bg-success text-white px-2 py-1 rounded">FREE</span>
+                        <span class="absolute top-2 left-2 bg-green-600 text-white text-xs font-semibold px-2 py-1 rounded">FREE</span>
                     </div>
 
                     <!-- Course Details -->
-                    <div class="course-details flex-grow-1">
+                    <div class="flex-grow">
                         <!-- Course Name -->
-                        <h5 class="course-title mb-2">
+                        <h5 class="text-lg font-semibold mb-2">
                             <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}" 
-                               style="color: #1a0dab; text-decoration: none;">
+                               class="text-blue-800 hover:underline">
                                 {{ course.course_name }}
                             </a>
                         </h5>
 
                         <!-- Two Columns for Course Info -->
-                        <div class="info-columns d-flex flex-column flex-md-row">
+                        <div class="flex flex-col md:flex-row gap-4 md:gap-8">
                             <!-- Left Column -->
-                            <div class="info-left me-md-4 mb-2 mb-md-0">
+                            <div class="flex-1">
                                 <!-- Duration -->
-                                <div class="d-flex align-items-center mb-2 text-muted">
-                                    <i class="bi bi-clock me-2"></i>
+                                <div class="flex items-center mb-2 text-gray-500 text-sm">
+                                    <i class="fas fa-clock mr-2"></i>
                                     <span>{{ course.duration }} hours</span>
                                 </div>
                                 <!-- Partner -->
-                                <div class="d-flex align-items-center mb-2 text-muted">
-                                    <i class="bi bi-building me-2"></i>
+                                <div class="flex items-center mb-2 text-gray-500 text-sm">
+                                    <i class="fas fa-building mr-2"></i>
                                     <span>University of Oxford</span>
                                 </div>
                                 <!-- Partner Code -->
-                                <div class="d-flex align-items-center mb-2 text-muted">
-                                    <i class="bi bi-bookmark me-2"></i>
+                                <div class="flex items-center mb-2 text-gray-500 text-sm">
+                                    <i class="fas fa-bookmark mr-2"></i>
                                     <span>{{ course.partner_kode }}</span>
                                 </div>
                             </div>
 
                             <!-- Right Column -->
-                            <div class="info-right">
+                            <div class="flex-1">
                                 <!-- Instructor -->
-                                <div class="d-flex align-items-center mb-2 text-muted">
+                                <div class="flex items-center mb-2 text-gray-500 text-sm">
                                     {% if course.partner_photo %}
                                         <img src="{{ course.partner_photo }}" 
                                              alt="{{ course.partner }}" 
-                                             class="rounded-circle me-2" 
-                                             style="width: 24px; height: 24px; object-fit: cover;" 
+                                             class="w-6 h-6 rounded-full mr-2 object-cover" 
                                              loading="lazy">
                                     {% endif %}
                                     <span>{{ course.instructor }}</span>
                                 </div>
                                 <!-- Language -->
-                                <div class="d-flex align-items-center mb-2 text-muted">
-                                    <i class="bi bi-translate me-2"></i>
+                                <div class="flex items-center mb-2 text-gray-500 text-sm">
+                                    <i class="fas fa-language mr-2"></i>
                                     <span>{{ course.language }}</span>
                                 </div>
                                 <!-- Enrollments and Rating -->
-                                <div class="d-flex align-items-center mb-2 text-muted">
-                                    <i class="bi bi-person-check me-2"></i>
+                                <div class="flex items-center mb-2 text-gray-500 text-sm">
+                                    <i class="fas fa-user-check mr-2"></i>
                                     <span>{{ course.num_enrollments }} enrolled</span>
-                                    <span class="ms-2">
+                                    <span class="ml-2 flex items-center">
                                         {% for i in course.full_star_range %}
-                                            <i class="bi bi-star-fill text-warning me-1"></i>
+                                            <i class="fas fa-star text-yellow-400 text-xs mr-1"></i>
                                         {% endfor %}
                                         {% if course.half_star %}
-                                            <i class="bi bi-star-half text-warning me-1"></i>
+                                            <i class="fas fa-star-half-alt text-yellow-400 text-xs mr-1"></i>
                                         {% endif %}
                                         {% for i in course.empty_star_range %}
-                                            <i class="bi bi-star text-muted me-1"></i>
+                                            <i class="far fa-star text-gray-400 text-xs mr-1"></i>
                                         {% endfor %}
                                         ({{ course.review_count }} reviews)
                                     </span>
@@ -110,14 +111,14 @@
                         </div>
                     </div>
 
-                    <!-- Buy Now Button -->
+                    <!-- Read More Button -->
                     <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}" 
-                       class="btn btn-course ms-md-3 mt-3 mt-md-0 align-self-md-center">Read More</a>
-
-                 
+                       class="mt-4 md:mt-0 md:ml-4 px-4 py-2 text-purple-600 font-medium border border-purple-600 rounded-full hover:bg-purple-600 hover:text-white transition-colors duration-300 self-center">
+                        Read More
+                    </a>
                 </div>
             {% empty %}
-                <div class="alert alert-warning text-center rounded-3" role="alert">
+                <div class="bg-yellow-50 text-yellow-800 text-center p-4 rounded-lg">
                     No courses available in this category.
                 </div>
             {% endfor %}
@@ -125,31 +126,28 @@
 
         <!-- Pagination -->
         {% if courses.has_other_pages %}
-            <nav aria-label="Page navigation" class="mt-5">
-                <ul class="pagination justify-content-center">
+            <nav aria-label="Page navigation" class="mt-8">
+                <ul class="flex justify-center gap-2">
                     {% if courses.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link" 
+                        <li>
+                            <a class="px-3 py-1 rounded-md text-red-600 hover:bg-red-600 hover:text-white transition-colors duration-300" 
                                href="?page={{ courses.previous_page_number }}" 
-                               aria-label="Previous" 
-                               style="color: #b02a37;">
+                               aria-label="Previous">
                                 <span aria-hidden="true">«</span>
                             </a>
                         </li>
                     {% endif %}
                     {% for num in courses.paginator.page_range %}
-                        <li class="page-item {% if courses.number == num %}active{% endif %}">
-                            <a class="page-link" 
-                               href="?page={{ num }}" 
-                               style="color: #b02a37; {% if courses.number == num %}background-color: #b02a37; border-color: #b02a37; color: white;{% endif %}">{{ num }}</a>
+                        <li>
+                            <a class="px-3 py-1 rounded-md {% if courses.number == num %}bg-red-600 text-white{% else %}text-red-600 hover:bg-red-600 hover:text-white{% endif %} transition-colors duration-300" 
+                               href="?page={{ num }}">{{ num }}</a>
                         </li>
                     {% endfor %}
                     {% if courses.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" 
+                        <li>
+                            <a class="px-3 py-1 rounded-md text-red-600 hover:bg-red-600 hover:text-white transition-colors duration-300" 
                                href="?page={{ courses.next_page_number }}" 
-                               aria-label="Next" 
-                               style="color: #b02a37;">
+                               aria-label="Next">
                                 <span aria-hidden="true">»</span>
                             </a>
                         </li>
@@ -160,282 +158,26 @@
     </div>
 </section>
 
-<style>
-/* 
-  Catatan untuk SEO:
-  - Tambahkan schema.org markup di template untuk rich snippets:
-  <script type="application/ld+json">
-  {
+<!-- Schema Markup -->
+{% for course in courses %}
+<script type="application/ld+json">
+{
     "@context": "https://schema.org",
     "@type": "Course",
+    "@id": "{% url 'courses:course_lms_detail' course.course_id course.course_slug %}#course",
     "name": "{{ course.course_name }}",
     "description": "Learn {{ course.course_name }} with {{ course.instructor }}.",
     "provider": {
-      "@type": "Organization",
-      "name": "{{ course.partner_kode }}"
+        "@type": "Organization",
+        "name": "{{ course.partner_kode }}"
     },
     "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "{{ course.rating }}",
-      "reviewCount": "{{ course.review_count }}"
-    }
-  }
-  </script>
-*/
-
-/* General Styling */
-.bg-light {
-    background-color: #f8f9fa !important;
-}
-
-.display-4 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    line-height: 1.2;
-}
-
-.lead {
-    font-size: 1.1rem;
-    font-weight: 400;
-}
-
-/* Course List Styling */
-.course-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
-
-.course-item {
-    background-color: #ffffff;
-    border: 1px solid #e9ecef;
-    transition: all 0.3s ease;
-}
-
-.course-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.course-image-wrapper {
-    width: 180px;
-    height: 120px;
-    flex-shrink: 0;
-    position: relative;
-}
-
-.course-image-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    transition: transform 0.3s ease;
-}
-
-.course-item:hover .course-image-wrapper img {
-    transform: scale(1.05);
-}
-
-.free-label {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    font-size: 0.75rem;
-    font-weight: 600;
-}
-
-.course-details {
-    flex-grow: 1;
-}
-
-.course-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    line-height: 1.3;
-}
-
-.course-title a {
-    color: #1a0dab;
-    text-decoration: none;
-}
-
-.course-title a:hover {
-    text-decoration: underline;
-}
-
-.text-muted {
-    font-size: 0.85rem;
-    line-height: 1.4;
-}
-
-/* Two Columns for Info */
-.info-columns {
-    display: flex;
-    gap: 2rem;
-}
-
-.info-left,
-.info-right {
-    flex: 1;
-}
-
-/* Button Styling */
-.btn-course {
-    color: #6f42c1;
-    font-weight: 500;
-    padding: 6px 16px;
-    border: 1px solid #6f42c1;
-    border-radius: 20px;
-    background-color: transparent;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    flex-shrink: 0;
-}
-
-.btn-course:hover,
-.btn-course:focus {
-    background-color: #6f42c1;
-    color: white;
-}
-
-.btn-course:focus {
-    outline: 2px solid #6f42c1;
-    outline-offset: 2px;
-}
-
-.favorite-btn {
-    font-size: 1.25rem;
-    cursor: pointer;
-}
-
-.favorite-btn:hover i {
-    color: #ff0000;
-}
-
-/* Pagination Styling */
-.page-link {
-    border-radius: 5px;
-    margin: 0 3px;
-    font-size: 0.9rem;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.page-link:hover,
-.page-link:focus {
-    background-color: #b02a37;
-    color: white !important;
-    border-color: #b02a37;
-}
-
-.page-link:focus {
-    outline: 2px solid #b02a37;
-    outline-offset: 2px;
-}
-
-.page-item.active .page-link {
-    background-color: #b02a37;
-    border-color: #b02a37;
-    color: white !important;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 992px) {
-    .display-4 {
-        font-size: 2.2rem;
-    }
-
-    .lead {
-        font-size: 1rem;
-    }
-
-    .course-image-wrapper {
-        width: 150px;
-        height: 100px;
-    }
-
-    .info-columns {
-        gap: 1.5rem;
+        "@type": "AggregateRating",
+        "ratingValue": "{{ course.rating }}",
+        "reviewCount": "{{ course.review_count }}"
     }
 }
+</script>
+{% endfor %}
 
-@media (max-width: 768px) {
-    .display-4 {
-        font-size: 1.8rem;
-    }
-
-    .lead {
-        font-size: 0.9rem;
-    }
-
-    .course-item {
-        padding: 1.25rem;
-        flex-direction: column;
-    }
-
-    .course-image-wrapper {
-        width: 100%;
-        height: 180px;
-        margin-bottom: 1rem;
-    }
-
-    .course-details {
-        width: 100%;
-    }
-
-    .course-title {
-        font-size: 1rem;
-    }
-
-    .btn-course {
-        padding: 5px 12px;
-        font-size: 0.9rem;
-        width: 100%;
-        text-align: center;
-    }
-
-    .info-columns {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    .info-left,
-    .info-right {
-        width: 100%;
-    }
-}
-
-@media (max-width: 576px) {
-    .display-4 {
-        font-size: 1.5rem;
-    }
-
-    .lead {
-        font-size: 0.85rem;
-    }
-
-    .course-item {
-        padding: 1rem;
-    }
-
-    .course-image-wrapper {
-        height: 150px;
-    }
-
-    .course-title {
-        font-size: 0.95rem;
-    }
-
-    .text-muted {
-        font-size: 0.8rem;
-    }
-
-    .btn-course {
-        padding: 4px 10px;
-        font-size: 0.85rem;
-    }
-
-    .favorite-btn {
-        font-size: 1rem;
-    }
-}
-</style>
 {% endblock %}

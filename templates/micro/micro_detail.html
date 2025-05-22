@@ -1,81 +1,84 @@
 {% extends 'home/base.html' %}
 {% load static %}
 {% load extra_custom_filters %}
+
 {% block content %}
 
 <!-- Course Content -->
-<section class="page-content course-sec py-5 bg-white">
-    <div class="container">
-        <div class="row g-4">
+<section class="py-8 bg-white">
+    <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Main Content -->
-            <div class="col-lg-8">
+            <div class="lg:col-span-2">
                 <!-- Inner Banner Inside Overview -->
-                <div class="card overview-sec border-0 shadow-sm rounded-3">
-                    <div class="card-body p-4">
-                        <div class="inner-banner bg-light border rounded-3 p-4 mb-4">
-                            <div class="row align-items-center">
-                                <div class="col-lg-12">
-                                    <h2 class="fw-bold mb-3 text-dark">{{ microcredential.title }}</h2>
-                                    <a href="{% url 'courses:category_list' microcredential.category.slug %}" class="text-decoration-none">
-                                        <span class="badge bg-danger text-white rounded-3 mb-3">
-                                            {% if microcredential.category %}{{ microcredential.category }}{% else %}N/A{% endif %}
-                                        </span>
-                                    </a>
-                                    <p class="text-muted mb-4">{{ microcredential.sort_description }}</p>
-                                    <div class="course-info d-flex flex-wrap gap-3 bg-white border rounded-3 p-3 shadow-sm">
-                                        <div class="cou-info d-flex align-items-center">
-                                            <i class="fas fa-star text-danger me-2"></i>
-                                            <span class="fw-medium"> {{ average_rating }} Rating ({{ total_reviews }})</span>
-                                        </div>
-                                        <div class="cou-info d-flex align-items-center">
-                                            <i class="fas fa-book me-2 text-danger"></i>
-                                            <span class="fw-medium">{{ microcredential.required_courses.count }} Courses</span>
-                                        </div>
-                                        <div class="cou-info d-flex align-items-center">
-                                            <i class="fas fa-users me-2 text-danger"></i>
-                                            <span class="fw-medium">{{ microcredential.reviews.count }} Reviews</span>
-                                        </div>
-                                    </div>
-                                </div>
+                <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-4">
+                    <div class="bg-gray-100 border border-gray-200 rounded-lg p-4 mb-4">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-3">{{ microcredential.title }}</h2>
+                        <a href="{% url 'courses:category_list' microcredential.category.slug %}" class="text-decoration-none">
+                            <span class="inline-block bg-red-600 text-white text-xs font-medium px-2 py-1 rounded-lg mb-3">
+                                {% if microcredential.category %}{{ microcredential.category }}{% else %}N/A{% endif %}
+                            </span>
+                        </a>
+                        <p class="text-gray-500 mb-4">{{ microcredential.sort_description }}</p>
+                        <div class="flex flex-wrap gap-4 bg-white border border-gray-200 rounded-lg p-3 shadow-sm">
+                            <div class="flex items-center">
+                                <i class="fas fa-star text-red-600 mr-2"></i>
+                                <span class="font-medium">{{ average_rating }} Rating ({{ total_reviews }})</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-book text-red-600 mr-2"></i>
+                                <span class="font-medium">{{ microcredential.required_courses.count }} Courses</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-users text-red-600 mr-2"></i>
+                                <span class="font-medium">{{ microcredential.reviews.count }} Reviews</span>
                             </div>
                         </div>
-
-                        <!-- Overview -->
-                        <h5 class="subs-title fw-bold text-dark mb-3">Overview</h5>
-                        <hr class="border-dark border-2 opacity-25">
-                        <h6 class="fw-semibold text-dark mb-3">Description</h6>
-                        <p class="text-muted">{{ microcredential.description | safe }}</p>
                     </div>
+
+                    <!-- Overview -->
+                    <h5 class="text-lg font-bold text-gray-900 mb-3">Overview</h5>
+                    <hr class="border-gray-900 border-2 opacity-25">
+                    <h6 class="font-semibold text-gray-900 mb-3">Description</h6>
+                    <p class="text-gray-500">{{ microcredential.description | safe }}</p>
                 </div>
-                <!-- /Overview -->
 
                 <!-- Course Content -->
-                <div class="card content-sec border-0 shadow-sm rounded-3 mt-4">
-                    <div class="card-body p-4">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h5 class="subs-title fw-bold text-dark">Required Courses</h5>
+              <!-- Course Content -->
+                <div class="bg-white shadow-sm rounded-2xl mt-6">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h5 class="text-xl font-bold text-gray-800">Required Courses</h5>
                         </div>
-                        <div class="accordion" id="courseAccordion">
+                        <div class="space-y-4">
                             {% for course in microcredential.required_courses.all %}
-                                <div class="accordion-item border-0 rounded-3 mb-3 shadow-sm">
-                                    <h6 class="accordion-header" id="heading-{{ course.id }}">
-                                        <button class="accordion-button collapsed bg-light rounded-3 fw-semibold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#course-{{ course.id }}" aria-expanded="false" aria-controls="course-{{ course.id }}">
+                                <div class="rounded-2xl shadow-sm bg-gray-50">
+                                    <details class="group">
+                                        <summary class="cursor-pointer px-4 py-3 flex items-center justify-between font-semibold text-gray-800 hover:bg-gray-100 rounded-2xl">
                                             {{ course.course_name }}
-                                        </button>
-                                    </h6>
-                                    <div id="course-{{ course.id }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ course.id }}" data-bs-parent="#courseAccordion">
-                                        <div class="accordion-body">
-                                            <ul class="list-unstyled">
-                                                <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                                                    <p class="mb-0"><i class="fas fa-book text-danger me-2"></i>{{ course.sort_description }}</p>
-                                                    <a href="{% url 'courses:course_lms_detail' id=course.id slug=course.slug %}" class="btn btn-outline-danger btn-sm rounded-3 transition-hover">View Course</a>
+                                            <svg class="w-5 h-5 ml-2 transition-transform duration-300 group-open:rotate-180 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </summary>
+                                        <div class="px-5 pb-4 pt-2">
+                                            <ul class="list-none space-y-2">
+                                                <li class="flex justify-between items-center border-t pt-3">
+                                                    <p class="text-gray-600 flex items-center">
+                                                        <i class="fas fa-book text-red-500 mr-2"></i>
+                                                        {{ course.sort_description }}
+                                                    </p>
+                                                    <a href="{% url 'courses:course_lms_detail' id=course.id slug=course.slug %}" class="text-sm border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition px-3 py-1 rounded-md">
+                                                        View Course
+                                                    </a>
                                                 </li>
                                             </ul>
                                         </div>
-                                    </div>
+                                    </details>
                                 </div>
                             {% empty %}
-                                <div class="alert alert-info rounded-3">No required courses available yet.</div>
+                                <div class="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-2xl">
+                                    No required courses available yet.
+                                </div>
                             {% endfor %}
                         </div>
                     </div>
@@ -83,522 +86,269 @@
                 <!-- /Course Content -->
 
                 <!-- Reviews -->
-                <div class="card review-sec border-0 shadow-sm rounded-3 mt-4">
-                    <div class="card-body p-4">
-                        <h5 class="subs-title fw-bold text-dark mb-4">Reviews</h5>
-                        {% for review in microcredential.reviews.all %}
-                            <div class="instructor-wrap d-flex flex-wrap align-items-center bg-white border rounded-3 p-3 shadow-sm mb-4">
-                                <div class="about-instructor d-flex align-items-center">
-                                    <div class="abt-instructor-img me-3">
-                                        <a href="{% url 'learner:learner_detail' review.user.username %}" target="_blank">
-                                            {% if review.user.photo %}
-                                                <img src="{{ review.user.photo.url }}" alt="{{ review.user.get_full_name }}" class="img-fluid rounded-circle border" style="width: 60px; height: 60px; object-fit: cover;">
-                                            {% else %}
-                                                <img src="{% static 'images/default_profile.png' %}" alt="Default Avatar" class="img-fluid rounded-circle border" style="width: 60px; height: 60px; object-fit: cover;">
-                                            {% endif %}
+                <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 mt-4 p-4">
+                    <h5 class="text-lg font-bold text-gray-900 mb-4">Reviews</h5>
+                    {% for review in microcredential.reviews.all %}
+                        <div class="flex flex-wrap items-center bg-white border border-gray-200 rounded-lg p-3 shadow-sm mb-4">
+                            <div class="flex items-center">
+                                <div class="mr-3">
+                                    <a href="{% url 'learner:learner_detail' review.user.username %}" target="_blank">
+                                        {% if review.user.photo %}
+                                            <img src="{{ review.user.photo.url }}" alt="{{ review.user.get_full_name }}" 
+                                                 class="w-12 h-12 object-cover rounded-full border">
+                                        {% else %}
+                                            <img src="{% static 'images/default_profile.png' %}" alt="Default Avatar" 
+                                                 class="w-12 h-12 object-cover rounded-full border">
+                                        {% endif %}
+                                    </a>
+                                </div>
+                                <div>
+                                    <h5 class="mb-1">
+                                        <a href="{% url 'learner:learner_detail' review.user.username %}" 
+                                           target="_blank" 
+                                           class="text-gray-900 font-bold no-underline hover:underline">
+                                            {{ review.user.get_full_name }}
                                         </a>
-                                    </div>
-                                    <div class="instructor-detail">
-                                        <h5 class="mb-1">
-                                            <a href="{% url 'learner:learner_detail' review.user.username %}" target="_blank" class="text-decoration-none text-dark fw-bold">{{ review.user.get_full_name }}</a>
-                                        </h5>
-                                        <p class="text-muted mb-0">{{ review.user.profile.title }}</p>
-                                    </div>
-                                </div>
-                                <div class="rating ms-auto">
-                                    {% for i in 5|to %}
-                                        <i class="fas fa-star {% if review.rating >= i %}text-warning{% else %}text-muted{% endif %}"></i>
-                                    {% endfor %}
-                                    <span class="d-inline-block average-rating ms-1 fw-bold">{{ review.rating }}</span>
+                                    </h5>
+                                    <p class="text-gray-500 mb-0">{{ review.user.profile.title }}</p>
                                 </div>
                             </div>
-                            <p class="text-muted mb-3">“{{ review.review_text }}”</p>
-                            
-                        {% empty %}
-                            <p class="text-muted">No reviews yet.</p>
-                        {% endfor %}
-                    </div>
-                </div>
-                <!-- /Reviews -->
-            
-              <!-- Comments Section -->
-                    <div class="comments-section mt-4">
-                        {% for comment in page_obj_comments %}
-                            <div class="comment-item bg-white border rounded-3 p-3 mb-3 shadow-sm transition-hover">
-                                <p class="mb-1">
-                                    <strong class="text-dark">{{ comment.user.username }}</strong>
-                                    <small class="text-muted">{{ comment.created_at|date:"F j, Y, g:i a" }}</small>
-                                </p>
-                                <p class="text-muted mb-2">{{ comment.content }}</p>
-                                <!-- Reply Link for Main Comment -->
-                                <div class="text-end">
-                                    <span class="reply-link" onclick="toggleReplyForm('comment-reply-form-{{ comment.id }}')">
-                                        <i class="bi bi-reply-fill"></i>
-                                    </span>
-                                </div>
-                                <!-- Form to Add Reply to Main Comment -->
-                                <div id="comment-reply-form-{{ comment.id }}" class="reply-form" style="display:none;">
-                                    <form method="POST" action="{% url 'courses:reply_comment' comment_id=comment.id %}">
-                                        {% csrf_token %}
-                                        <div class="input-group mb-2">
-                                            <textarea name="content" class="form-control border rounded-3 shadow-sm" rows="2" placeholder="Reply to this comment..." required></textarea>
-                                            <input type="hidden" name="parent_id" value="{{ comment.id }}">
-                                            <button type="submit" class="btn btn-outline-danger btn-sm rounded-3 transition-hover">Reply</button>
-                                        </div>
-                                    </form>
-                                </div>
-                                <!-- Displaying Replies -->
-                                <div class="replies">
-                                    {% for reply in comment.replies.all %}
-                                        <div class="reply-item bg-light border rounded-3 p-3 mt-3 ms-4 shadow-sm">
-                                            <p class="mb-1">
-                                                <strong class="text-dark">{{ reply.user.username }}</strong>
-                                                <small class="text-muted">{{ reply.created_at|date:"F j, Y, g:i a" }}</small>
-                                            </p>
-                                            <p class="text-muted mb-2">{{ reply.content }}</p>
-                                            <!-- Displaying Sub-Replies -->
-                                            <div class="sub-replies">
-                                                {% for sub_reply in reply.replies.all %}
-                                                    <div class="sub-reply-item bg-secondary bg-opacity-10 border rounded-3 p-3 mt-3 ms-4 shadow-sm">
-                                                        <p class="mb-1">
-                                                            <strong class="text-dark">{{ sub_reply.user.username }}</strong>
-                                                            <small class="text-muted">{{ sub_reply.created_at|date:"F j, Y, g:i a" }}</small>
-                                                        </p>
-                                                        <p class="text-muted mb-2">{{ sub_reply.content }}</p>
-                                                        <!-- Reply Link for Sub-Reply -->
-                                                        <div class="text-end">
-                                                            <span class="reply-link" onclick="toggleReplyForm('sub-reply-form-{{ sub_reply.id }}')">
-                                                                <i class="bi bi-reply-fill"></i>
-                                                            </span>
-                                                        </div>
-                                                        <!-- Form to Add Sub-Reply -->
-                                                        <div id="sub-reply-form-{{ sub_reply.id }}" class="reply-form" style="display:none;">
-                                                            <form method="POST" action="{% url 'courses:reply_comment' comment_id=sub_reply.id %}">
-                                                                {% csrf_token %}
-                                                                <div class="input-group mb-2">
-                                                                    <textarea name="content" class="form-control border rounded-3 shadow-sm" rows="2" placeholder="Reply to this sub-reply..." required></textarea>
-                                                                    <input type="hidden" name="parent_id" value="{{ sub_reply.id }}">
-                                                                    <button type="submit" class="btn btn-outline-danger btn-sm rounded-3 transition-hover">Reply</button>
-                                                                </div>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                {% endfor %}
-                                            </div>
-                                            <!-- Reply Link for Reply -->
-                                            <div class="text-end">
-                                                <span class="reply-link" onclick="toggleReplyForm('reply-form-{{ reply.id }}')">
-                                                    <i class="bi bi-reply-fill"></i>
-                                                </span>
-                                            </div>
-                                            <!-- Form to Add Reply to Reply -->
-                                            <div id="reply-form-{{ reply.id }}" class="reply-form" style="display:none;">
-                                                <form method="POST" action="{% url 'courses:reply_comment' comment_id=reply.id %}">
-                                                    {% csrf_token %}
-                                                    <div class="input-group mb-2">
-                                                        <textarea name="content" class="form-control border rounded-3 shadow-sm" rows="2" placeholder="Reply to this comment..." required></textarea>
-                                                        <input type="hidden" name="parent_id" value="{{ reply.id }}">
-                                                        <button type="submit" class="btn btn-outline-danger btn-sm rounded-3 transition-hover">Reply</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    {% endfor %}
-                                </div>
+                            <div class="ml-auto flex items-center">
+                                {% for i in 5|to %}
+                                    <i class="fas fa-star {% if review.rating >= i %}text-yellow-400{% else %}text-gray-400{% endif %} mr-1"></i>
+                                {% endfor %}
+                                <span class="font-bold text-gray-900">{{ review.rating }}</span>
                             </div>
-                        {% empty %}
-                            <p class="text-muted">No comments yet. Be the first to comment!</p>
-                        {% endfor %}
-                    </div>
-
-                    <!-- Form to Add New Comment -->
-                    <div class="card comment-sec border-0 shadow-sm rounded-3 mt-4">
-                        <div class="card-body p-4">
-                            <h5 class="subs-title fw-bold text-dark mb-4">Post a Comment</h5>
-                            <form method="POST" action="{% url 'courses:add_comment_microcredential' microcredential_id=microcredential.id slug=microcredential.slug %}">
-                                {% csrf_token %}
-                                <div class="mb-3">
-                                    <textarea name="content" rows="4" class="form-control border rounded-3 shadow-sm" placeholder="Write a comment..." required></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-outline-danger rounded-3 transition-hover">Post Comment</button>
-                            </form>
                         </div>
-                    </div>
+                        <p class="text-gray-500 mb-3">“{{ review.review_text }}”</p>
+                    {% empty %}
+                        <p class="text-gray-500">No reviews yet.</p>
+                    {% endfor %}
+                </div>
 
-                    <!-- JavaScript for Toggling Reply Forms -->
-                    <script>
-                        function toggleReplyForm(formId) {
-                            var form = document.getElementById(formId);
-                            form.style.display = form.style.display === 'block' || form.style.display === '' ? 'none' : 'block';
-                        }
-                    </script>
+                <!-- Comments Section -->
+                <div class="mt-4">
+                    {% for comment in page_obj_comments %}
+                        <div class="bg-white border border-gray-200 rounded-lg p-3 mb-3 shadow-sm hover:shadow-lg transition-all duration-300">
+                            <p class="mb-1">
+                                <strong class="text-gray-900">{{ comment.user.username }}</strong>
+                                <small class="text-gray-500">{{ comment.created_at|date:"F j, Y, g:i a" }}</small>
+                            </p>
+                            <p class="text-gray-500 mb-2">{{ comment.content }}</p>
+                            <!-- Reply Link for Main Comment -->
+                            <div class="text-right">
+                                <span class="cursor-pointer text-red-600 hover:text-red-700 font-bold text-sm" 
+                                      onclick="toggleReplyForm('comment-reply-form-{{ comment.id }}')">
+                                    <i class="fas fa-reply mr-1"></i> Reply
+                                </span>
+                            </div>
+                            <!-- Form to Add Reply to Main Comment -->
+                            <div id="comment-reply-form-{{ comment.id }}" class="mt-2 hidden">
+                                <form method="POST" action="{% url 'courses:reply_comment' comment_id=comment.id %}">
+                                    {% csrf_token %}
+                                    <div class="flex gap-2">
+                                        <textarea name="content" class="w-full border border-gray-200 rounded-lg p-2 shadow-sm focus:border-red-600 focus:ring focus:ring-red-100 transition-colors" 
+                                                  rows="2" placeholder="Reply to this comment..." required></textarea>
+                                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                        <button type="submit" class="px-3 py-1 border border-red-600 text-red-600 rounded-lg text-sm hover:bg-red-600 hover:text-white transition-all duration-300">
+                                            Reply
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- Displaying Replies -->
+                            <div class="ml-4 mt-2">
+                                {% for reply in comment.replies.all %}
+                                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 mt-3 shadow-sm">
+                                        <p class="mb-1">
+                                            <strong class="text-gray-900">{{ reply.user.username }}</strong>
+                                            <small class="text-gray-500">{{ reply.created_at|date:"F j, Y, g:i a" }}</small>
+                                        </p>
+                                        <p class="text-gray-500 mb-2">{{ reply.content }}</p>
+                                        <!-- Displaying Sub-Replies -->
+                                        <div class="ml-4">
+                                            {% for sub_reply in reply.replies.all %}
+                                                <div class="bg-gray-100 border border-gray-200 rounded-lg p-3 mt-3 shadow-sm">
+                                                    <p class="mb-1">
+                                                        <strong class="text-gray-900">{{ sub_reply.user.username }}</strong>
+                                                        <small class="text-gray-500">{{ sub_reply.created_at|date:"F j, Y, g:i a" }}</small>
+                                                    </p>
+                                                    <p class="text-gray-500 mb-2">{{ sub_reply.content }}</p>
+                                                    <!-- Reply Link for Sub-Reply -->
+                                                    <div class="text-right">
+                                                        <span class="cursor-pointer text-red-600 hover:text-red-700 font-bold text-sm" 
+                                                              onclick="toggleReplyForm('sub-reply-form-{{ sub_reply.id }}')">
+                                                            <i class="fas fa-reply mr-1"></i> Reply
+                                                        </span>
+                                                    </div>
+                                                    <!-- Form to Add Sub-Reply -->
+                                                    <div id="sub-reply-form-{{ sub_reply.id }}" class="mt-2 hidden">
+                                                        <form method="POST" action="{% url 'courses:reply_comment' comment_id=sub_reply.id %}">
+                                                            {% csrf_token %}
+                                                            <div class="flex gap-2">
+                                                                <textarea name="content" class="w-full border border-gray-200 rounded-lg p-2 shadow-sm focus:border-red-600 focus:ring focus:ring-red-100 transition-colors" 
+                                                                          rows="2" placeholder="Reply to this sub-reply..." required></textarea>
+                                                                <input type="hidden" name="parent_id" value="{{ sub_reply.id }}">
+                                                                <button type="submit" class="px-3 py-1 border border-red-600 text-red-600 rounded-lg text-sm hover:bg-red-600 hover:text-white transition-all duration-300">
+                                                                    Reply
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                        <!-- Reply Link for Reply -->
+                                        <div class="text-right">
+                                            <span class="cursor-pointer text-red-600 hover:text-red-700 font-bold text-sm" 
+                                                  onclick="toggleReplyForm('reply-form-{{ reply.id }}')">
+                                                <i class="fas fa-reply mr-1"></i> Reply
+                                            </span>
+                                        </div>
+                                        <!-- Form to Add Reply to Reply -->
+                                        <div id="reply-form-{{ reply.id }}" class="mt-2 hidden">
+                                            <form method="POST" action="{% url 'courses:reply_comment' comment_id=reply.id %}">
+                                                {% csrf_token %}
+                                                <div class="flex gap-2">
+                                                    <textarea name="content" class="w-full border border-gray-200 rounded-lg p-2 shadow-sm focus:border-red-600 focus:ring focus:ring-red-100 transition-colors" 
+                                                              rows="2" placeholder="Reply to this comment..." required></textarea>
+                                                    <input type="hidden" name="parent_id" value="{{ reply.id }}">
+                                                    <button type="submit" class="px-3 py-1 border border-red-600 text-red-600 rounded-lg text-sm hover:bg-red-600 hover:text-white transition-all duration-300">
+                                                        Reply
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p class="text-gray-500">No comments yet. Be the first to comment!</p>
+                    {% endfor %}
+                </div>
 
-                    <!-- Custom CSS -->
-                    <style>
-                        /* General Styles */
-                        .comments-section {
-                            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-                        }
-
-                        /* Comment Item */
-                        .comment-item, .reply-item, .sub-reply-item {
-                            transition: box-shadow 0.3s ease;
-                        }
-
-                        .comment-item:hover, .reply-item:hover, .sub-reply-item:hover {
-                            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1) !important;
-                        }
-
-                        /* Reply Link */
-                        .reply-link {
-                            color: #dc3545;
-                            cursor: pointer;
-                            font-size: 14px;
-                            font-weight: bold;
-                        }
-
-                        .reply-link:hover {
-                            color: #b02a37;
-                        }
-
-                        /* Buttons */
-                        .btn-outline-danger {
-                            border-color: #dc3545;
-                            color: #dc3545;
-                        }
-
-                        .btn-outline-danger:hover {
-                            background-color: #dc3545;
-                            color: white;
-                        }
-
-                        /* Form Controls */
-                        .form-control {
-                            border: 1px solid #e9ecef;
-                            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-                        }
-
-                        .form-control:focus {
-                            border-color: #dc3545;
-                            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.1);
-                        }
-
-                        /* Transition Hover */
-                        .transition-hover {
-                            transition: all 0.3s ease;
-                        }
-
-                        .transition-hover:hover {
-                            transform: translateY(-2px);
-                            color: #b02a37 !important;
-                        }
-
-                        /* Responsive Adjustments */
-                        @media (max-width: 767.98px) {
-                            .comment-item, .reply-item, .sub-reply-item {
-                                padding: 10px !important;
-                            }
-
-                            .replies, .sub-replies {
-                                margin-left: 10px;
-                            }
-
-                            .card-body {
-                                padding: 12px !important;
-                            }
-
-                            .form-control {
-                                font-size: 0.9rem;
-                            }
-
-                            .btn-outline-danger {
-                                font-size: 0.85rem;
-                            }
-                        }
-                    </style>
+                <!-- Form to Add New Comment -->
+                <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 mt-4 p-4">
+                    <h5 class="text-lg font-bold text-gray-900 mb-4">Post a Comment</h5>
+                    <form method="POST" action="{% url 'courses:add_comment_microcredential' microcredential_id=microcredential.id slug=microcredential.slug %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <textarea name="content" rows="4" 
+                                      class="w-full border border-gray-200 rounded-lg p-3 shadow-sm focus:border-red-600 focus:ring focus:ring-red-100 transition-colors" 
+                                      placeholder="Write a comment..." required></textarea>
+                        </div>
+                        <button type="submit" 
+                                class="px-4 py-2 border border-red-600 text-red-600 rounded-lg hover:bg-red-600 hover:text-white hover:-translate-y-0.5 transition-all duration-300">
+                            Post Comment
+                        </button>
+                    </form>
+                </div>
             </div>
 
             <!-- Sidebar -->
-            <div class="col-lg-4">
-                <div class="sidebar-sec sticky-top" style="top: 80px; z-index: 10;">
+            <div class="lg:col-span-1">
+                <div class="sticky top-20 z-10">
                     <!-- Video/Image Section -->
-                    <div class="video-sec vid-bg mb-4">
-                        <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
-                            <div class="card-body p-4">
-                                <div class="position-relative mb-3">
-                                    {% if microcredential.image %}
-                                        <img src="{{ microcredential.image.url }}" alt="{{ microcredential.title }}" class="img-fluid rounded-3 transition-hover" style="width: 100%; height: 200px; object-fit: cover;">
-                                    {% else %}
-                                        <img src="{% static 'assets/img/user/logo.5272a797c07c.png' %}" alt="Default Image" class="img-fluid rounded-3 transition-hover" style="width: 100%; height: 200px; object-fit: cover;">
-                                    {% endif %}
-                                </div>
-                                <div class="video-details text-center">
-                                    <div class="course-fee mb-3">
-                                        <h2 class="fw-bold text-dark mb-1">FREE</h2>
-                                        <p class="text-muted mb-0"><span class="text-decoration-line-through">$99.00</span> <span class="badge bg-danger text-white rounded-3">50% off</span></p>
-                                    </div>
-                                    <div class="row gx-2 mb-3">
-                                        <div class="col-6">
-                                            <a href="#" class="btn btn-outline-danger w-100 rounded-3 transition-hover"><i class="fas fa-heart me-1"></i> Wishlist</a>
-                                        </div>
-                                        <div class="col-6">
-                                            <button class="btn btn-outline-secondary w-100 rounded-3 transition-hover" onclick="openShareWindow()">
-                                                <i class="fas fa-share-alt me-1"></i> Share
-                                            </button>
-                                        </div>
-                                    </div>
-                                    {% if user.is_authenticated %}
-										{% if not is_enrolled %}
-											<!-- User is logged in but not enrolled -->
-											<div class="alert alert-info rounded-3 p-3">
-												<p class="mb-3">By enrolling in this MicroCredential, you will automatically be enrolled in all required courses listed above.</p>
-												<form method="POST" action="{% url 'courses:enroll_microcredential' slug=microcredential.slug %}">
-													{% csrf_token %}
-													<button type="submit" class="btn btn-danger w-100 rounded-3 transition-hover">Enroll Now</button>
-												</form>
-											</div>
-										{% else %}
-											<!-- User is already enrolled -->
-											<div class="alert alert-success rounded-3 p-3">
-												<p class="mb-3">You are already enrolled in this MicroCredential. Go to your <a href="{% url 'courses:microcredential_detail' microcredential.slug %}">Course Dashboard</a>.</p>
-											</div>
-										{% endif %}
-									{% else %}
-										<!-- User is not logged in -->
-										<div class="alert alert-warning rounded-3 p-3">
-											<p class="mb-3">You must be logged in to enroll in this MicroCredential. <a href="{% url 'authentication:login' %}">Click here to login</a>.</p>
-										</div>
-									{% endif %}
-
-
-                                </div>
+                    <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 mb-4 p-4">
+                        <div class="mb-3">
+                            {% if microcredential.image %}
+                                <img src="{{ microcredential.image.url }}" alt="{{ microcredential.title }}" 
+                                     class="w-full h-48 object-cover rounded-lg hover:-translate-y-0.5 transition-all duration-300">
+                            {% else %}
+                                <img src="{% static 'assets/img/user/logo.5272a797c07c.png' %}" alt="Default Image" 
+                                     class="w-full h-48 object-cover rounded-lg hover:-translate-y-0.5 transition-all duration-300">
+                            {% endif %}
+                        </div>
+                        <div class="text-center">
+                            <div class="mb-3">
+                                <h2 class="text-xl font-bold text-gray-900 mb-1">FREE</h2>
+                                <p class="text-gray-500 mb-0">
+                                    <span class="line-through">$99.00</span> 
+                                    <span class="inline-block bg-red-600 text-white text-xs font-medium px-2 py-1 rounded-lg">50% off</span>
+                                </p>
                             </div>
+                            <div class="grid grid-cols-2 gap-2 mb-3">
+                                <a href="#" class="px-3 py-2 border border-red-600 text-red-600 rounded-lg text-sm hover:bg-red-600 hover:text-white hover:-translate-y-0.5 transition-all duration-300">
+                                    <i class="fas fa-heart mr-1"></i> Wishlist
+                                </a>
+                                <button class="px-3 py-2 border border-gray-500 text-gray-500 rounded-lg text-sm hover:bg-gray-500 hover:text-white hover:-translate-y-0.5 transition-all duration-300" 
+                                        onclick="openShareWindow()">
+                                    <i class="fas fa-share-alt mr-1"></i> Share
+                                </button>
+                            </div>
+                            {% if user.is_authenticated %}
+                                {% if not is_enrolled %}
+                                    <!-- User is logged in but not enrolled -->
+                                    <div class="bg-blue-50 text-blue-800 p-3 rounded-lg">
+                                        <p class="mb-3 text-sm">By enrolling in this MicroCredential, you will automatically be enrolled in all required courses listed above.</p>
+                                        <form method="POST" action="{% url 'courses:enroll_microcredential' slug=microcredential.slug %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 hover:-translate-y-0.5 transition-all duration-300">
+                                                Enroll Now
+                                            </button>
+                                        </form>
+                                    </div>
+                                {% else %}
+                                    <!-- User is already enrolled -->
+                                    <div class="bg-green-50 text-green-800 p-3 rounded-lg">
+                                        <p class="mb-3 text-sm">You are already enrolled in this MicroCredential. Go to your 
+                                            <a href="{% url 'courses:microcredential_detail' microcredential.slug %}" class="text-blue-600 hover:underline">Course Dashboard</a>.
+                                        </p>
+                                    </div>
+                                {% endif %}
+                            {% else %}
+                                <!-- User is not logged in -->
+                                <div class="bg-yellow-50 text-yellow-800 p-3 rounded-lg">
+                                    <p class="mb-3 text-sm">You must be logged in to enroll in this MicroCredential. 
+                                        <a href="{% url 'authentication:login' %}" class="text-blue-600 hover:underline">Click here to login</a>.
+                                    </p>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
-                    <!-- /Video/Image Section -->
 
                     <!-- Features -->
-                    <div class="card feature-sec border-0 shadow-sm rounded-3">
-                        <div class="card-body p-4">
-                            <h4 class="fw-bold text-dark mb-3">Includes</h4>
-                            <ul class="course-details list-unstyled">
-                                <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                                    <span class="fw-medium text-dark">Category:</span>
-                                    <span class="text-muted">{% if microcredential.category %}{{ microcredential.category }}{% else %}N/A{% endif %}</span>
-                                </li>
-                                <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                                    <span class="fw-medium text-dark">Status:</span>
-                                    <span class="text-muted">{{ microcredential.status|title }}</span>
-                                </li>
-                                <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                                    <span class="fw-medium text-dark">Start Date:</span>
-                                    <span class="text-muted">{% if microcredential.start_date %}{{ microcredential.start_date|date:"M d, Y" }}{% else %}N/A{% endif %}</span>
-                                </li>
-                                <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                                    <span class="fw-medium text-dark">End Date:</span>
-                                    <span class="text-muted">{% if microcredential.end_date %}{{ microcredential.end_date|date:"M d, Y" }}{% else %}N/A{% endif %}</span>
-                                </li>
-                                <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                                    <span class="fw-medium text-dark">Created:</span>
-                                    <span class="text-muted">{{ microcredential.created_at|date:"M d, Y" }}</span>
-                                </li>
-                                <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                                    <span class="fw-medium text-dark">Last Edited:</span>
-                                    <span class="text-muted">{{ microcredential.edited_on|date:"M d, Y" }}</span>
-                                </li>
-                                <li class="d-flex justify-content-between align-items-center py-2">
-                                    <span class="fw-medium text-dark">Author:</span>
-                                    <span class="text-muted">{{ microcredential.author.username }}</span>
-                                </li>
-                            </ul>
-                        </div>
+                    <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-4">
+                        <h4 class="text-lg font-bold text-gray-900 mb-3">Includes</h4>
+                        <ul class="list-none">
+                            <li class="flex justify-between items-center py-2 border-b border-gray-200">
+                                <span class="font-medium text-gray-900">Category:</span>
+                                <span class="text-gray-500">{% if microcredential.category %}{{ microcredential.category }}{% else %}N/A{% endif %}</span>
+                            </li>
+                            <li class="flex justify-between items-center py-2 border-b border-gray-200">
+                                <span class="font-medium text-gray-900">Status:</span>
+                                <span class="text-gray-500">{{ microcredential.status|title }}</span>
+                            </li>
+                            <li class="flex justify-between items-center py-2 border-b border-gray-200">
+                                <span class="font-medium text-gray-900">Start Date:</span>
+                                <span class="text-gray-500">{% if microcredential.start_date %}{{ microcredential.start_date|date:"M d, Y" }}{% else %}N/A{% endif %}</span>
+                            </li>
+                            <li class="flex justify-between items-center py-2 border-b border-gray-200">
+                                <span class="font-medium text-gray-900">End Date:</span>
+                                <span class="text-gray-500">{% if microcredential.end_date %}{{ microcredential.end_date|date:"M d, Y" }}{% else %}N/A{% endif %}</span>
+                            </li>
+                            <li class="flex justify-between items-center py-2 border-b border-gray-200">
+                                <span class="font-medium text-gray-900">Created:</span>
+                                <span class="text-gray-500">{{ microcredential.created_at|date:"M d, Y" }}</span>
+                            </li>
+                            <li class="flex justify-between items-center py-2 border-b border-gray-200">
+                                <span class="font-medium text-gray-900">Last Edited:</span>
+                                <span class="text-gray-500">{{ microcredential.edited_on|date:"M d, Y" }}</span>
+                            </li>
+                            <li class="flex justify-between items-center py-2">
+                                <span class="font-medium text-gray-900">Author:</span>
+                                <span class="text-gray-500">{{ microcredential.author.username }}</span>
+                            </li>
+                        </ul>
                     </div>
-                    <!-- /Features -->
                 </div>
             </div>
         </div>
     </div>
 </section>
-<!-- /Course Content -->
 
-<!-- Dependensi Fancybox -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
-<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
 
-<!-- Scripts -->
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        if (typeof Fancybox !== 'undefined') {
-            Fancybox.bind('[data-fancybox="video-gallery"]', {
-                infinite: false,
-                arrows: true,
-                closeButton: "top",
-                dragToClose: true
-            });
-        } else {
-            console.warn('Fancybox is not loaded. Video lightbox functionality will not work.');
-        }
-    });
 
-    function openShareWindow() {
-        var courseUrl = window.location.href;
-        var encodedUrl = encodeURIComponent(courseUrl);
-        var shareUrls = {
-            facebook: 'https://www.facebook.com/sharer/sharer.php?u=' + encodedUrl,
-            twitter: 'https://twitter.com/intent/tweet?url=' + encodedUrl + '&text=Check out this microcredential!',
-            whatsapp: 'https://api.whatsapp.com/send?text=Check out this microcredential: ' + encodedUrl
-        };
-        var platform = 'facebook';
-        var windowOptions = 'height=400,width=600,top=' + (window.innerHeight / 2 - 200) + ',left=' + (window.innerWidth / 2 - 300);
-        if (shareUrls[platform]) {
-            window.open(shareUrls[platform], '_blank', windowOptions);
-        } else {
-            console.error('Platform not supported');
-        }
-    }
-</script>
-
-<!-- Custom CSS -->
-<style>
-    /* General Styles */
-    .page-content {
-        background-color: #ffffff;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    }
-
-    .container {
-        max-width: 1200px;
-    }
-
-    /* Card Styles */
-    .card {
-        transition: box-shadow 0.3s ease;
-        background-color: #ffffff;
-        border-radius: 8px !important;
-    }
-
-    .card:hover {
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1) !important;
-    }
-
-    .transition-hover {
-        transition: all 0.3s ease;
-    }
-
-    .transition-hover:hover {
-        transform: translateY(-2px);
-        color: #b02a37 !important;
-    }
-
-    /* Inner Banner */
-    .inner-banner {
-        background-color: #f8f9fa;
-        border: 1px solid #e9ecef;
-    }
-
-    /* Accordion */
-    .accordion-button:not(.collapsed) {
-        background-color: #dc3545 !important;
-        color: white !important;
-    }
-
-    .accordion-button:focus {
-        box-shadow: none;
-    }
-
-    /* Buttons */
-    .btn-danger {
-        background-color: #dc3545;
-        border-color: #dc3545;
-    }
-
-    .btn-danger:hover {
-        background-color: #b02a37;
-        border-color: #b02a37;
-    }
-
-    .btn-outline-danger {
-        border-color: #dc3545;
-        color: #dc3545;
-    }
-
-    .btn-outline-danger:hover {
-        background-color: #dc3545;
-        color: white;
-    }
-
-    /* Badges */
-    .badge {
-        font-size: 0.75rem;
-        padding: 0.4em 0.8em;
-    }
-
-    /* Form Controls */
-    .form-control {
-        border: 1px solid #e9ecef;
-        transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .form-control:focus {
-        border-color: #dc3545;
-        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.1);
-    }
-
-    /* Sidebar */
-    .sidebar-sec {
-        z-index: 10;
-    }
-
-    .navbar {
-        z-index: 1000 !important;
-        position: sticky;
-        top: 0;
-    }
-
-    /* Responsive Adjustments */
-    @media (max-width: 767.98px) {
-        .container {
-            padding-left: 8px;
-            padding-right: 8px;
-        }
-
-        .card {
-            margin-left: 0;
-            margin-right: 0;
-            padding: 8px !important;
-        }
-
-        .card-body {
-            padding: 12px !important;
-        }
-
-        .inner-banner,
-        .course-info,
-        .instructor-wrap {
-            margin-left: 0;
-            margin-right: 0;
-            padding: 10px !important;
-        }
-
-        .overview-sec p.text-muted {
-            margin-left: 0;
-            margin-right: 0;
-        }
-
-        .accordion-item {
-            margin-left: 0;
-            margin-right: 0;
-        }
-
-        .sidebar-sec .card-body {
-            padding: 10px !important;
-        }
-
-        .video-thumbnail img {
-            width: 100%;
-            height: auto;
-        }
-    }
-</style>
 
 {% endblock %}
