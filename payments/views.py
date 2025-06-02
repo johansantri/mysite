@@ -14,6 +14,8 @@ from django.utils.timezone import now
 @login_required
 @require_POST
 def add_to_cart(request, course_id):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     course = get_object_or_404(Course, id=course_id)
 
     # Cegah jika course gratis, langsung arahkan ke enroll
@@ -39,6 +41,8 @@ def add_to_cart(request, course_id):
 
 @login_required
 def view_cart(request):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     cart_items = CartItem.objects.select_related('course').filter(user=request.user)
     total_price = sum(item.course.get_course_price().user_payment for item in cart_items)
 
@@ -50,6 +54,8 @@ def view_cart(request):
 
 @login_required
 def checkout(request):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     cart_items = CartItem.objects.select_related('course').filter(user=request.user)
 
     if not cart_items.exists():
@@ -95,12 +101,16 @@ def checkout(request):
 
 @login_required
 def cart_item_delete(request, pk):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     item = get_object_or_404(CartItem, pk=pk, user=request.user)
     item.delete()
     return redirect('payments:view_cart')
 
 @login_required
 def transaction_history(request):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
     status_filter = request.GET.get('status', 'all')
     transactions = Transaction.objects.filter(user=request.user)
 
