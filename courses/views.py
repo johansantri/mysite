@@ -1241,7 +1241,7 @@ def posts_by_hashtag(request, hashtag):
 
 def create_and_list_sos_posts(request):
     if not request.user.is_authenticated:
-        return render(request, 'login_required.html')
+        return redirect("/login/?next=%s" % request.path)
     
     user_profile, _ = UserProfile.objects.get_or_create(user=request.user)
     if user_profile.is_blocked():
