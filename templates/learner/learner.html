@@ -24,43 +24,43 @@
                             <h5 class="font-semibold mb-4 text-lg">Personal Information</h5>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 {% if learner.gender %}
-                                    <div class="bg-white bg-opacity-20 p-3 rounded-lg flex items-center gap-2 hover:bg-opacity-30 hover:translate-x-1 transition-all duration-300">
+                                    <div class="bg-blue bg-opacity-20 p-3 rounded-lg flex items-center gap-2 hover:bg-opacity-30 hover:translate-x-1 transition-all duration-300">
                                         <i class="fas fa-venus-mars"></i>
                                         <span>{{ learner.get_gender_display }}</span>
                                     </div>
                                 {% endif %}
                                 {% if learner.education %}
-                                    <div class="bg-white bg-opacity-20 p-3 rounded-lg flex items-center gap-2 hover:bg-opacity-30 hover:translate-x-1 transition-all duration-300">
+                                    <div class="bg-blue bg-opacity-20 p-3 rounded-lg flex items-center gap-2 hover:bg-opacity-30 hover:translate-x-1 transition-all duration-300">
                                         <i class="fas fa-graduation-cap"></i>
                                         <span>{{ learner.get_education_display }}</span>
                                     </div>
                                 {% endif %}
                                 {% if learner.country %}
-                                    <div class="bg-white bg-opacity-20 p-3 rounded-lg flex items-center gap-2 hover:bg-opacity-30 hover:translate-x-1 transition-all duration-300">
+                                    <div class="bg-blue bg-opacity-20 p-3 rounded-lg flex items-center gap-2 hover:bg-opacity-30 hover:translate-x-1 transition-all duration-300">
                                         <i class="fas fa-globe"></i>
                                         <span>{{ learner.country }}</span>
                                     </div>
                                 {% endif %}
                                 {% if learner.birth %}
-                                    <div class="bg-white bg-opacity-20 p-3 rounded-lg flex items-center gap-2 hover:bg-opacity-30 hover:translate-x-1 transition-all duration-300">
+                                    <div class="bg-blue bg-opacity-20 p-3 rounded-lg flex items-center gap-2 hover:bg-opacity-30 hover:translate-x-1 transition-all duration-300">
                                         <i class="fas fa-birthday-cake"></i>
                                         <span>{{ learner.birth|mask_year }}</span>
                                     </div>
                                 {% endif %}
                                 {% if learner.phone %}
-                                    <div class="bg-white bg-opacity-20 p-3 rounded-lg flex items-center gap-2 hover:bg-opacity-30 hover:translate-x-1 transition-all duration-300">
+                                    <div class="bg-blue bg-opacity-20 p-3 rounded-lg flex items-center gap-2 hover:bg-opacity-30 hover:translate-x-1 transition-all duration-300">
                                         <i class="fas fa-phone"></i>
                                         <span>{{ learner.phone|mask_phone }}</span>
                                     </div>
                                 {% endif %}
                                 {% if learner.hobby %}
-                                    <div class="bg-white bg-opacity-20 p-3 rounded-lg flex items-center gap-2 hover:bg-opacity-30 hover:translate-x-1 transition-all duration-300">
+                                    <div class="bg-blue bg-opacity-20 p-3 rounded-lg flex items-center gap-2 hover:bg-opacity-30 hover:translate-x-1 transition-all duration-300">
                                         <i class="fas fa-heart"></i>
                                         <span>{{ learner.hobby }}</span>
                                     </div>
                                 {% endif %}
                                 {% if learner.university %}
-                                    <div class="bg-white bg-opacity-20 p-3 rounded-lg flex items-center gap-2 hover:bg-opacity-30 hover:translate-x-1 transition-all duration-300">
+                                    <div class="bg-blue bg-opacity-20 p-3 rounded-lg flex items-center gap-2 hover:bg-opacity-30 hover:translate-x-1 transition-all duration-300">
                                         <i class="fas fa-university"></i>
                                         <span>{{ learner.university.name }}</span>
                                     </div>
