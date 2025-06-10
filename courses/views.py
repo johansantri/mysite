@@ -3335,24 +3335,29 @@ def enroll_course(request, course_id):
     course = get_object_or_404(Course, id=course_id)
     partner = course.org_partner
     price_type_map = {
-        'buy_first': 'Buy first, then enroll',
-        'pay_for_exam': 'Enroll first, pay at exam',
-        'pay_for_certificate': 'Enroll & take exam first, pay at certificate claim',
-        'free': 'Free'
+        'buy_first': 'buy_first',
+        'pay_for_exam': 'pay_for_exam',
+        'pay_for_certificate': 'pay_for_certificate',
+        'free': 'free'
     }
+    logger.info(f"Attempting to enroll user {request.user.username} in course {course_id}, payment_model: {course.payment_model}")
     try:
-        price_type = PricingType.objects.get(name=price_type_map.get(course.payment_model, 'Buy first, then enroll'))
+        price_type = PricingType.objects.get(name=price_type_map.get(course.payment_model, 'buy_first'))
+        logger.info(f"Price type found: {price_type.name}")
     except PricingType.DoesNotExist:
+        logger.error(f"Price type for {course.payment_model} not found.")
         messages.error(request, f"Price type for {course.payment_model} not found. Please contact admin.")
         return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
 
     response = course.enroll_user(request.user, partner=partner, price_type=price_type)
+    logger.info(f"Enroll response: {response}")
 
     if response["status"] == "success":
         messages.success(request, response["message"])
         return redirect('courses:course_learn', username=request.user.username, slug=course.slug)
     elif response["status"] == "error":
         if course.payment_model == 'buy_first' and "Payment required" in response["message"]:
+            logger.info("Redirecting to payment for buy_first")
             return redirect('payments:process_payment', course_id=course.id)
         messages.error(request, response["message"])
     else:
