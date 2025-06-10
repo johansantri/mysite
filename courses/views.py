@@ -2546,18 +2546,22 @@ def start_assessment(request, assessment_id):
     return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
 
 
+
 def course_learn(request, username, slug):
     if not request.user.is_authenticated:
+        logger.info(f"Unauthenticated user attempted to access course {slug}")
         return redirect("/login/?next=%s" % request.path)
 
     course = get_object_or_404(Course, slug=slug)
 
     if request.user.username != username:
+        logger.warning(f"User {request.user.username} attempted to access course {slug} with username {username}")
         return redirect('authentication:course_list')
 
     if not Enrollment.objects.filter(user=request.user, course=course).exists():
+        logger.info(f"User {request.user.username} not enrolled in course {slug}")
         return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
-    
+
     course_name = course.course_name
 
     sections = Section.objects.filter(courses=course).prefetch_related(
@@ -2591,6 +2595,18 @@ def course_learn(request, username, slug):
         current_content = ('material', material, next((s for s in sections if material in s.materials.all()), None))
     elif assessment_id:
         assessment = get_object_or_404(Assessment, id=assessment_id)
+        # Cek pembayaran untuk pay_for_exam
+        if course.payment_model == 'pay_for_exam':
+            payment = Payment.objects.filter(
+                user=request.user,
+                course=course,
+                status='completed',
+                payment_model='pay_for_exam'
+            ).first()
+            if not payment:
+                logger.info(f"Payment required for exam in course {course.id} for user {request.user.username}")
+                messages.error(request, "Payment required to access this exam.")
+                return redirect('payments:process_payment', course_id=course.id, payment_type='exam')
         current_content = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
 
     comments = None
@@ -2795,6 +2811,7 @@ def course_learn(request, username, slug):
             'final_score': final_score,
             'can_review': user_has_submitted
         })
+
     lti_tools = LTIExternalTool.objects.filter(assessment__section__courses=course)
     context = {
         'course': course,

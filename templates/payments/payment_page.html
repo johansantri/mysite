@@ -1,0 +1,41 @@
+{% extends 'home/tes.html' %}
+{% load humanize %}
+
+{% block content %}
+<div class="container mx-auto max-w-7xl px-4 py-10">
+    <h1 class="text-2xl font-bold text-gray-800 mb-4">Add Payment to Cart</h1>
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-xl font-semibold mb-4">Payment Details</h2>
+        <p><strong>Course:</strong> {{ course.course_name }}</p>
+        <p><strong>Amount:</strong> IDR {{ payment.amount|intcomma }}</p>
+        <p><strong>Payment Type:</strong> 
+            {% if payment_type == 'exam' %}
+                Exam Access
+            {% elif payment_type == 'certificate' %}
+                Certificate Claim
+            {% else %}
+                Enrollment
+            {% endif %}
+        </p>
+        <p><strong>Transaction ID:</strong> {{ transaction.id }}</p>
+        
+        <!-- Form untuk menambahkan ke keranjang -->
+        <form method="POST" action="{% url 'payments:add_to_cart' course_id=course.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="payment_id" value="{{ payment.id }}">
+            <input type="hidden" name="transaction_id" value="{{ transaction.id }}">
+            <input type="hidden" name="payment_type" value="{{ payment_type }}">
+            <div class="mt-6 flex space-x-4">
+                <a href="{% url 'courses:course_lms_detail' id=course.id slug=course.slug %}" 
+                   class="btn btn-secondary px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
+                    Cancel
+                </a>
+                <button type="submit" 
+                        class="btn btn-primary px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                    Add to Cart
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
