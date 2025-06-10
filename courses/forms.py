@@ -142,15 +142,18 @@ class CourseRerunForm(forms.ModelForm):
     category = forms.ModelChoiceField(queryset=Category.objects.all(), widget=forms.Select(attrs={'class': 'form-control', 'style': 'width: 100%'}))
     level = forms.ChoiceField(choices=[('basic', 'Basic'), ('middle', 'Middle'), ('advanced', 'Advanced')], widget=forms.Select(attrs={'class': 'form-control', 'style': 'width: 100%'}))
 
-#add course price
 class CoursePriceForm(forms.ModelForm):
     class Meta:
         model = CoursePrice
-        fields = ['partner_price', 'discount_percent']  # Partner hanya bisa isi harga dan diskon
+        fields = ['partner_price', 'discount_percent', 'price_type']  # Partner bisa isi harga, diskon, dan pilih jenis harga
 
         widgets = {
-            'partner_price': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Masukkan harga...', 'min': '0', 'step': '0.01'}),
-            'discount_percent': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Masukkan diskon...', 'min': '0', 'max': '100', 'step': '0.01'}),
+            'partner_price': forms.NumberInput(attrs={
+                'class': 'form-control', 'placeholder': 'Masukkan harga...', 'min': '0', 'step': '0.01'
+            }),
+            'discount_percent': forms.NumberInput(attrs={
+                'class': 'form-control', 'placeholder': 'Masukkan diskon...', 'min': '0', 'max': '100', 'step': '0.01'
+            }),
         }
 
     def __init__(self, *args, **kwargs):
@@ -177,27 +180,28 @@ class CoursePriceForm(forms.ModelForm):
                     widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
                     required=False
                 )
-
             elif hasattr(self.user, 'is_partner') and self.user.is_partner:
-                try:
-                    regular_type = PricingType.objects.get(name="Beli Langsung")
-                    self.fields['price_type'] = forms.ModelChoiceField(
-                        queryset=PricingType.objects.filter(name="Beli Langsung"),
-                        initial=regular_type,
-                        widget=forms.HiddenInput()
-                    )
-                except PricingType.DoesNotExist:
-                    raise forms.ValidationError("Tipe harga 'Beli Langsung' tidak ditemukan! Tambahkan di database.")
+                # Partner bisa pilih jenis harga yang tersedia
+                self.fields['price_type'] = forms.ModelChoiceField(
+                    queryset=PricingType.objects.all(),  # atau batasi sesuai kebutuhan
+                    widget=forms.Select(attrs={'class': 'form-control'}),
+                    empty_label="Pilih Jenis Harga"
+                )
 
     def clean(self):
         cleaned_data = super().clean()
 
         if hasattr(self.user, 'is_partner') and self.user.is_partner:
-            existing_price = CoursePrice.objects.filter(course=self.course, price_type__name="Beli Langsung").first()
-            
-            # Jika partner sudah punya harga, hanya bisa mengedit
+            price_type = cleaned_data.get('price_type')
+            if not price_type:
+                raise forms.ValidationError("Jenis harga harus dipilih.")
+
+            existing_price = CoursePrice.objects.filter(course=self.course, price_type=price_type).first()
+
             if existing_price and existing_price.pk != self.instance.pk:
-                raise forms.ValidationError("❌ Anda hanya dapat menambahkan satu harga untuk kursus ini.")
+                raise forms.ValidationError(
+                    f"❌ Anda sudah memiliki harga untuk kursus ini dengan jenis harga '{price_type.name}'."
+                )
 
         return cleaned_data
 
@@ -206,23 +210,14 @@ class CoursePriceForm(forms.ModelForm):
         instance = super().save(commit=False)
 
         if hasattr(self.user, 'is_partner') and self.user.is_partner:
-            # ✅ Pastikan `partner` otomatis diisi
             if not instance.partner_id:
-                instance.partner = self.user.partner_user  # Gunakan relasi OneToOneField dari model Partner
-            
+                instance.partner = self.user.partner_user  # OneToOneField ke model Partner
+
             instance.start_date = date.today()
             instance.duration_days = None
             if self.course:
                 instance.end_date = self.course.end_date
-            
-            # ✅ Pastikan `price_type` otomatis diisi
-            if not instance.price_type_id:
-                try:
-                    instance.price_type = PricingType.objects.get(name="Beli Langsung")
-                except PricingType.DoesNotExist:
-                    raise ValueError("Tipe harga 'Beli Langsung' tidak ditemukan! Tambahkan di database.")
 
-        # Hitung harga otomatis
         instance.calculate_prices()
 
         if commit:
