@@ -239,22 +239,18 @@ class Course(models.Model):
 
     def get_course_price(self, partner=None, price_type=None):
         course_price = self.prices.filter(partner=partner if partner else self.org_partner)
+
         if price_type:
             course_price = course_price.filter(price_type=price_type)
         else:
-            peta_tipe_harga = {
-                'buy_first': 'Buy Directly',
-                'pay_for_exam': 'Pay at Exam',
-                'pay_for_certificate': 'Pay at Certificate',
-                'free': 'Free'
-            }
             try:
-                nama_tipe_harga = peta_tipe_harga.get(self.payment_model, 'Buy Directly')
-                tipe_harga_default = PricingType.objects.get(name=nama_tipe_harga)
+                tipe_harga_default = PricingType.objects.get(name=self.payment_model)
                 course_price = course_price.filter(price_type=tipe_harga_default)
             except PricingType.DoesNotExist:
                 return None
+
         return course_price.first()
+
 
     
     

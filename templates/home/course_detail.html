@@ -410,31 +410,37 @@
                                 {% endif %}
                             </div>
                             <div class="text-center">
-                                {% with course_price=course.get_course_price %}
+                               {% with course_price=course.get_course_price %}
                                     <div class="mb-4">
-                                        {% if course.payment_model == 'free' %}
-                                            <h2 class="text-2xl font-bold text-gray-900 mb-1">Free</h2>
-                                            <p class="text-gray-600 mb-0">Full access without charge</p>
-                                        {% else %}
-                                            <h2 class="text-2xl font-bold text-gray-900 mb-1">IDR {{ course_price.user_payment|intcomma }}</h2>
-                                            {% if course_price.discount_percent > 0 %}
-                                                <p class="text-gray-600 mb-0">
-                                                    <span class="line-through">IDR {{ course_price.normal_price|intcomma }}</span>
-                                                    <span class="inline-block bg-red-500 text-white text-sm font-medium px-3 py-1 rounded-md">{{ course_price.discount_percent }}% off</span>
-                                                </p>
-                                            {% endif %}
-                                            <p class="text-gray-600 mb-0">
-                                                {% if course.payment_model == 'buy_first' %}
-                                                    Payment required for enrollment
-                                                {% elif course.payment_model == 'pay_for_exam' %}
-                                                    Free to enroll, pay at exam
-                                                {% elif course.payment_model == 'pay_for_certificate' %}
-                                                    Free to enroll and take exam, pay at certificate claim
+                                        {% if course_price %}
+                                            <h2 class="text-2xl font-bold text-gray-900 mb-1">
+                                                {% if course.payment_model == 'free' %}
+                                                    Free
+                                                {% else %}
+                                                    IDR {{ course_price.user_payment|intcomma }}
                                                 {% endif %}
-                                            </p>
+                                            </h2>
+
+                                            {% if course.payment_model == 'pay_for_exam' %}
+                                                <p class="text-gray-600 mb-0">Free to enroll, pay only when taking the exam</p>
+                                            {% elif course.payment_model == 'pay_for_certificate' %}
+                                                <p class="text-gray-600 mb-0">Free to enroll and take the exam, pay only when claiming certificate</p>
+                                            {% elif course.payment_model == 'buy_first' %}
+                                                {% if course_price.discount_percent > 0 %}
+                                                    <p class="text-gray-600 mb-0">
+                                                        <span class="line-through">IDR {{ course_price.normal_price|intcomma }}</span>
+                                                        <span class="inline-block bg-red-500 text-white text-sm font-medium px-3 py-1 rounded-md">{{ course_price.discount_percent }}% off</span>
+                                                    </p>
+                                                {% endif %}
+                                                <p class="text-gray-600 mb-0">Payment required before enrollment</p>
+                                            {% endif %}
+                                        {% else %}
+                                            <h2 class="text-2xl font-bold text-gray-900 mb-1">Price not available</h2>
                                         {% endif %}
                                     </div>
                                 {% endwith %}
+
+
                                 <div class="grid grid-cols-2 gap-2 mb-4">
                                     <div>
                                         <a href="#" class="block border border-red-500 text-red-500 px-4 py-2 rounded-lg hover:bg-red-500 hover:text-white transition-colors">
@@ -455,12 +461,12 @@
                                         </button>
                                     </div>
                                 {% endfor %}
-                                {% if request.user.is_authenticated %}
+                               {% if request.user.is_authenticated %}
                                     {% if is_enrolled %}
                                         <a href="{% url 'courses:course_learn' request.user.username course.slug %}" class="block bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">Start Course</a>
                                     {% else %}
                                         {% with course_price=course.get_course_price %}
-                                            {% if course.payment_model == 'free' %}
+                                            {% if course.payment_model == 'free' or course.payment_model == 'pay_for_exam' or course.payment_model == 'pay_for_certificate' %}
                                                 <form id="enrollForm" method="POST" action="{% url 'courses:enroll' course.id %}">
                                                     {% csrf_token %}
                                                     <button type="submit" class="block w-full border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors">Enroll Now</button>
@@ -476,6 +482,7 @@
                                 {% else %}
                                     <a href="{% url 'authentication:register' %}?next={% url 'courses:course_lms_detail' id=course.id slug=course.slug %}" class="block bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">Join Now</a>
                                 {% endif %}
+
                             </div>
                         </div>
                     </div>

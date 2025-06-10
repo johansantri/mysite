@@ -6,10 +6,10 @@ CustomUser = get_user_model()
 
 class Payment(models.Model):
     PAYMENT_MODEL_CHOICES = [
-        ('buy_first', 'Beli dulu baru enrol'),
-        ('pay_for_exam', 'Enrol dulu, bayar saat ujian'),
-        ('pay_for_certificate', 'Enrol & ujian dulu, bayar saat sertifikat'),
-        ('free', 'Gratis'),
+        ('buy_first', 'Buy first, then enroll'),
+        ('pay_for_exam', 'Enroll first, pay at exam'),
+        ('pay_for_certificate', 'Enroll & take exam first, pay at certificate claim'),
+        ('free', 'Free'),
     ]
 
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='payments')

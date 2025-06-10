@@ -3231,7 +3231,7 @@ def course_reruns(request, id):
 
 #add course price
 def add_course_price(request, id):
-    print("🔄 Form submitted!")  # Debugging
+    
 
     # Pastikan user sudah login
     if not request.user.is_authenticated:
@@ -3361,13 +3361,13 @@ def enroll_course(request, course_id):
     course = get_object_or_404(Course, id=course_id)
     partner = course.org_partner
     price_type_map = {
-        'buy_first': 'Buy Directly',
-        'pay_for_exam': 'Pay at Exam',
-        'pay_for_certificate': 'Pay at Certificate',
+        'buy_first': 'Buy first, then enroll',
+        'pay_for_exam': 'Enroll first, pay at exam',
+        'pay_for_certificate': 'Enroll & take exam first, pay at certificate claim',
         'free': 'Free'
     }
     try:
-        price_type = PricingType.objects.get(name=price_type_map.get(course.payment_model, 'Buy Directly'))
+        price_type = PricingType.objects.get(name=price_type_map.get(course.payment_model, 'Buy first, then enroll'))
     except PricingType.DoesNotExist:
         messages.error(request, f"Price type for {course.payment_model} not found. Please contact admin.")
         return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
@@ -3496,6 +3496,8 @@ def course_lms_detail(request, id, slug):
     full_star_range = range(full_stars)
     empty_star_range = range(empty_stars)
 
+
+    course_price = course.get_course_price()
     return render(request, 'home/course_detail.html', {
         'course': course,
         'is_enrolled': is_enrolled,
@@ -3518,7 +3520,8 @@ def course_lms_detail(request, id, slug):
         'full_star_range': full_star_range,
         'half_star': half_star,
         'empty_star_range': empty_star_range,
-        'average_rating': average_rating
+        'average_rating': average_rating,
+        'course_price': course_price,
     })
 
 
