@@ -4,56 +4,39 @@
     {% include "courses/course_set.html"%}
     <hr>  
 
-    <div class="support-wrap">
-        <div class="tile">
-            <div class="tile-body">
-                <form method="POST">
-                    {% csrf_token %}
 
-                    {% if request.user.is_superuser %}
-                        <!-- ✅ Superuser Bisa Pilih Semua Opsi -->
-                        <div class="form-group">
-                            <label for="{{ form.price_type.id_for_label }}">Jenis Harga</label>
-                            {{ form.price_type }}
-                        </div>
+    <h2>Tambah Harga Kursus</h2>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Simpan</button>
+    </form>
 
-                        <div class="form-group">
-                            <label for="{{ form.start_date.id_for_label }}">Tanggal Mulai</label>
-                            {{ form.start_date }}
-                        </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const priceTypeSelect = document.querySelector('#id_price_type');
+        const partnerPriceInput = document.querySelector('#id_partner_price');
+        const discountPercentInput = document.querySelector('#id_discount_percent');
 
-                        <div class="form-group">
-                            <label for="{{ form.duration_days.id_for_label }}">Durasi (Hari)</label>
-                            {{ form.duration_days }}
-                        </div>
+        function togglePriceFields() {
+            if (priceTypeSelect.value === 'free') {
+                partnerPriceInput.disabled = true;
+                discountPercentInput.disabled = true;
+                partnerPriceInput.value = '';
+                discountPercentInput.value = '';
+            } else {
+                partnerPriceInput.disabled = false;
+                discountPercentInput.disabled = false;
+            }
+        }
 
-                        <div class="form-group">
-                            <label for="{{ form.end_date.id_for_label }}">Tanggal Selesai</label>
-                            {{ form.end_date }}
-                        </div>
-                    {% elif request.user.is_partner %}
-                        <!-- ✅ Partner Bisa Pilih Jenis Harga Juga -->
-                        <div class="form-group">
-                            <label for="{{ form.price_type.id_for_label }}">Jenis Harga</label>
-                            {{ form.price_type }}
-                        </div>
-
-                        <div class="form-group">
-                            <label for="{{ form.partner_price.id_for_label }}">Harga</label>
-                            {{ form.partner_price }}
-                        </div>
-
-                        <div class="form-group">
-                            <label for="{{ form.discount_percent.id_for_label }}">Diskon (%)</label>
-                            {{ form.discount_percent }}
-                        </div>
-                    {% endif %}
-
-                    <br>
-                    <button type="submit" class="btn btn-success">Simpan</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
+        priceTypeSelect.addEventListener('change', togglePriceFields);
+        togglePriceFields();
+    });
+</script>
 {% endblock %}

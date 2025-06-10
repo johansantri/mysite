@@ -1,1 +1,13 @@
-WARNING 2025-06-10 05:59:24,663 log Forbidden (Referer checking failed - no Referer.): /
+ERROR 2025-06-10 06:18:32,451 log Internal Server Error: /add-price/14/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 3264, in add_course_price
+    form = CoursePriceForm(user=request.user, course=course, instance=existing_price)
+  File "/home/TIM/mysite/courses/forms.py", line 199, in __init__
+    if self.instance and self.instance.price_type and self.instance.price_type.name == 'free':
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/fields/related_descriptors.py", line 268, in __get__
+    raise self.RelatedObjectDoesNotExist(
+courses.models.CoursePrice.price_type.RelatedObjectDoesNotExist: CoursePrice has no price_type.

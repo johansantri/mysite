@@ -3231,66 +3231,40 @@ def course_reruns(request, id):
 
 #add course price
 def add_course_price(request, id):
-    
-
-    # Pastikan user sudah login
     if not request.user.is_authenticated:
         return redirect(f"/login/?next={request.path}")
 
-    # Inisialisasi variabel course
     course = None
-
-    # Memastikan hanya partner yang bisa menambahkan harga
     if hasattr(request.user, 'is_partner') and request.user.is_partner:
-        # Pastikan kursus yang ingin diubah adalah milik partner ini
         course = get_object_or_404(Course, id=id, org_partner__user_id=request.user.id)
-        # Periksa apakah partner sudah menambahkan harga atau tidak
-        existing_price = CoursePrice.objects.filter(course=course, price_type__name="Beli Langsung").first()
+        # Ambil existing_price hanya jika price_type tidak NULL
+        existing_price = CoursePrice.objects.filter(course=course, price_type__isnull=False).first()
     else:
-        # Jika user bukan partner, tampilkan pesan error dan redirect ke halaman yang sesuai
         messages.error(request, "Anda tidak memiliki izin untuk menambahkan harga ke kursus ini.")
-        return redirect('courses:studio',id=id)  # Redirect ke halaman studio tanpa perlu mengakses course.id
+        return redirect('courses:studio', id=id)
 
-    # Jika request method POST, berarti user mengirimkan form
     if request.method == 'POST':
-        print("✅ POST request received")  # Debugging
-        print("📨 Data yang dikirim:", request.POST)  # Debugging, lihat isi form yang dikirim
+        print("✅ POST request received")
+        print("📨 Data yang dikirim:", request.POST)
 
-        # Membuat instance form dengan data dari POST, dan memeriksa harga yang sudah ada jika ada
         form = CoursePriceForm(request.POST, user=request.user, course=course, instance=existing_price)
-        
-        # Jika form valid, simpan data harga
         if form.is_valid():
-            print("✅ Form is valid")  # Debugging
+            print("✅ Form is valid")
             course_price = form.save(commit=False)
             course_price.course = course
-
-            # Pastikan hanya partner yang menambahkan harga 'Beli Langsung'
-            if hasattr(request.user, 'is_partner') and request.user.is_partner:
-                try:
-                    course_price.price_type = PricingType.objects.get(name="Beli Langsung")
-                except PricingType.DoesNotExist:
-                    messages.error(request, "Tipe harga 'Beli Langsung' tidak ditemukan! Tambahkan di database.")
-                    return redirect(reverse('courses:add_course_price', args=[course.id]))
-
-            # Simpan harga kursus
             course_price.save()
             messages.success(request, "✅ Harga kursus berhasil disimpan!")
-            print("✅ Data berhasil disimpan!")  # Debugging
-            return redirect(reverse('courses:add_course_price', args=[course.id]))  # Redirect setelah menyimpan
-
+            print("✅ Data berhasil disimpan!")
+            return redirect(reverse('courses:add_course_price', args=[course.id]))
         else:
-            print("❌ Form is NOT valid")  # Debugging
-            print(form.errors)  # Debugging, lihat kenapa form tidak valid
+            print("❌ Form is NOT valid")
+            print(form.errors)
             for error in form.errors.get("__all__", []):
                 messages.error(request, error)
-        
     else:
-        # Jika form tidak di-submit, tampilkan form kosong atau dengan data yang sudah ada (jika ada)
         form = CoursePriceForm(user=request.user, course=course, instance=existing_price)
 
     return render(request, 'courses/course_price_form.html', {'form': form, 'course': course})
-
 
 #instrcutor profile
 def instructor_profile(request, username):

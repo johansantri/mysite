@@ -142,6 +142,7 @@ class CourseRerunForm(forms.ModelForm):
     category = forms.ModelChoiceField(queryset=Category.objects.all(), widget=forms.Select(attrs={'class': 'form-control', 'style': 'width: 100%'}))
     level = forms.ChoiceField(choices=[('basic', 'Basic'), ('middle', 'Middle'), ('advanced', 'Advanced')], widget=forms.Select(attrs={'class': 'form-control', 'style': 'width: 100%'}))
 
+
 class CoursePriceForm(forms.ModelForm):
     class Meta:
         model = CoursePrice
@@ -162,6 +163,11 @@ class CoursePriceForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         if self.user:
+            # Definisikan queryset untuk price_type
+            price_type_queryset = PricingType.objects.filter(name__in=[
+                'free', 'pay_for_certificate', 'pay_for_exam', 'buy_first'
+            ])
+
             if self.user.is_superuser:
                 self.fields['price_type'] = forms.ModelChoiceField(
                     queryset=PricingType.objects.all(),
@@ -181,23 +187,40 @@ class CoursePriceForm(forms.ModelForm):
                     required=False
                 )
             elif hasattr(self.user, 'is_partner') and self.user.is_partner:
-                # Partner bisa pilih jenis harga yang tersedia
                 self.fields['price_type'] = forms.ModelChoiceField(
-                    queryset=PricingType.objects.all(),  # atau batasi sesuai kebutuhan
+                    queryset=price_type_queryset,
                     widget=forms.Select(attrs={'class': 'form-control'}),
                     empty_label="Pilih Jenis Harga"
                 )
 
+                # Periksa apakah instance ada dan price_type tidak None
+                if self.instance and hasattr(self.instance, 'price_type') and self.instance.price_type and self.instance.price_type.name == 'free':
+                    self.fields['partner_price'].widget.attrs['disabled'] = 'disabled'
+                    self.fields['discount_percent'].widget.attrs['disabled'] = 'disabled'
+
     def clean(self):
         cleaned_data = super().clean()
+        price_type = cleaned_data.get('price_type')
+        partner_price = cleaned_data.get('partner_price')
+        discount_percent = cleaned_data.get('discount_percent')
 
         if hasattr(self.user, 'is_partner') and self.user.is_partner:
-            price_type = cleaned_data.get('price_type')
             if not price_type:
                 raise forms.ValidationError("Jenis harga harus dipilih.")
 
-            existing_price = CoursePrice.objects.filter(course=self.course, price_type=price_type).first()
+            # Validasi untuk tipe 'free'
+            if price_type and price_type.name == 'free':
+                if partner_price is not None or discount_percent is not None:
+                    raise forms.ValidationError("Untuk jenis harga 'free', harga dan diskon harus kosong.")
+            # Validasi untuk tipe harga lainnya
+            else:
+                if partner_price is None or partner_price <= 0:
+                    raise forms.ValidationError("Harga harus diisi dengan nilai lebih dari 0 untuk jenis harga berbayar.")
+                if discount_percent is None:
+                    cleaned_data['discount_percent'] = 0
 
+            # Cek apakah harga dengan price_type ini sudah ada
+            existing_price = CoursePrice.objects.filter(course=self.course, price_type=price_type).first()
             if existing_price and existing_price.pk != self.instance.pk:
                 raise forms.ValidationError(
                     f"❌ Anda sudah memiliki harga untuk kursus ini dengan jenis harga '{price_type.name}'."
@@ -217,6 +240,11 @@ class CoursePriceForm(forms.ModelForm):
             instance.duration_days = None
             if self.course:
                 instance.end_date = self.course.end_date
+
+            # Jika tipe harga 'free', set partner_price dan discount_percent ke None
+            if instance.price_type.name == 'free':
+                instance.partner_price = None
+                instance.discount_percent = None
 
         instance.calculate_prices()
 
