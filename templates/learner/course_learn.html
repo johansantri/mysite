@@ -124,203 +124,215 @@
                 </div>
 
               {% elif current_content.0 == 'assessment' %}
-                <!-- Multiple Choice Questions -->
-                {% if current_content.1.questions.exists %}
-                <div class="assessment-item" style="border-bottom: 2px solid rgb(134, 134, 134); padding: 20px; background-color: #f9f9f9;">
-                  <h3 class="h5" style="color: rgb(2, 2, 2); font-size: 24px;">Assessment: {{ current_content.1.name }}</h3>
-                  <p>Time remaining: <span id="timer"></span></p>
-          
-                  <!-- Jika belum mulai dan durasi > 0, tampilkan form "Setuju" -->
-                  {% if not is_started and current_content.1.duration_in_minutes > 0 %}
-                    <form method="post" action="{% url 'courses:start_assessment' assessment_id=current_content.1.id %}">
-                      {% csrf_token %}
-                      <div class="alert alert-warning text-center" role="alert">
-                        <h4 class="alert-heading">Attention!</h4>
-                        <p>Before starting the exam, you will have <b>{{ current_content.1.duration_in_minutes }}</b> minutes to complete it. Do you <b>agree</b> to proceed?</p>
+              {% if assessment_locked %}
+                  <!-- Penilaian terkunci karena memerlukan pembayaran -->
+                  <div class="assessment-item" style="border-bottom: 2px solid rgb(134, 134, 134); padding: 20px; background-color: #f9f9f9;">
+                    <h3 class="h5" style="color: rgb(2, 2, 2); font-size: 24px;">Assessment: {{ current_content.1.name }}</h3>
+                    <div class="alert alert-warning text-center" role="alert">
+                        <h4 class="alert-heading">Payment Required!</h4>
+                        <p>This exam requires payment to access. You can add it to your cart or proceed to the next content.</p>
                         <hr>
-                        <button type="submit" class="btn btn-success">Agree</button>
-                      </div>
-                    </form>
-          
-                  <!-- Jika sudah mulai atau durasi = 0, tampilkan soal -->
-                  {% elif is_started or current_content.1.duration_in_minutes == 0 %}
-                    <form method="POST" action="{% url 'courses:submit_assessment' assessment_id=current_content.1.id %}">
-                      {% csrf_token %}
-                      <input type="text" name="honeypot" style="display:none;" />
-                      <input type="hidden" name="start_time" id="start_time" value="{{ current_time }}">
-                    
-                      <ul style="list-style: none; padding-left: 0;">
-                      
-                        {% for question in current_content.1.questions.all|randomize %}
-                          <li class="question" style="margin-bottom: 30px;">
-                            <div style="display: inline-block; margin-left: 10px; padding: 10px; background-color: #e9ecef; border-radius: 8px; font-size: 18px; color: #555;">
-                              {{ question.text |safe }}
-                            </div>
-                            <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
-                              {% for choice in question.choices.all|randomize %}
-                                <li style="margin-bottom: 15px; display: flex; align-items: center;">
-                                  <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}" id="choice_{{ choice.id }}" style="transform: scale(1.5); margin-right: 10px;">
-                                  <label for="choice_{{ choice.id }}" style="cursor: pointer; margin: 0; font-size: 16px; color: #555;">{{ choice.text |safe }}</label>
-                                  {% with answered_question=answered_questions|get_item:question.id %}
-                                    {% if answered_question %}
-                                      <small>
-                                        {% if answered_question.choice == choice %}
-                                          ({{ request.user.username }}!)
-                                        {% elif choice.is_correct %}
-                                          (correct)
-                                        {% else %}
-                                          (incorrect)
+                        <a href="{{ payment_required_url }}" class="btn btn-primary">Add to Cart</a>
+                    </div>
+                  </div>
+              {% else %}
+                    <!-- Multiple Choice Questions -->
+                    {% if current_content.1.questions.exists %}
+                    <div class="assessment-item" style="border-bottom: 2px solid rgb(134, 134, 134); padding: 20px; background-color: #f9f9f9;">
+                      <h3 class="h5" style="color: rgb(2, 2, 2); font-size: 24px;">Assessment: {{ current_content.1.name }}</h3>
+                      <p>Time remaining: <span id="timer"></span></p>
+              
+                      <!-- Jika belum mulai dan durasi > 0, tampilkan form "Setuju" -->
+                      {% if not is_started and current_content.1.duration_in_minutes > 0 %}
+                        <form method="post" action="{% url 'courses:start_assessment' assessment_id=current_content.1.id %}">
+                          {% csrf_token %}
+                          <div class="alert alert-warning text-center" role="alert">
+                            <h4 class="alert-heading">Attention!</h4>
+                            <p>Before starting the exam, you will have <b>{{ current_content.1.duration_in_minutes }}</b> minutes to complete it. Do you <b>agree</b> to proceed?</p>
+                            <hr>
+                            <button type="submit" class="btn btn-success">Agree</button>
+                          </div>
+                        </form>
+              
+                      <!-- Jika sudah mulai atau durasi = 0, tampilkan soal -->
+                      {% elif is_started or current_content.1.duration_in_minutes == 0 %}
+                        <form method="POST" action="{% url 'courses:submit_assessment' assessment_id=current_content.1.id %}">
+                          {% csrf_token %}
+                          <input type="text" name="honeypot" style="display:none;" />
+                          <input type="hidden" name="start_time" id="start_time" value="{{ current_time }}">
+                        
+                          <ul style="list-style: none; padding-left: 0;">
+                          
+                            {% for question in current_content.1.questions.all|randomize %}
+                              <li class="question" style="margin-bottom: 30px;">
+                                <div style="display: inline-block; margin-left: 10px; padding: 10px; background-color: #e9ecef; border-radius: 8px; font-size: 18px; color: #555;">
+                                  {{ question.text |safe }}
+                                </div>
+                                <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
+                                  {% for choice in question.choices.all|randomize %}
+                                    <li style="margin-bottom: 15px; display: flex; align-items: center;">
+                                      <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}" id="choice_{{ choice.id }}" style="transform: scale(1.5); margin-right: 10px;">
+                                      <label for="choice_{{ choice.id }}" style="cursor: pointer; margin: 0; font-size: 16px; color: #555;">{{ choice.text |safe }}</label>
+                                      {% with answered_question=answered_questions|get_item:question.id %}
+                                        {% if answered_question %}
+                                          <small>
+                                            {% if answered_question.choice == choice %}
+                                              ({{ request.user.username }}!)
+                                            {% elif choice.is_correct %}
+                                              (correct)
+                                            {% else %}
+                                              (incorrect)
+                                            {% endif %}
+                                          </small>
                                         {% endif %}
-                                      </small>
+                                      {% endwith %}
+                                    </li>
+                                  {% endfor %}
+                                </ul>
+                              </li>
+                            {% endfor %}
+                          </ul>
+                          <button type="submit" id="submit-button" class="btn btn-primary">
+                            <i class="bx bx-check me-2"></i> Submit
+                          </button>
+                        </form>
+              
+          
+                      {% endif %}
+                    </div>                
+                    {% endif %}
+
+                    <!-- Open Response Questions (AskOra) -->
+                    {% if not current_content.1.questions.exists %}
+                      <div class="askora-item" style="padding: 20px; background-color: #f9f9f9;">
+                        <h3 class="h5" style="color: rgb(2, 2, 2); font-size: 24px;">Assessmentx: {{ current_content.1.name }}</h3>
+                        <ul style="list-style: none; padding-left: 0;">
+                          {% for ask_ora in current_content.1.ask_oras.all %}
+                            <li class="question" style="margin-bottom: 30px;">
+                              <div style="display: inline-block; margin-left: 10px; padding: 10px; background-color: #e9ecef; border-radius: 8px; font-size: 18px; color: #555;">
+                                {{ ask_ora.question_text |safe }}
+                              </div>
+                              <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
+                                {% if ask_ora.is_responsive %}
+                                  {% with submission=submissions|dictsort:"submitted_at"|last %}
+                                    {% if submission and submission.askora == ask_ora %}
+                                      <li style="margin-bottom: 15px;">
+                                        <div style="padding: 10px; background-color: #d4edda; border-radius: 8px; color: #155724;">
+                                          <strong>Submitted!</strong> Your answer was submitted on {{ submission.submitted_at|date:"M d, Y H:i" }}.
+                                        </div>
+                                        <p style="font-size: 16px; color: #555; margin-top: 10px;">
+                                          <strong>Your Answer:</strong> {{ submission.answer_text|safe }}
+                                        </p>
+                                        {% if submission.answer_file %}
+                                          <p style="font-size: 16px; color: #555;">
+                                            <strong>File:</strong> <a href="{{ submission.answer_file.url }}" target="_blank" style="color: #007bff;">Download</a>
+                                          </p>
+                                        {% endif %}
+                                      </li>
+                                    {% else %}
+                                      <li style="margin-bottom: 15px;">
+                                        <form method="post" enctype="multipart/form-data" action="{% url 'courses:submit_answer' ask_ora.id %}">
+                                          {% csrf_token %}
+                                          <div style="margin-bottom: 15px;">
+                                            <label for="answer_text_{{ ask_ora.id }}" style="font-size: 16px; color: #555;">Your Answer:</label>
+                                            <textarea class="form-control" id="answer_text_{{ ask_ora.id }}" name="answer_text" rows="4" style="font-size: 16px; margin-top: 5px;" required></textarea>
+                                          </div>
+                                          <div style="margin-bottom: 15px;">
+                                            <label for="answer_file_{{ ask_ora.id }}" style="font-size: 16px; color: #555;">Upload File (Optional):</label>
+                                            <input type="file" class="form-control" id="answer_file_{{ ask_ora.id }}" name="answer_file" style="font-size: 16px; margin-top: 5px;">
+                                          </div>
+                                          <button type="submit" class="btn btn-success" style="font-size: 16px; padding: 8px 15px;">
+                                            <i class="bx bx-upload me-2"></i> Submit
+                                          </button>
+                                        </form>
+                                      </li>
                                     {% endif %}
                                   {% endwith %}
-                                </li>
-                              {% endfor %}
-                            </ul>
-                          </li>
-                        {% endfor %}
-                      </ul>
-                      <button type="submit" id="submit-button" class="btn btn-primary">
-                        <i class="bx bx-check me-2"></i> Submit
-                      </button>
-                    </form>
-          
-      
-                  {% endif %}
-                </div>                
-                {% endif %}
-
-                <!-- Open Response Questions (AskOra) -->
-                {% if not current_content.1.questions.exists %}
-                  <div class="askora-item" style="padding: 20px; background-color: #f9f9f9;">
-                    <h3 class="h5" style="color: rgb(2, 2, 2); font-size: 24px;">Assessmentx: {{ current_content.1.name }}</h3>
-                    <ul style="list-style: none; padding-left: 0;">
-                      {% for ask_ora in current_content.1.ask_oras.all %}
-                        <li class="question" style="margin-bottom: 30px;">
-                          <div style="display: inline-block; margin-left: 10px; padding: 10px; background-color: #e9ecef; border-radius: 8px; font-size: 18px; color: #555;">
-                            {{ ask_ora.question_text |safe }}
-                          </div>
-                          <ul style="list-style: none; padding-left: 0; margin-top: 10px;">
-                            {% if ask_ora.is_responsive %}
-                              {% with submission=submissions|dictsort:"submitted_at"|last %}
-                                {% if submission and submission.askora == ask_ora %}
-                                  <li style="margin-bottom: 15px;">
-                                    <div style="padding: 10px; background-color: #d4edda; border-radius: 8px; color: #155724;">
-                                      <strong>Submitted!</strong> Your answer was submitted on {{ submission.submitted_at|date:"M d, Y H:i" }}.
-                                    </div>
-                                    <p style="font-size: 16px; color: #555; margin-top: 10px;">
-                                      <strong>Your Answer:</strong> {{ submission.answer_text|safe }}
-                                    </p>
-                                    {% if submission.answer_file %}
-                                      <p style="font-size: 16px; color: #555;">
-                                        <strong>File:</strong> <a href="{{ submission.answer_file.url }}" target="_blank" style="color: #007bff;">Download</a>
-                                      </p>
-                                    {% endif %}
-                                  </li>
                                 {% else %}
                                   <li style="margin-bottom: 15px;">
-                                    <form method="post" enctype="multipart/form-data" action="{% url 'courses:submit_answer' ask_ora.id %}">
-                                      {% csrf_token %}
-                                      <div style="margin-bottom: 15px;">
-                                        <label for="answer_text_{{ ask_ora.id }}" style="font-size: 16px; color: #555;">Your Answer:</label>
-                                        <textarea class="form-control" id="answer_text_{{ ask_ora.id }}" name="answer_text" rows="4" style="font-size: 16px; margin-top: 5px;" required></textarea>
-                                      </div>
-                                      <div style="margin-bottom: 15px;">
-                                        <label for="answer_file_{{ ask_ora.id }}" style="font-size: 16px; color: #555;">Upload File (Optional):</label>
-                                        <input type="file" class="form-control" id="answer_file_{{ ask_ora.id }}" name="answer_file" style="font-size: 16px; margin-top: 5px;">
-                                      </div>
-                                      <button type="submit" class="btn btn-success" style="font-size: 16px; padding: 8px 15px;">
-                                        <i class="bx bx-upload me-2"></i> Submit
-                                      </button>
-                                    </form>
+                                    <div style="padding: 10px; background-color: #fff3cd; border-radius: 8px; color: #856404;">
+                                      <strong>Deadline Passed!</strong> Submissions closed on {{ ask_ora.response_deadline|date:"M d, Y H:i" }}.
+                                    </div>
                                   </li>
                                 {% endif %}
-                              {% endwith %}
-                            {% else %}
-                              <li style="margin-bottom: 15px;">
-                                <div style="padding: 10px; background-color: #fff3cd; border-radius: 8px; color: #856404;">
-                                  <strong>Deadline Passed!</strong> Submissions closed on {{ ask_ora.response_deadline|date:"M d, Y H:i" }}.
-                                </div>
-                              </li>
-                            {% endif %}
-                          </ul>
-                        </li>
-                      {% empty %}
-                        <li style="font-size: 16px; color: #555;">No open response questions available.</li>
-                      {% endfor %}
-                    </ul>
-                    <!-- Peer Review Submissions -->
-                    <h3 style="font-size: 18px; color: #555; margin-top: 20px;">Peer Review Submissions</h3>
-                    <ul style="list-style: none; padding-left: 0;">
-                      {% for peer_data in peer_submissions_data %}
-                        <li style="margin-bottom: 30px; border: 1px solid #ddd; padding: 15px; border-radius: 8px;">
-                          <p style="font-size: 16px; color: #555;">
-                            <strong>Submitted by:</strong> {{ peer_data.submission.user.username }} on {{ peer_data.submission.submitted_at|date:"M d, Y H:i" }}
-                          </p>
-                          {% if peer_data.can_review %}
-                            <p><strong>Answer:</strong> {{ peer_data.submission.answer_text|safe }}</p>
-                            {% if peer_data.submission.answer_file %}
-                              <p><strong>File:</strong> <a href="{{ peer_data.submission.answer_file.url }}" download>Download</a></p>
-                            {% endif %}
-                            <p><strong>Final Score:</strong> {{ peer_data.final_score|floatformat:2 }}</p>
-                            {% if peer_data.has_reviewed %}
-                              <p>You have already reviewed this submission.</p>
-                            {% else %}
-                              <form method="post" action="{% url 'courses:submit_peer_review' peer_data.submission.id %}" class="p-4 border rounded bg-light shadow-sm">
-                                {% csrf_token %}
-                                <div class="mb-3">
-                                  <label for="score" class="form-label">Score (1-5): <small>If 1 means 'not satisfied at all,' and 5 means 'very satisfied.'</small></label>
-                                  <select name="score" id="score" class="form-select w-50" required>
-                                    <option value="" disabled selected>Select a score</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                  </select>
-                                </div>
-                                <div class="mb-3">
-                                  <label for="comment" class="form-label">Comment (Optional):</label>
-                                  <textarea name="comment" id="comment" rows="3" class="form-control" placeholder="Write your comment here..."></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Submit Review</button>
-                              </form>
-                            {% endif %}
-                          {% else %}
-                            <p><strong>Status:</strong> Submitted (You must submit your own answer to view details and review)</p>
-                          {% endif %}
-                        </li>
-                      {% empty %}
-                        <li style="font-size: 16px; color: #555;">No peer submissions available for review.</li>
-                      {% endfor %}
-                    </ul>
-                  </div>
-                {% endif %}
+                              </ul>
+                            </li>
+                          {% empty %}
+                            <li style="font-size: 16px; color: #555;">No open response questions available.</li>
+                          {% endfor %}
+                        </ul>
+                        <!-- Peer Review Submissions -->
+                        <h3 style="font-size: 18px; color: #555; margin-top: 20px;">Peer Review Submissions</h3>
+                        <ul style="list-style: none; padding-left: 0;">
+                          {% for peer_data in peer_submissions_data %}
+                            <li style="margin-bottom: 30px; border: 1px solid #ddd; padding: 15px; border-radius: 8px;">
+                              <p style="font-size: 16px; color: #555;">
+                                <strong>Submitted by:</strong> {{ peer_data.submission.user.username }} on {{ peer_data.submission.submitted_at|date:"M d, Y H:i" }}
+                              </p>
+                              {% if peer_data.can_review %}
+                                <p><strong>Answer:</strong> {{ peer_data.submission.answer_text|safe }}</p>
+                                {% if peer_data.submission.answer_file %}
+                                  <p><strong>File:</strong> <a href="{{ peer_data.submission.answer_file.url }}" download>Download</a></p>
+                                {% endif %}
+                                <p><strong>Final Score:</strong> {{ peer_data.final_score|floatformat:2 }}</p>
+                                {% if peer_data.has_reviewed %}
+                                  <p>You have already reviewed this submission.</p>
+                                {% else %}
+                                  <form method="post" action="{% url 'courses:submit_peer_review' peer_data.submission.id %}" class="p-4 border rounded bg-light shadow-sm">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                      <label for="score" class="form-label">Score (1-5): <small>If 1 means 'not satisfied at all,' and 5 means 'very satisfied.'</small></label>
+                                      <select name="score" id="score" class="form-select w-50" required>
+                                        <option value="" disabled selected>Select a score</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                      </select>
+                                    </div>
+                                    <div class="mb-3">
+                                      <label for="comment" class="form-label">Comment (Optional):</label>
+                                      <textarea name="comment" id="comment" rows="3" class="form-control" placeholder="Write your comment here..."></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Submit Review</button>
+                                  </form>
+                                {% endif %}
+                              {% else %}
+                                <p><strong>Status:</strong> Submitted (You must submit your own answer to view details and review)</p>
+                              {% endif %}
+                            </li>
+                          {% empty %}
+                            <li style="font-size: 16px; color: #555;">No peer submissions available for review.</li>
+                          {% endfor %}
+                        </ul>
+                      </div>
+                    {% endif %}
 
 
-                <!-- LTI -->
+                    <!-- LTI -->
 
-                
-                {% if not current_content.2.questions.exists %}
-                  <div class="askora-item" style="padding: 20px; background-color: #f9f9f9;">
                     
-                    <ul style="list-style: none; padding-left: 0;">
-                      {% if current_content.1.lti_tools.exists %}
-                        {% for tool in current_content.1.lti_tools.all %}
-                          <li>
-                            {{ tool.name }} –
-                            <a href="{{ tool.launch_url }}" target="_blank">Launch</a>
-                          </li>
-                        {% endfor %}
-                      {% else %}
-                       
-                      {% endif %}
-                    </ul>
-                  </div>
+                    {% if not current_content.2.questions.exists %}
+                      <div class="askora-item" style="padding: 20px; background-color: #f9f9f9;">
+                        
+                        <ul style="list-style: none; padding-left: 0;">
+                          {% if current_content.1.lti_tools.exists %}
+                            {% for tool in current_content.1.lti_tools.all %}
+                              <li>
+                                {{ tool.name }} –
+                                <a href="{{ tool.launch_url }}" target="_blank">Launch</a>
+                              </li>
+                            {% endfor %}
+                          {% else %}
+                          
+                          {% endif %}
+                        </ul>
+                      </div>
+                    {% endif %}
+
+
                 {% endif %}
-
-
-
               {% endif %}
               
 

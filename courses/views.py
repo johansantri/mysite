@@ -2546,7 +2546,6 @@ def start_assessment(request, assessment_id):
     return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
 
 
-
 def course_learn(request, username, slug):
     if not request.user.is_authenticated:
         logger.info(f"Unauthenticated user attempted to access course {slug}")
@@ -2588,6 +2587,9 @@ def course_learn(request, username, slug):
     assessment_id = request.GET.get('assessment_id')
 
     current_content = None
+    assessment_locked = False
+    payment_required_url = None
+
     if not material_id and not assessment_id:
         current_content = combined_content[0] if combined_content else None
     elif material_id:
@@ -2604,10 +2606,14 @@ def course_learn(request, username, slug):
                 payment_model='pay_for_exam'
             ).first()
             if not payment:
+                assessment_locked = True
+                payment_required_url = reverse('payments:process_payment', kwargs={'course_id': course.id, 'payment_type': 'exam'})
+                messages.info(request, "This exam requires payment. You can add it to your cart or proceed to the next content.")
                 logger.info(f"Payment required for exam in course {course.id} for user {request.user.username}")
-                messages.error(request, "Payment required to access this exam.")
-                return redirect('payments:process_payment', course_id=course.id, payment_type='exam')
-        current_content = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
+            else:
+                current_content = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
+        else:
+            current_content = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
 
     comments = None
     page_comments = []
@@ -2669,9 +2675,18 @@ def course_learn(request, username, slug):
                 content[2].id == current_content[2].id):
                 current_index = i
                 break
+    elif assessment_locked:
+        # Cari indeks penilaian yang terkunci
+        for i, content in enumerate(combined_content):
+            if content[0] == 'assessment' and content[1].id == int(assessment_id):
+                current_index = i
+                break
         if current_index == -1:
             current_index = 0
             current_content = combined_content[0] if combined_content else None
+    else:
+        current_index = 0
+        current_content = combined_content[0] if combined_content else None
 
     previous_content = combined_content[current_index - 1] if current_index > 0 else None
     next_content = combined_content[current_index + 1] if current_index < len(combined_content) - 1 and current_index != -1 else None
@@ -2713,7 +2728,7 @@ def course_learn(request, username, slug):
         passing_threshold = pass_range.min_grade
         max_grade = pass_range.max_grade
     else:
-        return render(request, 'error_template.html', {'message': 'Grade range not found for this course.'})
+        return render(request, 'error_template.html', {'error': 'Grade range not found for this course.'})
 
     for assessment in assessments:
         score_value = Decimal(0)
@@ -2731,7 +2746,7 @@ def course_learn(request, username, slug):
             if total_questions > 0:
                 score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
         else:
-            askora_submissions = Submission.objects.filter(askora__assessment=assessment, user=request.user)
+            askora_submissions = Submission.objects.filter(askora__assessment=assessment, student=request.user)
             if not askora_submissions.exists():
                 all_assessments_submitted = False
             else:
@@ -2841,10 +2856,11 @@ def course_learn(request, username, slug):
         'submissions': submissions,
         'lti_tools': lti_tools,
         'peer_submissions_data': peer_submissions_data,
+        'assessment_locked': assessment_locked,
+        'payment_required_url': payment_required_url,
     }
 
     return render(request, 'learner/course_learn.html', context)
-
 
 def submit_peer_review(request, submission_id):
     submission = get_object_or_404(Submission, id=submission_id)
