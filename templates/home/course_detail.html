@@ -129,7 +129,7 @@
                                 <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow">
                                     {% if similar_course.image %}
                                         <a href="{% url 'courses:course_lms_detail' similar_course.id similar_course.slug %}">
-                                            <img src="{{ similar_course.image.url }}" class="w-full h-40 object-cover sm:h-36" alt="{{ similar_course.course_name }}">
+                                            <img src="{{ similar_course.image.url }}" class="w-full h-30 object-cover sm:h-30" alt="{{ similar_course.course_name }}">
                                         </a>
                                     {% else %}
                                         <img src="https://via.placeholder.com/150" class="w-full h-40 object-cover sm:h-36" alt="No Image">
@@ -392,7 +392,7 @@
                                 {% if course.link_video %}
                                     <a href="{{ course.link_video }}" class="block" data-fancybox="video-gallery">
                                         {% if course.image %}
-                                            <img src="{{ course.image.url }}" alt="{{ course.name }} Image" class="w-full h-52 object-cover rounded-xl hover:scale-105 transition-transform">
+                                            <img src="{{ course.image.url }}" alt="{{ course.name }} Image" class="w-full h-40 object-cover rounded-xl hover:scale-105 transition-transform">
                                         {% else %}
                                             <img src="{% static 'assets/img/user/logo.5272a797c07c.png' %}" alt="Default Image" class="w-full h-52 object-cover rounded-xl hover:scale-105 transition-transform">
                                         {% endif %}

@@ -41,7 +41,7 @@
                         <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}" 
                            aria-label="View details for {{ course.course_name }}">
                             <img 
-                                class="w-full h-48 object-cover rounded-t-xl hover:opacity-95 transition-opacity" 
+                                class="w-full h-38 object-cover rounded-t-xl hover:opacity-95 transition-opacity" 
                                 alt="{{ course.course_name }} - {{ course.instructor }} Course" 
                                 src="{{ course.course_image|default:'/media/default.jpg' }}" 
                                 srcset="{{ course.course_image_small|default:course.course_image|default:'/media/default.jpg' }} 480w, 
