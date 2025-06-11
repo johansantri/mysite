@@ -2610,6 +2610,8 @@ def course_learn(request, username, slug):
                 payment_required_url = reverse('payments:process_payment', kwargs={'course_id': course.id, 'payment_type': 'exam'})
                 messages.info(request, "This exam requires payment. You can add it to your cart or proceed to the next content.")
                 logger.info(f"Payment required for exam in course {course.id} for user {request.user.username}")
+                # Tetap atur current_content untuk assessment terkunci
+                current_content = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
             else:
                 current_content = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
         else:
@@ -2675,25 +2677,27 @@ def course_learn(request, username, slug):
                 content[2].id == current_content[2].id):
                 current_index = i
                 break
-    elif assessment_locked:
-        # Cari indeks penilaian yang terkunci
+    elif assessment_locked and assessment_id:
+        # Pastikan current_content untuk assessment terkunci
+        assessment = get_object_or_404(Assessment, id=assessment_id)
+        current_content = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
         for i, content in enumerate(combined_content):
             if content[0] == 'assessment' and content[1].id == int(assessment_id):
                 current_index = i
                 break
         if current_index == -1:
-            current_index = 0
-            current_content = combined_content[0] if combined_content else None
-    else:
-        current_index = 0
-        current_content = combined_content[0] if combined_content else None
+            current_index = 0  # Fallback untuk mencegah error
 
     previous_content = combined_content[current_index - 1] if current_index > 0 else None
     next_content = combined_content[current_index + 1] if current_index < len(combined_content) - 1 and current_index != -1 else None
     is_last_content = next_content is None
 
-    previous_url = "#" if not previous_content else f"?{previous_content[0]}_id={previous_content[1].id}"
-    next_url = "#" if not next_content else f"?{next_content[0]}_id={next_content[1].id}"
+    previous_url = None
+    next_url = None
+    if previous_content:
+        previous_url = reverse('courses:course_learn', kwargs={'username': username, 'slug': slug}) + f"?{previous_content[0]}_id={previous_content[1].id}"
+    if next_content:
+        next_url = reverse('courses:course_learn', kwargs={'username': username, 'slug': slug}) + f"?{next_content[0]}_id={next_content[1].id}"
 
     if current_content:
         if current_content[0] == 'material':
@@ -2746,7 +2750,7 @@ def course_learn(request, username, slug):
             if total_questions > 0:
                 score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
         else:
-            askora_submissions = Submission.objects.filter(askora__assessment=assessment, student=request.user)
+            askora_submissions = Submission.objects.filter(askora__assessment=assessment, user=request.user)
             if not askora_submissions.exists():
                 all_assessments_submitted = False
             else:
