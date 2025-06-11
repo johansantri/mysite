@@ -45,6 +45,7 @@ from blog.models import BlogPost
 from django.views.decorators.http import require_GET
 import html
 import re
+from django.utils.timezone import now
 from django.views.decorators.http import require_http_methods
 import logging
 from django.views.decorators.vary import vary_on_headers
@@ -771,16 +772,6 @@ def dasbord(request):
 @ratelimit(key='ip', rate='100/h')
 def dashbord(request):
     user = request.user
-
-    # 🔐 Cek lisensi aktif
-    active_licenses = user.licenses.filter(expiry_date__gte=timezone.now().date(), status=True)
-    current_license = active_licenses.order_by('-expiry_date').first() if active_licenses.exists() else None
-
-    if not current_license:
-        messages.error(request, "Lisensi Anda telah berakhir atau tidak tersedia. Silakan perpanjang atau beli lisensi untuk melanjutkan.")
-        return redirect('authentication:dasbord')  # Ganti ke URL upgrade lisensi kamu
-
-    # 📋 Cek field profil wajib
     required_fields = {
         'first_name': 'Nama Depan',
         'last_name': 'Nama Belakang',
@@ -790,13 +781,14 @@ def dashbord(request):
         'birth': 'Tanggal Lahir',
     }
     missing_fields = [label for field, label in required_fields.items() if not getattr(user, field)]
+
     if missing_fields:
         messages.warning(request, f"Harap lengkapi data berikut: {', '.join(missing_fields)}")
         return redirect('authentication:edit-profile', pk=user.pk)
 
-    # 🔍 Pencarian & pagination
     search_query = request.GET.get('search', '')
     enrollments_page = request.GET.get('enrollments_page', 1)
+
     enrollments = Enrollment.objects.filter(user=user).order_by('-enrolled_at')
 
     if search_query:
@@ -816,10 +808,10 @@ def dashbord(request):
 
     completed_courses = CourseProgress.objects.filter(user=user, progress_percentage=100)
 
-    # 🧮 Data progress dan skor
     enrollments_data = []
     for enrollment in enrollments:
         course = enrollment.course
+
         materials = Material.objects.filter(section__courses=course)
         total_materials = materials.count()
         materials_read = MaterialRead.objects.filter(user=user, material__in=materials).count()
@@ -832,7 +824,7 @@ def dashbord(request):
 
         progress = ((materials_read_percentage + assessments_completed_percentage) / Decimal('2')) if (total_materials + total_assessments) > 0 else Decimal('0')
 
-        course_progress, _ = CourseProgress.objects.get_or_create(user=user, course=course)
+        course_progress, created = CourseProgress.objects.get_or_create(user=user, course=course)
         course_progress.progress_percentage = progress
         course_progress.save()
 
@@ -847,12 +839,12 @@ def dashbord(request):
             total_questions = assessment.questions.count()
 
             if total_questions > 0:
-                total_correct_answers = sum(
-                    QuestionAnswer.objects.filter(
+                total_correct_answers = 0
+                for question in assessment.questions.all():
+                    correct = QuestionAnswer.objects.filter(
                         question=question, user=user, choice__is_correct=True
                     ).count()
-                    for question in assessment.questions.all()
-                )
+                    total_correct_answers += correct
                 score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
             else:
                 submissions = Submission.objects.filter(askora__assessment=assessment, user=user)
@@ -861,7 +853,6 @@ def dashbord(request):
                     score_obj = AssessmentScore.objects.filter(submission=latest).first()
                     if score_obj:
                         score_value = Decimal(score_obj.final_score)
-
             total_score += score_value
             total_max_score += Decimal(assessment.weight)
 
@@ -881,6 +872,12 @@ def dashbord(request):
     enrollments_paginator = Paginator(enrollments_data, 5)
     enrollments_page_obj = enrollments_paginator.get_page(enrollments_page)
 
+    # Tambahkan logic license
+    today = timezone.now().date()
+    user_licenses = user.licenses.all()
+    for lic in user_licenses:
+        lic.is_active = lic.start_date <= today <= lic.expiry_date
+
     return render(request, 'learner/dashbord.html', {
         'enrollments': enrollments_page_obj,
         'search_query': search_query,
@@ -888,7 +885,7 @@ def dashbord(request):
         'total_enrollments': total_enrollments,
         'active_courses': active_courses,
         'completed_courses': completed_courses,
-        'current_license': current_license,
+        'user_licenses': user_licenses,  # Dikirim ke template
     })
 
 @login_required

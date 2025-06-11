@@ -15,45 +15,36 @@
             </div>
         </div>
 
-        <!-- Kolom Kanan: Informasi Lisensi dalam Card -->
-            <div class="col-md-6 mb-4">
-                {% with active_licenses=user.licenses.all|dictsortreversed:"expiry_date" %}
-                    {% if active_licenses %}
-                        <div class="card shadow-sm h-100">
-                            <div class="card-header bg-primary text-white">
-                                <h5 class="card-title mb-0">Informasi Lisensi Anda</h5>
-                            </div>
-                            <div class="card-body">
-                                <p class="card-text">Berikut lisensi yang Anda miliki:</p>
-                                <ul class="list-group">
-                                    {% for license in active_licenses %}
-                                        {% with is_active=license.expiry_date >= today and license.status %}
-                                            <li class="list-group-item">
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <div>
-                                                        <strong>{{ license.name }}</strong>
-                                                        <div class="small text-muted">
-                                                            <div><strong>Start:</strong> {{ license.start_date|date:"j M Y" }}</div>
-                                                            <div><strong>End:</strong> {{ license.expiry_date|date:"j M Y" }}</div>
-                                                        </div>
-                                                    </div>
-                                                    <span class="badge bg-{{ is_active|yesno:'success,secondary' }}">
-                                                        {{ is_active|yesno:'Aktif,Kedaluwarsa' }}
-                                                    </span>
-                                                </div>
-                                            </li>
-                                        {% endwith %}
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
-                    {% else %}
-                        <div class="alert alert-warning">
-                            Anda belum memiliki lisensi. Silakan beli atau perpanjang lisensi Anda.
-                        </div>
-                    {% endif %}
-                {% endwith %}
-            </div>
+        <div class="col-md-6 mb-4">
+            {% if user_licenses %}
+                <div class="card shadow-sm h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">Your Licenses</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">You are currently under the following license(s):</p>
+                        <ul class="list-group">
+                            {% for license in user_licenses %}
+                                <li class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>{{ license.name }}</strong>
+                                            <div class="small text-muted">
+                                                Start: {{ license.start_date|date:"F j, Y" }}<br>
+                                                End: {{ license.expiry_date|date:"F j, Y" }}
+                                            </div>
+                                        </div>
+                                        <span class="badge bg-{{ license.is_active|yesno:'success,danger' }}">
+                                            {{ license.is_active|yesno:'Active,Inactive' }}
+                                        </span>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
 
     </div>
 </section>
