@@ -1,37 +1,63 @@
-{% extends 'home/tes.html' %}
+{% extends 'home/base.html' %}
 {% load humanize %}
 
 {% block content %}
-<div class="container mx-auto max-w-7xl px-4 py-10">
-    <h1 class="text-2xl font-bold text-gray-800 mb-4">Add Payment to Cart</h1>
-    <div class="bg-white p-6 rounded-lg shadow-md">
-        <h2 class="text-xl font-semibold mb-4">Payment Details</h2>
-        <p><strong>Course:</strong> {{ course.course_name }}</p>
-        <p><strong>Amount:</strong> IDR {{ payment.amount|intcomma }}</p>
-        <p><strong>Payment Type:</strong> 
-            {% if payment_type == 'exam' %}
-                Exam Access
-            {% elif payment_type == 'certificate' %}
-                Certificate Claim
-            {% else %}
-                Enrollment
-            {% endif %}
-        </p>
-        <p><strong>Transaction ID:</strong> {{ transaction.id }}</p>
-        
-        <!-- Form untuk menambahkan ke keranjang -->
-        <form method="POST" action="{% url 'payments:add_to_cart' course_id=course.id %}">
+<div class="min-h-screen bg-gray-100 flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8">
+    <div class="w-full max-w-lg bg-white rounded-xl shadow-lg p-6 sm:p-8 transform transition-all duration-300 hover:shadow-xl">
+        <!-- Header -->
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 text-center">
+            Add Payment to Cart
+        </h1>
+
+        <!-- Payment Details Card -->
+        <div class="space-y-4">
+            <h2 class="text-xl font-semibold text-gray-700 border-b pb-2">Payment Details</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Course</p>
+                    <p class="text-base text-gray-800 font-semibold">{{ course.course_name }}</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Amount</p>
+                    <p class="text-base text-gray-800 font-semibold">IDR {{ payment.amount|intcomma }}</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Payment Type</p>
+                    <p class="text-base text-gray-800 font-semibold">
+                        {% if payment_type == 'exam' %}
+                            Exam Access
+                        {% elif payment_type == 'certificate' %}
+                            Certificate Claim
+                        {% else %}
+                            Enrollment
+                        {% endif %}
+                    </p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Transaction ID</p>
+                    <p class="text-base text-gray-800 font-semibold">{{ transaction.id }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <form method="POST" action="{% url 'payments:add_to_cart' course_id=course.id %}" class="mt-8">
             {% csrf_token %}
             <input type="hidden" name="payment_id" value="{{ payment.id }}">
             <input type="hidden" name="transaction_id" value="{{ transaction.id }}">
             <input type="hidden" name="payment_type" value="{{ payment_type }}">
-            <div class="mt-6 flex space-x-4">
+            
+            <!-- Buttons -->
+            <div class="flex flex-col sm:flex-row justify-end space-y-4 sm:space-y-0 sm:space-x-4">
                 <a href="{% url 'courses:course_lms_detail' id=course.id slug=course.slug %}" 
-                   class="btn btn-secondary px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
+                   class="btn btn-secondary w-full sm:w-auto px-6 py-3 bg-gray-500 text-white rounded-lg font-medium text-center hover:bg-gray-600 focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 transition duration-200">
                     Cancel
                 </a>
                 <button type="submit" 
-                        class="btn btn-primary px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                        class="btn btn-primary w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200 flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18M9 3v18m6-18v18m-6-9h6"></path>
+                    </svg>
                     Add to Cart
                 </button>
             </div>

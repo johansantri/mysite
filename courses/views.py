@@ -2326,46 +2326,62 @@ def add_comment_course(request, course_id):
 
 def submit_assessment(request, assessment_id):
     if not request.user.is_authenticated:
+        logger.info(f"Unauthenticated user attempted to submit assessment {assessment_id}")
         return redirect("/login/?next=%s" % request.path)
 
     # Ambil assessment berdasarkan ID
     assessment = get_object_or_404(Assessment, id=assessment_id)
+    # Ambil course (pastikan hanya satu course terkait)
+    try:
+        course = assessment.section.courses.first()
+        if not course:
+            raise ValueError("No course associated with this assessment")
+    except Exception as e:
+        logger.error(f"Error retrieving course for assessment {assessment_id}: {str(e)}")
+        messages.error(request, "Course not found for this assessment.")
+        return redirect('authentication:dashbord')
 
     # Cek honeypot (bot jika terisi)
     honeypot = request.POST.get('honeypot')
     if honeypot:
+        logger.warning(f"Spam detected for assessment {assessment_id} by user {request.user.username}")
         messages.error(request, "Spam terdeteksi. Pengiriman dibatalkan.")
-        return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
+        return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': course.slug}) + f"?assessment_id={assessment.id}")
 
     # Periksa waktu pengisian form (cegah pengiriman terlalu cepat)
     start_time = request.POST.get('start_time')
     if start_time:
         try:
-            start_time_obj = timezone.make_aware(datetime.datetime.strptime(start_time, '%Y-%m-%dT%H:%M:%S.%fZ'))
+            start_time_obj = timezone.make_aware(datetime.strptime(start_time, '%Y-%m-%dT%H:%M:%S.%fZ'))
             elapsed_time = timezone.now() - start_time_obj
-            if elapsed_time < timedelta(seconds=10):  # Cegah pengiriman terlalu cepat
+            if elapsed_time < timedelta(seconds=10):
+                logger.warning(f"Submission too fast for assessment {assessment_id} by user {request.user.username}")
                 messages.error(request, "Pengiriman terlalu cepat. Coba lagi setelah beberapa detik.")
-                return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
-        except ValueError:
+                return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': course.slug}) + f"?assessment_id={assessment.id}")
+        except ValueError as e:
+            logger.error(f"Invalid start time format for assessment {assessment_id}: {str(e)}")
             messages.error(request, "Format waktu mulai tidak valid.")
-            return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
+            return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': course.slug}) + f"?assessment_id={assessment.id}")
 
     # Cek apakah user sudah pernah submit untuk assessment ini
-    if Score.objects.filter(user=request.user.username, course=assessment.section.courses, section=assessment.section, submitted=True).exists():
+    if Score.objects.filter(user=request.user, course=course, section=assessment.section, submitted=True).exists():
+        logger.info(f"User {request.user.username} already submitted assessment {assessment_id}")
         messages.info(request, "Anda sudah mengirimkan jawaban untuk ujian ini.")
-        return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
+        return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': course.slug}) + f"?assessment_id={assessment.id}")
 
     # Cek sesi dan waktu hanya jika durasi > 0
     session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
     if assessment.duration_in_minutes > 0:  # Hanya cek waktu jika bukan unlimited
         if not session:
+            logger.warning(f"No session found for user {request.user.username}, assessment {assessment_id}")
             messages.error(request, "Sesi ujian tidak ditemukan.")
-            return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
+            return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': course.slug}) + f"?assessment_id={assessment.id}")
 
         # Cek apakah waktu ujian sudah habis
         if timezone.now() > session.end_time:
+            logger.warning(f"Assessment session expired for user {request.user.username}, assessment {assessment_id}")
             messages.warning(request, "Waktu ujian telah habis, Anda tidak dapat mengirimkan jawaban.")
-            return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
+            return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': course.slug}) + f"?assessment_id={assessment.id}")
 
     if request.method == 'POST':
         correct_answers = 0
@@ -2374,39 +2390,60 @@ def submit_assessment(request, assessment_id):
         # Proses setiap soal di assessment
         for question in assessment.questions.all():
             if QuestionAnswer.objects.filter(user=request.user, question=question).exists():
+                logger.debug(f"Answer already exists for question {question.id} by user {request.user.username}")
                 continue
 
             user_answer = request.POST.get(f"question_{question.id}")
             if user_answer:
-                choice = Choice.objects.get(id=user_answer)
-                QuestionAnswer.objects.create(user=request.user, question=question, choice=choice)
-
-                if choice.is_correct:
-                    correct_answers += 1
+                try:
+                    choice = Choice.objects.get(id=user_answer)
+                    QuestionAnswer.objects.create(user=request.user, question=question, choice=choice)
+                    if choice.is_correct:
+                        correct_answers += 1
+                    logger.debug(f"Processed answer for question {question.id}: choice {choice.id}, correct={choice.is_correct}")
+                except Choice.DoesNotExist:
+                    logger.warning(f"Invalid choice ID {user_answer} for question {question.id} by user {request.user.username}")
+                    continue
 
         # Menghitung nilai berdasarkan jawaban yang benar
         score_percentage = (correct_answers / total_questions) * 100 if total_questions > 0 else 0
-        grade = calculate_grade(score_percentage, assessment.section.courses)
+        grade = calculate_grade(score_percentage, course)
 
         # Menyimpan hasil score ke model Score
-        score = Score.objects.create(
-            user=request.user.username,
-            course=assessment.section.courses,
-            section=assessment.section,
-            score=correct_answers,
-            total_questions=total_questions,
-            grade=grade,
-            submitted=True
-        )
+        try:
+            score = Score.objects.create(
+                user=request.user,  # Gunakan objek User
+                course=course,
+                section=assessment.section,
+                score=correct_answers,
+                total_questions=total_questions,
+                grade=grade,
+                submitted=True
+            )
+            logger.info(f"Score saved for user {request.user.username}, assessment {assessment_id}, score {correct_answers}/{total_questions}")
+        except Exception as e:
+            logger.error(f"Error saving score for user {request.user.username}, assessment {assessment_id}: {str(e)}")
+            messages.error(request, "Error submitting assessment. Please try again.")
+            return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': course.slug}) + f"?assessment_id={assessment.id}")
 
         # Perbarui progress user
-        user_progress, created = CourseProgress.objects.get_or_create(user=request.user, course=assessment.section.courses)
-        user_progress.progress = score_percentage
-        user_progress.save()
+        try:
+            user_progress, created = CourseProgress.objects.get_or_create(user=request.user, course=course)
+            user_progress.progress_percentage = score_percentage  # Asumsi field progress_percentage
+            user_progress.save()
+            logger.info(f"Updated progress for user {request.user.username}, course {course.id}, progress {score_percentage}%")
+        except Exception as e:
+            logger.error(f"Error updating progress for user {request.user.username}, course {course.id}: {str(e)}")
+
+        # Hapus sesi asesmen jika ada
+        if session:
+            session.delete()
+            logger.debug(f"Deleted session for user {request.user.username}, assessment {assessment_id}")
 
         messages.success(request, "Jawaban Anda telah berhasil disubmit. Terima kasih!")
-        return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': assessment.section.courses.slug}) + f"?assessment_id={assessment.id}")
+        return redirect(reverse('courses:course_learn', kwargs={'username': request.user.username, 'slug': course.slug}) + f"?assessment_id={assessment.id}")
 
+    logger.debug(f"Rendering submit_assessment.html for assessment {assessment_id}, user {request.user.username}")
     return render(request, 'submit_assessment.html', {'assessment': assessment})
 
 def calculate_overall_pass_fail(user, course):
@@ -2929,13 +2966,32 @@ def submit_answer(request, askora_id):
 
 
 # Setup logging untuk debugging
-logger = logging.getLogger(__name__)
-
 def generate_certificate(request, course_id):
     if not request.user.is_authenticated:
+        logger.info(f"Unauthenticated user attempted to claim certificate for course {course_id}")
         return redirect("/login/?next=%s" % request.path)
 
     course = get_object_or_404(Course, id=course_id)
+
+    # Cek apakah pengguna terdaftar di kursus
+    if not Enrollment.objects.filter(user=request.user, course=course).exists():
+        logger.warning(f"User {request.user.username} not enrolled in course {course.id}")
+        messages.error(request, "You are not enrolled in this course.")
+        return redirect('authentication:dashbord')
+
+    # Cek pembayaran untuk sertifikat jika diperlukan
+    if course.payment_model == 'pay_for_certificate':
+        payment = Payment.objects.filter(
+            user=request.user,
+            course=course,
+            status='completed',
+            payment_model='pay_for_certificate'
+        ).first()
+        if not payment:
+            logger.info(f"Payment required for certificate in course {course.id} for user {request.user.username}")
+            messages.info(request, "This certificate requires payment. Please complete the payment to claim your certificate.")
+            payment_url = reverse('payments:process_payment', kwargs={'course_id': course.id, 'payment_type': 'certificate'})
+            return redirect(payment_url)
 
     # Ambil semua asesmen untuk kursus ini
     assessments = Assessment.objects.filter(section__courses=course)
@@ -3001,7 +3057,7 @@ def generate_certificate(request, course_id):
         messages.error(request, "You have not met the passing criteria for this course.")
         return redirect('authentication:dashbord')
 
-    # Format hasil nilai per asesmen dan totalnya
+    # Format hasil assessment
     assessment_results = [
         {'name': score['assessment'].name, 'max_score': score['weight'], 'score': score['score']}
         for score in assessment_scores
@@ -3020,9 +3076,40 @@ def generate_certificate(request, course_id):
     except Exception as e:
         logger.error(f"Error fetching partner logo: {str(e)}")
 
-    # Generate QR code dan simpan sertifikat
+    # Cek apakah sertifikat sudah pernah diterbitkan
+    existing_certificate = Certificate.objects.filter(user=request.user, course=course).first()
+    if existing_certificate:
+        logger.info(f"Certificate {existing_certificate.certificate_id} already exists for user {request.user.username}")
+        messages.info(request, "You have already claimed a certificate for this course.")
+        # Generate ulang QR code URL untuk sertifikat yang sudah ada
+        qr_url = request.build_absolute_uri(settings.MEDIA_URL + f'qrcodes/certificate_{existing_certificate.certificate_id}.png')
+        # Render template untuk sertifikat yang sudah ada
+        html_content = render_to_string('learner/certificate_template.html', {
+            'passing_threshold': passing_threshold,
+            'status': status,
+            'course': course,
+            'total_score': total_score,
+            'user': request.user,
+            'issue_date': existing_certificate.issue_date.strftime('%Y-%m-%d'),
+            'assessment_results': assessment_results,
+            'partner_logo_url': partner_logo_url,
+            'qr_code_url': qr_url,
+            'base_url': base_url,
+        })
+        try:
+            pdf = HTML(string=html_content, base_url=base_url).write_pdf()
+            filename = f"certificate_{course.slug}.pdf"
+            response = HttpResponse(pdf, content_type='application/pdf')
+            response['Content-Disposition'] = f'attachment; filename="{filename}"'
+            return response
+        except Exception as e:
+            logger.error(f"Error re-generating PDF for existing certificate: {str(e)}")
+            messages.error(request, "Error retrieving certificate. Please contact support.")
+            return redirect('authentication:dashbord')
+
+    # Generate QR code dan simpan sertifikat baru
     certificate_id = uuid.uuid4()
-    verification_url = f"{base_url.rstrip('/')}/verify/{certificate_id}/"  # URL verifikasi dengan namespace
+    verification_url = f"{base_url.rstrip('/')}/verify/{certificate_id}/"
     qr = qrcode.QRCode(version=1, box_size=10, border=4)
     qr.add_data(verification_url)
     qr.make(fit=True)
@@ -3075,6 +3162,8 @@ def generate_certificate(request, course_id):
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
     return response
+
+
 
 def verify_certificate(request, certificate_id):
     certificate = get_object_or_404(Certificate, certificate_id=certificate_id)
