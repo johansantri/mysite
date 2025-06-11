@@ -264,29 +264,21 @@ class Course(models.Model):
             logger.error(f"Enrollment closed for course {self.course_name}")
             return {"status": "error", "message": "Pendaftaran untuk kursus ini telah ditutup."}
 
-        # Pemeriksaan untuk subscription
-        if self.payment_model == 'subscription':
+        # Pemeriksaan lisensi untuk semua pengguna yang terkait lisensi
+        licenses = user.licenses.all()
+        if licenses.exists():
             today = timezone.now().date()
-            licenses = user.licenses.filter(
+            active_license = user.licenses.filter(
                 start_date__lte=today,
                 expiry_date__gte=today,
                 status=True
             )
-            logger.info(f"Subscription license check for user {user.email} in course {self.course_name}: {licenses.values('name', 'start_date', 'expiry_date', 'status')}")
-            if not licenses.exists():
+            logger.info(f"License check for user {user.email} in course {self.course_name}: {active_license.values('name', 'start_date', 'expiry_date', 'status')}")
+            if not active_license.exists():
                 logger.error(f"No active license found for user {user.email} in course {self.course_name}")
                 return {"status": "error", "message": "Lisensi Anda sudah tidak aktif atau tidak valid. Silakan hubungi admin untuk perpanjangan."}
-            # Catat lisensi yang digunakan untuk pendaftaran
-            enrollment, created = Enrollment.objects.get_or_create(user=user, course=self)
-            if created:
-                enrollment.license = licenses.first()  # Simpan lisensi yang digunakan (jika model Enrollment mendukung)
-                enrollment.save()
-                logger.info(f"User {user.email} enrolled in subscription course {self.course_name} with license {licenses.first().name}")
-                return {"status": "success", "message": "Berhasil mendaftar ke kursus ini dengan lisensi aktif."}
-            logger.info(f"User {user.email} already enrolled in subscription course {self.course_name}")
-            return {"status": "info", "message": "Anda sudah terdaftar di kursus ini."}
 
-        # Logika untuk peserta umum jika kursus gratis
+        # Logika untuk kursus gratis
         if self.payment_model == 'free':
             enrollment, created = Enrollment.objects.get_or_create(user=user, course=self)
             if created:
@@ -295,7 +287,7 @@ class Course(models.Model):
             logger.info(f"User {user.email} already enrolled in free course {self.course_name}")
             return {"status": "info", "message": "Anda sudah terdaftar di kursus ini."}
 
-        # Dapatkan harga kursus (hanya untuk non-free dan non-subscription)
+        # Dapatkan harga kursus (untuk non-free dan non-subscription)
         course_price = self.get_course_price(partner, price_type)
         if not course_price and self.payment_model != 'subscription':
             logger.error(f"No course price found for course {self.course_name}, partner {partner}, price_type {price_type}")
@@ -315,7 +307,7 @@ class Course(models.Model):
             logger.info(f"User {user.email} already enrolled in paid course {self.course_name}")
             return {"status": "info", "message": "Anda sudah terdaftar di kursus ini."}
 
-        else:  # pay_for_exam atau pay_for_certificate
+        else:  # pay_for_exam, pay_for_certificate, atau subscription
             enrollment, created = Enrollment.objects.get_or_create(user=user, course=self)
             if created:
                 logger.info(f"User {user.email} enrolled in course {self.course_name} with model {self.payment_model}")

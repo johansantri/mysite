@@ -2,3 +2,35 @@ INFO 2025-06-11 09:18:12,947 views Attempting to enroll user semua in course 15,
 INFO 2025-06-11 09:18:12,948 views Price type found: free
 INFO 2025-06-11 09:18:12,968 models User semuake@gmail.com enrolled in free course Front End Developer
 INFO 2025-06-11 09:18:12,969 views Enroll response: {'status': 'success', 'message': 'Berhasil mendaftar ke kursus ini secara gratis.'}
+INFO 2025-06-11 09:23:50,249 views Attempting to enroll user semua in course 15, payment_model: free
+INFO 2025-06-11 09:23:50,250 views Price type found: free
+INFO 2025-06-11 09:23:50,268 models User semuake@gmail.com enrolled in free course Front End Developer
+INFO 2025-06-11 09:23:50,269 views Enroll response: {'status': 'success', 'message': 'Berhasil mendaftar ke kursus ini secara gratis.'}
+INFO 2025-06-11 09:28:29,711 views Checking licenses for user semuake@gmail.com in course Front End Developer (ID: 15): <QuerySet [{'name': 'PT Karya Maju Bersama', 'start_date': datetime.date(2025, 5, 5), 'expiry_date': datetime.date(2025, 5, 31), 'status': True}]>
+ERROR 2025-06-11 09:28:29,713 views No active license found for user semuake@gmail.com in course Front End Developer
+ERROR 2025-06-11 09:28:29,715 log Internal Server Error: /enroll/15/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/views/decorators/http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 3482, in enroll_course
+    return redirect('courses:course_lms_detail', null=course_id, slug=course.slug)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 51, in redirect
+    resolve_url(to, *args, **kwargs),
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 184, in resolve_url
+    return reverse(to, args=args, kwargs=kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'course_lms_detail' with keyword arguments '{'null': 15, 'slug': 'front-end-developer-2026'}' not found. 1 pattern(s) tried: ['course\\-detail/(?P<id>[0-9]+)/(?P<slug>[-a-zA-Z0-9_]+)/\\Z']
+INFO 2025-06-11 09:32:02,914 views Checking licenses for user learn@learn.com in course Front End Developer (ID: 15): <QuerySet []>
+INFO 2025-06-11 09:32:02,914 views Attempting to enroll user learn in course 15, payment_model: free
+INFO 2025-06-11 09:32:02,916 views Price type found: free
+INFO 2025-06-11 09:32:02,937 models User learn@learn.com enrolled in free course Front End Developer
+INFO 2025-06-11 09:32:02,938 views Enroll response: {'status': 'success', 'message': 'Berhasil mendaftar ke kursus ini secara gratis.'}

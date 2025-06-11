@@ -3465,20 +3465,21 @@ def enroll_course(request, course_id):
     course = get_object_or_404(Course, id=course_id)
     partner = course.org_partner
     user = request.user
-    today = timezone.now().date()  # Konsisten dengan zona waktu
+    today = timezone.now().date()
 
-    # Logika pemeriksaan lisensi untuk subscription
-    if course.payment_model == 'subscription':
-        licenses = user.licenses.filter(
+    # Cek apakah pengguna memiliki lisensi terkait
+    licenses = user.licenses.all()  # Ambil semua lisensi pengguna
+    logger.info(f"Checking licenses for user {user.email} in course {course.course_name} (ID: {course.id}): {licenses.values('name', 'start_date', 'expiry_date', 'status')}")
+    if licenses.exists():  # Jika pengguna terkait lisensi
+        active_license = user.licenses.filter(
             start_date__lte=today,
             expiry_date__gte=today,
-            status=True  # Hanya lisensi aktif
-        )
-        logger.info(f"Checking licenses for user {user.email} in course {course.course_name} (ID: {course.id}): {licenses.values('name', 'start_date', 'expiry_date', 'status')}")
-        if not licenses.exists():
+            status=True
+        ).exists()
+        if not active_license:
             logger.error(f"No active license found for user {user.email} in course {course.course_name}")
             messages.error(request, "Lisensi Anda sudah tidak aktif atau tidak valid. Silakan hubungi admin untuk perpanjangan.")
-            return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
+            return redirect('courses:course_learn', username=user.username, slug=course.slug)
 
     # Pilih price type sesuai skema pembayaran
     price_type_map = {
@@ -3486,7 +3487,7 @@ def enroll_course(request, course_id):
         'pay_for_exam': 'pay_for_exam',
         'pay_for_certificate': 'pay_for_certificate',
         'free': 'free',
-        'subscription': 'free',  # Subscription dianggap free karena dibayar via lisensi
+        'subscription': 'free',
     }
 
     logger.info(f"Attempting to enroll user {user.username} in course {course_id}, payment_model: {course.payment_model}")
@@ -3495,8 +3496,8 @@ def enroll_course(request, course_id):
         logger.info(f"Price type found: {price_type.name}")
     except PricingType.DoesNotExist:
         logger.error(f"Price type for {course.payment_model} not found.")
-        messages.error(request, f"Tipe harga untuk model {course.payment_model} tidak ditemukan. Silakan hubungi admin.")
-        return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
+        messages.error(request, f"Tipe harga untuk model {course.payment_model} tidak ditemukan.")
+        return redirect('courses:course_lms_detail', id=course_id, slug=course.slug)
 
     # Lanjutkan enrollment
     response = course.enroll_user(user, partner=partner, price_type=price_type)
@@ -3513,7 +3514,7 @@ def enroll_course(request, course_id):
     else:
         messages.info(request, response["message"])
 
-    return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
+    return redirect('courses:course_lms_detail', id=course_id, slug=course.slug)
 
 def draft_lms(request, id):
     if not request.user.is_authenticated:
