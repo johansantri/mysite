@@ -15,3 +15,33 @@ INFO 2025-06-11 02:07:19,749 views Reusing existing payment 3 for user johan, co
 INFO 2025-06-11 02:10:21,366 views Payment required for certificate in course 12 for user johan
 INFO 2025-06-11 02:10:21,503 views Processing payment for course 12, payment_type: certificate
 INFO 2025-06-11 02:10:21,542 views Reusing existing payment 3 for user johan, course 12, payment_model: pay_for_certificate
+ERROR 2025-06-11 02:48:01,426 log Internal Server Error: /invitation/send/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/licensing/views.py", line 553, in send_invitation
+    if license.end_date and license.end_date < timezone.now().date():
+AttributeError: 'License' object has no attribute 'end_date'
+ERROR 2025-06-11 02:50:24,423 log Internal Server Error: /invitation/send/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/licensing/views.py", line 555, in send_invitation
+    return redirect('licensing:renew_license')  # ganti dengan URL yang sesuai
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 51, in redirect
+    resolve_url(to, *args, **kwargs),
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 184, in resolve_url
+    return reverse(to, args=args, kwargs=kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'renew_license' not found. 'renew_license' is not a valid view function or pattern name.

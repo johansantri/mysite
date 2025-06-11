@@ -158,10 +158,20 @@ def licens_dashboard(request):
 @login_required
 def licens_learners(request):
     if not request.user.is_subscription:
-        messages.error(request, "Akses ditolak. Hanya pengguna dengan status langganan yang dapat mengakses dashboard ini.")
+        messages.warning(request, "Akses ditolak. Hanya pengguna dengan status langganan yang dapat mengakses dashboard ini.")
         return redirect('authentication:home')
 
-    licenses = License.objects.filter(users=request.user)
+    # Ambil lisensi yang masih aktif dan belum kedaluwarsa
+    licenses = License.objects.filter(
+        users=request.user,
+        status=True,
+        expiry_date__gte=timezone.now().date()  # 🔴 Hanya lisensi yang belum expired
+    )
+
+    if not licenses.exists():
+        messages.warning(request, "Lisensi Anda telah kedaluwarsa atau tidak tersedia. Silakan perpanjang atau beli lisensi baru.")
+        return redirect('licensing:licens_dashboard')  # Ganti dengan URL yang sesuai
+
     license_course_data = []
 
     for license in licenses:
@@ -174,15 +184,12 @@ def licens_learners(request):
             course_enrollments = enrollments.filter(course=course)
             user_ids = course_enrollments.values_list('user_id', flat=True)
 
-            # Ambil semua sertifikat untuk course ini
             certificates = Certificate.objects.filter(user_id__in=user_ids, course=course)
             cert_map = {(c.user_id, c.course_id): c for c in certificates}
 
-            # Ambil semua section dari course ini
             sections = course.sections.all()
-
-            # Ambil semua material dan assessment terkait section-section ini
             section_ids = sections.values_list('id', flat=True)
+
             material_reads = MaterialRead.objects.filter(
                 user_id__in=user_ids,
                 material__section_id__in=section_ids
@@ -240,7 +247,6 @@ def licens_learners(request):
             'courses': course_data,
         })
 
-    # Paginasi (misal 2 lisensi per halaman)
     paginator = Paginator(license_course_data, 2)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -537,14 +543,16 @@ def send_invitation(request):
                 messages.error(request, "Harap masukkan setidaknya satu email yang valid.")
                 return render(request, 'licensing/send_invitation.html', {'form': form})
 
-           
             license = License.objects.filter(users=request.user, status=True).order_by('-start_date').first()
             if not license:
                 logger.error(f"Tidak ditemukan lisensi aktif untuk pengguna: {request.user.username} (ID: {request.user.id})")
                 messages.error(request, "Tidak ditemukan lisensi aktif untuk akun Anda. Silakan hubungi Super Admin untuk membuat atau mengaktifkan lisensi.")
                 return redirect('licensing:licens_dashboard')
 
-           
+            # 🔴 Tambahan: Cek apakah lisensi sudah kedaluwarsa
+            if license.expiry_date and license.expiry_date < timezone.now().date():
+                messages.error(request, "Lisensi Anda telah kedaluwarsa. Silakan perpanjang atau beli lisensi baru untuk dapat mengirim undangan.")
+                return redirect('licensing:licens_dashboard')  # ganti dengan URL yang sesuai
 
             current_users = license.users.count()
             available_slots = license.max_users - current_users
@@ -557,7 +565,6 @@ def send_invitation(request):
                 try:
                     validator(email)
                 except ValidationError:
-                    
                     messages.warning(request, f"Email tidak valid dilewati: {email}")
                     continue
 
@@ -583,7 +590,7 @@ def send_invitation(request):
                 })
                 subject = f"Undangan Kursus dari {request.user.username}"
                 send_mail(subject, '', 'from@example.com', [email], html_message=html_message, fail_silently=True)
-               
+
                 messages.success(request, f"Undangan dikirim ke {email}.")
 
             return redirect('licensing:licens_dashboard')
