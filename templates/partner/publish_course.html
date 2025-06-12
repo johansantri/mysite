@@ -9,20 +9,48 @@
         <p class="mb-2">Current Status: <strong>{{ course.status_course.get_status_display }}</strong></p>
         <p class="mb-4">Latest Message: {{ course.status_course.manual_message|default:"No message" }}</p>
 
-        <!-- Course Price Info -->
-        <div class="card shadow-sm mb-4">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">Course Price Information</h5>
+        <!-- Price and Payment Model Info -->
+        <div class="row mb-4">
+            <!-- Course Price Info -->
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Course Price Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-4">Price Type Description:</dt>
+                            <dd class="col-sm-8">{{ price_info.price_type_description }}</dd>
+                            <dt class="col-sm-4">Partner Price:</dt>
+                            <dd class="col-sm-8">{{ price_info.partner_price|intcomma }}</dd>
+                            <dt class="col-sm-4">Discount (%):</dt>
+                            <dd class="col-sm-8">{{ price_info.discount_percent|floatformat:2 }}</dd>
+                        </dl>
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
-                <dl class="row mb-0">
-                    <dt class="col-sm-4">Price Type:</dt>
-                    <dd class="col-sm-8">{{ price_info.price_type_description }}</dd>
-                    <dt class="col-sm-4">Partner Price:</dt>
-                    <dd class="col-sm-8">IDR. {{ price_info.partner_price|intcomma }}</dd>
-                    <dt class="col-sm-4">Discount (%):</dt>
-                    <dd class="col-sm-8">{{ price_info.discount_percent|floatformat:2 }}</dd>
-                </dl>
+            <!-- Payment Model Info -->
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">Payment Model</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="update_payment_model">
+                            <label for="payment_model" class="form-label">Select Payment Model:</label>
+                            <div class="input-group">
+                                <select name="payment_model" id="payment_model" class="form-select">
+                                    {% for value, label in payment_model_choices %}
+                                    <option value="{{ value }}" {% if value == current_payment_model %}selected{% endif %}>{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button type="submit" class="btn btn-primary" onclick="return confirm('Are you sure you want to update the payment model?')">Update</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
 

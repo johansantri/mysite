@@ -165,16 +165,29 @@ def superuser_publish_course(request, course_id):
         'discount_percent': course_price.discount_percent if course_price else 0,
     }
 
+    # Siapkan data payment_model
+    payment_model_choices = dict(Course.PAYMENT_MODEL_CHOICES)
+
     if request.method == "POST":
         action = request.POST.get('action')
-        message = request.POST.get('message')
 
-        # Validasi pesan untuk aksi tertentu
+        # Handle update payment_model
+        if action == 'update_payment_model':
+            new_payment_model = request.POST.get('payment_model')
+            if new_payment_model in [choice[0] for choice in Course.PAYMENT_MODEL_CHOICES]:
+                course.payment_model = new_payment_model
+                course.save()
+                messages.success(request, f"Payment model updated to '{payment_model_choices[new_payment_model]}'.")
+            else:
+                messages.error(request, "Invalid payment model selected.")
+            return redirect('instructor:superuser_publish_course', course_id=course.id)
+
+        # Handle existing actions
+        message = request.POST.get('message')
         if action in ['superuser_reject', 'superuser_archive', 'superuser_reject_to_draft'] and not message:
             messages.error(request, "Please provide a message for your action.")
             return redirect('instructor:superuser_publish_course', course_id=course.id)
 
-        # Aksi: Mempublikasikan kursus
         if action == 'superuser_publish':
             if course.status_course.status != 'curation':
                 messages.error(request, "Course can only be published from 'Curation' status.")
@@ -185,7 +198,6 @@ def superuser_publish_course(request, course_id):
             course.change_status('published', request.user, message=message or "Published by Superuser.")
             messages.success(request, "Course has been published to the catalog.")
 
-        # Aksi: Menolak dan mengembalikan ke Partner
         elif action == 'superuser_reject':
             if course.status_course.status != 'curation':
                 messages.error(request, "Course can only be rejected to Partner from 'Curation' status.")
@@ -193,14 +205,12 @@ def superuser_publish_course(request, course_id):
             course.change_status('curation', request.user, message=message)
             messages.success(request, "Course has been rejected and returned to Partner for revisions.")
 
-        # Aksi: Mengarsipkan kursus
         elif action == 'superuser_archive':
             if course.status_course.status == 'archived':
                 messages.error(request, "Course is already archived.")
                 return redirect('instructor:superuser_publish_course', course_id=course.id)
             course.change_status('archived', request.user, message=message)
             messages.success(request, "Course has been archived.")
-            # Kirim email notifikasi
             instructor_email = course.instructor.user.email if course.instructor else None
             partner_email = course.org_partner.user.email if course.org_partner else None
             recipient_list = [email for email in [instructor_email, partner_email] if email]
@@ -220,14 +230,12 @@ def superuser_publish_course(request, course_id):
                     fail_silently=True,
                 )
 
-        # Aksi: Menolak ke 'draft'
         elif action == 'superuser_reject_to_draft':
             if course.status_course.status == 'draft':
                 messages.error(request, "Course is already in 'Draft' status.")
                 return redirect('instructor:superuser_publish_course', course_id=course.id)
             course.change_status('draft', request.user, message=message)
             messages.success(request, "Course has been rejected and returned to Instructor as Draft.")
-            # Kirim email notifikasi
             instructor_email = course.instructor.user.email if course.instructor else None
             partner_email = course.org_partner.user.email if course.org_partner else None
             recipient_list = [email for email in [instructor_email, partner_email] if email]
@@ -257,6 +265,8 @@ def superuser_publish_course(request, course_id):
         'course': course,
         'history': course.status_history.all(),
         'price_info': price_info,
+        'payment_model_choices': Course.PAYMENT_MODEL_CHOICES,
+        'current_payment_model': course.payment_model,
     })
 
 
