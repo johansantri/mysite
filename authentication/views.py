@@ -20,7 +20,7 @@ from django.contrib.auth.forms import PasswordResetForm,SetPasswordForm
 from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 from django.urls import reverse
 from django.core.mail import send_mail
-from authentication.forms import  Userprofile, UserPhoto
+from authentication.forms import  UserProfileForm, UserPhoto
 from .models import Profile
 from courses.models import LastAccessCourse,SearchHistory,Instructor,CourseRating,Partner,Assessment,GradeRange,AssessmentRead,Material, MaterialRead, Submission,AssessmentScore,QuestionAnswer,CourseStatus,Enrollment,MicroCredential, MicroCredentialEnrollment,Course, Enrollment, Category,CourseProgress
 from django.http import HttpResponse,JsonResponse
@@ -905,37 +905,27 @@ def pro(request,username):
     return redirect("/login/?next=%s" % request.path)
 
 @login_required
+@ratelimit(key='ip', rate='100/h')
 def edit_profile(request, pk):
-    # Pastikan hanya pengguna sendiri yang bisa edit
-    user = get_object_or_404(CustomUser, pk=pk)
-    if user != request.user:
+    profile = get_object_or_404(CustomUser, pk=pk)
+
+    # Pastikan hanya pemilik profil yang bisa mengedit
+    if request.user.pk != pk:
         messages.error(request, "Anda tidak memiliki izin untuk mengedit profil ini.")
         return redirect('authentication:dashbord')
 
-    if request.method == "GET":
-        form = Userprofile(instance=user)
-        return render(request, 'home/edit_profile_form.html', {'form': form})
-
-    elif request.method == "POST":
-        form = Userprofile(request.POST, request.FILES, instance=user)
+    if request.method == "POST":
+        form = UserProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
-            form_instance = form.save(commit=False)
-            # Pertahankan foto jika tidak ada file baru
-            if not request.FILES.get('photo'):
-                form_instance.photo = user.photo
-            form_instance.save()
-            # Cek apakah request adalah AJAX
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({'success': True, 'message': 'Profil berhasil diperbarui!'})
-            else:
-                messages.success(request, "Profil Anda berhasil diperbarui.")
-                return redirect('authentication:dashbord')
+            form.save()
+            messages.success(request, "Profil berhasil diperbarui.")
+            return redirect('authentication:dashbord')
         else:
-            # Untuk AJAX, kembalikan error sebagai JSON
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({'success': False, 'errors': form.errors}, status=400)
-            # Untuk non-AJAX, render ulang form
-            return render(request, 'home/edit_profile_form.html', {'form': form})
+            messages.error(request, "Silakan perbaiki kesalahan di bawah ini.")
+    else:
+        form = UserProfileForm(instance=profile)
+
+    return render(request, 'home/edit_profile_form.html', {'form': form, 'user': profile})
 #convert image before update
 
 # Fungsi untuk memproses gambar menjadi format WebP
@@ -1000,23 +990,26 @@ def edit_photo(request, pk):
 
 @login_required
 @ratelimit(key='ip', rate='100/h')
-def edit_profile_save(request, pk):
-    # Ensure the profile exists, fetching by pk
+def edit_profile(request, pk):
     profile = get_object_or_404(CustomUser, pk=pk)
 
+    # Pastikan hanya pemilik profil yang bisa mengedit
+    if request.user.pk != pk:
+        messages.error(request, "Anda tidak memiliki izin untuk mengedit profil ini.")
+        return redirect('authentication:dashbord')
+
     if request.method == "POST":
-        # Create a form instance bound to the profile
-        form = Userprofile(request.POST,request.FILES, instance=profile)
+        form = UserProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
-            # Render the updated profile details
-            return render(request, 'home/profile_detail.html', {'user': profile})
+            messages.success(request, "Profil berhasil diperbarui.")
+            return redirect('authentication:dashbord')
         else:
-            # Return the form with errors and a 400 status code
-            return render(request, 'home/edit_profile_form.html', {'form': form}, status=400)
+            messages.error(request, "Silakan perbaiki kesalahan di bawah ini.")
+    else:
+        form = UserProfileForm(instance=profile)
 
-    # If the method is not POST, handle it gracefully (e.g., redirect)
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
+    return render(request, 'home/edit_profile_form.html', {'form': form, 'user': profile})
 
 
 #populercourse

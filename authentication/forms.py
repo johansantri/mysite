@@ -69,7 +69,7 @@ class LoginForm(forms.Form):
 
 
 
-class Userprofile(forms.ModelForm):
+class UserProfileForm(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = [
@@ -128,7 +128,6 @@ class Userprofile(forms.ModelForm):
         phone = self.cleaned_data.get('phone')
         if not phone:
             raise forms.ValidationError("Nomor telepon wajib diisi.")
-        import re
         if not re.match(r'^\+?\d{8,15}$', phone):
             raise forms.ValidationError("Nomor telepon tidak valid.")
         return phone
@@ -144,6 +143,15 @@ class Userprofile(forms.ModelForm):
         if not gender:
             raise forms.ValidationError("Jenis kelamin wajib diisi.")
         return gender
+
+    def clean(self):
+        cleaned_data = super().clean()
+        social_fields = ['tiktok', 'youtube', 'facebook', 'instagram', 'linkedin', 'twitter']
+        for field in social_fields:
+            url = cleaned_data.get(field)
+            if url and not re.match(r'^https?://', url):
+                self.add_error(field, "URL harus dimulai dengan http:// atau https://")
+        return cleaned_data
 
 
        

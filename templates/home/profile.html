@@ -2,15 +2,23 @@
 {% load extra_filters %}
 
 {% block content %}
-<div class="container my-5 personal-address">
+<div class="container my-5">
     <!-- Header Section -->
-    <div class="resume-header text-center mb-5 bg-light p-4 rounded shadow-sm">
-        <h1 class="display-4 fw-bold text-dark">{{ user.first_name }} {{ user.last_name }}</h1>
-        <p class="lead text-muted mb-2">{{ user.hobby }}</p>
-        <p class="text-secondary">
-            <i class="fas fa-envelope me-2"></i><strong>Email:</strong> {{ user.email }} | 
-            <i class="fas fa-phone me-2"></i><strong>Phone:</strong> {{ user.phone }}
-        </p>
+    <div class="card bg-light border-0 shadow-sm mb-5">
+        <div class="card-body text-center py-5">
+            <h1 class="display-5 fw-bold text-dark mb-2">{{ user.first_name }} {{ user.last_name }}</h1>
+            <p class="lead text-muted mb-3">{{ user.hobby|default:"No hobby specified" }}</p>
+            <div class="d-flex justify-content-center gap-4 text-secondary">
+                <p class="mb-0">
+                    <i class="fas fa-envelope me-2"></i>
+                    <strong>Email:</strong> {{ user.email }}
+                </p>
+                <p class="mb-0">
+                    <i class="fas fa-phone me-2"></i>
+                    <strong>Phone:</strong> {{ user.phone|default:"Not provided" }}
+                </p>
+            </div>
+        </div>
     </div>
 
     <!-- Main Content -->
@@ -18,86 +26,106 @@
         <!-- Left Column -->
         <div class="col-lg-8">
             <!-- About Section -->
-            <div class="resume-section mb-4 bg-white p-4 rounded shadow-sm">
-                <h3 class="h4 text-primary mb-3 border-bottom pb-2">About Me</h3>
-                {% if instructor %}
-                    <p class="text-dark">{{ instructor.bio }}</p>
-                {% endif %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3 class="h4 text-primary mb-3 border-bottom pb-2">About Me</h3>
+                    {% if instructor %}
+                        <p class="text-dark">{{ instructor.bio|default:"No bio provided" }}</p>
+                    {% else %}
+                        <p class="text-muted">No instructor information available.</p>
+                    {% endif %}
+                </div>
             </div>
 
             <!-- Experience Section -->
-            <div class="resume-section mb-4 bg-white p-4 rounded shadow-sm">
-                <h3 class="h4 text-primary mb-3 border-bottom pb-2">Experience</h3>
-                <div class="experience-item">
-                    <h6 class="text-muted fw-semibold">{{ user.hobby }}</h6>
-                    <p class="mb-2"><strong>{{ instructor.experience_years }} years</strong> | Experience</p>
-                    <ul class="list-group list-group-flush">
-                        {% if instructor %}
-                            <li class="list-group-item border-0">{{ instructor.expertise }}</li>
-                        {% endif %}
-                    </ul>
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3 class="h4 text-primary mb-3 border-bottom pb-2">Experience</h3>
+                    <div class="mb-3">
+                        <h6 class="text-muted fw-semibold mb-1">{{ user.hobby|default:"No hobby specified" }}</h6>
+                        <p class="mb-2">
+                            <strong>{{ instructor.experience_years|default:0 }} years</strong> | Experience
+                        </p>
+                        <ul class="list-group list-group-flush">
+                            {% if instructor and instructor.expertise %}
+                                <li class="list-group-item border-0">{{ instructor.expertise }}</li>
+                            {% else %}
+                                <li class="list-group-item border-0 text-muted">No expertise listed.</li>
+                            {% endif %}
+                        </ul>
+                    </div>
                 </div>
             </div>
 
             <!-- Education Section -->
-            <div class="resume-section mb-4 bg-white p-4 rounded shadow-sm">
-                <h3 class="h4 text-primary mb-3 border-bottom pb-2">Education</h3>
-                <p class="text-dark">
-                    <strong>{{ user.education }}</strong> | 
-                    <span class="text-muted">{{ user.university }}</span>
-                </p>
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3 class="h4 text-primary mb-3 border-bottom pb-2">Education</h3>
+                    {% if user.education and user.university %}
+                        <p class="text-dark">
+                            <strong>{{ user.education }}</strong> | 
+                            <span class="text-muted">{{ user.university }}</span>
+                        </p>
+                    {% else %}
+                        <p class="text-muted">No education information provided.</p>
+                    {% endif %}
+                </div>
             </div>
         </div>
 
         <!-- Right Column -->
         <div class="col-lg-4">
             <!-- Skills Section -->
-            <div class="resume-section mb-4 bg-white p-4 rounded shadow-sm">
-                <h3 class="h4 text-primary mb-3 border-bottom pb-2">Skills</h3>
-                <div class="d-flex flex-wrap gap-2">
-                    {% if instructor.tech %}
-                        {% for skill in instructor.tech|split:"," %}
-                            <span class="badge bg-primary text-white p-2">{{ skill|trim }}</span>
-                        {% endfor %}
-                    {% endif %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3 class="h4 text-primary mb-3 border-bottom pb-2">Skills</h3>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% if instructor.tech %}
+                            {% for skill in instructor.tech|split:"," %}
+                                <span class="badge bg-primary text-white p-2">{{ skill|trim }}</span>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">No skills listed.</p>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
 
             <!-- Contact Section -->
-            <div class="resume-section mb-4 bg-white p-4 rounded shadow-sm">
-                <h3 class="h4 text-primary mb-3 border-bottom pb-2">Contact</h3>
-                <ul class="list-unstyled text-dark">
-                    <li><i class="fas fa-envelope me-2 text-primary"></i><strong>Email:</strong> {{ user.email }}</li>
-                    <li><i class="fas fa-phone me-2 text-primary"></i><strong>Phone:</strong> {{ user.phone }}</li>
-                    <li><i class="fab fa-linkedin me-2 text-primary"></i><strong>LinkedIn:</strong> 
-                        <a href="https://www.linkedin.com/in/johndoe" target="_blank" class="text-primary text-decoration-none">linkedin.com/in/johndoe</a>
-                    </li>
-                </ul>
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3 class="h4 text-primary mb-3 border-bottom pb-2">Contact</h3>
+                    <ul class="list-unstyled text-dark">
+                        <li class="mb-2">
+                            <i class="fas fa-envelope me-2 text-primary"></i>
+                            <strong>Email:</strong> {{ user.email }}
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-phone me-2 text-primary"></i>
+                            <strong>Phone:</strong> {{ user.phone|default:"Not provided" }}
+                        </li>
+                        <li>
+                            <i class="fab fa-linkedin me-2 text-primary"></i>
+                            <strong>LinkedIn:</strong>
+                            {% if user.linkedin_url %}
+                                <a href="{{ user.linkedin_url }}" target="_blank" class="text-primary text-decoration-none">
+                                    {{ user.linkedin_url|urlize }}
+                                </a>
+                            {% else %}
+                                <span class="text-muted">Not provided</span>
+                            {% endif %}
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Edit Profile Link -->
     <div class="text-end mt-4">
-        <a href="#" class="btn btn-outline-primary btn-sm px-3 py-2"
-           hx-get="{% url 'authentication:edit-profile' user.id %}"
-           hx-target=".personal-address"
-           hx-swap="innerHTML">
-            <i class="fa fa-edit me-2" aria-hidden="true"></i> Edit Profile
+        <a href="{% url 'authentication:edit-profile' user.id %}" class="btn btn-outline-primary px-4 py-2">
+            <i class="fas fa-edit me-2"></i> Edit Profile
         </a>
     </div>
 </div>
-
-<!-- Your scripts -->
-<script>
-  // Example getAuthToken definition
-  function getAuthToken() {
-      return localStorage.getItem('authToken') || 'default-token';
-  }
-
-  // Configure HTMX to include the Authorization header
-  document.addEventListener("htmx:configRequest", (event) => {
-      event.detail.headers['Authorization'] = `Bearer ${getAuthToken()}`;
-  });
-</script>
 {% endblock content %}

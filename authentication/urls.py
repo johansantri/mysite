@@ -27,7 +27,7 @@ urlpatterns = [
     path('profile/<slug:username>/',views.pro, name='profile'), 
     path('edit-profile/<int:pk>/',views.edit_profile, name='edit-profile'), 
     path('edit-photo/<int:pk>/',views.edit_photo, name='edit-photo'), 
-    path('edit-profile-save/<int:pk>/', views.edit_profile_save, name='edit-profile-save'),
+    
     #admin,partner, instructur
     path('dasbord/',views.dasbord, name='dasbord'),
     #student
