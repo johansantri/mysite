@@ -9,7 +9,7 @@ import csv
 from django.core.mail import send_mail
 from decimal import Decimal
 from django.contrib import messages
-from courses.models import Course, Enrollment,Section,GradeRange,CourseStatusHistory,QuestionAnswer, CourseProgress, PeerReview,MaterialRead, AssessmentRead, AssessmentScore,Material,Assessment, Submission, CustomUser, Instructor
+from courses.models import Course,CoursePrice, Enrollment,Section,GradeRange,CourseStatusHistory,QuestionAnswer, CourseProgress, PeerReview,MaterialRead, AssessmentRead, AssessmentScore,Material,Assessment, Submission, CustomUser, Instructor
 from authentication.models import CustomUser, Universiti
 # Create your views here.
 
@@ -153,6 +153,18 @@ def superuser_publish_course(request, course_id):
     if not request.user.is_superuser:
         raise PermissionDenied("You do not have permission to publish this course.")
 
+    # Ambil harga kursus terbaru
+    course_price = CoursePrice.objects.filter(course=course, price_type__isnull=False).order_by('-id').first()
+    price_info = {
+        'price_type_description': (
+            course_price.price_type.description if course_price and course_price.price_type and course_price.price_type.description
+            else course_price.price_type.name if course_price and course_price.price_type
+            else 'Not set'
+        ),
+        'partner_price': course_price.partner_price if course_price else 0,
+        'discount_percent': course_price.discount_percent if course_price else 0,
+    }
+
     if request.method == "POST":
         action = request.POST.get('action')
         message = request.POST.get('message')
@@ -164,14 +176,16 @@ def superuser_publish_course(request, course_id):
 
         # Aksi: Mempublikasikan kursus
         if action == 'superuser_publish':
-            # Hanya izinkan dari status 'Curation'
             if course.status_course.status != 'curation':
                 messages.error(request, "Course can only be published from 'Curation' status.")
+                return redirect('instructor:superuser_publish_course', course_id=course.id)
+            if not course_price:
+                messages.error(request, "Cannot publish course without a set price.")
                 return redirect('instructor:superuser_publish_course', course_id=course.id)
             course.change_status('published', request.user, message=message or "Published by Superuser.")
             messages.success(request, "Course has been published to the catalog.")
 
-        # Aksi: Menolak dan mengembalikan ke Partner (status 'curation')
+        # Aksi: Menolak dan mengembalikan ke Partner
         elif action == 'superuser_reject':
             if course.status_course.status != 'curation':
                 messages.error(request, "Course can only be rejected to Partner from 'Curation' status.")
@@ -179,41 +193,55 @@ def superuser_publish_course(request, course_id):
             course.change_status('curation', request.user, message=message)
             messages.success(request, "Course has been rejected and returned to Partner for revisions.")
 
-        # Aksi: Mengarsipkan kursus (dari status apa pun ke 'archived')
+        # Aksi: Mengarsipkan kursus
         elif action == 'superuser_archive':
             if course.status_course.status == 'archived':
                 messages.error(request, "Course is already archived.")
                 return redirect('instructor:superuser_publish_course', course_id=course.id)
             course.change_status('archived', request.user, message=message)
             messages.success(request, "Course has been archived.")
-            # Kirim email notifikasi ke Instructor dan Partner
+            # Kirim email notifikasi
             instructor_email = course.instructor.user.email if course.instructor else None
             partner_email = course.org_partner.user.email if course.org_partner else None
             recipient_list = [email for email in [instructor_email, partner_email] if email]
             if recipient_list:
+                email_message = (
+                    f"The course '{course.course_name}' has been archived by Superuser.\n"
+                    f"Price Type: {price_info['price_type_description']}\n"
+                    f"Partner Price: {price_info['partner_price']}\n"
+                    f"Discount: {price_info['discount_percent']}%\n"
+                    f"Reason: {message}"
+                )
                 send_mail(
                     subject=f"Course Archived: {course.course_name}",
-                    message=f"The course '{course.course_name}' has been archived by Superuser.\nReason: {message}",
+                    message=email_message,
                     from_email='noreply@yourdomain.com',
                     recipient_list=recipient_list,
                     fail_silently=True,
                 )
 
-        # Aksi: Menolak tiba-tiba ke 'draft' (dari status apa pun ke 'draft')
+        # Aksi: Menolak ke 'draft'
         elif action == 'superuser_reject_to_draft':
             if course.status_course.status == 'draft':
                 messages.error(request, "Course is already in 'Draft' status.")
                 return redirect('instructor:superuser_publish_course', course_id=course.id)
             course.change_status('draft', request.user, message=message)
             messages.success(request, "Course has been rejected and returned to Instructor as Draft.")
-            # Kirim email notifikasi ke Instructor dan Partner
+            # Kirim email notifikasi
             instructor_email = course.instructor.user.email if course.instructor else None
             partner_email = course.org_partner.user.email if course.org_partner else None
             recipient_list = [email for email in [instructor_email, partner_email] if email]
             if recipient_list:
+                email_message = (
+                    f"The course '{course.course_name}' has been rejected by Superuser and returned to Draft status.\n"
+                    f"Price Type: {price_info['price_type_description']}\n"
+                    f"Partner Price: {price_info['partner_price']}\n"
+                    f"Discount: {price_info['discount_percent']}%\n"
+                    f"Reason: {message}"
+                )
                 send_mail(
                     subject=f"Course Rejected to Draft: {course.course_name}",
-                    message=f"The course '{course.course_name}' has been rejected by Superuser and returned to Draft status.\nReason: {message}",
+                    message=email_message,
                     from_email='noreply@yourdomain.com',
                     recipient_list=recipient_list,
                     fail_silently=True,
@@ -227,9 +255,9 @@ def superuser_publish_course(request, course_id):
 
     return render(request, 'partner/publish_course.html', {
         'course': course,
-        'history': course.status_history.all()
+        'history': course.status_history.all(),
+        'price_info': price_info,
     })
-
 
 
 @login_required
