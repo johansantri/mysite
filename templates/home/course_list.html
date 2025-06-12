@@ -5,14 +5,14 @@
 {% block content %}
 <section class="py-8 bg-white font-sans">
     <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <!-- Filter Toggle untuk Mobile -->
-        <div x-data="{ open: false }" class="lg:hidden text-center mb-6">
-            <button 
-                @click="open = !open" 
-                class="inline-flex items-center px-4 py-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-colors"
-                aria-label="Toggle filters">
+        <!-- Filter Toggle for Mobile -->
+        <div class="lg:hidden text-center mb-6">
+            <input type="checkbox" id="filter-toggle" class="hidden peer">
+            <label for="filter-toggle" 
+                   class="inline-flex items-center px-4 py-2 border border-red-600 text-red-600 rounded-lg hover:bg-red-600 hover:text-white transition-colors cursor-pointer"
+                   aria-label="Toggle filters">
                 <i class="fas fa-filter mr-2"></i> Show Filters
-            </button>
+            </label>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -22,7 +22,7 @@
                     <div class="flex items-center flex-wrap gap-4">
                         <div class="view-icons">
                             <a href="{% url 'authentication:course_list' %}" 
-                               class="inline-flex p-2 border border-red-500 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-colors" 
+                               class="inline-flex p-2 border border-red-600 text-red-600 rounded-lg hover:bg-red-600 hover:text-white transition-colors" 
                                aria-label="Grid view">
                                 <i class="fas fa-th"></i>
                             </a>
@@ -41,7 +41,7 @@
                         <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}" 
                            aria-label="View details for {{ course.course_name }}">
                             <img 
-                                class="w-full h-38 object-cover rounded-t-xl hover:opacity-95 transition-opacity" 
+                                class="w-full h-48 object-cover rounded-t-xl hover:opacity-95 transition-opacity" 
                                 alt="{{ course.course_name }} - {{ course.instructor }} Course" 
                                 src="{{ course.course_image|default:'/media/default.jpg' }}" 
                                 srcset="{{ course.course_image_small|default:course.course_image|default:'/media/default.jpg' }} 480w, 
@@ -63,14 +63,14 @@
                                 <div class="ml-2">
                                     <h2 class="text-base font-semibold text-gray-900">
                                         <a href="{% url 'courses:instructor_profile' course.instructor_username %}" 
-                                           class="text-gray-900 hover:text-red-500 transition-colors">
+                                           class="text-gray-900 hover:text-red-600 transition-colors">
                                             {{ course.instructor|default:"Unknown" }}
                                         </a>
                                     </h2>
-                                    <small class="text-gray-500">
+                                    <small class="text-gray-500 text-sm">
                                         {% if course.partner and course.partner_slug %}
                                             <a href="{% url 'courses:org_partner' course.partner_slug %}" 
-                                               class="text-gray-500 hover:text-red-500 transition-colors">
+                                               class="text-gray-500 hover:text-red-600 transition-colors">
                                                 {{ course.partner_kode|default:"N/A" }}
                                             </a>
                                         {% else %}
@@ -81,17 +81,17 @@
                             </div>
                             <h3 class="text-lg font-bold text-gray-900 mb-3">
                                 <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}" 
-                                   class="text-gray-900 hover:text-red-500 transition-colors">
+                                   class="text-gray-900 hover:text-red-600 transition-colors">
                                     {{ course.course_name }}
                                 </a>
                             </h3>
                             <div class="flex justify-between items-center mb-3 text-gray-500 text-sm">
                                 <div class="flex items-center">
-                                    <i class="fas fa-users mr-1 text-red-500"></i>
+                                    <i class="fas fa-users mr-1 text-red-600"></i>
                                     <span>{{ course.num_enrollments }} Learners</span>
                                 </div>
                                 <div class="flex items-center">
-                                    <i class="fas fa-clock mr-1 text-red-500"></i>
+                                    <i class="fas fa-clock mr-1 text-red-600"></i>
                                     <span>{{ course.hour }} hour</span>
                                 </div>
                             </div>
@@ -105,7 +105,7 @@
                                 {% for _ in course.empty_star_range %}
                                     <i class="far fa-star text-gray-400" aria-hidden="true"></i>
                                 {% endfor %}
-                                <small class="text-gray-500 ml-1">
+                                <small class="text-gray-500 ml-1 text-sm">
                                     ({{ course.average_rating|floatformat:1 }}) ({{ course.review_count }})
                                 </small>
                             </div>
@@ -127,9 +127,9 @@
                 <!-- Pagination -->
                 <nav aria-label="Course pagination" role="navigation" class="mt-6">
                     <ul class="flex justify-center gap-2">
-                        <li class="{% if not page_obj.has_previous %}opacity-50{% endif %}">
+                        <li class="{% if not page_obj.has_previous %}opacity-50 pointer-events-none{% endif %}">
                             {% if page_obj.has_previous %}
-                                <a class="inline-flex px-3 py-1 rounded-lg text-red-500 border border-gray-200 hover:bg-red-500 hover:text-white transition-colors"
+                                <a class="inline-flex px-3 py-1 rounded-lg text-red-600 border border-gray-200 hover:bg-red-600 hover:text-white transition-colors"
                                    href="?page={{ page_obj.previous_page_number }}{% for cat in category_filter %}&category={{ cat }}{% endfor %}{% if search_query %}&search={{ search_query }}{% endif %}{% if language_filter %}&language={{ language_filter }}{% endif %}{% if level_filter %}&level={{ level_filter }}{% endif %}" 
                                    aria-label="Previous page">
                                     <i class="fas fa-angle-left"></i>
@@ -142,16 +142,16 @@
                         </li>
                         {% for page_num in page_obj.paginator.page_range %}
                             <li>
-                                <a class="inline-flex px-3 py-1 rounded-lg border border-gray-200 transition-colors {% if page_obj.number == page_num %}bg-red-500 text-white{% else %}text-red-500 hover:bg-red-500 hover:text-white{% endif %}"
+                                <a class="inline-flex px-3 py-1 rounded-lg border border-gray-200 transition-colors {% if page_obj.number == page_num %}bg-red-600 text-white{% else %}text-red-600 hover:bg-red-600 hover:text-white{% endif %}"
                                    href="?page={{ page_num }}{% for cat in category_filter %}&category={{ cat }}{% endfor %}{% if search_query %}&search={{ search_query }}{% endif %}{% if language_filter %}&language={{ language_filter }}{% endif %}{% if level_filter %}&level={{ level_filter }}{% endif %}" 
                                    {% if page_obj.number == page_num %}aria-current="page"{% endif %}>
                                     {{ page_num }}
                                 </a>
                             </li>
                         {% endfor %}
-                        <li class="{% if not page_obj.has_next %}opacity-50{% endif %}">
+                        <li class="{% if not page_obj.has_next %}opacity-50 pointer-events-none{% endif %}">
                             {% if page_obj.has_next %}
-                                <a class="inline-flex px-3 py-1 rounded-lg text-red-500 border border-gray-200 hover:bg-red-500 hover:text-white transition-colors"
+                                <a class="inline-flex px-3 py-1 rounded-lg text-red-600 border border-gray-200 hover:bg-red-600 hover:text-white transition-colors"
                                    href="?page={{ page_obj.next_page_number }}{% for cat in category_filter %}&category={{ cat }}{% endfor %}{% if search_query %}&search={{ search_query }}{% endif %}{% if language_filter %}&language={{ language_filter }}{% endif %}{% if level_filter %}&level={{ level_filter }}{% endif %}" 
                                    aria-label="Next page">
                                     <i class="fas fa-angle-right"></i>
@@ -168,9 +168,7 @@
 
             <!-- Sidebar -->
             <div 
-                x-show="open" 
-                x-transition 
-                class="lg:col-span-3 mt-6 lg:mt-0 lg:block" 
+                class="hidden peer-checked:block lg:block lg:col-span-3 mt-6 lg:mt-0" 
                 id="filterSidebar">
                 <div class="bg-white rounded-xl shadow-md p-6">
                     <h3 class="text-xl font-bold text-gray-900 mb-4">Search</h3>
@@ -179,7 +177,7 @@
                             <input 
                                 type="text" 
                                 name="search" 
-                                class="w-full border border-gray-200 rounded-lg shadow-sm p-3 focus:border-red-500 focus:ring focus:ring-red-100 transition-colors" 
+                                class="w-full border border-gray-200 rounded-lg shadow-sm p-3 focus:border-red-600 focus:ring-2 focus:ring-red-100 transition-colors" 
                                 placeholder="Search courses..." 
                                 value="{{ search_query|default:'' }}" 
                                 aria-label="Search courses">
@@ -190,13 +188,13 @@
                             {% for category in categories %}
                                 <div class="flex items-center mb-2">
                                     <input 
-                                        class="h-4 w-4 text-red-500 border-gray-300 rounded focus:ring-red-500" 
+                                        class="h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-600" 
                                         type="checkbox" 
                                         name="category" 
                                         id="category-{{ category.id }}" 
                                         value="{{ category.id }}" 
                                         {% if category.id|stringformat:"s" in category_filter|join:"," %}checked{% endif %}>
-                                    <label class="ml-2 text-gray-700" for="category-{{ category.id }}">
+                                    <label class="ml-2 text-gray-700 text-sm" for="category-{{ category.id }}">
                                         {{ category.name }} <span class="text-gray-500">({{ category.course_count }})</span>
                                     </label>
                                 </div>
@@ -209,7 +207,7 @@
                         <div class="mb-4">
                             <select 
                                 name="language" 
-                                class="w-full border border-gray-200 rounded-lg shadow-sm p-3 focus:border-red-500 focus:ring focus:ring-red-100 transition-colors" 
+                                class="w-full border border-gray-200 rounded-lg shadow-sm p-3 focus:border-red-600 focus:ring-2 focus:ring-red-100 transition-colors" 
                                 aria-label="Select course language">
                                 <option value="" {% if not language_filter %}selected{% endif %}>Choose Language</option>
                                 {% for lang in language_options %}
@@ -226,7 +224,7 @@
                         <div class="mb-4">
                             <select 
                                 name="level" 
-                                class="w-full border border-gray-200 rounded-lg shadow-sm p-3 focus:border-red-500 focus:ring focus:ring-red-100 transition-colors" 
+                                class="w-full border border-gray-200 rounded-lg shadow-sm p-3 focus:border-red-600 focus:ring-2 focus:ring-red-100 transition-colors" 
                                 aria-label="Select course level">
                                 <option value="" {% if not level_filter %}selected{% endif %}>All Levels</option>
                                 <option value="basic" {% if level_filter == 'basic' %}selected{% endif %}>Basic</option>
@@ -237,7 +235,7 @@
 
                         <button 
                             type="submit" 
-                            class="w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
+                            class="w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
                             Apply Filters
                         </button>
                     </form>
@@ -247,7 +245,7 @@
     </div>
 </section>
 
-<!-- Schema Markup untuk SEO -->
+<!-- Schema Markup for SEO -->
 <script type="application/ld+json">
 {
     "@context": "https://schema.org",

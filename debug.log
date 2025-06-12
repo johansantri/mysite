@@ -1,36 +1,138 @@
-INFO 2025-06-11 09:18:12,947 views Attempting to enroll user semua in course 15, payment_model: free
-INFO 2025-06-11 09:18:12,948 views Price type found: free
-INFO 2025-06-11 09:18:12,968 models User semuake@gmail.com enrolled in free course Front End Developer
-INFO 2025-06-11 09:18:12,969 views Enroll response: {'status': 'success', 'message': 'Berhasil mendaftar ke kursus ini secara gratis.'}
-INFO 2025-06-11 09:23:50,249 views Attempting to enroll user semua in course 15, payment_model: free
-INFO 2025-06-11 09:23:50,250 views Price type found: free
-INFO 2025-06-11 09:23:50,268 models User semuake@gmail.com enrolled in free course Front End Developer
-INFO 2025-06-11 09:23:50,269 views Enroll response: {'status': 'success', 'message': 'Berhasil mendaftar ke kursus ini secara gratis.'}
-INFO 2025-06-11 09:28:29,711 views Checking licenses for user semuake@gmail.com in course Front End Developer (ID: 15): <QuerySet [{'name': 'PT Karya Maju Bersama', 'start_date': datetime.date(2025, 5, 5), 'expiry_date': datetime.date(2025, 5, 31), 'status': True}]>
-ERROR 2025-06-11 09:28:29,713 views No active license found for user semuake@gmail.com in course Front End Developer
-ERROR 2025-06-11 09:28:29,715 log Internal Server Error: /enroll/15/
-Traceback (most recent call last):
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
-    response = get_response(request)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
-    return view_func(request, *args, **kwargs)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/views/decorators/http.py", line 64, in inner
-    return func(request, *args, **kwargs)
-  File "/home/TIM/mysite/courses/views.py", line 3482, in enroll_course
-    return redirect('courses:course_lms_detail', null=course_id, slug=course.slug)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 51, in redirect
-    resolve_url(to, *args, **kwargs),
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 184, in resolve_url
-    return reverse(to, args=args, kwargs=kwargs)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/base.py", line 98, in reverse
-    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
-    raise NoReverseMatch(msg)
-django.urls.exceptions.NoReverseMatch: Reverse for 'course_lms_detail' with keyword arguments '{'null': 15, 'slug': 'front-end-developer-2026'}' not found. 1 pattern(s) tried: ['course\\-detail/(?P<id>[0-9]+)/(?P<slug>[-a-zA-Z0-9_]+)/\\Z']
-INFO 2025-06-11 09:32:02,914 views Checking licenses for user learn@learn.com in course Front End Developer (ID: 15): <QuerySet []>
-INFO 2025-06-11 09:32:02,914 views Attempting to enroll user learn in course 15, payment_model: free
-INFO 2025-06-11 09:32:02,916 views Price type found: free
-INFO 2025-06-11 09:32:02,937 models User learn@learn.com enrolled in free course Front End Developer
-INFO 2025-06-11 09:32:02,938 views Enroll response: {'status': 'success', 'message': 'Berhasil mendaftar ke kursus ini secara gratis.'}
+WARNING 2025-06-11 13:06:33,502 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 14:20:04,985 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 14:20:05,795 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 15:25:51,006 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:40,517 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:40,606 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:40,632 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:40,638 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:40,700 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:40,757 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:40,777 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:40,778 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:40,802 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:40,819 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:46,572 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:46,942 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:47,000 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:47,087 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:47,223 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:47,282 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:47,299 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:47,479 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:47,786 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:48,024 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:53,354 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:53,773 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:53,779 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:53,795 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:53,808 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:53,820 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:53,824 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:53,828 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:53,835 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:53,843 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:59,153 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:59,204 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:59,233 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:59,608 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:59,637 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:59,682 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:59,687 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:59,695 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:59,718 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:31:59,722 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:10,053 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:10,059 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:10,063 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:10,500 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:10,594 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:10,595 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:10,605 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:10,612 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:10,615 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:10,632 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:15,952 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:15,955 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:15,958 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:15,977 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:16,401 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:16,416 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:16,426 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:16,440 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:16,451 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:16,460 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:16,867 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:16,868 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:16,883 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:16,888 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:16,907 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:17,306 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:17,322 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:17,338 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:17,341 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:17,356 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:22,725 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:22,830 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:22,858 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:22,965 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:23,211 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:23,351 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:23,354 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:23,399 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:23,410 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:23,416 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:28,738 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:29,273 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:29,278 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:29,291 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:29,701 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:29,708 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:29,716 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:29,731 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:29,734 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:34,416 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:39,730 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:39,862 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:39,863 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:40,193 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:40,209 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:40,225 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:40,262 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:40,265 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:40,280 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:40,290 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:45,748 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:45,848 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:45,873 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:45,879 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:46,117 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:46,193 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:46,251 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:46,265 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:46,325 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:46,329 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:51,641 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:51,646 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:51,662 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:51,681 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:52,080 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:52,090 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:52,117 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:52,122 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:52,125 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:52,127 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:58,289 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:58,464 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:58,920 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:59,298 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:32:59,318 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:33:00,045 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:33:00,145 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:33:00,420 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:33:01,127 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 17:33:01,372 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 20:26:00,877 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-11 23:45:47,753 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-12 04:28:23,959 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-12 05:09:53,209 log Forbidden (Referer checking failed - no Referer.): /
