@@ -3364,7 +3364,6 @@ def add_course_price(request, id):
     course = None
     if hasattr(request.user, 'is_partner') and request.user.is_partner:
         course = get_object_or_404(Course, id=id, org_partner__user_id=request.user.id)
-        # Ambil existing_price hanya jika price_type tidak NULL
         existing_price = CoursePrice.objects.filter(course=course, price_type__isnull=False).first()
     else:
         messages.error(request, "Anda tidak memiliki izin untuk menambahkan harga ke kursus ini.")
@@ -3382,6 +3381,8 @@ def add_course_price(request, id):
             course_price.save()
             messages.success(request, "✅ Harga kursus berhasil disimpan!")
             print("✅ Data berhasil disimpan!")
+            # Simpan ID instance di session
+            request.session['last_course_price_id'] = course_price.id
             return redirect(reverse('courses:add_course_price', args=[course.id]))
         else:
             print("❌ Form is NOT valid")
@@ -3389,9 +3390,21 @@ def add_course_price(request, id):
             for error in form.errors.get("__all__", []):
                 messages.error(request, error)
     else:
-        form = CoursePriceForm(user=request.user, course=course, instance=existing_price)
+        # Cek apakah ada instance dari session
+        last_price_id = request.session.get('last_course_price_id')
+        if last_price_id:
+            try:
+                last_price = CoursePrice.objects.get(id=last_price_id, course=course)
+                form = CoursePriceForm(user=request.user, course=course, instance=last_price)
+            except CoursePrice.DoesNotExist:
+                form = CoursePriceForm(user=request.user, course=course, instance=existing_price)
+            # Hapus session setelah digunakan
+            request.session.pop('last_course_price_id', None)
+        else:
+            form = CoursePriceForm(user=request.user, course=course, instance=existing_price)
 
     return render(request, 'courses/course_price_form.html', {'form': form, 'course': course})
+
 
 #instrcutor profile
 def instructor_profile(request, username):

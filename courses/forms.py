@@ -146,14 +146,21 @@ class CourseRerunForm(forms.ModelForm):
 class CoursePriceForm(forms.ModelForm):
     class Meta:
         model = CoursePrice
-        fields = ['partner_price', 'discount_percent', 'price_type']  # Partner bisa isi harga, diskon, dan pilih jenis harga
+        fields = ['partner_price', 'discount_percent', 'price_type']
 
         widgets = {
             'partner_price': forms.NumberInput(attrs={
-                'class': 'form-control', 'placeholder': 'Masukkan harga...', 'min': '0', 'step': '0.01'
+                'class': 'form-control',
+                'placeholder': 'Masukkan harga...',
+                'min': '0',
+                'step': '0.01'
             }),
             'discount_percent': forms.NumberInput(attrs={
-                'class': 'form-control', 'placeholder': 'Masukkan diskon...', 'min': '0', 'max': '100', 'step': '0.01'
+                'class': 'form-control',
+                'placeholder': 'Masukkan diskon...',
+                'min': '0',
+                'max': '100',
+                'step': '0.01'
             }),
         }
 
@@ -163,7 +170,6 @@ class CoursePriceForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         if self.user:
-            # Definisikan queryset untuk price_type
             price_type_queryset = PricingType.objects.filter(name__in=[
                 'free', 'pay_for_certificate', 'pay_for_exam', 'buy_first'
             ])
@@ -175,15 +181,25 @@ class CoursePriceForm(forms.ModelForm):
                     empty_label="Pilih Jenis Harga"
                 )
                 self.fields['start_date'] = forms.DateField(
-                    widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+                    widget=forms.DateInput(attrs={
+                        'class': 'form-control',
+                        'type': 'date'
+                    }),
                     required=False
                 )
                 self.fields['duration_days'] = forms.IntegerField(
-                    widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Durasi dalam hari', 'min': '1'}),
+                    widget=forms.NumberInput(attrs={
+                        'class': 'form-control',
+                        'placeholder': 'Durasi dalam hari',
+                        'min': '1'
+                    }),
                     required=False
                 )
                 self.fields['end_date'] = forms.DateField(
-                    widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+                    widget=forms.DateInput(attrs={
+                        'class': 'form-control',
+                        'type': 'date'
+                    }),
                     required=False
                 )
             elif hasattr(self.user, 'is_partner') and self.user.is_partner:
@@ -192,11 +208,6 @@ class CoursePriceForm(forms.ModelForm):
                     widget=forms.Select(attrs={'class': 'form-control'}),
                     empty_label="Pilih Jenis Harga"
                 )
-
-                # Periksa apakah instance ada dan price_type tidak None
-                if self.instance and hasattr(self.instance, 'price_type') and self.instance.price_type and self.instance.price_type.name == 'free':
-                    self.fields['partner_price'].widget.attrs['disabled'] = 'disabled'
-                    self.fields['discount_percent'].widget.attrs['disabled'] = 'disabled'
 
     def clean(self):
         cleaned_data = super().clean()
@@ -208,18 +219,15 @@ class CoursePriceForm(forms.ModelForm):
             if not price_type:
                 raise forms.ValidationError("Jenis harga harus dipilih.")
 
-            # Validasi untuk tipe 'free'
             if price_type and price_type.name == 'free':
-                if partner_price is not None or discount_percent is not None:
-                    raise forms.ValidationError("Untuk jenis harga 'free', harga dan diskon harus kosong.")
-            # Validasi untuk tipe harga lainnya
+                cleaned_data['partner_price'] = 0
+                cleaned_data['discount_percent'] = 0
             else:
                 if partner_price is None or partner_price <= 0:
                     raise forms.ValidationError("Harga harus diisi dengan nilai lebih dari 0 untuk jenis harga berbayar.")
                 if discount_percent is None:
                     cleaned_data['discount_percent'] = 0
 
-            # Cek apakah harga dengan price_type ini sudah ada
             existing_price = CoursePrice.objects.filter(course=self.course, price_type=price_type).first()
             if existing_price and existing_price.pk != self.instance.pk:
                 raise forms.ValidationError(
@@ -229,28 +237,26 @@ class CoursePriceForm(forms.ModelForm):
         return cleaned_data
 
     def save(self, commit=True):
-        """Tetapkan nilai otomatis sebelum menyimpan"""
         instance = super().save(commit=False)
 
         if hasattr(self.user, 'is_partner') and self.user.is_partner:
             if not instance.partner_id:
-                instance.partner = self.user.partner_user  # OneToOneField ke model Partner
-
+                instance.partner = self.user.partner_user
             instance.start_date = date.today()
             instance.duration_days = None
             if self.course:
                 instance.end_date = self.course.end_date
 
-            # Jika tipe harga 'free', set partner_price dan discount_percent ke None
             if instance.price_type.name == 'free':
-                instance.partner_price = None
-                instance.discount_percent = None
+                instance.partner_price = 0
+                instance.discount_percent = 0
 
         instance.calculate_prices()
 
         if commit:
             instance.save()
         return instance
+
 
 class CourseInstructorForm(forms.ModelForm):
     instructor = forms.ModelChoiceField(
