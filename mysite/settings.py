@@ -74,12 +74,14 @@ INSTALLED_APPS = [
     'audit',#audit user
     'payments',#semua pembayaran
     'django.contrib.humanize',
+    'axes',#LOGIN LIMIT
  
     
 ]
 
 MIDDLEWARE = [
     #'django.middleware.security.SecurityMiddleware',
+    'axes.middleware.AxesMiddleware',
     'csp.middleware.CSPMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -591,4 +593,17 @@ CONTENT_SECURITY_POLICY = {
     }
 }
 
+
+# settings.py
+AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+# settings.py
+
+# settings.py
+
+AXES_FAILURE_LIMIT = 5
+AXES_COOLOFF_TIME = 1  # 1 jam
+AXES_LOCKOUT_PARAMETERS = ['username', 'ip_address']  # ganti yang deprecated
 

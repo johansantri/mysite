@@ -1269,10 +1269,20 @@ def logout_view(request):
 
 
 # Login view
-@ratelimit(key='ip', rate='100/h')
+@ratelimit(key='ip', rate='5/m', block=False)  # Batasi misal 5 kali per menit
 def login_view(request):
+    was_limited = getattr(request, 'limited', False)
+
     if request.method == 'POST':
         form = LoginForm(request.POST)
+
+        # Jika terlalu banyak request, tolak
+        if was_limited:
+            return render(request, 'authentication/login.html', {
+                'form': form,
+                'error': 'Terlalu banyak percobaan login. Coba lagi nanti.'
+            })
+
         if form.is_valid():
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
@@ -1281,13 +1291,12 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 next_url = request.POST.get('next') or request.GET.get('next')
-                if next_url:
-                    return redirect(next_url)
-                #return redirect('home') 
-                return redirect('authentication:home')  # Redirect to home after login
+                return redirect(next_url or 'authentication:home')
             else:
-                return render(request, 'authentication/login.html', {'form': form, 'error': 'Invalid email or password'})
-
+                return render(request, 'authentication/login.html', {
+                    'form': form,
+                    'error': 'Email atau kata sandi salah.'
+                })
     else:
         form = LoginForm()
 
