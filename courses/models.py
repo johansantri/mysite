@@ -219,7 +219,7 @@ class Course(models.Model):
     start_enrol = models.DateField(null=True)
     end_enrol = models.DateField(null=True)
     payment_model = models.CharField(max_length=20, choices=PAYMENT_MODEL_CHOICES, default='buy_first')
-
+    view_count = models.PositiveIntegerField(default=0)  # total view
 
     class Meta:
         indexes = [
@@ -457,7 +457,13 @@ class Course(models.Model):
     def has_been_rated_by(self, user):
         return self.ratings.filter(user=user).exists()
 
+class CourseViewLog(models.Model):
+    course = models.ForeignKey('Course', on_delete=models.CASCADE, related_name='view_logs')
+    date = models.DateField(default=timezone.now)
+    count = models.PositiveIntegerField(default=1)
 
+    class Meta:
+        unique_together = ('course', 'date')
 class PricingType(models.Model):
     name = models.CharField(max_length=50, unique=True)  # Nama pricing type (contoh: 'Regular Price', 'Discount')
     description = models.TextField(blank=True, null=True)  # Deskripsi opsional

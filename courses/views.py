@@ -14,7 +14,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import MicroCredentialCommentForm,MicroCredentialReviewForm,LTIExternalToolForm,CoursePriceForm,CourseRatingForm,SosPostForm,MicroCredentialForm,AskOraForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from .utils import user_has_passed_course,check_for_blacklisted_keywords,is_suspicious
 from django.http import JsonResponse
-from .models import LastAccessCourse,MicroClaim,UserMicroCredential,MicroCredentialComment,MicroCredentialReview,UserMicroProgress,SearchHistory,Certificate,LTIExternalTool,Course,CourseRating,Like,SosPost,Hashtag,UserProfile,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
+from .models import LastAccessCourse,MicroClaim,CourseViewLog,UserMicroCredential,MicroCredentialComment,MicroCredentialReview,UserMicroProgress,SearchHistory,Certificate,LTIExternalTool,Course,CourseRating,Like,SosPost,Hashtag,UserProfile,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
 from authentication.models import CustomUser, Universiti
 from blog.models import BlogPost
 from licensing.models import License
@@ -3586,51 +3586,55 @@ def draft_lms(request, id):
 
 
 def course_lms_detail(request, id, slug):
-    # Fetch the course by id and slug
+    # Ambil course berdasarkan id dan slug
     course = get_object_or_404(Course, id=id, slug=slug)
 
-    # Get the 'published' CourseStatus
+    # Ambil status published
     try:
         published_status = CourseStatus.objects.get(status='published')
     except CourseStatus.DoesNotExist:
-        return redirect('/')  # Redirect if the 'published' status doesn't exist
+        return redirect('/')
 
-    # Check enrollment
+    # Cek apakah user sudah enroll
     is_enrolled = False
     if request.user.is_authenticated:
         is_enrolled = course.enrollments.filter(user=request.user).exists()
 
-    # Restrict access only for users not enrolled and course is not available
+    # Batasi akses jika belum enroll dan kursus belum publish atau enrol sudah berakhir
     if not is_enrolled and (course.status_course != published_status or course.end_enrol < timezone.now().date()):
         return redirect('/')
 
-    # Get similar courses based on the category and level (only published and active courses)
+    # ✅ Tambahkan view count total
+    Course.objects.filter(id=course.id).update(view_count=F('view_count') + 1)
+
+    # ✅ Tambahkan log harian pengunjung
+    today = timezone.now().date()
+    view_log, created = CourseViewLog.objects.get_or_create(course=course, date=today)
+    if not created:
+        CourseViewLog.objects.filter(pk=view_log.pk).update(count=F('count') + 1)
+
+    # Ambil kursus serupa
     similar_courses = Course.objects.filter(
         category=course.category,
         status_course=published_status,
         end_enrol__gte=timezone.now().date()
     ).exclude(id=course.id)[:5]
 
-    # Get all comments for the course, excluding replies (parent is None)
+    # Ambil komentar utama
     comments = CourseComment.objects.filter(course=course, parent=None).order_by('-created_at')
-
     for comment in comments:
         replies = comment.replies.all().order_by('-created_at')
         for reply in replies:
-            sub_replies = reply.replies.all().order_by('-created_at')
-            reply.sub_replies = sub_replies
+            reply.sub_replies = reply.replies.all().order_by('-created_at')
 
-    # Fetch sections with related materials for the current course
-    section_data = Section.objects.filter(
-        parent=None, courses=course
-    ).prefetch_related('materials')
-
+    # Data section & material
+    section_data = Section.objects.filter(parent=None, courses=course).prefetch_related('materials')
     total_sections = section_data.count()
     total_materials = sum(section.materials.count() for section in section_data)
     total_students = course.enrollments.count()
     total_effort_hours = course.hour if course.hour else "N/A"
 
-    # Perhitungan untuk semua kursus milik instruktur
+    # Statistik untuk semua kursus milik instruktur
     instructor = course.instructor
     instructor_courses = Course.objects.filter(
         instructor=instructor,
@@ -3640,39 +3644,26 @@ def course_lms_detail(request, id, slug):
 
     instructor_total_courses = instructor_courses.count()
     instructor_total_students = sum(c.enrollments.count() for c in instructor_courses)
-
-    instructor_total_effort_hours = 0
-    for c in instructor_courses:
-        if c.hour and str(c.hour).isdigit():
-            instructor_total_effort_hours += int(c.hour)
-
-    instructor_sections = Section.objects.filter(
-        courses__in=instructor_courses, parent=None
-    ).prefetch_related('materials')
+    instructor_total_effort_hours = sum(int(c.hour) for c in instructor_courses if c.hour and str(c.hour).isdigit())
+    instructor_sections = Section.objects.filter(courses__in=instructor_courses, parent=None).prefetch_related('materials')
     instructor_total_sections = instructor_sections.count()
-    instructor_total_materials = sum(section.materials.count() for section in instructor_sections)
+    instructor_total_materials = sum(s.materials.count() for s in instructor_sections)
 
-    # Reviews and ratings
+    # Review dan rating
     reviews = CourseRating.objects.filter(course=course).order_by('-created_at')
     paginator = Paginator(reviews, 5)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    if request.user.is_authenticated:
-        user_has_rated = CourseRating.objects.filter(user=request.user, course=course).exists()
-    else:
-        user_has_rated = False
+    user_has_rated = request.user.is_authenticated and CourseRating.objects.filter(user=request.user, course=course).exists()
 
     average_rating = course.average_rating
     full_stars = int(average_rating)
     half_star = (average_rating % 1) >= 0.5
     empty_stars = 5 - (full_stars + (1 if half_star else 0))
 
-    full_star_range = range(full_stars)
-    empty_star_range = range(empty_stars)
-
-
     course_price = course.get_course_price()
+
     return render(request, 'home/course_detail.html', {
         'course': course,
         'is_enrolled': is_enrolled,
@@ -3692,9 +3683,9 @@ def course_lms_detail(request, id, slug):
         'reviews': page_obj,
         'user_has_rated': user_has_rated,
         'range': range(1, 6),
-        'full_star_range': full_star_range,
+        'full_star_range': range(full_stars),
         'half_star': half_star,
-        'empty_star_range': empty_star_range,
+        'empty_star_range': range(empty_stars),
         'average_rating': average_rating,
         'course_price': course_price,
     })
