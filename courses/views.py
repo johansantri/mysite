@@ -2276,26 +2276,41 @@ def add_comment(request, material_id):
 #add coment course
 
 
+@require_POST  # Hanya izinkan metode POST
+@ratelimit(key='ip', rate='10/m', block=True)  # Batasi 10 request per menit per IP
+@csrf_protect  # Pastikan CSRF protection aktif
 def add_comment_course(request, course_id):
-    #cek akses
+    # Cek akses
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
     
-    course = get_object_or_404(Course, id=course_id)
+    try:
+        course = get_object_or_404(Course, id=course_id)
+    except Http404:
+        messages.error(request, "Course not found.")
+        return redirect('courses:course_list')
 
     if request.method == 'POST':
         # Mengecek apakah request mencurigakan (bot detection)
         if is_suspicious(request):
             messages.warning(request, "Suspicious activity detected. Comment not posted.")
-            return redirect('course_detail', course_id=course.id)
+            return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
 
-        content = request.POST.get('content')
+        content = request.POST.get('content', '').strip()  # Ambil dan bersihkan input
+        if not content:  # Validasi input kosong
+            messages.error(request, "Comment cannot be empty.")
+            return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
+
         parent_id = request.POST.get('parent_id')
         parent_comment = None
 
         # Menentukan apakah ini komentar balasan
         if parent_id:
-            parent_comment = get_object_or_404(CourseComment, id=parent_id)
+            try:
+                parent_comment = get_object_or_404(CourseComment, id=parent_id, course=course)
+            except Http404:
+                messages.error(request, "Invalid parent comment.")
+                return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
 
         # Membuat objek komentar
         comment = CourseComment(
@@ -2315,11 +2330,29 @@ def add_comment_course(request, course_id):
             messages.warning(request, "You are posting too frequently. Please wait a moment before posting again.")
             return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
 
-        comment.save()
+        # Validasi dan simpan komentar
+        try:
+            comment.full_clean()  # Validasi model Django
+            comment.save()
+            messages.success(request, "Comment posted successfully!")
+        except ValidationError as e:
+            messages.error(request, f"Error posting comment: {e}")
+            return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
 
-        return redirect(request.META.get('HTTP_REFERER'))  # Kembali ke halaman sebelumnya
+        # Redirect aman dengan validasi referer
+        referer = request.META.get('HTTP_REFERER')
+        if referer and course_id in referer:
+            return redirect(referer)
+        return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
 
     return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
+
+# Fungsi contoh untuk is_suspicious (harus didefinisikan)
+def is_suspicious(request):
+    # Logika deteksi bot (misalnya, cek header, CAPTCHA, dll.)
+    # Contoh sederhana: return True jika tidak ada user agent
+    user_agent = request.META.get('HTTP_USER_AGENT', '')
+    return not user_agent or 'bot' in user_agent.lower()
 
 
 

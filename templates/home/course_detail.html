@@ -1,6 +1,20 @@
 {% extends 'home/base.html' %}
 {% load humanize %}
 {% load static %}
+{% block meta %}
+    <meta name="description" content="{{ course.sort_description|default:'Pelajari kursus menarik ini di LMSKu.' }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ course.course_name }} - LMSKu">
+    <meta name="twitter:description" content="{{ course.sort_description|default:'Pelajari kursus menarik ini di LMSKu.' }}">
+    <meta name="twitter:image" content="{% if course.image %}{{ course.image.url }}{% else %}{% static 'assets/img/icon/certificate.svg' %}{% endif %}">
+    <meta property="og:title" content="{{ course.course_name }} - LMSKu">
+    <meta property="og:description" content="{{ course.sort_description|default:'Pelajari kursus menarik ini di LMSKu.' }}">
+    <meta property="og:image" content="{% if course.image %}{{ course.image.url }}{% else %}{% static 'assets/img/icon/certificate.svg' %}{% endif %}">
+    <meta property="og:image:width" content="{% if course.image %}1200{% else %}512{% endif %}">
+    <meta property="og:image:height" content="{% if course.image %}630{% else %}512{% endif %}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:type" content="article">
+{% endblock %}
 {% block content %}
 
 <!-- Course Content Section -->
@@ -192,7 +206,7 @@
                         </div>
                         <div class="flex items-center">
                             <i class="fas fa-book text-red-500 mr-2"></i>
-                            <span class="font-medium">{{ instructor_total_sections }} Sections ({{ instructor_total_materials }} Materials)</span>
+                            <span class="font-medium">{{ instructor_total_sections }} Sections </span>
                         </div>
                         <div class="flex items-center">
                             <i class="fas fa-clock text-red-500 mr-2"></i>
@@ -291,6 +305,7 @@
                     <h5 class="text-lg font-bold text-gray-900 mb-4">Post a Comment</h5>
                     <form method="POST" action="{% url 'courses:add_comment_course' course_id=course.id %}">
                         {% csrf_token %}
+                        
                         <div class="mb-3">
                             <textarea name="content" rows="4" class="w-full border border-gray-200 rounded-xl shadow-sm p-3 focus:border-red-500 focus:ring focus:ring-red-100 transition-colors" placeholder="Your Comments" required></textarea>
                         </div>

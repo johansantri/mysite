@@ -7,6 +7,7 @@ from io import BytesIO
 from PIL import Image  # Pastikan ini ada
 register = template.Library()
 
+
 @register.filter
 def get_item(dictionary, key):
     """Filter untuk mengambil nilai dari dictionary berdasarkan key"""

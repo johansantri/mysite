@@ -8,7 +8,7 @@ import re
 from .models import CustomUser
 from django.core.exceptions import ValidationError
 import imghdr
-from captcha.fields import CaptchaField
+
 from django.core.mail import EmailMultiAlternatives
 from django.template import loader
 from django.utils.translation import gettext_lazy as _

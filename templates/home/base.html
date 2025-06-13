@@ -14,6 +14,9 @@
     <meta property="og:image" content="{% static 'assets/img/icon/certificate.svg' %}">
     <meta property="og:url" content="https://ini.icei.ac.id/">
     <meta property="og:type" content="website">
+    <!-- Blok meta untuk ditimpa oleh template anak -->
+    {% block meta %}
+    {% endblock %}
     <title>LMSKu - Home</title>
     <link rel="icon" href="{% static 'assets/img/icon/certificate.svg' %}" sizes="any" type="image/svg+xml">
     

@@ -21,6 +21,10 @@ import xml.etree.ElementTree as ET
 import hashlib
 logger = logging.getLogger(__name__)
 
+
+
+
+
 class MicroCredentialCommentForm(forms.ModelForm):
     class Meta:
         model = MicroCredentialComment

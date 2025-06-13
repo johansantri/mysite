@@ -1,11 +1,28 @@
 {% extends 'home/base.html' %}
 {% load static blog_filters %}
 
-{% block extra_head %}
-<meta name="description" content="{{ post.meta_description|default:post.title }}">
-<meta name="keywords" content="{{ post.tags.all|join:', ' }}, {{ post.category.name|default:'blog' }}, education, technology">
-<meta name="robots" content="index, follow">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+{% block meta %}
+    <meta name="description" content="{{ post.meta_description|default:post.title }}">
+    <meta name="keywords" content="{{ post.tags.all|join:', ' }}, {{ post.category.name|default:'blog' }}, education, technology">
+    <meta name="robots" content="index, follow">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="{{ post.title }} - LMSKu Blog">
+    <meta property="og:description" content="{{ post.meta_description|default:post.title|truncatewords:20 }}">
+    <meta property="og:image" content="{% if post.image %}{{ post.image.url }}{% else %}{% static 'assets/img/icon/certificate.svg' %}{% endif %}">
+    <meta property="og:image:width" content="{% if post.image %}1200{% else %}512{% endif %}">
+    <meta property="og:image:height" content="{% if post.image %}630{% else %}512{% endif %}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="LMSKu">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ post.title }} - LMSKu Blog">
+    <meta name="twitter:description" content="{{ post.meta_description|default:post.title|truncatewords:20 }}">
+    <meta name="twitter:image" content="{% if post.image %}{{ post.image.url }}{% else %}{% static 'assets/img/icon/certificate.svg' %}{% endif %}">
 {% endblock %}
 
 {% block content %}
@@ -50,16 +67,26 @@
             <div class="mt-4 mb-4 text-gray-800 leading-relaxed">{{ post.content|safe }}</div>
 
             <!-- Share Buttons -->
-            <div class="flex gap-2">
-              <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ post.title }}"
-                 class="px-3 py-1 border border-blue-600 text-blue-600 rounded-lg text-sm hover:bg-blue-600 hover:text-white transition-all duration-300">
-                Share on Twitter
-              </a>
-              <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}"
-                 class="px-3 py-1 border border-blue-600 text-blue-600 rounded-lg text-sm hover:bg-blue-600 hover:text-white transition-all duration-300">
-                Share on Facebook
-              </a>
-            </div>
+              <div class="flex gap-2 items-center justify-center mt-4">
+                <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ post.title }}"
+                  class="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-blue-600 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+                  target="_blank" rel="noopener noreferrer">
+                  <i class="fab fa-twitter"></i>
+                  <span class="text-sm font-medium">Twitter</span>
+                </a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}"
+                  class="flex items-center gap-2 px-4 py-2 bg-red-700 text-white rounded-lg shadow-md hover:bg-blue-800 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+                  target="_blank" rel="noopener noreferrer">
+                  <i class="fab fa-facebook-f"></i>
+                  <span class="text-sm font-medium">Facebook</span>
+                </a>
+                <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri }}&title={{ post.title }}&summary={{ post.meta_description|default:post.title|truncatewords:20 }}"
+                  class="flex items-center gap-2 px-4 py-2 bg-red-800 text-white rounded-lg shadow-md hover:bg-blue-900 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+                  target="_blank" rel="noopener noreferrer">
+                  <i class="fab fa-linkedin-in"></i>
+                  <span class="text-sm font-medium">LinkedIn</span>
+                </a>
+              </div>
           </div>
         </div>
 
