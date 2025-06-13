@@ -20,7 +20,7 @@ from django.contrib.auth.forms import PasswordResetForm,SetPasswordForm
 from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 from django.urls import reverse
 from django.core.mail import send_mail
-from authentication.forms import  UserProfileForm, UserPhoto
+from authentication.forms import  UserProfileForm, UserPhoto,PasswordResetForms
 from .models import Profile
 from courses.models import LastAccessCourse,SearchHistory,Instructor,CourseRating,Partner,Assessment,GradeRange,AssessmentRead,Material, MaterialRead, Submission,AssessmentScore,QuestionAnswer,CourseStatus,Enrollment,MicroCredential, MicroCredentialEnrollment,Course, Enrollment, Category,CourseProgress
 from django.http import HttpResponse,JsonResponse
@@ -1356,7 +1356,7 @@ def activate_account(request, uidb64, token):
 @ratelimit(key='ip', rate='100/h')
 # Custom Password Reset View
 def custom_password_reset(request):
-    form = PasswordResetForm(request.POST or None)
+    form = PasswordResetForms(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
         email = form.cleaned_data['email']
