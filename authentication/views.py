@@ -203,7 +203,7 @@ def validate_level(level):
     raise ValidationError(f"Invalid level: {level}")
 
 @custom_ratelimit
-@cache_page(60 * 30)  # Increased to 30 minutes
+@cache_page(60 * 30)  # Cache for 30 minutes
 @vary_on_headers('Accept-Language')
 def course_list(request):
     try:
@@ -291,7 +291,7 @@ def course_list(request):
 
             courses = courses.annotate(
                 avg_rating=Avg('ratings__rating', default=0),
-                enrollment_count=Count('enrollments'),
+                enrollment_count=Count('enrollments', distinct=True),  # Tambahkan distinct=True
                 review_count=Count('ratings'),
                 language_display=Case(
                     *[When(language=k, then=Value(v)) for k, v in Course.choice_language],
@@ -343,7 +343,6 @@ def course_list(request):
         cache_key_languages = 'language_options'
         language_options = cache.get(cache_key_languages)
         if not language_options:
-            # Convert set to list for slicing
             language_codes = sorted(set(c['language'] for c in courses if c['language']))[:50]
             all_languages = dict(Course.choice_language)
             language_options = [{'code': code, 'name': all_languages.get(code, code)} for code in language_codes]
@@ -422,8 +421,6 @@ def course_list(request):
     except Exception as e:
         logger.exception(f"Unexpected error in course_list: {str(e)}")
         return HttpResponseServerError("Terjadi kesalahan yang tidak terduga.")
-
-
 
 
 #detailuser
@@ -1023,11 +1020,12 @@ def popular_courses(request):
     except CourseStatus.DoesNotExist:
         return JsonResponse({'error': 'Published status not found.'}, status=404)
 
+    # Query dengan distinct=True pada num_enrollments untuk menghindari duplikasi
     courses = Course.objects.filter(
         status_course=published_status,
         end_date__gte=now
     ).annotate(
-        num_enrollments=Count('enrollments'),
+        num_enrollments=Count('enrollments', distinct=True),
         avg_rating=Coalesce(Avg('ratings__rating'), 0.0),
         num_ratings=Count('ratings'),
         unique_raters=Count('ratings__user', distinct=True)
