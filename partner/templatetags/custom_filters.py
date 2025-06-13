@@ -23,3 +23,8 @@ def render_comment_tree(context, comment):
         'replies': comment.get_replies(),
         'request': request,
     }
+
+#Untuk mengambil nilai list dalam ChartJS:
+@register.filter
+def pluck(value, key):
+    return [v[key] for v in value]

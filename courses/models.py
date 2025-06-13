@@ -472,7 +472,17 @@ class CourseViewIP(models.Model):
 
     class Meta:
         unique_together = ('course', 'ip_address')
-        
+
+
+
+class UserActivityLog(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    activity_type = models.CharField(max_length=100)  # ex: "view_course", "login", etc.
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.user} - {self.activity_type} - {self.timestamp}'
+            
 class PricingType(models.Model):
     name = models.CharField(max_length=50, unique=True)  # Nama pricing type (contoh: 'Regular Price', 'Discount')
     description = models.TextField(blank=True, null=True)  # Deskripsi opsional

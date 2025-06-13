@@ -16,7 +16,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import MicroCredentialCommentForm,MicroCredentialReviewForm,LTIExternalToolForm,CoursePriceForm,CourseRatingForm,SosPostForm,MicroCredentialForm,AskOraForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from .utils import user_has_passed_course,check_for_blacklisted_keywords,is_suspicious
 from django.http import JsonResponse
-from .models import LastAccessCourse,MicroClaim,CourseViewIP,CourseViewLog,UserMicroCredential,MicroCredentialComment,MicroCredentialReview,UserMicroProgress,SearchHistory,Certificate,LTIExternalTool,Course,CourseRating,Like,SosPost,Hashtag,UserProfile,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
+from .models import LastAccessCourse,UserActivityLog,MicroClaim,CourseViewIP,CourseViewLog,UserMicroCredential,MicroCredentialComment,MicroCredentialReview,UserMicroProgress,SearchHistory,Certificate,LTIExternalTool,Course,CourseRating,Like,SosPost,Hashtag,UserProfile,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
 from authentication.models import CustomUser, Universiti
 from blog.models import BlogPost
 from licensing.models import License
@@ -2623,6 +2623,8 @@ def course_learn(request, username, slug):
     if not request.user.is_authenticated:
         logger.info(f"Unauthenticated user attempted to access course {slug}")
         return redirect("/login/?next=%s" % request.path)
+    if request.user.is_authenticated:
+        UserActivityLog.objects.create(user=request.user, activity_type='course_learn')
 
     course = get_object_or_404(Course, slug=slug)
 
@@ -5117,6 +5119,8 @@ def studio(request, id):
     # Check if the user is authenticated
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
+    if request.user.is_authenticated:
+        UserActivityLog.objects.create(user=request.user, activity_type='course_learn')
     user = request.user
     course = None
 

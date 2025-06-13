@@ -184,7 +184,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '<your-client-secret>'
 SOCIALACCOUNT_LOGIN_ON_GET=True
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Jakarta'
 
 USE_I18N = True
 

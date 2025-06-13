@@ -5,11 +5,92 @@ from courses.forms import PartnerFormUpdate
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator,EmptyPage, PageNotAnInteger
 from django.http import HttpResponseForbidden
-from courses.models import Course, Enrollment,CourseRating,CourseComment
+from courses.models import Course, Enrollment,CourseRating,CourseComment,CourseViewLog,UserActivityLog
 from authentication.models import CustomUser
 from collections import defaultdict
 from django.db.models import Avg, Count
 from django.contrib import messages
+from datetime import timedelta
+from django.utils.timezone import now
+from django.http import Http404
+from django.db.models.functions import ExtractHour, ExtractWeekDay
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.views.decorators.cache import cache_page
+import json
+
+
+@login_required
+@user_passes_test(lambda u: u.is_partner or u.is_staff)
+
+def heatmap_view(request):
+    qs = (
+        UserActivityLog.objects
+        .annotate(hour=ExtractHour('timestamp'), weekday=ExtractWeekDay('timestamp'))
+        .values('hour', 'weekday')
+        .annotate(count=Count('id'))
+    )
+
+    heatmap_data = []
+    for item in qs:
+        heatmap_data.append({
+            "x": item['hour'],           # 0–23
+            "y": item['weekday'] - 1,    # Ubah dari 1=Sunday ke 0-index
+            "v": item['count'],
+        })
+
+    return render(request, 'partner/heatmap.html', {
+        'heatmap_data': json.dumps(heatmap_data),
+    })
+
+@login_required
+def partner_analytics_view(request):
+    # Cek apakah user adalah partner
+    if not request.user.is_partner:
+        raise Http404("You are not authorized to access this page.")
+
+    # Ambil instance Partner melalui relasi OneToOneField
+    partner = getattr(request.user, 'partner_user', None)
+    if not partner:
+        raise Http404("Partner profile not found.")
+
+    # Ambil kursus milik partner
+    courses = Course.objects.filter(org_partner=partner).only('id', 'course_name')
+    
+    # Ambil log view untuk kursus-kursus tersebut
+    logs = CourseViewLog.objects.filter(course__in=courses).select_related('course')
+
+    # Waktu referensi
+    today = now().date()
+    week_ago = today - timedelta(days=7)
+    month_ago = today - timedelta(days=30)
+
+    # Total view dalam 7 hari dan 30 hari terakhir
+    weekly_views = logs.filter(date__gte=week_ago).aggregate(total=Count('count'))['total'] or 0
+    monthly_views = logs.filter(date__gte=month_ago).aggregate(total=Count('count'))['total'] or 0
+
+    # View per course (limit 10 besar agar chart ringan)
+    view_by_course = (
+        logs.values('course__course_name')
+        .annotate(total=Count('count'))
+        .order_by('-total')[:10]
+    )
+
+    # Komentar per course (limit 10 besar)
+    comment_by_course = (
+        CourseComment.objects.filter(course__in=courses)
+        .values('course__course_name')
+        .annotate(total=Count('id'))
+        .order_by('-total')[:10]
+    )
+
+    # Kirim data ke template
+    return render(request, 'partner/analytics.html', {
+        'weekly_views': weekly_views,
+        'monthly_views': monthly_views,
+        'view_by_course': view_by_course,
+        'comment_by_course': comment_by_course,
+    })
+
 
 @login_required
 def partner_course_comments(request):

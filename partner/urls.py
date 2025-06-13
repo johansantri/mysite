@@ -12,5 +12,7 @@ urlpatterns = [
     path('course-detail/<int:course_id>/comment/reply/<int:comment_id>/', views.post_comment_reply, name='post_comment_reply'),
     path('course-comments/', views.partner_course_comments, name='partner_course_comments'),
     path('explore/', views.explore, name='explore'),
+    path('analytics/', views.partner_analytics_view, name='partner_analytics'),
+    path('analytics/heatmap/', views.heatmap_view, name='heatmap'),
    
 ]
