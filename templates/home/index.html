@@ -107,35 +107,18 @@
 
 
 
-<section class="py-10 bg-white" aria-labelledby="partners-heading">
-    <div class="container mx-auto px-4">
-        <h2 id="partners-heading" class="text-xl md:text-3xl font-bold mb-6 text-center">Our Trusted Partners</h2>
-        <div class="overflow-hidden">
-            <div class="marquee-container">
-                <div class="flex space-x-6">
+    <section class="py-10" aria-labelledby="partners-heading">
+        <div class="container mx-auto px-4">
+            <h2 id="partners-heading" class="text-xl md:text-3xl font-bold mb-6 text-center">Our Trusted Partners</h2>
+            <div class="overflow-hidden">
+                <div class="grid grid-cols-4 gap-5 max-w-5xl mx-auto">
                     {% for partner in partners %}
-                        <div class="flex-none w-60 bg-gray-50 p-3 rounded-xl shadow-md hover:shadow-lg transition-all">
+                        <div class="flex-none w-48 bg-gray-50 p-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
                             <a href="{% url 'courses:org_partner' partner.name.slug %}" class="no-underline">
                                 {% if partner.logo %}
-                                    <img src="{{ partner.logo.url }}" alt="Logo {{ partner.name.name }}" class="partner-logo mx-auto h-14 object-contain" loading="lazy" width="150" height="60">
+                                    <img src="{{ partner.logo.url }}" alt="Logo {{ partner.name.name }}" class="h-14 w-auto mx-auto object-contain" loading="lazy">
                                 {% else %}
-                                    <img src="https://via.placeholder.com/150x60?text={{ partner.name.name|urlencode }}" alt="{{ partner.name.name }}" class="partner-logo mx-auto h-14 object-contain" loading="lazy" width="150" height="60">
-                                {% endif %}
-                                <p class="text-center text-xs mt-2 text-gray-600">{{ partner.name.name }}</p>
-                            </a>
-                        </div>
-                    {% endfor %}
-                </div>
-
-                {# Duplicate the flex container for infinite marquee effect #}
-                <div class="flex space-x-6">
-                    {% for partner in partners %}
-                        <div class="flex-none w-60 bg-gray-50 p-3 rounded-xl shadow-md hover:shadow-lg transition-all">
-                            <a href="{% url 'courses:org_partner' partner.name.slug %}" class="no-underline">
-                                {% if partner.logo %}
-                                    <img src="{{ partner.logo.url }}" alt="Logo {{ partner.name.name }}" class="partner-logo mx-auto h-14 object-contain" loading="lazy" width="150" height="60">
-                                {% else %}
-                                    <img src="https://via.placeholder.com/150x60?text={{ partner.name.name|urlencode }}" alt="{{ partner.name.name }}" class="partner-logo mx-auto h-14 object-contain" loading="lazy" width="150" height="60">
+                                    <img src="https://via.placeholder.com/150x60?text={{ partner.name.name|urlencode }}" alt="{{ partner.name.name }}" class="h-14 w-auto mx-auto object-contain" loading="lazy">
                                 {% endif %}
                                 <p class="text-center text-xs mt-2 text-gray-600">{{ partner.name.name }}</p>
                             </a>
@@ -144,8 +127,7 @@
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
 
 <!-- Micro Courses Section -->
