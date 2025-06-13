@@ -203,7 +203,7 @@ def validate_level(level):
     raise ValidationError(f"Invalid level: {level}")
 
 @custom_ratelimit
-@cache_page(60 * 30)  # Cache for 30 minutes
+@cache_page(60 * 5)  # Reduced cache to 5 minutes for faster updates
 @vary_on_headers('Accept-Language')
 def course_list(request):
     try:
@@ -291,8 +291,8 @@ def course_list(request):
 
             courses = courses.annotate(
                 avg_rating=Avg('ratings__rating', default=0),
-                enrollment_count=Count('enrollments', distinct=True),  # Tambahkan distinct=True
-                review_count=Count('ratings'),
+                enrollment_count=Count('enrollments', distinct=True),
+                review_count=Count('ratings', distinct=True),  # Added distinct=True to avoid duplicates
                 language_display=Case(
                     *[When(language=k, then=Value(v)) for k, v in Course.choice_language],
                     output_field=CharField(),
@@ -305,14 +305,14 @@ def course_list(request):
                 'category__name', 'language', 'level', 'avg_rating', 'enrollment_count', 'review_count', 'language_display'
             )
             courses = list(courses)
-            cache.set(cache_key_query, courses, 60 * 30)
+            cache.set(cache_key_query, courses, 60 * 5)  # Reduced to 5 minutes
 
         # Cache total courses
         cache_key_total = f'course_count_{category_filter}_{language_filter}_{level_filter}_{search_query}'
         total_courses = cache.get(cache_key_total)
         if total_courses is None:
             total_courses = len(courses)
-            cache.set(cache_key_total, total_courses, 60 * 30)
+            cache.set(cache_key_total, total_courses, 60 * 5)
 
         # Pagination
         paginator = Paginator(courses, 9)
@@ -324,10 +324,10 @@ def course_list(request):
         else:
             try:
                 page_obj = paginator.get_page(page_number)
-                cache.set(cache_key_page, list(page_obj.object_list), 60 * 30)
+                cache.set(cache_key_page, list(page_obj.object_list), 60 * 5)
             except (PageNotAnInteger, EmptyPage):
                 page_obj = paginator.get_page(1)
-                cache.set(cache_key_page, list(page_obj.object_list), 60 * 30)
+                cache.set(cache_key_page, list(page_obj.object_list), 60 * 5)
 
         # Cache categories
         cache_key_categories = 'categories'
@@ -406,7 +406,7 @@ def course_list(request):
             return HttpResponse(cached_response)
 
         response = render(request, 'home/course_list.html', context)
-        cache.set(cache_key_response, response.content, 60 * 30)
+        cache.set(cache_key_response, response.content, 60 * 5)  # Reduced to 5 minutes
         return response
 
     except CourseStatus.DoesNotExist:
