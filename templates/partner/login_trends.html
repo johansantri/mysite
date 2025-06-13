@@ -1,0 +1,216 @@
+{% extends 'home/tes.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-10">
+      <div class="card shadow-lg border-0 rounded-3">
+        <div class="card-body p-4 p-md-5">
+          <h2 class="card-title text-center mb-3 text-primary fw-bold">
+            <i class="bi bi-graph-up-arrow me-2"></i> Login Trends
+          </h2>
+          <p class="text-center text-muted mb-4 lead">
+            Analyze login patterns over time and by day of the week
+          </p>
+
+          <!-- Tombol Kembali -->
+          <div class="d-flex justify-content-center mb-4">
+            <a href="{% url 'partner:partner_analytics' %}" class="btn btn-outline-primary">
+              <i class="bi bi-arrow-left me-2"></i>Back to Analytics
+            </a>
+          </div>
+
+          <!-- Grafik Login per Hari -->
+          <div class="chart-container position-relative rounded bg-light p-3 mb-4">
+            <h5 class="text-center text-muted mb-3">Logins per Day</h5>
+            <canvas id="loginsPerDayChart"></canvas>
+          </div>
+
+          <!-- Grafik Login per Hari dalam Seminggu -->
+          <div class="chart-container position-relative rounded bg-light p-3">
+            <h5 class="text-center text-muted mb-3">Logins by Day of Week</h5>
+            <canvas id="loginsByDayChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<!-- Script lokal Chart.js -->
+<script src="{% static 'js/chart.umd.min.js' %}"></script>
+
+<script>
+  const loginsPerDayData = {{ logins_per_day|safe }};  // format: [{date: '2025-06-12', count: 10}, ...]
+  const loginsByDayData = {{ logins_by_day|safe }};    // format: [{day: 'Monday', count: 50}, ...]
+
+  // Line Chart: Login per Day
+  new Chart(document.getElementById('loginsPerDayChart'), {
+    type: 'line',
+    data: {
+      labels: loginsPerDayData.map(d => d.date),
+      datasets: [{
+        label: 'Login per Day',
+        data: loginsPerDayData.map(d => d.count),
+        borderColor: '#1d4ed8',
+        backgroundColor: 'rgba(30, 64, 175, 0.2)',
+        tension: 0.3,
+        fill: true,
+        pointBackgroundColor: '#1d4ed8',
+        pointBorderColor: '#fff',
+        pointHoverBackgroundColor: '#fff',
+        pointHoverBorderColor: '#1d4ed8',
+        pointRadius: 4,
+        pointHoverRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: {
+        duration: 1000,
+        easing: 'easeInOutQuad'
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(17, 24, 39, 0.9)',
+          titleFont: { size: 14, weight: 'bold' },
+          bodyFont: { size: 12 },
+          padding: 12,
+          cornerRadius: 6,
+          callbacks: {
+            title: d => d[0].label,
+            label: d => `Logins: ${d.raw}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Date',
+            font: { size: 14, weight: 'bold' },
+            color: '#1e40af',
+            padding: 10
+          },
+          grid: { display: false },
+          ticks: { color: '#4b5563', font: { size: 12 } }
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Number of Logins',
+            font: { size: 14, weight: 'bold' },
+            color: '#1e40af',
+            padding: 10
+          },
+          beginAtZero: true,
+          grid: { color: 'rgba(0, 0, 0, 0.1)' },
+          ticks: { color: '#4b5563', font: { size: 12 } }
+        }
+      }
+    }
+  });
+
+  // Bar Chart: Login by Day of Week
+  new Chart(document.getElementById('loginsByDayChart'), {
+    type: 'bar',
+    data: {
+      labels: loginsByDayData.map(d => d.day),
+      datasets: [{
+        label: 'Logins by Day',
+        data: loginsByDayData.map(d => d.count),
+        backgroundColor: 'rgba(30, 64, 175, 0.8)',
+        borderColor: '#1d4ed8',
+        borderWidth: 1,
+        hoverBackgroundColor: '#1d4ed8',
+        hoverBorderColor: '#1e3a8a'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: {
+        duration: 1000,
+        easing: 'easeInOutQuad'
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(17, 24, 39, 0.9)',
+          titleFont: { size: 14, weight: 'bold' },
+          bodyFont: { size: 12 },
+          padding: 12,
+          cornerRadius: 6,
+          callbacks: {
+            title: d => d[0].label,
+            label: d => `Logins: ${d.raw}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Day of Week',
+            font: { size: 14, weight: 'bold' },
+            color: '#1e40af',
+            padding: 10
+          },
+          grid: { display: false },
+          ticks: { color: '#4b5563', font: { size: 12 } }
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Number of Logins',
+            font: { size: 14, weight: 'bold' },
+            color: '#1e40af',
+            padding: 10
+          },
+          beginAtZero: true,
+          grid: { color: 'rgba(0, 0, 0, 0.1)' },
+          ticks: { color: '#4b5563', font: { size: 12 } }
+        }
+      }
+    }
+  });
+</script>
+
+<style>
+  .chart-container {
+    height: 350px;
+    transition: all 0.3s ease;
+  }
+  .chart-container:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  .btn-outline-primary {
+    transition: all 0.3s ease;
+  }
+  .btn-outline-primary:hover {
+    transform: translateY(-1px);
+  }
+  @media (max-width: 767.98px) {
+    .chart-container {
+      height: 250px;
+    }
+  }
+  @media (min-width: 768px) {
+    .chart-container {
+      height: 300px;
+    }
+  }
+  @media (min-width: 992px) {
+    .chart-container {
+      height: 350px;
+    }
+  }
+</style>
+{% endblock %}

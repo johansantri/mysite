@@ -1,3 +1,4 @@
+from django.contrib.auth.signals import user_logged_in
 import threading
 import logging
 from decimal import Decimal
@@ -124,3 +125,21 @@ def log_delete(sender, instance, **kwargs):
         )
     except Exception as e:
         logger.error(f"Error in audit log (post_delete) for {sender.__name__} pk={instance.pk}: {e}")
+
+
+#Log Login ke Audit
+@receiver(user_logged_in)
+def log_user_login(sender, request, user, **kwargs):
+    ip_address, user_agent, device_type, request_path = get_request_info()
+
+    AuditLog.objects.create(
+        user=user if isinstance(user, CustomUser) else None,
+        action='login',
+        content_type=ContentType.objects.get_for_model(CustomUser),
+        object_id=str(user.pk),
+        changes={'from': None, 'to': 'login'},
+        ip_address=ip_address,
+        user_agent=user_agent,
+        device_type=device_type,
+        request_path=request_path,
+    )

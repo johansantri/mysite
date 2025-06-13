@@ -1,69 +1,235 @@
-<!-- partner/analytics.html -->
 {% extends 'home/tes.html' %}
-{% load custom_filters %}
+{% load static custom_filters %}
+
 {% block content %}
-<div class="max-w-7xl mx-auto p-6">
-  <h2 class="text-xl font-semibold mb-4">Partner Analytics</h2>
-    <a href="{% url 'partner:heatmap' %}" class="btn btn-primary mb-4">User Activity Heatmap</a>
-  <!-- Stat Boxes Compact -->
-  <div class="row mb-4">
-    <div class="col-sm-6 col-lg-6 mb-3 mb-sm-0">
-      <div class="card text-center border-0 shadow-sm h-100">
-        <div class="card-body py-3">
-          <h6 class="text-muted mb-1">👀 Weekly Views</h6>
-          <h3 class="fw-bold text-primary mb-0">{{ weekly_views }}</h3>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-10">
+      <h2 class="text-center mb-4 text-primary fw-bold">
+        <i class="bi bi-bar-chart-line me-2"></i>Partner Analytics
+      </h2>
+      <p class="text-center text-muted mb-5 lead">
+        Gain insights into course views and engagement metrics
+      </p>
+
+      <!-- Tombol Navigasi -->
+      <div class="d-flex flex-column flex-md-row justify-content-center gap-3 mb-5">
+        <a href="{% url 'partner:heatmap' %}" class="btn btn-outline-primary">
+          <i class="bi bi-grid-3x3 me-2"></i>User Activity Heatmap
+        </a>
+        <a href="{% url 'partner:login_trends' %}" class="btn btn-outline-primary">
+          <i class="bi bi-graph-up-arrow me-2"></i>Login Trends
+        </a>
+      </div>
+
+      <!-- Stat Boxes -->
+      <div class="row mb-5">
+        <div class="col-12 col-sm-6 mb-4 mb-sm-0">
+          <div class="card text-center border-0 shadow-lg rounded-3 h-100">
+            <div class="card-body py-4">
+              <h6 class="text-muted mb-2"><i class="bi bi-eye me-1"></i>Weekly Views</h6>
+              <h3 class="fw-bold text-primary mb-0">{{ weekly_views }}</h3>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6">
+          <div class="card text-center border-0 shadow-lg rounded-3 h-100">
+            <div class="card-body py-4">
+              <h6 class="text-muted mb-2"><i class="bi bi-calendar3 me-1"></i>Monthly Views</h6>
+              <h3 class="fw-bold text-success mb-0">{{ monthly_views }}</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grafik Views per Course -->
+      <div class="card shadow-lg border-0 rounded-3 mb-5">
+        <div class="card-body p-4">
+          <h3 class="text-center text-muted mb-3">Views per Course</h3>
+          <div class="chart-container position-relative rounded bg-light p-3">
+            <canvas id="viewChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grafik Comments per Course -->
+      <div class="card shadow-lg border-0 rounded-3">
+        <div class="card-body p-4">
+          <h3 class="text-center text-muted mb-3">Comments per Course</h3>
+          <div class="chart-container position-relative rounded bg-light p-3">
+            <canvas id="commentChart"></canvas>
+          </div>
         </div>
       </div>
     </div>
-    <div class="col-sm-6 col-lg-6">
-      <div class="card text-center border-0 shadow-sm h-100">
-        <div class="card-body py-3">
-          <h6 class="text-muted mb-1">📅 Monthly Views</h6>
-          <h3 class="fw-bold text-success mb-0">{{ monthly_views }}</h3>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="bg-white p-4 rounded-lg shadow mb-6">
-    <h3 class="text-lg font-medium mb-2">Views per Course</h3>
-    <canvas id="viewChart" height="100"></canvas>
-  </div>
-
-  <div class="bg-white p-4 rounded-lg shadow">
-    <h3 class="text-lg font-medium mb-2">Comments per Course</h3>
-    <canvas id="commentChart" height="100"></canvas>
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-const viewChart = document.getElementById('viewChart');
-new Chart(viewChart, {
-    type: 'bar',
-    data: {
-        labels: {{ view_by_course|pluck:"course__course_name"|safe }},
-        datasets: [{
-            label: 'Total Views',
-            data: {{ view_by_course|pluck:"total"|safe }},
-            backgroundColor: '#60a5fa',
-        }]
-    },
-    options: { responsive: true }
-});
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-const commentChart = document.getElementById('commentChart');
-new Chart(commentChart, {
+<!-- Script lokal Chart.js -->
+<script src="{% static 'js/chart.umd.min.js' %}"></script>
+
+<script>
+  const viewChart = document.getElementById('viewChart');
+  new Chart(viewChart, {
     type: 'bar',
     data: {
-        labels: {{ comment_by_course|pluck:"course__course_name"|safe }},
-        datasets: [{
-            label: 'Total Comments',
-            data: {{ comment_by_course|pluck:"total"|safe }},
-            backgroundColor: '#34d399',
-        }]
+      labels: {{ view_by_course|pluck:"course__course_name"|safe }},
+      datasets: [{
+        label: 'Total Views',
+        data: {{ view_by_course|pluck:"total"|safe }},
+        backgroundColor: 'rgba(96, 165, 250, 0.8)',
+        borderColor: '#1d4ed8',
+        borderWidth: 1,
+        hoverBackgroundColor: '#1d4ed8',
+        hoverBorderColor: '#1e3a8a'
+      }]
     },
-    options: { responsive: true }
-});
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: {
+        duration: 1000,
+        easing: 'easeInOutQuad'
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(17, 24, 39, 0.9)',
+          titleFont: { size: 14, weight: 'bold' },
+          bodyFont: { size: 12 },
+          padding: 12,
+          cornerRadius: 6,
+          callbacks: {
+            title: d => d[0].label,
+            label: d => `Views: ${d.raw}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Course',
+            font: { size: 14, weight: 'bold' },
+            color: '#1e40af',
+            padding: 10
+          },
+          grid: { display: false },
+          ticks: { color: '#4b5563', font: { size: 12 } }
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Number of Views',
+            font: { size: 14, weight: 'bold' },
+            color: '#1e40af',
+            padding: 10
+          },
+          beginAtZero: true,
+          grid: { color: 'rgba(0, 0, 0, 0.1)' },
+          ticks: { color: '#4b5563', font: { size: 12 } }
+        }
+      }
+    }
+  });
+
+  const commentChart = document.getElementById('commentChart');
+  new Chart(commentChart, {
+    type: 'bar',
+    data: {
+      labels: {{ comment_by_course|pluck:"course__course_name"|safe }},
+      datasets: [{
+        label: 'Total Comments',
+        data: {{ comment_by_course|pluck:"total"|safe }},
+        backgroundColor: 'rgba(52, 211, 153, 0.8)',
+        borderColor: '#059669',
+        borderWidth: 1,
+        hoverBackgroundColor: '#059669',
+        hoverBorderColor: '#047857'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: {
+        duration: 1000,
+        easing: 'easeInOutQuad'
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(17, 24, 39, 0.9)',
+          titleFont: { size: 14, weight: 'bold' },
+          bodyFont: { size: 12 },
+          padding: 12,
+          cornerRadius: 6,
+          callbacks: {
+            title: d => d[0].label,
+            label: d => `Comments: ${d.raw}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Course',
+            font: { size: 14, weight: 'bold' },
+            color: '#1e40af',
+            padding: 10
+          },
+          grid: { display: false },
+          ticks: { color: '#4b5563', font: { size: 12 } }
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Number of Comments',
+            font: { size: 14, weight: 'bold' },
+            color: '#1e40af',
+            padding: 10
+          },
+          beginAtZero: true,
+          grid: { color: 'rgba(0, 0, 0, 0.1)' },
+          ticks: { color: '#4b5563', font: { size: 12 } }
+        }
+      }
+    }
+  });
 </script>
+
+<style>
+  .chart-container {
+    height: 350px;
+    transition: all 0.3s ease;
+  }
+  .chart-container:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  .btn-outline-primary {
+    transition: all 0.3s ease;
+  }
+  .btn-outline-primary:hover {
+    transform: translateY(-1px);
+  }
+  @media (max-width: 767.98px) {
+    .chart-container {
+      height: 250px;
+    }
+  }
+  @media (min-width: 768px) {
+    .chart-container {
+      height: 300px;
+    }
+  }
+  @media (min-width: 992px) {
+    .chart-container {
+      height: 350px;
+    }
+  }
+</style>
 {% endblock %}

@@ -22,7 +22,7 @@ from django.urls import reverse
 from django.core.mail import send_mail
 from authentication.forms import  UserProfileForm, UserPhoto,PasswordResetForms
 from .models import Profile
-from courses.models import LastAccessCourse,SearchHistory,Instructor,CourseRating,Partner,Assessment,GradeRange,AssessmentRead,Material, MaterialRead, Submission,AssessmentScore,QuestionAnswer,CourseStatus,Enrollment,MicroCredential, MicroCredentialEnrollment,Course, Enrollment, Category,CourseProgress
+from courses.models import LastAccessCourse,UserActivityLog,SearchHistory,Instructor,CourseRating,Partner,Assessment,GradeRange,AssessmentRead,Material, MaterialRead, Submission,AssessmentScore,QuestionAnswer,CourseStatus,Enrollment,MicroCredential, MicroCredentialEnrollment,Course, Enrollment, Category,CourseProgress
 from django.http import HttpResponse,JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseForbidden
@@ -1267,14 +1267,13 @@ def logout_view(request):
 
 
 # Login view
-@ratelimit(key='ip', rate='5/m', block=False)  # Batasi misal 5 kali per menit
+@ratelimit(key='ip', rate='5/m', block=False)
 def login_view(request):
     was_limited = getattr(request, 'limited', False)
 
     if request.method == 'POST':
         form = LoginForm(request.POST)
 
-        # Jika terlalu banyak request, tolak
         if was_limited:
             return render(request, 'authentication/login.html', {
                 'form': form,
@@ -1288,6 +1287,13 @@ def login_view(request):
 
             if user is not None:
                 login(request, user)
+
+                # ✅ Simpan aktivitas login
+                UserActivityLog.objects.create(
+                    user=user,
+                    activity_type='login_view'
+                )
+
                 next_url = request.POST.get('next') or request.GET.get('next')
                 return redirect(next_url or 'authentication:home')
             else:
@@ -1299,6 +1305,8 @@ def login_view(request):
         form = LoginForm()
 
     return render(request, 'authentication/login.html', {'form': form})
+
+
 
 # Register view
 @ratelimit(key='ip', rate='100/h')

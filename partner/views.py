@@ -17,6 +17,43 @@ from django.db.models.functions import ExtractHour, ExtractWeekDay
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.cache import cache_page
 import json
+from django.db.models.functions import TruncDate, ExtractWeekDay
+
+def login_trends_view(request):
+    # Gunakan activity_type yg benar
+    logins_per_day = (
+        UserActivityLog.objects
+        .filter(activity_type='login_view')
+        .annotate(date=TruncDate('timestamp'))
+        .values('date')
+        .annotate(count=Count('id'))
+        .order_by('date')
+    )
+
+    logins_by_day = (
+        UserActivityLog.objects
+        .filter(activity_type='login_view')
+        .annotate(weekday=ExtractWeekDay('timestamp'))
+        .values('weekday')
+        .annotate(count=Count('id'))
+    )
+
+    # Ubah weekday (1–7) menjadi nama hari
+    days_map = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    login_day_data = [
+        {"day": days_map[item['weekday'] - 1], "count": item['count']}
+        for item in logins_by_day
+    ]
+
+    context = {
+        "logins_per_day": json.dumps([
+            {"date": item['date'].strftime('%Y-%m-%d'), "count": item['count']}
+            for item in logins_per_day
+        ]),
+        "logins_by_day": json.dumps(login_day_data),
+    }
+
+    return render(request, 'partner/login_trends.html', context)
 
 
 @login_required
