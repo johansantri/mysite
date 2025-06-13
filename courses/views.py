@@ -7,6 +7,8 @@ from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.cache import cache
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import Http404
+from django.http import HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q,OuterRef, Subquery, IntegerField
 from django.views.decorators.csrf import csrf_exempt
@@ -14,7 +16,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import MicroCredentialCommentForm,MicroCredentialReviewForm,LTIExternalToolForm,CoursePriceForm,CourseRatingForm,SosPostForm,MicroCredentialForm,AskOraForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from .utils import user_has_passed_course,check_for_blacklisted_keywords,is_suspicious
 from django.http import JsonResponse
-from .models import LastAccessCourse,MicroClaim,CourseViewLog,UserMicroCredential,MicroCredentialComment,MicroCredentialReview,UserMicroProgress,SearchHistory,Certificate,LTIExternalTool,Course,CourseRating,Like,SosPost,Hashtag,UserProfile,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
+from .models import LastAccessCourse,MicroClaim,CourseViewIP,CourseViewLog,UserMicroCredential,MicroCredentialComment,MicroCredentialReview,UserMicroProgress,SearchHistory,Certificate,LTIExternalTool,Course,CourseRating,Like,SosPost,Hashtag,UserProfile,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
 from authentication.models import CustomUser, Universiti
 from blog.models import BlogPost
 from licensing.models import License
@@ -3585,56 +3587,61 @@ def draft_lms(request, id):
     return render(request, 'courses/course_draft_view.html', {'course': course})
 
 
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        return x_forwarded_for.split(',')[0]
+    return request.META.get('REMOTE_ADDR')
+
+
+@ratelimit(key='ip', rate='30/h', method='GET', block=True)
 def course_lms_detail(request, id, slug):
-    # Ambil course berdasarkan id dan slug
+    if getattr(request, 'limited', False):
+        return HttpResponse("Terlalu banyak permintaan. Coba lagi nanti.", status=429)
+    
     course = get_object_or_404(Course, id=id, slug=slug)
 
-    # Ambil status published
     try:
         published_status = CourseStatus.objects.get(status='published')
     except CourseStatus.DoesNotExist:
         return redirect('/')
 
-    # Cek apakah user sudah enroll
-    is_enrolled = False
-    if request.user.is_authenticated:
-        is_enrolled = course.enrollments.filter(user=request.user).exists()
+    is_enrolled = request.user.is_authenticated and course.enrollments.filter(user=request.user).exists()
 
-    # Batasi akses jika belum enroll dan kursus belum publish atau enrol sudah berakhir
     if not is_enrolled and (course.status_course != published_status or course.end_enrol < timezone.now().date()):
         return redirect('/')
 
-    # ✅ Tambahkan view count total
-    Course.objects.filter(id=course.id).update(view_count=F('view_count') + 1)
+    # ✅ Hitung view unik per IP (bukan bot)
+    user_agent = request.META.get('HTTP_USER_AGENT', '').lower()
+    if 'bot' not in user_agent:
+        ip = get_client_ip(request)
+        if not CourseViewIP.objects.filter(course=course, ip_address=ip).exists():
+            CourseViewIP.objects.create(course=course, ip_address=ip)
+            Course.objects.filter(id=course.id).update(view_count=F('view_count') + 1)
 
-    # ✅ Tambahkan log harian pengunjung
-    today = timezone.now().date()
-    view_log, created = CourseViewLog.objects.get_or_create(course=course, date=today)
-    if not created:
-        CourseViewLog.objects.filter(pk=view_log.pk).update(count=F('count') + 1)
+        # ✅ Log harian (opsional)
+        today = timezone.now().date()
+        view_log, created = CourseViewLog.objects.get_or_create(course=course, date=today)
+        if not created:
+            CourseViewLog.objects.filter(pk=view_log.pk).update(count=F('count') + 1)
 
-    # Ambil kursus serupa
     similar_courses = Course.objects.filter(
         category=course.category,
         status_course=published_status,
         end_enrol__gte=timezone.now().date()
     ).exclude(id=course.id)[:5]
 
-    # Ambil komentar utama
     comments = CourseComment.objects.filter(course=course, parent=None).order_by('-created_at')
     for comment in comments:
-        replies = comment.replies.all().order_by('-created_at')
-        for reply in replies:
+        for reply in comment.replies.all().order_by('-created_at'):
             reply.sub_replies = reply.replies.all().order_by('-created_at')
 
-    # Data section & material
     section_data = Section.objects.filter(parent=None, courses=course).prefetch_related('materials')
     total_sections = section_data.count()
     total_materials = sum(section.materials.count() for section in section_data)
     total_students = course.enrollments.count()
     total_effort_hours = course.hour if course.hour else "N/A"
 
-    # Statistik untuk semua kursus milik instruktur
     instructor = course.instructor
     instructor_courses = Course.objects.filter(
         instructor=instructor,
@@ -3649,11 +3656,9 @@ def course_lms_detail(request, id, slug):
     instructor_total_sections = instructor_sections.count()
     instructor_total_materials = sum(s.materials.count() for s in instructor_sections)
 
-    # Review dan rating
     reviews = CourseRating.objects.filter(course=course).order_by('-created_at')
     paginator = Paginator(reviews, 5)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    page_obj = paginator.get_page(request.GET.get('page'))
 
     user_has_rated = request.user.is_authenticated and CourseRating.objects.filter(user=request.user, course=course).exists()
 

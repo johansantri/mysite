@@ -98,3 +98,10 @@ def is_suspicious(request, threshold=5, time_window=60):
         cache.set(f'{cache_key}_count', 1, timeout=time_window)
     
     return False
+
+#ambil ip client untuk di simpan di log
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        return x_forwarded_for.split(',')[0]
+    return request.META.get('REMOTE_ADDR')

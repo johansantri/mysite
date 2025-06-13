@@ -464,6 +464,15 @@ class CourseViewLog(models.Model):
 
     class Meta:
         unique_together = ('course', 'date')
+
+class CourseViewIP(models.Model):
+    course = models.ForeignKey("Course", on_delete=models.CASCADE)
+    ip_address = models.GenericIPAddressField()
+    viewed_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('course', 'ip_address')
+        
 class PricingType(models.Model):
     name = models.CharField(max_length=50, unique=True)  # Nama pricing type (contoh: 'Regular Price', 'Discount')
     description = models.TextField(blank=True, null=True)  # Deskripsi opsional
