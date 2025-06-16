@@ -11,7 +11,7 @@ from django.template.loader import render_to_string
 from authentication.models import CustomUser
 from django.urls import reverse
 import uuid
-from django.db.models import Count,F
+from django.db.models import Count,F,Sum
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError
@@ -769,35 +769,43 @@ def license_update(request, pk):
 def subscription_management(request):
     if not request.user.is_superuser:
         return redirect('licensing:participant_dashboard')
-   
-    # Mengambil lisensi yang aktif dan menghitung jumlah pengguna
-    active_licenses = License.objects.annotate(num_users=Count('users')).filter(status=True)
 
-    # Lisensi yang kadaluarsa
+    # Update otomatis status expired
+    License.objects.filter(expiry_date__lt=timezone.now().date(), status=True).update(status=False)
+
+    q = request.GET.get("q", "")
+    status_filter = request.GET.get("status", "")
+
+    filtered_licenses = License.objects.annotate(num_users=Count('users'))
+
+    if q:
+        filtered_licenses = filtered_licenses.filter(
+            Q(name__icontains=q) | Q(university__name__icontains=q)
+        )
+
+    if status_filter == "active":
+        filtered_licenses = filtered_licenses.filter(status=True)
+    elif status_filter == "inactive":
+        filtered_licenses = filtered_licenses.filter(status=False)
+
+    # Sisanya tetap
+    active_licenses = License.objects.filter(status=True).annotate(num_users=Count("users"))
     expired_licenses = License.objects.filter(status=False)
-
-    # Lisensi yang masih ada space untuk pengguna
     licenses_with_space = active_licenses.filter(num_users__lt=F('max_users'))
-
-    # Lisensi yang hampir kedaluwarsa (misalnya dalam 7 hari)
     approaching_expiry_licenses = active_licenses.filter(
         expiry_date__lte=timezone.now().date() + timedelta(days=7)
     )
 
-    # Menghitung total lisensi
-    total_licenses = active_licenses.count()
-    total_expired_licenses = expired_licenses.count()
-    total_approaching_expiry = approaching_expiry_licenses.count()
-
-    # Kirimkan data ke template
     context = {
-        'active_licenses': active_licenses,
-        'expired_licenses': expired_licenses,
-        'licenses_with_space': licenses_with_space,
-        'approaching_expiry_licenses': approaching_expiry_licenses,  # Menambahkan data lisensi hampir kedaluwarsa
-        'total_licenses': total_licenses,
-        'total_expired_licenses': total_expired_licenses,
-        'total_approaching_expiry': total_approaching_expiry,
+        "filtered_licenses": filtered_licenses,
+        "active_licenses": active_licenses,
+        "expired_licenses": expired_licenses,
+        "licenses_with_space": licenses_with_space,
+        "approaching_expiry_licenses": approaching_expiry_licenses,
+        "total_licenses": active_licenses.count(),
+        "total_expired_licenses": expired_licenses.count(),
+        "total_approaching_expiry": approaching_expiry_licenses.count(),
+        'today': timezone.now().date(),
     }
 
-    return render(request, 'licensing/subscription_management.html', context)
+    return render(request, "licensing/subscription_management.html", context)

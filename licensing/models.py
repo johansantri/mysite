@@ -59,6 +59,10 @@ class License(models.Model):
     def can_add_user(self):
         return self.users.count() < self.max_users
 
+    @property
+    def remaining_slots(self):
+        return self.max_users - self.users.count()
+
 class Invitation(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Menunggu'),

@@ -1,111 +1,150 @@
 {% extends 'home/tes.html' %}
+{% load static %}
 
 {% block content %}
-    <h2>Subscription Management</h2>
-    
-    <!-- Tautan untuk menambahkan subscription -->
-    <div class="mb-4">
-        <a href="{% url 'licensing:license_create' %}" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> Add Subscription
-        </a>
-    </div>
-    
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card mb-3">
-                <div class="card-header">
-                    <i class="bi bi-list-check"></i> Total Active Licenses
-                </div>
-                <div class="card-body">
-                    <h5>{{ total_licenses }}</h5>
-                </div>
-            </div>
-        </div>
+<h2>Subscription Management</h2>
 
-        <div class="col-md-4">
-            <div class="card mb-3">
-                <div class="card-header">
-                    <i class="bi bi-file-earmark-x"></i> Total Expired Licenses
-                </div>
-                <div class="card-body">
-                    <h5>{{ total_expired_licenses }}</h5>
-                </div>
-            </div>
-        </div>
+<!-- Tombol Tambah -->
+<div class="mb-4">
+    <a href="{% url 'licensing:license_create' %}" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Add Subscription
+    </a>
+</div>
 
-        <div class="col-md-4">
-            <div class="card mb-3">
-                <div class="card-header">
-                    <i class="bi bi-calendar-x"></i> Licenses Approaching Expiry
-                </div>
-                <div class="card-body">
-                    <h5>{{ total_approaching_expiry }}</h5>
-                </div>
+<!-- Statistik -->
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header">
+                <i class="bi bi-list-check"></i> Total Active Licenses
+            </div>
+            <div class="card-body">
+                <h5>{{ total_licenses }}</h5>
             </div>
         </div>
     </div>
 
-    <h3>Licenses Approaching Expiry</h3>
-    {% if approaching_expiry_licenses %}
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Start Date</th>
-                    <th>Expiry Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for license in approaching_expiry_licenses %}
-                    <tr>
-                        <td>{{ license.name }}</td>
-                        <td>{{ license.license_type }}</td>
-                        <td>{{ license.start_date }}</td>
-                        <td>{{ license.expiry_date }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>No licenses are approaching expiry in the next 7 days.</p>
-    {% endif %}
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header">
+                <i class="bi bi-file-earmark-x"></i> Total Expired Licenses
+            </div>
+            <div class="card-body">
+                <h5>{{ total_expired_licenses }}</h5>
+            </div>
+        </div>
+    </div>
 
-    <h3>Licenses with Space for More Users</h3>
-    {% if licenses_with_space %}
-        <table class="table table-striped">
-            <thead>
+    <div class="col-md-4">
+        <div class="card mb-3">
+            <div class="card-header">
+                <i class="bi bi-calendar-x"></i> Licenses Approaching Expiry
+            </div>
+            <div class="card-body">
+                <h5>{{ total_approaching_expiry }}</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filter dan Search -->
+<form method="get" class="mb-3 d-flex gap-2">
+    <input type="text" name="q" value="{{ request.GET.q }}" class="form-control" placeholder="Search by name or university">
+    <select name="status" class="form-select">
+        <option value="">All Status</option>
+        <option value="active" {% if request.GET.status == 'active' %}selected{% endif %}>Active</option>
+        <option value="inactive" {% if request.GET.status == 'inactive' %}selected{% endif %}>Inactive</option>
+    </select>
+    <button type="submit" class="btn btn-secondary">Filter</button>
+</form>
+
+<!-- Tabel Semua Lisensi -->
+<h3>All Active Licenses</h3>
+{% if filtered_licenses %}
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>University</th>
+                <th>License Type</th>
+                <th>Start Date</th>
+                <th>Expiry Date</th>
+                <th>Max Users</th>
+                <th>Current Users</th>
+                <th>Remaining Slots</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for license in filtered_licenses %}
                 <tr>
-                    <th>Name</th>
-                    <th>pelanggan</th>
-                    <th>Type</th>
-                    <th>Start Date</th>
-                    <th>Expiry Date</th>
-                    <th>Max Users</th>
-                    <th>Current Users</th>
-                    <th>Status</th>
-                     <th>Aksi</th>
+                    <td>{{ license.name }}</td>
+                    <td>{{ license.university.name }}</td>
+                    <td>{{ license.license_type }}</td>
+                    <td>{{ license.start_date }}</td>
+                    <td>{{ license.expiry_date }}</td>
+                    <td>{{ license.max_users }}</td>
+                    <td>
+                        {{ license.users.count }}
+                        <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#usersModal{{ license.id }}">
+                            View Users
+                        </button>
+                    </td>
+                    <td>{{ license.remaining_slots }}</td>
+                    <td>
+                        {% if license.status and license.expiry_date >= today %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-danger">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'licensing:license_update' license.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                {% for license in licenses_with_space %}
-                    <tr>
-                        <td>{{ license.name }} </td>
-                        <td>{{ license.users.first.email }}</td>
-                        <td>{{ license.license_type }}</td>
-                        <td>{{ license.start_date }}</td>
-                        <td>{{ license.expiry_date }}</td>
-                        <td>{{ license.max_users }}</td>
-                        <td>{{ license.users.count }}</td>
-                        <td>{{ license.status|yesno:"Active,Inactive" }}</td>
-                        <td>
-                            <a href="{% url 'licensing:license_update' license.pk %}" class="btn btn-sm btn-warning">Edit</a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>No licenses have space for more users.</p>
-    {% endif %}
+
+                <!-- Modal untuk detail user -->
+                <div class="modal fade" id="usersModal{{ license.id }}" tabindex="-1" aria-labelledby="usersModalLabel{{ license.id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="usersModalLabel{{ license.id }}">
+                                    Users in License: {{ license.name }}
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                {% if license.users.all %}
+                                    <ul class="list-group">
+                                        {% for user in license.users.all %}
+                                            <li class="list-group-item">
+                                                <strong>{{ user.get_full_name }}</strong> ({{ user.email }})<br>
+                                                Username: {{ user.username }}
+
+                                                {% if user.last_login %}
+                                                    <i class="text-muted">{{ user.last_login|date:"d-m-Y H:i" }}</i>
+                                                {% else %}
+                                                    <span class="text-muted">Never logged in</span>
+                                                {% endif %}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <p>No users assigned to this license.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No licenses match the filter.</p>
+{% endif %}
+
+<!-- Bootstrap Modal JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 {% endblock %}
