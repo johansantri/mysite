@@ -430,6 +430,25 @@
         timerInterval = setInterval(updateTimer, 1000);
         updateTimer();
       </script>
+
+      <script>
+          const courseId = "{{ course.id }}";  // Pastikan ini dikirim dari Django
+
+          function pingLearningSession() {
+              fetch("{% url 'partner:ping_session' %}", {
+                  method: "POST",
+                  headers: {
+                      "X-CSRFToken": "{{ csrf_token }}",
+                      "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify({ course_id: courseId })
+              });
+          }
+
+          // Ping setiap 1 menit (60000 ms)
+          setInterval(pingLearningSession, 60000);
+      </script>
+
     {% endblock %}
   {% endif %}
 

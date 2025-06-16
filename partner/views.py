@@ -5,7 +5,7 @@ from courses.forms import PartnerFormUpdate
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator,EmptyPage, PageNotAnInteger
 from django.http import HttpResponseForbidden
-from courses.models import Course, Enrollment,CourseRating,CourseComment,CourseViewLog,UserActivityLog
+from courses.models import Course, Enrollment,CourseRating,CourseComment,CourseViewLog,UserActivityLog,CourseSessionLog
 from authentication.models import CustomUser
 from collections import defaultdict
 from django.db.models import Avg, Count
@@ -18,9 +18,143 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.cache import cache_page
 import json
 from django.db.models.functions import TruncDate, ExtractWeekDay
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Count, Sum
+from .utils import get_geo_from_ip
 
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.is_partner)
+def participant_geography_view(request):
+    view_mode = request.GET.get('view', 'country')  # default: country
+
+    if view_mode == 'city':
+        data = (
+            CourseSessionLog.objects
+            .exclude(location_country__isnull=True)
+            .exclude(location_city__isnull=True)
+            .values('location_country', 'location_city')
+            .annotate(total=Count('id'))
+            .order_by('-total')[:10]
+        )
+        labels = [
+            f"{item['location_city']}, {item['location_country']}" for item in data
+        ]
+    else:
+        data = (
+            CourseSessionLog.objects
+            .exclude(location_country__isnull=True)
+            .values('location_country')
+            .annotate(total=Count('id'))
+            .order_by('-total')[:10]
+        )
+        labels = [item['location_country'] for item in data]
+
+    totals = [item['total'] for item in data]
+
+    return render(request, 'partner/participant_geography.html', {
+        'countries': labels,
+        'totals': totals,
+        'view_mode': view_mode,
+    })
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.is_partner)
+def learning_duration_view(request):
+    # Jika superuser, tampilkan semua course
+    if request.user.is_superuser:
+        courses = Course.objects.all()
+    else:
+        partner = getattr(request.user, 'partner_user', None)
+        if not partner:
+            raise Http404("Partner profile not found.")
+        courses = Course.objects.filter(org_partner=partner)
+
+    # Ambil session log berdasarkan course yang dimiliki
+    session_logs = CourseSessionLog.objects.filter(course__in=courses)
+
+    today = now().date()
+    week_ago = today - timedelta(days=7)
+    month_ago = today - timedelta(days=30)
+
+    # Hitung total waktu belajar dalam detik
+    weekly_seconds = session_logs.filter(started_at__date__gte=week_ago).aggregate(total=Sum('duration_seconds'))['total'] or 0
+    monthly_seconds = session_logs.filter(started_at__date__gte=month_ago).aggregate(total=Sum('duration_seconds'))['total'] or 0
+
+    # Total waktu belajar per course
+    duration_by_course = (
+        session_logs.values('course__course_name')
+        .annotate(total_seconds=Sum('duration_seconds'))
+        .order_by('-total_seconds')[:10]
+    )
+
+    # Ubah ke menit
+    for item in duration_by_course:
+        item['total_minutes'] = round(item['total_seconds'] / 60)
+
+    context = {
+        'weekly_minutes': round(weekly_seconds / 60),
+        'monthly_minutes': round(monthly_seconds / 60),
+        'duration_by_course': duration_by_course,
+    }
+
+    return render(request, 'partner/learning_duration.html', context)
+
+
+@csrf_exempt
+@login_required
+def ping_session(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            course_id = data.get("course_id")
+            course = Course.objects.get(id=course_id)
+        except (json.JSONDecodeError, Course.DoesNotExist):
+            return JsonResponse({"error": "Invalid course_id"}, status=400)
+
+        ip_address = get_client_ip(request)
+
+        session, created = CourseSessionLog.objects.get_or_create(
+            user=request.user,
+            course=course,
+            ended_at__isnull=True,
+            defaults={
+                "started_at": now(),
+                "user_agent": request.META.get("HTTP_USER_AGENT", "")[:255],
+                "ip_address": ip_address,
+            }
+        )
+
+        session.ended_at = now()
+
+        if not session.location_country:
+            session.location_country, session.location_city = get_geo_from_ip(ip_address)
+
+        session.save()
+
+        return JsonResponse({"status": "ok", "duration_seconds": session.duration_seconds})
+
+    return JsonResponse({"error": "Invalid method"}, status=405)
+
+
+def get_client_ip(request):
+    x_forwarded = request.META.get("HTTP_X_FORWARDED_FOR")
+    if x_forwarded:
+        return x_forwarded.split(",")[0]
+    return request.META.get("REMOTE_ADDR")
+
+
+# Cek user: hanya superuser atau staff yang boleh mengakses
+def is_superuser_or_staff(user):
+    return user.is_authenticated and (user.is_superuser or user.is_staff)
+
+
+@user_passes_test(is_superuser_or_staff)
 def login_trends_view(request):
-    # Gunakan activity_type yg benar
+    # Ambil hanya aktivitas login
     logins_per_day = (
         UserActivityLog.objects
         .filter(activity_type='login_view')
@@ -36,19 +170,25 @@ def login_trends_view(request):
         .annotate(weekday=ExtractWeekDay('timestamp'))
         .values('weekday')
         .annotate(count=Count('id'))
+        .order_by('weekday')
     )
 
-    # Ubah weekday (1–7) menjadi nama hari
+    # Map nama hari dari weekday (1 = Sunday di PostgreSQL)
     days_map = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-    login_day_data = [
-        {"day": days_map[item['weekday'] - 1], "count": item['count']}
-        for item in logins_by_day
-    ]
+    login_day_data = []
+    for item in logins_by_day:
+        index = (item['weekday'] - 1) % 7  # Perlindungan terhadap index error
+        login_day_data.append({
+            "day": days_map[index],
+            "count": item['count']
+        })
 
     context = {
         "logins_per_day": json.dumps([
-            {"date": item['date'].strftime('%Y-%m-%d'), "count": item['count']}
-            for item in logins_per_day
+            {
+                "date": item['date'].strftime('%Y-%m-%d'),
+                "count": item['count']
+            } for item in logins_per_day
         ]),
         "logins_by_day": json.dumps(login_day_data),
     }
@@ -56,9 +196,12 @@ def login_trends_view(request):
     return render(request, 'partner/login_trends.html', context)
 
 
-@login_required
-@user_passes_test(lambda u: u.is_partner or u.is_staff)
+# Hanya superuser dan partner yang boleh akses
+def is_superuser_or_partner(user):
+    return user.is_authenticated and (user.is_superuser or getattr(user, 'is_partner', False))
 
+@login_required
+@user_passes_test(is_superuser_or_partner)
 def heatmap_view(request):
     qs = (
         UserActivityLog.objects
@@ -67,11 +210,14 @@ def heatmap_view(request):
         .annotate(count=Count('id'))
     )
 
+    # Buat heatmap format {x: hour, y: weekday (0-index), v: count}
     heatmap_data = []
     for item in qs:
+        hour = item['hour']
+        weekday = (item['weekday'] - 1) % 7  # 1=Sunday jadi 0-indexed, aman dari index error
         heatmap_data.append({
-            "x": item['hour'],           # 0–23
-            "y": item['weekday'] - 1,    # Ubah dari 1=Sunday ke 0-index
+            "x": hour,
+            "y": weekday,
             "v": item['count'],
         })
 
@@ -81,18 +227,22 @@ def heatmap_view(request):
 
 @login_required
 def partner_analytics_view(request):
-    # Cek apakah user adalah partner
-    if not request.user.is_partner:
+    user = request.user
+
+    # Cek apakah user superuser atau partner
+    if not (user.is_superuser or getattr(user, 'is_partner', False)):
         raise Http404("You are not authorized to access this page.")
 
-    # Ambil instance Partner melalui relasi OneToOneField
-    partner = getattr(request.user, 'partner_user', None)
-    if not partner:
-        raise Http404("Partner profile not found.")
+    # Jika superuser → bisa akses semua course
+    if user.is_superuser:
+        courses = Course.objects.all().only('id', 'course_name')
+    else:
+        # Jika partner → hanya course milik partner
+        partner = getattr(user, 'partner_user', None)
+        if not partner:
+            raise Http404("Partner profile not found.")
+        courses = Course.objects.filter(org_partner=partner).only('id', 'course_name')
 
-    # Ambil kursus milik partner
-    courses = Course.objects.filter(org_partner=partner).only('id', 'course_name')
-    
     # Ambil log view untuk kursus-kursus tersebut
     logs = CourseViewLog.objects.filter(course__in=courses).select_related('course')
 
@@ -120,7 +270,6 @@ def partner_analytics_view(request):
         .order_by('-total')[:10]
     )
 
-    # Kirim data ke template
     return render(request, 'partner/analytics.html', {
         'weekly_views': weekly_views,
         'monthly_views': monthly_views,
@@ -132,7 +281,7 @@ def partner_analytics_view(request):
 @login_required
 def partner_course_comments(request):
     # Pastikan hanya partner yang bisa mengakses halaman ini
-    if not request.user.is_partner:
+    if not request.user.is_superuser:
         return HttpResponseForbidden("You are not authorized to view this page.")
 
     # Ambil semua kursus yang dimiliki oleh partner

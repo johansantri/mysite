@@ -15,5 +15,9 @@ urlpatterns = [
     path('analytics/', views.partner_analytics_view, name='partner_analytics'),
     path('analytics/heatmap/', views.heatmap_view, name='heatmap'),
     path('analytics/login-trends/', views.login_trends_view, name='login_trends'),
+    path('ping-session/', views.ping_session, name='ping_session'),
+    path('analytics/duration/', views.learning_duration_view, name='learning_duration'),
+    path("analytics/geography/", views.participant_geography_view, name="participant_geography"),
+
    
 ]

@@ -1061,7 +1061,32 @@ class CourseProgress(models.Model):
         except cls.DoesNotExist:
             return 0
 
-        
+
+#untuk analitik
+class CourseSessionLog(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    course = models.ForeignKey('courses.Course', on_delete=models.CASCADE)
+
+    started_at = models.DateTimeField(default=timezone.now)
+    ended_at = models.DateTimeField(null=True, blank=True)
+
+    duration_seconds = models.PositiveIntegerField(default=0, help_text="Durasi belajar dalam detik.")
+
+    user_agent = models.CharField(max_length=255, blank=True, null=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    location_country = models.CharField(max_length=100, blank=True, null=True)  # Tambahan
+    location_city = models.CharField(max_length=100, blank=True, null=True)    # Tambahan
+
+    def save(self, *args, **kwargs):
+        if self.started_at and self.ended_at:
+            self.duration_seconds = int((self.ended_at - self.started_at).total_seconds())
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        durasi = self.duration_seconds
+        menit = durasi // 60
+        return f"{self.user.username} - {self.course.course_name} - {menit} menit"
+
 class MaterialRead(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     material = models.ForeignKey(Material, on_delete=models.CASCADE)
