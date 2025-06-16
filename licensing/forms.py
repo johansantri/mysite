@@ -16,11 +16,10 @@ class InvitationForm(forms.Form):
     )
 
 class LicenseForm(forms.ModelForm):
-    # Field untuk input satu email pengguna
     user_email = forms.EmailField(
-        widget=forms.EmailInput(attrs={'placeholder': 'Masukkan email pengguna'}),
-        required=True,  # Wajib diisi
-        label='Email Pengguna'
+        widget=forms.EmailInput(attrs={'placeholder': 'Masukkan email pemilik lisensi'}),
+        required=True,
+        label='Email Pemilik'
     )
 
     class Meta:
@@ -40,6 +39,9 @@ class LicenseForm(forms.ModelForm):
         email = self.cleaned_data.get('user_email')
         try:
             user = CustomUser.objects.get(email=email)
+            # Cek apakah user sudah punya lisensi lain sebagai owner
+            if License.objects.filter(owner=user).exclude(pk=self.instance.pk).exists():
+                raise ValidationError(f"Email {email} sudah digunakan sebagai pemilik lisensi lain.")
             return user
         except CustomUser.DoesNotExist:
             raise ValidationError(f"Email {email} tidak ditemukan.")
@@ -47,36 +49,19 @@ class LicenseForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         max_users = cleaned_data.get('max_users')
-        user = cleaned_data.get('user_email')
-
-        # Validasi bahwa hanya satu pengguna yang diizinkan
-        if max_users < 1:
+        if max_users is not None and max_users < 1:
             raise ValidationError("Maksimum pengguna harus minimal 1.")
-        if user and self.instance.pk:  # Jika sedang update
-            current_users = self.instance.users.count()
-            if current_users >= max_users:
-                raise ValidationError(f"Jumlah pengguna sudah mencapai batas maksimum ({max_users}).")
-
         return cleaned_data
-    def clean_user_email(self):
-        email = self.cleaned_data.get('user_email')
-        try:
-            user = CustomUser.objects.get(email=email)
-            # Cek apakah user sudah terkait dengan lisensi lain
-            if License.objects.filter(users=user).exclude(pk=self.instance.pk).exists():
-                raise ValidationError(f"Email {email} sudah digunakan di lisensi lain.")
-            return user
-        except CustomUser.DoesNotExist:
-            raise ValidationError(f"Email {email} tidak ditemukan.")
 
     def save(self, commit=True):
         instance = super().save(commit=False)
+        user = self.cleaned_data['user_email']
+        instance.owner = user
+
         if commit:
             instance.save()
-            # Simpan pengguna dan update status is_subscription
-            user = self.cleaned_data['user_email']
-            if user:
-                instance.users.set([user])  # Set hanya satu pengguna
-                user.is_subscription = True  # Update status is_subscription
-                user.save()
+            # Tambahkan owner ke dalam daftar pengguna (jika belum ada)
+            instance.users.add(user)
+            user.is_subscription = True
+            user.save()
         return instance

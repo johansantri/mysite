@@ -305,32 +305,28 @@ def course_participants_dashboard(request):
     # Ambil lisensi yang terkait dengan pengguna dan statusnya aktif
     licenses = License.objects.filter(users=request.user, status=True).prefetch_related('users')
 
+    # Ambil query pencarian terlebih dahulu agar selalu tersedia
+    search_query = request.GET.get('search', '')
+
     # Menyiapkan data kursus dan peserta
     license_course_data = []
+    page_obj = None  # Inisialisasi default agar tidak error jika tidak ada lisensi
 
     for license in licenses:
-        # Ambil pengguna yang terdaftar di lisensi ini selain pengguna yang sedang login
         participants = license.users.exclude(id=request.user.id)
 
-        # Ambil kursus yang terdaftar di lisensi ini dengan jumlah peserta
         courses = Course.objects.filter(enrollments__user__in=participants).annotate(
             enrollment_count=Count('enrollments')
         ).distinct()
 
-        # Pencarian kursus berdasarkan query parameter 'search'
-        search_query = request.GET.get('search', '')
         if search_query:
             courses = courses.filter(course_name__icontains=search_query)
 
-        # Urutkan kursus berdasarkan jumlah peserta (descending) dan course_name sebagai tiebreaker
         courses = courses.order_by('-enrollment_count', 'course_name')
-
-        # Pagination untuk kursus
+        paginator = Paginator(courses, 10)
         page_number = request.GET.get('page')
-        paginator = Paginator(courses, 10)  # Menampilkan 10 kursus per halaman
         page_obj = paginator.get_page(page_number)
 
-        # Menyusun data kursus dan peserta
         course_data = []
         for course in page_obj.object_list:
             course_data.append({
@@ -338,13 +334,11 @@ def course_participants_dashboard(request):
                 'enrollment_count': course.enrollment_count,
             })
 
-        # Menyimpan data kursus yang terkait dengan lisensi
         license_course_data.append({
             'license': license,
             'courses': course_data,
         })
 
-    # Kirim data ke template
     context = {
         'license_course_data': license_course_data,
         'search_query': search_query,

@@ -3,6 +3,7 @@ import uuid
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from authentication.models import Universiti
+from django.conf import settings
 
 User = get_user_model()
 
@@ -30,7 +31,14 @@ class License(models.Model):
     
     subscription_type = models.CharField(max_length=20, choices=LICENSE_TYPE_CHOICES, default='paid', verbose_name='Tipe Langganan')
     subscription_frequency = models.CharField(max_length=20, choices=SUBSCRIPTION_FREQUENCY_CHOICES, default='yearly', verbose_name='Frekuensi Langganan')
-    
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='owned_licenses',
+        verbose_name='Pemilik Lisensi'
+    )
     def __str__(self):
         return f"{self.name}"
     

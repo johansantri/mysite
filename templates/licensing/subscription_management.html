@@ -79,7 +79,7 @@
         <tbody>
             {% for license in filtered_licenses %}
                 <tr>
-                    <td>{{ license.name }}</td>
+                    <td>{{ license.name }} | {{ license.owner.email }}</td>
                     <td>{{ license.university.name }}</td>
                     <td>{{ license.license_type }}</td>
                     <td>{{ license.start_date }}</td>
