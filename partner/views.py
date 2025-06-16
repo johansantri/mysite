@@ -5,7 +5,7 @@ from courses.forms import PartnerFormUpdate
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator,EmptyPage, PageNotAnInteger
 from django.http import HttpResponseForbidden
-from courses.models import Course, Enrollment,CourseRating,CourseComment,CourseViewLog,UserActivityLog,CourseSessionLog
+from courses.models import Course, Enrollment,CourseRating,CourseComment,CourseViewLog,UserActivityLog,CourseSessionLog,Certificate
 from authentication.models import CustomUser
 from collections import defaultdict
 from django.db.models import Avg, Count, Q,F,FloatField, ExpressionWrapper
@@ -27,6 +27,37 @@ from django.db.models.functions import TruncMonth
 from collections import defaultdict
 from decimal import Decimal
 from django.db.models.functions import TruncWeek
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.is_partner)
+def certificate_analytics_view(request):
+    # Jumlah sertifikat yang diterbitkan per bulan
+    monthly_certificates = (
+        Certificate.objects.annotate(month=TruncMonth('issue_date'))
+        .values('month')
+        .annotate(count=Count('id'))
+        .order_by('month')
+    )
+    labels = [entry['month'].strftime('%b %Y') for entry in monthly_certificates]
+    counts = [entry['count'] for entry in monthly_certificates]
+
+    # Rata-rata skor per course
+    avg_scores = (
+        Certificate.objects.values('course__course_name')
+        .annotate(avg_score=Avg('total_score'))
+        .order_by('-avg_score')[:10]
+    )
+    score_labels = [entry['course__course_name'] for entry in avg_scores]
+    scores = [float(entry['avg_score']) for entry in avg_scores]
+
+    return render(request, 'partner/certificate_analytics.html', {
+        'labels': labels,
+        'counts': counts,
+        'score_labels': score_labels,
+        'scores': scores,
+    })
+
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.is_partner)

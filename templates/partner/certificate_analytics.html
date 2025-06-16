@@ -1,0 +1,76 @@
+{% extends 'home/tes.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+  <h2 class="text-center text-primary fw-bold">
+    <i class="bi bi-patch-check me-2"></i>Certificate Analytics
+  </h2>
+  <p class="text-center text-muted lead">Insights about issued certificates</p>
+
+  <div class="d-flex justify-content-center my-3">
+    <a href="{% url 'partner:partner_analytics' %}" class="btn btn-outline-primary">
+      <i class="bi bi-bar-chart-line me-2"></i>Back to Analytics
+    </a>
+  </div>
+
+  <div class="card shadow-lg p-4 border-0 rounded-3 mb-4">
+    <h5 class="mb-3 text-primary">Certificates Issued per Month</h5>
+    <canvas id="certMonthChart"></canvas>
+  </div>
+
+  <div class="card shadow-lg p-4 border-0 rounded-3">
+    <h5 class="mb-3 text-primary">Top Courses by Average Certificate Score</h5>
+    <canvas id="avgScoreChart"></canvas>
+  </div>
+</div>
+
+<script src="{% static 'js/chart.umd.min.js' %}"></script>
+<script>
+  new Chart(document.getElementById('certMonthChart'), {
+    type: 'line',
+    data: {
+      labels: {{ labels|safe }},
+      datasets: [{
+        label: 'Certificates Issued',
+        data: {{ counts|safe }},
+        borderColor: '#0d6efd',
+        backgroundColor: 'rgba(13,110,253,0.1)',
+        fill: true,
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: { display: true, text: 'Certificates' }
+        }
+      }
+    }
+  });
+
+  new Chart(document.getElementById('avgScoreChart'), {
+    type: 'bar',
+    data: {
+      labels: {{ score_labels|safe }},
+      datasets: [{
+        label: 'Average Score',
+        data: {{ scores|safe }},
+        backgroundColor: '#198754'
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          min: 0,
+          max: 100,
+          title: { display: true, text: 'Score (0-100)' }
+        }
+      }
+    }
+  });
+</script>
+{% endblock %}
