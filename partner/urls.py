@@ -27,6 +27,7 @@ urlpatterns = [
     path('analytics/enrollment-growth/', views.course_enrollment_growth_view, name='course_enrollment_growth'),
     path('analytics/course-dropoff/', views.course_dropoff_rate_view, name='course_dropoff_rate'),
     path('analytics/certificates/', views.certificate_analytics_view, name='certificate_analytics'),
+    path('analytics/active-partners/', views.active_partners_view, name='active_partners'),
 
 
    

@@ -31,6 +31,29 @@ from django.db.models.functions import TruncWeek
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.is_partner)
+def active_partners_view(request):
+    partners = (
+        Partner.objects.annotate(
+            total_courses=Count('courses', distinct=True),
+            total_certificates=Count('courses__certificates', distinct=True)
+        )
+        .order_by('-total_courses', '-total_certificates')[:10]
+    )
+
+    labels = [partner.name.name for partner in partners]
+    course_counts = [partner.total_courses for partner in partners]
+    certificate_counts = [partner.total_certificates for partner in partners]
+
+    return render(request, 'partner/active_partners.html', {
+        'labels': labels,
+        'course_counts': course_counts,
+        'certificate_counts': certificate_counts,
+    })
+
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.is_partner)
 def certificate_analytics_view(request):
     # Jumlah sertifikat yang diterbitkan per bulan
     monthly_certificates = (

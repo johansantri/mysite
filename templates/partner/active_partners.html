@@ -1,0 +1,57 @@
+{% extends 'home/tes.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+  <h2 class="text-center text-primary fw-bold">
+    <i class="bi bi-building me-2"></i>Most Active Partners
+  </h2>
+  <p class="text-center text-muted lead">
+    Based on total courses and certificates issued
+  </p>
+
+  <div class="d-flex justify-content-center my-3">
+    <a href="{% url 'partner:partner_analytics' %}" class="btn btn-outline-primary">
+      <i class="bi bi-bar-chart-line me-2"></i>Back to Analytics
+    </a>
+  </div>
+
+  <div class="card shadow-lg p-4 border-0 rounded-3">
+    <canvas id="partnerChart"></canvas>
+  </div>
+</div>
+
+<script src="{% static 'js/chart.umd.min.js' %}"></script>
+<script>
+  new Chart(document.getElementById('partnerChart'), {
+    type: 'bar',
+    data: {
+      labels: {{ labels|safe }},
+      datasets: [
+        {
+          label: 'Total Courses',
+          data: {{ course_counts|safe }},
+          backgroundColor: '#3b82f6'  // biru
+        },
+        {
+          label: 'Total Certificates',
+          data: {{ certificate_counts|safe }},
+          backgroundColor: '#10b981'  // hijau
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: 'Count'
+          }
+        }
+      }
+    }
+  });
+</script>
+{% endblock %}
