@@ -196,3 +196,585 @@ INFO 2025-06-16 12:14:18,241 apps AXES: BEGIN version 8.0.0, blocking by usernam
 INFO 2025-06-16 12:15:26,950 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
 INFO 2025-06-16 12:15:27,037 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
 INFO 2025-06-16 12:15:27,068 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 12:57:16,279 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 12:57:16,352 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 12:57:16,545 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+ERROR 2025-06-16 12:57:18,737 log Internal Server Error: /analytics/geography/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/partner/views.py", line 57, in participant_geography_view
+    return render(request, 'partner/participant_geography.html', {
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 861, in do_for
+    sequence = parser.compile_filter(bits[in_index + 1])
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 705, in __init__
+    filter_func = parser.find_filter(filter_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 615, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'zip'
+INFO 2025-06-16 12:58:56,745 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 12:58:56,924 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 12:58:56,939 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+ERROR 2025-06-16 12:58:58,536 log Internal Server Error: /analytics/geography/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/partner/views.py", line 57, in participant_geography_view
+    return render(request, 'partner/participant_geography.html', {
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 861, in do_for
+    sequence = parser.compile_filter(bits[in_index + 1])
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 705, in __init__
+    filter_func = parser.find_filter(filter_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 615, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'zip'
+INFO 2025-06-16 13:00:13,983 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:00:14,099 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:00:14,140 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+ERROR 2025-06-16 13:00:16,064 log Internal Server Error: /analytics/geography/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 1035, in find_library
+    return parser.libraries[name]
+KeyError: 'costum_filters'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/partner/views.py", line 55, in participant_geography_view
+    return render(request, 'partner/participant_geography.html', {
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 1097, in load
+    lib = find_library(parser, name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 1037, in find_library
+    raise TemplateSyntaxError(
+django.template.exceptions.TemplateSyntaxError: 'costum_filters' is not a registered tag library. Must be one of:
+account
+admin_list
+admin_modify
+admin_urls
+allauth
+blog_filters
+cache
+csp
+custom_filters
+extra_custom_filters
+extra_filters
+form_filters
+humanize
+i18n
+import_export_tags
+l10n
+log
+mathfilters
+socialaccount
+static
+tz
+INFO 2025-06-16 13:00:40,840 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:00:40,993 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:00:41,043 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:01:51,537 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:01:51,657 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:01:51,678 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+ERROR 2025-06-16 13:01:53,733 log Internal Server Error: /analytics/geography/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/partner/views.py", line 57, in participant_geography_view
+    return render(request, 'partner/participant_geography.html', {
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 861, in do_for
+    sequence = parser.compile_filter(bits[in_index + 1])
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 705, in __init__
+    filter_func = parser.find_filter(filter_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 615, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'zip'
+INFO 2025-06-16 13:02:12,815 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:02:12,910 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:02:12,940 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:07:18,388 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-16 05:07:18.380592+00:00
+INFO 2025-06-16 13:07:18,388 database AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0", path_info: "/logout/"}.
+INFO 2025-06-16 13:07:28,687 database AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0", path_info: "/login/"}.
+INFO 2025-06-16 13:07:28,688 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-16 05:07:27.761219+00:00
+INFO 2025-06-16 13:08:17,929 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:08:17,965 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:08:17,981 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:10:07,598 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:10:07,640 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:10:07,722 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:12:21,866 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:12:21,890 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:12:21,912 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+ERROR 2025-06-16 13:12:25,626 log Internal Server Error: /analytics/popular-courses/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/partner/views.py", line 38, in popular_courses_view
+    labels = [course.title for course in data]
+  File "/home/TIM/mysite/partner/views.py", line 38, in <listcomp>
+    labels = [course.title for course in data]
+AttributeError: 'Course' object has no attribute 'title'
+INFO 2025-06-16 13:13:00,961 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:13:01,153 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:13:01,203 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:15:18,821 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:15:18,831 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:15:19,002 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:15:19,156 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:19:51,320 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:19:58,965 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:19:59,088 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:19:59,291 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+ERROR 2025-06-16 13:20:03,150 log Internal Server Error: /analytics/course-completion/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/partner/views.py", line 36, in course_completion_rate_view
+    completed=Count('enrollments', filter=Q(enrollments__is_completed=True))
+NameError: name 'Q' is not defined
+INFO 2025-06-16 13:20:38,005 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:20:38,186 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:20:38,450 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+ERROR 2025-06-16 13:20:38,877 log Internal Server Error: /analytics/course-completion/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/partner/views.py", line 33, in course_completion_rate_view
+    Course.objects
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1645, in annotate
+    return self._annotate(args, kwargs, select=True)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1697, in _annotate
+    clone.query.add_annotation(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1218, in add_annotation
+    annotation = annotation.resolve_expression(self, allow_joins=True, reuse=None)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/aggregates.py", line 181, in resolve_expression
+    result = super().resolve_expression(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/aggregates.py", line 63, in resolve_expression
+    c = super().resolve_expression(query, allow_joins, reuse, summarize)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/expressions.py", line 298, in resolve_expression
+    source_expressions = [
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/expressions.py", line 300, in <listcomp>
+    expr.resolve_expression(query, allow_joins, reuse, summarize)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query_utils.py", line 91, in resolve_expression
+    clause, joins = query._add_q(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1675, in _add_q
+    child_clause, needed_inner = self.build_filter(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1585, in build_filter
+    condition = self.build_lookup(lookups, col, value)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1406, in build_lookup
+    lhs = self.try_transform(lhs, lookup_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1455, in try_transform
+    raise FieldError(
+django.core.exceptions.FieldError: Unsupported lookup 'is_completed' for ManyToOneRel or join on the field not permitted.
+INFO 2025-06-16 13:24:30,949 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:24:31,038 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:24:31,103 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:28:57,455 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:28:57,672 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:28:57,689 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+ERROR 2025-06-16 13:28:58,331 log Internal Server Error: /analytics/course-completion/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/partner/views.py", line 41, in course_completion_rate_view
+    if is_passed(enrollment.user, course):  # logika lulus aktual
+NameError: name 'is_passed' is not defined
+INFO 2025-06-16 13:30:13,709 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:30:13,763 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:30:13,861 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:35:54,602 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:35:54,643 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:35:54,743 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+ERROR 2025-06-16 13:36:09,150 log Internal Server Error: /analytics/retention/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/partner/views.py", line 46, in retention_rate_view
+    retained_users=Count('id', filter=Q(last_login__gte=F('date_joined') + timedelta(days=7)))
+NameError: name 'F' is not defined
+INFO 2025-06-16 13:36:43,885 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:36:44,114 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:36:44,134 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:38:10,141 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:38:10,190 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:38:10,399 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:40:47,651 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:40:47,818 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:40:48,012 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:43:50,745 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:43:50,870 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:43:50,891 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+ERROR 2025-06-16 13:43:54,433 log Internal Server Error: /analytics/enrollment-growth/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/partner/views.py", line 60, in course_enrollment_growth_view
+    return render(request, 'partner/course_enrollment_growth.html', {
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 489, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 487, in parse
+    filter_expression = self.compile_filter(token.contents)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 705, in __init__
+    filter_func = parser.find_filter(filter_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 615, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'mul'
+INFO 2025-06-16 13:45:30,546 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:45:30,589 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:45:30,764 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+ERROR 2025-06-16 13:45:31,335 log Internal Server Error: /analytics/enrollment-growth/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 134, in render
+    compiled_parent = self.get_parent(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 131, in get_parent
+    return self.find_template(parent, context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 109, in find_template
+    template, origin = context.template.engine.find_template(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 163, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: partner/base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/partner/views.py", line 60, in course_enrollment_growth_view
+    return render(request, 'partner/course_enrollment_growth.html', {
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 109, in render
+    reraise(exc, self.backend)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 130, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: partner/base.html
+INFO 2025-06-16 13:47:24,682 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:47:24,795 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:47:24,861 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:49:28,394 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:49:28,435 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:49:28,442 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:50:29,192 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:50:29,316 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:50:29,540 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:53:39,636 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-16 05:53:39.633191+00:00
+INFO 2025-06-16 13:53:39,636 database AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0", path_info: "/logout/"}.
+INFO 2025-06-16 13:53:52,114 database AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0", path_info: "/login/"}.
+INFO 2025-06-16 13:53:52,115 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-16 05:53:51.190337+00:00
+INFO 2025-06-16 13:56:22,633 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:56:22,718 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:56:22,885 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+ERROR 2025-06-16 13:56:31,173 log Internal Server Error: /analytics/course-dropoff/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/partner/views.py", line 38, in course_dropoff_rate_view
+    Enrollment.objects.values('course__course_name')
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1645, in annotate
+    return self._annotate(args, kwargs, select=True)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1697, in _annotate
+    clone.query.add_annotation(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1218, in add_annotation
+    annotation = annotation.resolve_expression(self, allow_joins=True, reuse=None)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/aggregates.py", line 181, in resolve_expression
+    result = super().resolve_expression(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/aggregates.py", line 63, in resolve_expression
+    c = super().resolve_expression(query, allow_joins, reuse, summarize)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/expressions.py", line 298, in resolve_expression
+    source_expressions = [
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/expressions.py", line 300, in <listcomp>
+    expr.resolve_expression(query, allow_joins, reuse, summarize)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query_utils.py", line 91, in resolve_expression
+    clause, joins = query._add_q(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1675, in _add_q
+    child_clause, needed_inner = self.build_filter(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1523, in build_filter
+    lookups, parts, reffed_expression = self.solve_lookup_type(arg, summarize)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1330, in solve_lookup_type
+    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1802, in names_to_path
+    raise FieldError(
+django.core.exceptions.FieldError: Cannot resolve keyword 'progress' into field. Choices are: certificate_issued, course, course_id, enrolled_at, id, payment, payment_id, total_enrolled, user, user_id
+INFO 2025-06-16 13:58:37,180 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:58:37,260 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 13:58:37,340 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 14:01:08,839 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 14:01:08,992 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 14:01:09,031 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-16 14:01:16,896 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-16 06:01:16.894127+00:00
+INFO 2025-06-16 14:01:16,896 database AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0", path_info: "/logout/"}.
+INFO 2025-06-16 14:01:29,474 database AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0", path_info: "/login/"}.
+INFO 2025-06-16 14:01:29,476 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-16 06:01:28.494801+00:00
+INFO 2025-06-16 14:07:44,833 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address

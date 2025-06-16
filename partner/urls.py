@@ -18,6 +18,15 @@ urlpatterns = [
     path('ping-session/', views.ping_session, name='ping_session'),
     path('analytics/duration/', views.learning_duration_view, name='learning_duration'),
     path("analytics/geography/", views.participant_geography_view, name="participant_geography"),
+    path('analytics/device-usage/', views.device_usage_view, name='device_usage'),
+    path('analytics/popular-courses/', views.popular_courses_view, name='popular_courses'),
+    path('analytics/user-growth/', views.user_growth_view, name='user_growth'),
+    path('analytics/course-completion/', views.course_completion_rate_view, name='course_completion_rate'),
+    path('analytics/retention/', views.retention_rate_view, name='retention_rate'),
+    path('analytics/top-courses-rating/', views.top_courses_by_rating_view, name='top_courses_by_rating'),
+    path('analytics/enrollment-growth/', views.course_enrollment_growth_view, name='course_enrollment_growth'),
+    path('analytics/course-dropoff/', views.course_dropoff_rate_view, name='course_dropoff_rate'),
+
 
    
 ]

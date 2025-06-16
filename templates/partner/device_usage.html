@@ -1,0 +1,69 @@
+{% extends 'home/tes.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="text-center mb-4">
+    <h2 class="text-primary fw-bold">
+      <i class="bi bi-pc-display me-2"></i>Device Usage
+    </h2>
+    <p class="text-muted lead">
+      Distribution of devices used by participants during login
+    </p>
+  </div>
+
+  <div class="d-flex justify-content-center mb-4">
+    <a href="{% url 'partner:partner_analytics' %}" class="btn btn-outline-primary">
+      <i class="bi bi-bar-chart-line me-2"></i>Back to Main Analytics
+    </a>
+  </div>
+
+  <div class="card shadow-lg border-0 rounded-4 p-4 mx-auto" style="max-width: 700px;">
+    <canvas id="deviceChart" height="280"></canvas>
+  </div>
+</div>
+
+<script src="{% static 'js/chart.umd.min.js' %}"></script>
+<script>
+  new Chart(document.getElementById("deviceChart"), {
+    type: 'doughnut',
+    data: {
+      labels: {{ labels|safe }},
+      datasets: [{
+        label: "Logins by Device",
+        data: {{ counts|safe }},
+        backgroundColor: [
+          '#3b82f6', // Desktop
+          '#10b981', // Mobile
+          '#f59e0b', // Tablet
+          '#6b7280'  // Other
+        ],
+        hoverOffset: 12,
+        borderWidth: 2,
+        borderColor: '#fff'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            boxWidth: 20,
+            padding: 15
+          }
+        },
+        tooltip: {
+          backgroundColor: 'rgba(17,24,39,0.9)',
+          titleColor: '#fff',
+          bodyColor: '#f3f4f6',
+          callbacks: {
+            label: ctx => `${ctx.label}: ${ctx.raw} login(s)`
+          }
+        }
+      }
+    }
+  });
+</script>
+{% endblock %}

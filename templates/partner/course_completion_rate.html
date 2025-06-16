@@ -1,0 +1,59 @@
+{% extends 'home/tes.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+  <h2 class="text-center mb-4 text-success fw-bold">
+    <i class="bi bi-check2-square me-2"></i>Course Completion Rate
+  </h2>
+  <p class="text-center text-muted mb-4 lead">
+    Percentage of participants who completed the course (based on certificate issuance)
+  </p>
+
+  <div class="d-flex flex-column flex-md-row justify-content-center gap-3 mb-5">
+    <a href="{% url 'partner:partner_analytics' %}" class="btn btn-outline-success">
+      <i class="bi bi-bar-chart-line me-2"></i>Back to Main Analytics
+    </a>
+  </div>
+
+  <div class="card shadow-lg border-0 rounded-3 p-4">
+    <canvas id="completionChart"></canvas>
+  </div>
+</div>
+
+<script src="{% static 'js/chart.umd.min.js' %}"></script>
+<script>
+  new Chart(document.getElementById("completionChart"), {
+    type: 'bar',
+    data: {
+      labels: {{ labels|safe }},
+      datasets: [
+        {
+          label: 'Completed',
+          data: {{ completed|safe }},
+          backgroundColor: '#10b981'
+        },
+        {
+          label: 'Not Completed',
+          data: {{ not_completed|safe }},
+          backgroundColor: '#f87171'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.dataset.label}: ${ctx.raw} participants`
+          }
+        }
+      },
+      scales: {
+        x: { stacked: true, title: { display: true, text: 'Course' } },
+        y: { stacked: true, beginAtZero: true, title: { display: true, text: 'Participants' } }
+      }
+    }
+  });
+</script>
+{% endblock %}

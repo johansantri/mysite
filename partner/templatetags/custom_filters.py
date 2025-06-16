@@ -28,3 +28,10 @@ def render_comment_tree(context, comment):
 @register.filter
 def pluck(value, key):
     return [v[key] for v in value]
+
+
+
+
+@register.filter
+def zip_lists(a, b):
+    return zip(a, b)

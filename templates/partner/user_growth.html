@@ -1,0 +1,63 @@
+{% extends 'home/tes.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+  <h2 class="text-center text-primary fw-bold mb-4">
+    <i class="bi bi-person-plus me-2"></i>New User Growth
+  </h2>
+  <p class="text-center text-muted lead mb-4">
+    Monthly growth of newly registered users
+  </p>
+
+  <div class="d-flex justify-content-center mb-4">
+    <a href="{% url 'partner:partner_analytics' %}" class="btn btn-outline-primary">
+      <i class="bi bi-bar-chart-line me-2"></i>Back to Main Analytics
+    </a>
+  </div>
+
+  <div class="card shadow-lg border-0 rounded-3 p-4">
+    <canvas id="growthChart"></canvas>
+  </div>
+</div>
+
+<script src="{% static 'js/chart.umd.min.js' %}"></script>
+<script>
+  new Chart(document.getElementById("growthChart"), {
+    type: 'line',
+    data: {
+      labels: {{ months|safe }},
+      datasets: [{
+        label: 'New Users',
+        data: {{ counts|safe }},
+        fill: true,
+        borderColor: '#3b82f6',
+        backgroundColor: 'rgba(59,130,246,0.1)',
+        tension: 0.3,
+        pointRadius: 4,
+        pointHoverRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.raw} new users`
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: { display: true, text: 'Users' }
+        },
+        x: {
+          title: { display: true, text: 'Month' }
+        }
+      }
+    }
+  });
+</script>
+{% endblock %}

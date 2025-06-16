@@ -1,0 +1,64 @@
+{% extends 'home/tes.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+  <h2 class="text-center text-primary fw-bold">
+    <i class="bi bi-graph-up-arrow me-2"></i>Course Enrollment Growth
+  </h2>
+  <p class="text-center text-muted lead">
+    Enrollment trend of the most popular courses over time
+  </p>
+
+  <div class="d-flex justify-content-center my-3">
+    <a href="{% url 'partner:partner_analytics' %}" class="btn btn-outline-primary">
+      <i class="bi bi-bar-chart-line me-2"></i>Back to Analytics
+    </a>
+  </div>
+
+  <div class="card shadow-lg p-4 border-0 rounded-3">
+    <canvas id="enrollmentGrowthChart"></canvas>
+  </div>
+</div>
+
+<script src="{% static 'js/chart.umd.min.js' %}"></script>
+<script>
+  new Chart(document.getElementById('enrollmentGrowthChart'), {
+    type: 'line',
+    data: {
+      labels: {{ labels|safe }},
+      datasets: {{ datasets|safe }}
+    },
+    options: {
+      responsive: true,
+      interaction: {
+        mode: 'index',
+        intersect: false
+      },
+      stacked: false,
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: 'Number of Enrollments'
+          }
+        }
+      },
+      plugins: {
+        title: {
+          display: true,
+          text: 'Monthly Enrollment by Course'
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return `${context.dataset.label}: ${context.formattedValue} enrollments`;
+            }
+          }
+        }
+      }
+    }
+  });
+</script>
+{% endblock %}

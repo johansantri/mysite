@@ -1,0 +1,59 @@
+{% extends 'home/tes.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+  <h2 class="text-center text-primary fw-bold">
+    <i class="bi bi-star-fill me-2"></i>Top Courses by Rating
+  </h2>
+  <p class="text-center text-muted lead">
+    The most highly rated courses by participants
+  </p>
+
+  <div class="d-flex justify-content-center my-3">
+    <a href="{% url 'partner:partner_analytics' %}" class="btn btn-outline-primary">
+      <i class="bi bi-bar-chart-line me-2"></i>Back to Analytics
+    </a>
+  </div>
+
+  <div class="card shadow-lg p-4 border-0 rounded-3">
+    <canvas id="ratingChart"></canvas>
+  </div>
+</div>
+
+<script src="{% static 'js/chart.umd.min.js' %}"></script>
+<script>
+  new Chart(document.getElementById('ratingChart'), {
+    type: 'bar',
+    data: {
+      labels: {{ labels|safe }},
+      datasets: [{
+        label: 'Average Rating',
+        data: {{ ratings|safe }},
+        backgroundColor: '#facc15' // kuning
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          min: 0,
+          max: 5,
+          title: {
+            display: true,
+            text: 'Rating (0-5)'
+          }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => `Rating: ${ctx.raw}`
+          }
+        }
+      }
+    }
+  });
+</script>
+{% endblock %}

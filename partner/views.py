@@ -8,7 +8,7 @@ from django.http import HttpResponseForbidden
 from courses.models import Course, Enrollment,CourseRating,CourseComment,CourseViewLog,UserActivityLog,CourseSessionLog
 from authentication.models import CustomUser
 from collections import defaultdict
-from django.db.models import Avg, Count
+from django.db.models import Avg, Count, Q,F,FloatField, ExpressionWrapper
 from django.contrib import messages
 from datetime import timedelta
 from django.utils.timezone import now
@@ -22,7 +22,266 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Count, Sum
 from .utils import get_geo_from_ip
+from audit.models import AuditLog
+from django.db.models.functions import TruncMonth
+from collections import defaultdict
+from decimal import Decimal
+from django.db.models.functions import TruncWeek
 
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.is_partner)
+def course_dropoff_rate_view(request):
+    data = (
+        Enrollment.objects.values('course__course_name')
+        .annotate(
+            total_enrolled=Count('id'),
+            total_completed=Count('id', filter=Q(certificate_issued=True))
+        )
+        .order_by('-total_enrolled')[:10]
+    )
+
+    labels = [entry['course__course_name'] for entry in data]
+    completed = [entry['total_completed'] for entry in data]
+    dropoffs = [entry['total_enrolled'] - entry['total_completed'] for entry in data]
+
+    return render(request, 'partner/course_dropoff_rate.html', {
+        'labels': labels,
+        'completed': completed,
+        'dropoffs': dropoffs,
+    })
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.is_partner)
+def course_enrollment_growth_view(request):
+    enrollments = (
+        Enrollment.objects.annotate(month=TruncMonth('enrolled_at'))
+        .values('course__course_name', 'month')
+        .annotate(count=Count('id'))
+        .order_by('month')
+    )
+
+    course_data = defaultdict(lambda: defaultdict(int))
+    months_set = set()
+
+    for entry in enrollments:
+        course_name = entry['course__course_name']
+        month = entry['month'].strftime('%Y-%m')
+        course_data[course_name][month] = entry['count']
+        months_set.add(month)
+
+    all_months = sorted(list(months_set))
+
+    datasets = []
+    for i, (course, month_data) in enumerate(course_data.items()):
+        datasets.append({
+            'label': course,
+            'data': [month_data.get(month, 0) for month in all_months],
+            'color_hue': (i * 45) % 360,  # perhitungan warna aman
+        })
+
+    return render(request, 'partner/course_enrollment_growth.html', {
+        'labels': all_months,
+        'datasets': datasets,
+    })
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.is_partner)
+def top_courses_by_rating_view(request):
+    top_courses = (
+        Course.objects.annotate(avg_rating=Avg('ratings__rating'))
+        .filter(avg_rating__isnull=False)
+        .order_by('-avg_rating')[:10]
+    )
+    labels = [course.course_name for course in top_courses]
+    ratings = [round(course.avg_rating, 2) for course in top_courses]
+
+    return render(request, 'partner/top_courses_by_rating.html', {
+        'labels': labels,
+        'ratings': ratings,
+    })
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or getattr(u, 'is_partner', False))
+def retention_rate_view(request):
+    today = now().date()
+    start_date = today - timedelta(weeks=12)
+
+    # Retention data (cohort by week)
+    cohorts = (
+        CustomUser.objects.filter(date_joined__gte=start_date)
+        .annotate(week_joined=TruncWeek('date_joined'))
+        .values('week_joined')
+        .annotate(
+            new_users=Count('id'),
+            retained_users=Count('id', filter=Q(last_login__gte=F('date_joined') + timedelta(days=7)))
+        )
+        .order_by('week_joined')
+    )
+
+    week_labels = [c['week_joined'].strftime('%Y-%m-%d') for c in cohorts]
+    new_users = [c['new_users'] for c in cohorts]
+    retained_users = [c['retained_users'] for c in cohorts]
+
+    # Active user count per day
+    activity = (
+        UserActivityLog.objects.filter(activity_type='login', timestamp__gte=start_date)
+        .annotate(day=TruncDate('timestamp'))
+        .values('day')
+        .annotate(active_users=Count('user', distinct=True))
+        .order_by('day')
+    )
+
+    day_labels = [a['day'].strftime('%Y-%m-%d') for a in activity]
+    daily_active_users = [a['active_users'] for a in activity]
+
+    return render(request, 'partner/retention_rate.html', {
+        'week_labels': week_labels,
+        'new_users': new_users,
+        'retained_users': retained_users,
+        'day_labels': day_labels,
+        'daily_active_users': daily_active_users,
+    })
+
+
+
+
+
+def is_passed(user, course):
+    from courses.models import Assessment, QuestionAnswer, GradeRange, CourseProgress
+
+    # Ambil semua assessment terkait course
+    assessments = Assessment.objects.filter(section__courses=course).distinct()
+    total_score = Decimal(0)
+    total_max_score = Decimal(0)
+    all_submitted = True
+
+    for assessment in assessments:
+        total_questions = assessment.questions.count()
+        if total_questions == 0:
+            continue
+
+        correct_answers = 0
+        answered = False
+        for question in assessment.questions.all():
+            answers = QuestionAnswer.objects.filter(question=question, user=user)
+            if answers.exists():
+                answered = True
+                correct_answers += answers.filter(choice__is_correct=True).count()
+
+        if not answered:
+            all_submitted = False
+
+        score = (Decimal(correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
+        total_score += score
+        total_max_score += Decimal(assessment.weight)
+
+    percentage = (total_score / total_max_score) * 100 if total_max_score > 0 else 0
+
+    # Ambil progress dari CourseProgress
+    course_progress = CourseProgress.objects.filter(user=user, course=course).first()
+    progress_percentage = course_progress.progress_percentage if course_progress else 0
+
+    # Ambil passing grade dari GradeRange
+    grade_range = GradeRange.objects.filter(course=course).first()
+    passing_threshold = grade_range.min_grade if grade_range else 0
+
+    return progress_percentage == 100 and all_submitted and percentage >= passing_threshold
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.is_partner)
+def course_completion_rate_view(request):
+    all_courses = Course.objects.all()
+    results = []
+
+    for course in all_courses:
+        enrollments = Enrollment.objects.filter(course=course)
+        total_enrolled = enrollments.count()
+
+        total_passed = 0
+        for enrollment in enrollments.select_related('user'):
+            if is_passed(enrollment.user, course):  # logika lulus aktual
+                total_passed += 1
+
+        results.append({
+            'course_name': course.course_name,
+            'total_enrolled': total_enrolled,
+            'total_completed': total_passed
+        })
+
+    # Urutkan dan ambil 10 teratas
+    sorted_results = sorted(results, key=lambda x: x['total_enrolled'], reverse=True)[:10]
+
+    labels = [entry['course_name'] for entry in sorted_results]
+    completed = [entry['total_completed'] for entry in sorted_results]
+    not_completed = [entry['total_enrolled'] - entry['total_completed'] for entry in sorted_results]
+
+    return render(request, 'partner/course_completion_rate.html', {
+        'labels': labels,
+        'completed': completed,
+        'not_completed': not_completed,
+    })
+
+
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.is_partner)
+def user_growth_view(request):
+    data = (
+        CustomUser.objects
+        .filter(date_joined__isnull=False)
+        .annotate(month=TruncMonth('date_joined'))
+        .values('month')
+        .annotate(count=Count('id'))
+        .order_by('month')
+    )
+
+    months = [entry['month'].strftime('%b %Y') for entry in data]
+    counts = [entry['count'] for entry in data]
+
+    return render(request, 'partner/user_growth.html', {
+        'months': months,
+        'counts': counts,
+    })
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.is_partner)
+def popular_courses_view(request):
+    data = (
+        Course.objects
+        .annotate(enrollment_count=Count('enrollments'))
+        .order_by('-enrollment_count')[:10]
+    )
+
+    labels = [course.course_name for course in data]
+    counts = [course.enrollment_count for course in data]
+
+    return render(request, 'partner/popular_courses.html', {
+        'labels': labels,
+        'counts': counts,
+    })
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.is_partner)
+def device_usage_view(request):
+    data = (
+        AuditLog.objects
+        .filter(action='login')
+        .values('device_type')
+        .annotate(count=Count('id'))
+        .order_by('-count')
+    )
+
+    labels = [item['device_type'] or 'Unknown' for item in data]
+    counts = [item['count'] for item in data]
+
+    return render(request, 'partner/device_usage.html', {
+        'labels': labels,
+        'counts': counts,
+    })
 
 
 @login_required

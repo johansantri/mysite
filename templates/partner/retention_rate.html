@@ -1,0 +1,86 @@
+{% extends 'home/tes.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+  <h2 class="text-center text-primary fw-bold mb-4">
+    <i class="bi bi-arrow-repeat me-2"></i>Retention Rate & Active Users
+  </h2>
+  <p class="text-center text-muted lead mb-4">
+    Weekly retention and daily active user trend over the last 12 weeks.
+  </p>
+
+  <div class="d-flex justify-content-center mb-4">
+    <a href="{% url 'partner:partner_analytics' %}" class="btn btn-outline-primary">
+      <i class="bi bi-bar-chart-line"></i> Back to Main Analytics
+    </a>
+  </div>
+
+  <div class="card shadow-sm p-4 mb-5">
+    <h5 class="text-muted">Weekly Retention Rate</h5>
+    <canvas id="retentionChart" height="120"></canvas>
+  </div>
+
+  <div class="card shadow-sm p-4">
+    <h5 class="text-muted">Daily Active Users</h5>
+    <canvas id="activeChart" height="120"></canvas>
+  </div>
+</div>
+
+<script src="{% static 'js/chart.umd.min.js' %}"></script>
+<script>
+  const retentionChart = new Chart(document.getElementById("retentionChart"), {
+    type: 'bar',
+    data: {
+      labels: {{ week_labels|safe }},
+      datasets: [
+        {
+          label: "New Users",
+          data: {{ new_users|safe }},
+          backgroundColor: "#3b82f6"
+        },
+        {
+          label: "Retained After 7 Days",
+          data: {{ retained_users|safe }},
+          backgroundColor: "#10b981"
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'top' },
+        tooltip: { mode: 'index', intersect: false }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+
+  const activeChart = new Chart(document.getElementById("activeChart"), {
+    type: 'line',
+    data: {
+      labels: {{ day_labels|safe }},
+      datasets: [{
+        label: "Daily Active Users",
+        data: {{ daily_active_users|safe }},
+        fill: true,
+        borderColor: "#f59e0b",
+        backgroundColor: "rgba(245, 158, 11, 0.2)",
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'top' },
+        tooltip: { mode: 'index', intersect: false }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+</script>
+{% endblock %}

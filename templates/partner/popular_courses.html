@@ -1,0 +1,67 @@
+{% extends 'home/tes.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+  <h2 class="text-center mb-4 text-primary fw-bold">
+    <i class="bi bi-star-fill me-2"></i>Most Popular Courses
+  </h2>
+  <p class="text-center text-muted mb-4 lead">
+    Top 10 courses with the most enrollments
+  </p>
+
+  <div class="d-flex flex-column flex-md-row justify-content-center gap-3 mb-5">
+    <a href="{% url 'partner:partner_analytics' %}" class="btn btn-outline-primary">
+      <i class="bi bi-bar-chart-line me-2"></i>Back to Main Analytics
+    </a>
+  </div>
+
+  <div class="card shadow-lg border-0 rounded-3 p-4">
+    <canvas id="popularCoursesChart" height="400"></canvas>
+  </div>
+</div>
+
+<script src="{% static 'js/chart.umd.min.js' %}"></script>
+<script>
+  new Chart(document.getElementById("popularCoursesChart"), {
+    type: 'bar',
+    data: {
+      labels: {{ labels|safe }},
+      datasets: [{
+        label: "Enrollments",
+        data: {{ counts|safe }},
+        backgroundColor: 'rgba(34,197,94,0.8)',
+        borderColor: '#22c55e',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.label}: ${ctx.raw} participants`
+          }
+        }
+      },
+      scales: {
+        x: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: 'Number of Participants'
+          }
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Course Title'
+          }
+        }
+      }
+    }
+  });
+</script>
+{% endblock %}
