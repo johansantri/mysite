@@ -13,57 +13,80 @@
       </p>
 
       <!-- Tombol Navigasi -->
-      <div class="d-flex flex-column flex-md-row justify-content-center gap-3 mb-5">
-        <a href="{% url 'partner:heatmap' %}" class="btn btn-outline-primary">
-          <i class="bi bi-grid-3x3 me-2"></i>User Activity Heatmap
-        </a>
-        <a href="{% url 'partner:login_trends' %}" class="btn btn-outline-primary">
-          <i class="bi bi-graph-up-arrow me-2"></i>Login Trends
-        </a>
-        <a href="{% url 'partner:learning_duration' %}" class="btn btn-outline-primary">
-          <i class="bi bi-clock-history me-2"></i>Learning Duration Analytics
-        </a>
-        <a href="{% url 'partner:participant_geography' %}" class="btn btn-outline-primary">
-          <i class="bi bi-geo-alt me-2"></i>Geographic Analytics
-        </a>
-        <a href="{% url 'partner:device_usage' %}" class="btn btn-outline-primary">
-          <i class="bi bi-pc-display me-2"></i>Device Usage Analytics
-        </a>
-        <a href="{% url 'partner:popular_courses' %}" class="btn btn-outline-success">
-          <i class="bi bi-star me-2"></i>Popular Courses
-        </a>
-        <a href="{% url 'partner:user_growth' %}" class="btn btn-outline-primary">
-          <i class="bi bi-person-plus me-2"></i>New User Growth
-        </a>
-        <a href="{% url 'partner:course_completion_rate' %}" class="btn btn-outline-primary">
-          <i class="bi bi-check2-circle me-2"></i>Course Completion Rate
-        </a>
-
-        <a href="{% url 'partner:retention_rate' %}" class="btn btn-outline-primary">
-          <i class="bi bi-people me-2"></i>Retention Rate
-        </a>
-        <a href="{% url 'partner:top_courses_by_rating' %}" class="btn btn-outline-primary">
-          <i class="bi bi-star-fill me-2"></i>Top Courses by Rating
-        </a>
-        <a href="{% url 'partner:course_enrollment_growth' %}" class="btn btn-outline-primary">
-        <i class="bi bi-graph-up-arrow me-2"></i>Course Enrollment Growth
-      </a>
-      <a href="{% url 'partner:course_dropoff_rate' %}" class="btn btn-outline-primary">
-        <i class="bi bi-person-dash-fill me-2"></i>Course Drop-off Rate
-      </a>
-
-      <a href="{% url 'partner:certificate_analytics' %}" class="btn btn-outline-primary">
-        <i class="bi bi-patch-check me-2"></i>Certificate Analytics
-      </a>
-        <a href="{% url 'partner:active_partners' %}" class="btn btn-outline-primary">
-        <i class="bi bi-building me-2"></i>Most Active Partners
-      </a>
-
-
-
-
-
+      <!-- Tombol Navigasi dalam 4 Grid -->
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3 mb-5">
+        <div class="col">
+          <a href="{% url 'partner:heatmap' %}" class="btn btn-outline-primary w-100">
+            <i class="bi bi-grid-3x3 me-2"></i>User Activity Heatmap
+          </a>
+        </div>
+        <div class="col">
+          <a href="{% url 'partner:login_trends' %}" class="btn btn-outline-primary w-100">
+            <i class="bi bi-graph-up-arrow me-2"></i>Login Trends
+          </a>
+        </div>
+        <div class="col">
+          <a href="{% url 'partner:learning_duration' %}" class="btn btn-outline-primary w-100">
+            <i class="bi bi-clock-history me-2"></i>Learning Duration Analytics
+          </a>
+        </div>
+        <div class="col">
+          <a href="{% url 'partner:participant_geography' %}" class="btn btn-outline-primary w-100">
+            <i class="bi bi-geo-alt me-2"></i>Geographic Analytics
+          </a>
+        </div>
+        <div class="col">
+          <a href="{% url 'partner:device_usage' %}" class="btn btn-outline-primary w-100">
+            <i class="bi bi-pc-display me-2"></i>Device Usage Analytics
+          </a>
+        </div>
+        <div class="col">
+          <a href="{% url 'partner:popular_courses' %}" class="btn btn-outline-success w-100">
+            <i class="bi bi-star me-2"></i>Popular Courses
+          </a>
+        </div>
+        <div class="col">
+          <a href="{% url 'partner:user_growth' %}" class="btn btn-outline-primary w-100">
+            <i class="bi bi-person-plus me-2"></i>New User Growth
+          </a>
+        </div>
+        <div class="col">
+          <a href="{% url 'partner:course_completion_rate' %}" class="btn btn-outline-primary w-100">
+            <i class="bi bi-check2-circle me-2"></i>Course Completion Rate
+          </a>
+        </div>
+        <div class="col">
+          <a href="{% url 'partner:retention_rate' %}" class="btn btn-outline-primary w-100">
+            <i class="bi bi-people me-2"></i>Retention Rate
+          </a>
+        </div>
+        <div class="col">
+          <a href="{% url 'partner:top_courses_by_rating' %}" class="btn btn-outline-primary w-100">
+            <i class="bi bi-star-fill me-2"></i>Top Courses by Rating
+          </a>
+        </div>
+        <div class="col">
+          <a href="{% url 'partner:course_enrollment_growth' %}" class="btn btn-outline-primary w-100">
+            <i class="bi bi-graph-up-arrow me-2"></i>Course Enrollment Growth
+          </a>
+        </div>
+        <div class="col">
+          <a href="{% url 'partner:course_dropoff_rate' %}" class="btn btn-outline-primary w-100">
+            <i class="bi bi-person-dash-fill me-2"></i>Course Drop-off Rate
+          </a>
+        </div>
+        <div class="col">
+          <a href="{% url 'partner:certificate_analytics' %}" class="btn btn-outline-primary w-100">
+            <i class="bi bi-patch-check me-2"></i>Certificate Analytics
+          </a>
+        </div>
+        <div class="col">
+          <a href="{% url 'partner:active_partners' %}" class="btn btn-outline-primary w-100">
+            <i class="bi bi-building me-2"></i>Most Active Partners
+          </a>
+        </div>
       </div>
+
 
       <!-- Stat Boxes -->
       <div class="row mb-5">
