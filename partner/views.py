@@ -701,20 +701,26 @@ def partner_analytics_view(request):
 
 @login_required
 def partner_course_comments(request):
-    # Pastikan hanya partner yang bisa mengakses halaman ini
-    if not request.user.is_superuser:
+    # Jika superuser, ambil semua course dan komentar
+    if request.user.is_superuser:
+        owned_courses = Course.objects.all()
+    elif hasattr(request.user, 'partner_user'):
+        # Jika partner, ambil hanya kursus miliknya
+        partner = request.user.partner_user
+        owned_courses = Course.objects.filter(org_partner=partner)
+    else:
+        # Selain itu, tolak akses
         return HttpResponseForbidden("You are not authorized to view this page.")
 
-    # Ambil semua kursus yang dimiliki oleh partner
-    owned_courses = Course.objects.filter(org_partner__user=request.user)
-    
-    # Ambil semua komentar dari kursus yang dimiliki partner, hanya komentar utama (parent__isnull=True)
-    comments = CourseComment.objects.filter(course__in=owned_courses, parent__isnull=True).order_by('-created_at')
+    # Ambil komentar utama dari course yang dimiliki
+    comments = CourseComment.objects.filter(
+        course__in=owned_courses,
+        parent__isnull=True
+    ).order_by('-created_at')
 
-    # Paginasi komentar, tampilkan 5 komentar per halaman
+    # Paginasi
     paginator = Paginator(comments, 5)
     page = request.GET.get('page')
-    
     try:
         comments_page = paginator.page(page)
     except PageNotAnInteger:
@@ -722,7 +728,7 @@ def partner_course_comments(request):
     except EmptyPage:
         comments_page = paginator.page(paginator.num_pages)
 
-    # Tangani balasan komentar jika POST
+    # Balasan komentar
     if request.method == 'POST':
         content = request.POST.get('content')
         parent_id = request.POST.get('parent_id')
@@ -733,17 +739,16 @@ def partner_course_comments(request):
             return HttpResponseForbidden("Invalid parent comment.")
 
         if content:
-            # Buat komentar balasan
             CourseComment.objects.create(
                 user=request.user,
                 content=content,
                 course=parent_comment.course,
                 parent=parent_comment
             )
-            return redirect('partner:partner_course_comments')  # Redirect ke halaman komentar
+            return redirect('partner:partner_course_comments')
 
     context = {
-        'comments': comments_page  # Kirim komentar yang dipaginasi ke template
+        'comments': comments_page
     }
     return render(request, 'partner/partner_course_comments.html', context)
 

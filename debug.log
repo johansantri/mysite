@@ -96,3 +96,75 @@ INFO 2025-06-17 09:57:46,589 apps AXES: BEGIN version 8.0.0, blocking by usernam
 INFO 2025-06-17 10:12:37,297 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
 INFO 2025-06-17 10:12:37,513 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
 INFO 2025-06-17 10:12:37,570 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 10:30:50,752 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 10:30:50,782 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 10:30:50,983 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 10:33:24,309 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 10:33:24,392 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 10:33:24,551 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+ERROR 2025-06-17 10:33:27,906 log Internal Server Error: /analytics/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 510, in parse
+    compile_func = self.tags[command]
+KeyError: 'endfor'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/partner/views.py", line 694, in partner_analytics_view
+    return render(request, 'partner/analytics.html', {
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 567, in invalid_block_tag
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 40: 'endfor', expected 'endblock'. Did you forget to register or load this tag?
+INFO 2025-06-17 10:34:30,932 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 10:34:30,950 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 10:34:30,969 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 10:35:50,846 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 10:35:51,020 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 10:35:51,073 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 10:37:27,584 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 10:37:27,693 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 10:37:27,732 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 10:37:49,278 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 10:37:49,603 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 10:37:49,632 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
