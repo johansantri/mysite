@@ -2,63 +2,125 @@
 {% load humanize %}
 
 {% block content %}
-
-  <h2 class="mb-4">Transaction Detail</h2>
-
+<div class="container py-5">
   {% if payment %}
-    <div class="card shadow-sm">
+    <div class="card border-0 shadow-lg">
+      <div class="card-header bg-white border-bottom">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h4 class="mb-0 fw-bold">Invoice Transaksi</h4>
+            <small class="text-muted">Transaction ID: <code>{{ payment.transaction_id|default:"-" }}</code></small>
+          </div>
+          <div>
+            <span class="badge 
+              {% if payment.status == 'completed' %} bg-success
+              {% elif payment.status == 'pending' %} bg-warning text-dark
+              {% else %} bg-danger {% endif %}">
+              {{ payment.get_status_display }}
+            </span>
+          </div>
+        </div>
+      </div>
+
       <div class="card-body">
-        <h5 class="card-title">Transaction ID: {{ payment.transaction_id }}</h5>
-        <h6 class="card-subtitle mb-3 text-muted">Status: 
-          <span class="badge bg-{{ payment.status|yesno:'success,danger,secondary' }}">{{ payment.status|capfirst }}</span>
-        </h6>
+        <div class="row gy-4">
+          <!-- Informasi Pengguna -->
+          <div class="col-md-6">
+            <h6 class="fw-semibold mb-3">Informasi Pengguna</h6>
+            <ul class="list-unstyled small">
+              <li><strong>Nama:</strong> {{ payment.user.get_full_name|default:payment.user.username }}</li>
+              <li><strong>Email:</strong> {{ payment.user.email }}</li>
+              <li><strong>IP:</strong> {{ payment.ip_address|default:"-" }}</li>
+              <li><strong>User Agent:</strong><br><span class="text-muted">{{ payment.user_agent|default:"-" }}</span></li>
+            </ul>
+          </div>
 
-        <table class="table table-bordered">
-          <tbody>
-            <tr>
-              <th>User</th>
-              <td>{{ payment.user.username }}</td>
-            </tr>
-            <tr>
-              <th>Course</th>
-              <td>{{ payment.course.course_name }}</td>
-            </tr>
-            <tr>
-              <th>Partner Organization</th>
-              <td>{{ payment.course.org_partner.name }}</td>
-            </tr>
-            <tr>
-              <th>Payment Model</th>
-              <td>{{ payment.get_payment_model_display }}</td>
-            </tr>
-            <tr>
-              <th>Amount</th>
-              <td>Rp {{ payment.amount|floatformat:0|intcomma }}</td>
-            </tr>
-            <tr>
-              <th>Date</th>
-              <td>{{ payment.created_at|date:"Y-m-d H:i" }}</td>
-            </tr>
-            <tr>
-              <th>Updated At</th>
-              <td>{{ payment.updated_at|date:"Y-m-d H:i" }}</td>
-            </tr>
-            {% if payment.notes %}
-              <tr>
-                <th>Notes</th>
-                <td>{{ payment.notes }}</td>
-              </tr>
-            {% endif %}
-          </tbody>
-        </table>
+          <!-- Informasi Kursus -->
+          <div class="col-md-6">
+            <h6 class="fw-semibold mb-3">Informasi Kursus</h6>
+            <ul class="list-unstyled small">
+              <li><strong>Kursus:</strong> {{ payment.course.course_name }}</li>
+              <li><strong>ID Kursus:</strong> {{ payment.course.id }}</li>
+              <li><strong>Partner:</strong> {{ payment.course.org_partner.name }}</li>
+              <li><strong>Model Pembayaran:</strong> {{ payment.get_payment_model_display }}</li>
+              <li><strong>Metode:</strong> {{ payment.get_method_display|default:"-" }}</li>
+            </ul>
+          </div>
+        </div>
 
-        <a href="{% url 'payments:payment_report' %}" class="btn btn-secondary mt-3">← Back to Report</a>
+        <hr class="my-4">
+
+        <!-- Waktu dan Tagihan -->
+        <div class="row gy-3">
+          <div class="col-md-6">
+            <h6 class="fw-semibold mb-3">Waktu Transaksi</h6>
+            <ul class="list-unstyled small">
+              <li><strong>Tanggal Dibuat:</strong> {{ payment.created_at|date:"Y-m-d H:i" }}</li>
+              <li><strong>Terakhir Diperbarui:</strong> {{ payment.updated_at|date:"Y-m-d H:i" }}</li>
+            </ul>
+          </div>
+          <div class="col-md-6">
+            <h6 class="fw-semibold mb-3">Tagihan</h6>
+            <p class="fs-5 fw-bold text-success">Rp {{ payment.amount|floatformat:0|intcomma }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Snapshot Harga -->
+      <div class="card-body bg-light border-top">
+        <h6 class="fw-semibold mb-3">Rincian Harga Saat Transaksi</h6>
+        <div class="row small">
+          <div class="col-md-4">
+            <ul class="list-unstyled">
+              <li><strong>Harga Normal:</strong> Rp {{ payment.snapshot_price|intcomma }}</li>
+              <li><strong>Diskon:</strong> Rp {{ payment.snapshot_discount|intcomma }}</li>
+              <li><strong>Tax (%):</strong> {{ payment.snapshot_tax }}</li>
+            </ul>
+          </div>
+          <div class="col-md-4">
+            <ul class="list-unstyled">
+              <li><strong>PPN:</strong> Rp {{ payment.snapshot_ppn|intcomma }}</li>
+              <li><strong>Total Dibayar:</strong> <span class="text-success fw-bold">Rp {{ payment.snapshot_user_payment|intcomma }}</span></li>
+            </ul>
+          </div>
+          <div class="col-md-4">
+            <ul class="list-unstyled">
+              <li><strong>Ke Partner:</strong> Rp {{ payment.snapshot_partner_earning|intcomma }}</li>
+              <li><strong>Ke ICE:</strong> Rp {{ payment.snapshot_ice_earning|intcomma }}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bukti Pembayaran -->
+      {% if payment.proof_of_payment %}
+      <div class="card-body border-top">
+        <h6 class="fw-semibold mb-3">Bukti Pembayaran</h6>
+        <div class="text-center">
+          <a href="{{ payment.proof_of_payment.url }}" target="_blank">
+            <img src="{{ payment.proof_of_payment.url }}" alt="Bukti Bayar" class="img-fluid img-thumbnail w-50">
+          </a>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Catatan -->
+      {% if payment.notes %}
+      <div class="card-body border-top bg-white">
+        <h6 class="fw-semibold mb-2">Catatan</h6>
+        <p class="text-muted small mb-0">{{ payment.notes }}</p>
+      </div>
+      {% endif %}
+
+      <!-- Tombol Kembali -->
+      <div class="card-footer text-end bg-white">
+        <a href="{% url 'payments:payment_report' %}" class="btn btn-outline-secondary btn-sm">← Kembali ke Laporan</a>
       </div>
     </div>
   {% else %}
-    <div class="alert alert-warning">
-      Transaction not found.
+    <div class="alert alert-warning text-center" role="alert">
+      Transaksi tidak ditemukan.
     </div>
   {% endif %}
-
+</div>
 {% endblock %}
