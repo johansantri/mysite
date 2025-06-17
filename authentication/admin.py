@@ -2,9 +2,13 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser, Universiti
+from import_export.admin import ImportExportModelAdmin
+
+
+
 
 # Menyesuaikan admin untuk model Universiti
-class UniversitiAdmin(admin.ModelAdmin):
+class UniversitiAdmin(ImportExportModelAdmin):
     list_display = ('name', 'slug', 'location')
     search_fields = ('name', 'location')
     list_per_page = 10
