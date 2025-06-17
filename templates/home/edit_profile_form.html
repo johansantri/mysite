@@ -7,8 +7,8 @@
         <div class="col-12 col-md-10 col-lg-8">
             <div class="card shadow-sm border-0">
                 <div class="card-body p-4 p-md-5">
-                    <h2 class="text-center mb-3 fw-bold">Lengkapi Profil Anda</h2>
-                    <p class="text-center text-muted mb-4">Silakan lengkapi data pribadi Anda untuk melanjutkan ke dashboard.</p>
+                    <h2 class="text-center mb-3 fw-bold">Complete Your Profile</h2>
+                    <p class="text-center text-muted mb-4">Please complete your personal data to proceed to the dashboard.</p>
 
                     <!-- Messages -->
                     {% if messages %}
@@ -101,7 +101,7 @@
                                         {{ form.photo }}
                                         {% if user.photo %}
                                             <span class="input-group-text">
-                                                <img src="{{ user.photo.url }}" alt="Foto Profil" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                                                <img src="{{ user.photo.url }}" alt="Profile Photo" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
                                             </span>
                                         {% endif %}
                                     </div>
@@ -149,7 +149,7 @@
 
                             <!-- Social Media Links -->
                             <div class="col-12">
-                                <h5 class="mb-3 text-primary border-bottom pb-2">Tautan Media Sosial</h5>
+                                <h5 class="mb-3 text-primary border-bottom pb-2">Social Media Links</h5>
                                 <div class="row g-4">
                                     <div class="col-md-6">
                                         <div class="mb-3">
@@ -223,8 +223,8 @@
 
                         <!-- Buttons -->
                         <div class="d-flex justify-content-center mt-4 gap-3">
-                            <button type="submit" class="btn btn-primary btn-lg px-5">Simpan</button>
-                            <a href="{% url 'authentication:dashbord' %}" class="btn btn-outline-secondary btn-lg px-5">Batal</a>
+                            <button type="submit" class="btn btn-primary btn-lg px-5">Save</button>
+                            <a href="{% url 'authentication:dashbord' %}" class="btn btn-outline-secondary btn-lg px-5">Cancel</a>
                         </div>
                     </form>
                 </div>

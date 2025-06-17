@@ -770,17 +770,17 @@ def dasbord(request):
 def dashbord(request):
     user = request.user
     required_fields = {
-        'first_name': 'Nama Depan',
-        'last_name': 'Nama Belakang',
+        'first_name': 'First Name',
+        'last_name': 'Last Name',
         'email': 'Email',
-        'phone': 'Nomor Telepon',
-        'gender': 'Jenis Kelamin',
-        'birth': 'Tanggal Lahir',
+        'phone': 'Phone Number',
+        'gender': 'Gender',
+        'birth': 'Date of Birth',
     }
     missing_fields = [label for field, label in required_fields.items() if not getattr(user, field)]
 
     if missing_fields:
-        messages.warning(request, f"Harap lengkapi data berikut: {', '.join(missing_fields)}")
+        messages.warning(request, f"Please fill in the following required information.: {', '.join(missing_fields)}")
         return redirect('authentication:edit-profile', pk=user.pk)
 
     search_query = request.GET.get('search', '')
@@ -908,17 +908,17 @@ def edit_profile(request, pk):
 
     # Pastikan hanya pemilik profil yang bisa mengedit
     if request.user.pk != pk:
-        messages.error(request, "Anda tidak memiliki izin untuk mengedit profil ini.")
+        messages.error(request, "You are not authorized to edit this profile.")
         return redirect('authentication:dashbord')
 
     if request.method == "POST":
         form = UserProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
-            messages.success(request, "Profil berhasil diperbarui.")
+            messages.success(request, "Your profile has been updated.")
             return redirect('authentication:dashbord')
         else:
-            messages.error(request, "Silakan perbaiki kesalahan di bawah ini.")
+            messages.error(request, "Please correct the errors below.")
     else:
         form = UserProfileForm(instance=profile)
 

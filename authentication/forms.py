@@ -223,25 +223,26 @@ class UserProfileForm(forms.ModelForm):
             'twitter': forms.URLInput(attrs={'class': 'form-control'}),
         }
         labels = {
-            'first_name': 'Nama Depan',
-            'last_name': 'Nama Belakang',
-            'email': 'Email',
-            'phone': 'Nomor Telepon',
-            'gender': 'Jenis Kelamin',
-            'birth': 'Tanggal Lahir',
-            'country': 'Negara',
-            'photo': 'Foto Profil',
-            'address': 'Alamat',
-            'hobby': 'Hobi',
-            'education': 'Pendidikan',
-            'university': 'Universitas',
-            'tiktok': 'TikTok',
-            'youtube': 'YouTube',
-            'facebook': 'Facebook',
-            'instagram': 'Instagram',
-            'linkedin': 'LinkedIn',
-            'twitter': 'Twitter',
-        }
+                'first_name': 'First Name',
+                'last_name': 'Last Name',
+                'email': 'Email',
+                'phone': 'Phone Number',
+                'gender': 'Gender',
+                'birth': 'Date of Birth',
+                'country': 'Country',
+                'photo': 'Profile Photo',
+                'address': 'Address',
+                'hobby': 'Hobby',
+                'education': 'Education',
+                'university': 'University',
+                'tiktok': 'TikTok',
+                'youtube': 'YouTube',
+                'facebook': 'Facebook',
+                'instagram': 'Instagram',
+                'linkedin': 'LinkedIn',
+                'twitter': 'Twitter',
+            }
+
 
     def clean_email(self):
         email = self.cleaned_data.get('email')

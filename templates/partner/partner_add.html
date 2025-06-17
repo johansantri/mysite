@@ -28,39 +28,5 @@
         </div>
  
 
-        <script>
-          $(document).ready(function() {
-              $('.pilihA').select2({
-                  placeholder: 'Pilih Universitas',
-                  ajax: {
-                      url: '{% url "courses:search_partner" %}',
-                      dataType: 'json',
-                      delay: 250,
-                      data: function(params) {
-                          return { q: params.term };
-                      },
-                      processResults: function(data) {
-                          console.log("PilihA data:", data);
-                          return { results: data.partners };
-                      }
-                  }
-              });
-      
-              $('.pilihB').select2({
-                  placeholder: 'Pilih Pengguna',
-                  ajax: {
-                      url: '{% url "courses:search_users" %}',
-                      dataType: 'json',
-                      delay: 250,
-                      data: function(params) {
-                          return { q: params.term };
-                      },
-                      processResults: function(data) {
-                          console.log("PilihB data:", data);
-                          return { results: data.users };
-                      }
-                  }
-              });
-          });
-      </script>
+       
 {% endblock %}
