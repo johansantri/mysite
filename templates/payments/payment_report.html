@@ -91,7 +91,11 @@
       <tr>
         <td>{{ p.id }} | {{ p.transaction_id }}</td>
     
-        <td>{{ p.user.username }}</td>
+        <td>
+        <a href="{% url 'payments:payment_detail' p.id %}">
+            {{ p.user.username }}
+        </a>
+        </td>
         <td>{{ p.course.course_name }}</td>
         <td>{{ p.course.org_partner.name }}</td>
         <td>{{ p.get_payment_model_display }}</td>

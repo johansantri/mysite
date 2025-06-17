@@ -1,0 +1,64 @@
+{% extends 'home/tes.html' %}
+{% load humanize %}
+
+{% block content %}
+
+  <h2 class="mb-4">Transaction Detail</h2>
+
+  {% if payment %}
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">Transaction ID: {{ payment.transaction_id }}</h5>
+        <h6 class="card-subtitle mb-3 text-muted">Status: 
+          <span class="badge bg-{{ payment.status|yesno:'success,danger,secondary' }}">{{ payment.status|capfirst }}</span>
+        </h6>
+
+        <table class="table table-bordered">
+          <tbody>
+            <tr>
+              <th>User</th>
+              <td>{{ payment.user.username }}</td>
+            </tr>
+            <tr>
+              <th>Course</th>
+              <td>{{ payment.course.course_name }}</td>
+            </tr>
+            <tr>
+              <th>Partner Organization</th>
+              <td>{{ payment.course.org_partner.name }}</td>
+            </tr>
+            <tr>
+              <th>Payment Model</th>
+              <td>{{ payment.get_payment_model_display }}</td>
+            </tr>
+            <tr>
+              <th>Amount</th>
+              <td>Rp {{ payment.amount|floatformat:0|intcomma }}</td>
+            </tr>
+            <tr>
+              <th>Date</th>
+              <td>{{ payment.created_at|date:"Y-m-d H:i" }}</td>
+            </tr>
+            <tr>
+              <th>Updated At</th>
+              <td>{{ payment.updated_at|date:"Y-m-d H:i" }}</td>
+            </tr>
+            {% if payment.notes %}
+              <tr>
+                <th>Notes</th>
+                <td>{{ payment.notes }}</td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+
+        <a href="{% url 'payments:payment_report' %}" class="btn btn-secondary mt-3">← Back to Report</a>
+      </div>
+    </div>
+  {% else %}
+    <div class="alert alert-warning">
+      Transaction not found.
+    </div>
+  {% endif %}
+
+{% endblock %}

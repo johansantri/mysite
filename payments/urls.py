@@ -11,4 +11,5 @@ urlpatterns = [
     path('transactions/', views.transaction_history, name='transaction_history'),
     path('course/<int:course_id>/payment/<str:payment_type>/', views.process_payment, name='process_payment'),
     path('payment-report/', views.payment_report_view, name='payment_report'),
+    path('report/<int:pk>/', views.payment_detail_view, name='payment_detail'),
 ]

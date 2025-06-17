@@ -605,6 +605,11 @@
                                 <i class="bi bi-graph-up-arrow me-2"></i> Analytics
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'payment_report' %}active{% endif %}" href="{% url 'payments:payment_report' %}">
+                                <i class="bi bi-receipt me-2"></i> Transaction Report
+                            </a>
+                        </li>
                     {% elif user.is_subscription %}
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'licens_dashboard' %}active{% endif %}" href="{% url 'licensing:licens_dashboard' %}" aria-current="page">
@@ -680,6 +685,11 @@
                          <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'partner_analytics' %}active{% endif %}" href="{% url 'partner:partner_analytics' %}">
                                 <i class="bi bi-graph-up-arrow me-2"></i> Analytics
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'payment_report' %}active{% endif %}" href="{% url 'payments:payment_report' %}">
+                                <i class="bi bi-receipt me-2"></i> Transaction Report
                             </a>
                         </li>
                     {% else %}

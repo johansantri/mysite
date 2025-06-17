@@ -21,7 +21,11 @@ from django.db.models import Q
 
 logger = logging.getLogger(__name__)
 
-
+@login_required
+@user_passes_test(lambda u: u.is_authenticated and (u.is_superuser or getattr(u, 'is_partner', False)))
+def payment_detail_view(request, pk):
+    payment = get_object_or_404(Payment.objects.select_related('user', 'course__org_partner'), pk=pk)
+    return render(request, 'payments/payment_detail.html', {'payment': payment})
 
 
 @login_required
