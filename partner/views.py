@@ -62,37 +62,45 @@ def top_transaction_partners_view(request):
 
     partners = partners.annotate(
         total_transactions=Count('courses__payments', distinct=True),
-        paid_transactions=Count('courses__payments', filter=Q(courses__payments__status='paid'), distinct=True),
+
+        # Completed = paid
+        paid_transactions=Count('courses__payments', filter=Q(courses__payments__status='completed'), distinct=True),
         pending_transactions=Count('courses__payments', filter=Q(courses__payments__status='pending'), distinct=True),
+        expired_transactions=Count('courses__payments', filter=Q(courses__payments__status='expired'), distinct=True),
+
         total_amount=Sum('courses__payments__amount'),
-        paid_amount=Sum('courses__payments__amount', filter=Q(courses__payments__status='paid')),
-        pending_amount=Sum('courses__payments__amount', filter=Q(courses__payments__status='pending'))
+        paid_amount=Sum('courses__payments__amount', filter=Q(courses__payments__status='completed')),
+        pending_amount=Sum('courses__payments__amount', filter=Q(courses__payments__status='pending')),
+        expired_amount=Sum('courses__payments__amount', filter=Q(courses__payments__status='expired'))
     ).order_by('-total_transactions')[:10]
 
-    labels = [partner.name.name for partner in partners]
+    labels = [partner.name if isinstance(partner.name, str) else partner.name.name for partner in partners]
     transaction_counts = [partner.total_transactions for partner in partners]
     paid_counts = [partner.paid_transactions for partner in partners]
     pending_counts = [partner.pending_transactions for partner in partners]
+    expired_counts = [partner.expired_transactions for partner in partners]
+
     transaction_totals = [float(partner.total_amount or 0) for partner in partners]
     paid_totals = [float(partner.paid_amount or 0) for partner in partners]
     pending_totals = [float(partner.pending_amount or 0) for partner in partners]
+    expired_totals = [float(partner.expired_amount or 0) for partner in partners]
 
-    # Prepare zipped data for table
+    # Untuk ditampilkan di tabel
     partner_data = list(zip(
-        labels, transaction_counts, paid_counts, pending_counts,
-        transaction_totals, paid_totals, pending_totals
+        labels, transaction_counts,
+        paid_counts, pending_counts, expired_counts,
+        transaction_totals, paid_totals, pending_totals, expired_totals
     ))
 
-    # Prepare JSON-safe data for Chart.js
     context = {
         'partner_data': partner_data,
         'labels_json': json.dumps(labels),
-        'transaction_counts_json': json.dumps(transaction_counts),
         'paid_counts_json': json.dumps(paid_counts),
         'pending_counts_json': json.dumps(pending_counts),
-        'transaction_totals_json': json.dumps(transaction_totals),
+        'expired_counts_json': json.dumps(expired_counts),
         'paid_totals_json': json.dumps(paid_totals),
         'pending_totals_json': json.dumps(pending_totals),
+        'expired_totals_json': json.dumps(expired_totals),
     }
 
     return render(request, 'partner/top_partners_transactions.html', context)

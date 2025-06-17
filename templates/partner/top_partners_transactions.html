@@ -19,7 +19,6 @@
   </div>
 
   {% if partner_data %}
-    <!-- Data Available: Show Chart and Table -->
     <div class="card shadow-lg border-0 rounded-4 p-4 mx-auto mb-5 max-w-900">
       <div class="card-body p-0">
         <canvas id="transactionPartnerChart" class="w-100" aria-label="Transaction Partners Chart"></canvas>
@@ -35,29 +34,32 @@
             <th scope="col">Total Transactions</th>
             <th scope="col">Paid Transactions</th>
             <th scope="col">Pending Transactions</th>
+            <th scope="col">Expired Transactions</th>
             <th scope="col">Total Amount (Rp)</th>
             <th scope="col">Paid Amount (Rp)</th>
             <th scope="col">Pending Amount (Rp)</th>
+            <th scope="col">Expired Amount (Rp)</th>
           </tr>
         </thead>
         <tbody>
-          {% for label, total_count, paid_count, pending_count, total_amount, paid_amount, pending_amount in partner_data %}
+          {% for label, total_count, paid_count, pending_count, expired_count, total_amount, paid_amount, pending_amount, expired_amount in partner_data %}
             <tr>
               <td>{{ forloop.counter }}</td>
               <td>{{ label }}</td>
               <td>{{ total_count }}</td>
               <td>{{ paid_count }}</td>
               <td>{{ pending_count }}</td>
+              <td>{{ expired_count }}</td>
               <td>Rp {{ total_amount|floatformat:0|intcomma }}</td>
               <td>Rp {{ paid_amount|floatformat:0|intcomma }}</td>
               <td>Rp {{ pending_amount|floatformat:0|intcomma }}</td>
+              <td>Rp {{ expired_amount|floatformat:0|intcomma }}</td>
             </tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
   {% else %}
-    <!-- No Data: Show Fallback UI -->
     <div class="card shadow-lg border-0 rounded-4 p-4 mx-auto text-center max-w-600" role="alert" aria-live="polite">
       <div class="card-body">
         <i class="bi bi-exclamation-circle display-4 text-muted mb-3"></i>
@@ -82,8 +84,10 @@
     const labels = {{ labels_json|safe }};
     const paidCounts = {{ paid_counts_json|safe }};
     const pendingCounts = {{ pending_counts_json|safe }};
+    const expiredCounts = {{ expired_counts_json|safe }};
     const paidTotals = {{ paid_totals_json|safe }};
     const pendingTotals = {{ pending_totals_json|safe }};
+    const expiredTotals = {{ expired_totals_json|safe }};
 
     new Chart(ctx, {
       type: 'bar',
@@ -103,6 +107,12 @@
             stack: 'Stack 0'
           },
           {
+            label: "Expired Transactions",
+            data: expiredCounts,
+            backgroundColor: '#9ca3af',
+            stack: 'Stack 0'
+          },
+          {
             label: "Paid Amount (Rp)",
             data: paidTotals,
             backgroundColor: '#3b82f6',
@@ -113,6 +123,13 @@
             label: "Pending Amount (Rp)",
             data: pendingTotals,
             backgroundColor: '#ef4444',
+            yAxisID: 'y2',
+            stack: 'Stack 1'
+          },
+          {
+            label: "Expired Amount (Rp)",
+            data: expiredTotals,
+            backgroundColor: '#6b7280',
             yAxisID: 'y2',
             stack: 'Stack 1'
           }

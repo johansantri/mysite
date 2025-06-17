@@ -15,6 +15,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.paginator import Paginator
 from django.utils.http import urlencode
 from django.db.models import Q
+from django.utils import timezone
+from datetime import timedelta
 from .utils import get_client_ip, get_geo_from_ip
 
 
@@ -322,33 +324,32 @@ def cart_item_delete(request, pk):
 
 @login_required
 def transaction_history(request):
-    status_filter = request.GET.get('status', 'all')
-    
-    # Ambil semua transaksi milik user
-    transactions = Transaction.objects.filter(user=request.user)
+    # 1️⃣ Update status pending yang sudah kadaluarsa
+    expire_limit = timezone.now() - timedelta(hours=1)
+    Payment.objects.filter(status='pending', created_at__lt=expire_limit).update(status='expired')
+    Transaction.objects.filter(status='pending', created_at__lt=expire_limit).update(status='expired')
 
-    # Validasi status filter
-    VALID_STATUSES = ['paid', 'pending', 'failed']
+    # 2️⃣ Ambil filter status
+    status_filter = request.GET.get('status', 'all')
+    VALID_STATUSES = ['paid', 'pending', 'failed', 'expired']
+
+    # 3️⃣ Ambil transaksi user
+    transactions = Transaction.objects.filter(user=request.user)
     if status_filter in VALID_STATUSES:
         transactions = transactions.filter(status=status_filter)
     elif status_filter != 'all':
         messages.warning(request, "Status filter tidak dikenali. Menampilkan semua transaksi.")
         status_filter = 'all'
 
-    # Hitung total
-    total_paid = Transaction.objects.filter(user=request.user, status='paid').aggregate(
-        total=Sum('total_amount')
-    )['total'] or 0
-
-    total_pending = Transaction.objects.filter(user=request.user, status='pending').aggregate(
-        total=Sum('total_amount')
-    )['total'] or 0
+    # 4️⃣ Hitung total
+    total_paid = transactions.filter(status='paid').aggregate(total=Sum('total_amount'))['total'] or 0
+    total_pending = transactions.filter(status='pending').aggregate(total=Sum('total_amount'))['total'] or 0
 
     context = {
         'transactions': transactions.order_by('-created_at'),
         'total_transactions': transactions.count(),
         'total_paid': total_paid,
         'total_pending': total_pending,
-        'selected_status': status_filter
+        'selected_status': status_filter,
     }
     return render(request, 'payments/transaction_history.html', context)
