@@ -1,6 +1,6 @@
 from django.contrib import admin
 from . import models 
-from .models import  MicroClaim,UserMicroProgress,MicroCredentialComment,LTIExternalTool,Submission,CourseRating,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
+from .models import  MicroClaim,UserMicroProgress,MicroCredentialComment,Certificate,LTIExternalTool,Submission,CourseRating,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
 from import_export.admin import ImportExportModelAdmin
 from django.utils.html import format_html
 # Kelas admin untuk model MicroClaim
@@ -201,3 +201,39 @@ class ScoreAdmin(admin.ModelAdmin):
     list_display = ('user', 'score', 'total_questions', 'grade', 'date')
     list_filter = ('grade', 'date')
     list_per_page = 10
+
+
+@admin.register(Certificate)
+class CertificateAdmin(admin.ModelAdmin):
+    # Fields to display in the list view
+    list_display = ('certificate_id', 'user', 'course', 'issue_date', 'total_score', 'partner', 'created_at')
+    
+    # Fields that can be searched
+    search_fields = ('certificate_id', 'user__username', 'course__course_name')
+    
+    # Filters for the sidebar
+    list_filter = ('issue_date', 'partner', 'created_at')
+    
+    # Fields to display in the detail view (form)
+    fields = ('certificate_id', 'user', 'course', 'issue_date', 'total_score', 'partner', 'created_at')
+    
+    # Make these fields read-only in the admin
+    readonly_fields = ('certificate_id', 'created_at')
+    
+    # Enable clickable links for user and course
+    list_display_links = ('certificate_id',)
+    
+    # Order the list by issue date (newest first)
+    ordering = ('-issue_date',)
+    
+    # Customize how related fields are displayed
+    def get_user(self, obj):
+        return obj.user.username
+    get_user.short_description = 'User'
+    
+    def get_course(self, obj):
+        return obj.course.course_name
+    get_course.short_description = 'Course'
+    
+    # Optional: Add pagination to the list view
+    list_per_page = 25
