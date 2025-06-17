@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator,EmptyPage, PageNotAnInteger
 from django.http import HttpResponseForbidden
 from courses.models import Course, Enrollment,CourseRating,CourseComment,CourseViewLog,UserActivityLog,CourseSessionLog,Certificate
+from payments.models import Payment
 from authentication.models import CustomUser
 from collections import defaultdict
 from django.db.models import Avg, Count, Q,F,FloatField, ExpressionWrapper
@@ -27,6 +28,102 @@ from django.db.models.functions import TruncMonth
 from collections import defaultdict
 from decimal import Decimal
 from django.db.models.functions import TruncWeek
+
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.is_partner)
+def top_courses_by_revenue_view(request):
+    courses = Course.objects.all()
+
+    if request.user.is_partner and not request.user.is_superuser:
+        courses = courses.filter(org_partner__user=request.user)
+
+    courses = courses.annotate(
+        revenue=Sum('payments__amount', filter=Q(payments__status='completed'))
+    ).order_by('-revenue')[:10]
+
+    labels = [course.course_name for course in courses]
+    revenues = [course.revenue or 0 for course in courses]
+
+    return render(request, 'partner/top_courses_revenue.html', {
+        'labels': labels,
+        'revenues': revenues,
+    })
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.is_partner)
+def top_transaction_partners_view(request):
+    partners = Partner.objects.all()
+
+    if request.user.is_partner and not request.user.is_superuser:
+        partners = partners.filter(user=request.user)
+
+    partners = partners.annotate(
+        total_transactions=Count('courses__payments', distinct=True),
+        paid_transactions=Count('courses__payments', filter=Q(courses__payments__status='paid'), distinct=True),
+        pending_transactions=Count('courses__payments', filter=Q(courses__payments__status='pending'), distinct=True),
+        total_amount=Sum('courses__payments__amount'),
+        paid_amount=Sum('courses__payments__amount', filter=Q(courses__payments__status='paid')),
+        pending_amount=Sum('courses__payments__amount', filter=Q(courses__payments__status='pending'))
+    ).order_by('-total_transactions')[:10]
+
+    labels = [partner.name.name for partner in partners]
+    transaction_counts = [partner.total_transactions for partner in partners]
+    paid_counts = [partner.paid_transactions for partner in partners]
+    pending_counts = [partner.pending_transactions for partner in partners]
+    transaction_totals = [float(partner.total_amount or 0) for partner in partners]
+    paid_totals = [float(partner.paid_amount or 0) for partner in partners]
+    pending_totals = [float(partner.pending_amount or 0) for partner in partners]
+
+    # Prepare zipped data for table
+    partner_data = list(zip(
+        labels, transaction_counts, paid_counts, pending_counts,
+        transaction_totals, paid_totals, pending_totals
+    ))
+
+    # Prepare JSON-safe data for Chart.js
+    context = {
+        'partner_data': partner_data,
+        'labels_json': json.dumps(labels),
+        'transaction_counts_json': json.dumps(transaction_counts),
+        'paid_counts_json': json.dumps(paid_counts),
+        'pending_counts_json': json.dumps(pending_counts),
+        'transaction_totals_json': json.dumps(transaction_totals),
+        'paid_totals_json': json.dumps(paid_totals),
+        'pending_totals_json': json.dumps(pending_totals),
+    }
+
+    return render(request, 'partner/top_partners_transactions.html', context)
+
+
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.is_partner)
+def transaction_trends_view(request):
+    payments = Payment.objects.filter(status='completed')
+
+    if request.user.is_partner and not request.user.is_superuser:
+        payments = payments.filter(course__org_partner__user=request.user)
+
+    monthly_data = payments.annotate(
+        month=TruncMonth('created_at')
+    ).values('month').annotate(
+        total_amount=Sum('amount'),
+        transaction_count=Count('id')
+    ).order_by('month')
+
+    labels = [entry['month'].strftime('%b %Y') for entry in monthly_data]
+    transaction_totals = [entry['total_amount'] or 0 for entry in monthly_data]
+    transaction_counts = [entry['transaction_count'] for entry in monthly_data]
+
+    return render(request, 'partner/transaction_trends.html', {
+        'labels': labels,
+        'transaction_totals': transaction_totals,
+        'transaction_counts': transaction_counts,
+    })
 
 
 @login_required

@@ -28,7 +28,9 @@ urlpatterns = [
     path('analytics/course-dropoff/', views.course_dropoff_rate_view, name='course_dropoff_rate'),
     path('analytics/certificates/', views.certificate_analytics_view, name='certificate_analytics'),
     path('analytics/active-partners/', views.active_partners_view, name='active_partners'),
+    path('transaction-trends/', views.transaction_trends_view, name='transaction_trends'),
+    path('analytics/top-transaction-partners/', views.top_transaction_partners_view, name='top_transaction_partners'),
+    path('top-courses-revenue/', views.top_courses_by_revenue_view, name='top_courses_revenue'),
 
 
-   
 ]

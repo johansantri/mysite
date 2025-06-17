@@ -1,0 +1,65 @@
+{% extends 'home/tes.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="text-center mb-4">
+    <h2 class="text-primary fw-bold">
+      <i class="bi bi-currency-dollar me-2"></i>Top Courses by Revenue
+    </h2>
+    <p class="text-muted lead">
+      Courses with the highest total revenue from completed transactions.
+    </p>
+  </div>
+
+  <div class="d-flex justify-content-center mb-4">
+    <a href="{% url 'partner:partner_analytics' %}" class="btn btn-outline-primary">
+      <i class="bi bi-bar-chart-line me-2"></i>Back to Main Analytics
+    </a>
+  </div>
+
+  <div class="card shadow-lg border-0 rounded-4 p-4 mx-auto" style="max-width: 700px;">
+    <canvas id="revenueChart" height="300"></canvas>
+  </div>
+</div>
+
+<script src="{% static 'js/chart.umd.min.js' %}"></script>
+<script>
+  new Chart(document.getElementById("revenueChart"), {
+    type: 'bar',
+    data: {
+      labels: {{ labels|safe }},
+      datasets: [{
+        label: "Total Revenue (Rp)",
+        data: {{ revenues|safe }},
+        backgroundColor: '#3b82f6',
+        borderRadius: 5,
+        barThickness: 40
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              return 'Rp ' + ctx.raw.toLocaleString();
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          ticks: {
+            callback: value => 'Rp ' + value.toLocaleString()
+          }
+        }
+      }
+    }
+  });
+</script>
+{% endblock %}

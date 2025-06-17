@@ -1,0 +1,165 @@
+{% extends 'home/tes.html' %}
+{% load static humanize %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="text-center mb-4">
+    <h2 class="text-primary fw-bold">
+      <i class="bi bi-graph-up me-2"></i>Top Partners by Transactions
+    </h2>
+    <p class="text-muted lead">
+      10 partners with the highest number and amount of transactions
+    </p>
+  </div>
+
+  <div class="d-flex justify-content-center mb-4">
+    <a href="{% url 'partner:partner_analytics' %}" class="btn btn-outline-primary">
+      <i class="bi bi-bar-chart-line me-2"></i>Back to Main Analytics
+    </a>
+  </div>
+
+  {% if partner_data %}
+    <!-- Data Available: Show Chart and Table -->
+    <div class="card shadow-lg border-0 rounded-4 p-4 mx-auto mb-5 max-w-900">
+      <div class="card-body p-0">
+        <canvas id="transactionPartnerChart" class="w-100" aria-label="Transaction Partners Chart"></canvas>
+      </div>
+    </div>
+
+    <div class="table-responsive mt-5">
+      <table class="table table-bordered table-hover table-light">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Partner</th>
+            <th scope="col">Total Transactions</th>
+            <th scope="col">Paid Transactions</th>
+            <th scope="col">Pending Transactions</th>
+            <th scope="col">Total Amount (Rp)</th>
+            <th scope="col">Paid Amount (Rp)</th>
+            <th scope="col">Pending Amount (Rp)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for label, total_count, paid_count, pending_count, total_amount, paid_amount, pending_amount in partner_data %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ label }}</td>
+              <td>{{ total_count }}</td>
+              <td>{{ paid_count }}</td>
+              <td>{{ pending_count }}</td>
+              <td>Rp {{ total_amount|floatformat:0|intcomma }}</td>
+              <td>Rp {{ paid_amount|floatformat:0|intcomma }}</td>
+              <td>Rp {{ pending_amount|floatformat:0|intcomma }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <!-- No Data: Show Fallback UI -->
+    <div class="card shadow-lg border-0 rounded-4 p-4 mx-auto text-center max-w-600" role="alert" aria-live="polite">
+      <div class="card-body">
+        <i class="bi bi-exclamation-circle display-4 text-muted mb-3"></i>
+        <h4 class="card-title text-dark">No Transactions Found</h4>
+        <p class="text-muted mb-4">It looks like there are no transactions to display at the moment.</p>
+        {% if request.user.is_superuser %}
+          <p class="text-muted">Try adding new partners or transactions to see the data here.</p>
+          <a href="{% url 'partner:add_partner' %}" class="btn btn-primary">Add Partner</a>
+        {% else %}
+          <p class="text-muted">Contact an administrator for more details or start creating transactions.</p>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+{% block extra_js %}
+{% if partner_data %}
+  <script src="{% static 'js/chart.umd.min.js' %}"></script>
+  <script>
+    const ctx = document.getElementById("transactionPartnerChart");
+    const labels = {{ labels_json|safe }};
+    const paidCounts = {{ paid_counts_json|safe }};
+    const pendingCounts = {{ pending_counts_json|safe }};
+    const paidTotals = {{ paid_totals_json|safe }};
+    const pendingTotals = {{ pending_totals_json|safe }};
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: "Paid Transactions",
+            data: paidCounts,
+            backgroundColor: '#10b981',
+            stack: 'Stack 0'
+          },
+          {
+            label: "Pending Transactions",
+            data: pendingCounts,
+            backgroundColor: '#f59e0b',
+            stack: 'Stack 0'
+          },
+          {
+            label: "Paid Amount (Rp)",
+            data: paidTotals,
+            backgroundColor: '#3b82f6',
+            yAxisID: 'y2',
+            stack: 'Stack 1'
+          },
+          {
+            label: "Pending Amount (Rp)",
+            data: pendingTotals,
+            backgroundColor: '#ef4444',
+            yAxisID: 'y2',
+            stack: 'Stack 1'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        interaction: { mode: 'index', intersect: false },
+        scales: {
+          y: {
+            type: 'linear',
+            position: 'left',
+            title: { display: true, text: 'Transaction Count' },
+            ticks: { precision: 0 },
+            stacked: true
+          },
+          y2: {
+            type: 'linear',
+            position: 'right',
+            title: { display: true, text: 'Total Amount (Rp)' },
+            ticks: {
+              callback: function(value) {
+                return 'Rp ' + value.toLocaleString('id-ID');
+              }
+            },
+            grid: { drawOnChartArea: false },
+            stacked: true
+          }
+        },
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function(ctx) {
+                if (ctx.dataset.label.includes("Amount")) {
+                  return `${ctx.dataset.label}: Rp ${ctx.raw.toLocaleString('id-ID')}`;
+                }
+                return `${ctx.dataset.label}: ${ctx.raw}`;
+              }
+            }
+          },
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }
+    });
+  </script>
+{% endif %}
+{% endblock %}
+{% endblock %}
