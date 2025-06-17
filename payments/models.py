@@ -29,6 +29,13 @@ class Payment(models.Model):
     amount = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal('0.00'))
     currency = models.CharField(max_length=10, default='IDR')
     transaction_id = models.CharField(max_length=100, blank=True, null=True, unique=True)
+    linked_transaction = models.ForeignKey(
+        'Transaction',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='payments'
+    )
     
     # Metode/gateway
     payment_method = models.CharField(max_length=50, blank=True, null=True)
@@ -53,6 +60,13 @@ class Payment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     paid_at = models.DateTimeField(blank=True, null=True)
+
+    ip_address = models.GenericIPAddressField(blank=True, null=True)
+    user_agent = models.TextField(blank=True, null=True)
+    location = models.CharField(max_length=255, blank=True, null=True)
+    isp = models.CharField(max_length=255, blank=True, null=True)
+    latitude = models.FloatField(blank=True, null=True)
+    longitude = models.FloatField(blank=True, null=True)
 
     class Meta:
         unique_together = ('user', 'course', 'payment_model')

@@ -89,7 +89,7 @@
   <tbody>
     {% for p in page_obj %}
       <tr>
-        <td>{{ p.id }} | {{ p.transaction_id }}</td>
+        <td>{{ p.id }} | {{ p.linked_transaction.id }}</td>
     
         <td>
         <a href="{% url 'payments:payment_detail' p.id %}">

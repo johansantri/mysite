@@ -15,7 +15,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.paginator import Paginator
 from django.utils.http import urlencode
 from django.db.models import Q
-
+from .utils import get_client_ip, get_geo_from_ip
 
 
 
@@ -55,8 +55,10 @@ def payment_report_view(request):
 
     # ✅ Filter berdasarkan ID Transaksi
     search_query = request.GET.get('search', '').strip()
-    if search_query:
-        payments = payments.filter(transaction_id__icontains=search_query)
+    if search_query.isdigit():
+        payments = payments.filter(linked_transaction__id=search_query)
+
+
 
     # Ringkasan
     summary = payments.values('payment_model', 'status').annotate(
@@ -239,8 +241,6 @@ def view_cart(request):
 
 @login_required
 def checkout(request):
-    if not request.user.is_authenticated:
-        return redirect("/login/?next=%s" % request.path)
     cart_items = CartItem.objects.select_related('course').filter(user=request.user)
 
     if not cart_items.exists():
@@ -250,38 +250,66 @@ def checkout(request):
     total_price = sum(item.course.get_course_price().user_payment for item in cart_items)
 
     if request.method == 'POST':
-        # Buat transaksi baru dengan status awal
+        ip = get_client_ip(request)
+        geo = get_geo_from_ip(ip)
+        user_agent = request.META.get('HTTP_USER_AGENT', '')
+
+        # Buat transaksi
         transaction = Transaction.objects.create(
             user=request.user,
             total_amount=total_price,
-            status='pending',  # ganti jadi 'paid' jika pembayaran otomatis
+            status='pending',
             description='Course purchase',
         )
 
-        # Tambahkan courses ke transaksi
         for item in cart_items:
             transaction.courses.add(item.course)
 
-            # Enroll hanya jika course harus dibayar dulu DAN transaksinya sudah paid
+            # Buat 1 payment per course
+            price = item.course.get_course_price()
+
+            Payment.objects.create(
+                user=request.user,
+                course=item.course,
+                payment_model=item.course.payment_model,
+                status='pending',
+                amount=price.user_payment,
+                course_price=price,
+                snapshot_price=price.normal_price,
+                snapshot_discount=price.discount_amount,
+                snapshot_tax=price.tax,
+                snapshot_ppn=price.ppn,
+                snapshot_user_payment=price.user_payment,
+                snapshot_partner_earning=price.partner_earning,
+                snapshot_ice_earning=price.ice_earning,
+                linked_transaction=transaction,
+                ip_address=ip,
+                user_agent=user_agent,
+                location=f"{geo['city']}, {geo['country']}" if geo else None,
+                isp=geo['isp'] if geo else None,
+                latitude=geo['lat'] if geo else None,
+                longitude=geo['lon'] if geo else None,
+            )
+
+            # Auto-enroll jika dibayar di awal (jika transaksi paid)
             if item.course.payment_model == 'buy_first' and transaction.status == 'paid':
                 item.course.enroll_user(request.user)
 
-        # Kosongkan keranjang setelah checkout
+        # Kosongkan keranjang
         cart_items.delete()
 
-        # Feedback untuk user berdasarkan status
         if transaction.status == 'paid':
             messages.success(request, "Checkout successful. You have been enrolled in your courses.")
         else:
             messages.success(request, "Checkout pending. Please complete the payment to access your courses.")
 
-        return redirect('authentication:dashbord')  # redirect ke dashboard atau halaman course user
+        return redirect('authentication:dashbord')
 
-    context = {
+    return render(request, 'payments/checkout.html', {
         'cart_items': cart_items,
         'total_price': total_price,
-    }
-    return render(request, 'payments/checkout.html', context)
+    })
+
 
 
 @login_required
@@ -294,16 +322,27 @@ def cart_item_delete(request, pk):
 
 @login_required
 def transaction_history(request):
-    if not request.user.is_authenticated:
-        return redirect("/login/?next=%s" % request.path)
     status_filter = request.GET.get('status', 'all')
+    
+    # Ambil semua transaksi milik user
     transactions = Transaction.objects.filter(user=request.user)
 
-    if status_filter in ['paid', 'pending', 'failed']:
+    # Validasi status filter
+    VALID_STATUSES = ['paid', 'pending', 'failed']
+    if status_filter in VALID_STATUSES:
         transactions = transactions.filter(status=status_filter)
+    elif status_filter != 'all':
+        messages.warning(request, "Status filter tidak dikenali. Menampilkan semua transaksi.")
+        status_filter = 'all'
 
-    total_paid = transactions.filter(status='paid').aggregate(Sum('total_amount'))['total_amount__sum'] or 0
-    total_pending = transactions.filter(status='pending').aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+    # Hitung total
+    total_paid = Transaction.objects.filter(user=request.user, status='paid').aggregate(
+        total=Sum('total_amount')
+    )['total'] or 0
+
+    total_pending = Transaction.objects.filter(user=request.user, status='pending').aggregate(
+        total=Sum('total_amount')
+    )['total'] or 0
 
     context = {
         'transactions': transactions.order_by('-created_at'),
