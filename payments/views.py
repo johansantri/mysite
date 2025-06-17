@@ -1,18 +1,101 @@
 # payments/views.py
 
 from django.shortcuts import render
-from django.db.models import Sum
+from django.db.models import Sum, Count
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 import logging
-from courses.models import Course,CoursePrice
+from courses.models import Course,CoursePrice,Partner
 from payments.models import CartItem,Transaction,Payment  # pastikan model keranjang belanja kamu ini
 from django.utils.timezone import now
 from django.db import IntegrityError
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.core.paginator import Paginator
+from django.utils.http import urlencode
+from django.db.models import Q
+
+
+
 
 logger = logging.getLogger(__name__)
+
+
+
+
+@login_required
+@user_passes_test(lambda u: u.is_authenticated and (u.is_superuser or getattr(u, 'is_partner', False)))
+def payment_report_view(request):
+    payments = Payment.objects.select_related('user', 'course__org_partner').all()
+
+    # Filter berdasarkan role
+    if getattr(request.user, 'is_partner', False):
+        payments = payments.filter(course__org_partner__user=request.user)
+        partner_id = None
+    else:
+        try:
+            partner_id = int(request.GET.get('partner_id')) if request.GET.get('partner_id') else None
+        except ValueError:
+            partner_id = None
+        if partner_id:
+            payments = payments.filter(course__org_partner__id=partner_id)
+
+    # Filter tanggal
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+    if start_date:
+        payments = payments.filter(created_at__date__gte=start_date)
+    if end_date:
+        payments = payments.filter(created_at__date__lte=end_date)
+
+    # ✅ Filter berdasarkan ID Transaksi
+    search_query = request.GET.get('search', '').strip()
+    if search_query:
+        payments = payments.filter(transaction_id__icontains=search_query)
+
+    # Ringkasan
+    summary = payments.values('payment_model', 'status').annotate(
+        total_amount=Sum('amount'),
+        count=Count('id')
+    ).order_by('payment_model', 'status')
+
+    total_paid = payments.filter(status='completed').aggregate(total=Sum('amount'))['total'] or 0
+
+    partner_courses = None
+    if request.user.is_superuser:
+        partner_courses = Course.objects.values(
+            'id', 'course_name', 'org_partner__name'
+        ).annotate(
+            total_amount=Sum('payments__amount')
+        ).filter(
+            payments__status='completed'
+        )
+        if partner_id:
+            partner_courses = partner_courses.filter(org_partner__id=partner_id)
+
+    # Pagination
+    paginator = Paginator(payments.order_by('-created_at'), 25)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # Buat querystring tanpa parameter "page"
+    get_params = request.GET.copy()
+    if 'page' in get_params:
+        del get_params['page']
+    querystring = get_params.urlencode()
+
+    context = {
+        'summary': summary,
+        'total_paid': total_paid,
+        'page_obj': page_obj,
+        'partners': Partner.objects.all() if request.user.is_superuser else None,
+        'partner_courses': partner_courses,
+        'search_query': search_query,
+        'querystring': querystring,
+    }
+    return render(request, 'payments/payment_report.html', context)
+
 def process_payment(request, course_id, payment_type='enrollment'):
     course = get_object_or_404(Course, id=course_id)
     logger.info(f"Processing payment for course {course_id}, payment_type: {payment_type}")
