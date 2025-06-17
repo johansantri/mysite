@@ -61,6 +61,7 @@
 <!-- Tabel Semua Lisensi -->
 <h3>All Active Licenses</h3>
 {% if filtered_licenses %}
+<div class="table-responsive">
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
@@ -140,6 +141,7 @@
             {% endfor %}
         </tbody>
     </table>
+</div>
 {% else %}
     <p>No licenses match the filter.</p>
 {% endif %}

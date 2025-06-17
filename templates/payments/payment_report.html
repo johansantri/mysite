@@ -72,42 +72,52 @@
 
 <!-- Transaction Table -->
 <h4 class="mt-5">Recent Transactions</h4>
-<table class="table table-hover table-sm">
-  <thead>
-    <tr>
-        <th>ID | Transaction ID</th>
-      
-      <th>User</th>
-      <th>Course</th>
-      <th>Partner Organization</th>
-      <th>Payment Model</th>
-      <th>Status</th>
-      <th>Amount</th>
-      <th>Date</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for p in page_obj %}
+<div class="table-responsive">
+  <table class="table table-hover table-sm align-middle">
+    <thead class="table-light">
       <tr>
-        <td>{{ p.id }} | {{ p.linked_transaction.id }}</td>
-    
-        <td>
-        <a href="{% url 'payments:payment_detail' p.id %}">
-            {{ p.user.username }}
-        </a>
-        </td>
-        <td>{{ p.course.course_name }}</td>
-        <td>{{ p.course.org_partner.name }}</td>
-        <td>{{ p.get_payment_model_display }}</td>
-        <td>{{ p.status|capfirst }}</td>
-        <td>Rp {{ p.amount|floatformat:0|intcomma }}</td>
-        <td>{{ p.created_at|date:"Y-m-d H:i" }}</td>
+        <th>ID | Transaction ID</th>
+        <th>User</th>
+        <th>Course</th>
+        <th>Partner Organization</th>
+        <th>Payment Model</th>
+        <th>Status</th>
+        <th>Amount</th>
+        <th>Date</th>
       </tr>
-    {% empty %}
-      <tr><td colspan="8">No transactions found.</td></tr>
-    {% endfor %}
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      {% for p in page_obj %}
+        <tr>
+          <td>{{ p.id }} | {{ p.linked_transaction.id|default:"-" }}</td>
+          <td>
+            <a href="{% url 'payments:payment_detail' p.id %}" class="text-decoration-none">
+              {{ p.user.username }}
+            </a>
+          </td>
+          <td>{{ p.course.course_name }}</td>
+          <td>{{ p.course.org_partner.name }}</td>
+          <td>{{ p.get_payment_model_display }}</td>
+          <td>
+            <span class="badge 
+              {% if p.status == 'completed' %} bg-success
+              {% elif p.status == 'pending' %} bg-warning text-dark
+              {% else %} bg-danger {% endif %}">
+              {{ p.status|capfirst }}
+            </span>
+          </td>
+          <td>Rp {{ p.amount|floatformat:0|intcomma }}</td>
+          <td>{{ p.created_at|date:"Y-m-d H:i" }}</td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="8" class="text-center text-muted">No transactions found.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
 
 <!-- Pagination -->
 {% if page_obj.has_other_pages %}
