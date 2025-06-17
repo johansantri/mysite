@@ -48,3 +48,48 @@ INFO 2025-06-17 09:34:04,126 apps AXES: BEGIN version 8.0.0, blocking by usernam
 INFO 2025-06-17 09:37:28,388 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
 INFO 2025-06-17 09:37:28,466 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
 INFO 2025-06-17 09:37:28,488 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 09:41:54,085 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 09:41:54,362 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 09:41:54,366 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 09:43:25,591 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 09:43:25,605 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 09:43:25,701 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+ERROR 2025-06-17 09:43:26,992 log Internal Server Error: /analytics/popular-courses/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/partner/views.py", line 310, in popular_courses_view
+    courses = courses.filter(org_partner=request.user.partner)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/functional.py", line 253, in inner
+    return func(_wrapped, *args)
+AttributeError: 'CustomUser' object has no attribute 'partner'
+INFO 2025-06-17 09:45:45,669 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 09:45:45,690 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 09:45:45,711 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 09:47:15,364 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 09:47:15,540 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 09:47:15,553 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 09:48:50,023 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 09:48:50,081 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 09:48:50,387 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 09:49:38,934 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 09:49:39,004 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 09:49:39,192 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 09:51:47,610 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 09:51:47,658 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 09:51:47,760 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 09:54:29,570 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 09:54:29,936 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 09:54:29,998 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 09:55:52,785 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 09:55:53,077 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 09:55:53,164 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 09:57:46,557 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 09:57:46,557 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-17 09:57:46,589 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address

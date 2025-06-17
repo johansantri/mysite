@@ -32,13 +32,19 @@ from django.db.models.functions import TruncWeek
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.is_partner)
 def active_partners_view(request):
-    partners = (
-        Partner.objects.annotate(
-            total_courses=Count('courses', distinct=True),
-            total_certificates=Count('courses__certificates', distinct=True)
-        )
-        .order_by('-total_courses', '-total_certificates')[:10]
-    )
+    partners = Partner.objects.all()
+
+    if request.user.is_partner and not request.user.is_superuser:
+        try:
+            partners = partners.filter(user=request.user)
+        except Partner.DoesNotExist:
+            messages.error(request, "Akun Anda belum terhubung ke data Partner.")
+            return redirect('authentication:dashboard')
+
+    partners = partners.annotate(
+        total_courses=Count('courses', distinct=True),
+        total_certificates=Count('courses__certificates', distinct=True)
+    ).order_by('-total_courses', '-total_certificates')[:10]
 
     labels = [partner.name.name for partner in partners]
     course_counts = [partner.total_courses for partner in partners]
@@ -55,9 +61,21 @@ def active_partners_view(request):
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.is_partner)
 def certificate_analytics_view(request):
-    # Jumlah sertifikat yang diterbitkan per bulan
+    # Ambil course berdasarkan partner jika bukan superuser
+    courses = Course.objects.all()
+
+    if request.user.is_partner and not request.user.is_superuser:
+        try:
+            partner = request.user.partner_user
+            courses = courses.filter(org_partner=partner)
+        except Partner.DoesNotExist:
+            messages.error(request, "Akun Anda belum terhubung ke data Partner.")
+            return redirect('authentication:dashboard')
+
+    # Sertifikat per bulan
     monthly_certificates = (
-        Certificate.objects.annotate(month=TruncMonth('issue_date'))
+        Certificate.objects.filter(course__in=courses)
+        .annotate(month=TruncMonth('issue_date'))
         .values('month')
         .annotate(count=Count('id'))
         .order_by('month')
@@ -67,7 +85,8 @@ def certificate_analytics_view(request):
 
     # Rata-rata skor per course
     avg_scores = (
-        Certificate.objects.values('course__course_name')
+        Certificate.objects.filter(course__in=courses)
+        .values('course__course_name')
         .annotate(avg_score=Avg('total_score'))
         .order_by('-avg_score')[:10]
     )
@@ -85,8 +104,19 @@ def certificate_analytics_view(request):
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.is_partner)
 def course_dropoff_rate_view(request):
+    courses = Course.objects.all()
+
+    if request.user.is_partner and not request.user.is_superuser:
+        try:
+            partner = request.user.partner_user
+            courses = courses.filter(org_partner=partner)
+        except Partner.DoesNotExist:
+            messages.error(request, "Akun Anda belum terhubung ke data Partner.")
+            return redirect('authentication:dashboard')
+
     data = (
-        Enrollment.objects.values('course__course_name')
+        Enrollment.objects.filter(course__in=courses)
+        .values('course__course_name')
         .annotate(
             total_enrolled=Count('id'),
             total_completed=Count('id', filter=Q(certificate_issued=True))
@@ -107,8 +137,20 @@ def course_dropoff_rate_view(request):
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.is_partner)
 def course_enrollment_growth_view(request):
+    courses = Course.objects.all()
+
+    # Filter untuk partner
+    if request.user.is_partner and not request.user.is_superuser:
+        try:
+            partner = request.user.partner_user
+            courses = courses.filter(org_partner=partner)
+        except Partner.DoesNotExist:
+            messages.error(request, "Akun Anda belum terhubung ke data Partner.")
+            return redirect('authentication:dashboard')
+
     enrollments = (
-        Enrollment.objects.annotate(month=TruncMonth('enrolled_at'))
+        Enrollment.objects.filter(course__in=courses)
+        .annotate(month=TruncMonth('enrolled_at'))
         .values('course__course_name', 'month')
         .annotate(count=Count('id'))
         .order_by('month')
@@ -130,7 +172,7 @@ def course_enrollment_growth_view(request):
         datasets.append({
             'label': course,
             'data': [month_data.get(month, 0) for month in all_months],
-            'color_hue': (i * 45) % 360,  # perhitungan warna aman
+            'color_hue': (i * 45) % 360,
         })
 
     return render(request, 'partner/course_enrollment_growth.html', {
@@ -138,14 +180,27 @@ def course_enrollment_growth_view(request):
         'datasets': datasets,
     })
 
+
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.is_partner)
 def top_courses_by_rating_view(request):
+    courses = Course.objects.all()
+
+    # Jika partner, filter berdasarkan org_partner
+    if request.user.is_partner and not request.user.is_superuser:
+        try:
+            partner = request.user.partner_user  # relasi OneToOne ke Partner
+            courses = courses.filter(org_partner=partner)
+        except Partner.DoesNotExist:
+            messages.error(request, "Akun Anda belum terhubung ke data Partner.")
+            return redirect('authentication:dashboard')
+
     top_courses = (
-        Course.objects.annotate(avg_rating=Avg('ratings__rating'))
+        courses.annotate(avg_rating=Avg('ratings__rating'))
         .filter(avg_rating__isnull=False)
         .order_by('-avg_rating')[:10]
     )
+
     labels = [course.course_name for course in top_courses]
     ratings = [round(course.avg_rating, 2) for course in top_courses]
 
@@ -160,9 +215,20 @@ def retention_rate_view(request):
     today = now().date()
     start_date = today - timedelta(weeks=12)
 
-    # Retention data (cohort by week)
+    users = CustomUser.objects.filter(date_joined__gte=start_date)
+
+    # Jika user partner, filter berdasarkan partner
+    if request.user.is_partner and not request.user.is_superuser:
+        try:
+            partner = request.user.partner_user  # related_name dari Partner
+            users = users.filter(partner_user=partner)  # pastikan ini sesuai dengan OneToOne atau FK
+        except Partner.DoesNotExist:
+            messages.error(request, "Akun Anda belum terhubung ke data Partner.")
+            return redirect('authentication:dashboard')
+
+    # Cohort by week
     cohorts = (
-        CustomUser.objects.filter(date_joined__gte=start_date)
+        users
         .annotate(week_joined=TruncWeek('date_joined'))
         .values('week_joined')
         .annotate(
@@ -176,9 +242,14 @@ def retention_rate_view(request):
     new_users = [c['new_users'] for c in cohorts]
     retained_users = [c['retained_users'] for c in cohorts]
 
-    # Active user count per day
+    # Login activity per day
+    user_ids = users.values_list('id', flat=True)
     activity = (
-        UserActivityLog.objects.filter(activity_type='login', timestamp__gte=start_date)
+        UserActivityLog.objects.filter(
+            activity_type='login',
+            timestamp__gte=start_date,
+            user_id__in=user_ids
+        )
         .annotate(day=TruncDate('timestamp'))
         .values('day')
         .annotate(active_users=Count('user', distinct=True))
@@ -195,6 +266,7 @@ def retention_rate_view(request):
         'day_labels': day_labels,
         'daily_active_users': daily_active_users,
     })
+
 
 
 
@@ -245,10 +317,21 @@ def is_passed(user, course):
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.is_partner)
 def course_completion_rate_view(request):
-    all_courses = Course.objects.all()
+    # Ambil semua course
+    courses = Course.objects.all()
+
+    # Filter berdasarkan partner jika user adalah partner
+    if request.user.is_partner and not request.user.is_superuser:
+        try:
+            partner = request.user.partner_user  # sesuai related_name di model Partner
+            courses = courses.filter(org_partner=partner)
+        except Partner.DoesNotExist:
+            messages.error(request, "Akun Anda belum terhubung ke data Partner.")
+            return redirect('authentication:dashboard')  # ganti dengan halaman dashboard atau error
+
     results = []
 
-    for course in all_courses:
+    for course in courses:
         enrollments = Enrollment.objects.filter(course=course)
         total_enrolled = enrollments.count()
 
@@ -303,9 +386,19 @@ def user_growth_view(request):
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.is_partner)
 def popular_courses_view(request):
+    courses = Course.objects.all()
+
+    # Filter khusus partner
+    if request.user.is_partner and not request.user.is_superuser:
+        try:
+            partner = request.user.partner_user  # Sesuai dengan related_name di model
+            courses = courses.filter(org_partner=partner)
+        except Partner.DoesNotExist:
+            messages.error(request, "Akun Anda belum terhubung ke data Partner.")
+            return redirect('authentication:dashboard')  # ganti dengan URL yang sesuai
+
     data = (
-        Course.objects
-        .annotate(enrollment_count=Count('enrollments'))
+        courses.annotate(enrollment_count=Count('enrollments'))
         .order_by('-enrollment_count')[:10]
     )
 
@@ -318,13 +411,19 @@ def popular_courses_view(request):
     })
 
 
+
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.is_partner)
 def device_usage_view(request):
+    logs = AuditLog.objects.filter(action='login')
+
+    if request.user.is_partner:
+        partner = getattr(request.user, 'partner_user', None)
+        if partner:
+            logs = logs.filter(user__enrollments__course__org_partner=partner).distinct()
+
     data = (
-        AuditLog.objects
-        .filter(action='login')
-        .values('device_type')
+        logs.values('device_type')
         .annotate(count=Count('id'))
         .order_by('-count')
     )
@@ -337,17 +436,24 @@ def device_usage_view(request):
         'counts': counts,
     })
 
-
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.is_partner)
 def participant_geography_view(request):
     view_mode = request.GET.get('view', 'country')  # default: country
 
+    logs = CourseSessionLog.objects.exclude(location_country__isnull=True)
+
+    if request.user.is_partner and not request.user.is_superuser:
+        try:
+            partner = request.user.partner_user
+            partner_courses = Course.objects.filter(org_partner=partner)
+            logs = logs.filter(course__in=partner_courses)
+        except Exception:
+            logs = logs.none()  # jika partner tidak valid, tampilkan kosong
+
     if view_mode == 'city':
         data = (
-            CourseSessionLog.objects
-            .exclude(location_country__isnull=True)
-            .exclude(location_city__isnull=True)
+            logs.exclude(location_city__isnull=True)
             .values('location_country', 'location_city')
             .annotate(total=Count('id'))
             .order_by('-total')[:10]
@@ -357,9 +463,7 @@ def participant_geography_view(request):
         ]
     else:
         data = (
-            CourseSessionLog.objects
-            .exclude(location_country__isnull=True)
-            .values('location_country')
+            logs.values('location_country')
             .annotate(total=Count('id'))
             .order_by('-total')[:10]
         )
@@ -377,7 +481,7 @@ def participant_geography_view(request):
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.is_partner)
 def learning_duration_view(request):
-    # Jika superuser, tampilkan semua course
+    # Ambil daftar course berdasarkan role
     if request.user.is_superuser:
         courses = Course.objects.all()
     else:
@@ -386,25 +490,24 @@ def learning_duration_view(request):
             raise Http404("Partner profile not found.")
         courses = Course.objects.filter(org_partner=partner)
 
-    # Ambil session log berdasarkan course yang dimiliki
     session_logs = CourseSessionLog.objects.filter(course__in=courses)
 
     today = now().date()
     week_ago = today - timedelta(days=7)
     month_ago = today - timedelta(days=30)
 
-    # Hitung total waktu belajar dalam detik
+    # Total waktu belajar (detik)
     weekly_seconds = session_logs.filter(started_at__date__gte=week_ago).aggregate(total=Sum('duration_seconds'))['total'] or 0
     monthly_seconds = session_logs.filter(started_at__date__gte=month_ago).aggregate(total=Sum('duration_seconds'))['total'] or 0
 
-    # Total waktu belajar per course
+    # Waktu belajar per course
     duration_by_course = (
         session_logs.values('course__course_name')
         .annotate(total_seconds=Sum('duration_seconds'))
         .order_by('-total_seconds')[:10]
     )
 
-    # Ubah ke menit
+    # Ubah detik ke menit
     for item in duration_by_course:
         item['total_minutes'] = round(item['total_seconds'] / 60)
 
@@ -461,11 +564,11 @@ def get_client_ip(request):
 
 
 # Cek user: hanya superuser atau staff yang boleh mengakses
-def is_superuser_or_staff(user):
-    return user.is_authenticated and (user.is_superuser or user.is_staff)
+def is_superuser_or_partner(user):
+    return user.is_authenticated and (user.is_superuser or getattr(user, 'is_partner', False))
 
 
-@user_passes_test(is_superuser_or_staff)
+@user_passes_test(is_superuser_or_partner)
 def login_trends_view(request):
     # Ambil hanya aktivitas login
     logins_per_day = (
@@ -514,20 +617,24 @@ def is_superuser_or_partner(user):
     return user.is_authenticated and (user.is_superuser or getattr(user, 'is_partner', False))
 
 @login_required
-@user_passes_test(is_superuser_or_partner)
+@user_passes_test(lambda u: u.is_superuser or u.is_partner)
 def heatmap_view(request):
     qs = (
         UserActivityLog.objects
-        .annotate(hour=ExtractHour('timestamp'), weekday=ExtractWeekDay('timestamp'))
+        .annotate(
+            hour=ExtractHour('timestamp'),
+            weekday=ExtractWeekDay('timestamp')
+        )
         .values('hour', 'weekday')
         .annotate(count=Count('id'))
+        .order_by('hour', 'weekday')
     )
 
-    # Buat heatmap format {x: hour, y: weekday (0-index), v: count}
+    # Format heatmap data
     heatmap_data = []
     for item in qs:
         hour = item['hour']
-        weekday = (item['weekday'] - 1) % 7  # 1=Sunday jadi 0-indexed, aman dari index error
+        weekday = (item['weekday'] - 1) % 7  # ubah dari 1=Sunday menjadi 0=Sunday
         heatmap_data.append({
             "x": hour,
             "y": weekday,
@@ -537,6 +644,7 @@ def heatmap_view(request):
     return render(request, 'partner/heatmap.html', {
         'heatmap_data': json.dumps(heatmap_data),
     })
+
 
 @login_required
 def partner_analytics_view(request):
