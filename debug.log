@@ -1,0 +1,14 @@
+ERROR 2025-06-18 11:44:42,607 log Internal Server Error: /learn/big-data-developer-2026/assessment/45/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/learner/views.py", line 205, in load_content
+    'course_name': course.name,
+AttributeError: 'Course' object has no attribute 'name'
+INFO 2025-06-18 11:45:05,904 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-18 11:45:06,336 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-18 11:45:06,374 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address

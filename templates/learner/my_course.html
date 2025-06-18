@@ -1,0 +1,77 @@
+{% extends 'home/tes.html' %}
+{% load static %}
+
+{% block title %}{{ course_name|default:"Kursus" }}{% endblock %}
+
+{% block extra_head %}
+<style>
+    .sidebar {
+        position: sticky;
+        top: 20px;
+        max-height: calc(100vh - 40px);
+        overflow-y: auto;
+        background: #f8f9fa;
+        border-right: 1px solid #ddd;
+        min-height: 200px;
+    }
+    #content-area {
+        min-height: 400px;
+    }
+    .content-column {
+        background: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .list-group-item a:hover {
+        background-color: #e9ecef;
+    }
+    @media (max-width: 767.98px) {
+        .sidebar {
+            position: static;
+            border-right: none;
+            border-top: 1px solid #ddd;
+            margin-top: 20px;
+            padding-top: 20px;
+        }
+        .content-column {
+            margin-bottom: 20px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="content-area">
+    {% include 'learner/partials/content.html' %}
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const timerElement = document.getElementById('timer');
+        if (timerElement) {
+            let timeLeft = parseInt(timerElement.textContent);
+            const interval = setInterval(() => {
+                timeLeft--;
+                timerElement.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    timerElement.parentElement.innerHTML = '<div class="alert alert-danger">Waktu habis!</div>';
+                }
+            }, 1000);
+        }
+        // Log HTMX errors
+        document.body.addEventListener('htmx:afterRequest', function(evt) {
+            if (evt.detail.xhr.status >= 400) {
+                console.error('HTMX request failed:', evt.detail.xhr.status, evt.detail.xhr.responseText);
+            }
+        });
+        // Reinisialisasi HTMX
+        htmx.process(document.body);
+        // Trigger contentLoaded saat halaman dimuat
+        document.body.dispatchEvent(new Event('contentLoaded'));
+    });
+</script>
+{% endblock %}

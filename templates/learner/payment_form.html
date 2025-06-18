@@ -1,0 +1,24 @@
+{% extends 'home/tes.html' %}
+
+{% block title %}Pembayaran untuk {{ course.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2>Pembayaran untuk {{ course.name }}</h2>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Detail Pembayaran</h5>
+            <p><strong>Jenis Pembayaran:</strong> {{ payment_type|title }}</p>
+            <p><strong>Jumlah:</strong> Rp {{ payment_amount|floatformat:0 }}</p>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Lanjutkan ke Pembayaran</button>
+                <a href="{% url 'learner:course_learn' username=request.user.username slug=course.slug %}" class="btn btn-secondary">Batal</a>
+            </form>
+            {% if payment_url != '#' %}
+                <p class="mt-3"><a href="{{ payment_url }}" class="btn btn-success">Bayar Sekarang</a></p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

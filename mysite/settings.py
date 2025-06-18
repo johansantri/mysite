@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     'payments',#semua pembayaran
     'django.contrib.humanize',
     'axes',#LOGIN LIMIT
+    "django_htmx",
  
     
 ]
@@ -92,6 +93,7 @@ MIDDLEWARE = [
     'allauth.account.middleware.AccountMiddleware',
     'audit.middleware.CurrentUserMiddleware',
     'audit.middleware.AuditLogMiddleware',
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 ROOT_URLCONF = 'mysite.urls'
@@ -111,6 +113,9 @@ TEMPLATES = [
                 'authentication.context_processors.search_history_context',
                 'payments.context_processors.cart_item_count', 
             ],
+            'libraries': {
+                'learner_tags': 'learner.templatetags.learner_tags',
+            },
         },
     },
 ]
@@ -565,6 +570,7 @@ CONTENT_SECURITY_POLICY = {
             'https://cdn.jsdelivr.net',  # CDN umum
             'https://cdnjs.cloudflare.com',  # CDN umum
             "'unsafe-inline'",  # mengizinkan <script> inline — sebaiknya dihindari untuk keamanan
+            "'unsafe-eval'",
         ),
 
         # Izinkan file CSS dari domain sendiri dan CDN berikut

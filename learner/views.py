@@ -1,21 +1,316 @@
 
-from django.shortcuts import render, redirect
-from django.shortcuts import render, redirect,get_object_or_404
+import csv
+import logging
+from datetime import timedelta
+from decimal import Decimal
+
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponse
-from django.core.paginator import Paginator
-from django.db.models import Prefetch
-import csv
 from django.core.mail import send_mail
-from decimal import Decimal
-from django.contrib import messages
-from courses.models import Course,Instructor, Enrollment,Section,GradeRange,CourseStatusHistory,QuestionAnswer, CourseProgress, PeerReview,MaterialRead, AssessmentRead, AssessmentScore,Material,Assessment, Submission, CustomUser, Instructor
-from authentication.models import CustomUser, Universiti
-from django.http import HttpResponse
-import csv
+from django.core.paginator import Paginator
 from django.db.models import Avg, Prefetch
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.utils import timezone
+from django.urls import NoReverseMatch
 
+from authentication.models import CustomUser, Universiti
+from courses.models import (
+    Assessment, AssessmentRead, AssessmentScore, AssessmentSession,
+    AskOra, Choice, Comment, Course, CourseProgress, CourseStatusHistory,
+    Enrollment, GradeRange, Instructor, LTIExternalTool, Material,
+    MaterialRead, Payment, PeerReview, Question, QuestionAnswer, 
+    Score, Section, Submission, UserActivityLog,
+)
+
+
+
+logger = logging.getLogger(__name__)
+
+
+
+@login_required
+def my_course(request, username, slug):
+    if request.user.username != username:
+        logger.warning(f"Unauthorized access attempt by {request.user.username} for {username}")
+        return HttpResponse(status=403)
+
+    course = get_object_or_404(Course, slug=slug)
+    if not Enrollment.objects.filter(user=request.user, course=course).exists():
+        logger.warning(f"User {request.user.username} not enrolled in course {slug}")
+        return HttpResponse(status=403)
+
+    sections = Section.objects.filter(courses=course).prefetch_related('materials', 'assessments').order_by('order')
+    current_content = None
+    material = None
+    assessment = None
+    assessment_locked = False
+    payment_required_url = None
+    is_started = False
+    is_expired = False
+    remaining_time = 0
+    answered_questions = {}
+
+    combined_content = []
+    for section in sections:
+        for m in section.materials.all():
+            combined_content.append(('material', m, section))
+        for a in section.assessments.all():
+            combined_content.append(('assessment', a, section))
+
+    if combined_content:
+        content_type, content_obj, section = combined_content[0]
+        if content_type == 'material':
+            material = content_obj
+            current_content = ('material', material, section)
+        elif content_type == 'assessment':
+            assessment = content_obj
+            if course.payment_model == 'pay_for_exam':
+                payment = Payment.objects.filter(
+                    user=request.user, course=course, status='completed', payment_model='pay_for_exam'
+                ).first()
+                if not payment:
+                    assessment_locked = True
+                    try:
+                        payment_required_url = reverse('payments:process_payment', kwargs={'course_id': course.id, 'payment_type': 'exam'})
+                    except NoReverseMatch as e:
+                        logger.error(f"Failed to reverse payments:process_payment: {e}")
+                        payment_required_url = None
+                        assessment_locked = False
+            session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
+            if session:
+                is_started = True
+                time_elapsed = (timezone.now() - session.start_time).total_seconds()
+                remaining_time = max(0, session.assessment.time_limit * 60 - time_elapsed)
+                is_expired = remaining_time <= 0
+                answered_questions = {
+                    answer.question.id: answer
+                    for answer in QuestionAnswer.objects.filter(
+                        user=request.user, assessment=assessment
+                    ).select_related('question', 'choice')
+                }
+            current_content = ('assessment', assessment, section)
+
+    current_index = 0 if combined_content else -1
+    previous_url = None
+    next_url = reverse('learner:load_content', kwargs={
+        'username': username, 'slug': slug,
+        'content_type': combined_content[1][0],
+        'content_id': combined_content[1][1].id
+    }) if combined_content and len(combined_content) > 1 else None
+
+    context = {
+        'course': course,
+        'course_name': course.course_name,
+        'username': username,
+        'slug': slug,
+        'sections': sections,
+        'current_content': current_content,
+        'material': material,
+        'assessment': assessment,
+        'assessment_locked': assessment_locked,
+        'payment_required_url': payment_required_url,
+        'is_started': is_started,
+        'is_expired': is_expired,
+        'remaining_time': int(remaining_time),
+        'answered_questions': answered_questions,
+        'course_progress': course.get_progress(request.user) if hasattr(course, 'get_progress') else 0,
+        'previous_url': previous_url,
+        'next_url': next_url,
+    }
+
+    logger.debug(f"my_course: Rendering for {request.path}, Sections={sections.count()}, HTMX={getattr(request, 'htmx', False)}")
+
+    is_htmx = getattr(request, 'htmx', False) or request.headers.get('HX-Request') == 'true'
+    if is_htmx:
+        return render(request, 'learner/partials/content.html', context)
+    return render(request, 'learner/my_course.html', context)
+
+@login_required
+def load_content(request, username, slug, content_type, content_id):
+    if request.user.username != username:
+        logger.warning(f"Unauthorized access attempt by {request.user.username} for {username}")
+        return HttpResponse(status=403)
+
+    course = get_object_or_404(Course, slug=slug)
+    if not Enrollment.objects.filter(user=request.user, course=course).exists():
+        logger.warning(f"User {request.user.username} not enrolled in course {slug}")
+        return HttpResponse(status=403)
+
+    sections = Section.objects.filter(courses=course).prefetch_related('materials', 'assessments').order_by('order')
+    current_content = None
+    material = None
+    assessment = None
+    assessment_locked = False
+    payment_required_url = None
+    is_started = False
+    is_expired = False
+    remaining_time = 0
+    answered_questions = {}
+
+    combined_content = []
+    for section in sections:
+        for m in section.materials.all():
+            combined_content.append(('material', m, section))
+        for a in section.assessments.all():
+            combined_content.append(('assessment', a, section))
+
+    current_index = next((i for i, c in enumerate(combined_content) if c[0] == content_type and c[1].id == int(content_id)), 0)
+    previous_url = reverse('learner:load_content', kwargs={
+        'username': username, 'slug': slug,
+        'content_type': combined_content[current_index - 1][0],
+        'content_id': combined_content[current_index - 1][1].id
+    }) if current_index > 0 else None
+    next_url = reverse('learner:load_content', kwargs={
+        'username': username, 'slug': slug,
+        'content_type': combined_content[current_index + 1][0],
+        'content_id': combined_content[current_index + 1][1].id
+    }) if current_index < len(combined_content) - 1 else None
+
+    if content_type == 'material':
+        material = get_object_or_404(Material, id=content_id)
+        current_content = ('material', material, next((s for s in sections if material in s.materials.all()), None))
+    elif content_type == 'assessment':
+        assessment = get_object_or_404(Assessment, id=content_id)
+        if course.payment_model == 'pay_for_exam':
+            payment = Payment.objects.filter(
+                user=request.user, course=course, status='completed', payment_model='pay_for_exam'
+            ).first()
+            if not payment:
+                assessment_locked = True
+                try:
+                    payment_required_url = reverse('payments:process_payment', kwargs={'course_id': course.id, 'payment_type': 'exam'})
+                except NoReverseMatch as e:
+                    logger.error(f"Failed to reverse payments:process_payment: {e}")
+                    payment_required_url = None
+                    assessment_locked = False
+        session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
+        if session:
+            is_started = True
+            time_elapsed = (timezone.now() - session.start_time).total_seconds()
+            remaining_time = max(0, session.assessment.time_limit * 60 - time_elapsed)
+            is_expired = remaining_time <= 0
+            answered_questions = {
+                answer.question.id: answer
+                for answer in QuestionAnswer.objects.filter(
+                    user=request.user, assessment=assessment
+                ).select_related('question', 'choice')
+            }
+        current_content = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
+
+    context = {
+        'course': course,
+        'course_name': course.course_name,
+        'username': username,
+        'slug': slug,
+        'sections': sections,
+        'current_content': current_content,
+        'material': material,
+        'assessment': assessment,
+        'assessment_locked': assessment_locked,
+        'payment_required_url': payment_required_url,
+        'is_started': is_started,
+        'is_expired': is_expired,
+        'remaining_time': int(remaining_time),
+        'answered_questions': answered_questions,
+        'course_progress': course.get_progress(request.user) if hasattr(course, 'get_progress') else 0,
+        'previous_url': previous_url,
+        'next_url': next_url,
+    }
+
+    logger.debug(f"load_content: Rendering for {request.path}, Sections={sections.count()}, HTMX={getattr(request, 'htmx', False)}")
+
+    is_htmx = getattr(request, 'htmx', False) or request.headers.get('HX-Request') == 'true'
+    if is_htmx:
+        return render(request, 'learner/partials/content.html', context)
+    return render(request, 'learner/my_course.html', context)
+
+def start_assessment(request, assessment_id):
+    if not request.user.is_authenticated:
+        return HttpResponse(status=403)
+    assessment = get_object_or_404(Assessment, id=assessment_id)
+    course = assessment.section.courses.first()
+    if not Enrollment.objects.filter(user=request.user, course=course).exists():
+        return HttpResponse(status=403)
+
+    session, created = AssessmentSession.objects.get_or_create(
+        user=request.user,
+        assessment=assessment,
+        defaults={'end_time': timezone.now() + timedelta(minutes=assessment.duration_in_minutes)}
+    )
+    return HttpResponseRedirect(reverse('learner:load_content', kwargs={
+        'username': request.user.username,
+        'slug': course.slug,
+        'content_type': 'assessment',
+        'content_id': assessment.id
+    }))
+
+def submit_answer(request):
+    if not request.user.is_authenticated or request.method != 'POST':
+        return HttpResponse(status=400)
+
+    question_id = request.POST.get('question_id')
+    choice_id = request.POST.get('choice_id')
+    if not question_id or not choice_id:
+        return HttpResponse(status=400)
+
+    question = get_object_or_404(Question, id=question_id)
+    choice = get_object_or_404(Choice, id=choice_id)
+    QuestionAnswer.objects.update_or_create(
+        user=request.user,
+        question=question,
+        defaults={'choice': choice}
+    )
+    course = question.assessment.section.courses.first()
+    return HttpResponseRedirect(reverse('learner:load_content', kwargs={
+        'username': request.user.username,
+        'slug': course.slug,
+        'content_type': 'assessment',
+        'content_id': question.assessment.id
+    }))
+
+def add_comment(request):
+    if not request.user.is_authenticated or request.method != 'POST':
+        return HttpResponse(status=400)
+
+    comment_text = request.POST.get('comment_text')
+    material_id = request.POST.get('material_id')
+    section_id = request.POST.get('section_id')
+    if not comment_text:
+        return HttpResponse(status=400)
+
+    if material_id and material_id != '':
+        material = get_object_or_404(Material, id=material_id)
+        Comment.objects.create(user=request.user, material=material, text=comment_text)
+        course = material.section.courses.first()
+        content_type = 'material'
+        content_id = material_id
+    elif section_id and section_id != '':
+        section = get_object_or_404(Section, id=section_id)
+        Comment.objects.create(user=request.user, section=section, text=comment_text)
+        course = section.courses.first()
+        content_type = 'assessment'
+        content_id = section.assessments.first().id if section.assessments.exists() else None
+    else:
+        return HttpResponse(status=400)
+
+    if content_id:
+        return HttpResponseRedirect(reverse('learner:load_content', kwargs={
+            'username': request.user.username,
+            'slug': course.slug,
+            'content_type': content_type,
+            'content_id': content_id
+        }))
+    return HttpResponse(status=400)
+
+def get_progress(request, username, slug):
+    if not request.user.is_authenticated or request.user.username != username:
+        return HttpResponse(status=403)
+    course = get_object_or_404(Course, slug=slug)
+    user_progress, _ = CourseProgress.objects.get_or_create(user=request.user, course=course)
+    return render(request, 'learner/partials/progress.html', {'course_progress': user_progress.progress_percentage})
 
 
 def learner_detail(request, username):

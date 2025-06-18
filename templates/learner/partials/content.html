@@ -1,0 +1,156 @@
+{% load learner_tags %}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- Sidebar (Kiri pada desktop, bawah pada mobile) -->
+        <div class="col-md-3 sidebar p-3 rounded">
+            <h4 class="mb-3">{{ course_name|default:"Kursus Tidak Ditemukan" }}</h4>
+            <div class="progress mb-3" id="progress-bar"
+                 hx-get="{% url 'learner:get_progress' username=username slug=slug %}"
+                 hx-trigger="load, contentLoaded from:body"
+                 hx-swap="innerHTML">
+                <div class="progress-bar bg-success" role="progressbar" style="width: {{ course_progress|default:0 }}%;" 
+                     aria-valuenow="{{ course_progress|default:0 }}" aria-valuemin="0" aria-valuemax="100">
+                    {{ course_progress|default:0|floatformat:0 }}%
+                </div>
+            </div>
+            <ul class="list-group">
+                {% for section in sections %}
+                    <li class="list-group-item border-0">
+                        <strong>{{ section.title }}</strong>
+                        <ul class="list-group list-group-flush">
+                            {% for material in section.materials.all %}
+                                <li class="list-group-item border-0">
+                                    <a href="{% url 'learner:load_content' username=username slug=slug content_type='material' content_id=material.id %}"
+                                       hx-get="{% url 'learner:load_content' username=username slug=slug content_type='material' content_id=material.id %}"
+                                       hx-target="#content-area"
+                                       hx-swap="innerHTML"
+                                       hx-push-url="true"
+                                       class="text-decoration-none text-dark"
+                                       hx-on::after-request="document.body.dispatchEvent(new Event('contentLoaded'))">
+                                        <i class="bi bi-file-text me-2"></i>{{ material.title }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                            {% for assessment in section.assessments.all %}
+                                <li class="list-group-item border-0">
+                                    <a href="{% url 'learner:load_content' username=username slug=slug content_type='assessment' content_id=assessment.id %}"
+                                       hx-get="{% url 'learner:load_content' username=username slug=slug content_type='assessment' content_id=assessment.id %}"
+                                       hx-target="#content-area"
+                                       hx-swap="innerHTML"
+                                       hx-push-url="true"
+                                       class="text-decoration-none text-dark"
+                                       hx-on::after-request="document.body.dispatchEvent(new Event('contentLoaded'))">
+                                        <i class="bi bi-question-circle me-2"></i>{{ assessment.name }}
+                                        {% if assessment_locked and assessment.id == current_content.1.id %}
+                                            <span class="badge bg-warning ms-2">Terkunci</span>
+                                        {% endif %}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item border-0">
+                        <p class="text-muted">Tidak ada section tersedia.</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <!-- Konten Utama (Kanan pada desktop, atas pada mobile) -->
+        <div class="col-md-9 content-column">
+            {% if current_content %}
+                {% if current_content.0 == 'material' %}
+                    <h3 class="mb-4">{{ material.title }}</h3>
+                    <div class="content-body">{{ material.description|safe }}</div>
+                {% elif current_content.0 == 'assessment' %}
+                    {% if assessment_locked %}
+                        <div class="alert alert-warning">
+                            Ujian ini memerlukan pembayaran.
+                            <a href="{{ payment_required_url }}" class="btn btn-warning btn-sm ms-2">Lanjutkan ke Pembayaran</a>
+                        </div>
+                    {% else %}
+                        <h3 class="mb-4">{{ assessment.name }}</h3>
+                        {% if is_started %}
+                            {% if is_expired %}
+                                <div class="alert alert-danger">Penilaian ini telah kedaluwarsa.</div>
+                            {% else %}
+                                <div class="alert alert-info mb-4">
+                                    Waktu tersisa: <span id="timer">{{ remaining_time }}</span> detik
+                                </div>
+                                {% for question in assessment.questions.all %}
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <h5>{{ question.text }}</h5>
+                                            <form hx-post="{% url 'learner:submit_answer' %}"
+                                                  hx-target="#content-area"
+                                                  hx-swap="innerHTML"
+                                                  hx-on::after-request="document.body.dispatchEvent(new Event('contentLoaded'))">
+                                                {% for choice in question.choices.all %}
+                                                    <div class="form-check mb-2">
+                                                        {% with answer=answered_questions|get_question_answer:question.id %}
+                                                        <input type="radio"
+                                                               name="question_{{ question.id }}"
+                                                               value="{{ choice.id }}"
+                                                               class="form-check-input"
+                                                               {% if answer and answer.choice.id == choice.id %}checked{% endif %}
+                                                               hx-vals='{"question_id": {{ question.id }}, "choice_id": {{ choice.id }}}'>
+                                                        <label class="form-check-label">{{ choice.text }}</label>
+                                                        {% endwith %}
+                                                    </div>
+                                                {% endfor %}
+                                                <button type="submit" class="btn btn-primary mt-2">Kirim Jawaban</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% else %}
+                            <button hx-post="{% url 'learner:start_assessment' assessment.id %}"
+                                    hx-target="#content-area"
+                                    hx-swap="innerHTML"
+                                    class="btn btn-success"
+                                    hx-on::after-request="document.body.dispatchEvent(new Event('contentLoaded'))">
+                                Mulai Penilaian
+                            </button>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+                <div id="comments-section" class="mt-5">
+                    {% include 'learner/partials/comments.html' %}
+                </div>
+                <!-- Tombol Navigasi -->
+                <div class="d-flex justify-content-between mt-4">
+                    {% if previous_url %}
+                        <a href="{{ previous_url }}"
+                           hx-get="{{ previous_url }}"
+                           hx-target="#content-area"
+                           hx-swap="innerHTML"
+                           hx-push-url="true"
+                           class="btn btn-primary"
+                           hx-on::after-request="document.body.dispatchEvent(new Event('contentLoaded'))">
+                            <i class="bi bi-chevron-left me-2"></i>Sebelumnya
+                        </a>
+                    {% else %}
+                        <button class="btn btn-primary" disabled><i class="bi bi-chevron-left me-2"></i>Sebelumnya</button>
+                    {% endif %}
+                    {% if next_url %}
+                        <a href="{{ next_url }}"
+                           hx-get="{{ next_url }}"
+                           hx-target="#content-area"
+                           hx-swap="innerHTML"
+                           hx-push-url="true"
+                           class="btn btn-primary"
+                           hx-on::after-request="document.body.dispatchEvent(new Event('contentLoaded'))">
+                            Selanjutnya<i class="bi bi-chevron-right ms-2"></i>
+                        </a>
+                    {% else %}
+                        <button class="btn btn-primary" disabled>Selanjutnya<i class="bi bi-chevron-right ms-2"></i></button>
+                    {% endif %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">Tidak ada konten tersedia untuk kursus ini.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>

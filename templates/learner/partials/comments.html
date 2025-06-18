@@ -1,0 +1,23 @@
+<h4 class="mb-3">Komentar</h4>
+{% for comment in comments %}
+    <div class="card mb-2">
+        <div class="card-body">
+            <p class="mb-1">{{ comment.text }}</p>
+            <small class="text-muted">Diposting oleh {{ comment.user.username }} pada {{ comment.created_at }}</small>
+        </div>
+    </div>
+{% empty %}
+    <p class="text-muted">Belum ada komentar.</p>
+{% endfor %}
+<form hx-post="{% url 'learner:add_comment' %}"
+      hx-target="#comments-section"
+      hx-swap="innerHTML"
+      class="mt-3"
+      hx-on::after-request="document.body.dispatchEvent(new Event('contentLoaded'))">
+    <div class="mb-3">
+        <textarea name="comment_text" class="form-control" rows="4" placeholder="Tambahkan komentar..." required></textarea>
+        <input type="hidden" name="material_id" value="{{ material.id|default_if_none:'' }}">
+        <input type="hidden" name="section_id" value="{{ current_content.2.id|default_if_none:'' }}">
+    </div>
+    <button type="submit" class="btn btn-primary">Kirim Komentar</button>
+</form>
