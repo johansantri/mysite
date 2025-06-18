@@ -3,7 +3,8 @@ import csv
 import logging
 from datetime import timedelta
 from decimal import Decimal
-
+from django.db.models import F
+from django.db import transaction
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -22,14 +23,79 @@ from courses.models import (
     AskOra, Choice, Comment, Course, CourseProgress, CourseStatusHistory,
     Enrollment, GradeRange, Instructor, LTIExternalTool, Material,
     MaterialRead, Payment, PeerReview, Question, QuestionAnswer, 
-    Score, Section, Submission, UserActivityLog,
+    Score, Section, Submission, UserActivityLog, CommentReaction
 )
 
 
 
 logger = logging.getLogger(__name__)
 
+@login_required
+def toggle_reaction(request, comment_id, reaction_type):
+    if not request.user.is_authenticated or request.method != 'POST':
+        logger.warning(f"Invalid request: Auth={request.user.is_authenticated}, Method={request.method}")
+        return HttpResponse(status=400)
 
+    if reaction_type not in ['like', 'dislike']:
+        logger.warning(f"Invalid reaction_type: {reaction_type}")
+        return HttpResponse(status=400)
+
+    comment = get_object_or_404(Comment, id=comment_id)
+    material = comment.material
+    reaction_type = CommentReaction.REACTION_LIKE if reaction_type == 'like' else CommentReaction.REACTION_DISLIKE
+
+    try:
+        with transaction.atomic():
+            existing_reaction = CommentReaction.objects.filter(user=request.user, comment=comment).first()
+
+            if existing_reaction:
+                if existing_reaction.reaction_type == reaction_type:
+                    # Batalkan reaksi
+                    existing_reaction.delete()
+                    if reaction_type == CommentReaction.REACTION_LIKE:
+                        Comment.objects.filter(id=comment_id).update(likes=F('likes') - 1)
+                    else:
+                        Comment.objects.filter(id=comment_id).update(dislikes=F('dislikes') - 1)
+                    logger.debug(f"User {request.user.username} removed {reaction_type} from comment {comment_id}")
+                else:
+                    # Ganti reaksi (misalnya, like ke dislike)
+                    existing_reaction.delete()
+                    CommentReaction.objects.create(user=request.user, comment=comment, reaction_type=reaction_type)
+                    if reaction_type == CommentReaction.REACTION_LIKE:
+                        Comment.objects.filter(id=comment_id).update(likes=F('likes') + 1, dislikes=F('dislikes') - 1)
+                    else:
+                        Comment.objects.filter(id=comment_id).update(dislikes=F('dislikes') + 1, likes=F('likes') - 1)
+                    logger.debug(f"User {request.user.username} changed reaction to {reaction_type} on comment {comment_id}")
+            else:
+                # Tambahkan reaksi baru
+                CommentReaction.objects.create(user=request.user, comment=comment, reaction_type=reaction_type)
+                if reaction_type == CommentReaction.REACTION_LIKE:
+                    Comment.objects.filter(id=comment_id).update(likes=F('likes') + 1)
+                else:
+                    Comment.objects.filter(id=comment_id).update(dislikes=F('dislikes') + 1)
+                logger.debug(f"User {request.user.username} added {reaction_type} to comment {comment_id}")
+
+    except Exception as e:
+        logger.error(f"Error toggling reaction for comment {comment_id}: {str(e)}")
+        return HttpResponse(status=500)
+
+    is_htmx = getattr(request, 'htmx', False) or request.headers.get('HX-Request') == 'true'
+    if is_htmx:
+        context = {
+            'comments': Comment.objects.filter(material=material).select_related('user', 'parent'),
+            'material': material,
+            'user_reactions': {r.comment_id: r.reaction_type for r in CommentReaction.objects.filter(user=request.user, comment__material=material)},
+        }
+        return render(request, 'learner/partials/comments.html', context)
+
+    course = material.section.courses
+    redirect_url = reverse('learner:load_content', kwargs={
+        'username': request.user.username,
+        'slug': course.slug,
+        'content_type': 'material',
+        'content_id': material.id
+    })
+    return HttpResponseRedirect(redirect_url)
 
 @login_required
 def my_course(request, username, slug):
@@ -46,6 +112,7 @@ def my_course(request, username, slug):
     current_content = None
     material = None
     assessment = None
+    comments = None
     assessment_locked = False
     payment_required_url = None
     is_started = False
@@ -65,8 +132,10 @@ def my_course(request, username, slug):
         if content_type == 'material':
             material = content_obj
             current_content = ('material', material, section)
+            comments = Comment.objects.filter(material=material).select_related('user', 'parent')  # Tambahkan komentar
         elif content_type == 'assessment':
             assessment = content_obj
+            current_content = ('assessment', assessment, section)
             if course.payment_model == 'pay_for_exam':
                 payment = Payment.objects.filter(
                     user=request.user, course=course, status='completed', payment_model='pay_for_exam'
@@ -75,8 +144,8 @@ def my_course(request, username, slug):
                     assessment_locked = True
                     try:
                         payment_required_url = reverse('payments:process_payment', kwargs={'course_id': course.id, 'payment_type': 'exam'})
-                    except NoReverseMatch as e:
-                        logger.error(f"Failed to reverse payments:process_payment: {e}")
+                    except:
+                        logger.error(f"Failed to reverse payments:process_payment")
                         payment_required_url = None
                         assessment_locked = False
             session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
@@ -87,11 +156,8 @@ def my_course(request, username, slug):
                 is_expired = remaining_time <= 0
                 answered_questions = {
                     answer.question.id: answer
-                    for answer in QuestionAnswer.objects.filter(
-                        user=request.user, assessment=assessment
-                    ).select_related('question', 'choice')
+                    for answer in QuestionAnswer.objects.filter(user=request.user, assessment=assessment).select_related('question', 'choice')
                 }
-            current_content = ('assessment', assessment, section)
 
     current_index = 0 if combined_content else -1
     previous_url = None
@@ -110,6 +176,7 @@ def my_course(request, username, slug):
         'current_content': current_content,
         'material': material,
         'assessment': assessment,
+        'comments': comments,  # Tambahkan ke konteks
         'assessment_locked': assessment_locked,
         'payment_required_url': payment_required_url,
         'is_started': is_started,
@@ -121,8 +188,7 @@ def my_course(request, username, slug):
         'next_url': next_url,
     }
 
-    logger.debug(f"my_course: Rendering for {request.path}, Sections={sections.count()}, HTMX={getattr(request, 'htmx', False)}")
-
+    logger.debug(f"my_course: Rendering for {request.path}, Sections={sections.count()}, Comments={comments.count() if comments else 0}, HTMX={getattr(request, 'htmx', False)}")
     is_htmx = getattr(request, 'htmx', False) or request.headers.get('HX-Request') == 'true'
     if is_htmx:
         return render(request, 'learner/partials/content.html', context)
@@ -143,6 +209,7 @@ def load_content(request, username, slug, content_type, content_id):
     current_content = None
     material = None
     assessment = None
+    comments = None
     assessment_locked = False
     payment_required_url = None
     is_started = False
@@ -172,8 +239,10 @@ def load_content(request, username, slug, content_type, content_id):
     if content_type == 'material':
         material = get_object_or_404(Material, id=content_id)
         current_content = ('material', material, next((s for s in sections if material in s.materials.all()), None))
+        comments = Comment.objects.filter(material=material).select_related('user', 'parent')  # Tambahkan komentar
     elif content_type == 'assessment':
         assessment = get_object_or_404(Assessment, id=content_id)
+        current_content = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
         if course.payment_model == 'pay_for_exam':
             payment = Payment.objects.filter(
                 user=request.user, course=course, status='completed', payment_model='pay_for_exam'
@@ -182,8 +251,8 @@ def load_content(request, username, slug, content_type, content_id):
                 assessment_locked = True
                 try:
                     payment_required_url = reverse('payments:process_payment', kwargs={'course_id': course.id, 'payment_type': 'exam'})
-                except NoReverseMatch as e:
-                    logger.error(f"Failed to reverse payments:process_payment: {e}")
+                except:
+                    logger.error(f"Failed to reverse payments:process_payment")
                     payment_required_url = None
                     assessment_locked = False
         session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
@@ -194,11 +263,8 @@ def load_content(request, username, slug, content_type, content_id):
             is_expired = remaining_time <= 0
             answered_questions = {
                 answer.question.id: answer
-                for answer in QuestionAnswer.objects.filter(
-                    user=request.user, assessment=assessment
-                ).select_related('question', 'choice')
+                for answer in QuestionAnswer.objects.filter(user=request.user, assessment=assessment).select_related('question', 'choice')
             }
-        current_content = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
 
     context = {
         'course': course,
@@ -209,6 +275,7 @@ def load_content(request, username, slug, content_type, content_id):
         'current_content': current_content,
         'material': material,
         'assessment': assessment,
+        'comments': comments,  # Tambahkan ke konteks
         'assessment_locked': assessment_locked,
         'payment_required_url': payment_required_url,
         'is_started': is_started,
@@ -220,8 +287,7 @@ def load_content(request, username, slug, content_type, content_id):
         'next_url': next_url,
     }
 
-    logger.debug(f"load_content: Rendering for {request.path}, Sections={sections.count()}, HTMX={getattr(request, 'htmx', False)}")
-
+    logger.debug(f"load_content: Rendering for {request.path}, Comments={comments.count() if comments else 0}, HTMX={getattr(request, 'htmx', False)}")
     is_htmx = getattr(request, 'htmx', False) or request.headers.get('HX-Request') == 'true'
     if is_htmx:
         return render(request, 'learner/partials/content.html', context)
@@ -338,8 +404,14 @@ def add_comment(request):
         messages.warning(request, "Material tidak valid atau tidak terkait dengan kursus.")
         return HttpResponse(status=400)
 
-    course = material.section.courses  # ForeignKey ke Course
-    parent_comment = get_object_or_404(Comment, id=parent_id) if parent_id else None
+    course = material.section.courses
+    parent_comment = None
+    if parent_id:
+        parent_comment = get_object_or_404(Comment, id=parent_id, material=material)  # Validasi material
+        if parent_comment.material != material:
+            logger.warning(f"Invalid parent comment: parent_id={parent_id}, material_id={material_id}")
+            messages.warning(request, "Komentar induk tidak valid.")
+            return HttpResponse(status=400)
 
     # Pemeriksaan keamanan
     if is_suspicious(request):
@@ -368,7 +440,7 @@ def add_comment(request):
 
     # Simpan komentar
     comment.save()
-    logger.debug(f"Comment added by {request.user.username} for material {material_id}")
+    logger.debug(f"Comment added by {request.user.username} for material {material_id}, parent_id={parent_id}")
 
     # Untuk HTMX, kembalikan partial comments.html
     is_htmx = getattr(request, 'htmx', False) or request.headers.get('HX-Request') == 'true'

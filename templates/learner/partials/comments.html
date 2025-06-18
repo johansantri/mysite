@@ -1,5 +1,9 @@
+{% load learner_tags %}
 <div class="comments mt-4" id="comments-section">
     <h5>Komentar</h5>
+    <small class="text-muted mb-3"> komen sesuai topik diskusi, tidak mengandung SARA, pornografi, dan spam.</small>
+    
+    
     {% if messages %}
         {% for message in messages %}
             <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
@@ -9,12 +13,14 @@
         {% endfor %}
     {% endif %}
     {% if user.is_authenticated %}
+        <!-- Form untuk komentar utama -->
         <form hx-post="{% url 'learner:add_comment' %}"
               hx-target="#comments-section"
               hx-swap="innerHTML"
-              hx-on::after-request="document.body.dispatchEvent(new Event('contentLoaded')); this.reset()">
+              hx-on::after-request="document.body.dispatchEvent(new Event('contentLoaded')); this.reset()"
+              class="mb-4">
             <input type="hidden" name="material_id" value="{{ material.id|default:'' }}">
-            <input type="hidden" name="parent_id" id="parent_id" value="">
+            <input type="hidden" name="parent_id" value="">
             <div class="mb-3">
                 <textarea name="comment_text" class="form-control" rows="4" placeholder="Tulis komentar Anda..." required></textarea>
             </div>
@@ -25,35 +31,87 @@
     {% endif %}
     <div class="mt-3">
         {% for comment in comments %}
-            <div class="card mb-2 {% if comment.parent %}ms-4{% endif %}">
+            <div class="card mb-2 {% if comment.parent %}ms-4 border-left-reply{% endif %}">
                 <div class="card-body">
                     <p class="card-text">{{ comment.content }}</p>
-                    <small class="text-muted">Oleh {{ comment.user.username }} pada {{ comment.created_at }} | 
-                        Likes: {{ comment.likes }} | Dislikes: {{ comment.dislikes }}</small>
+                    <small class="text-muted">
+                        Oleh {{ comment.user.username }} pada {{ comment.created_at }}
+                    </small>
+                    <div class="d-flex align-items-center mt-2">
+                        <!-- Like Button -->
+                        {% if user.is_authenticated %}
+                            <form hx-post="{% url 'learner:toggle_reaction' comment_id=comment.id reaction_type='like' %}"
+                                  hx-target="#comments-section"
+                                  hx-swap="innerHTML"
+                                  class="me-3">
+                                <button type="submit" class="btn btn-sm {% if user_reactions|dict_get:comment.id == 'LIKE' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                                    <i class="bi bi-heart-fill"></i> {{ comment.likes }}
+                                </button>
+                            </form>
+                            <!-- Dislike Button -->
+                            <form hx-post="{% url 'learner:toggle_reaction' comment_id=comment.id reaction_type='dislike' %}"
+                                  hx-target="#comments-section"
+                                  hx-swap="innerHTML">
+                                <button type="submit" class="btn btn-sm {% if user_reactions|dict_get:comment.id == 'DISLIKE' %}btn-danger{% else %}btn-outline-danger{% endif %}">
+                                    <i class="bi bi-hand-thumbs-down-fill"></i> {{ comment.dislikes }}
+                                </button>
+                            </form>
+                        {% else %}
+                            <span class="me-3"><i class="bi bi-heart-fill"></i> {{ comment.likes }}</span>
+                            <span><i class="bi bi-hand-thumbs-down-fill"></i> {{ comment.dislikes }}</span>
+                        {% endif %}
+                    </div>
                     {% if comment.parent %}
-                        <small class="text-muted">Balasan untuk {{ comment.parent.user.username }}</small>
+                        <small class="text-muted d-block">Balasan untuk {{ comment.parent.user.username }}</small>
                     {% endif %}
                     {% if user.is_authenticated %}
-                        <button class="btn btn-link btn-sm reply-btn" data-comment-id="{{ comment.id }}">Balas</button>
+                        <button class="btn btn-link btn-sm reply-btn mt-2" 
+                                data-comment-id="{{ comment.id }}"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#reply-form-{{ comment.id }}">Balas</button>
                     {% endif %}
                 </div>
+                <!-- Form balasan -->
+                {% if user.is_authenticated %}
+                    <div class="collapse reply-form" id="reply-form-{{ comment.id }}">
+                        <form hx-post="{% url 'learner:add_comment' %}"
+                              hx-target="#comments-section"
+                              hx-swap="innerHTML"
+                              hx-on::after-request="document.body.dispatchEvent(new Event('contentLoaded')); this.reset()"
+                              class="ms-4 p-3">
+                            <input type="hidden" name="material_id" value="{{ material.id|default:'' }}">
+                            <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                            <div class="mb-3">
+                                <textarea name="comment_text" class="form-control" rows="3" placeholder="Tulis balasan Anda..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-sm">Kirim Balasan</button>
+                            <button type="button" class="btn btn-secondary btn-sm ms-2" data-bs-toggle="collapse" data-bs-target="#reply-form-{{ comment.id }}">Batal</button>
+                        </form>
+                    </div>
+                {% endif %}
             </div>
         {% empty %}
             <p class="text-muted">Belum ada komentar.</p>
         {% endfor %}
     </div>
 </div>
+<style>
+    .border-left-reply {
+        border-left: 4px solid #007bff;
+    }
+    .reply-form {
+        background-color: #f8f9fa;
+        border-radius: 0.25rem;
+    }
+</style>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const replyButtons = document.querySelectorAll('.reply-btn');
-        replyButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const commentId = this.getAttribute('data-comment-id');
-                document.getElementById('parent_id').value = commentId;
-                const textarea = document.querySelector('textarea[name="comment_text"]');
-                textarea.focus();
-                textarea.placeholder = 'Tulis balasan Anda...';
-            });
+        document.body.addEventListener('htmx:afterSwap', function(event) {
+            if (event.detail.target.id === 'comments-section') {
+                document.querySelectorAll('.reply-form.show').forEach(form => {
+                    form.classList.remove('show');
+                });
+            }
         });
     });
 </script>

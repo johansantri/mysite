@@ -1137,18 +1137,33 @@ class Comment(models.Model):
     def __str__(self):
         return f'Comment by {self.user.username} on {self.created_at}'
     def contains_blacklisted_keywords(self):
-        """Check if the comment contains any blacklisted keywords."""
-        blacklisted_keywords = [
-            'gratis', 'promo', 'diskon', 'belanja', 'jualan', 'poker', 'judi', 
-            'kredit', 'utang', 'deposito', 'investasi', 'uang', 'tawaran', 'hadiah', 
-            'pemenang', 'hack', 'phishing', 'penipuan', 'melanggar', 'bocor','kunci jawaban','email','0857',
-             '0858','0859','021','0812','0813','0811','0856','@gmail','@', 'penjualan'
-        ]
+        blacklisted_keywords = BlacklistedKeyword.objects.values_list('keyword', flat=True)
         for keyword in blacklisted_keywords:
-            if keyword.lower() in self.content.lower():
+            if re.search(r'\b' + re.escape(keyword) + r'\b', self.content.lower()):
                 return True
         return False
     
+class CommentReaction(models.Model):
+    REACTION_LIKE = 'LIKE'
+    REACTION_DISLIKE = 'DISLIKE'
+    REACTION_CHOICES = [
+        (REACTION_LIKE, 'Like'),
+        (REACTION_DISLIKE, 'Dislike'),
+    ]
+
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='comment_reactions')
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='reactions')
+    reaction_type = models.CharField(max_length=10, choices=REACTION_CHOICES)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ['user', 'comment']  # Satu pengguna, satu reaksi per komentar
+        indexes = [
+            models.Index(fields=['comment', 'user']),
+        ]
+
+    def __str__(self):
+        return f"{self.user.username} {self.reaction_type} on Comment {self.comment.id}"    
 
 class CourseComment(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)

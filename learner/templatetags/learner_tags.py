@@ -17,3 +17,8 @@ def get_question_answer(dictionary, question_id):
     Returns None if no answer exists.
     """
     return dictionary.get(question_id)
+
+
+@register.filter
+def dict_get(dictionary, key):
+    return dictionary.get(key)
