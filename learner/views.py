@@ -109,6 +109,14 @@ def my_course(request, username, slug):
         return HttpResponse(status=403)
 
     sections = Section.objects.filter(courses=course).prefetch_related('materials', 'assessments').order_by('order')
+    combined_content = []
+    for section in sections:
+        for m in section.materials.all():
+            combined_content.append(('material', m, section))
+        for a in section.assessments.all():
+            combined_content.append(('assessment', a, section))
+
+    total_content = len(combined_content)
     current_content = None
     material = None
     assessment = None
@@ -117,55 +125,77 @@ def my_course(request, username, slug):
     payment_required_url = None
     is_started = False
     is_expired = False
-    remaining_time = 0
+    time_left = 0
     answered_questions = {}
 
-    combined_content = []
-    for section in sections:
-        for m in section.materials.all():
-            combined_content.append(('material', m, section))
-        for a in section.assessments.all():
-            combined_content.append(('assessment', a, section))
-
-    if combined_content:
-        content_type, content_obj, section = combined_content[0]
-        if content_type == 'material':
-            material = content_obj
-            current_content = ('material', material, section)
-            comments = Comment.objects.filter(material=material).select_related('user', 'parent')  # Tambahkan komentar
-        elif content_type == 'assessment':
-            assessment = content_obj
-            current_content = ('assessment', assessment, section)
-            if course.payment_model == 'pay_for_exam':
-                payment = Payment.objects.filter(
-                    user=request.user, course=course, status='completed', payment_model='pay_for_exam'
-                ).first()
-                if not payment:
-                    assessment_locked = True
-                    try:
-                        payment_required_url = reverse('payments:process_payment', kwargs={'course_id': course.id, 'payment_type': 'exam'})
-                    except:
-                        logger.error(f"Failed to reverse payments:process_payment")
-                        payment_required_url = None
-                        assessment_locked = False
-            session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
-            if session:
+    # Cek parameter assessment_id
+    assessment_id = request.GET.get('assessment_id')
+    if assessment_id:
+        assessment = get_object_or_404(Assessment, id=assessment_id)
+        current_content = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
+        if course.payment_model == 'pay_for_exam':
+            payment = Payment.objects.filter(
+                user=request.user, course=course, status='completed', payment_model='pay_for_exam'
+            ).first()
+            if not payment:
+                assessment_locked = True
+                payment_required_url = reverse('payments:process_payment', kwargs={'course_id': course.id, 'payment_type': 'exam'})
+                logger.info(f"Payment required for assessment {assessment_id} in course {course.id} for user {request.user.username}")
+            else:
+                if not AssessmentRead.objects.filter(user=request.user, assessment=assessment).exists():
+                    AssessmentRead.objects.create(user=request.user, assessment=assessment)
+        else:
+            if not AssessmentRead.objects.filter(user=request.user, assessment=assessment).exists():
+                AssessmentRead.objects.create(user=request.user, assessment=assessment)
+        session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
+        if session:
+            is_started = True
+            if session.end_time:
+                time_left = max(0, (session.end_time - timezone.now()).total_seconds())
+                is_expired = time_left <= 0
+            else:
+                time_left = 0
+            answered_questions = {
+                answer.question.id: answer
+                for answer in QuestionAnswer.objects.filter(user=request.user, question__assessment=assessment).select_related('question', 'choice')
+            }
+        else:
+            if assessment.duration_in_minutes == 0:
                 is_started = True
-                time_elapsed = (timezone.now() - session.start_time).total_seconds()
-                remaining_time = max(0, session.assessment.time_limit * 60 - time_elapsed)
-                is_expired = remaining_time <= 0
-                answered_questions = {
-                    answer.question.id: answer
-                    for answer in QuestionAnswer.objects.filter(user=request.user, assessment=assessment).select_related('question', 'choice')
-                }
+                time_left = 0
+    else:
+        current_content = combined_content[0] if combined_content else None
+        if current_content:
+            if current_content[0] == 'material':
+                material = current_content[1]
+                comments = Comment.objects.filter(material=material, parent=None).order_by('-created_at')
+                if not MaterialRead.objects.filter(user=request.user, material=material).exists():
+                    MaterialRead.objects.create(user=request.user, material=material)
+            elif current_content[0] == 'assessment':
+                assessment = current_content[1]
 
-    current_index = 0 if combined_content else -1
-    previous_url = None
+    current_index = -1
+    if current_content:
+        for i, content in enumerate(combined_content):
+            if content[0] == current_content[0] and content[1].id == current_content[1].id:
+                current_index = i
+                break
+
+    previous_url = reverse('learner:load_content', kwargs={
+        'username': username, 'slug': slug,
+        'content_type': combined_content[current_index - 1][0],
+        'content_id': combined_content[current_index - 1][1].id
+    }) if current_index > 0 else None
     next_url = reverse('learner:load_content', kwargs={
         'username': username, 'slug': slug,
-        'content_type': combined_content[1][0],
-        'content_id': combined_content[1][1].id
-    }) if combined_content and len(combined_content) > 1 else None
+        'content_type': combined_content[current_index + 1][0],
+        'content_id': combined_content[current_index + 1][1].id
+    }) if current_index < len(combined_content) - 1 else None
+
+    user_progress, created = CourseProgress.objects.get_or_create(user=request.user, course=course)
+    if current_content and (current_index + 1) > user_progress.progress_percentage / 100 * total_content:
+        user_progress.progress_percentage = (current_index + 1) / total_content * 100
+        user_progress.save()
 
     context = {
         'course': course,
@@ -176,24 +206,20 @@ def my_course(request, username, slug):
         'current_content': current_content,
         'material': material,
         'assessment': assessment,
-        'comments': comments,  # Tambahkan ke konteks
+        'comments': comments,
         'assessment_locked': assessment_locked,
         'payment_required_url': payment_required_url,
         'is_started': is_started,
         'is_expired': is_expired,
-        'remaining_time': int(remaining_time),
+        'remaining_time': int(time_left),
         'answered_questions': answered_questions,
-        'course_progress': course.get_progress(request.user) if hasattr(course, 'get_progress') else 0,
+        'course_progress': user_progress.progress_percentage,
         'previous_url': previous_url,
         'next_url': next_url,
     }
 
-    logger.debug(f"my_course: Rendering for {request.path}, Sections={sections.count()}, Comments={comments.count() if comments else 0}, HTMX={getattr(request, 'htmx', False)}")
-    is_htmx = getattr(request, 'htmx', False) or request.headers.get('HX-Request') == 'true'
-    if is_htmx:
-        return render(request, 'learner/partials/content.html', context)
+    logger.info(f"my_course: Rendering for user {username}, course {slug}, assessment_id={assessment_id}")
     return render(request, 'learner/my_course.html', context)
-
 @login_required
 def load_content(request, username, slug, content_type, content_id):
     if request.user.username != username:
@@ -224,6 +250,7 @@ def load_content(request, username, slug, content_type, content_id):
         for a in section.assessments.all():
             combined_content.append(('assessment', a, section))
 
+    total_content = len(combined_content)
     current_index = next((i for i, c in enumerate(combined_content) if c[0] == content_type and c[1].id == int(content_id)), 0)
     previous_url = reverse('learner:load_content', kwargs={
         'username': username, 'slug': slug,
@@ -239,7 +266,9 @@ def load_content(request, username, slug, content_type, content_id):
     if content_type == 'material':
         material = get_object_or_404(Material, id=content_id)
         current_content = ('material', material, next((s for s in sections if material in s.materials.all()), None))
-        comments = Comment.objects.filter(material=material).select_related('user', 'parent')  # Tambahkan komentar
+        comments = Comment.objects.filter(material=material, parent=None).order_by('-created_at')
+        if not MaterialRead.objects.filter(user=request.user, material=material).exists():
+            MaterialRead.objects.create(user=request.user, material=material)
     elif content_type == 'assessment':
         assessment = get_object_or_404(Assessment, id=content_id)
         current_content = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
@@ -249,22 +278,39 @@ def load_content(request, username, slug, content_type, content_id):
             ).first()
             if not payment:
                 assessment_locked = True
-                try:
-                    payment_required_url = reverse('payments:process_payment', kwargs={'course_id': course.id, 'payment_type': 'exam'})
-                except:
-                    logger.error(f"Failed to reverse payments:process_payment")
-                    payment_required_url = None
-                    assessment_locked = False
+                payment_required_url = reverse('payments:process_payment', kwargs={'course_id': course.id, 'payment_type': 'exam'})
+                logger.info(f"Payment required for assessment {content_id} in course {course.id} for user {request.user.username}")
+            else:
+                if not AssessmentRead.objects.filter(user=request.user, assessment=assessment).exists():
+                    AssessmentRead.objects.create(user=request.user, assessment=assessment)
+        else:
+            if not AssessmentRead.objects.filter(user=request.user, assessment=assessment).exists():
+                AssessmentRead.objects.create(user=request.user, assessment=assessment)
         session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
         if session:
             is_started = True
-            time_elapsed = (timezone.now() - session.start_time).total_seconds()
-            remaining_time = max(0, session.assessment.time_limit * 60 - time_elapsed)
-            is_expired = remaining_time <= 0
+            if session.end_time:
+                remaining_time = max(0, (session.end_time - timezone.now()).total_seconds())
+                is_expired = remaining_time <= 0
+            else:
+                remaining_time = 0  # No timer for duration_in_minutes == 0
+            logger.debug(f"load_content: Assessment session user={request.user.username}, assessment={content_id}, start_time={session.start_time}, end_time={session.end_time}, remaining_time={remaining_time} sec, is_expired={is_expired}")
             answered_questions = {
                 answer.question.id: answer
-                for answer in QuestionAnswer.objects.filter(user=request.user, assessment=assessment).select_related('question', 'choice')
+                for answer in QuestionAnswer.objects.filter(user=request.user, question__assessment=assessment).select_related('question', 'choice')
             }
+        else:
+            if assessment.duration_in_minutes == 0:
+                is_started = True
+                remaining_time = 0
+            else:
+                is_started = False
+
+    # Update progres
+    user_progress, created = CourseProgress.objects.get_or_create(user=request.user, course=course)
+    if current_content and (current_index + 1) > user_progress.progress_percentage / 100 * total_content:
+        user_progress.progress_percentage = (current_index + 1) / total_content * 100
+        user_progress.save()
 
     context = {
         'course': course,
@@ -275,69 +321,292 @@ def load_content(request, username, slug, content_type, content_id):
         'current_content': current_content,
         'material': material,
         'assessment': assessment,
-        'comments': comments,  # Tambahkan ke konteks
+        'comments': comments,
         'assessment_locked': assessment_locked,
         'payment_required_url': payment_required_url,
         'is_started': is_started,
         'is_expired': is_expired,
         'remaining_time': int(remaining_time),
         'answered_questions': answered_questions,
+        'course_progress': user_progress.progress_percentage,
+        'previous_url': previous_url,
+        'next_url': next_url,
+    }
+
+    is_htmx = request.headers.get('HX-Request') == 'true'
+    logger.info(f"load_content: Rendering for {request.path}, Content_type={content_type}, Content_id={content_id}, Comments={comments.count() if comments else 0}, is_htmx={is_htmx}, is_started={is_started}, remaining_time={remaining_time}")
+    if is_htmx:
+        return render(request, 'learner/partials/content.html', context)
+    return render(request, 'learner/my_course.html', context)
+
+
+@login_required
+def start_assessment_courses(request, assessment_id):
+    #logger.debug(f"start_assessment: Request={request.method}, {Path=request.path}, Headers={request.headers}")
+    
+    if not request.user.is_authenticated or not request.method == 'POST':
+        logger.error(f"Invalid start_assessment: Auth={request.user.is_authenticated}, Method={request.method}, Path={request.path}")
+        return HttpResponse(status=400)
+
+    assessment = get_object_or_404(Assessment, id=assessment_id)
+    course = assessment.section.courses  # Pastikan mengambil course yang benar
+    if not Enrollment.objects.filter(user=request.user, course=course).exists():
+        logger.warning(f"User {request.user.username} not enrolled in course {course.slug}, assessment_id={assessment_id}")
+        return HttpResponse(status=403)
+
+    # Create or reset session
+    session, created = AssessmentSession.objects.get_or_create(
+        user=request.user,
+        assessment=assessment,
+        defaults={
+            'start_time': timezone.now(),
+            'end_time': timezone.now() + timedelta(minutes=assessment.duration_in_minutes) if assessment.duration_in_minutes > 0 else None
+        }
+    )
+    if not created and session.end_time():
+        session.start_time = timezone.now()
+        session.end_time = timezone.now() + timedelta(minutes=assessment.duration_in_minutes) if assessment.duration_in_minutes > 0 else None
+        session.save()
+        logger.debug(f"Reset session for user {request.user.username}, assessment {assessment_id}, start_time={session.start_time}, end_time={session.end_time}")
+    elif created:
+        logger.debug(f"New session for user {request.user.username}, assessment {assessment_id}, start_time={session.start_time}, end_time={session.end_time}")
+    else:
+        logger.debug(f"Using existing session: for user {request.user.username}, assessment_id={assessment_id}, start_time={session.start_time}, end_time={session.end_time}")
+
+    # Calculate time_left
+    is_started = True
+    is_expired = False
+    time_left = 0
+    if assessment.duration_in_minutes > 0 and session.end_time:
+        time_left = max(0, (session.end_time - timezone.now()).total_seconds())
+        is_expired = time_left <= 0
+    else:
+        time_left = 0
+
+    logger.info(f"start_assessment: assessment_id={assessment_id}, duration={assessment.duration_in_minutes} min, start_time={session.start_time}, end_time={session.end_time}, time_left={time_left}, is_expired={is_expired}, timezone={timezone.get_current_timezone_name()}")
+
+    sections = Section.objects.filter(courses=course).prefetch_related('materials', 'assessments').all().order_by('id')
+    combined_content = []
+    for section in sections:
+        for m in section.materials.all():
+            combined_content.append(('material', m, section))
+        for a in section.assessments.all():
+            combined_content.append(('assessment', a, section))
+
+    current_index = next((i for i, c in enumerate(combined_content) if c[0] == 'assessment' and c[1].id == assessment_id), 0)
+    previous_url = reverse('learner:load_content', kwargs={
+        'username': request.user.username,
+        'slug': course.slug,
+        'content_type': combined_content[current_index - 1][0],
+        'content_id': combined_content[current_index - 1][1].id
+    }) if current_index > 0 else None
+    next_url = reverse('learner:load_content', kwargs={
+        'username': request.user.username,
+        'slug': course.slug,
+        'content_type': combined_content[current_index + 1][0],
+        'content_id': combined_content[current_index + 1][1].id
+    }) if current_index < len(combined_content) - 1 else None
+
+    context = {
+        'course': course,
+        'course_name': course.course_name,
+        'username': request.user.username,
+        'slug': course.slug,
+        'sections': sections,
+        'current_content': ('assessment', assessment, section),
+        'material': None,
+        'assessment': assessment,
+        'comments': None,
+        'assessment_locked': False,
+        'payment_required_url': None,
+        'is_started': is_started,
+        'is_expired': is_expired,
+        'remaining_time': int(time_left),
+        'answered_questions': {
+            answer.question.id: answer
+            for answer in QuestionAnswer.objects.filter(user=request.user, question__assessment=assessment).select_related('question', 'choice')
+        },
         'course_progress': course.get_progress(request.user) if hasattr(course, 'get_progress') else 0,
         'previous_url': previous_url,
         'next_url': next_url,
     }
 
-    logger.debug(f"load_content: Rendering for {request.path}, Comments={comments.count() if comments else 0}, HTMX={getattr(request, 'htmx', False)}")
-    is_htmx = getattr(request, 'htmx', False) or request.headers.get('HX-Request') == 'true'
-    if is_htmx:
-        return render(request, 'learner/partials/content.html', context)
-    return render(request, 'learner/my_course.html', context)
+    is_htmx = request.headers.get('HX-Request') == 'true'
+    if not is_htmx:
+        logger.warning(f"Non-HTMX request detected for start_assessment: {request.path}, Headers: {request.headers}")
+        # Redirect ke URL load_content yang benar
+        redirect_url = reverse('learner:load_content', kwargs={
+            'username': request.user.username,
+            'slug': course.slug,
+            'content_type': 'assessment',
+            'content_id': assessment.id
+        })
+        logger.info(f"Redirecting non-HTMX request to: {redirect_url}")
+        return HttpResponseRedirect(redirect_url)
 
-def start_assessment(request, assessment_id):
-    if not request.user.is_authenticated:
-        return HttpResponse(status=403)
+    logger.info(f"start_assessment: Rendering HTMX for user {request.user.username}, assessment {assessment_id}, is_htmx={is_htmx}, time_left={time_left}")
+    return render(request, 'learner/partials/content.html', context)
+
+
+@login_required
+def submit_assessment(request, assessment_id):
+    if not request.user.is_authenticated or request.method != 'POST':
+        logger.warning(f"Invalid submit_assessment: Auth={request.user.is_authenticated}, Method={request.method}")
+        return HttpResponse(status=400)
+
     assessment = get_object_or_404(Assessment, id=assessment_id)
-    course = assessment.section.courses.first()
-    if not Enrollment.objects.filter(user=request.user, course=course).exists():
-        return HttpResponse(status=403)
+    course = assessment.section.courses
+    session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
 
-    session, created = AssessmentSession.objects.get_or_create(
-        user=request.user,
-        assessment=assessment,
-        defaults={'end_time': timezone.now() + timedelta(minutes=assessment.duration_in_minutes)}
-    )
-    return HttpResponseRedirect(reverse('learner:load_content', kwargs={
+    if not session:
+        logger.warning(f"No session found for user {request.user.username}, assessment {assessment_id}")
+        return HttpResponse(status=400)
+
+    # Tandai sesi selesai
+    session.end_time = timezone.now()
+    session.save()
+    logger.debug(f"Assessment submitted for user {request.user.username}, assessment {assessment_id}, end_time={session.end_time}")
+
+    sections = Section.objects.filter(courses=course).prefetch_related('materials', 'assessments').order_by('order')
+    combined_content = []
+    for section in sections:
+        for m in section.materials.all():
+            combined_content.append(('material', m, section))
+        for a in section.assessments.all():
+            combined_content.append(('assessment', a, section))
+
+    current_index = next((i for i, c in enumerate(combined_content) if c[0] == 'assessment' and c[1].id == assessment_id), 0)
+    previous_url = reverse('learner:load_content', kwargs={
+        'username': request.user.username, 'slug': course.slug,
+        'content_type': combined_content[current_index - 1][0],
+        'content_id': combined_content[current_index - 1][1].id
+    }) if current_index > 0 else None
+    next_url = reverse('learner:load_content', kwargs={
+        'username': request.user.username, 'slug': course.slug,
+        'content_type': combined_content[current_index + 1][0],
+        'content_id': combined_content[current_index + 1][1].id
+    }) if current_index < len(combined_content) - 1 else None
+
+    context = {
+        'course': course,
+        'course_name': course.course_name,
         'username': request.user.username,
         'slug': course.slug,
-        'content_type': 'assessment',
-        'content_id': assessment.id
-    }))
+        'sections': sections,
+        'current_content': ('assessment', assessment, assessment.section),
+        'material': None,
+        'assessment': assessment,
+        'comments': None,
+        'assessment_locked': False,
+        'payment_required_url': None,
+        'is_started': True,
+        'is_expired': True,
+        'remaining_time': 0,
+        'answered_questions': {
+            answer.question.id: answer
+            for answer in QuestionAnswer.objects.filter(user=request.user, assessment=assessment).select_related('question', 'choice')
+        },
+        'course_progress': course.get_progress(request.user) if hasattr(course, 'get_progress') else 0,
+        'previous_url': previous_url,
+        'next_url': next_url,
+    }
 
+    is_htmx = request.headers.get('HX-Request') == 'true'
+    logger.info(f"submit_assessment: Rendering for user {request.user.username}, assessment {assessment_id}, is_htmx={is_htmx}")
+    return render(request, 'learner/partials/content.html', context)
+
+
+@login_required
 def submit_answer(request):
     if not request.user.is_authenticated or request.method != 'POST':
+        logger.warning(f"Invalid submit_answer: Auth={request.user.is_authenticated}, Method={request.method}")
         return HttpResponse(status=400)
+    logger.debug(f"submit_answer POST data: {request.POST}")
 
     question_id = request.POST.get('question_id')
     choice_id = request.POST.get('choice_id')
+
     if not question_id or not choice_id:
+        logger.warning(f"Missing question_id or choice_id in submit_answer for user {request.user.username}")
         return HttpResponse(status=400)
 
     question = get_object_or_404(Question, id=question_id)
     choice = get_object_or_404(Choice, id=choice_id)
+    assessment = question.assessment
+    course = assessment.section.courses
+
+    if not Enrollment.objects.filter(user=request.user, course=course).exists():
+        logger.warning(f"User {request.user.username} not enrolled in course {course.slug}")
+        return HttpResponse(status=403)
+
+    # Simpan jawaban
     QuestionAnswer.objects.update_or_create(
         user=request.user,
         question=question,
         defaults={'choice': choice}
     )
-    course = question.assessment.section.courses.first()
-    return HttpResponseRedirect(reverse('learner:load_content', kwargs={
+    logger.debug(f"Answer submitted for user {request.user.username}, question {question_id}, choice {choice_id}")
+
+    # Muat ulang konten assessment
+    session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
+    is_started = False
+    is_expired = False
+    remaining_time = 0
+    if session:
+        is_started = True
+        if session.end_time:
+            remaining_time = max(0, (session.end_time - timezone.now()).total_seconds())
+            is_expired = remaining_time <= 0
+        else:
+            remaining_time = 0
+
+    sections = Section.objects.filter(courses=course).prefetch_related('materials', 'assessments').order_by('order')
+    combined_content = []
+    for section in sections:
+        for m in section.materials.all():
+            combined_content.append(('material', m, section))
+        for a in section.assessments.all():
+            combined_content.append(('assessment', a, section))
+
+    current_index = next((i for i, c in enumerate(combined_content) if c[0] == 'assessment' and c[1].id == assessment.id), 0)
+    previous_url = reverse('learner:load_content', kwargs={
+        'username': request.user.username, 'slug': course.slug,
+        'content_type': combined_content[current_index - 1][0],
+        'content_id': combined_content[current_index - 1][1].id
+    }) if current_index > 0 else None
+    next_url = reverse('learner:load_content', kwargs={
+        'username': request.user.username, 'slug': course.slug,
+        'content_type': combined_content[current_index + 1][0],
+        'content_id': combined_content[current_index + 1][1].id
+    }) if current_index < len(combined_content) - 1 else None
+
+    context = {
+        'course': course,
+        'course_name': course.course_name,
         'username': request.user.username,
         'slug': course.slug,
-        'content_type': 'assessment',
-        'content_id': question.assessment.id
-    }))
+        'sections': sections,
+        'current_content': ('assessment', assessment, assessment.section),
+        'material': None,
+        'assessment': assessment,
+        'comments': None,
+        'assessment_locked': False,
+        'payment_required_url': None,
+        'is_started': is_started,
+        'is_expired': is_expired,
+        'remaining_time': int(remaining_time),
+        'answered_questions': {
+            answer.question.id: answer
+            for answer in QuestionAnswer.objects.filter(user=request.user, question__assessment=assessment).select_related('question', 'choice')
+        },
+        'course_progress': course.get_progress(request.user) if hasattr(course, 'get_progress') else 0,
+        'previous_url': previous_url,
+        'next_url': next_url,
+    }
 
-
+    is_htmx = request.headers.get('HX-Request') == 'true'
+    logger.info(f"submit_answer: Rendering for user {request.user.username}, assessment {assessment.id}, question {question_id}, is_htmx={is_htmx}")
+    return render(request, 'learner/partials/content.html', context)
 
 #add coment matrial course
 def is_bot(request):
