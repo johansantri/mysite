@@ -134,6 +134,8 @@
                                                     {% endfor %}
 
                                                     <button type="submit" class="btn btn-primary mt-2">Kirim Jawaban</button>
+                                                    
+
                                                 </form>
 
                                         </div>
@@ -189,9 +191,11 @@
                         {% endif %}
                     {% endif %}
                 {% endif %}
-                <div id="comments-section" class="mt-5">
-                    {% include 'learner/partials/comments.html' %}
-                </div>
+                        {% if current_content.0 == 'material' %}
+                            <div id="comments-section" class="mt-5">
+                                {% include 'learner/partials/comments.html' %}
+                            </div>
+                        {% endif %}
                 <!-- Tombol Navigasi -->
                 <div class="d-flex justify-content-between mt-4">
                     {% if previous_url %}

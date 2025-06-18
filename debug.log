@@ -39,3 +39,188 @@ INFO 2025-06-18 16:13:56,556 views submit_answer: Rendering for user learn, asse
 INFO 2025-06-18 16:13:59,896 views submit_answer: Rendering for user learn, assessment 78, question 317, is_htmx=True
 INFO 2025-06-18 16:14:05,488 views load_content: Rendering for /learn/front-end-developer-2026/material/77/, Content_type=material, Content_id=77, Comments=0, is_htmx=True, is_started=False, remaining_time=0
 INFO 2025-06-18 16:14:09,276 views load_content: Rendering for /learn/front-end-developer-2026/assessment/79/, Content_type=assessment, Content_id=79, Comments=0, is_htmx=True, is_started=False, remaining_time=0
+INFO 2025-06-18 16:14:53,973 views load_content: Rendering for /learn/build-powerful-web-applications-with-django-2026/assessment/50/, Content_type=assessment, Content_id=50, Comments=0, is_htmx=True, is_started=True, remaining_time=0
+INFO 2025-06-18 16:16:57,202 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-18 16:16:57,329 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-18 16:16:57,433 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-18 16:16:59,170 views load_content: Rendering for /learn/front-end-developer-2026/assessment/79/, Content_type=assessment, Content_id=79, Comments=0, is_htmx=False, is_started=False, remaining_time=0
+INFO 2025-06-18 16:17:02,490 views load_content: Rendering for /learn/front-end-developer-2026/material/77/, Content_type=material, Content_id=77, Comments=0, is_htmx=True, is_started=False, remaining_time=0
+INFO 2025-06-18 16:17:05,307 views load_content: Rendering for /learn/front-end-developer-2026/assessment/78/, Content_type=assessment, Content_id=78, Comments=0, is_htmx=True, is_started=True, remaining_time=107.500007
+INFO 2025-06-18 16:17:06,753 views load_content: Rendering for /learn/front-end-developer-2026/material/76/, Content_type=material, Content_id=76, Comments=0, is_htmx=True, is_started=False, remaining_time=0
+INFO 2025-06-18 16:17:10,162 views load_content: Rendering for /learn/front-end-developer-2026/assessment/77/, Content_type=assessment, Content_id=77, Comments=0, is_htmx=True, is_started=True, remaining_time=44.611724
+INFO 2025-06-18 16:17:12,830 views load_content: Rendering for /learn/front-end-developer-2026/material/75/, Content_type=material, Content_id=75, Comments=0, is_htmx=True, is_started=False, remaining_time=0
+INFO 2025-06-18 16:17:15,919 views load_content: Rendering for /learn/front-end-developer-2026/assessment/76/, Content_type=assessment, Content_id=76, Comments=0, is_htmx=True, is_started=True, remaining_time=0
+INFO 2025-06-18 16:17:23,664 views load_content: Rendering for /learn/front-end-developer-2026/material/74/, Content_type=material, Content_id=74, Comments=0, is_htmx=True, is_started=False, remaining_time=0
+INFO 2025-06-18 16:17:29,659 views load_content: Rendering for /learn/front-end-developer-2026/assessment/75/, Content_type=assessment, Content_id=75, Comments=0, is_htmx=True, is_started=True, remaining_time=0
+WARNING 2025-06-18 16:17:55,036 views Unauthorized access attempt by learn for submit-assessment
+WARNING 2025-06-18 16:18:53,175 views Unauthorized access attempt by learn for submit-assessment
+INFO 2025-06-18 16:19:02,166 views load_content: Rendering for /learn/front-end-developer-2026/assessment/75/, Content_type=assessment, Content_id=75, Comments=0, is_htmx=False, is_started=True, remaining_time=0
+INFO 2025-06-18 16:19:03,516 views load_content: Rendering for /learn/front-end-developer-2026/material/73/, Content_type=material, Content_id=73, Comments=0, is_htmx=True, is_started=False, remaining_time=0
+INFO 2025-06-18 16:19:07,327 views load_content: Rendering for /learn/front-end-developer-2026/assessment/75/, Content_type=assessment, Content_id=75, Comments=0, is_htmx=True, is_started=True, remaining_time=0
+INFO 2025-06-18 16:19:09,189 views load_content: Rendering for /learn/front-end-developer-2026/material/74/, Content_type=material, Content_id=74, Comments=0, is_htmx=True, is_started=False, remaining_time=0
+INFO 2025-06-18 16:19:12,573 views load_content: Rendering for /learn/front-end-developer-2026/assessment/76/, Content_type=assessment, Content_id=76, Comments=0, is_htmx=True, is_started=True, remaining_time=0
+INFO 2025-06-18 16:25:06,430 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-18 16:25:06,456 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-18 16:25:06,591 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-18 16:25:08,274 views load_content: Rendering for /learn/front-end-developer-2026/assessment/76/, Content_type=assessment, Content_id=76, Comments=0, is_htmx=False, is_started=True, remaining_time=0
+ERROR 2025-06-18 16:25:08,319 log Internal Server Error: /learn/front-end-developer-2026/assessment/76/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/smartif.py", line 180, in translate_token
+    op = OPERATORS[token]
+KeyError: 'request.headers.HX-Request'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/learner/views.py", line 340, in load_content
+    return render(request, 'learner/my_course.html', context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 199, in render
+    template = context.template.engine.select_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 208, in select_template
+    return self.get_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 970, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 976, in do_if
+    nodelist = parser.parse(("endif",))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 976, in do_if
+    nodelist = parser.parse(("endif",))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 961, in do_if
+    condition = TemplateIfParser(parser, bits).parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 894, in __init__
+    super().__init__(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/smartif.py", line 171, in __init__
+    mapped_tokens.append(self.translate_token(token))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/smartif.py", line 182, in translate_token
+    return self.create_var(token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 897, in create_var
+    return TemplateLiteral(self.template_parser.compile_filter(value), value)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 710, in __init__
+    raise TemplateSyntaxError(
+django.template.exceptions.TemplateSyntaxError: Could not parse the remainder: '-Request' from 'request.headers.HX-Request'
+INFO 2025-06-18 16:26:57,481 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-18 16:26:57,570 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-18 16:26:57,612 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-18 16:26:58,461 views load_content: Rendering for /learn/front-end-developer-2026/assessment/76/, Content_type=assessment, Content_id=76, Comments=0, is_htmx=False, is_started=True, remaining_time=0
+INFO 2025-06-18 16:27:01,829 views load_content: Rendering for /learn/front-end-developer-2026/material/75/, Content_type=material, Content_id=75, Comments=0, is_htmx=True, is_started=False, remaining_time=0
+WARNING 2025-06-18 16:27:16,806 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-18 16:27:54,364 views Unauthorized access attempt by admin for kuruk
+INFO 2025-06-18 16:27:57,403 views load_content: Rendering for /learn/front-end-developer-2026/material/75/, Content_type=material, Content_id=75, Comments=0, is_htmx=False, is_started=False, remaining_time=0
+INFO 2025-06-18 16:27:59,792 views load_content: Rendering for /learn/front-end-developer-2026/assessment/77/, Content_type=assessment, Content_id=77, Comments=0, is_htmx=True, is_started=False, remaining_time=0
+INFO 2025-06-18 16:28:02,863 views start_assessment: assessment_id=77, duration=5 min, start_time=2025-06-18 09:28:02.848073+00:00, end_time=2025-06-18 09:33:02.848073+00:00, time_left=299.984965, is_expired=False, timezone=Asia/Jakarta
+INFO 2025-06-18 16:28:02,870 views start_assessment: Rendering HTMX for user learn, assessment 77, is_htmx=True, time_left=299.984965
+INFO 2025-06-18 16:28:06,451 views submit_answer: Rendering for user learn, assessment 77, question 314, is_htmx=True
+INFO 2025-06-18 16:28:12,051 views submit_answer: Rendering for user learn, assessment 77, question 315, is_htmx=True
+INFO 2025-06-18 16:28:16,868 views load_content: Rendering for /learn/front-end-developer-2026/material/76/, Content_type=material, Content_id=76, Comments=0, is_htmx=True, is_started=False, remaining_time=0
+INFO 2025-06-18 16:28:20,030 views load_content: Rendering for /learn/front-end-developer-2026/assessment/78/, Content_type=assessment, Content_id=78, Comments=0, is_htmx=True, is_started=False, remaining_time=0
+INFO 2025-06-18 16:28:22,500 views start_assessment: assessment_id=78, duration=5 min, start_time=2025-06-18 09:28:22.483267+00:00, end_time=2025-06-18 09:33:22.483267+00:00, time_left=299.982535, is_expired=False, timezone=Asia/Jakarta
+INFO 2025-06-18 16:28:22,508 views start_assessment: Rendering HTMX for user learn, assessment 78, is_htmx=True, time_left=299.982535
+INFO 2025-06-18 16:28:25,207 views submit_answer: Rendering for user learn, assessment 78, question 317, is_htmx=True
+INFO 2025-06-18 16:28:26,730 views load_content: Rendering for /learn/front-end-developer-2026/material/77/, Content_type=material, Content_id=77, Comments=0, is_htmx=True, is_started=False, remaining_time=0
+INFO 2025-06-18 16:28:29,226 views load_content: Rendering for /learn/front-end-developer-2026/assessment/79/, Content_type=assessment, Content_id=79, Comments=0, is_htmx=True, is_started=False, remaining_time=0
+INFO 2025-06-18 16:28:31,777 views start_assessment: assessment_id=79, duration=5 min, start_time=2025-06-18 09:28:31.754155+00:00, end_time=2025-06-18 09:33:31.754155+00:00, time_left=299.97666, is_expired=False, timezone=Asia/Jakarta
+INFO 2025-06-18 16:28:31,787 views start_assessment: Rendering HTMX for user learn, assessment 79, is_htmx=True, time_left=299.97666
+INFO 2025-06-18 16:28:38,423 views submit_answer: Rendering for user learn, assessment 79, question 318, is_htmx=True
+INFO 2025-06-18 16:30:40,210 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-18 16:30:40,211 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-18 16:30:40,323 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-18 16:30:47,439 views load_content: Rendering for /learn/front-end-developer-2026/assessment/79/, Content_type=assessment, Content_id=79, Comments=0, is_htmx=False, is_started=True, remaining_time=164.31747
+INFO 2025-06-18 16:30:52,218 views submit_answer: Rendering for user learn, assessment 79, question 318, is_htmx=True
+INFO 2025-06-18 16:31:00,873 views submit_answer: Rendering for user learn, assessment 79, question 319, is_htmx=True
+INFO 2025-06-18 16:31:06,145 views load_content: Rendering for /learn/front-end-developer-2026/material/77/, Content_type=material, Content_id=77, Comments=0, is_htmx=True, is_started=False, remaining_time=0
+INFO 2025-06-18 16:31:08,476 views load_content: Rendering for /learn/front-end-developer-2026/assessment/78/, Content_type=assessment, Content_id=78, Comments=0, is_htmx=True, is_started=True, remaining_time=134.009955
+INFO 2025-06-18 16:31:10,004 views load_content: Rendering for /learn/front-end-developer-2026/material/76/, Content_type=material, Content_id=76, Comments=0, is_htmx=True, is_started=False, remaining_time=0
+INFO 2025-06-18 16:31:12,856 views load_content: Rendering for /learn/front-end-developer-2026/assessment/77/, Content_type=assessment, Content_id=77, Comments=0, is_htmx=True, is_started=True, remaining_time=109.994495
+INFO 2025-06-18 16:31:14,378 views load_content: Rendering for /learn/front-end-developer-2026/material/75/, Content_type=material, Content_id=75, Comments=0, is_htmx=True, is_started=False, remaining_time=0
+INFO 2025-06-18 16:31:17,218 views load_content: Rendering for /learn/front-end-developer-2026/assessment/76/, Content_type=assessment, Content_id=76, Comments=0, is_htmx=True, is_started=False, remaining_time=0
+INFO 2025-06-18 16:31:57,370 views Payment required for exam in course 11 for user learn
+INFO 2025-06-18 16:32:13,286 views my_course: Rendering for user learn, course big-data-developer-2026, assessment_id=None
+INFO 2025-06-18 16:32:17,284 views Payment required for assessment 45 in course 11 for user learn
+INFO 2025-06-18 16:32:17,287 views load_content: Rendering for /learn/big-data-developer-2026/assessment/45/, Content_type=assessment, Content_id=45, Comments=0, is_htmx=True, is_started=False, remaining_time=0

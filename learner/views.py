@@ -602,6 +602,7 @@ def submit_answer(request):
         'course_progress': course.get_progress(request.user) if hasattr(course, 'get_progress') else 0,
         'previous_url': previous_url,
         'next_url': next_url,
+        
     }
 
     is_htmx = request.headers.get('HX-Request') == 'true'
