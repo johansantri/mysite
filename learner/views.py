@@ -271,39 +271,125 @@ def submit_answer(request):
         'content_id': question.assessment.id
     }))
 
+
+
+#add coment matrial course
+def is_bot(request):
+    """
+    Mengecek apakah permintaan berasal dari bot.
+    Dengan melihat user-agent dan header lainnya.
+    """
+    user_agent = request.META.get('HTTP_USER_AGENT', '').lower()
+    if 'bot' in user_agent or 'crawler' in user_agent:
+        return True  # Bot terdeteksi
+    return False
+
+
+def is_suspicious(request):
+    """Check if the request is suspicious based on User-Agent or missing Referer."""
+    user_agent = request.META.get('HTTP_USER_AGENT', '')
+    referer = request.META.get('HTTP_REFERER', '')
+    
+    # Bot detection (simple heuristic)
+    if 'bot' in user_agent.lower() or not referer:
+        return True
+    return False
+
+
+def is_spam(request, user, content):
+    """
+    Memeriksa apakah komentar terdeteksi sebagai spam berdasarkan
+    rate-limiting, bot detection dan blacklist keywords.
+    """
+    # 1. Cek Bot Detection
+    if is_bot(request):
+        return True  # Bot terdeteksi, komentar dianggap spam
+    
+    # 2. Cek Rate Limiting (Spam)
+    time_limit = timedelta(seconds=30)  # Menentukan batas waktu antara komentar
+    last_comment = Comment.objects.filter(user=user).order_by('-created_at').first()
+    if last_comment and timezone.now() - last_comment.created_at < time_limit:
+        return True  # Terlalu cepat mengirim komentar, dianggap spam
+    
+    # 3. Cek Kata Kunci yang Diblokir menggunakan metode model
+    comment_instance = Comment(user=user, content=content)
+    if comment_instance.contains_blacklisted_keywords():
+        return True  # Mengandung kata terlarang, dianggap spam
+    
+    return False
+
+
+@login_required
 def add_comment(request):
     if not request.user.is_authenticated or request.method != 'POST':
+        logger.warning(f"Invalid request: Auth={request.user.is_authenticated}, Method={request.method}")
         return HttpResponse(status=400)
 
     comment_text = request.POST.get('comment_text')
     material_id = request.POST.get('material_id')
-    section_id = request.POST.get('section_id')
-    if not comment_text:
+    parent_id = request.POST.get('parent_id')
+    if not comment_text or not material_id:
+        logger.warning(f"Missing required fields: comment_text={bool(comment_text)}, material_id={material_id}")
         return HttpResponse(status=400)
 
-    if material_id and material_id != '':
-        material = get_object_or_404(Material, id=material_id)
-        Comment.objects.create(user=request.user, material=material, text=comment_text)
-        course = material.section.courses.first()
-        content_type = 'material'
-        content_id = material_id
-    elif section_id and section_id != '':
-        section = get_object_or_404(Section, id=section_id)
-        Comment.objects.create(user=request.user, section=section, text=comment_text)
-        course = section.courses.first()
-        content_type = 'assessment'
-        content_id = section.assessments.first().id if section.assessments.exists() else None
-    else:
+    material = get_object_or_404(Material, id=material_id)
+    if not material.section or not material.section.courses:
+        logger.warning(f"Invalid material: section={material.section}, courses={material.section.courses if material.section else None}")
+        messages.warning(request, "Material tidak valid atau tidak terkait dengan kursus.")
         return HttpResponse(status=400)
 
-    if content_id:
+    course = material.section.courses  # ForeignKey ke Course
+    parent_comment = get_object_or_404(Comment, id=parent_id) if parent_id else None
+
+    # Pemeriksaan keamanan
+    if is_suspicious(request):
+        logger.warning(f"Suspicious activity detected by {request.user.username}")
+        messages.warning(request, "Aktivitas mencurigakan terdeteksi. Komentar tidak diposting.")
         return HttpResponseRedirect(reverse('learner:load_content', kwargs={
-            'username': request.user.username,
-            'slug': course.slug,
-            'content_type': content_type,
-            'content_id': content_id
+            'username': request.user.username, 'slug': course.slug, 'content_type': 'material', 'content_id': material_id
         }))
-    return HttpResponse(status=400)
+
+    # Pemeriksaan spam
+    if is_spam(request, request.user, comment_text):
+        logger.warning(f"Spam comment detected by {request.user.username}: {comment_text}")
+        messages.warning(request, "Komentar Anda terdeteksi sebagai spam!")
+        return HttpResponseRedirect(reverse('learner:load_content', kwargs={
+            'username': request.user.username, 'slug': course.slug, 'content_type': 'material', 'content_id': material_id
+        }))
+
+    # Pemeriksaan blacklisted keywords
+    comment = Comment(user=request.user, material=material, content=comment_text, parent=parent_comment)
+    if comment.contains_blacklisted_keywords():
+        logger.warning(f"Comment by {request.user.username} contains blacklisted keywords: {comment_text}")
+        messages.warning(request, "Komentar mengandung kata-kata yang tidak diizinkan.")
+        return HttpResponseRedirect(reverse('learner:load_content', kwargs={
+            'username': request.user.username, 'slug': course.slug, 'content_type': 'material', 'content_id': material_id
+        }))
+
+    # Simpan komentar
+    comment.save()
+    logger.debug(f"Comment added by {request.user.username} for material {material_id}")
+
+    # Untuk HTMX, kembalikan partial comments.html
+    is_htmx = getattr(request, 'htmx', False) or request.headers.get('HX-Request') == 'true'
+    if is_htmx:
+        context = {
+            'comments': Comment.objects.filter(material=material).select_related('user', 'parent'),
+            'material': material,
+        }
+        messages.success(request, "Komentar berhasil diposting!")
+        return render(request, 'learner/partials/comments.html', context)
+
+    # Untuk non-HTMX, redirect dengan pesan
+    messages.success(request, "Komentar berhasil diposting!")
+    redirect_url = reverse('learner:load_content', kwargs={
+        'username': request.user.username,
+        'slug': course.slug,
+        'content_type': 'material',
+        'content_id': material_id
+    })
+    return HttpResponseRedirect(redirect_url)
+
 
 def get_progress(request, username, slug):
     if not request.user.is_authenticated or request.user.username != username:
