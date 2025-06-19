@@ -76,108 +76,258 @@
                     {% else %}
                         <h3 class="mb-4">{{ assessment.name }}</h3>
 
-                        <!-- Bagian untuk AskOra -->
                         {% if ask_oras %}
                             <h4>Pertanyaan AskOra</h4>
                             {% for ask_ora in ask_oras %}
-                                <div class="card mb-3">
+                                <div class="card mb-4">
                                     <div class="card-body">
                                         <h5>{{ ask_ora.title }}</h5>
-                                        <p>{{ ask_ora.question_text|safe }}</p>
-                                        <p>Batas Waktu: {{ ask_ora.response_deadline }}</p>
+                                        <div class="mb-3">
+                                            {{ ask_ora.question_text|safe }}
+                                        </div>
+                                        <p class="text-muted">
+                                            <i class="bi bi-clock"></i> 
+                                            Batas waktu: {{ ask_ora.response_deadline|date:"d M Y H:i" }}
+                                        </p>
+                                        
                                         {% if askora_can_submit|dict_get:ask_ora.id %}
-                                            <form method="post" 
-                                                hx-post="{% url 'learner:submit_answer_askora' ask_ora.id %}"
+                                            <form method="POST"
+                                                hx-post="{% url 'learner:submit_answer_askora_new' ask_ora.id %}"
                                                 hx-target="#content-area"
                                                 hx-swap="innerHTML"
-                                                hx-on::after-request="document.body.dispatchEvent(new Event('contentLoaded')); this.reset()">
+                                                enctype="multipart/form-data"
+                                                class="mt-4">
                                                 {% csrf_token %}
+                                                
                                                 <div class="mb-3">
-                                                    <label for="answer_text" class="form-label">Jawaban</label>
-                                                    <textarea name="answer_text" id="answer_text" class="form-control" required></textarea>
+                                                    <label for="answer_text" class="form-label">
+                                                        <i class="bi bi-pencil-square"></i> Jawaban Anda
+                                                    </label>
+                                                    <textarea name="answer_text" id="answer_text" 
+                                                        class="form-control" rows="6" required
+                                                        placeholder="Tulis jawaban Anda disini..."></textarea>
                                                 </div>
-                                                <button type="submit" class="btn btn-primary">Kirim Jawaban</button>
+                                                
+                                                <div class="mb-3">
+                                                    <label for="answer_file" class="form-label">
+                                                        <i class="bi bi-paperclip"></i> Lampirkan File (Opsional)
+                                                    </label>
+                                                    <input type="file" class="form-control" 
+                                                        name="answer_file" id="answer_file">
+                                                </div>
+                                                
+                                                <button type="submit" class="btn btn-primary">
+                                                    <span class="htmx-indicator">
+                                                        <span class="spinner-border spinner-border-sm" role="status"></span>
+                                                        Mengirim...
+                                                    </span>
+                                                    <span class="non-htmx-indicator">
+                                                        <i class="bi bi-send"></i> Kirim Jawaban
+                                                    </span>
+                                                </button>
                                             </form>
                                         {% else %}
-                                            <p class="text-muted">
+                                            <div class="alert alert-secondary">
                                                 {% if not ask_ora.is_responsive %}
-                                                    Batas waktu pengiriman telah berakhir.
+                                                    <i class="bi bi-exclamation-circle"></i> Batas waktu pengiriman telah berakhir.
                                                 {% else %}
-                                                    Anda sudah mengirimkan jawaban.
+                                                    <i class="bi bi-check-circle"></i> Anda sudah mengirimkan jawaban.
                                                 {% endif %}
-                                            </p>
+                                            </div>
                                         {% endif %}
                                     </div>
                                 </div>
                             {% endfor %}
                         {% endif %}
 
-                        <!-- Bagian untuk Submission -->
+                        <!-- Bagian Jawaban User -->
                         {% if user_submissions %}
-                            <h4>Jawaban Anda</h4>
-                            {% for submission in user_submissions %}
-                                <div class="card mb-3">
-                                    <div class="card-body">
-                                        <p><strong>Pertanyaan:</strong> {{ submission.askora.title }}</p>
-                                        <p><strong>Jawaban:</strong> {{ submission.answer_text }}</p>
-                                        {% if submission.answer_file %}
-                                            <p><a href="{{ submission.answer_file.url }}" class="btn btn-sm btn-info">Unduh File</a></p>
-                                        {% endif %}
-                                        {% if submission.score %}
-                                            <p><strong>Skor:</strong> {{ submission.score }}</p>
-                                        {% endif %}
+                            <div class="mt-5">
+                                <h4><i class="bi bi-journal-text"></i> Jawaban Saya</h4>
+                                
+                                {% for submission in user_submissions %}
+                                    <div class="card mb-4 {% if submission.score %}border-primary{% endif %}">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                                <h5>{{ submission.askora.title }}</h5>
+                                                {% if submission.score %}
+                                                    <span class="badge bg-primary fs-6">
+                                                        Nilai: {{ submission.score }}
+                                                    </span>
+                                                {% endif %}
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <p class="text-muted">
+                                                    <i class="bi bi-clock"></i> 
+                                                    Dikirim pada: {{ submission.submitted_at|date:"d M Y H:i" }}
+                                                </p>
+                                                <div class="bg-light p-3 rounded">
+                                                    {{ submission.answer_text|linebreaks }}
+                                                </div>
+                                            </div>
+                                            
+                                            {% if submission.answer_file %}
+                                                <a href="{{ submission.answer_file.url }}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-download"></i> Unduh File Lampiran
+                                                </a>
+                                            {% endif %}
+                                            
+                                            <!-- Status Review -->
+                                            <div class="mt-4 p-3 bg-light rounded">
+                                                <h6><i class="bi bi-info-circle"></i> Status Penilaian:</h6>
+                                                <ul class="mb-0">
+                                                    <li>
+                                                        {% if peer_review_stats.review_count > 0 %}
+                                                            <i class="bi bi-check-circle text-success"></i> 
+                                                            Telah direview oleh {{ peer_review_stats.review_count }} teman
+                                                        {% else %}
+                                                            <i class="bi bi-hourglass text-warning"></i> 
+                                                            Belum ada review dari teman
+                                                        {% endif %}
+                                                    </li>
+                                                    <li>
+                                                        {% if submission.score %}
+                                                            <i class="bi bi-check-circle text-success"></i> 
+                                                            Nilai akhir sudah tersedia
+                                                        {% else %}
+                                                            <i class="bi bi-hourglass text-warning"></i> 
+                                                            Menunggu review selesai
+                                                        {% endif %}
+                                                    </li>
+                                                </ul>
+                                            </div>
+
+                                            <!-- Bagian Status Penilaian -->
+                                                <div class="mt-4 p-3 bg-light rounded">
+                                                    <h6><i class="bi bi-info-circle"></i> Status Penilaian:</h6>
+                                                    <ul class="mb-0">
+                                                        <li>
+                                                            <i class="bi bi-people-fill"></i> Telah direview oleh 
+                                                            {{ peer_review_stats.distinct_reviewers }} dari 
+                                                            {{ peer_review_stats.total_participants }} teman
+                                                            {% if peer_review_stats.completed %}
+                                                                <span class="badge bg-success ms-2">Selesai</span>
+                                                            {% else %}
+                                                                <span class="badge bg-warning ms-2">Proses</span>
+                                                            {% endif %}
+                                                        </li>
+                                                        <li>
+                                                            <i class="bi bi-star-fill"></i> Rata-rata nilai: 
+                                                            {% if peer_review_stats.avg_score %}
+                                                                <strong>{{ peer_review_stats.avg_score }}</strong>/5.00
+                                                            {% else %}
+                                                                <span class="text-muted">Belum ada nilai</span>
+                                                            {% endif %}
+                                                        </li>
+                                                        <li>
+                                                            <i class="bi bi-clock"></i> Estimasi selesai: 
+                                                            {% if peer_review_stats.completed %}
+                                                                <span class="text-success">Penilaian telah selesai</span>
+                                                            {% else %}
+                                                                {% with remaining=peer_review_stats.total_participants|subtract:peer_review_stats.distinct_reviewers %}
+                                                                    {% if remaining == 1 %}
+                                                                        Menunggu 1 review terakhir
+                                                                    {% else %}
+                                                                        Menunggu {{ remaining }} review lagi
+                                                                    {% endif %}
+                                                                {% endwith %}
+                                                            {% endif %}
+                                                        </li>
+                                                    </ul>
+                                                    
+                                                    {% if peer_review_stats.completed and not submission.score %}
+                                                    <div class="alert alert-info mt-3 mb-0">
+                                                        <i class="bi bi-info-circle"></i> Nilai akhir sedang diproses oleh sistem.
+                                                        Silakan refresh halaman beberapa saat lagi.
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                        </div>
                                     </div>
-                                </div>
-                            {% endfor %}
+                                {% endfor %}
+                            </div>
                         {% endif %}
 
-                        <!-- Bagian untuk Peer Review -->
+                        <!-- Bagian Peer Review -->
                         {% if can_review and submissions %}
-                            <h4>Tinjau Jawaban Teman</h4>
-                            {% for submission in submissions %}
-                                <div class="card mb-3">
-                                    <div class="card-body">
-                                        <p><strong>Pertanyaan:</strong> {{ submission.askora.title }}</p>
-                                        <p><strong>Jawaban:</strong> {{ submission.answer_text }}</p>
-                                        {% if submission.answer_file %}
-                                            <p><a href="{{ submission.answer_file.url }}" class="btn btn-sm btn-info">Unduh File</a></p>
-                                        {% endif %}
-                                        <form method="post" 
-                                            hx-post="{% url 'learner:submit_peer_review' submission.id %}"
-                                            hx-target="#content-area"
-                                            hx-swap="innerHTML">
-                                            {% csrf_token %}
-                                            <div class="mb-3">
-                                                <label class="form-label">Skor (1-5)</label>
-                                                <select name="score" class="form-control" required>
-                                                    <option value="1">1 - Sangat Buruk</option>
-                                                    <option value="2">2 - Buruk</option>
-                                                    <option value="3">3 - Cukup</option>
-                                                    <option value="4">4 - Baik</option>
-                                                    <option value="5">5 - Sangat Baik</option>
-                                                </select>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Komentar (opsional)</label>
-                                                <textarea name="comment" class="form-control"></textarea>
-                                            </div>
-                                            <button type="submit" class="btn btn-primary">Kirim Review</button>
-                                        </form>
-                                    </div>
+                            <div id="peer-review-section" class="mt-5 border-top pt-4">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <h4><i class="bi bi-people-fill"></i> Tinjau Jawaban Teman</h4>
+                                    <span class="badge bg-info">
+                                        {{ submissions|length }} jawaban perlu direview
+                                    </span>
                                 </div>
-                            {% endfor %}
-                        {% endif %}
+                                
+                                <div class="alert alert-info">
+                                    <h5><i class="bi bi-lightbulb"></i> Panduan Review:</h5>
+                                    <ol class="mb-0">
+                                        <li>Baca jawaban dengan seksama</li>
+                                        <li>Berikan skor 1-5 (1 = sangat buruk, 5 = sangat baik)</li>
+                                        <li>Beri komentar yang membangun (opsional)</li>
+                                        <li>Review Anda akan mempengaruhi nilai teman</li>
+                                    </ol>
+                                </div>
 
-                        <!-- Bagian untuk Skor Akhir -->
-                        {% if assessment_scores %}
-                            <h4>Skor Akhir</h4>
-                            {% for score in assessment_scores %}
-                                <div class="card mb-3">
-                                    <div class="card-body">
-                                        <p><strong>Skor Akhir:</strong> {{ score.final_score }}</p>
+                                {% for submission in submissions %}
+                                    <div class="card mb-4">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                                <h5>{{ submission.askora.title }}</h5>
+                                                <small class="text-muted">
+                                                    Oleh: {{ submission.user.get_full_name|default:submission.user.username }}
+                                                </small>
+                                            </div>
+                                            
+                                            <div class="mb-4 p-3 bg-light rounded">
+                                                <p class="fw-bold mb-2">Jawaban:</p>
+                                                {{ submission.answer_text|linebreaks }}
+                                                
+                                                {% if submission.answer_file %}
+                                                <div class="mt-2">
+                                                    <a href="{{ submission.answer_file.url }}" class="btn btn-sm btn-outline-secondary">
+                                                        <i class="bi bi-download"></i> Unduh File
+                                                    </a>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                            
+                                            <form method="post" 
+                                                hx-post="{% url 'learner:submit_peer_review_new' submission.id %}"
+                                                hx-target="#content-area"
+                                                hx-swap="innerHTML">
+                                                {% csrf_token %}
+                                                
+                                                <div class="mb-3">
+                                                    <label class="form-label">
+                                                        <i class="bi bi-star-fill"></i> Berikan Nilai
+                                                    </label>
+                                                    <select name="score" class="form-select" required>
+                                                        <option value="">Pilih skor 1-5</option>
+                                                        <option value="1">1 - Sangat Buruk</option>
+                                                        <option value="2">2 - Buruk</option>
+                                                        <option value="3">3 - Cukup</option>
+                                                        <option value="4">4 - Baik</option>
+                                                        <option value="5">5 - Sangat Baik</option>
+                                                    </select>
+                                                </div>
+                                                
+                                                <div class="mb-3">
+                                                    <label class="form-label">
+                                                        <i class="bi bi-chat-left-text"></i> Komentar (opsional)
+                                                    </label>
+                                                    <textarea name="comment" class="form-control" rows="3" 
+                                                        placeholder="Berikan masukan yang membangun..."></textarea>
+                                                </div>
+                                                
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="bi bi-send"></i> Kirim Review
+                                                </button>
+                                            </form>
+                                        </div>
                                     </div>
-                                </div>
-                            {% endfor %}
+                                {% endfor %}
+                            </div>
                         {% endif %}
 
                         <!-- Bagian untuk Skor Kuis -->

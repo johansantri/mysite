@@ -18,6 +18,11 @@ from django.utils import timezone
 from django.urls import NoReverseMatch
 from django.views.decorators.csrf import csrf_protect
 from authentication.models import CustomUser, Universiti
+from django.http import JsonResponse
+from django.db.models import Count
+from django.template.defaultfilters import linebreaks
+from django.middleware.csrf import get_token
+
 from courses.models import (
     Assessment, AssessmentRead, AssessmentScore, AssessmentSession,
     AskOra, Choice, Comment, Course, CourseProgress, CourseStatusHistory,
@@ -262,12 +267,13 @@ def load_content(request, username, slug, content_type, content_id):
         'content_id': combined_content[current_index + 1][1].id
     }) if current_index < len(combined_content) - 1 else None
 
-    # ✅ Inisialisasi aman
+    # Inisialisasi variabel
     ask_oras = []
     user_submissions = Submission.objects.none()
     askora_submit_status = {}
     askora_can_submit = {}
-
+    peer_reviews = PeerReview.objects.none()
+    
     context = {
         'course': course,
         'course_name': course.course_name,
@@ -288,7 +294,7 @@ def load_content(request, username, slug, content_type, content_id):
         'next_url': next_url,
         'ask_oras': ask_oras,
         'user_submissions': user_submissions,
-        'peer_reviews': None,
+        'peer_reviews': peer_reviews,
         'assessment_scores': None,
         'can_submit': False,
         'can_review': False,
@@ -299,6 +305,7 @@ def load_content(request, username, slug, content_type, content_id):
         'show_timer': False,
         'askora_submit_status': askora_submit_status,
         'askora_can_submit': askora_can_submit,
+        'peer_review_stats': None,
     }
 
     if content_type == 'material':
@@ -312,7 +319,7 @@ def load_content(request, username, slug, content_type, content_id):
         assessment = get_object_or_404(Assessment, id=content_id)
         context['assessment'] = assessment
 
-        # ✅ Ambil AskOra & Submissions
+        # Ambil AskOra & Submissions
         ask_oras = AskOra.objects.filter(assessment=assessment)
         context['ask_oras'] = ask_oras
 
@@ -323,7 +330,7 @@ def load_content(request, username, slug, content_type, content_id):
         askora_submit_status = {askora.id: (askora.id in submitted_askora_ids) for askora in ask_oras}
         context['askora_submit_status'] = askora_submit_status
 
-        # ✅ Logika submit (misalnya deadline & apakah sudah jawab)
+        # Logika submit
         now = timezone.now()
         askora_can_submit = {
             askora.id: (
@@ -335,17 +342,47 @@ def load_content(request, username, slug, content_type, content_id):
         }
         context['askora_can_submit'] = askora_can_submit
 
-        context['submissions'] = Submission.objects.filter(
-            askora__assessment=assessment
-        ).exclude(user=request.user).exclude(
-            id__in=PeerReview.objects.filter(reviewer=request.user).values('submission__id')
-        )
+        # Logika Peer Review
+            # Perbaikan logika status review
+        if user_submissions.exists():
+            # Hitung total peserta yang sudah submit
+            total_participants = Submission.objects.filter(
+                askora__assessment=assessment
+            ).values('user').distinct().count()
+            
+            # Hitung review yang sudah diberikan ke jawaban user
+            user_reviews = PeerReview.objects.filter(
+                submission__in=user_submissions
+            ).aggregate(
+                total_reviews=Count('id'),
+                distinct_reviewers=Count('reviewer', distinct=True)
+            )
 
+            context['peer_review_stats'] = {
+                'total_reviews': user_reviews['total_reviews'] or 0,
+                'distinct_reviewers': user_reviews['distinct_reviewers'] or 0,
+                'total_participants': total_participants - 1,  # exclude current user
+                'completed': user_reviews['distinct_reviewers'] >= (total_participants - 1)
+            }
+            
+            # Hitung rata-rata nilai
+            if user_reviews['total_reviews'] > 0:
+                avg_score = PeerReview.objects.filter(
+                    submission__in=user_submissions
+                ).aggregate(avg_score=Avg('score'))['avg_score']
+                context['peer_review_stats']['avg_score'] = round(avg_score, 2)
+
+        # Logika kuis
         is_quiz = assessment.questions.exists()
         context['is_quiz'] = is_quiz
 
         if course.payment_model == 'pay_for_exam':
-            has_paid = Payment.objects.filter(user=request.user, course=course, status='completed', payment_model='pay_for_exam').exists()
+            has_paid = Payment.objects.filter(
+                user=request.user, 
+                course=course, 
+                status='completed', 
+                payment_model='pay_for_exam'
+            ).exists()
             if not has_paid:
                 context['assessment_locked'] = True
                 context['payment_required_url'] = reverse('payments:process_payment', kwargs={
@@ -365,10 +402,13 @@ def load_content(request, username, slug, content_type, content_id):
             else:
                 context['remaining_time'] = 0
             context['answered_questions'] = {
-                a.question.id: a for a in QuestionAnswer.objects.filter(user=request.user, question__assessment=assessment)
+                a.question.id: a for a in QuestionAnswer.objects.filter(
+                    user=request.user, 
+                    question__assessment=assessment
+                )
             }
 
-    # ✅ Update progres
+    # Update progress
     user_progress, _ = CourseProgress.objects.get_or_create(user=request.user, course=course)
     total_content = len(combined_content)
     if current_index + 1 > user_progress.progress_percentage / 100 * total_content:
@@ -378,8 +418,6 @@ def load_content(request, username, slug, content_type, content_id):
 
     is_htmx = request.headers.get('HX-Request') == 'true'
     return render(request, 'learner/partials/content.html' if is_htmx else 'learner/my_course.html', context)
-
-
 
 @login_required
 def start_assessment_courses(request, assessment_id):
@@ -785,72 +823,235 @@ def get_progress(request, username, slug):
 logger = logging.getLogger(__name__)
 
 @login_required
-def submit_answer_askora(request, ask_ora_id):
-    logger.debug(f"User: {request.user}, Authenticated: {request.user.is_authenticated}")
-    logger.debug(f"X-CSRFToken header: {request.META.get('HTTP_X_CSRFTOKEN', 'No X-CSRFToken')}")
-    logger.debug(f"CSRF token in POST: {request.POST.get('csrfmiddlewaretoken', 'No CSRF in POST')}")
-    logger.debug(f"CSRF cookie: {request.COOKIES.get('csrftoken', 'No CSRF cookie')}")
-    logger.debug(f"POST data: {request.POST}")
-    logger.debug(f"FILES: {request.FILES}")
-    
+def submit_answer_askora_new(request, ask_ora_id):
     ask_ora = get_object_or_404(AskOra, id=ask_ora_id)
+    assessment = ask_ora.assessment
+    
     if not ask_ora.is_responsive():
-        logger.warning(f"Batas waktu pengiriman untuk AskOra {ask_ora_id} telah berakhir")
-        return HttpResponse("Batas waktu pengiriman telah berakhir.", status=400)
+        return HttpResponse(
+            '<div class="alert alert-danger">Batas waktu pengiriman telah berakhir.</div>',
+            status=400
+        )
+        
     if Submission.objects.filter(askora=ask_ora, user=request.user).exists():
-        logger.warning(f"Pengguna {request.user.username} sudah mengirimkan jawaban untuk AskOra {ask_ora_id}")
-        return HttpResponse("Anda sudah mengirimkan jawaban.", status=400)
+        return HttpResponse(
+            '<div class="alert alert-warning">Anda sudah mengirimkan jawaban untuk pertanyaan ini.</div>',
+            status=400
+        )
 
     if request.method == 'POST':
         answer_text = request.POST.get('answer_text')
         answer_file = request.FILES.get('answer_file')
+        
         submission = Submission.objects.create(
             askora=ask_ora,
             user=request.user,
             answer_text=answer_text,
             answer_file=answer_file
         )
-        logger.info(f"Submission dibuat oleh {request.user.username} untuk AskOra {ask_ora_id}")
-        return redirect('learner:load_content', 
-                        username=request.user.username, 
-                        slug=ask_ora.assessment.course.slug, 
-                        content_type='assessment', 
-                        content_id=ask_ora.assessment.id)
+        
+        # Cek apakah ada submission lain yang bisa direview
+        can_review = Submission.objects.filter(
+            askora__assessment=assessment
+        ).exclude(user=request.user).exists()
+        
+        response_html = f"""
+        <div class="alert alert-success">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle-fill fs-3 me-3"></i>
+                <div>
+                    <h5 class="mb-1">Jawaban Berhasil Dikirim!</h5>
+                    <p class="mb-0">Terima kasih telah mengirimkan jawaban Anda.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card border-success mb-4">
+            <div class="card-header bg-success text-white">
+                <i class="bi bi-info-circle"></i> Langkah Selanjutnya
+            </div>
+            <div class="card-body">
+                { 
+                    f'<p>✅ <strong>Sekarang Anda bisa meninjau jawaban teman-teman Anda.</strong></p><a href="#peer-review-section" class="btn btn-success">Lihat Jawaban Teman</a>' 
+                    if can_review 
+                    else '<p>⏳ Nilai akan muncul setelah jawaban Anda direview oleh teman-teman dan instruktur.</p>' 
+                }
+                <hr>
+                <p class="small text-muted mb-0"><i class="bi bi-clock-history"></i> Jawaban dikirim pada {timezone.now().strftime("%d %B %Y %H:%M")}</p>
+            </div>
+        </div>
+        
+        <!-- Tampilkan jawaban user -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Jawaban Anda</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Pertanyaan:</strong> {ask_ora.title}</p>
+                <div class="bg-light p-3 rounded mb-3">
+                    {submission.answer_text|linebreaks}
+                </div>
+                { f'<p><a href="{submission.answer_file.url}" class="btn btn-sm btn-primary"><i class="bi bi-download"></i> Unduh File Lampiran</a></p>' if submission.answer_file else '' }
+            </div>
+        </div>
+        """
+        
+        if can_review:
+            submissions_to_review = Submission.objects.filter(
+                askora__assessment=assessment
+            ).exclude(user=request.user).select_related('user', 'askora')
+            
+            response_html += """
+            <div id="peer-review-section" class="mt-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4><i class="bi bi-people-fill"></i> Tinjau Jawaban Teman</h4>
+                    <span class="badge bg-primary">""" + str(submissions_to_review.count()) + """ jawaban</span>
+                </div>
+                
+                <div class="alert alert-info">
+                    <h5><i class="bi bi-lightbulb"></i> Panduan Review:</h5>
+                    <ol class="mb-0">
+                        <li>Baca jawaban dengan seksama</li>
+                        <li>Berikan skor 1-5 (1 = sangat buruk, 5 = sangat baik)</li>
+                        <li>Beri komentar yang membangun (opsional)</li>
+                        <li>Review Anda akan mempengaruhi nilai teman</li>
+                    </ol>
+                </div>
+            """
+            
+            for sub in submissions_to_review:
+                response_html += f"""
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <h5>{sub.askora.title}</h5>
+                            <small class="text-muted">Oleh: {sub.user.get_full_name or sub.user.username}</small>
+                        </div>
+                        
+                        <div class="bg-light p-3 rounded my-3">
+                            {sub.answer_text|linebreaks}
+                        </div>
+                        
+                        { f'<p><a href="{sub.answer_file.url}" class="btn btn-sm btn-outline-secondary mb-3"><i class="bi bi-download"></i> Unduh File</a></p>' if sub.answer_file else '' }
+                        
+                        <form method="post" 
+                            hx-post="{reverse('learner:submit_peer_review_new', args=[sub.id])}"
+                            hx-target="#content-area"
+                            hx-swap="innerHTML">
+                            <input type="hidden" name="csrfmiddlewaretoken" value="{csrf_token}">
+                            
+                            <div class="mb-3">
+                                <label class="form-label"><i class="bi bi-star-fill"></i> Berikan Nilai (1-5)</label>
+                                <select name="score" class="form-select" required>
+                                    <option value="">Pilih nilai...</option>
+                                    <option value="1">1 - Sangat Buruk</option>
+                                    <option value="2">2 - Buruk</option>
+                                    <option value="3">3 - Cukup</option>
+                                    <option value="4">4 - Baik</option>
+                                    <option value="5">5 - Sangat Baik</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label"><i class="bi bi-chat-left-text"></i> Komentar (opsional)</label>
+                                <textarea name="comment" class="form-control" rows="3" placeholder="Berikan masukan yang membangun..."></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-send"></i> Kirim Review
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                """
+            
+            response_html += "</div>"  # Close peer-review-section
+        
+        response_html += """
+        <script>
+            // Scroll ke bagian review jika ada
+            if (document.getElementById('peer-review-section')) {
+                document.getElementById('peer-review-section').scrollIntoView({ behavior: 'smooth' });
+            }
+        </script>
+        """
+        
+        return HttpResponse(response_html)
     
-    return HttpResponse("Metode request tidak valid.", status=400)
+    return HttpResponse(
+        '<div class="alert alert-danger">Metode request tidak valid.</div>',
+        status=400
+    )
 
 
 @login_required
-def submit_peer_review(request, submission_id):
+def submit_peer_review_new(request, submission_id):
     submission = get_object_or_404(Submission, id=submission_id)
+    
+    # Cek apakah sudah mereview
     if PeerReview.objects.filter(submission=submission, reviewer=request.user).exists():
-        logger.warning(f"Pengguna {request.user.username} sudah mereview submission {submission_id}")
-        return HttpResponse("Anda sudah memberikan review untuk submission ini.", status=400)
-
+        return HttpResponse(
+            '<div class="alert alert-warning">Anda sudah memberikan review untuk jawaban ini.</div>',
+            status=400
+        )
+    
     if request.method == 'POST':
-        score = request.POST.get('score')
-        comment = request.POST.get('comment')
         try:
-            peer_review = PeerReview.objects.create(
+            score = int(request.POST.get('score'))
+            if not 1 <= score <= 5:
+                raise ValueError("Nilai harus antara 1-5")
+                
+            comment = request.POST.get('comment', '').strip()
+            
+            # Buat review
+            PeerReview.objects.create(
                 submission=submission,
                 reviewer=request.user,
-                score=int(score),
-                comment=comment or None
+                score=score,
+                comment=comment if comment else None
             )
-            logger.info(f"Peer review dibuat oleh {request.user.username} untuk submission {submission_id}")
-            # Hitung ulang skor akhir
-            assessment_score, created = AssessmentScore.objects.get_or_create(submission=submission)
+            
+            # Update skor
+            assessment_score, _ = AssessmentScore.objects.get_or_create(
+                submission=submission
+            )
             assessment_score.calculate_final_score()
-            return redirect('learner:load_content', 
-                            username=request.user.username, 
-                            slug=submission.askora.assessment.course.slug, 
-                            content_type='assessment', 
-                            content_id=submission.askora.assessment.id)
-        except ValueError:
-            logger.error(f"Skor tidak valid untuk peer review oleh {request.user.username}")
-            return HttpResponse("Skor tidak valid.", status=400)
+            
+            # Response sukses
+            return HttpResponse(f"""
+                <div class="alert alert-success">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-check-circle-fill fs-3 me-3"></i>
+                        <div>
+                            <h5 class="mb-1">Review Berhasil Dikirim!</h5>
+                            <p class="mb-0">Terima kasih telah memberikan penilaian.</p>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    htmx.ajax('GET', '{reverse("learner:load_content", kwargs={
+                        "username": request.user.username,
+                        "slug": submission.askora.assessment.course.slug,
+                        "content_type": "assessment",
+                        "content_id": submission.askora.assessment.id
+                    })}', {{
+                        target: "#content-area",
+                        swap: "innerHTML",
+                        headers: {{"HX-Trigger": "contentLoaded"}}
+                    }});
+                </script>
+            """)
+            
+        except (ValueError, TypeError):
+            return HttpResponse(
+                '<div class="alert alert-danger">Nilai harus berupa angka antara 1-5.</div>',
+                status=400
+            )
     
-    return HttpResponse("Metode request tidak valid.", status=400)
+    return HttpResponse(
+        '<div class="alert alert-danger">Metode request tidak valid.</div>',
+        status=400
+    )
 
 
 def learner_detail(request, username):
