@@ -85,20 +85,16 @@
                                         <h5>{{ ask_ora.title }}</h5>
                                         <p>{{ ask_ora.question_text|safe }}</p>
                                         <p>Batas Waktu: {{ ask_ora.response_deadline }}</p>
-                                        {% if can_submit and ask_ora.is_responsive %}
+                                        {% if askora_can_submit|dict_get:ask_ora.id %}
                                             <form method="post" 
-                                                  hx-post="{% url 'learner:submit_answer_askora' ask_ora.id %}"
-                                                  hx-target="#content-area"
-                                                  hx-swap="innerHTML"
-                                                  enctype="multipart/form-data">
+                                                hx-post="{% url 'learner:submit_answer_askora' ask_ora.id %}"
+                                                hx-target="#content-area"
+                                                hx-swap="innerHTML"
+                                                hx-on::after-request="document.body.dispatchEvent(new Event('contentLoaded')); this.reset()">
                                                 {% csrf_token %}
                                                 <div class="mb-3">
-                                                    <label class="form-label">Jawaban</label>
-                                                    <textarea name="answer_text" class="form-control" required></textarea>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Unggah File (opsional)</label>
-                                                    <input type="file" name="answer_file" class="form-control">
+                                                    <label for="answer_text" class="form-label">Jawaban</label>
+                                                    <textarea name="answer_text" id="answer_text" class="form-control" required></textarea>
                                                 </div>
                                                 <button type="submit" class="btn btn-primary">Kirim Jawaban</button>
                                             </form>

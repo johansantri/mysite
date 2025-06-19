@@ -22,3 +22,8 @@ def get_question_answer(dictionary, question_id):
 @register.filter
 def dict_get(dictionary, key):
     return dictionary.get(key)
+
+
+@register.filter
+def dict_get(d, key):
+    return d.get(key)

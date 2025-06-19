@@ -16,7 +16,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.urls import NoReverseMatch
-
+from django.views.decorators.csrf import csrf_protect
 from authentication.models import CustomUser, Universiti
 from courses.models import (
     Assessment, AssessmentRead, AssessmentScore, AssessmentSession,
@@ -229,7 +229,6 @@ def my_course(request, username, slug):
     logger.info(f"my_course: Rendering for user {username}, course {slug}, assessment_id={assessment_id}")
     return render(request, 'learner/my_course.html', context)
 
-
 @login_required
 def load_content(request, username, slug, content_type, content_id):
     if request.user.username != username:
@@ -241,7 +240,6 @@ def load_content(request, username, slug, content_type, content_id):
 
     sections = Section.objects.filter(courses=course).prefetch_related('materials', 'assessments').order_by('order')
 
-    # Kombinasi materi dan assessment
     combined_content = []
     for section in sections:
         for m in section.materials.all():
@@ -264,7 +262,12 @@ def load_content(request, username, slug, content_type, content_id):
         'content_id': combined_content[current_index + 1][1].id
     }) if current_index < len(combined_content) - 1 else None
 
-    # Inisialisasi context
+    # ✅ Inisialisasi aman
+    ask_oras = []
+    user_submissions = Submission.objects.none()
+    askora_submit_status = {}
+    askora_can_submit = {}
+
     context = {
         'course': course,
         'course_name': course.course_name,
@@ -283,8 +286,8 @@ def load_content(request, username, slug, content_type, content_id):
         'answered_questions': {},
         'previous_url': previous_url,
         'next_url': next_url,
-        'ask_oras': None,
-        'user_submissions': None,
+        'ask_oras': ask_oras,
+        'user_submissions': user_submissions,
         'peer_reviews': None,
         'assessment_scores': None,
         'can_submit': False,
@@ -294,9 +297,10 @@ def load_content(request, username, slug, content_type, content_id):
         'submissions': [],
         'is_quiz': False,
         'show_timer': False,
+        'askora_submit_status': askora_submit_status,
+        'askora_can_submit': askora_can_submit,
     }
 
-    # Logic untuk konten material
     if content_type == 'material':
         material = get_object_or_404(Material, id=content_id)
         context['material'] = material
@@ -304,16 +308,39 @@ def load_content(request, username, slug, content_type, content_id):
         if not MaterialRead.objects.filter(user=request.user, material=material).exists():
             MaterialRead.objects.create(user=request.user, material=material)
 
-    # Logic untuk assessment (quiz atau AskOra)
     elif content_type == 'assessment':
         assessment = get_object_or_404(Assessment, id=content_id)
         context['assessment'] = assessment
-        context['ask_oras'] = AskOra.objects.filter(assessment=assessment)
-        context['user_submissions'] = Submission.objects.filter(askora__assessment=assessment, user=request.user)
-        context['submissions'] = Submission.objects.filter(askora__assessment=assessment).exclude(user=request.user).exclude(
-            id__in=PeerReview.objects.filter(reviewer=request.user).values('submission__id'))
 
-        # Cek apakah ini quiz (punya pertanyaan)
+        # ✅ Ambil AskOra & Submissions
+        ask_oras = AskOra.objects.filter(assessment=assessment)
+        context['ask_oras'] = ask_oras
+
+        user_submissions = Submission.objects.filter(askora__assessment=assessment, user=request.user)
+        context['user_submissions'] = user_submissions
+
+        submitted_askora_ids = set(user_submissions.values_list('askora_id', flat=True))
+        askora_submit_status = {askora.id: (askora.id in submitted_askora_ids) for askora in ask_oras}
+        context['askora_submit_status'] = askora_submit_status
+
+        # ✅ Logika submit (misalnya deadline & apakah sudah jawab)
+        now = timezone.now()
+        askora_can_submit = {
+            askora.id: (
+                askora.id not in submitted_askora_ids and
+                askora.is_responsive and
+                (askora.response_deadline is None or askora.response_deadline > now)
+            )
+            for askora in ask_oras
+        }
+        context['askora_can_submit'] = askora_can_submit
+
+        context['submissions'] = Submission.objects.filter(
+            askora__assessment=assessment
+        ).exclude(user=request.user).exclude(
+            id__in=PeerReview.objects.filter(reviewer=request.user).values('submission__id')
+        )
+
         is_quiz = assessment.questions.exists()
         context['is_quiz'] = is_quiz
 
@@ -341,7 +368,7 @@ def load_content(request, username, slug, content_type, content_id):
                 a.question.id: a for a in QuestionAnswer.objects.filter(user=request.user, question__assessment=assessment)
             }
 
-    # Hitung progress
+    # ✅ Update progres
     user_progress, _ = CourseProgress.objects.get_or_create(user=request.user, course=course)
     total_content = len(combined_content)
     if current_index + 1 > user_progress.progress_percentage / 100 * total_content:
@@ -351,6 +378,8 @@ def load_content(request, username, slug, content_type, content_id):
 
     is_htmx = request.headers.get('HX-Request') == 'true'
     return render(request, 'learner/partials/content.html' if is_htmx else 'learner/my_course.html', context)
+
+
 
 @login_required
 def start_assessment_courses(request, assessment_id):
@@ -753,8 +782,17 @@ def get_progress(request, username, slug):
     return render(request, 'learner/partials/progress.html', {'course_progress': user_progress.progress_percentage})
 
 
+logger = logging.getLogger(__name__)
+
 @login_required
 def submit_answer_askora(request, ask_ora_id):
+    logger.debug(f"User: {request.user}, Authenticated: {request.user.is_authenticated}")
+    logger.debug(f"X-CSRFToken header: {request.META.get('HTTP_X_CSRFTOKEN', 'No X-CSRFToken')}")
+    logger.debug(f"CSRF token in POST: {request.POST.get('csrfmiddlewaretoken', 'No CSRF in POST')}")
+    logger.debug(f"CSRF cookie: {request.COOKIES.get('csrftoken', 'No CSRF cookie')}")
+    logger.debug(f"POST data: {request.POST}")
+    logger.debug(f"FILES: {request.FILES}")
+    
     ask_ora = get_object_or_404(AskOra, id=ask_ora_id)
     if not ask_ora.is_responsive():
         logger.warning(f"Batas waktu pengiriman untuk AskOra {ask_ora_id} telah berakhir")
@@ -780,6 +818,7 @@ def submit_answer_askora(request, ask_ora_id):
                         content_id=ask_ora.assessment.id)
     
     return HttpResponse("Metode request tidak valid.", status=400)
+
 
 @login_required
 def submit_peer_review(request, submission_id):

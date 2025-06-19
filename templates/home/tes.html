@@ -1058,13 +1058,16 @@
     </script>
     <!-- script CSRF berikutnya -->
     <script>
-    document.body.addEventListener('htmx:configRequest', function(evt) {
-        const token = document.querySelector('meta[name="csrf-token"]')?.content;
-        if (token) {
-            evt.detail.headers['X-CSRFToken'] = token;
-        }
-    });
-    </script>
+        document.body.addEventListener('htmx:configRequest', function(evt) {
+            const token = document.querySelector('meta[name="csrf-token"]')?.content;
+            if (token) {
+                evt.detail.headers['X-CSRFToken'] = token;
+            }
+        });
+
+
+        </script>
+
  <!-- add partner -->
     <script>
     
