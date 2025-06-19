@@ -23,7 +23,7 @@ from courses.models import (
     AskOra, Choice, Comment, Course, CourseProgress, CourseStatusHistory,
     Enrollment, GradeRange, Instructor, LTIExternalTool, Material,
     MaterialRead, Payment, PeerReview, Question, QuestionAnswer, 
-    Score, Section, Submission, UserActivityLog, CommentReaction
+    Score, Section, Submission, UserActivityLog, CommentReaction,AttemptedQuestion
 )
 
 
@@ -197,6 +197,13 @@ def my_course(request, username, slug):
         user_progress.progress_percentage = (current_index + 1) / total_content * 100
         user_progress.save()
 
+    submissions = Submission.objects.filter(
+        askora__assessment=assessment
+    ).exclude(
+        user=request.user
+    ).exclude(
+        id__in=PeerReview.objects.filter(reviewer=request.user).values('submission__id')
+    )
     context = {
         'course': course,
         'course_name': course.course_name,
@@ -216,33 +223,25 @@ def my_course(request, username, slug):
         'course_progress': user_progress.progress_percentage,
         'previous_url': previous_url,
         'next_url': next_url,
+        'submissions': submissions,
     }
 
     logger.info(f"my_course: Rendering for user {username}, course {slug}, assessment_id={assessment_id}")
     return render(request, 'learner/my_course.html', context)
+
+
 @login_required
 def load_content(request, username, slug, content_type, content_id):
     if request.user.username != username:
-        logger.warning(f"Unauthorized access attempt by {request.user.username} for {username}")
         return HttpResponse(status=403)
 
     course = get_object_or_404(Course, slug=slug)
     if not Enrollment.objects.filter(user=request.user, course=course).exists():
-        logger.warning(f"User {request.user.username} not enrolled in course {slug}")
         return HttpResponse(status=403)
 
     sections = Section.objects.filter(courses=course).prefetch_related('materials', 'assessments').order_by('order')
-    current_content = None
-    material = None
-    assessment = None
-    comments = None
-    assessment_locked = False
-    payment_required_url = None
-    is_started = False
-    is_expired = False
-    remaining_time = 0
-    answered_questions = {}
 
+    # Kombinasi materi dan assessment
     combined_content = []
     for section in sections:
         for m in section.materials.all():
@@ -250,68 +249,22 @@ def load_content(request, username, slug, content_type, content_id):
         for a in section.assessments.all():
             combined_content.append(('assessment', a, section))
 
-    total_content = len(combined_content)
     current_index = next((i for i, c in enumerate(combined_content) if c[0] == content_type and c[1].id == int(content_id)), 0)
+    current_content = combined_content[current_index] if combined_content else None
+
     previous_url = reverse('learner:load_content', kwargs={
         'username': username, 'slug': slug,
         'content_type': combined_content[current_index - 1][0],
         'content_id': combined_content[current_index - 1][1].id
     }) if current_index > 0 else None
+
     next_url = reverse('learner:load_content', kwargs={
         'username': username, 'slug': slug,
         'content_type': combined_content[current_index + 1][0],
         'content_id': combined_content[current_index + 1][1].id
     }) if current_index < len(combined_content) - 1 else None
 
-    if content_type == 'material':
-        material = get_object_or_404(Material, id=content_id)
-        current_content = ('material', material, next((s for s in sections if material in s.materials.all()), None))
-        comments = Comment.objects.filter(material=material, parent=None).order_by('-created_at')
-        if not MaterialRead.objects.filter(user=request.user, material=material).exists():
-            MaterialRead.objects.create(user=request.user, material=material)
-    elif content_type == 'assessment':
-        assessment = get_object_or_404(Assessment, id=content_id)
-        current_content = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
-        if course.payment_model == 'pay_for_exam':
-            payment = Payment.objects.filter(
-                user=request.user, course=course, status='completed', payment_model='pay_for_exam'
-            ).first()
-            if not payment:
-                assessment_locked = True
-                payment_required_url = reverse('payments:process_payment', kwargs={'course_id': course.id, 'payment_type': 'exam'})
-                logger.info(f"Payment required for assessment {content_id} in course {course.id} for user {request.user.username}")
-            else:
-                if not AssessmentRead.objects.filter(user=request.user, assessment=assessment).exists():
-                    AssessmentRead.objects.create(user=request.user, assessment=assessment)
-        else:
-            if not AssessmentRead.objects.filter(user=request.user, assessment=assessment).exists():
-                AssessmentRead.objects.create(user=request.user, assessment=assessment)
-        session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
-        if session:
-            is_started = True
-            if session.end_time:
-                remaining_time = max(0, (session.end_time - timezone.now()).total_seconds())
-                is_expired = remaining_time <= 0
-            else:
-                remaining_time = 0  # No timer for duration_in_minutes == 0
-            logger.debug(f"load_content: Assessment session user={request.user.username}, assessment={content_id}, start_time={session.start_time}, end_time={session.end_time}, remaining_time={remaining_time} sec, is_expired={is_expired}")
-            answered_questions = {
-                answer.question.id: answer
-                for answer in QuestionAnswer.objects.filter(user=request.user, question__assessment=assessment).select_related('question', 'choice')
-            }
-        else:
-            if assessment.duration_in_minutes == 0:
-                is_started = True
-                remaining_time = 0
-            else:
-                is_started = False
-
-    # Update progres
-    user_progress, created = CourseProgress.objects.get_or_create(user=request.user, course=course)
-    if current_content and (current_index + 1) > user_progress.progress_percentage / 100 * total_content:
-        user_progress.progress_percentage = (current_index + 1) / total_content * 100
-        user_progress.save()
-
+    # Inisialisasi context
     context = {
         'course': course,
         'course_name': course.course_name,
@@ -319,26 +272,85 @@ def load_content(request, username, slug, content_type, content_id):
         'slug': slug,
         'sections': sections,
         'current_content': current_content,
-        'material': material,
-        'assessment': assessment,
-        'comments': comments,
-        'assessment_locked': assessment_locked,
-        'payment_required_url': payment_required_url,
-        'is_started': is_started,
-        'is_expired': is_expired,
-        'remaining_time': int(remaining_time),
-        'answered_questions': answered_questions,
-        'course_progress': user_progress.progress_percentage,
+        'material': None,
+        'assessment': None,
+        'comments': None,
+        'assessment_locked': False,
+        'payment_required_url': None,
+        'is_started': False,
+        'is_expired': False,
+        'remaining_time': 0,
+        'answered_questions': {},
         'previous_url': previous_url,
         'next_url': next_url,
+        'ask_oras': None,
+        'user_submissions': None,
+        'peer_reviews': None,
+        'assessment_scores': None,
+        'can_submit': False,
+        'can_review': False,
+        'course_scores': None,
+        'attempted_questions': None,
+        'submissions': [],
+        'is_quiz': False,
+        'show_timer': False,
     }
 
-    is_htmx = request.headers.get('HX-Request') == 'true'
-    logger.info(f"load_content: Rendering for {request.path}, Content_type={content_type}, Content_id={content_id}, Comments={comments.count() if comments else 0}, is_htmx={is_htmx}, is_started={is_started}, remaining_time={remaining_time}")
-    if is_htmx:
-        return render(request, 'learner/partials/content.html', context)
-    return render(request, 'learner/my_course.html', context)
+    # Logic untuk konten material
+    if content_type == 'material':
+        material = get_object_or_404(Material, id=content_id)
+        context['material'] = material
+        context['comments'] = Comment.objects.filter(material=material, parent=None).order_by('-created_at')
+        if not MaterialRead.objects.filter(user=request.user, material=material).exists():
+            MaterialRead.objects.create(user=request.user, material=material)
 
+    # Logic untuk assessment (quiz atau AskOra)
+    elif content_type == 'assessment':
+        assessment = get_object_or_404(Assessment, id=content_id)
+        context['assessment'] = assessment
+        context['ask_oras'] = AskOra.objects.filter(assessment=assessment)
+        context['user_submissions'] = Submission.objects.filter(askora__assessment=assessment, user=request.user)
+        context['submissions'] = Submission.objects.filter(askora__assessment=assessment).exclude(user=request.user).exclude(
+            id__in=PeerReview.objects.filter(reviewer=request.user).values('submission__id'))
+
+        # Cek apakah ini quiz (punya pertanyaan)
+        is_quiz = assessment.questions.exists()
+        context['is_quiz'] = is_quiz
+
+        if course.payment_model == 'pay_for_exam':
+            has_paid = Payment.objects.filter(user=request.user, course=course, status='completed', payment_model='pay_for_exam').exists()
+            if not has_paid:
+                context['assessment_locked'] = True
+                context['payment_required_url'] = reverse('payments:process_payment', kwargs={
+                    'course_id': course.id, 'payment_type': 'exam'})
+        else:
+            AssessmentRead.objects.get_or_create(user=request.user, assessment=assessment)
+
+        if is_quiz:
+            session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
+            if session:
+                context['is_started'] = True
+                if session.end_time:
+                    time_left = (session.end_time - timezone.now()).total_seconds()
+                    context['remaining_time'] = max(0, int(time_left))
+                    context['is_expired'] = time_left <= 0
+                    context['show_timer'] = time_left > 0
+            else:
+                context['remaining_time'] = 0
+            context['answered_questions'] = {
+                a.question.id: a for a in QuestionAnswer.objects.filter(user=request.user, question__assessment=assessment)
+            }
+
+    # Hitung progress
+    user_progress, _ = CourseProgress.objects.get_or_create(user=request.user, course=course)
+    total_content = len(combined_content)
+    if current_index + 1 > user_progress.progress_percentage / 100 * total_content:
+        user_progress.progress_percentage = ((current_index + 1) / total_content) * 100
+        user_progress.save()
+    context['course_progress'] = user_progress.progress_percentage
+
+    is_htmx = request.headers.get('HX-Request') == 'true'
+    return render(request, 'learner/partials/content.html' if is_htmx else 'learner/my_course.html', context)
 
 @login_required
 def start_assessment_courses(request, assessment_id):
@@ -739,6 +751,67 @@ def get_progress(request, username, slug):
     course = get_object_or_404(Course, slug=slug)
     user_progress, _ = CourseProgress.objects.get_or_create(user=request.user, course=course)
     return render(request, 'learner/partials/progress.html', {'course_progress': user_progress.progress_percentage})
+
+
+@login_required
+def submit_answer_askora(request, ask_ora_id):
+    ask_ora = get_object_or_404(AskOra, id=ask_ora_id)
+    if not ask_ora.is_responsive():
+        logger.warning(f"Batas waktu pengiriman untuk AskOra {ask_ora_id} telah berakhir")
+        return HttpResponse("Batas waktu pengiriman telah berakhir.", status=400)
+    if Submission.objects.filter(askora=ask_ora, user=request.user).exists():
+        logger.warning(f"Pengguna {request.user.username} sudah mengirimkan jawaban untuk AskOra {ask_ora_id}")
+        return HttpResponse("Anda sudah mengirimkan jawaban.", status=400)
+
+    if request.method == 'POST':
+        answer_text = request.POST.get('answer_text')
+        answer_file = request.FILES.get('answer_file')
+        submission = Submission.objects.create(
+            askora=ask_ora,
+            user=request.user,
+            answer_text=answer_text,
+            answer_file=answer_file
+        )
+        logger.info(f"Submission dibuat oleh {request.user.username} untuk AskOra {ask_ora_id}")
+        return redirect('learner:load_content', 
+                        username=request.user.username, 
+                        slug=ask_ora.assessment.course.slug, 
+                        content_type='assessment', 
+                        content_id=ask_ora.assessment.id)
+    
+    return HttpResponse("Metode request tidak valid.", status=400)
+
+@login_required
+def submit_peer_review(request, submission_id):
+    submission = get_object_or_404(Submission, id=submission_id)
+    if PeerReview.objects.filter(submission=submission, reviewer=request.user).exists():
+        logger.warning(f"Pengguna {request.user.username} sudah mereview submission {submission_id}")
+        return HttpResponse("Anda sudah memberikan review untuk submission ini.", status=400)
+
+    if request.method == 'POST':
+        score = request.POST.get('score')
+        comment = request.POST.get('comment')
+        try:
+            peer_review = PeerReview.objects.create(
+                submission=submission,
+                reviewer=request.user,
+                score=int(score),
+                comment=comment or None
+            )
+            logger.info(f"Peer review dibuat oleh {request.user.username} untuk submission {submission_id}")
+            # Hitung ulang skor akhir
+            assessment_score, created = AssessmentScore.objects.get_or_create(submission=submission)
+            assessment_score.calculate_final_score()
+            return redirect('learner:load_content', 
+                            username=request.user.username, 
+                            slug=submission.askora.assessment.course.slug, 
+                            content_type='assessment', 
+                            content_id=submission.askora.assessment.id)
+        except ValueError:
+            logger.error(f"Skor tidak valid untuk peer review oleh {request.user.username}")
+            return HttpResponse("Skor tidak valid.", status=400)
+    
+    return HttpResponse("Metode request tidak valid.", status=400)
 
 
 def learner_detail(request, username):

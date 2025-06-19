@@ -14,6 +14,8 @@ urlpatterns = [
     path('submit-answer/', views.submit_answer, name='submit_answer'),
     path('add-comment/', views.add_comment, name='add_comment'),
     path('<str:username>/<str:slug>/progress/', views.get_progress, name='get_progress'),
+    path('submit-answer-askora/<int:ask_ora_id>/', views.submit_answer_askora, name='submit_answer_askora'),
+    path('submit-peer-review/<int:submission_id>/', views.submit_peer_review, name='submit_peer_review'),
     
    
    
