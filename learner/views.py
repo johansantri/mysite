@@ -93,6 +93,20 @@ def _build_assessment_context(assessment, user):
     submitted_askora_ids = set(user_submissions.values_list('askora_id', flat=True))
     now = timezone.now()
     
+    # Tentukan apakah pengguna bisa melakukan peer review
+    can_review = Submission.objects.filter(askora__assessment=assessment).exclude(user=user).exists()
+    
+    # Gunakan logika submissions yang konsisten
+    submissions = Submission.objects.filter(
+        askora__assessment=assessment
+    ).exclude(user=user)  # Selaraskan dengan submit_answer_askora_new
+    # Alternatif: Jika hanya submisi yang belum direview yang diinginkan
+    # submissions = Submission.objects.filter(
+    #     askora__assessment=assessment
+    # ).exclude(user=user).exclude(
+    #     id__in=PeerReview.objects.filter(reviewer=user).values('submission__id')
+    # )
+
     context = {
         'ask_oras': ask_oras,
         'user_submissions': user_submissions,
@@ -104,15 +118,10 @@ def _build_assessment_context(assessment, user):
                 (askora.response_deadline is None or askora.response_deadline > now)
             ) for askora in ask_oras
         },
-        'peer_review_stats': None,
-        'submissions': Submission.objects.filter(
-            askora__assessment=assessment
-        ).exclude(
-            user=user
-        ).exclude(
-            id__in=PeerReview.objects.filter(reviewer=user).values('submission__id')
-        ),
+        'can_review': can_review,
+        'submissions': submissions,
         'is_quiz': assessment.questions.exists(),
+        'peer_review_stats': None,
     }
     
     if user_submissions.exists():
@@ -1040,54 +1049,187 @@ def submit_answer_askora_new(request, ask_ora_id):
 
 @login_required
 def submit_peer_review_new(request, submission_id):
+    """
+    Menyimpan peer review untuk submisi tertentu dan merender ulang halaman assessment.
+    
+    Args:
+        request: Objek HTTP request.
+        submission_id: ID submisi yang akan direview.
+    
+    Returns:
+        HttpResponse: Render ulang template content.html atau pesan error.
+    """
     submission = get_object_or_404(Submission, id=submission_id)
+    assessment = submission.askora.assessment
+    course = assessment.section.courses  # Menggunakan courses, bukan course
 
     if request.method != 'POST':
-        logger.warning("Metode tidak valid.")
+        logger.warning(f"Metode tidak valid untuk submit_peer_review_new oleh {request.user.username}")
         return HttpResponse('<div class="alert alert-danger">Metode request tidak valid.</div>', status=400)
 
-    print("POST data:", request.POST)
+    logger.debug(f"POST data untuk review submission {submission_id}: {request.POST}")
 
     if PeerReview.objects.filter(reviewer=request.user).count() >= 5:
-        return HttpResponse(
-            '<div class="alert alert-warning">Anda telah memberikan jumlah review maksimal yang diperbolehkan.</div>',
-            status=400
-        )
+        logger.warning(f"Pengguna {request.user.username} telah mencapai batas maksimum 5 review")
+        messages.warning(request, "Anda telah memberikan jumlah review maksimal yang diperbolehkan.")
+        return render_content(request, assessment, course)
+
     if PeerReview.objects.filter(submission=submission, reviewer=request.user).exists():
-        return HttpResponse('<div class="alert alert-warning">Anda sudah mereview.</div>', status=400)
+        logger.warning(f"Pengguna {request.user.username} mencoba mereview ulang submission {submission_id}")
+        messages.warning(request, "Anda sudah mereview submisi ini.")
+        return render_content(request, assessment, course)
 
     try:
         score_raw = request.POST.get('score')
-        print("Score value:", score_raw)
+        logger.debug(f"Nilai review untuk submission {submission_id}: {score_raw}")
         score = int(score_raw)
 
         if not 1 <= score <= 5:
-            raise ValueError("Nilai harus antara 1-5")
+            raise ValueError("Nilai harus antara 1 hingga 5")
 
         comment = request.POST.get('comment', '').strip()
 
-        if PeerReview.objects.filter(submission=submission, reviewer=request.user).exists():
-            logger.warning(f"Duplicate review by {request.user}")
-            return HttpResponse('<div class="alert alert-warning">Anda sudah mereview.</div>', status=400)
-
-        PeerReview.objects.create(
+        # Buat objek PeerReview
+        peer_review = PeerReview.objects.create(
             submission=submission,
             reviewer=request.user,
             score=score,
             comment=comment or None
         )
+        logger.info(f"Peer review berhasil dibuat untuk submission {submission_id} oleh {request.user.username}")
 
+        # Hitung skor final
         assessment_score, _ = AssessmentScore.objects.get_or_create(submission=submission)
         assessment_score.calculate_final_score()
+        logger.debug(f"Skor final dihitung untuk submission {submission_id}")
 
-        return HttpResponse("""<div class="alert alert-success">Review berhasil dikirim.</div>""")
+        # Tambahkan pesan sukses
+        messages.success(request, "Review berhasil dikirim!")
+
+        # Render ulang halaman assessment
+        return render_content(request, assessment, course)
 
     except Exception as e:
-        logger.exception("Gagal menyimpan review.")
-        return HttpResponse(
-            f'<div class="alert alert-danger">Error: {str(e)}</div>',
-            status=400
+        logger.exception(f"Gagal menyimpan review untuk submission {submission_id} oleh {request.user.username}: {str(e)}")
+        messages.error(request, f"Error: {str(e)}")
+        return render_content(request, assessment, course)
+
+def render_content(request, assessment, course):
+    """
+    Helper function untuk merender ulang template content.html dengan konteks lengkap.
+    
+    Args:
+        request: Objek HTTP request.
+        assessment: Objek Assessment.
+        course: Objek Course.
+    
+    Returns:
+        HttpResponse: Render template content.html.
+    """
+    sections = Section.objects.filter(courses=course).prefetch_related(
+        Prefetch('materials', queryset=Material.objects.all()),
+        Prefetch('assessments', queryset=Assessment.objects.all())
+    ).order_by('order')
+
+    # Bangun combined_content untuk navigasi
+    combined_content = []
+    for section in sections:
+        for material in section.materials.all():
+            combined_content.append(('material', material))
+        for assessment_item in section.assessments.all():
+            combined_content.append(('assessment', assessment_item))
+    current_index = next((i for i, c in enumerate(combined_content) if c[0] == 'assessment' and c[1].id == assessment.id), 0)
+
+    # Bangun konteks
+    context = {
+        'course': course,
+        'course_name': course.course_name,
+        'username': request.user.username,
+        'slug': course.slug,
+        'sections': sections,
+        'current_content': ('assessment', assessment, assessment.section),
+        'material': None,
+        'assessment': assessment,
+        'comments': None,
+        'assessment_locked': False,
+        'payment_required_url': None,
+        'is_started': False,
+        'is_expired': False,
+        'remaining_time': 0,
+        'answered_questions': {},
+        'course_progress': CourseProgress.objects.get_or_create(user=request.user, course=course)[0].progress_percentage,
+        'previous_url': None,
+        'next_url': None,
+        'ask_oras': assessment.ask_oras.all(),
+        'user_submissions': Submission.objects.filter(askora__assessment=assessment, user=request.user),
+        'askora_submit_status': {
+            ao.id: Submission.objects.filter(askora=ao, user=request.user).exists()
+            for ao in assessment.ask_oras.all()
+        },
+        'askora_can_submit': {
+            ao.id: (
+                not Submission.objects.filter(askora=ao, user=request.user).exists() and
+                ao.is_responsive and
+                (ao.response_deadline is None or ao.response_deadline > timezone.now())
+            ) for ao in assessment.ask_oras.all()
+        },
+        'can_review': Submission.objects.filter(askora__assessment=assessment).exclude(user=request.user).exists(),
+        'submissions': Submission.objects.filter(
+            askora__assessment=assessment
+        ).exclude(user=request.user).exclude(
+            id__in=PeerReview.objects.filter(reviewer=request.user).values('submission__id')
+        ),
+        'is_quiz': assessment.questions.exists(),
+        'peer_review_stats': None,
+        'show_timer': False,
+    }
+
+    # Hitung peer_review_stats jika pengguna punya submisi
+    user_submissions = context['user_submissions']
+    if user_submissions.exists():
+        total_participants = Submission.objects.filter(
+            askora__assessment=assessment
+        ).values('user').distinct().count()
+        user_reviews = PeerReview.objects.filter(
+            submission__in=user_submissions
+        ).aggregate(
+            total_reviews=Count('id'),
+            distinct_reviewers=Count('reviewer', distinct=True)
         )
+        context['peer_review_stats'] = {
+            'total_reviews': user_reviews['total_reviews'] or 0,
+            'distinct_reviewers': user_reviews['distinct_reviewers'] or 0,
+            'total_participants': total_participants - 1,
+            'completed': user_reviews['distinct_reviewers'] >= (total_participants - 1)
+        }
+        if user_reviews['total_reviews'] > 0:
+            avg_score = PeerReview.objects.filter(
+                submission__in=user_submissions
+            ).aggregate(avg_score=Avg('score'))['avg_score']
+            context['peer_review_stats']['avg_score'] = round(avg_score, 2) if avg_score else None
+
+    # Hitung URL navigasi
+    if current_index > 0:
+        prev = combined_content[current_index - 1]
+        context['previous_url'] = reverse('learner:load_content', kwargs={
+            'username': request.user.username,
+            'slug': course.slug,
+            'content_type': prev[0],
+            'content_id': prev[1].id
+        })
+    if current_index < len(combined_content) - 1:
+        next_item = combined_content[current_index + 1]
+        context['next_url'] = reverse('learner:load_content', kwargs={
+            'username': request.user.username,
+            'slug': course.slug,
+            'content_type': next_item[0],
+            'content_id': next_item[1].id
+        })
+
+    logger.info(f"submit_peer_review_new: Rendering learner/partials/content.html untuk user {request.user.username}, assessment {assessment.id}")
+    response = render(request, 'learner/partials/content.html', context)
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    return response
 
 def learner_detail(request, username):
     """

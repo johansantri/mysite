@@ -999,7 +999,10 @@ class AssessmentScore(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def calculate_final_score(self):
-        course = self.submission.askora.assessment.section.course
+        """
+        Hitung skor final berdasarkan peer reviews untuk submisi ini.
+        """
+        course = self.submission.askora.assessment.section.courses  # Perbaikan: courses bukan course
         total_participants = (
             Enrollment.objects
             .filter(course=course)
@@ -1037,7 +1040,7 @@ class AssessmentScore(models.Model):
         else:
             avg_peer_score = Decimal('0')
 
-        # ⚖️ Bobot skor: 50% jawaban peserta, 50% review teman
+        # ⚖️ Bobot skor: 50% jawaban peserta, 50%ied review teman
         participant_score = Decimal('5')  # nilai otomatis, bisa dinamis
         final_score = (participant_score * Decimal('0.5')) + (avg_peer_score * Decimal('0.5'))
 
