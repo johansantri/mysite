@@ -1,0 +1,99 @@
+{% load learner_tags %}
+
+<div class="comment-wrapper mb-3 {% if level > 0 %}ms-{{ level|mul:4 }} ps-2 border-start border-2 border-primary-subtle{% endif %}">
+    <div class="d-flex">
+        <!-- Avatar (huruf awal nama) -->
+        <div class="flex-shrink-0">
+            <div class="rounded-circle bg-secondary text-white d-flex justify-content-center align-items-center"
+                 style="width: 40px; height: 40px;">
+                {{ comment.user.username|slice:":1"|upper }}
+            </div>
+        </div>
+
+        <!-- Konten Komentar -->
+        <div class="flex-grow-1 ms-3">
+            <div class="d-flex justify-content-between">
+                <strong>{{ comment.user.username }}</strong>
+                <small class="text-muted">{{ comment.created_at|timesince }} yang lalu</small>
+            </div>
+
+            {% if comment.parent %}
+                <small class="text-muted d-block">Balasan untuk <strong>{{ comment.parent.user.username }}</strong></small>
+            {% endif %}
+
+            <p class="mb-2 mt-1 text-break">{{ comment.content }}</p>
+
+            <!-- Aksi Like / Dislike / Balas -->
+            <div class="d-flex gap-2 align-items-center small text-muted flex-wrap">
+                {% if user.is_authenticated %}
+                    <form hx-post="{% url 'learner:toggle_reaction' comment_id=comment.id reaction_type='like' %}"
+                          hx-target="#comments-section"
+                          hx-swap="innerHTML" class="d-inline">
+                        <button type="submit" class="btn btn-link btn-sm px-1 text-decoration-none
+                            {% if user_reactions|dict_get:comment.id == 'LIKE' %}text-primary fw-bold{% endif %}">
+                            Suka ({{ comment.likes }})
+                        </button>
+                    </form>
+                    <form hx-post="{% url 'learner:toggle_reaction' comment_id=comment.id reaction_type='dislike' %}"
+                          hx-target="#comments-section"
+                          hx-swap="innerHTML" class="d-inline">
+                        <button type="submit" class="btn btn-link btn-sm px-1 text-decoration-none
+                            {% if user_reactions|dict_get:comment.id == 'DISLIKE' %}text-danger fw-bold{% endif %}">
+                            Tidak Suka ({{ comment.dislikes }})
+                        </button>
+                    </form>
+                    <button class="btn btn-link btn-sm px-1 text-decoration-none text-muted"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#reply-form-{{ comment.id }}"
+                            aria-expanded="false" aria-controls="reply-form-{{ comment.id }}">
+                        Balas
+                    </button>
+                {% else %}
+                    <span class="me-2">👍 {{ comment.likes }}</span>
+                    <span>👎 {{ comment.dislikes }}</span>
+                {% endif %}
+            </div>
+
+            <!-- Form Balasan -->
+            {% if user.is_authenticated %}
+                <div class="collapse mt-2 reply-form" id="reply-form-{{ comment.id }}">
+                    <form hx-post="{% url 'learner:add_comment' %}"
+                          hx-target="#comments-section"
+                          hx-swap="innerHTML"
+                          hx-on::after-request="document.body.dispatchEvent(new Event('contentLoaded')); this.reset()">
+                        <input type="hidden" name="material_id" value="{{ material.id|default:'' }}">
+                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                        <div class="mb-2">
+                            <textarea name="comment_text" rows="2" class="form-control form-control-sm"
+                                      placeholder="Tulis balasan Anda..." required></textarea>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-sm btn-primary">Kirim</button>
+                            <button type="button" class="btn btn-sm btn-secondary"
+                                    data-bs-toggle="collapse" data-bs-target="#reply-form-{{ comment.id }}">
+                                Batal
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            {% endif %}
+
+            <!-- Collapse Tombol Tampilkan Balasan -->
+            {% if comment.children.all %}
+                <button class="btn btn-sm btn-link text-decoration-none mt-2"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#child-comments-{{ comment.id }}"
+                        aria-expanded="false"
+                        aria-controls="child-comments-{{ comment.id }}">
+                    <i class="bi bi-chat-left-text"></i> Tampilkan {{ comment.children.count }} balasan
+                </button>
+                <div class="collapse mt-2" id="child-comments-{{ comment.id }}">
+                    {% for child in comment.children.all %}
+                        {% include 'learner/partials/comment.html' with comment=child user_reactions=user_reactions level=level|add:1 %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>

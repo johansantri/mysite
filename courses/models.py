@@ -1127,7 +1127,7 @@ class Comment(models.Model):
     material = models.ForeignKey('Material', on_delete=models.CASCADE)
     likes = models.IntegerField(default=0)  # Jumlah like
     dislikes = models.IntegerField(default=0)  # Jumlah dislike
-    parent=models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE)
+    parent=models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE,related_name="children")
 
     class Meta:
         indexes = [

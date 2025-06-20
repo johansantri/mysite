@@ -53,3 +53,11 @@ def get_review_progress(submission):
         'total': total_participants - 1,  # exclude submitter
         'completed': reviews_received['reviewers'] >= (total_participants - 1)
     }
+
+
+@register.filter
+def mul(value, arg):
+    try:
+        return float(value) * float(arg)
+    except (ValueError, TypeError):
+        return ''

@@ -362,7 +362,7 @@ def load_content(request, username, slug, content_type, content_id):
         content_id: ID of the content.
     
     Returns:
-        HttpResponse: Rendered content partial or full page.
+        HttpResponse: Rendered content partial or redirect.
     """
     if request.user.username != username:
         logger.warning(f"Unauthorized access attempt by {request.user.username} for {username}")
@@ -373,13 +373,10 @@ def load_content(request, username, slug, content_type, content_id):
         logger.warning(f"User {request.user.username} not enrolled in course {slug}")
         return HttpResponse(status=403)
 
-    sections = Section.objects.filter(courses=course).prefetch_related(  # Changed 'course' to 'courses'
+    sections = Section.objects.filter(courses=course).prefetch_related(  # Fixed: 'course' to 'courses'
         Prefetch('materials', queryset=Material.objects.all()),
         Prefetch('assessments', queryset=Assessment.objects.all())
     ).order_by('order')
-    combined_content = _build_combined_content(sections)
-    current_index = next((i for i, c in enumerate(combined_content) if c[0] == content_type and c[1].id == int(content_id)), 0)
-    current_content = combined_content[current_index] if combined_content else None
 
     context = {
         'course': course,
@@ -387,7 +384,7 @@ def load_content(request, username, slug, content_type, content_id):
         'username': username,
         'slug': slug,
         'sections': sections,
-        'current_content': current_content,
+        'current_content': None,
         'material': None,
         'assessment': None,
         'comments': None,
@@ -397,6 +394,7 @@ def load_content(request, username, slug, content_type, content_id):
         'is_expired': False,
         'remaining_time': 0,
         'answered_questions': {},
+        'course_progress': CourseProgress.objects.get_or_create(user=request.user, course=course)[0].progress_percentage,
         'previous_url': None,
         'next_url': None,
         'ask_oras': [],
@@ -411,57 +409,58 @@ def load_content(request, username, slug, content_type, content_id):
         'show_timer': False,
     }
 
+    combined_content = _build_combined_content(sections)
+    current_index = 0
+
     if content_type == 'material':
-        context['material'] = get_object_or_404(Material, id=content_id)
-        context['comments'] = Comment.objects.filter(
-            material=context['material'], parent=None
-        ).order_by('-created_at')
-        MaterialRead.objects.get_or_create(user=request.user, material=context['material'])
+        material = get_object_or_404(Material, id=content_id)
+        context['material'] = material
+        context['current_content'] = ('material', material, next((s for s in sections if material in s.materials.all()), None))
+        context['comments'] = Comment.objects.filter(material=material, parent=None).select_related('user', 'parent').prefetch_related('children').order_by('-created_at')
+        MaterialRead.objects.get_or_create(user=request.user, material=material)
+        current_index = next((i for i, c in enumerate(combined_content) if c[0] == 'material' and c[1].id == material.id), 0)
     elif content_type == 'assessment':
-        context['assessment'] = get_object_or_404(Assessment, id=content_id)
-        context.update(_build_assessment_context(context['assessment'], request.user))
+        assessment = get_object_or_404(Assessment.objects.select_related('section__courses'), id=content_id)
+        context['assessment'] = assessment
+        context['current_content'] = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
+        current_index = next((i for i, c in enumerate(combined_content) if c[0] == 'assessment' and c[1].id == assessment.id), 0)
         if course.payment_model == 'pay_for_exam':
-            has_paid = Payment.objects.filter(
+            payment = Payment.objects.filter(
                 user=request.user, course=course, status='completed', payment_model='pay_for_exam'
-            ).exists()
-            if not has_paid:
+            ).first()
+            if not payment:
                 context['assessment_locked'] = True
                 context['payment_required_url'] = reverse('payments:process_payment', kwargs={
-                    'course_id': course.id, 'payment_type': 'exam'
+                    'course_id': course.id,
+                    'payment_type': 'exam'
                 })
+                logger.info(f"Payment required for assessment {content_id} in course {course.id} for user {request.user.username}")
             else:
-                AssessmentRead.objects.get_or_create(user=request.user, assessment=context['assessment'])
+                AssessmentRead.objects.get_or_create(user=request.user, assessment=assessment)
         else:
-            AssessmentRead.objects.get_or_create(user=request.user, assessment=context['assessment'])
-        if context['is_quiz']:
-            session = AssessmentSession.objects.filter(user=request.user, assessment=context['assessment']).first()
-            if session:
-                context['is_started'] = True
-                if session.end_time:
-                    context['remaining_time'] = max(0, int((session.end_time - timezone.now()).total_seconds()))
-                    context['is_expired'] = context['remaining_time'] <= 0
-                    context['show_timer'] = context['remaining_time'] > 0
-                context['answered_questions'] = {
-                    a.question.id: a for a in QuestionAnswer.objects.filter(
-                        user=request.user, question__assessment=context['assessment']
-                    ).select_related('question', 'choice')
-                }
+            AssessmentRead.objects.get_or_create(user=request.user, assessment=assessment)
+        session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
+        if session:
+            context['is_started'] = True
+            if session.end_time:
+                context['remaining_time'] = max(0, int((session.end_time - timezone.now()).total_seconds()))
+                context['is_expired'] = context['remaining_time'] <= 0
+                context['show_timer'] = context['remaining_time'] > 0
+            context['answered_questions'] = {
+                answer.question.id: answer for answer in QuestionAnswer.objects.filter(
+                    user=request.user, question__assessment=assessment
+                ).select_related('question', 'choice')
+            }
+        context.update(_build_assessment_context(assessment, request.user))
 
     context['previous_url'], context['next_url'] = _get_navigation_urls(username, slug, combined_content, current_index)
-    user_progress, _ = CourseProgress.objects.get_or_create(user=request.user, course=course)
-    total_content = len(combined_content)
-    if current_index + 1 > user_progress.progress_percentage / 100 * total_content:
-        user_progress.progress_percentage = ((current_index + 1) / total_content) * 100
-        user_progress.save()
-    context['course_progress'] = user_progress.progress_percentage
-    context['can_review'] = bool(context['submissions'])
+    template = 'learner/partials/content.html' if request.headers.get('HX-Request') == 'true' else 'learner/my_course.html'
 
-    is_htmx = request.headers.get('HX-Request') == 'true'
-    template = 'learner/partials/content.html' if is_htmx else 'learner/my_course.html'
     logger.info(f"load_content: Rendering {template} for user {username}, {content_type} {content_id}")
     response = render(request, template, context)
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     return response
+
 @login_required
 def start_assessment_courses(request, assessment_id):
     """
@@ -815,23 +814,27 @@ def add_comment(request):
         return HttpResponse(status=400)
 
     material = get_object_or_404(Material, id=material_id)
-    course = material.section.course
+    course = material.section.courses  # Fixed: 'course' to 'courses'
     parent_comment = get_object_or_404(Comment, id=parent_id, material=material) if parent_id else None
 
     if is_suspicious(request):
         logger.warning(f"Suspicious activity detected by {request.user.username}")
         messages.warning(request, "Aktivitas mencurigakan terdeteksi.")
         return HttpResponseRedirect(reverse('learner:load_content', kwargs={
-            'username': request.user.username, 'slug': course.slug,
-            'content_type': 'material', 'content_id': material_id
+            'username': request.user.username,
+            'slug': course.slug,
+            'content_type': 'material',
+            'content_id': material_id
         }))
 
     if is_spam(request, request.user, comment_text):
         logger.warning(f"Spam comment detected by {request.user.username}: {comment_text}")
         messages.warning(request, "Komentar Anda terdeteksi sebagai spam!")
         return HttpResponseRedirect(reverse('learner:load_content', kwargs={
-            'username': request.user.username, 'slug': course.slug,
-            'content_type': 'material', 'content_id': material_id
+            'username': request.user.username,
+            'slug': course.slug,
+            'content_type': 'material',
+            'content_id': material_id
         }))
 
     comment = Comment(user=request.user, material=material, content=comment_text, parent=parent_comment)
@@ -839,8 +842,10 @@ def add_comment(request):
         logger.warning(f"Comment by {request.user.username} contains blacklisted keywords: {comment_text}")
         messages.warning(request, "Komentar mengandung kata-kata yang tidak diizinkan.")
         return HttpResponseRedirect(reverse('learner:load_content', kwargs={
-            'username': request.user.username, 'slug': course.slug,
-            'content_type': 'material', 'content_id': material_id
+            'username': request.user.username,
+            'slug': course.slug,
+            'content_type': 'material',
+            'content_id': material_id
         }))
 
     comment.save()
@@ -849,7 +854,7 @@ def add_comment(request):
     is_htmx = request.headers.get('HX-Request') == 'true'
     if is_htmx:
         context = {
-            'comments': Comment.objects.filter(material=material).select_related('user', 'parent'),
+            'comments': Comment.objects.filter(material=material, parent=None).select_related('user', 'parent').prefetch_related('children'),  # Modified to ensure replies are fetched
             'material': material,
             'user_reactions': {
                 r.comment_id: r.reaction_type for r in CommentReaction.objects.filter(
@@ -862,10 +867,11 @@ def add_comment(request):
 
     messages.success(request, "Komentar berhasil diposting!")
     return HttpResponseRedirect(reverse('learner:load_content', kwargs={
-        'username': request.user.username, 'slug': course.slug,
-        'content_type': 'material', 'content_id': material_id
+        'username': request.user.username,
+        'slug': course.slug,
+        'content_type': 'material',
+        'content_id': material_id
     }))
-
 @login_required
 def get_progress(request, username, slug):
     """
