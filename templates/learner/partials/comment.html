@@ -26,27 +26,31 @@
             <!-- Aksi Like / Dislike / Balas -->
             <div class="d-flex gap-2 align-items-center small text-muted flex-wrap">
                 {% if user.is_authenticated %}
-                    <form 
-                        hx-post="{% url 'learner:toggle_reaction' comment_id=comment.id reaction_type='like' %}"
-                        hx-target="#comment-{{ comment.id }}"
-                        hx-swap="outerHTML"
-                        class="d-inline">
-                        <button type="submit" class="btn btn-link btn-sm px-1 text-decoration-none
-                            {% if user_reactions|dict_get:comment.id == 'LIKE' %}text-primary fw-bold{% endif %}">
-                            Suka ({{ comment.likes }})
-                        </button>
-                    </form>
+                    <!-- LIKE -->
+                            <form 
+                            hx-post="{% url 'learner:toggle_reaction' comment_id=comment.id reaction_type='like' %}?level={{ level }}"
+                            hx-target="#comment-{{ comment.id }}"
+                            hx-swap="outerHTML"
+                            class="d-inline">
+                            <button type="submit" class="btn btn-link btn-sm text-decoration-none
+                                {% if user_reactions|dict_get:comment.id == 'LIKE' %}text-primary fw-bold{% else %}text-muted{% endif %}">
+                                <i class="bi bi-heart{% if user_reactions|dict_get:comment.id == 'LIKE' %}-fill{% endif %} me-1"></i>
+                                {{ comment.likes }}
+                            </button>
+                            </form>
 
-                    <form 
-                        hx-post="{% url 'learner:toggle_reaction' comment_id=comment.id reaction_type='dislike' %}"
-                        hx-target="#comment-{{ comment.id }}"
-                        hx-swap="outerHTML"
-                        class="d-inline">
-                        <button type="submit" class="btn btn-link btn-sm px-1 text-decoration-none
-                            {% if user_reactions|dict_get:comment.id == 'DISLIKE' %}text-danger fw-bold{% endif %}">
-                            Tidak Suka ({{ comment.dislikes }})
-                        </button>
-                    </form>
+                            <!-- DISLIKE -->
+                            <form 
+                            hx-post="{% url 'learner:toggle_reaction' comment_id=comment.id reaction_type='dislike' %}?level={{ level }}"
+                            hx-target="#comment-{{ comment.id }}"
+                            hx-swap="outerHTML"
+                            class="d-inline">
+                            <button type="submit" class="btn btn-link btn-sm text-decoration-none
+                                {% if user_reactions|dict_get:comment.id == 'DISLIKE' %}text-danger fw-bold{% else %}text-muted{% endif %}">
+                                <i class="bi bi-hand-thumbs-down{% if user_reactions|dict_get:comment.id == 'DISLIKE' %}-fill{% endif %} me-1"></i>
+                                {{ comment.dislikes }}
+                            </button>
+                            </form>
 
                     <button class="btn btn-link btn-sm px-1 text-decoration-none text-muted"
                             data-bs-toggle="collapse"
