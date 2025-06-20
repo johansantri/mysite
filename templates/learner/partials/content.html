@@ -173,30 +173,7 @@
                                                 </a>
                                             {% endif %}
                                             
-                                            <!-- Status Review -->
-                                            <div class="mt-4 p-3 bg-light rounded">
-                                                <h6><i class="bi bi-info-circle"></i> Status Penilaian:</h6>
-                                                <ul class="mb-0">
-                                                    <li>
-                                                        {% if peer_review_stats.review_count > 0 %}
-                                                            <i class="bi bi-check-circle text-success"></i> 
-                                                            Telah direview oleh {{ peer_review_stats.review_count }} teman
-                                                        {% else %}
-                                                            <i class="bi bi-hourglass text-warning"></i> 
-                                                            Belum ada review dari teman
-                                                        {% endif %}
-                                                    </li>
-                                                    <li>
-                                                        {% if submission.score %}
-                                                            <i class="bi bi-check-circle text-success"></i> 
-                                                            Nilai akhir sudah tersedia
-                                                        {% else %}
-                                                            <i class="bi bi-hourglass text-warning"></i> 
-                                                            Menunggu review selesai
-                                                        {% endif %}
-                                                    </li>
-                                                </ul>
-                                            </div>
+                                            
 
                                             <!-- Bagian Status Penilaian -->
                                                 <div class="mt-4 p-3 bg-light rounded">
@@ -236,12 +213,7 @@
                                                         </li>
                                                     </ul>
                                                     
-                                                    {% if peer_review_stats.completed and not submission.score %}
-                                                    <div class="alert alert-info mt-3 mb-0">
-                                                        <i class="bi bi-info-circle"></i> Nilai akhir sedang diproses oleh sistem.
-                                                        Silakan refresh halaman beberapa saat lagi.
-                                                    </div>
-                                                    {% endif %}
+                                                   
                                                 </div>
                                         </div>
                                     </div>

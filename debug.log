@@ -1,127 +1,278 @@
-INFO 2025-06-19 13:59:24,800 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-19 13:59:24,819 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-19 13:59:24,910 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-19 14:00:37,585 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 06:00:37.582862+00:00
-INFO 2025-06-19 14:00:37,585 database AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0", path_info: "/logout/"}.
-INFO 2025-06-19 14:00:50,543 database AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0", path_info: "/login/"}.
-INFO 2025-06-19 14:00:50,545 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 06:00:49.531587+00:00
-INFO 2025-06-19 14:03:22,941 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 06:03:22.939515+00:00
-INFO 2025-06-19 14:03:22,941 database AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0", path_info: "/logout/"}.
-INFO 2025-06-19 14:03:33,133 database AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0", path_info: "/login/"}.
-INFO 2025-06-19 14:03:33,134 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 06:03:32.165532+00:00
-INFO 2025-06-19 14:03:56,857 views my_course: Rendering for user learn, course backend-development, assessment_id=56
-INFO 2025-06-19 14:05:59,906 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 06:05:59.905924+00:00
-INFO 2025-06-19 14:05:59,907 database AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0", path_info: "/logout/"}.
-INFO 2025-06-19 14:06:07,301 database AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0", path_info: "/accounts/google/login/callback/"}.
-INFO 2025-06-19 14:06:07,303 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 06:06:07.301587+00:00
-INFO 2025-06-19 14:08:32,511 views my_course: Rendering for user johan, course backend-development, assessment_id=56
-ERROR 2025-06-19 14:08:50,036 log Internal Server Error: /submit-answer-askora/2/new
-Traceback (most recent call last):
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
-    response = get_response(request)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
-    return view_func(request, *args, **kwargs)
-  File "/home/TIM/mysite/learner/views.py", line 857, in submit_answer_askora_new
-    "slug": ask_ora.assessment.course.slug,
-AttributeError: 'Assessment' object has no attribute 'course'
-INFO 2025-06-19 14:12:22,509 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 06:12:22.508172+00:00
-INFO 2025-06-19 14:12:22,509 database AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0", path_info: "/logout/"}.
-INFO 2025-06-19 14:12:32,158 database AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0", path_info: "/login/"}.
-INFO 2025-06-19 14:12:32,160 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 06:12:31.184672+00:00
-INFO 2025-06-19 14:13:02,332 views my_course: Rendering for user admin, course backend-development, assessment_id=None
-INFO 2025-06-19 14:13:57,471 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 06:13:57.470540+00:00
-INFO 2025-06-19 14:13:57,471 database AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36", path_info: "/logout/"}.
-INFO 2025-06-19 14:14:17,071 database AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36", path_info: "/login/"}.
-INFO 2025-06-19 14:14:17,072 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 06:14:16.066437+00:00
-INFO 2025-06-19 14:14:57,020 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 06:14:57.019796+00:00
-INFO 2025-06-19 14:14:57,021 database AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0", path_info: "/logout/"}.
-INFO 2025-06-19 14:15:03,634 database AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0", path_info: "/accounts/google/login/callback/"}.
-INFO 2025-06-19 14:15:03,635 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 06:15:03.633818+00:00
-INFO 2025-06-19 14:15:17,353 views my_course: Rendering for user semua, course backend-development, assessment_id=None
-ERROR 2025-06-19 14:16:37,885 log Internal Server Error: /submit-answer-askora/2/new
-Traceback (most recent call last):
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
-    response = get_response(request)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
-    return view_func(request, *args, **kwargs)
-  File "/home/TIM/mysite/learner/views.py", line 857, in submit_answer_askora_new
-    "slug": ask_ora.assessment.course.slug,
-AttributeError: 'Assessment' object has no attribute 'course'
-INFO 2025-06-19 14:18:37,285 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 06:18:37.284738+00:00
-INFO 2025-06-19 14:18:37,285 database AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0", path_info: "/logout/"}.
-INFO 2025-06-19 14:18:48,647 database AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0", path_info: "/login/"}.
-INFO 2025-06-19 14:18:48,649 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 06:18:47.694746+00:00
-INFO 2025-06-19 14:19:03,260 views my_course: Rendering for user learn, course backend-development, assessment_id=None
-INFO 2025-06-19 14:20:31,654 views my_course: Rendering for user learn, course backend-development, assessment_id=None
-INFO 2025-06-19 14:20:48,252 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 06:20:48.252011+00:00
-INFO 2025-06-19 14:20:48,253 database AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0", path_info: "/logout/"}.
-INFO 2025-06-19 14:21:00,675 database AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0", path_info: "/login/"}.
-INFO 2025-06-19 14:21:00,677 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 06:20:59.699300+00:00
-INFO 2025-06-19 14:21:11,966 views my_course: Rendering for user admin, course backend-development, assessment_id=None
-INFO 2025-06-19 14:22:00,649 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 06:22:00.648872+00:00
-INFO 2025-06-19 14:22:00,649 database AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0", path_info: "/logout/"}.
-INFO 2025-06-19 14:22:08,506 database AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0", path_info: "/accounts/google/login/callback/"}.
-INFO 2025-06-19 14:22:08,507 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 06:22:08.505957+00:00
-INFO 2025-06-19 14:23:05,606 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 06:23:05.605346+00:00
-INFO 2025-06-19 14:23:05,606 database AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0", path_info: "/logout/"}.
-INFO 2025-06-19 14:23:12,974 database AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0", path_info: "/accounts/google/login/callback/"}.
-INFO 2025-06-19 14:23:12,975 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 06:23:12.974061+00:00
-INFO 2025-06-19 14:23:32,898 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 06:23:32.896885+00:00
-INFO 2025-06-19 14:23:32,898 database AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0", path_info: "/logout/"}.
-INFO 2025-06-19 14:23:48,108 database AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0", path_info: "/login/"}.
-INFO 2025-06-19 14:23:48,109 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 06:23:47.130610+00:00
-INFO 2025-06-19 14:24:12,786 views my_course: Rendering for user learn, course backend-development, assessment_id=56
-INFO 2025-06-19 14:25:50,364 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 06:25:50.364112+00:00
-INFO 2025-06-19 14:25:50,365 database AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36", path_info: "/logout/"}.
-INFO 2025-06-19 14:26:03,523 database AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36", path_info: "/login/"}.
-INFO 2025-06-19 14:26:03,525 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 06:26:02.553358+00:00
-INFO 2025-06-19 14:35:46,846 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-19 14:35:47,049 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-19 14:35:47,086 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-19 14:51:52,441 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-19 14:51:52,736 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-19 14:51:52,748 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-19 14:52:49,787 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-19 14:52:50,130 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-19 14:52:50,236 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-19 15:01:20,696 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-19 15:01:20,706 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-19 15:01:20,970 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-19 15:02:13,048 database AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0", path_info: "/login/"}.
-INFO 2025-06-19 15:02:13,050 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 07:02:12.077535+00:00
-INFO 2025-06-19 15:02:30,655 views my_course: Rendering for user admin, course backend-development, assessment_id=56
-INFO 2025-06-19 15:03:09,023 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 07:03:09.021493+00:00
-INFO 2025-06-19 15:03:09,023 database AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36", path_info: "/logout/"}.
-INFO 2025-06-19 15:03:19,340 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 07:03:19.339625+00:00
-INFO 2025-06-19 15:03:19,340 database AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0", path_info: "/logout/"}.
-INFO 2025-06-19 15:03:30,991 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 07:03:30.989168+00:00
-INFO 2025-06-19 15:03:30,991 database AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0", path_info: "/logout/"}.
-INFO 2025-06-19 15:03:37,978 database AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0", path_info: "/accounts/google/login/callback/"}.
-INFO 2025-06-19 15:03:37,979 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 07:03:37.977907+00:00
-INFO 2025-06-19 15:03:56,882 views my_course: Rendering for user johan, course backend-development, assessment_id=56
-INFO 2025-06-19 15:04:23,209 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 07:04:23.208800+00:00
-INFO 2025-06-19 15:04:23,210 database AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0", path_info: "/logout/"}.
-INFO 2025-06-19 15:04:30,564 database AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:139.0) Gecko/20100101 Firefox/139.0", path_info: "/accounts/google/login/callback/"}.
-INFO 2025-06-19 15:04:30,566 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 07:04:30.564659+00:00
-INFO 2025-06-19 15:04:42,734 views my_course: Rendering for user semua, course backend-development, assessment_id=1
-INFO 2025-06-19 15:14:31,345 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-19 15:14:31,442 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-19 15:14:31,529 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-WARNING 2025-06-19 15:14:50,203 views User semua attempted to access course backend-development with username learn
-WARNING 2025-06-19 15:14:53,389 views User semua attempted to access course backend-development with username learn
-INFO 2025-06-19 15:15:03,298 views my_course: Rendering for user semua, course backend-development, assessment_id=None
-INFO 2025-06-19 15:16:23,985 database AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36", path_info: "/login/"}.
-INFO 2025-06-19 15:16:23,987 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-06-19 07:16:22.980917+00:00
-WARNING 2025-06-19 15:16:58,076 views Unauthorized access attempt by admin for delete-matrial
-INFO 2025-06-19 15:17:43,041 views my_course: Rendering for user semua, course backend-development, assessment_id=None
-INFO 2025-06-19 15:17:48,010 views start_assessment: assessment_id=1, duration=5 min, start_time=2025-06-19 08:17:47.995040+00:00, end_time=2025-06-19 08:22:47.995040+00:00, time_left=299.98494, is_expired=False, timezone=Asia/Jakarta
-INFO 2025-06-19 15:17:48,016 views start_assessment: Rendering HTMX for user semua, assessment 1, is_htmx=True, time_left=299.98494
-INFO 2025-06-19 15:18:07,918 views submit_answer: Rendering for user semua, assessment 1, question 1, is_htmx=True
-INFO 2025-06-19 15:18:25,158 views submit_answer: Rendering for user semua, assessment 1, question 2, is_htmx=True
-INFO 2025-06-19 15:18:40,029 views submit_answer: Rendering for user semua, assessment 1, question 3, is_htmx=True
-INFO 2025-06-19 15:18:51,676 views submit_answer: Rendering for user semua, assessment 1, question 4, is_htmx=True
-INFO 2025-06-19 15:19:06,365 views submit_answer: Rendering for user semua, assessment 1, question 5, is_htmx=True
+WARNING 2025-06-20 07:35:16,207 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-20 07:35:21,691 views Unauthorized access attempt by admin for kuruk
+INFO 2025-06-20 07:36:29,781 views Partner logo found: https://ini.icei.ac.id/media/logos/oxford.png
+INFO 2025-06-20 07:36:29,806 views QR code generated: https://ini.icei.ac.id/media/qrcodes/certificate_0d849615-0005-4284-b386-07031e8c6ea1.png
+ERROR 2025-06-20 07:36:29,833 signals Error in audit log (post_save) for Certificate pk=18: Object of type UUID is not JSON serializable
+INFO 2025-06-20 07:36:29,833 views Certificate 0d849615-0005-4284-b386-07031e8c6ea1 saved for user semua
+INFO 2025-06-20 07:36:29,838 __init__ Step 1 - Fetching and parsing HTML - HTML string
+INFO 2025-06-20 07:36:29,868 __init__ Step 2 - Fetching and parsing CSS - CSS string
+INFO 2025-06-20 07:36:29,874 __init__ Step 2 - Fetching and parsing CSS - https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@400;700&display=swap
+DEBUG 2025-06-20 07:36:31,411 __init__ Ignored `pointer-events: none` at 197:13, the property does not apply for the print media.
+INFO 2025-06-20 07:36:31,413 __init__ Step 3 - Applying CSS
+INFO 2025-06-20 07:36:31,418 document Step 4 - Creating formatting structure
+INFO 2025-06-20 07:36:31,689 page Step 5 - Creating layout - Page 1
+INFO 2025-06-20 07:36:31,851 __init__ Step 6 - Creating PDF
+INFO 2025-06-20 07:36:31,911 __init__ Step 7 - Adding PDF metadata
+DEBUG 2025-06-20 07:36:31,914 ttFont Reading 'maxp' table from disk
+DEBUG 2025-06-20 07:36:31,914 ttFont Decompiling 'maxp' table
+DEBUG 2025-06-20 07:36:31,915 loggingTools Took 0.001s to load 'maxp'
+DEBUG 2025-06-20 07:36:31,915 loggingTools Took 0.000s to prune 'maxp'
+INFO 2025-06-20 07:36:31,915 __init__ maxp pruned
+DEBUG 2025-06-20 07:36:31,917 ttFont Reading 'cmap' table from disk
+DEBUG 2025-06-20 07:36:31,917 ttFont Decompiling 'cmap' table
+DEBUG 2025-06-20 07:36:31,918 ttFont Reading 'post' table from disk
+DEBUG 2025-06-20 07:36:31,918 ttFont Decompiling 'post' table
+DEBUG 2025-06-20 07:36:31,919 loggingTools Took 0.003s to load 'cmap'
+DEBUG 2025-06-20 07:36:31,920 loggingTools Took 0.000s to prune 'cmap'
+INFO 2025-06-20 07:36:31,920 __init__ cmap pruned
+INFO 2025-06-20 07:36:31,920 __init__ prep dropped
+DEBUG 2025-06-20 07:36:31,920 loggingTools Took 0.000s to load 'post'
+DEBUG 2025-06-20 07:36:31,920 loggingTools Took 0.000s to prune 'post'
+INFO 2025-06-20 07:36:31,920 __init__ post pruned
+INFO 2025-06-20 07:36:31,921 __init__ GPOS dropped
+INFO 2025-06-20 07:36:31,922 __init__ GSUB dropped
+DEBUG 2025-06-20 07:36:31,922 ttFont Reading 'glyf' table from disk
+DEBUG 2025-06-20 07:36:31,923 ttFont Decompiling 'glyf' table
+DEBUG 2025-06-20 07:36:31,924 ttFont Reading 'loca' table from disk
+DEBUG 2025-06-20 07:36:31,924 ttFont Decompiling 'loca' table
+DEBUG 2025-06-20 07:36:31,924 ttFont Reading 'head' table from disk
+DEBUG 2025-06-20 07:36:31,924 ttFont Decompiling 'head' table
+DEBUG 2025-06-20 07:36:31,926 loggingTools Took 0.004s to load 'glyf'
+DEBUG 2025-06-20 07:36:31,927 loggingTools Took 0.000s to prune 'glyf'
+INFO 2025-06-20 07:36:31,928 __init__ glyf pruned
+DEBUG 2025-06-20 07:36:31,928 loggingTools Took 0.000s to close glyph list over 'cmap'
+INFO 2025-06-20 07:36:31,929 __init__ Added gid0 to subset
+INFO 2025-06-20 07:36:31,929 __init__ Closing glyph list over 'glyf': 31 glyphs before
+INFO 2025-06-20 07:36:31,929 __init__ Glyph names: ['.notdef', 'A', 'C', 'E', 'F', 'I', 'L', 'M', 'N', 'O', 'P', 'R', 'T', 'a', 'c', 'd', 'e', 'f', 'fi', 'h', 'i', 'k', 'm', 'n', 'o', 'r', 's', 'space', 't', 'u', 'v']
+INFO 2025-06-20 07:36:31,930 __init__ Glyph IDs:   [0, 1, 26, 36, 56, 69, 87, 93, 94, 100, 125, 128, 140, 190, 215, 221, 225, 246, 255, 259, 276, 286, 287, 294, 322, 326, 334, 339, 359, 387, 633]
+INFO 2025-06-20 07:36:31,930 __init__ Closed glyph list over 'glyf': 33 glyphs after
+INFO 2025-06-20 07:36:31,931 __init__ Glyph names: ['.notdef', 'A', 'C', 'E', 'F', 'I', 'L', 'M', 'N', 'O', 'P', 'R', 'T', 'a', 'c', 'd', 'dotlessi', 'e', 'f', 'fi', 'h', 'i', 'k', 'm', 'n', 'o', 'r', 's', 'space', 't', 'u', 'uni0307', 'v']
+INFO 2025-06-20 07:36:31,931 __init__ Glyph IDs:   [0, 1, 26, 36, 56, 69, 87, 93, 94, 100, 125, 128, 140, 190, 215, 221, 225, 246, 255, 259, 260, 276, 286, 287, 294, 322, 326, 334, 339, 359, 387, 633, 700]
+DEBUG 2025-06-20 07:36:31,931 loggingTools Took 0.002s to close glyph list over 'glyf'
+INFO 2025-06-20 07:36:31,932 __init__ Retaining 33 glyphs
+INFO 2025-06-20 07:36:31,933 __init__ head subsetting not needed
+INFO 2025-06-20 07:36:31,933 __init__ hhea subsetting not needed
+INFO 2025-06-20 07:36:31,933 __init__ maxp subsetting not needed
+INFO 2025-06-20 07:36:31,933 __init__ OS/2 subsetting not needed
+DEBUG 2025-06-20 07:36:31,934 ttFont Reading 'hmtx' table from disk
+DEBUG 2025-06-20 07:36:31,934 ttFont Decompiling 'hmtx' table
+DEBUG 2025-06-20 07:36:31,934 ttFont Reading 'hhea' table from disk
+DEBUG 2025-06-20 07:36:31,934 ttFont Decompiling 'hhea' table
+DEBUG 2025-06-20 07:36:31,935 loggingTools Took 0.002s to subset 'hmtx'
+INFO 2025-06-20 07:36:31,935 __init__ hmtx subsetted
+DEBUG 2025-06-20 07:36:31,937 loggingTools Took 0.001s to subset 'cmap'
+INFO 2025-06-20 07:36:31,938 __init__ cmap subsetted
+INFO 2025-06-20 07:36:31,938 __init__ loca subsetting not needed
+DEBUG 2025-06-20 07:36:31,938 loggingTools Took 0.000s to subset 'post'
+INFO 2025-06-20 07:36:31,939 __init__ post subsetted
+INFO 2025-06-20 07:36:31,939 __init__ gasp subsetting not needed
+INFO 2025-06-20 07:36:31,940 __init__ STAT subsetting not needed
+DEBUG 2025-06-20 07:36:31,940 ttFont Reading 'GDEF' table from disk
+DEBUG 2025-06-20 07:36:31,940 ttFont Decompiling 'GDEF' table
+DEBUG 2025-06-20 07:36:31,942 loggingTools Took 0.002s to subset 'GDEF'
+INFO 2025-06-20 07:36:31,942 __init__ GDEF subsetted
+INFO 2025-06-20 07:36:31,942 __init__ name subsetting not needed
+DEBUG 2025-06-20 07:36:31,944 loggingTools Took 0.001s to subset 'glyf'
+INFO 2025-06-20 07:36:31,944 __init__ glyf subsetted
+DEBUG 2025-06-20 07:36:31,944 loggingTools Took 0.000s to subset GlyphOrder
+DEBUG 2025-06-20 07:36:31,944 loggingTools Took 0.000s to prune 'head'
+INFO 2025-06-20 07:36:31,945 __init__ head pruned
+DEBUG 2025-06-20 07:36:31,945 ttFont Reading 'OS/2' table from disk
+DEBUG 2025-06-20 07:36:31,945 ttFont Decompiling 'OS/2' table
+INFO 2025-06-20 07:36:31,946 __init__ OS/2 Unicode ranges pruned: [0, 62]
+INFO 2025-06-20 07:36:31,947 __init__ OS/2 CodePage ranges pruned: [0]
+DEBUG 2025-06-20 07:36:31,948 loggingTools Took 0.001s to prune 'glyf'
+INFO 2025-06-20 07:36:31,948 __init__ glyf pruned
+DEBUG 2025-06-20 07:36:31,949 loggingTools Took 0.000s to prune 'GDEF'
+INFO 2025-06-20 07:36:31,949 __init__ GDEF pruned
+DEBUG 2025-06-20 07:36:31,949 ttFont Reading 'name' table from disk
+DEBUG 2025-06-20 07:36:31,949 ttFont Decompiling 'name' table
+DEBUG 2025-06-20 07:36:31,950 ttFont Reading 'gasp' table from disk
+DEBUG 2025-06-20 07:36:31,950 ttFont Decompiling 'gasp' table
+DEBUG 2025-06-20 07:36:31,950 ttFont Reading 'STAT' table from disk
+DEBUG 2025-06-20 07:36:31,950 ttFont Decompiling 'STAT' table
+DEBUG 2025-06-20 07:36:31,951 loggingTools Took 0.002s to prune 'name'
+INFO 2025-06-20 07:36:31,951 __init__ name pruned
+DEBUG 2025-06-20 07:36:31,973 ttFont Reading 'maxp' table from disk
+DEBUG 2025-06-20 07:36:31,973 ttFont Decompiling 'maxp' table
+DEBUG 2025-06-20 07:36:31,973 loggingTools Took 0.001s to load 'maxp'
+DEBUG 2025-06-20 07:36:31,974 loggingTools Took 0.000s to prune 'maxp'
+INFO 2025-06-20 07:36:31,974 __init__ maxp pruned
+DEBUG 2025-06-20 07:36:31,974 ttFont Reading 'cmap' table from disk
+DEBUG 2025-06-20 07:36:31,974 ttFont Decompiling 'cmap' table
+DEBUG 2025-06-20 07:36:31,976 ttFont Reading 'post' table from disk
+DEBUG 2025-06-20 07:36:31,976 ttFont Decompiling 'post' table
+DEBUG 2025-06-20 07:36:31,985 loggingTools Took 0.011s to load 'cmap'
+DEBUG 2025-06-20 07:36:31,985 loggingTools Took 0.000s to prune 'cmap'
+INFO 2025-06-20 07:36:31,986 __init__ cmap pruned
+INFO 2025-06-20 07:36:31,986 __init__ prep dropped
+DEBUG 2025-06-20 07:36:31,986 loggingTools Took 0.000s to load 'post'
+DEBUG 2025-06-20 07:36:31,986 loggingTools Took 0.000s to prune 'post'
+INFO 2025-06-20 07:36:31,986 __init__ post pruned
+INFO 2025-06-20 07:36:31,987 __init__ GPOS dropped
+INFO 2025-06-20 07:36:31,987 __init__ GSUB dropped
+DEBUG 2025-06-20 07:36:31,987 ttFont Reading 'glyf' table from disk
+DEBUG 2025-06-20 07:36:31,987 ttFont Decompiling 'glyf' table
+DEBUG 2025-06-20 07:36:31,988 ttFont Reading 'loca' table from disk
+DEBUG 2025-06-20 07:36:31,988 ttFont Decompiling 'loca' table
+DEBUG 2025-06-20 07:36:31,988 ttFont Reading 'head' table from disk
+DEBUG 2025-06-20 07:36:31,988 ttFont Decompiling 'head' table
+DEBUG 2025-06-20 07:36:31,993 loggingTools Took 0.006s to load 'glyf'
+DEBUG 2025-06-20 07:36:31,994 loggingTools Took 0.000s to prune 'glyf'
+INFO 2025-06-20 07:36:31,994 __init__ glyf pruned
+DEBUG 2025-06-20 07:36:31,995 loggingTools Took 0.000s to close glyph list over 'cmap'
+INFO 2025-06-20 07:36:31,995 __init__ Added gid0 to subset
+INFO 2025-06-20 07:36:31,995 __init__ Closing glyph list over 'glyf': 41 glyphs before
+INFO 2025-06-20 07:36:31,995 __init__ Glyph names: ['.notdef', 'A', 'I', 'O', 'P', 'Q', 'S', 'T', 'U', 'V', 'a', 'b', 'c', 'colon', 'd', 'e', 'eight', 'f', 'five', 'four', 'g', 'h', 'hyphen.case', 'i', 'l', 'n', 'o', 'period', 'r', 's', 'six', 'space', 't', 'two', 'u', 'v', 'w', 'x', 'y', 'z', 'zero']
+INFO 2025-06-20 07:36:31,996 __init__ Glyph IDs:   [0, 2, 197, 321, 375, 382, 397, 411, 424, 456, 507, 578, 586, 597, 614, 647, 658, 670, 689, 736, 773, 790, 852, 871, 888, 913, 978, 982, 991, 996, 1020, 1339, 1341, 1344, 1345, 1347, 1349, 1469, 1500, 1503, 1747]
+INFO 2025-06-20 07:36:31,996 __init__ Closed glyph list over 'glyf': 44 glyphs after
+INFO 2025-06-20 07:36:31,996 __init__ Glyph names: ['.notdef', 'A', 'I', 'O', 'P', 'Q', 'S', 'T', 'U', 'V', 'a', 'b', 'c', 'colon', 'd', 'dotlessi', 'e', 'eight', 'f', 'five', 'four', 'g', 'h', 'hyphen', 'hyphen.case', 'i', 'l', 'n', 'o', 'period', 'r', 's', 'six', 'space', 't', 'two', 'u', 'uni0307', 'v', 'w', 'x', 'y', 'z', 'zero']
+INFO 2025-06-20 07:36:31,997 __init__ Glyph IDs:   [0, 2, 197, 321, 375, 382, 397, 411, 424, 456, 507, 578, 586, 597, 614, 647, 658, 670, 689, 690, 736, 773, 790, 852, 871, 888, 913, 978, 982, 991, 996, 1020, 1339, 1341, 1344, 1345, 1347, 1349, 1457, 1469, 1500, 1503, 1747, 2645]
+DEBUG 2025-06-20 07:36:31,997 loggingTools Took 0.002s to close glyph list over 'glyf'
+INFO 2025-06-20 07:36:32,000 __init__ Retaining 44 glyphs
+INFO 2025-06-20 07:36:32,000 __init__ head subsetting not needed
+INFO 2025-06-20 07:36:32,000 __init__ hhea subsetting not needed
+INFO 2025-06-20 07:36:32,001 __init__ maxp subsetting not needed
+INFO 2025-06-20 07:36:32,001 __init__ OS/2 subsetting not needed
+DEBUG 2025-06-20 07:36:32,001 ttFont Reading 'hmtx' table from disk
+DEBUG 2025-06-20 07:36:32,001 ttFont Decompiling 'hmtx' table
+DEBUG 2025-06-20 07:36:32,001 ttFont Reading 'hhea' table from disk
+DEBUG 2025-06-20 07:36:32,001 ttFont Decompiling 'hhea' table
+DEBUG 2025-06-20 07:36:32,004 loggingTools Took 0.003s to subset 'hmtx'
+INFO 2025-06-20 07:36:32,004 __init__ hmtx subsetted
+DEBUG 2025-06-20 07:36:32,006 loggingTools Took 0.002s to subset 'cmap'
+INFO 2025-06-20 07:36:32,006 __init__ cmap subsetted
+INFO 2025-06-20 07:36:32,007 __init__ loca subsetting not needed
+DEBUG 2025-06-20 07:36:32,007 loggingTools Took 0.000s to subset 'post'
+INFO 2025-06-20 07:36:32,007 __init__ post subsetted
+INFO 2025-06-20 07:36:32,007 __init__ gasp subsetting not needed
+INFO 2025-06-20 07:36:32,007 __init__ STAT subsetting not needed
+DEBUG 2025-06-20 07:36:32,008 ttFont Reading 'GDEF' table from disk
+DEBUG 2025-06-20 07:36:32,008 ttFont Decompiling 'GDEF' table
+DEBUG 2025-06-20 07:36:32,010 loggingTools Took 0.003s to subset 'GDEF'
+INFO 2025-06-20 07:36:32,010 __init__ GDEF subsetted
+INFO 2025-06-20 07:36:32,011 __init__ name subsetting not needed
+DEBUG 2025-06-20 07:36:32,013 loggingTools Took 0.002s to subset 'glyf'
+INFO 2025-06-20 07:36:32,013 __init__ glyf subsetted
+DEBUG 2025-06-20 07:36:32,014 loggingTools Took 0.000s to subset GlyphOrder
+DEBUG 2025-06-20 07:36:32,014 loggingTools Took 0.000s to prune 'head'
+INFO 2025-06-20 07:36:32,014 __init__ head pruned
+DEBUG 2025-06-20 07:36:32,014 ttFont Reading 'OS/2' table from disk
+DEBUG 2025-06-20 07:36:32,015 ttFont Decompiling 'OS/2' table
+INFO 2025-06-20 07:36:32,015 __init__ OS/2 Unicode ranges pruned: [0, 60]
+INFO 2025-06-20 07:36:32,015 __init__ OS/2 CodePage ranges pruned: [0]
+DEBUG 2025-06-20 07:36:32,017 loggingTools Took 0.001s to prune 'glyf'
+INFO 2025-06-20 07:36:32,017 __init__ glyf pruned
+DEBUG 2025-06-20 07:36:32,018 loggingTools Took 0.000s to prune 'GDEF'
+INFO 2025-06-20 07:36:32,018 __init__ GDEF pruned
+DEBUG 2025-06-20 07:36:32,018 ttFont Reading 'name' table from disk
+DEBUG 2025-06-20 07:36:32,018 ttFont Decompiling 'name' table
+DEBUG 2025-06-20 07:36:32,019 ttFont Reading 'gasp' table from disk
+DEBUG 2025-06-20 07:36:32,019 ttFont Decompiling 'gasp' table
+DEBUG 2025-06-20 07:36:32,019 ttFont Reading 'STAT' table from disk
+DEBUG 2025-06-20 07:36:32,019 ttFont Decompiling 'STAT' table
+DEBUG 2025-06-20 07:36:32,020 loggingTools Took 0.002s to prune 'name'
+INFO 2025-06-20 07:36:32,020 __init__ name pruned
+DEBUG 2025-06-20 07:36:32,045 ttFont Reading 'maxp' table from disk
+DEBUG 2025-06-20 07:36:32,045 ttFont Decompiling 'maxp' table
+DEBUG 2025-06-20 07:36:32,046 loggingTools Took 0.001s to load 'maxp'
+DEBUG 2025-06-20 07:36:32,046 loggingTools Took 0.000s to prune 'maxp'
+INFO 2025-06-20 07:36:32,046 __init__ maxp pruned
+DEBUG 2025-06-20 07:36:32,046 ttFont Reading 'cmap' table from disk
+DEBUG 2025-06-20 07:36:32,047 ttFont Decompiling 'cmap' table
+DEBUG 2025-06-20 07:36:32,048 ttFont Reading 'post' table from disk
+DEBUG 2025-06-20 07:36:32,048 ttFont Decompiling 'post' table
+DEBUG 2025-06-20 07:36:32,057 loggingTools Took 0.011s to load 'cmap'
+DEBUG 2025-06-20 07:36:32,057 loggingTools Took 0.000s to prune 'cmap'
+INFO 2025-06-20 07:36:32,057 __init__ cmap pruned
+INFO 2025-06-20 07:36:32,058 __init__ prep dropped
+DEBUG 2025-06-20 07:36:32,058 loggingTools Took 0.000s to load 'post'
+DEBUG 2025-06-20 07:36:32,058 loggingTools Took 0.000s to prune 'post'
+INFO 2025-06-20 07:36:32,058 __init__ post pruned
+INFO 2025-06-20 07:36:32,058 __init__ GPOS dropped
+INFO 2025-06-20 07:36:32,059 __init__ GSUB dropped
+DEBUG 2025-06-20 07:36:32,059 ttFont Reading 'glyf' table from disk
+DEBUG 2025-06-20 07:36:32,059 ttFont Decompiling 'glyf' table
+DEBUG 2025-06-20 07:36:32,059 ttFont Reading 'loca' table from disk
+DEBUG 2025-06-20 07:36:32,060 ttFont Decompiling 'loca' table
+DEBUG 2025-06-20 07:36:32,060 ttFont Reading 'head' table from disk
+DEBUG 2025-06-20 07:36:32,063 ttFont Decompiling 'head' table
+DEBUG 2025-06-20 07:36:32,067 loggingTools Took 0.008s to load 'glyf'
+DEBUG 2025-06-20 07:36:32,068 loggingTools Took 0.000s to prune 'glyf'
+INFO 2025-06-20 07:36:32,068 __init__ glyf pruned
+DEBUG 2025-06-20 07:36:32,069 loggingTools Took 0.001s to close glyph list over 'cmap'
+INFO 2025-06-20 07:36:32,069 __init__ Added gid0 to subset
+INFO 2025-06-20 07:36:32,069 __init__ Closing glyph list over 'glyf': 43 glyphs before
+INFO 2025-06-20 07:36:32,069 __init__ Glyph names: ['.notdef', 'A', 'B', 'C', 'D', 'E', 'H', 'I', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'X', 'a', 'at', 'c', 'd', 'e', 'eight', 'f', 'i', 'k', 'l', 'm', 'n', 'o', 'p', 'period', 'r', 's', 'six', 'space', 't', 'u', 'v', 'x', 'y', 'zero']
+INFO 2025-06-20 07:36:32,070 __init__ Glyph IDs:   [0, 2, 65, 73, 84, 95, 161, 197, 292, 300, 321, 375, 384, 397, 411, 424, 456, 466, 507, 586, 597, 614, 647, 689, 727, 736, 766, 773, 790, 843, 852, 871, 888, 913, 978, 991, 996, 1339, 1347, 1349, 1443, 1500, 1747]
+INFO 2025-06-20 07:36:32,072 __init__ Closed glyph list over 'glyf': 45 glyphs after
+INFO 2025-06-20 07:36:32,072 __init__ Glyph names: ['.notdef', 'A', 'B', 'C', 'D', 'E', 'H', 'I', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'X', 'a', 'at', 'c', 'd', 'dotlessi', 'e', 'eight', 'f', 'i', 'k', 'l', 'm', 'n', 'o', 'p', 'period', 'r', 's', 'six', 'space', 't', 'u', 'uni0307', 'v', 'x', 'y', 'zero']
+INFO 2025-06-20 07:36:32,072 __init__ Glyph IDs:   [0, 2, 65, 73, 84, 95, 161, 197, 292, 300, 321, 375, 384, 397, 411, 424, 456, 466, 507, 586, 597, 614, 647, 689, 690, 727, 736, 766, 773, 790, 843, 852, 871, 888, 913, 978, 991, 996, 1339, 1347, 1349, 1443, 1500, 1747, 2645]
+DEBUG 2025-06-20 07:36:32,072 loggingTools Took 0.003s to close glyph list over 'glyf'
+INFO 2025-06-20 07:36:32,075 __init__ Retaining 45 glyphs
+INFO 2025-06-20 07:36:32,076 __init__ head subsetting not needed
+INFO 2025-06-20 07:36:32,076 __init__ hhea subsetting not needed
+INFO 2025-06-20 07:36:32,076 __init__ maxp subsetting not needed
+INFO 2025-06-20 07:36:32,076 __init__ OS/2 subsetting not needed
+DEBUG 2025-06-20 07:36:32,076 ttFont Reading 'hmtx' table from disk
+DEBUG 2025-06-20 07:36:32,077 ttFont Decompiling 'hmtx' table
+DEBUG 2025-06-20 07:36:32,077 ttFont Reading 'hhea' table from disk
+DEBUG 2025-06-20 07:36:32,077 ttFont Decompiling 'hhea' table
+DEBUG 2025-06-20 07:36:32,080 loggingTools Took 0.003s to subset 'hmtx'
+INFO 2025-06-20 07:36:32,080 __init__ hmtx subsetted
+DEBUG 2025-06-20 07:36:32,082 loggingTools Took 0.002s to subset 'cmap'
+INFO 2025-06-20 07:36:32,082 __init__ cmap subsetted
+INFO 2025-06-20 07:36:32,082 __init__ loca subsetting not needed
+DEBUG 2025-06-20 07:36:32,082 loggingTools Took 0.000s to subset 'post'
+INFO 2025-06-20 07:36:32,083 __init__ post subsetted
+INFO 2025-06-20 07:36:32,083 __init__ gasp subsetting not needed
+INFO 2025-06-20 07:36:32,083 __init__ STAT subsetting not needed
+DEBUG 2025-06-20 07:36:32,083 ttFont Reading 'GDEF' table from disk
+DEBUG 2025-06-20 07:36:32,083 ttFont Decompiling 'GDEF' table
+DEBUG 2025-06-20 07:36:32,086 loggingTools Took 0.002s to subset 'GDEF'
+INFO 2025-06-20 07:36:32,086 __init__ GDEF subsetted
+INFO 2025-06-20 07:36:32,086 __init__ name subsetting not needed
+DEBUG 2025-06-20 07:36:32,089 loggingTools Took 0.002s to subset 'glyf'
+INFO 2025-06-20 07:36:32,089 __init__ glyf subsetted
+DEBUG 2025-06-20 07:36:32,089 loggingTools Took 0.000s to subset GlyphOrder
+DEBUG 2025-06-20 07:36:32,089 loggingTools Took 0.000s to prune 'head'
+INFO 2025-06-20 07:36:32,090 __init__ head pruned
+DEBUG 2025-06-20 07:36:32,090 ttFont Reading 'OS/2' table from disk
+DEBUG 2025-06-20 07:36:32,090 ttFont Decompiling 'OS/2' table
+INFO 2025-06-20 07:36:32,091 __init__ OS/2 Unicode ranges pruned: [0]
+INFO 2025-06-20 07:36:32,091 __init__ OS/2 CodePage ranges pruned: [0]
+DEBUG 2025-06-20 07:36:32,092 loggingTools Took 0.001s to prune 'glyf'
+INFO 2025-06-20 07:36:32,093 __init__ glyf pruned
+DEBUG 2025-06-20 07:36:32,093 loggingTools Took 0.000s to prune 'GDEF'
+INFO 2025-06-20 07:36:32,093 __init__ GDEF pruned
+DEBUG 2025-06-20 07:36:32,093 ttFont Reading 'name' table from disk
+DEBUG 2025-06-20 07:36:32,094 ttFont Decompiling 'name' table
+DEBUG 2025-06-20 07:36:32,094 ttFont Reading 'gasp' table from disk
+DEBUG 2025-06-20 07:36:32,094 ttFont Decompiling 'gasp' table
+DEBUG 2025-06-20 07:36:32,094 ttFont Reading 'STAT' table from disk
+DEBUG 2025-06-20 07:36:32,095 ttFont Decompiling 'STAT' table
+DEBUG 2025-06-20 07:36:32,095 loggingTools Took 0.002s to prune 'name'
+INFO 2025-06-20 07:36:32,096 __init__ name pruned
+WARNING 2025-06-20 07:38:20,487 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-20 07:38:24,894 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-20 07:38:27,844 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-20 07:38:31,168 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-20 07:38:34,284 views Unauthorized access attempt by admin for kuruk
+INFO 2025-06-20 07:43:42,252 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-20 07:43:42,255 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-20 07:43:42,405 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-20 07:48:42,309 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-20 07:48:42,583 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-20 07:48:42,771 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-20 07:51:08,103 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-20 07:51:08,500 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-20 07:51:08,675 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-20 07:52:53,868 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-20 07:52:54,254 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-20 07:52:54,315 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-20 07:54:28,436 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-20 07:54:28,738 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-20 07:54:28,941 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-20 07:55:41,354 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-20 07:55:41,591 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-20 07:55:41,822 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
