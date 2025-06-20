@@ -24,6 +24,8 @@ from django.contrib.postgres.fields import JSONField
 from payments.models import Payment
 from licensing.models import Invitation
 import logging
+from django.db.models import Count
+
 logger = logging.getLogger(__name__)
 
 class UserProfile(models.Model):
