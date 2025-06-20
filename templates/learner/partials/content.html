@@ -224,6 +224,7 @@
                         {% endif %}
 
                         <!-- Bagian Peer Review -->
+                            <!-- Bagian Peer Review -->
                         {% if can_review and submissions %}
                             <div id="peer-review-section" class="mt-5 border-top pt-4">
                                 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -271,7 +272,6 @@
                                                 hx-target="#content-area"
                                                 hx-swap="innerHTML">
                                                 {% csrf_token %}
-                                                
                                                 <div class="mb-3">
                                                     <label class="form-label">
                                                         <i class="bi bi-star-fill"></i> Berikan Nilai
@@ -285,15 +285,13 @@
                                                         <option value="5">5 - Sangat Baik</option>
                                                     </select>
                                                 </div>
-                                                
                                                 <div class="mb-3">
                                                     <label class="form-label">
                                                         <i class="bi bi-chat-left-text"></i> Komentar (opsional)
                                                     </label>
                                                     <textarea name="comment" class="form-control" rows="3" 
-                                                        placeholder="Berikan masukan yang membangun..."></textarea>
+                                                            placeholder="Berikan masukan yang membangun..."></textarea>
                                                 </div>
-                                                
                                                 <button type="submit" class="btn btn-primary">
                                                     <i class="bi bi-send"></i> Kirim Review
                                                 </button>
@@ -302,6 +300,14 @@
                                     </div>
                                 {% endfor %}
                             </div>
+                        {% else %}
+                            {% if has_other_submissions %}
+                                <div id="peer-review-section" class="mt-5 border-top pt-4">
+                                    <div class="alert alert-info">
+                                        Anda telah mereview semua submisi yang tersedia. Jika ada submisi baru, Anda akan dapat mereview lagi.
+                                    </div>
+                                </div>
+                            {% endif %}
                         {% endif %}
 
                         <!-- Bagian untuk Skor Kuis -->

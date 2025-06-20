@@ -1,86 +1,134 @@
-INFO 2025-06-20 15:59:05,606 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-20 15:59:05,708 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-20 15:59:05,710 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-20 15:59:08,169 views load_content: Rendering learner/my_course.html for user learn, assessment 56
-WARNING 2025-06-20 15:59:13,267 views Unauthorized access attempt by admin for kuruk
-WARNING 2025-06-20 15:59:18,231 views Unauthorized access attempt by admin for kuruk
-INFO 2025-06-20 15:59:19,504 views load_content: Rendering learner/my_course.html for user learn, assessment 56
-INFO 2025-06-20 15:59:24,704 views submit_answer_askora_new: Rendering HTMX for user learn, assessment 56, ask_ora 2
-INFO 2025-06-20 16:07:47,333 views load_content: Rendering learner/my_course.html for user admin, assessment 1
-INFO 2025-06-20 16:07:48,743 views load_content: Rendering learner/partials/content.html for user admin, assessment 56
-INFO 2025-06-20 16:08:05,305 views submit_answer_askora_new: Rendering HTMX for user admin, assessment 56, ask_ora 2
-INFO 2025-06-20 16:08:11,521 views load_content: Rendering learner/my_course.html for user admin, assessment 56
-INFO 2025-06-20 16:08:19,926 views load_content: Rendering learner/my_course.html for user admin, assessment 56
-INFO 2025-06-20 16:08:23,662 views load_content: Rendering learner/my_course.html for user admin, assessment 56
-INFO 2025-06-20 16:08:25,866 views load_content: Rendering learner/my_course.html for user admin, assessment 56
-WARNING 2025-06-20 16:08:48,799 views Unauthorized access attempt by admin for kuruk
-WARNING 2025-06-20 16:08:55,051 views Unauthorized access attempt by admin for kuruk
-INFO 2025-06-20 16:08:59,369 views load_content: Rendering learner/my_course.html for user admin, assessment 56
-INFO 2025-06-20 16:09:05,999 views submit_answer_askora_new: Rendering HTMX for user admin, assessment 56, ask_ora 2
-INFO 2025-06-20 16:11:04,267 views load_content: Rendering learner/my_course.html for user admin, assessment 56
-INFO 2025-06-20 16:11:06,997 views load_content: Rendering learner/partials/content.html for user admin, assessment 1
-INFO 2025-06-20 16:11:08,216 views load_content: Rendering learner/partials/content.html for user admin, assessment 56
-INFO 2025-06-20 16:21:26,063 views load_content: Rendering learner/my_course.html for user admin, assessment 56
-INFO 2025-06-20 16:35:43,139 views load_content: Rendering learner/my_course.html for user learn, assessment 56
-WARNING 2025-06-20 16:35:48,375 views Unauthorized access attempt by admin for kuruk
-WARNING 2025-06-20 16:35:55,046 views Unauthorized access attempt by admin for kuruk
-INFO 2025-06-20 16:35:56,067 views load_content: Rendering learner/my_course.html for user learn, assessment 56
-INFO 2025-06-20 16:36:01,617 views submit_answer_askora_new: Rendering HTMX for user learn, assessment 56, ask_ora 2
-INFO 2025-06-20 16:36:13,781 views load_content: Rendering learner/my_course.html for user admin, assessment 56
-INFO 2025-06-20 16:36:21,229 views submit_answer_askora_new: Rendering HTMX for user admin, assessment 56, ask_ora 2
-INFO 2025-06-20 16:36:28,793 views load_content: Rendering learner/my_course.html for user learn, assessment 56
-INFO 2025-06-20 16:36:33,126 views load_content: Rendering learner/my_course.html for user learn, assessment 56
-INFO 2025-06-20 16:36:46,695 views load_content: Rendering learner/my_course.html for user admin, assessment 56
-INFO 2025-06-20 16:37:02,434 views load_content: Rendering learner/my_course.html for user admin, assessment 56
-INFO 2025-06-20 16:37:39,523 views load_content: Rendering learner/my_course.html for user learn, assessment 56
-INFO 2025-06-20 16:46:31,458 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-20 16:46:31,553 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-20 16:46:31,673 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-20 16:46:35,691 views load_content: Rendering learner/my_course.html for user learn, assessment 56
-INFO 2025-06-20 16:46:43,895 views load_content: Rendering learner/my_course.html for user admin, assessment 56
-ERROR 2025-06-20 16:47:00,488 views Gagal menyimpan review.
+INFO 2025-06-20 17:12:30,018 views load_content: Rendering learner/my_course.html for user learn, assessment 56
+ERROR 2025-06-20 17:12:30,038 log Internal Server Error: /learn/backend-development/assessment/56/
 Traceback (most recent call last):
-  File "/home/TIM/mysite/learner/views.py", line 1090, in submit_peer_review_new
-    assessment_score.calculate_final_score()
-  File "/home/TIM/mysite/courses/models.py", line 1002, in calculate_final_score
-    course = self.submission.askora.assessment.section.course
-AttributeError: 'Section' object has no attribute 'course'
-ERROR 2025-06-20 16:47:12,858 views Gagal menyimpan review.
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/smartif.py", line 180, in translate_token
+    op = OPERATORS[token]
+KeyError: 'Submission.objects.filter(askora__assessment=assessment).exclude(user=request.user).exists'
+
+During handling of the above exception, another exception occurred:
+
 Traceback (most recent call last):
-  File "/home/TIM/mysite/learner/views.py", line 1090, in submit_peer_review_new
-    assessment_score.calculate_final_score()
-  File "/home/TIM/mysite/courses/models.py", line 1002, in calculate_final_score
-    course = self.submission.askora.assessment.section.course
-AttributeError: 'Section' object has no attribute 'course'
-INFO 2025-06-20 16:54:03,254 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-20 16:54:03,395 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-20 16:54:03,540 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-20 16:54:09,579 views load_content: Rendering learner/my_course.html for user learn, assessment 56
-INFO 2025-06-20 16:54:34,506 views load_content: Rendering learner/my_course.html for user learn, assessment 56
-INFO 2025-06-20 16:54:44,305 views load_content: Rendering learner/my_course.html for user learn, assessment 56
-INFO 2025-06-20 16:54:46,811 views load_content: Rendering learner/my_course.html for user learn, assessment 56
-INFO 2025-06-20 16:54:48,745 views load_content: Rendering learner/my_course.html for user learn, assessment 56
-INFO 2025-06-20 16:54:52,464 views load_content: Rendering learner/my_course.html for user admin, assessment 56
-INFO 2025-06-20 16:55:08,485 views load_content: Rendering learner/my_course.html for user learn, assessment 56
-INFO 2025-06-20 16:55:23,882 views load_content: Rendering learner/my_course.html for user admin, assessment 56
-INFO 2025-06-20 16:55:48,149 views load_content: Rendering learner/my_course.html for user learn, assessment 56
-WARNING 2025-06-20 16:57:08,620 views Unauthorized access attempt by admin for kuruk
-WARNING 2025-06-20 16:57:14,695 views Unauthorized access attempt by admin for kuruk
-WARNING 2025-06-20 16:57:19,509 views Unauthorized access attempt by admin for kuruk
-INFO 2025-06-20 16:57:23,319 views load_content: Rendering learner/my_course.html for user learn, assessment 56
-INFO 2025-06-20 16:57:28,586 views load_content: Rendering learner/my_course.html for user admin, assessment 56
-INFO 2025-06-20 16:59:02,153 views load_content: Rendering learner/my_course.html for user admin, assessment 56
-INFO 2025-06-20 17:00:46,327 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-20 17:00:46,502 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-20 17:00:46,515 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-WARNING 2025-06-20 17:00:51,064 views Unauthorized access attempt by admin for kuruk
-WARNING 2025-06-20 17:00:54,557 views Unauthorized access attempt by admin for kuruk
-WARNING 2025-06-20 17:00:59,942 views Unauthorized access attempt by admin for kuruk
-INFO 2025-06-20 17:01:04,073 views load_content: Rendering learner/my_course.html for user learn, assessment 56
-INFO 2025-06-20 17:01:18,287 views Peer review berhasil dibuat untuk submission 22 oleh learn
-INFO 2025-06-20 17:01:18,487 views submit_peer_review_new: Rendering learner/partials/content.html untuk user learn, assessment 56
-INFO 2025-06-20 17:01:29,448 views load_content: Rendering learner/my_course.html for user admin, assessment 56
-INFO 2025-06-20 17:01:47,472 views Peer review berhasil dibuat untuk submission 21 oleh admin
-INFO 2025-06-20 17:01:47,526 views submit_peer_review_new: Rendering learner/partials/content.html untuk user admin, assessment 56
-INFO 2025-06-20 17:01:50,949 views load_content: Rendering learner/my_course.html for user learn, assessment 56
-INFO 2025-06-20 17:02:01,692 views load_content: Rendering learner/my_course.html for user admin, assessment 56
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/learner/views.py", line 453, in load_content
+    response = render(request, template, context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 199, in render
+    template = context.template.engine.select_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 208, in select_template
+    return self.get_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 970, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 976, in do_if
+    nodelist = parser.parse(("endif",))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 976, in do_if
+    nodelist = parser.parse(("endif",))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 961, in do_if
+    condition = TemplateIfParser(parser, bits).parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 894, in __init__
+    super().__init__(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/smartif.py", line 171, in __init__
+    mapped_tokens.append(self.translate_token(token))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/smartif.py", line 182, in translate_token
+    return self.create_var(token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 897, in create_var
+    return TemplateLiteral(self.template_parser.compile_filter(value), value)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 710, in __init__
+    raise TemplateSyntaxError(
+django.template.exceptions.TemplateSyntaxError: Could not parse the remainder: '(askora__assessment=assessment).exclude(user=request.user).exists' from 'Submission.objects.filter(askora__assessment=assessment).exclude(user=request.user).exists'
+INFO 2025-06-20 17:15:26,795 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-20 17:15:26,896 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-20 17:15:27,145 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-20 17:16:01,668 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-20 17:16:01,701 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-20 17:16:01,743 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-20 17:16:09,615 views load_content: Rendering learner/my_course.html for user learn, assessment 1
+INFO 2025-06-20 17:16:11,992 views load_content: Rendering learner/partials/content.html for user learn, assessment 56
+INFO 2025-06-20 17:16:20,973 views Peer review berhasil dibuat untuk submission 22 oleh learn
+INFO 2025-06-20 17:16:21,028 views submit_peer_review_new: Rendering learner/partials/content.html untuk user learn, assessment 56
+INFO 2025-06-20 17:16:35,709 views load_content: Rendering learner/my_course.html for user admin, assessment 56
+INFO 2025-06-20 17:17:01,266 views Peer review berhasil dibuat untuk submission 21 oleh admin
+INFO 2025-06-20 17:17:01,336 views submit_peer_review_new: Rendering learner/partials/content.html untuk user admin, assessment 56
+INFO 2025-06-20 17:17:07,552 views load_content: Rendering learner/my_course.html for user admin, assessment 56
+INFO 2025-06-20 17:17:10,470 views load_content: Rendering learner/my_course.html for user learn, assessment 56
+INFO 2025-06-20 17:22:19,290 views load_content: Rendering learner/my_course.html for user learn, assessment 56
+INFO 2025-06-20 17:22:31,989 views load_content: Rendering learner/partials/content.html for user learn, assessment 1
+INFO 2025-06-20 17:22:33,407 views load_content: Rendering learner/partials/content.html for user learn, assessment 56
+INFO 2025-06-20 17:22:36,519 views load_content: Rendering learner/partials/content.html for user learn, assessment 1
+WARNING 2025-06-20 17:28:36,829 log Forbidden (Referer checking failed - no Referer.): /
+INFO 2025-06-20 17:29:25,371 views load_content: Rendering learner/partials/content.html for user learn, assessment 56
+INFO 2025-06-20 17:29:27,555 views load_content: Rendering learner/partials/content.html for user learn, assessment 1
+INFO 2025-06-20 17:29:29,285 views load_content: Rendering learner/partials/content.html for user learn, material 1

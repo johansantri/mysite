@@ -93,19 +93,17 @@ def _build_assessment_context(assessment, user):
     submitted_askora_ids = set(user_submissions.values_list('askora_id', flat=True))
     now = timezone.now()
     
-    # Tentukan apakah pengguna bisa melakukan peer review
-    can_review = Submission.objects.filter(askora__assessment=assessment).exclude(user=user).exists()
-    
-    # Gunakan logika submissions yang konsisten
+    # Filter submisi yang belum direview
     submissions = Submission.objects.filter(
         askora__assessment=assessment
-    ).exclude(user=user)  # Selaraskan dengan submit_answer_askora_new
-    # Alternatif: Jika hanya submisi yang belum direview yang diinginkan
-    # submissions = Submission.objects.filter(
-    #     askora__assessment=assessment
-    # ).exclude(user=user).exclude(
-    #     id__in=PeerReview.objects.filter(reviewer=user).values('submission__id')
-    # )
+    ).exclude(user=user).exclude(
+        id__in=PeerReview.objects.filter(reviewer=user).values('submission__id')
+    )
+    
+    # Periksa apakah ada submisi dari pengguna lain
+    has_other_submissions = Submission.objects.filter(
+        askora__assessment=assessment
+    ).exclude(user=user).exists()
 
     context = {
         'ask_oras': ask_oras,
@@ -118,8 +116,9 @@ def _build_assessment_context(assessment, user):
                 (askora.response_deadline is None or askora.response_deadline > now)
             ) for askora in ask_oras
         },
-        'can_review': can_review,
+        'can_review': submissions.exists(),
         'submissions': submissions,
+        'has_other_submissions': has_other_submissions,  # Tambahan
         'is_quiz': assessment.questions.exists(),
         'peer_review_stats': None,
     }
@@ -147,6 +146,7 @@ def _build_assessment_context(assessment, user):
             context['peer_review_stats']['avg_score'] = round(avg_score, 2) if avg_score else None
     
     return context
+
 
 @login_required
 def toggle_reaction(request, comment_id, reaction_type):
@@ -1140,6 +1140,18 @@ def render_content(request, assessment, course):
             combined_content.append(('assessment', assessment_item))
     current_index = next((i for i, c in enumerate(combined_content) if c[0] == 'assessment' and c[1].id == assessment.id), 0)
 
+    # Filter submisi yang belum direview
+    submissions = Submission.objects.filter(
+        askora__assessment=assessment
+    ).exclude(user=request.user).exclude(
+        id__in=PeerReview.objects.filter(reviewer=request.user).values('submission__id')
+    )
+    
+    # Periksa apakah ada submisi dari pengguna lain
+    has_other_submissions = Submission.objects.filter(
+        askora__assessment=assessment
+    ).exclude(user=request.user).exists()
+
     # Bangun konteks
     context = {
         'course': course,
@@ -1173,12 +1185,9 @@ def render_content(request, assessment, course):
                 (ao.response_deadline is None or ao.response_deadline > timezone.now())
             ) for ao in assessment.ask_oras.all()
         },
-        'can_review': Submission.objects.filter(askora__assessment=assessment).exclude(user=request.user).exists(),
-        'submissions': Submission.objects.filter(
-            askora__assessment=assessment
-        ).exclude(user=request.user).exclude(
-            id__in=PeerReview.objects.filter(reviewer=request.user).values('submission__id')
-        ),
+        'can_review': submissions.exists(),
+        'submissions': submissions,
+        'has_other_submissions': has_other_submissions,  # Tambahan: True jika ada submisi dari pengguna lain
         'is_quiz': assessment.questions.exists(),
         'peer_review_stats': None,
         'show_timer': False,
