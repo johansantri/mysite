@@ -220,6 +220,9 @@ def toggle_reaction(request, comment_id, reaction_type):
             }, status=500)
         return HttpResponse(status=500)
 
+
+logger = logging.getLogger(__name__)
+
 @login_required
 def my_course(request, username, slug):
     """
@@ -242,7 +245,7 @@ def my_course(request, username, slug):
         logger.warning(f"User {request.user.username} not enrolled in course {slug}")
         return HttpResponse(status=403)
 
-    sections = Section.objects.filter(course=course).prefetch_related(
+    sections = Section.objects.filter(courses=course).prefetch_related(  # Fixed: 'course' to 'courses'
         Prefetch('materials', queryset=Material.objects.all()),
         Prefetch('assessments', queryset=Assessment.objects.all())
     ).order_by('order')
@@ -295,7 +298,8 @@ def my_course(request, username, slug):
             if not payment:
                 context['assessment_locked'] = True
                 context['payment_required_url'] = reverse('payments:process_payment', kwargs={
-                    'course_id': course.id, 'payment_type': 'exam'
+                    'course_id': course.id,
+                    'payment_type': 'exam'
                 })
                 logger.info(f"Payment required for assessment {assessment_id} in course {course.id} for user {request.user.username}")
             else:
@@ -345,7 +349,6 @@ def my_course(request, username, slug):
     response = render(request, 'learner/my_course.html', context)
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     return response
-
 @login_required
 def load_content(request, username, slug, content_type, content_id):
     """

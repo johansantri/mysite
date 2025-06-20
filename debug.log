@@ -1,6 +1,37 @@
-WARNING 2025-06-20 10:08:18,236 views Unauthorized access attempt by admin for kuruk
-WARNING 2025-06-20 10:08:25,445 views Unauthorized access attempt by admin for kuruk
-INFO 2025-06-20 10:08:28,635 views load_content: Rendering learner/my_course.html for user learn, assessment 1
-INFO 2025-06-20 10:08:31,270 views start_assessment: Rendering HTMX for user learn, assessment 1, time_left=59
-INFO 2025-06-20 10:09:31,147 views submit_assessment_new: Rendering HTMX for user learn, assessment 1
-INFO 2025-06-20 10:09:36,286 views load_content: Rendering learner/partials/content.html for user learn, assessment 56
+ERROR 2025-06-20 10:18:56,160 log Internal Server Error: /admin/backend-development/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/learner/views.py", line 245, in my_course
+    sections = Section.objects.filter(course=course).prefetch_related(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1491, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1509, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1516, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1643, in add_q
+    clause, _ = self._add_q(q_object, can_reuse)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1675, in _add_q
+    child_clause, needed_inner = self.build_filter(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1523, in build_filter
+    lookups, parts, reffed_expression = self.solve_lookup_type(arg, summarize)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1330, in solve_lookup_type
+    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1802, in names_to_path
+    raise FieldError(
+django.core.exceptions.FieldError: Cannot resolve keyword 'course' into field. Choices are: assessments, attempted_questions, children, courses, courses_id, created_at, id, materials, order, parent, parent_id, scores, slug, title
+INFO 2025-06-20 10:20:57,045 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-20 10:20:57,084 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-20 10:20:57,099 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-20 10:21:00,000 views my_course: Rendering for user admin, course backend-development, assessment_id=None
+INFO 2025-06-20 10:21:03,926 views load_content: Rendering learner/partials/content.html for user admin, assessment 1
+INFO 2025-06-20 10:21:06,137 views load_content: Rendering learner/partials/content.html for user admin, assessment 56
+INFO 2025-06-20 10:21:38,016 views load_content: Rendering learner/partials/content.html for user admin, assessment 1
+INFO 2025-06-20 10:21:39,661 views load_content: Rendering learner/partials/content.html for user admin, material 1
