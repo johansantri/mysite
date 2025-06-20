@@ -16,6 +16,7 @@ from django.utils import timezone
 from django.template.defaultfilters import linebreaks
 from django.middleware.csrf import get_token
 from authentication.models import CustomUser, Universiti
+from django.template.loader import render_to_string
 from courses.models import (
     Assessment, AssessmentRead, AssessmentScore, AssessmentSession,
     AskOra, Choice, Comment, Course, CourseProgress, CourseStatusHistory,
@@ -140,17 +141,6 @@ def _build_assessment_context(assessment, user):
 
 @login_required
 def toggle_reaction(request, comment_id, reaction_type):
-    """
-    Toggle like/dislike reaction on a comment.
-    
-    Args:
-        request: HTTP request object.
-        comment_id: ID of the comment.
-        reaction_type: Type of reaction ('like' or 'dislike').
-    
-    Returns:
-        HttpResponse: Updated comments partial or redirect.
-    """
     if request.method != 'POST':
         logger.warning(f"Invalid request method: {request.method} for toggle_reaction")
         return HttpResponse(status=400)
@@ -173,7 +163,6 @@ def toggle_reaction(request, comment_id, reaction_type):
                         Comment.objects.filter(id=comment_id).update(likes=F('likes') - 1)
                     else:
                         Comment.objects.filter(id=comment_id).update(dislikes=F('dislikes') - 1)
-                    logger.debug(f"User {request.user.username} removed {reaction_type} from comment {comment_id}")
                 else:
                     existing_reaction.delete()
                     CommentReaction.objects.create(user=request.user, comment=comment, reaction_type=reaction_value)
@@ -181,27 +170,32 @@ def toggle_reaction(request, comment_id, reaction_type):
                         Comment.objects.filter(id=comment_id).update(likes=F('likes') + 1, dislikes=F('dislikes') - 1)
                     else:
                         Comment.objects.filter(id=comment_id).update(dislikes=F('dislikes') + 1, likes=F('likes') - 1)
-                    logger.debug(f"User {request.user.username} changed reaction to {reaction_type} on comment {comment_id}")
             else:
                 CommentReaction.objects.create(user=request.user, comment=comment, reaction_type=reaction_value)
                 if reaction_value == CommentReaction.REACTION_LIKE:
                     Comment.objects.filter(id=comment_id).update(likes=F('likes') + 1)
                 else:
                     Comment.objects.filter(id=comment_id).update(dislikes=F('dislikes') + 1)
-                logger.debug(f"User {request.user.username} added {reaction_type} to comment {comment_id}")
 
         is_htmx = request.headers.get('HX-Request') == 'true'
         if is_htmx:
-            context = {
-                'comments': Comment.objects.filter(material=material).select_related('user', 'parent'),
-                'material': material,
-                'user_reactions': {
-                    r.comment_id: r.reaction_type for r in CommentReaction.objects.filter(
-                        user=request.user, comment__material=material
-                    )
-                },
+            comment.refresh_from_db()
+            user_reactions = {
+                r.comment_id: r.reaction_type
+                for r in CommentReaction.objects.filter(user=request.user, comment__material=material)
             }
-            return render(request, 'learner/partials/comments.html', context)
+            level = int(request.GET.get('level', 0))
+            html = render_to_string(
+                'learner/partials/comment.html',
+                {
+                    'comment': comment,
+                    'material': material,
+                    'user_reactions': user_reactions,
+                    'level': level,
+                },
+                request=request
+            )
+            return HttpResponse(html)
 
         redirect_url = reverse('learner:load_content', kwargs={
             'username': request.user.username,
@@ -213,11 +207,8 @@ def toggle_reaction(request, comment_id, reaction_type):
 
     except Exception as e:
         logger.error(f"Error toggling reaction for comment {comment_id}: {str(e)}", exc_info=True)
-        is_htmx = request.headers.get('HX-Request') == 'true'
-        if is_htmx:
-            return render(request, 'learner/partials/error.html', {
-                'error_message': 'Terjadi kesalahan saat memproses reaksi.'
-            }, status=500)
+        if request.headers.get('HX-Request') == 'true':
+            return HttpResponse("Terjadi kesalahan saat memproses reaksi.", status=500)
         return HttpResponse(status=500)
 
 

@@ -1,8 +1,8 @@
 {% load learner_tags %}
 
-<div class="comment-wrapper mb-3 {% if level > 0 %}ms-{{ level|mul:4 }} ps-2 border-start border-2 border-primary-subtle{% endif %}">
+<div id="comment-{{ comment.id }}" class="comment-wrapper mb-3 {% if level > 0 %}ms-{{ level|mul:4 }} ps-2 border-start border-2 border-primary-subtle{% endif %}">
     <div class="d-flex">
-        <!-- Avatar (huruf awal nama) -->
+        <!-- Avatar dari huruf awal username -->
         <div class="flex-shrink-0">
             <div class="rounded-circle bg-secondary text-white d-flex justify-content-center align-items-center"
                  style="width: 40px; height: 40px;">
@@ -26,22 +26,28 @@
             <!-- Aksi Like / Dislike / Balas -->
             <div class="d-flex gap-2 align-items-center small text-muted flex-wrap">
                 {% if user.is_authenticated %}
-                    <form hx-post="{% url 'learner:toggle_reaction' comment_id=comment.id reaction_type='like' %}"
-                          hx-target="#comments-section"
-                          hx-swap="innerHTML" class="d-inline">
+                    <form 
+                        hx-post="{% url 'learner:toggle_reaction' comment_id=comment.id reaction_type='like' %}"
+                        hx-target="#comment-{{ comment.id }}"
+                        hx-swap="outerHTML"
+                        class="d-inline">
                         <button type="submit" class="btn btn-link btn-sm px-1 text-decoration-none
                             {% if user_reactions|dict_get:comment.id == 'LIKE' %}text-primary fw-bold{% endif %}">
                             Suka ({{ comment.likes }})
                         </button>
                     </form>
-                    <form hx-post="{% url 'learner:toggle_reaction' comment_id=comment.id reaction_type='dislike' %}"
-                          hx-target="#comments-section"
-                          hx-swap="innerHTML" class="d-inline">
+
+                    <form 
+                        hx-post="{% url 'learner:toggle_reaction' comment_id=comment.id reaction_type='dislike' %}"
+                        hx-target="#comment-{{ comment.id }}"
+                        hx-swap="outerHTML"
+                        class="d-inline">
                         <button type="submit" class="btn btn-link btn-sm px-1 text-decoration-none
                             {% if user_reactions|dict_get:comment.id == 'DISLIKE' %}text-danger fw-bold{% endif %}">
                             Tidak Suka ({{ comment.dislikes }})
                         </button>
                     </form>
+
                     <button class="btn btn-link btn-sm px-1 text-decoration-none text-muted"
                             data-bs-toggle="collapse"
                             data-bs-target="#reply-form-{{ comment.id }}"
@@ -54,7 +60,7 @@
                 {% endif %}
             </div>
 
-            <!-- Form Balasan -->
+            <!-- Form Balas -->
             {% if user.is_authenticated %}
                 <div class="collapse mt-2 reply-form" id="reply-form-{{ comment.id }}">
                     <form hx-post="{% url 'learner:add_comment' %}"
@@ -78,7 +84,7 @@
                 </div>
             {% endif %}
 
-            <!-- Collapse Tombol Tampilkan Balasan -->
+            <!-- Tombol Collapse Balasan -->
             {% if comment.children.all %}
                 <button class="btn btn-sm btn-link text-decoration-none mt-2"
                         type="button"
@@ -88,6 +94,7 @@
                         aria-controls="child-comments-{{ comment.id }}">
                     <i class="bi bi-chat-left-text"></i> Tampilkan {{ comment.children.count }} balasan
                 </button>
+
                 <div class="collapse mt-2" id="child-comments-{{ comment.id }}">
                     {% for child in comment.children.all %}
                         {% include 'learner/partials/comment.html' with comment=child user_reactions=user_reactions level=level|add:1 %}
