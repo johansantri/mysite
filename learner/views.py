@@ -558,13 +558,6 @@ def start_assessment_courses(request, assessment_id):
 def submit_assessment_new(request, assessment_id):
     """
     Submit an assessment and end the session.
-    
-    Args:
-        request: HTTP request object.
-        assessment_id: ID of the assessment.
-    
-    Returns:
-        HttpResponse: Rendered assessment partial or redirect.
     """
     if request.method != 'POST':
         logger.warning(f"Invalid request method: {request.method} for submit_assessment_new")
@@ -572,26 +565,50 @@ def submit_assessment_new(request, assessment_id):
             'error_message': 'Permintaan tidak valid.'
         }, status=400) if request.headers.get('HX-Request') == 'true' else HttpResponse(status=400)
 
-    assessment = get_object_or_404(Assessment.objects.select_related('section__courses'), id=assessment_id)  # Fixed: 'section__course' to 'section__courses'
-    course = assessment.section.courses  # Fixed: 'course' to 'courses'
+    assessment = get_object_or_404(Assessment.objects.select_related('section__courses'), id=assessment_id)
+    course = assessment.section.courses
     session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
 
     if not session:
-        logger.error(f"No session found for user {request.user.username}, assessment {assessment_id}")  # Changed to 'error' for severity
+        logger.error(f"No session found for user {request.user.username}, assessment {assessment_id}")
         return render(request, 'learner/partials/error.html', {
             'error_message': 'Sesi penilaian tidak ditemukan.'
         }, status=400) if request.headers.get('HX-Request') == 'true' else HttpResponse(status=400)
 
+    # ⬇️ SIMPAN JAWABAN PILIHAN GANDA
+    answers = {
+        key.split('_')[1]: value
+        for key, value in request.POST.items()
+        if key.startswith('answers_')
+    }
+
+    for question_id, choice_id in answers.items():
+        try:
+            question = Question.objects.get(id=question_id, assessment=assessment)
+            choice = Choice.objects.get(id=choice_id, question=question)
+
+            QuestionAnswer.objects.update_or_create(
+                user=request.user,
+                question=question,
+                defaults={'choice': choice}
+            )
+        except (Question.DoesNotExist, Choice.DoesNotExist) as e:
+            logger.warning(f"Invalid answer data for question {question_id}: {e}")
+            continue
+
+    # ⬇️ SIMPAN AKHIR SESI
     session.end_time = timezone.now()
     session.save()
-    logger.debug(f"Assessment submitted for user {request.user.username}, assessment {assessment_id}")
 
+    logger.debug(f"Assessment submitted for user {request.user.username}, assessment {assessment_id}")
+    
+    # ⬇️ BANGUN KONTEN
     context = {
         'course': course,
         'course_name': course.course_name,
         'username': request.user.username,
         'slug': course.slug,
-        'sections': Section.objects.filter(courses=course).prefetch_related('materials', 'assessments').order_by('order'),  # Fixed: 'course' to 'courses'
+        'sections': Section.objects.filter(courses=course).prefetch_related('materials', 'assessments').order_by('order'),
         'current_content': ('assessment', assessment, assessment.section),
         'material': None,
         'assessment': assessment,
@@ -611,6 +628,7 @@ def submit_assessment_new(request, assessment_id):
         'next_url': None,
     }
 
+    # Tambahan jika Anda punya helper
     context.update(_build_assessment_context(assessment, request.user))
     context['can_review'] = bool(context['submissions'])
 
