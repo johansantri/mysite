@@ -316,123 +316,130 @@
                         {% endif %}
 
                         <!-- Bagian untuk soal pilihan ganda (quiz) dengan timer -->
-                        {% if is_quiz %}
+                       {% if is_quiz %}
                             {% if is_started %}
                                 {% if is_expired %}
-                                    <div class="alert alert-danger">Penilaian ini telah kedaluwarsa.</div>
-                                    {% for question in assessment.questions.all %}
-                                        <div class="card mb-3 border 
+                                <div class="alert alert-danger">Penilaian ini telah kedaluwarsa.</div>
+                                {% for question in assessment.questions.all %}
+                                    <div class="card mb-3 border 
+                                    {% with answer=answered_questions|get_question_answer:question.id %}
+                                        {% if answer and answer.choice.is_correct %}
+                                        border-success
+                                        {% else %}
+                                        border-danger
+                                        {% endif %}
+                                    {% endwith %}">
+                                    <div class="card-body">
+                                        <h5>{{ question.text }}</h5>
+                                        <ul class="list-group">
+                                        {% for choice in question.choices.all %}
                                             {% with answer=answered_questions|get_question_answer:question.id %}
-                                                {% if answer and answer.choice.is_correct %}
-                                                    border-success
-                                                {% else %}
-                                                    border-danger
+                                            <li class="list-group-item
+                                                {% if choice.is_correct %}
+                                                list-group-item-success
+                                                {% elif answer and answer.choice.id == choice.id %}
+                                                list-group-item-danger
+                                                {% endif %}">
+                                                {{ choice.text }}
+                                                {% if choice.is_correct %}
+                                                <span class="badge bg-success">Benar</span>
                                                 {% endif %}
-                                            {% endwith %}">
-                                            <div class="card-body">
-                                                <h5>{{ question.text }}</h5>
-                                                <ul class="list-group">
-                                                    {% for choice in question.choices.all %}
-                                                        {% with answer=answered_questions|get_question_answer:question.id %}
-                                                            <li class="list-group-item
-                                                                {% if choice.is_correct %}
-                                                                    list-group-item-success
-                                                                {% elif answer and answer.choice.id == choice.id %}
-                                                                    list-group-item-danger
-                                                                {% endif %}">
-                                                                {{ choice.text }}
-                                                                {% if choice.is_correct %}
-                                                                    <span class="badge bg-success">Benar</span>
-                                                                {% endif %}
-                                                                {% if answer and answer.choice.id == choice.id %}
-                                                                    <span class="badge bg-primary">Jawaban Anda</span>
-                                                                {% endif %}
-                                                            </li>
-                                                        {% endwith %}
-                                                    {% endfor %}
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    {% endfor %}
-                                {% else %}
-                                    <div class="alert alert-info mb-4">
-                                        Waktu tersisa: <span id="timer">{{ remaining_time }}</span> detik
+                                                {% if answer and answer.choice.id == choice.id %}
+                                                <span class="badge bg-primary">Jawaban Anda</span>
+                                                {% endif %}
+                                            </li>
+                                            {% endwith %}
+                                        {% endfor %}
+                                        </ul>
                                     </div>
+                                    </div>
+                                {% endfor %}
+                                {% else %}
+                                <div class="alert alert-info mb-4">
+                                    Waktu tersisa: <span id="timer">{{ remaining_time }}</span> detik
+                                </div>
+
+                                <form id="quiz-form"
+                                        hx-post="{% url 'learner:submit_assessment_new' assessment.id %}"
+                                        hx-target="#content-area"
+                                        hx-swap="innerHTML"
+                                        method="POST">
+                                    {% csrf_token %}
+
                                     {% for question in assessment.questions.all|shuffled %}
-                                        <div class="card mb-3">
-                                            <div class="card-body">
-                                                <h5>{{ question.text }}</h5>
-                                                <form 
-                                                    hx-post="{% url 'learner:submit_answer' %}"
-                                                    hx-target="#content-area"
-                                                    hx-swap="innerHTML"
-                                                    hx-on::after-request="document.body.dispatchEvent(new Event('contentLoaded'))"
-                                                    method="POST">
-                                                    {% csrf_token %}
-                                                    <input type="hidden" name="question_id" value="{{ question.id }}">
-                                                    {% for choice in question.choices.all|shuffled %}
-                                                        <div class="form-check mb-2">
-                                                            {% with answer=answered_questions|get_question_answer:question.id %}
-                                                                <input type="radio"
-                                                                       name="choice_id"
-                                                                       value="{{ choice.id }}"
-                                                                       class="form-check-input"
-                                                                       {% if answer and answer.choice.id == choice.id %}checked{% endif %}>
-                                                                <label class="form-check-label">{{ choice.text }}</label>
-                                                            {% endwith %}
-                                                        </div>
-                                                    {% endfor %}
-                                                    <button type="submit" class="btn btn-primary mt-2">Kirim Jawaban</button>
-                                                </form>
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                        <h5>{{ question.text }}</h5>
+                                        <input type="hidden" name="question_ids" value="{{ question.id }}">
+                                        {% for choice in question.choices.all|shuffled %}
+                                            <div class="form-check mb-2">
+                                            {% with answer=answered_questions|get_question_answer:question.id %}
+                                                <input type="radio"
+                                                    name="answers_{{ question.id }}"
+                                                    value="{{ choice.id }}"
+                                                    class="form-check-input"
+                                                    {% if answer and answer.choice.id == choice.id %}checked{% endif %}>
+                                                <label class="form-check-label">{{ choice.text }}</label>
+                                            {% endwith %}
                                             </div>
+                                        {% endfor %}
                                         </div>
+                                    </div>
                                     {% endfor %}
-                                    <!-- Timer Script -->
-                                    <script>
-                                        (function() {
-                                            const timerElement = document.getElementById('timer');
-                                            if (timerElement && !timerElement.dataset.timerInitialized) {
-                                                let timeLeft = parseInt(timerElement.textContent);
-                                                timerElement.dataset.timerInitialized = 'true';
-                                                const interval = setInterval(() => {
-                                                    timeLeft--;
-                                                    timerElement.textContent = timeLeft;
-                                                    if (timeLeft <= 0) {
-                                                        clearInterval(interval);
-                                                        htmx.ajax('POST', '{% url "learner:submit_assessment_new" assessment.id %}', {
-                                                            target: '#content-area',
-                                                            swap: 'innerHTML'
-                                                        });
-                                                    }
-                                                }, 1000);
+
+                                    <div class="text-end mt-4">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-send"></i> Kirim Semua Jawaban
+                                    </button>
+                                    </div>
+                                </form>
+
+                                <script>
+                                    (function() {
+                                    const timerElement = document.getElementById('timer');
+                                    if (timerElement && !timerElement.dataset.timerInitialized) {
+                                        let timeLeft = parseInt(timerElement.textContent);
+                                        timerElement.dataset.timerInitialized = 'true';
+                                        const interval = setInterval(() => {
+                                        timeLeft--;
+                                        timerElement.textContent = timeLeft;
+                                        if (timeLeft <= 0) {
+                                            clearInterval(interval);
+                                            const form = document.getElementById('quiz-form');
+                                            if (form) {
+                                            htmx.trigger(form, 'submit');
                                             }
-                                        })();
-                                    </script>
+                                        }
+                                        }, 1000);
+                                    }
+                                    })();
+                                </script>
                                 {% endif %}
                             {% else %}
-                                <!-- Hanya untuk quiz, tampilkan tombol mulai penilaian -->
+                                <!-- Tombol mulai quiz -->
                                 <button type="button" class="btn btn-success" onclick="document.getElementById('manual-confirmation').style.display = 'block'">
-                                    Mulai Penilaian
+                                Mulai Penilaian
                                 </button>
                                 <div id="manual-confirmation" class="mt-4 p-3 border rounded bg-light" style="display: none;">
-                                    <p class="mb-3">
-                                        Sebelum memulai ujian, Anda memiliki <strong>{{ assessment.duration_in_minutes }} menit</strong> untuk menyelesaikannya. Apakah Anda setuju untuk melanjutkan?
-                                    </p>
-                                    <div class="d-flex gap-2">
-                                        <form 
-                                            hx-post="{% url 'learner:start_assessment' assessment.id %}"
-                                            hx-target="#content-area"
-                                            hx-swap="innerHTML"
-                                            hx-push-url="{% url 'learner:load_content' username=username slug=slug content_type='assessment' content_id=assessment.id %}">
-                                            <button type="submit" class="btn btn-primary">Setuju</button>
-                                        </form>
-                                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('manual-confirmation').style.display = 'none'">
-                                            Batal
-                                        </button>
-                                    </div>
+                                <p class="mb-3">
+                                    Sebelum memulai ujian, Anda memiliki <strong>{{ assessment.duration_in_minutes }} menit</strong> untuk menyelesaikannya. Apakah Anda setuju untuk melanjutkan?
+                                </p>
+                                <div class="d-flex gap-2">
+                                    <form 
+                                    hx-post="{% url 'learner:start_assessment' assessment.id %}"
+                                    hx-target="#content-area"
+                                    hx-swap="innerHTML"
+                                    hx-push-url="{% url 'learner:load_content' username=username slug=slug content_type='assessment' content_id=assessment.id %}">
+                                    <button type="submit" class="btn btn-primary">Setuju</button>
+                                    </form>
+                                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('manual-confirmation').style.display = 'none'">
+                                    Batal
+                                    </button>
+                                </div>
                                 </div>
                             {% endif %}
-                        {% endif %}
+                            {% endif %}
+
 
                     {% endif %}
                 {% endif %}
