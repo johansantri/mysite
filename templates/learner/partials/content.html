@@ -358,7 +358,7 @@
                                     <div class="alert alert-info mb-4">
                                         Waktu tersisa: <span id="timer">{{ remaining_time }}</span> detik
                                     </div>
-                                    {% for question in assessment.questions.all %}
+                                    {% for question in assessment.questions.all|shuffled %}
                                         <div class="card mb-3">
                                             <div class="card-body">
                                                 <h5>{{ question.text }}</h5>
@@ -370,7 +370,7 @@
                                                     method="POST">
                                                     {% csrf_token %}
                                                     <input type="hidden" name="question_id" value="{{ question.id }}">
-                                                    {% for choice in question.choices.all %}
+                                                    {% for choice in question.choices.all|shuffled %}
                                                         <div class="form-check mb-2">
                                                             {% with answer=answered_questions|get_question_answer:question.id %}
                                                                 <input type="radio"

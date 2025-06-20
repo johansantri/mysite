@@ -1,7 +1,15 @@
 from django import template
 from django.db.models import Count
 from courses.models import PeerReview, Submission
+import random
 register = template.Library()
+
+
+@register.filter
+def shuffled(value):
+    result = list(value)
+    random.shuffle(result)
+    return result
 
 @register.filter
 def dict_get(dictionary, key):
