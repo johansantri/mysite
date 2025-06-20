@@ -1083,6 +1083,14 @@ def submit_peer_review_new(request, submission_id):
 
     print("POST data:", request.POST)
 
+    if PeerReview.objects.filter(reviewer=request.user).count() >= 5:
+        return HttpResponse(
+            '<div class="alert alert-warning">Anda telah memberikan jumlah review maksimal yang diperbolehkan.</div>',
+            status=400
+        )
+    if PeerReview.objects.filter(submission=submission, reviewer=request.user).exists():
+        return HttpResponse('<div class="alert alert-warning">Anda sudah mereview.</div>', status=400)
+
     try:
         score_raw = request.POST.get('score')
         print("Score value:", score_raw)

@@ -997,20 +997,49 @@ class AssessmentScore(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def calculate_final_score(self):
-        peer_reviews = self.submission.peer_reviews.all()
+        course = self.submission.askora.assessment.section.course
+        total_participants = (
+            Enrollment.objects
+            .filter(course=course)
+            .aggregate(total=Count("user"))
+            .get("total", 0)
+        )
 
-        if peer_reviews:
-            total_score = sum(Decimal(review.score) * Decimal(review.weight) for review in peer_reviews)
-            peer_review_count = peer_reviews.count()
+        peer_reviews = self.submission.peer_reviews.all()
+        peer_review_count = peer_reviews.count()
+
+        # ⚙️ Tentukan minimal peer review berdasarkan jumlah peserta
+        if total_participants <= 1:
+            # ⛳ Kasus hanya satu peserta → langsung kasih nilai otomatis
+            avg_peer_score = Decimal('0')
+        elif total_participants == 2:
+            # 🤝 Cukup 1 peer review
+            if peer_review_count < 1:
+                self.final_score = None
+                self.save()
+                return
+        else:
+            # 👥 Untuk 3 peserta atau lebih, butuh minimal 3 review
+            if peer_review_count < 3:
+                self.final_score = None
+                self.save()
+                return
+
+        # ✅ Hitung rata-rata skor review jika ada
+        if peer_review_count > 0:
+            total_score = sum(
+                Decimal(review.score) * Decimal(review.weight or 1)
+                for review in peer_reviews
+            )
             avg_peer_score = total_score / Decimal(peer_review_count)
         else:
-            avg_peer_score = Decimal(0)
-        
-        # Misalnya nilai maksimum peserta (otomatis) 5
-        participant_score = Decimal(5)
+            avg_peer_score = Decimal('0')
 
-        # Skor akhir dengan bobot
-        self.final_score = (participant_score * Decimal('0.5')) + (avg_peer_score * Decimal('0.5'))
+        # ⚖️ Bobot skor: 50% jawaban peserta, 50% review teman
+        participant_score = Decimal('5')  # nilai otomatis, bisa dinamis
+        final_score = (participant_score * Decimal('0.5')) + (avg_peer_score * Decimal('0.5'))
+
+        self.final_score = final_score
         self.save()
 
     def __str__(self):
