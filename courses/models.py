@@ -998,18 +998,19 @@ class AssessmentScore(models.Model):
 
     def calculate_final_score(self):
         peer_reviews = self.submission.peer_reviews.all()
-        if peer_reviews:
-            total_score = sum(review.score * review.weight for review in peer_reviews)
-            peer_review_count = peer_reviews.count()
-            avg_peer_score = total_score / peer_review_count
-        else:
-            avg_peer_score = 0
-        
-        # Skor jawaban peserta, misalnya 50% bobot untuk jawaban otomatis
-        participant_score = 5  # Misalnya nilai maksimum 5
 
-        # Menghitung skor akhir dengan bobot
-        self.final_score = (participant_score * 0.5) + (avg_peer_score * 0.5)
+        if peer_reviews:
+            total_score = sum(Decimal(review.score) * Decimal(review.weight) for review in peer_reviews)
+            peer_review_count = peer_reviews.count()
+            avg_peer_score = total_score / Decimal(peer_review_count)
+        else:
+            avg_peer_score = Decimal(0)
+        
+        # Misalnya nilai maksimum peserta (otomatis) 5
+        participant_score = Decimal(5)
+
+        # Skor akhir dengan bobot
+        self.final_score = (participant_score * Decimal('0.5')) + (avg_peer_score * Decimal('0.5'))
         self.save()
 
     def __str__(self):

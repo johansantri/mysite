@@ -1074,127 +1074,103 @@ def submit_answer_askora_new(request, ask_ora_id):
     """
     return HttpResponse(response_html)
 
-@login_required
 def submit_peer_review_new(request, submission_id):
-    """
-    Submit a peer review for a submission.
-    
-    Args:
-        request: HTTP request object.
-        submission_id: ID of the submission to review.
-    
-    Returns:
-        HttpResponse: Rendered success or error message.
-    """
     submission = get_object_or_404(Submission, id=submission_id)
-    if PeerReview.objects.filter(submission=submission, reviewer=request.user).exists():
-        logger.warning(f"Duplicate review attempt for submission {submission_id} by {request.user.username}")
-        return HttpResponse(
-            '<div class="alert alert-warning">Anda sudah memberikan review untuk jawaban ini.</div>',
-            status=400
-        )
 
     if request.method != 'POST':
-        logger.warning(f"Invalid request method: {request.method} for submit_peer_review_new")
-        return HttpResponse(
-            '<div class="alert alert-danger">Metode request tidak valid.</div>',
-            status=400
-        )
+        logger.warning("Metode tidak valid.")
+        return HttpResponse('<div class="alert alert-danger">Metode request tidak valid.</div>', status=400)
+
+    print("POST data:", request.POST)
 
     try:
-        score = int(request.POST.get('score'))
+        score_raw = request.POST.get('score')
+        print("Score value:", score_raw)
+        score = int(score_raw)
+
         if not 1 <= score <= 5:
             raise ValueError("Nilai harus antara 1-5")
+
         comment = request.POST.get('comment', '').strip()
+
+        if PeerReview.objects.filter(submission=submission, reviewer=request.user).exists():
+            logger.warning(f"Duplicate review by {request.user}")
+            return HttpResponse('<div class="alert alert-warning">Anda sudah mereview.</div>', status=400)
 
         PeerReview.objects.create(
             submission=submission,
             reviewer=request.user,
             score=score,
-            comment=comment if comment else None
+            comment=comment or None
         )
 
         assessment_score, _ = AssessmentScore.objects.get_or_create(submission=submission)
         assessment_score.calculate_final_score()
-        logger.debug(f"Peer review submitted for submission {submission_id} by {request.user.username}")
 
-        return HttpResponse(f"""
-            <div class="alert alert-success">
-                <div class="d-flex align-items-center">
-                    <i class="bi bi-check-circle-fill fs-3 me-3"></i>
-                    <div>
-                        <h5 class="mb-1">Review Berhasil Dikirim!</h5>
-                        <p class="mb-0">Terima kasih telah memberikan penilaian.</p>
-                    </div>
-                </div>
-            </div>
-            <script>
-                htmx.ajax('GET', '{reverse("learner:load_content", kwargs={
-                    "username": request.user.username,
-                    "slug": submission.askora.assessment.section.course.slug,
-                    "content_type": "assessment",
-                    "content_id": submission.askora.assessment.id
-                })}', {{
-                    target: "#content-area",
-                    swap: "innerHTML",
-                    headers: {{"HX-Trigger": "contentLoaded"}}
-                }});
-            </script>
-        """)
+        return HttpResponse("""<div class="alert alert-success">Review berhasil dikirim.</div>""")
 
-    except (ValueError, TypeError):
-        logger.warning(f"Invalid score for submission {submission_id} by {request.user.username}")
+    except Exception as e:
+        logger.exception("Gagal menyimpan review.")
         return HttpResponse(
-            '<div class="alert alert-danger">Nilai harus berupa angka antara 1-5.</div>',
+            f'<div class="alert alert-danger">Error: {str(e)}</div>',
             status=400
         )
 
 def learner_detail(request, username):
     """
-    Display a learner's public profile with completed courses and instructor info.
-    
-    Args:
-        request: HTTP request object.
-        username: Username of the learner.
-    
-    Returns:
-        HttpResponse: Rendered learner profile page.
+    Menampilkan profil learner secara publik, termasuk kursus yang diselesaikan (lulus),
+    informasi instructor jika ada, dan progres belajar.
     """
     learner = get_object_or_404(CustomUser, username=username)
+
+    # Ambil semua enrollment dan prefetch relasi yang diperlukan
     enrollments = Enrollment.objects.filter(user=learner).select_related('course')
+
+    # Jika learner juga instructor, ambil profil instructor-nya
     instructor = Instructor.objects.filter(user=learner).first()
+
     completed_courses_data = []
 
     for enrollment in enrollments:
         course = enrollment.course
-        materials = Material.objects.filter(section__course=course).distinct()
+
+        # Hitung progress materi
+        materials = Material.objects.filter(section__courses=course).distinct()
         total_materials = materials.count()
         materials_read = MaterialRead.objects.filter(user=learner, material__in=materials).count()
         materials_read_percentage = (materials_read / total_materials * 100) if total_materials > 0 else 0
 
-        assessments = Assessment.objects.filter(section__course=course).distinct()
+        # Hitung progress assessment
+        assessments = Assessment.objects.filter(section__courses=course).distinct()
         total_assessments = assessments.count()
         assessments_completed = AssessmentRead.objects.filter(user=learner, assessment__in=assessments).count()
         assessments_completed_percentage = (assessments_completed / total_assessments * 100) if total_assessments > 0 else 0
 
+        # Gabungkan progress keseluruhan
         progress = (materials_read_percentage + assessments_completed_percentage) / 2 if (total_materials + total_assessments) > 0 else 0
+
+        # Simpan atau update ke model CourseProgress
         course_progress, _ = CourseProgress.objects.get_or_create(user=learner, course=course)
         course_progress.progress_percentage = progress
         course_progress.save()
 
+        # Ambil ambang batas kelulusan
         grade_range = GradeRange.objects.filter(course=course, name='Pass').first()
         passing_threshold = grade_range.min_grade if grade_range else Decimal('52.00')
 
+        # Hitung nilai akhir
         total_score = Decimal('0')
         total_max_score = Decimal('0')
+
         for assessment in assessments:
             score_value = Decimal('0')
             total_questions = assessment.questions.count()
+
             if total_questions > 0:
                 correct_answers = QuestionAnswer.objects.filter(
                     user=learner, question__assessment=assessment, choice__is_correct=True
                 ).count()
-                score_value = (Decimal(correct_answers) / Decimal(total_questions)) * assessment.weight if total_questions > 0 else Decimal('0')
+                score_value = (Decimal(correct_answers) / Decimal(total_questions)) * assessment.weight
             else:
                 submission = Submission.objects.filter(askora__assessment=assessment, user=learner).order_by('-submitted_at').first()
                 if submission:
@@ -1206,6 +1182,8 @@ def learner_detail(request, username):
             total_max_score += assessment.weight
 
         overall_percentage = (total_score / total_max_score * 100) if total_max_score > 0 else 0
+
+        # Penentu apakah kursus dianggap selesai/lulus
         is_completed = progress == 100 and overall_percentage >= passing_threshold
 
         if is_completed:
@@ -1222,4 +1200,5 @@ def learner_detail(request, username):
         'completed_courses': completed_courses_data,
         'instructor': instructor,
     }
+
     return render(request, 'learner/learner.html', context)
