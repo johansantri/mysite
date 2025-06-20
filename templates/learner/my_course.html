@@ -1,7 +1,9 @@
 {% extends 'home/tes.html' %}
 {% load static %}
 
-{% block title %}{{ course_name|default:"Kursus" }}{% endblock %}
+{% block title %}<a href="{% url 'authentication:dashbord' %}">
+  {{ course_name|default:"Kursus" }}
+</a>{% endblock %}
 
 {% block extra_head %}
 <style>

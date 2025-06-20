@@ -4,7 +4,9 @@
     <div class="row">
         <!-- Sidebar -->
         <div class="col-md-3 sidebar p-3 rounded">
-            <h4 class="mb-3">{{ course_name|default:"Kursus Tidak Ditemukan" }}</h4>
+            <h4 class="mb-3"><a href="{% url 'authentication:dashbord' %}">
+  {{ course_name|default:"Kursus" }}
+</a></h4>
             <div class="progress mb-3" id="progress-bar"
                  hx-get="{% url 'learner:get_progress' username=username slug=slug %}"
                  hx-trigger="load, contentLoaded from:body"
@@ -355,44 +357,110 @@
                                     </div>
                                 {% endfor %}
                                 {% else %}
-                                <div class="alert alert-info mb-4">
-                                    Waktu tersisa: <span id="timer">{{ remaining_time }}</span> detik
-                                </div>
+                                <!-- Bagian Timer dan Progress Bar -->
+                                    <div class="mb-4">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <span class="fw-semibold text-muted">
+                                                Waktu tersisa: <span id="timer-countdown" class="text-dark fw-bold">{{ remaining_time }}</span> detik
+                                            </span>
+                                            <span id="progress-percent" class="text-muted small">100%</span>
+                                        </div>
 
-                                <form id="quiz-form"
+                                        <div class="progress" style="height: 20px;">
+                                            <div id="timer-progress" class="progress-bar bg-primary" role="progressbar"
+                                                style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Form Quiz Pilihan Ganda -->
+                                    <form id="quiz-form"
                                         hx-post="{% url 'learner:submit_assessment_new' assessment.id %}"
                                         hx-target="#content-area"
                                         hx-swap="innerHTML"
                                         method="POST">
-                                    {% csrf_token %}
+                                        {% csrf_token %}
 
-                                    {% for question in assessment.questions.all|shuffled %}
-                                    <div class="card mb-3">
-                                        <div class="card-body">
-                                        <h5>{{ question.text }}</h5>
-                                        <input type="hidden" name="question_ids" value="{{ question.id }}">
-                                        {% for choice in question.choices.all|shuffled %}
-                                            <div class="form-check mb-2">
-                                            {% with answer=answered_questions|get_question_answer:question.id %}
-                                                <input type="radio"
-                                                    name="answers_{{ question.id }}"
-                                                    value="{{ choice.id }}"
-                                                    class="form-check-input"
-                                                    {% if answer and answer.choice.id == choice.id %}checked{% endif %}>
-                                                <label class="form-check-label">{{ choice.text }}</label>
-                                            {% endwith %}
+                                        {% for question in assessment.questions.all|shuffled %}
+                                        <div class="card mb-3">
+                                            <div class="card-body">
+                                                <h5>{{ question.text }}</h5>
+                                                <input type="hidden" name="question_ids" value="{{ question.id }}">
+                                                {% for choice in question.choices.all|shuffled %}
+                                                <div class="form-check mb-2">
+                                                    {% with answer=answered_questions|get_question_answer:question.id %}
+                                                    <input type="radio"
+                                                        name="answers_{{ question.id }}"
+                                                        value="{{ choice.id }}"
+                                                        class="form-check-input"
+                                                        {% if answer and answer.choice.id == choice.id %}checked{% endif %}>
+                                                    <label class="form-check-label">{{ choice.text }}</label>
+                                                    {% endwith %}
+                                                </div>
+                                                {% endfor %}
                                             </div>
-                                        {% endfor %}
                                         </div>
-                                    </div>
-                                    {% endfor %}
+                                        {% endfor %}
 
-                                    <div class="text-end mt-4">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="bi bi-send"></i> Kirim Semua Jawaban
-                                    </button>
-                                    </div>
-                                </form>
+                                        <div class="text-end mt-4">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bi bi-send"></i> Kirim Semua Jawaban
+                                            </button>
+                                        </div>
+                                    </form>
+
+                                    <!-- Script Countdown Otomatis Submit -->
+                                    <script>
+                                        (function () {
+                                            const timerElement = document.getElementById("timer-countdown");
+                                            const progressBar = document.getElementById("timer-progress");
+                                            const percentElement = document.getElementById("progress-percent");
+
+                                            if (!timerElement) return;
+
+                                            let totalTime = parseInt(timerElement.textContent);
+                                            let timeLeft = totalTime;
+
+                                            const interval = setInterval(() => {
+                                                timeLeft--;
+                                                const percent = Math.max(0, Math.round((timeLeft / totalTime) * 100));
+                                                timerElement.textContent = timeLeft;
+                                                progressBar.style.width = percent + "%";
+                                                progressBar.setAttribute("aria-valuenow", percent);
+                                                percentElement.textContent = percent + "%";
+
+                                                if (percent <= 25) {
+                                                    progressBar.classList.remove("bg-primary", "bg-warning");
+                                                    progressBar.classList.add("bg-danger");
+                                                } else if (percent <= 50) {
+                                                    progressBar.classList.remove("bg-primary");
+                                                    progressBar.classList.add("bg-warning");
+                                                }
+
+                                                if (timeLeft <= 0) {
+                                                    clearInterval(interval);
+                                                    const form = document.getElementById("quiz-form");
+                                                    if (form) {
+                                                        // Pastikan semua radio yang dipilih tetap aktif
+                                                        const inputs = form.querySelectorAll('input[type="radio"]');
+                                                        inputs.forEach(input => {
+                                                            if (!input.checked) {
+                                                                input.disabled = true;  // nonaktifkan yang tidak dipilih
+                                                            }
+                                                        });
+
+                                                        // Trigger HTMX submit (lebih aman dari pada form.submit())
+                                                        if (typeof htmx !== 'undefined') {
+                                                            htmx.trigger(form, 'submit');
+                                                        } else {
+                                                            form.submit(); // fallback
+                                                        }
+                                                    }
+                                                }
+                                            }, 1000);
+                                        })();
+                                        </script>
+
 
                                 <script>
                                     (function() {
