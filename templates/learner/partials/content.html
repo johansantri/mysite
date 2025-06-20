@@ -399,7 +399,7 @@
                                                     timerElement.textContent = timeLeft;
                                                     if (timeLeft <= 0) {
                                                         clearInterval(interval);
-                                                        htmx.ajax('POST', '{% url "learner:submit_assessment" assessment.id %}', {
+                                                        htmx.ajax('POST', '{% url "learner:submit_assessment_new" assessment.id %}', {
                                                             target: '#content-area',
                                                             swap: 'innerHTML'
                                                         });
