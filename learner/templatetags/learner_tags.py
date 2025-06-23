@@ -77,78 +77,100 @@ def mul(value, arg):
 
 @register.simple_tag(takes_context=True)
 def get_course_completion_status(context):
-    """
-    Calculate course completion status for the current user and course.
-    
-    Args:
-        context: Template context containing request, course, next_url, etc.
-    
-    Returns:
-        dict: Contains is_completed, certificate_url, and assessments_completed_percentage.
-    """
     request = context['request']
     user = request.user
     course = context.get('course')
-    next_url = context.get('next_url')
-    if not course or next_url:
+
+    if not course:
         return {
             'is_completed': False,
             'certificate_url': None,
             'assessments_completed_percentage': 0,
+            'course_progress': 0,
+            'overall_percentage': 0,
+            'passing_threshold': 0
         }
 
-    # Hitung progres seperti di dashbord
+    # Ambil passing threshold dari GradeRange
+    grade_range = GradeRange.objects.filter(course=course, name__iexact='Pass').first()
+    passing_threshold = float(grade_range.min_grade) if grade_range else 52.0
+
+    # Hitung progres materi
     materials = Material.objects.filter(section__courses=course)
     total_materials = materials.count()
     materials_read = MaterialRead.objects.filter(user=user, material__in=materials).count()
-    materials_read_percentage = (Decimal(materials_read) / Decimal(total_materials) * 100) if total_materials > 0 else Decimal('0')
 
+    # Hitung progres assessment
     assessments = Assessment.objects.filter(section__courses=course)
     total_assessments = assessments.count()
-    assessments_completed = AssessmentRead.objects.filter(user=user, assessment__in=assessments).count()
-    assessments_completed_percentage = (Decimal(assessments_completed) / Decimal(total_assessments) * 100) if total_assessments > 0 else Decimal('0')
+    assessments_completed = 0
+    total_score = Decimal(0)
+    total_max_score = Decimal(0)
+    all_assessments_submitted = True
 
-    progress = ((materials_read_percentage + assessments_completed_percentage) / Decimal('2')) if (total_materials + total_assessments) > 0 else Decimal('0')
-
-    # Hitung skor keseluruhan
-    grade_range = GradeRange.objects.filter(course=course, name='Pass').first()
-    passing_threshold = grade_range.min_grade if grade_range else Decimal('52.00')
-    total_score = Decimal('0')
-    total_max_score = Decimal('0')
     for assessment in assessments:
-        score_value = Decimal('0')
-        total_questions = assessment.questions.count()
-        if total_questions > 0:
-            total_correct_answers = QuestionAnswer.objects.filter(
-                question__assessment=assessment, user=user, choice__is_correct=True
+        score_value = Decimal(0)
+        weight = Decimal(assessment.weight or 1)
+
+        if assessment.questions.exists():  # Pilihan ganda
+            has_answers = QuestionAnswer.objects.filter(
+                user=user, question__assessment=assessment
+            ).exists()
+
+            if not has_answers:
+                all_assessments_submitted = False
+                continue
+
+            total_questions = assessment.questions.count()
+            correct_answers = QuestionAnswer.objects.filter(
+                user=user,
+                question__assessment=assessment,
+                choice__is_correct=True
             ).count()
-            score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
-        else:
-            submissions = Submission.objects.filter(askora__assessment=assessment, user=user)
-            if submissions.exists():
-                latest = submissions.order_by('-submitted_at').first()
-                score_obj = AssessmentScore.objects.filter(submission=latest).first()
-                if score_obj:
-                    score_value = Decimal(score_obj.final_score)
+
+            assessments_completed += 1
+            score_value = (Decimal(correct_answers) / Decimal(total_questions)) * weight if total_questions > 0 else Decimal(0)
+
+        else:  # ORA / manual
+            submission = Submission.objects.filter(
+                user=user, askora__assessment=assessment
+            ).order_by('-submitted_at').first()
+
+            if not submission:
+                all_assessments_submitted = False
+                continue
+
+            score_obj = AssessmentScore.objects.filter(submission=submission).first()
+            if not score_obj:
+                all_assessments_submitted = False
+                continue
+
+            assessments_completed += 1
+            score_value = Decimal(score_obj.final_score)
+
         total_score += score_value
-        total_max_score += Decimal(assessment.weight)
+        total_max_score += weight
 
-    overall_percentage = (total_score / total_max_score * Decimal('100')) if total_max_score > 0 else Decimal('0')
-
-    # Tentukan status kelulusan
-    is_completed = (
-        progress >= 100 and
-        assessments_completed_percentage == 100 and
-        overall_percentage >= passing_threshold and
-        next_url is None
+    assessments_completed_percentage = (
+        (assessments_completed / total_assessments) * 100 if total_assessments > 0 else 0
     )
 
-    # Gunakan URL generate_certificate yang sudah ada
-    certificate_url = reverse('courses:generate_certificate', kwargs={'course_id': course.id}) if is_completed else None
+    overall_percentage = (
+        float((total_score / total_max_score) * 100) if total_max_score > 0 else 0
+    )
+
+    is_completed = all_assessments_submitted and overall_percentage >= passing_threshold
+
+    certificate_url = (
+        reverse('courses:generate_certificate', kwargs={'course_id': course.id})
+        if is_completed else None
+    )
 
     return {
         'is_completed': is_completed,
         'certificate_url': certificate_url,
-        'assessments_completed_percentage': assessments_completed_percentage,
-        'course_progress': progress,
+        'assessments_completed_percentage': round(assessments_completed_percentage, 2),
+        'course_progress': float(context.get('course_progress', 0)),
+        'overall_percentage': round(overall_percentage, 2),
+        'passing_threshold': passing_threshold
     }

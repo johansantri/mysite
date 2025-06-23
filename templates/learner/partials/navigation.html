@@ -1,7 +1,7 @@
 {% load learner_tags %}
 <!-- Completion Card atau Warning -->
 {% get_course_completion_status as completion_status %}
-{% with is_completed=completion_status.is_completed certificate_url=completion_status.certificate_url assessments_completed_percentage=completion_status.assessments_completed_percentage course_progress=completion_status.course_progress %}
+{% with is_completed=completion_status.is_completed certificate_url=completion_status.certificate_url assessments_completed_percentage=completion_status.assessments_completed_percentage course_progress=completion_status.course_progress overall_percentage=completion_status.overall_percentage passing_threshold=completion_status.passing_threshold %}
     {% if is_completed %}
         <div class="completion-overlay" id="completion-overlay">
             <div class="card shadow-lg border-0 text-center p-5 completed-card mx-auto" style="max-width: 900px; width: 90%;" role="alert" aria-label="Selamat, Anda telah lulus kursus {{ course_name }}">
@@ -11,9 +11,7 @@
                 <h1 class="fw-bold text-success mb-3">Selamat, Anda Lulus!</h1>
                 <p class="text-muted mb-4 fs-4">
                     Anda telah menyelesaikan kursus <strong>{{ course_name }}</strong> dengan sukses!
-                    {% if course_scores %}
-                        <br>Skor akhir: <strong>{{ course_scores.last.grade }}%</strong>.
-                    {% endif %}
+                    <br>Skor akhir: <strong>{{ overall_percentage }}%</strong> (Ambang batas lulus: {{ passing_threshold }}%).
                 </p>
                 <div class="d-flex justify-content-center gap-3 flex-wrap">
                     <a href="{% url 'authentication:dashbord' %}"
@@ -31,11 +29,15 @@
                 </div>
             </div>
         </div>
-    {% elif course_progress >= 100 and assessments_completed_percentage < 100 %}
+    {% elif course_progress >= 100 and not is_completed %}
         <div class="mt-4">
-            <div class="alert alert-warning text-center p-4 mx-auto" style="max-width: 800px;" role="alert" aria-label="Peringatan: Penilaian belum selesai">
+            <div class="alert alert-warning text-center p-4 mx-auto" style="max-width: 800px;" role="alert" aria-label="Peringatan: Persyaratan kelulusan belum terpenuhi">
                 <i class="bi bi-exclamation-triangle me-2 fs-4"></i>
-                Anda belum menyelesaikan semua penilaian. Silakan selesaikan untuk lulus kursus ini.
+                {% if overall_percentage < passing_threshold %}
+                    Skor Anda (<strong>{{ overall_percentage }}%</strong>) belum mencapai ambang batas lulus (<strong>{{ passing_threshold }}%</strong>). Silakan tingkatkan skor Anda.
+                {% else %}
+                    Anda belum menyelesaikan semua penilaian. Silakan selesaikan untuk lulus kursus ini.
+                {% endif %}
             </div>
         </div>
     {% endif %}
@@ -70,9 +72,7 @@
                     Selanjutnya<i class="bi bi-chevron-right ms-2"></i>
                 </a>
             {% else %}
-                {% if not course_progress >= 100 or assessments_completed_percentage >= 100 %}
-                    <button class="btn btn-primary" disabled>Selanjutnya<i class="bi bi-chevron-right ms-2"></i></button>
-                {% endif %}
+                <button class="btn btn-primary" disabled>Selanjutnya<i class="bi bi-chevron-right ms-2"></i></button>
             {% endif %}
         {% endif %}
     </div>
@@ -130,7 +130,6 @@
             confettiColors: ['#ff0a54', '#ff477e', '#ff7096', '#ff85a1', '#00d4ff', '#00b7eb', '#ffd700'],
             spread: 360
         }).then(() => {
-            // Repeat confetti for extra celebration
             setTimeout(() => {
                 jsConfetti.addConfetti({
                     confettiNumber: 200,
