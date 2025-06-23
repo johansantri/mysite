@@ -71,10 +71,19 @@
 
                 {% elif current_content.0 == 'assessment' %}
                     {% if assessment_locked %}
-                        <div class="alert alert-warning">
-                            Ujian ini memerlukan pembayaran.
-                            <a href="{{ payment_required_url }}" class="btn btn-warning btn-sm ms-2">Lanjutkan ke Pembayaran</a>
+                        <div class="alert alert-warning d-flex justify-content-between align-items-center shadow-sm p-4 rounded-3" role="alert">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-exclamation-triangle-fill me-3 fs-3 text-warning"></i>
+                                <div>
+                                    <h5 class="mb-1 fw-semibold">Pembayaran Diperlukan</h5>
+                                    <p class="mb-0">Ujian ini memerlukan pembayaran sebelum dapat dimulai.</p>
+                                </div>
+                            </div>
+                            <a href="{{ payment_required_url }}" class="btn btn-outline-warning ms-4">
+                                <i class="bi bi-credit-card"></i> Bayar Sekarang
+                            </a>
                         </div>
+
                     {% else %}
                         <h3 class="mb-4">{{ assessment.name }}</h3>
 
@@ -490,27 +499,31 @@
                                 </script>
                                 {% endif %}
                             {% else %}
-                                <!-- Tombol mulai quiz -->
-                                <button type="button" class="btn btn-success" onclick="document.getElementById('manual-confirmation').style.display = 'block'">
-                                Mulai Penilaian
-                                </button>
-                                <div id="manual-confirmation" class="mt-4 p-3 border rounded bg-light" style="display: none;">
-                                <p class="mb-3">
-                                    Sebelum memulai ujian, Anda memiliki <strong>{{ assessment.duration_in_minutes }} menit</strong> untuk menyelesaikannya. Apakah Anda setuju untuk melanjutkan?
-                                </p>
-                                <div class="d-flex gap-2">
-                                    <form 
-                                    hx-post="{% url 'learner:start_assessment' assessment.id %}"
-                                    hx-target="#content-area"
-                                    hx-swap="innerHTML"
-                                    hx-push-url="{% url 'learner:load_content' username=username slug=slug content_type='assessment' content_id=assessment.id %}">
-                                    <button type="submit" class="btn btn-primary">Setuju</button>
-                                    </form>
-                                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('manual-confirmation').style.display = 'none'">
-                                    Batal
-                                    </button>
+                             <div id="manual-confirmation" class="d-flex justify-content-center align-items-center min-vh-100 bg-light">
+                                <div class="card shadow-lg border-0" style="max-width: 480px; width: 100%;">
+                                    <div class="card-body text-center p-5">
+                                        <div class="mb-4">
+                                            <i class="bi bi-journal-check text-primary display-4"></i>
+                                        </div>
+                                        <h4 class="mb-3 fw-semibold">Siap untuk Memulai Ujian?</h4>
+                                        <p class="mb-4 text-muted">
+                                            Anda memiliki <strong>{{ assessment.duration_in_minutes }} menit</strong> untuk menyelesaikan penilaian ini. Pastikan Anda telah siap sebelum melanjutkan.
+                                        </p>
+                                        <form 
+                                            hx-post="{% url 'learner:start_assessment' assessment.id %}"
+                                            hx-target="#content-area"
+                                            hx-swap="innerHTML"
+                                            hx-push-url="{% url 'learner:load_content' username=username slug=slug content_type='assessment' content_id=assessment.id %}">
+                                            <button type="submit" class="btn btn-lg btn-primary w-100">
+                                                <i class="bi bi-play-circle me-2"></i> Mulai Sekarang
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
-                                </div>
+                            </div>
+
+
+
                             {% endif %}
                             {% endif %}
 
