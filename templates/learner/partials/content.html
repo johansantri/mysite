@@ -5,8 +5,8 @@
         <!-- Sidebar -->
         <div class="col-md-3 sidebar p-3 rounded">
             <h4 class="mb-3"><a href="{% url 'authentication:dashbord' %}">
-  {{ course_name|default:"Kursus" }}
-</a></h4>
+                {{ course_name|default:"Kursus" }}
+            </a></h4>
             <div class="progress mb-3" id="progress-bar"
                  hx-get="{% url 'learner:get_progress' username=username slug=slug %}"
                  hx-trigger="load, contentLoaded from:body"
@@ -28,9 +28,14 @@
                                        hx-target="#content-area"
                                        hx-swap="innerHTML"
                                        hx-push-url="true"
-                                       class="text-decoration-none text-dark"
+                                       class="text-decoration-none text-dark {% if current_content.0 == 'material' and current_content.1.id == material.id %}active{% endif %}"
                                        hx-on::after-request="document.body.dispatchEvent(new Event('contentLoaded'))">
-                                        <i class="bi bi-file-text me-2"></i>{{ material.title }}
+                                        <i class="bi bi-file-text me-2"></i>
+                                        {% is_content_read 'material' material.id as is_material_read %}
+                                        {% if is_material_read %}
+                                            <i class="bi bi-check-circle text-success me-2" title="Sudah dibaca" aria-label="Materi sudah dibaca"></i>
+                                        {% endif %}
+                                        {{ material.title }}
                                     </a>
                                 </li>
                             {% endfor %}
@@ -41,9 +46,14 @@
                                        hx-target="#content-area"
                                        hx-swap="innerHTML"
                                        hx-push-url="true"
-                                       class="text-decoration-none text-dark"
+                                       class="text-decoration-none text-dark {% if current_content.0 == 'assessment' and current_content.1.id == assessment.id %}active{% endif %}"
                                        hx-on::after-request="document.body.dispatchEvent(new Event('contentLoaded'))">
-                                        <i class="bi bi-question-circle me-2"></i>{{ assessment.name }}
+                                        <i class="bi bi-question-circle me-2"></i>
+                                        {% is_content_read 'assessment' assessment.id as is_assessment_read %}
+                                        {% if is_assessment_read %}
+                                            <i class="bi bi-check-circle text-success me-2" title="Sudah dibuka" aria-label="Penilaian sudah dibuka"></i>
+                                        {% endif %}
+                                        {{ assessment.name }}
                                         {% if assessment_locked and assessment.id == current_content.1.id %}
                                             <span class="badge bg-warning ms-2">Terkunci</span>
                                         {% endif %}
@@ -68,7 +78,6 @@
                     <div id="comments-section" class="mt-5">
                         {% include 'learner/partials/comments.html' %}
                     </div>
-
                 {% elif current_content.0 == 'assessment' %}
                     {% if assessment_locked %}
                         <div class="alert alert-warning d-flex justify-content-between align-items-center shadow-sm p-4 rounded-3" role="alert">
@@ -83,10 +92,8 @@
                                 <i class="bi bi-credit-card"></i> Bayar Sekarang
                             </a>
                         </div>
-
                     {% else %}
                         <h3 class="mb-4">{{ assessment.name }}</h3>
-
                         {% if ask_oras %}
                             <h4>Pertanyaan AskOra</h4>
                             {% for ask_ora in ask_oras %}
@@ -100,33 +107,29 @@
                                             <i class="bi bi-clock"></i> 
                                             Batas waktu: {{ ask_ora.response_deadline|date:"d M Y H:i" }}
                                         </p>
-                                        
                                         {% if askora_can_submit|dict_get:ask_ora.id %}
                                             <form method="POST"
-                                                hx-post="{% url 'learner:submit_answer_askora_new' ask_ora.id %}"
-                                                hx-target="#content-area"
-                                                hx-swap="innerHTML"
-                                                enctype="multipart/form-data"
-                                                class="mt-4">
+                                                  hx-post="{% url 'learner:submit_answer_askora_new' ask_ora.id %}"
+                                                  hx-target="#content-area"
+                                                  hx-swap="innerHTML"
+                                                  enctype="multipart/form-data"
+                                                  class="mt-4">
                                                 {% csrf_token %}
-                                                
                                                 <div class="mb-3">
                                                     <label for="answer_text" class="form-label">
                                                         <i class="bi bi-pencil-square"></i> Jawaban Anda
                                                     </label>
                                                     <textarea name="answer_text" id="answer_text" 
-                                                        class="form-control" rows="6" required
-                                                        placeholder="Tulis jawaban Anda disini..."></textarea>
+                                                              class="form-control" rows="6" required
+                                                              placeholder="Tulis jawaban Anda disini..."></textarea>
                                                 </div>
-                                                
                                                 <div class="mb-3">
                                                     <label for="answer_file" class="form-label">
                                                         <i class="bi bi-paperclip"></i> Lampirkan File (Opsional)
                                                     </label>
                                                     <input type="file" class="form-control" 
-                                                        name="answer_file" id="answer_file">
+                                                           name="answer_file" id="answer_file">
                                                 </div>
-                                                
                                                 <button type="submit" class="btn btn-primary">
                                                     <span class="htmx-indicator">
                                                         <span class="spinner-border spinner-border-sm" role="status"></span>
@@ -150,12 +153,10 @@
                                 </div>
                             {% endfor %}
                         {% endif %}
-
                         <!-- Bagian Jawaban User -->
                         {% if user_submissions %}
                             <div class="mt-5">
                                 <h4><i class="bi bi-journal-text"></i> Jawaban Saya</h4>
-                                
                                 {% for submission in user_submissions %}
                                     <div class="card mb-4 {% if submission.score %}border-primary{% endif %}">
                                         <div class="card-body">
@@ -167,7 +168,6 @@
                                                     </span>
                                                 {% endif %}
                                             </div>
-                                            
                                             <div class="mb-3">
                                                 <p class="text-muted">
                                                     <i class="bi bi-clock"></i> 
@@ -177,63 +177,55 @@
                                                     {{ submission.answer_text|linebreaks }}
                                                 </div>
                                             </div>
-                                            
                                             {% if submission.answer_file %}
                                                 <a href="{{ submission.answer_file.url }}" class="btn btn-sm btn-outline-primary">
                                                     <i class="bi bi-download"></i> Unduh File Lampiran
                                                 </a>
                                             {% endif %}
-                                            
-                                            
-
                                             <!-- Bagian Status Penilaian -->
-                                                <div class="mt-4 p-3 bg-light rounded">
-                                                    <h6><i class="bi bi-info-circle"></i> Status Penilaian:</h6>
-                                                    <ul class="mb-0">
-                                                        <li>
-                                                            <i class="bi bi-people-fill"></i> Telah direview oleh 
-                                                            {{ peer_review_stats.distinct_reviewers }} dari 
-                                                            {{ peer_review_stats.total_participants }} teman
-                                                            {% if peer_review_stats.completed %}
-                                                                <span class="badge bg-success ms-2">Selesai</span>
-                                                            {% else %}
-                                                                <span class="badge bg-warning ms-2">Proses</span>
-                                                            {% endif %}
-                                                        </li>
-                                                        <li>
-                                                            <i class="bi bi-star-fill"></i> Rata-rata nilai: 
-                                                            {% if peer_review_stats.avg_score %}
-                                                                <strong>{{ peer_review_stats.avg_score }}</strong>/5.00
-                                                            {% else %}
-                                                                <span class="text-muted">Belum ada nilai</span>
-                                                            {% endif %}
-                                                        </li>
-                                                        <li>
-                                                            <i class="bi bi-clock"></i> Estimasi selesai: 
-                                                            {% if peer_review_stats.completed %}
-                                                                <span class="text-success">Penilaian telah selesai</span>
-                                                            {% else %}
-                                                                {% with remaining=peer_review_stats.total_participants|subtract:peer_review_stats.distinct_reviewers %}
-                                                                    {% if remaining == 1 %}
-                                                                        Menunggu 1 review terakhir
-                                                                    {% else %}
-                                                                        Menunggu {{ remaining }} review lagi
-                                                                    {% endif %}
-                                                                {% endwith %}
-                                                            {% endif %}
-                                                        </li>
-                                                    </ul>
-                                                    
-                                                   
-                                                </div>
+                                            <div class="mt-4 p-3 bg-light rounded">
+                                                <h6><i class="bi bi-info-circle"></i> Status Penilaian:</h6>
+                                                <ul class="mb-0">
+                                                    <li>
+                                                        <i class="bi bi-people-fill"></i> Telah direview oleh 
+                                                        {{ peer_review_stats.distinct_reviewers }} dari 
+                                                        {{ peer_review_stats.total_participants }} teman
+                                                        {% if peer_review_stats.completed %}
+                                                            <span class="badge bg-success ms-2">Selesai</span>
+                                                        {% else %}
+                                                            <span class="badge bg-warning ms-2">Proses</span>
+                                                        {% endif %}
+                                                    </li>
+                                                    <li>
+                                                        <i class="bi bi-star-fill"></i> Rata-rata nilai: 
+                                                        {% if peer_review_stats.avg_score %}
+                                                            <strong>{{ peer_review_stats.avg_score }}</strong>/5.00
+                                                        {% else %}
+                                                            <span class="text-muted">Belum ada nilai</span>
+                                                        {% endif %}
+                                                    </li>
+                                                    <li>
+                                                        <i class="bi bi-clock"></i> Estimasi selesai: 
+                                                        {% if peer_review_stats.completed %}
+                                                            <span class="text-success">Penilaian telah selesai</span>
+                                                        {% else %}
+                                                            {% with remaining=peer_review_stats.total_participants|subtract:peer_review_stats.distinct_reviewers %}
+                                                                {% if remaining == 1 %}
+                                                                    Menunggu 1 review terakhir
+                                                                {% else %}
+                                                                    Menunggu {{ remaining }} review lagi
+                                                                {% endif %}
+                                                            {% endwith %}
+                                                        {% endif %}
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
                                 {% endfor %}
                             </div>
                         {% endif %}
-
                         <!-- Bagian Peer Review -->
-                            <!-- Bagian Peer Review -->
                         {% if can_review and submissions %}
                             <div id="peer-review-section" class="mt-5 border-top pt-4">
                                 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -242,7 +234,6 @@
                                         {{ submissions|length }} jawaban perlu direview
                                     </span>
                                 </div>
-                                
                                 <div class="alert alert-info">
                                     <h5><i class="bi bi-lightbulb"></i> Panduan Review:</h5>
                                     <ol class="mb-0">
@@ -252,7 +243,6 @@
                                         <li>Review Anda akan mempengaruhi nilai teman</li>
                                     </ol>
                                 </div>
-
                                 {% for submission in submissions %}
                                     <div class="card mb-4">
                                         <div class="card-body">
@@ -262,24 +252,21 @@
                                                     Oleh: {{ submission.user.get_full_name|default:submission.user.username }}
                                                 </small>
                                             </div>
-                                            
                                             <div class="mb-4 p-3 bg-light rounded">
                                                 <p class="fw-bold mb-2">Jawaban:</p>
                                                 {{ submission.answer_text|linebreaks }}
-                                                
                                                 {% if submission.answer_file %}
-                                                <div class="mt-2">
-                                                    <a href="{{ submission.answer_file.url }}" class="btn btn-sm btn-outline-secondary">
-                                                        <i class="bi bi-download"></i> Unduh File
-                                                    </a>
-                                                </div>
+                                                    <div class="mt-2">
+                                                        <a href="{{ submission.answer_file.url }}" class="btn btn-sm btn-outline-secondary">
+                                                            <i class="bi bi-download"></i> Unduh File
+                                                        </a>
+                                                    </div>
                                                 {% endif %}
                                             </div>
-                                            
                                             <form method="post" 
-                                                hx-post="{% url 'learner:submit_peer_review_new' submission.id %}"
-                                                hx-target="#content-area"
-                                                hx-swap="innerHTML">
+                                                  hx-post="{% url 'learner:submit_peer_review_new' submission.id %}"
+                                                  hx-target="#content-area"
+                                                  hx-swap="innerHTML">
                                                 {% csrf_token %}
                                                 <div class="mb-3">
                                                     <label class="form-label">
@@ -299,7 +286,7 @@
                                                         <i class="bi bi-chat-left-text"></i> Komentar (opsional)
                                                     </label>
                                                     <textarea name="comment" class="form-control" rows="3" 
-                                                            placeholder="Berikan masukan yang membangun..."></textarea>
+                                                              placeholder="Berikan masukan yang membangun..."></textarea>
                                                 </div>
                                                 <button type="submit" class="btn btn-primary">
                                                     <i class="bi bi-send"></i> Kirim Review
@@ -318,7 +305,6 @@
                                 </div>
                             {% endif %}
                         {% endif %}
-
                         <!-- Bagian untuk Skor Kuis -->
                         {% if course_scores %}
                             <h4>Hasil Kuis</h4>
@@ -331,48 +317,47 @@
                                 </div>
                             {% endfor %}
                         {% endif %}
-
                         <!-- Bagian untuk soal pilihan ganda (quiz) dengan timer -->
-                       {% if is_quiz %}
+                        {% if is_quiz %}
                             {% if is_started %}
                                 {% if is_expired %}
-                                <div class="alert alert-danger">Penilaian ini telah kedaluwarsa.</div>
-                                {% for question in assessment.questions.all %}
-                                    <div class="card mb-3 border 
-                                    {% with answer=answered_questions|get_question_answer:question.id %}
-                                        {% if answer and answer.choice.is_correct %}
-                                        border-success
-                                        {% else %}
-                                        border-danger
-                                        {% endif %}
-                                    {% endwith %}">
-                                    <div class="card-body">
-                                        <h5>{{ question.text }}</h5>
-                                        <ul class="list-group">
-                                        {% for choice in question.choices.all %}
-                                            {% with answer=answered_questions|get_question_answer:question.id %}
-                                            <li class="list-group-item
-                                                {% if choice.is_correct %}
-                                                list-group-item-success
-                                                {% elif answer and answer.choice.id == choice.id %}
-                                                list-group-item-danger
-                                                {% endif %}">
-                                                {{ choice.text }}
-                                                {% if choice.is_correct %}
-                                                <span class="badge bg-success">Benar</span>
-                                                {% endif %}
-                                                {% if answer and answer.choice.id == choice.id %}
-                                                <span class="badge bg-primary">Jawaban Anda</span>
-                                                {% endif %}
-                                            </li>
-                                            {% endwith %}
-                                        {% endfor %}
-                                        </ul>
-                                    </div>
-                                    </div>
-                                {% endfor %}
+                                    <div class="alert alert-danger">Penilaian ini telah kedaluwarsa.</div>
+                                    {% for question in assessment.questions.all %}
+                                        <div class="card mb-3 border 
+                                              {% with answer=answered_questions|get_question_answer:question.id %}
+                                                  {% if answer and answer.choice.is_correct %}
+                                                      border-success
+                                                  {% else %}
+                                                      border-danger
+                                                  {% endif %}
+                                              {% endwith %}">
+                                            <div class="card-body">
+                                                <h5>{{ question.text }}</h5>
+                                                <ul class="list-group">
+                                                    {% for choice in question.choices.all %}
+                                                        {% with answer=answered_questions|get_question_answer:question.id %}
+                                                            <li class="list-group-item
+                                                                {% if choice.is_correct %}
+                                                                    list-group-item-success
+                                                                {% elif answer and answer.choice.id == choice.id %}
+                                                                    list-group-item-danger
+                                                                {% endif %}">
+                                                                {{ choice.text }}
+                                                                {% if choice.is_correct %}
+                                                                    <span class="badge bg-success">Benar</span>
+                                                                {% endif %}
+                                                                {% if answer and answer.choice.id == choice.id %}
+                                                                    <span class="badge bg-primary">Jawaban Anda</span>
+                                                                {% endif %}
+                                                            </li>
+                                                        {% endwith %}
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
                                 {% else %}
-                                <!-- Bagian Timer dan Progress Bar -->
+                                    <!-- Bagian Timer dan Progress Bar -->
                                     <div class="mb-4">
                                         <div class="d-flex justify-content-between align-items-center mb-1">
                                             <span class="fw-semibold text-muted">
@@ -380,62 +365,54 @@
                                             </span>
                                             <span id="progress-percent" class="text-muted small">100%</span>
                                         </div>
-
                                         <div class="progress" style="height: 20px;">
                                             <div id="timer-progress" class="progress-bar bg-primary" role="progressbar"
-                                                style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+                                                 style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
                                             </div>
                                         </div>
                                     </div>
-
                                     <!-- Form Quiz Pilihan Ganda -->
                                     <form id="quiz-form"
-                                        hx-post="{% url 'learner:submit_assessment_new' assessment.id %}"
-                                        hx-target="#content-area"
-                                        hx-swap="innerHTML"
-                                        method="POST">
+                                          hx-post="{% url 'learner:submit_assessment_new' assessment.id %}"
+                                          hx-target="#content-area"
+                                          hx-swap="innerHTML"
+                                          method="POST">
                                         {% csrf_token %}
-
                                         {% for question in assessment.questions.all|shuffled %}
-                                        <div class="card mb-3">
-                                            <div class="card-body">
-                                                <h5>{{ question.text }}</h5>
-                                                <input type="hidden" name="question_ids" value="{{ question.id }}">
-                                                {% for choice in question.choices.all|shuffled %}
-                                                <div class="form-check mb-2">
-                                                    {% with answer=answered_questions|get_question_answer:question.id %}
-                                                    <input type="radio"
-                                                        name="answers_{{ question.id }}"
-                                                        value="{{ choice.id }}"
-                                                        class="form-check-input"
-                                                        {% if answer and answer.choice.id == choice.id %}checked{% endif %}>
-                                                    <label class="form-check-label">{{ choice.text }}</label>
-                                                    {% endwith %}
+                                            <div class="card mb-3">
+                                                <div class="card-body">
+                                                    <h5>{{ question.text }}</h5>
+                                                    <input type="hidden" name="question_ids" value="{{ question.id }}">
+                                                    {% for choice in question.choices.all|shuffled %}
+                                                        <div class="form-check mb-2">
+                                                            {% with answer=answered_questions|get_question_answer:question.id %}
+                                                                <input type="radio"
+                                                                       name="answers_{{ question.id }}"
+                                                                       value="{{ choice.id }}"
+                                                                       class="form-check-input"
+                                                                       {% if answer and answer.choice.id == choice.id %}checked{% endif %}>
+                                                                <label class="form-check-label">{{ choice.text }}</label>
+                                                            {% endwith %}
+                                                        </div>
+                                                    {% endfor %}
                                                 </div>
-                                                {% endfor %}
                                             </div>
-                                        </div>
                                         {% endfor %}
-
                                         <div class="text-end mt-4">
                                             <button type="submit" class="btn btn-primary">
                                                 <i class="bi bi-send"></i> Kirim Semua Jawaban
                                             </button>
                                         </div>
                                     </form>
-
                                     <!-- Script Countdown Otomatis Submit -->
                                     <script>
                                         (function () {
                                             const timerElement = document.getElementById("timer-countdown");
                                             const progressBar = document.getElementById("timer-progress");
                                             const percentElement = document.getElementById("progress-percent");
-
                                             if (!timerElement) return;
-
                                             let totalTime = parseInt(timerElement.textContent);
                                             let timeLeft = totalTime;
-
                                             const interval = setInterval(() => {
                                                 timeLeft--;
                                                 const percent = Math.max(0, Math.round((timeLeft / totalTime) * 100));
@@ -443,7 +420,6 @@
                                                 progressBar.style.width = percent + "%";
                                                 progressBar.setAttribute("aria-valuenow", percent);
                                                 percentElement.textContent = percent + "%";
-
                                                 if (percent <= 25) {
                                                     progressBar.classList.remove("bg-primary", "bg-warning");
                                                     progressBar.classList.add("bg-danger");
@@ -451,92 +427,99 @@
                                                     progressBar.classList.remove("bg-primary");
                                                     progressBar.classList.add("bg-warning");
                                                 }
-
                                                 if (timeLeft <= 0) {
                                                     clearInterval(interval);
                                                     const form = document.getElementById("quiz-form");
                                                     if (form) {
-                                                        // Pastikan semua radio yang dipilih tetap aktif
                                                         const inputs = form.querySelectorAll('input[type="radio"]');
                                                         inputs.forEach(input => {
                                                             if (!input.checked) {
-                                                                input.disabled = true;  // nonaktifkan yang tidak dipilih
+                                                                input.disabled = true;
                                                             }
                                                         });
-
-                                                        // Trigger HTMX submit (lebih aman dari pada form.submit())
                                                         if (typeof htmx !== 'undefined') {
                                                             htmx.trigger(form, 'submit');
                                                         } else {
-                                                            form.submit(); // fallback
+                                                            form.submit();
                                                         }
                                                     }
                                                 }
                                             }, 1000);
                                         })();
-                                        </script>
-
-
-                                <script>
-                                    (function() {
-                                    const timerElement = document.getElementById('timer');
-                                    if (timerElement && !timerElement.dataset.timerInitialized) {
-                                        let timeLeft = parseInt(timerElement.textContent);
-                                        timerElement.dataset.timerInitialized = 'true';
-                                        const interval = setInterval(() => {
-                                        timeLeft--;
-                                        timerElement.textContent = timeLeft;
-                                        if (timeLeft <= 0) {
-                                            clearInterval(interval);
-                                            const form = document.getElementById('quiz-form');
-                                            if (form) {
-                                            htmx.trigger(form, 'submit');
+                                    </script>
+                                    <script>
+                                        (function() {
+                                            const timerElement = document.getElementById('timer');
+                                            if (timerElement && !timerElement.dataset.timerInitialized) {
+                                                let timeLeft = parseInt(timerElement.textContent);
+                                                timerElement.dataset.timerInitialized = 'true';
+                                                const interval = setInterval(() => {
+                                                    timeLeft--;
+                                                    timerElement.textContent = timeLeft;
+                                                    if (timeLeft <= 0) {
+                                                        clearInterval(interval);
+                                                        const form = document.getElementById('quiz-form');
+                                                        if (form) {
+                                                            htmx.trigger(form, 'submit');
+                                                        }
+                                                    }
+                                                }, 1000);
                                             }
-                                        }
-                                        }, 1000);
-                                    }
-                                    })();
-                                </script>
+                                        })();
+                                    </script>
                                 {% endif %}
                             {% else %}
-                             <div id="manual-confirmation" class="d-flex justify-content-center align-items-center min-vh-100 bg-light">
-                                <div class="card shadow-lg border-0" style="max-width: 480px; width: 100%;">
-                                    <div class="card-body text-center p-5">
-                                        <div class="mb-4">
-                                            <i class="bi bi-journal-check text-primary display-4"></i>
+                                <div id="manual-confirmation" class="d-flex justify-content-center align-items-center min-vh-100 bg-light">
+                                    <div class="card shadow-lg border-0" style="max-width: 480px; width: 100%;">
+                                        <div class="card-body text-center p-5">
+                                            <div class="mb-4">
+                                                <i class="bi bi-journal-check text-primary display-4"></i>
+                                            </div>
+                                            <h4 class="mb-3 fw-semibold">Siap untuk Memulai Ujian?</h4>
+                                            <p class="mb-4 text-muted">
+                                                Anda memiliki <strong>{{ assessment.duration_in_minutes }} menit</strong> untuk menyelesaikan penilaian ini. Pastikan Anda telah siap sebelum melanjutkan.
+                                            </p>
+                                            <form 
+                                                  hx-post="{% url 'learner:start_assessment' assessment.id %}"
+                                                  hx-target="#content-area"
+                                                  hx-swap="innerHTML"
+                                                  hx-push-url="{% url 'learner:load_content' username=username slug=slug content_type='assessment' content_id=assessment.id %}">
+                                                <button type="submit" class="btn btn-lg btn-primary w-100">
+                                                    <i class="bi bi-play-circle me-2"></i> Mulai Sekarang
+                                                </button>
+                                            </form>
                                         </div>
-                                        <h4 class="mb-3 fw-semibold">Siap untuk Memulai Ujian?</h4>
-                                        <p class="mb-4 text-muted">
-                                            Anda memiliki <strong>{{ assessment.duration_in_minutes }} menit</strong> untuk menyelesaikan penilaian ini. Pastikan Anda telah siap sebelum melanjutkan.
-                                        </p>
-                                        <form 
-                                            hx-post="{% url 'learner:start_assessment' assessment.id %}"
-                                            hx-target="#content-area"
-                                            hx-swap="innerHTML"
-                                            hx-push-url="{% url 'learner:load_content' username=username slug=slug content_type='assessment' content_id=assessment.id %}">
-                                            <button type="submit" class="btn btn-lg btn-primary w-100">
-                                                <i class="bi bi-play-circle me-2"></i> Mulai Sekarang
-                                            </button>
-                                        </form>
                                     </div>
                                 </div>
-                            </div>
-
-
-
                             {% endif %}
-                            {% endif %}
-
-
+                        {% endif %}
                     {% endif %}
                 {% endif %}
-
                 <!-- Tombol Navigasi -->
                 {% include 'learner/partials/navigation.html' %}
-
             {% else %}
                 <p>Pilih materi atau penilaian dari sidebar.</p>
             {% endif %}
         </div>
     </div>
 </div>
+
+<!-- CSS untuk Highlight Sidebar dan Checklist -->
+<style>
+.sidebar .active {
+    font-weight: bold;
+    color: #007bff; /* Warna biru untuk link aktif */
+    background-color: #f8f9fa; /* Latar belakang abu-abu muda */
+    padding: 8px 12px;
+    border-radius: 4px;
+    display: block;
+}
+.sidebar .active:hover {
+    color: #0056b3; /* Warna hover lebih gelap */
+    background-color: #e9ecef;
+}
+.sidebar .bi-check-circle {
+    font-size: 0.9rem; /* Ukuran ikon checklist sedikit lebih kecil */
+    vertical-align: middle;
+}
+</style>

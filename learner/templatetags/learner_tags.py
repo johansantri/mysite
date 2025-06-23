@@ -174,3 +174,26 @@ def get_course_completion_status(context):
         'overall_percentage': round(overall_percentage, 2),
         'passing_threshold': passing_threshold
     }
+
+
+@register.simple_tag(takes_context=True)
+def is_content_read(context, content_type, content_id):
+    """
+    Check if a material or assessment has been read/opened by the user.
+    
+    Args:
+        context: Template context (includes request).
+        content_type: 'material' or 'assessment'.
+        content_id: ID of the material or assessment.
+    
+    Returns:
+        bool: True if content is read/opened, False otherwise.
+    """
+    user = context['request'].user
+    if not user.is_authenticated:
+        return False
+    if content_type == 'material':
+        return MaterialRead.objects.filter(user=user, material_id=content_id).exists()
+    elif content_type == 'assessment':
+        return AssessmentRead.objects.filter(user=user, assessment_id=content_id).exists()
+    return False

@@ -1,9 +1,9 @@
-INFO 2025-06-23 15:09:01,801 views load_content: Rendering learner/my_course.html for user learn, assessment 56
-ERROR 2025-06-23 15:09:01,859 log Internal Server Error: /learn/backend-development/assessment/56/
+INFO 2025-06-23 16:33:23,378 views load_content: Rendering learner/my_course.html for user admin, assessment 56
+ERROR 2025-06-23 16:33:23,428 log Internal Server Error: /admin/backend-development/assessment/56/
 Traceback (most recent call last):
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 510, in parse
-    compile_func = self.tags[command]
-KeyError: 'endwith'
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/smartif.py", line 180, in translate_token
+    op = OPERATORS[token]
+KeyError: 'material.id|is_content_read'
 
 During handling of the above exception, another exception occurred:
 
@@ -50,26 +50,6 @@ Traceback (most recent call last):
     return SafeString("".join([node.render_annotated(context) for node in self]))
   File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
     return self.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 210, in render
-    return template.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 173, in render
-    return self._render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
-    return self.nodelist.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
-    return self.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 327, in render
-    return nodelist.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
-    return SafeString("".join([node.render_annotated(context) for node in self]))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
-    return self.render(context)
   File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 199, in render
     template = context.template.engine.select_template(template_name)
   File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 208, in select_template
@@ -86,406 +66,42 @@ Traceback (most recent call last):
     self.nodelist = self.compile_nodelist()
   File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 196, in compile_nodelist
     nodelist = parser.parse()
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 512, in parse
-    self.invalid_block_tag(token, command, parse_until)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 577, in invalid_block_tag
-    raise self.error(
-django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 96: 'endwith'. Did you forget to register or load this tag?
-INFO 2025-06-23 15:10:22,421 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-23 15:10:22,635 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-23 15:10:22,677 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-23 15:10:38,534 views my_course: Rendering for user learn, course backend-development, assessment_id=None
-INFO 2025-06-23 15:11:10,985 views my_course: Rendering for user learn, course build-powerful-web-applications-with-django, assessment_id=None
-INFO 2025-06-23 15:11:14,410 views load_content: Rendering learner/partials/content.html for user learn, assessment 17
-INFO 2025-06-23 15:11:16,044 views load_content: Rendering learner/partials/content.html for user learn, material 16
-INFO 2025-06-23 15:11:17,598 views load_content: Rendering learner/partials/content.html for user learn, assessment 18
-INFO 2025-06-23 15:11:19,279 views load_content: Rendering learner/partials/content.html for user learn, material 17
-INFO 2025-06-23 15:11:20,668 views load_content: Rendering learner/partials/content.html for user learn, assessment 19
-INFO 2025-06-23 15:11:22,323 views load_content: Rendering learner/partials/content.html for user learn, material 18
-INFO 2025-06-23 15:11:23,941 views load_content: Rendering learner/partials/content.html for user learn, assessment 20
-INFO 2025-06-23 15:11:25,558 views load_content: Rendering learner/partials/content.html for user learn, material 19
-INFO 2025-06-23 15:11:27,194 views load_content: Rendering learner/partials/content.html for user learn, assessment 21
-INFO 2025-06-23 15:11:28,710 views load_content: Rendering learner/partials/content.html for user learn, material 20
-INFO 2025-06-23 15:11:30,069 views load_content: Rendering learner/partials/content.html for user learn, assessment 22
-INFO 2025-06-23 15:12:14,675 views my_course: Rendering for user learn, course front-end-developer, assessment_id=None
-INFO 2025-06-23 15:12:18,318 views load_content: Rendering learner/partials/content.html for user learn, assessment 23
-INFO 2025-06-23 15:12:20,327 views load_content: Rendering learner/partials/content.html for user learn, material 22
-INFO 2025-06-23 15:12:22,552 views load_content: Rendering learner/partials/content.html for user learn, assessment 24
-INFO 2025-06-23 15:12:24,186 views load_content: Rendering learner/partials/content.html for user learn, material 23
-INFO 2025-06-23 15:12:26,717 views load_content: Rendering learner/partials/content.html for user learn, assessment 25
-INFO 2025-06-23 15:12:28,724 views load_content: Rendering learner/partials/content.html for user learn, material 24
-INFO 2025-06-23 15:12:33,222 views load_content: Rendering learner/partials/content.html for user learn, assessment 26
-INFO 2025-06-23 15:12:34,808 views load_content: Rendering learner/partials/content.html for user learn, material 25
-INFO 2025-06-23 15:12:37,575 views load_content: Rendering learner/partials/content.html for user learn, assessment 27
-INFO 2025-06-23 15:12:39,139 views load_content: Rendering learner/partials/content.html for user learn, material 26
-INFO 2025-06-23 15:12:41,676 views load_content: Rendering learner/partials/content.html for user learn, assessment 28
-INFO 2025-06-23 15:13:01,442 views my_course: Rendering for user learn, course backend-development, assessment_id=None
-INFO 2025-06-23 15:14:02,370 views load_content: Rendering learner/my_course.html for user learn, assessment 56
-INFO 2025-06-23 15:16:48,127 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-23 15:16:48,497 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-23 15:16:48,598 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-23 15:16:53,752 views load_content: Rendering learner/my_course.html for user learn, assessment 56
-INFO 2025-06-23 15:17:52,625 views my_course: Rendering for user learn, course front-end-developer, assessment_id=23
-INFO 2025-06-23 15:18:13,973 views submit_assessment_new: Rendering HTMX for user learn, assessment 23
-INFO 2025-06-23 15:18:16,325 views load_content: Rendering learner/partials/content.html for user learn, material 22
-INFO 2025-06-23 15:18:19,959 views load_content: Rendering learner/partials/content.html for user learn, assessment 24
-INFO 2025-06-23 15:18:22,734 views start_assessment: Rendering HTMX for user learn, assessment 24, time_left=299
-INFO 2025-06-23 15:18:50,201 views submit_assessment_new: Rendering HTMX for user learn, assessment 24
-INFO 2025-06-23 15:18:52,125 views load_content: Rendering learner/partials/content.html for user learn, material 23
-INFO 2025-06-23 15:18:55,709 views load_content: Rendering learner/partials/content.html for user learn, assessment 25
-INFO 2025-06-23 15:18:59,901 views start_assessment: Rendering HTMX for user learn, assessment 25, time_left=299
-INFO 2025-06-23 15:19:13,063 views submit_assessment_new: Rendering HTMX for user learn, assessment 25
-INFO 2025-06-23 15:19:14,915 views load_content: Rendering learner/partials/content.html for user learn, material 24
-INFO 2025-06-23 15:19:18,545 views load_content: Rendering learner/partials/content.html for user learn, assessment 26
-INFO 2025-06-23 15:19:20,020 views start_assessment: Rendering HTMX for user learn, assessment 26, time_left=299
-INFO 2025-06-23 15:19:41,318 views submit_assessment_new: Rendering HTMX for user learn, assessment 26
-INFO 2025-06-23 15:20:55,965 views load_content: Rendering learner/partials/content.html for user learn, material 25
-INFO 2025-06-23 15:20:59,292 views load_content: Rendering learner/partials/content.html for user learn, assessment 27
-INFO 2025-06-23 15:21:00,586 views start_assessment: Rendering HTMX for user learn, assessment 27, time_left=299
-INFO 2025-06-23 15:21:22,344 views submit_assessment_new: Rendering HTMX for user learn, assessment 27
-INFO 2025-06-23 15:21:35,716 views load_content: Rendering learner/partials/content.html for user learn, material 26
-INFO 2025-06-23 15:22:33,099 views load_content: Rendering learner/partials/content.html for user learn, assessment 28
-INFO 2025-06-23 15:22:34,738 views start_assessment: Rendering HTMX for user learn, assessment 28, time_left=299
-INFO 2025-06-23 15:23:33,200 views submit_assessment_new: Rendering HTMX for user learn, assessment 28
-INFO 2025-06-23 15:24:21,577 views load_content: Rendering learner/partials/content.html for user learn, assessment 27
-INFO 2025-06-23 15:24:26,515 views load_content: Rendering learner/my_course.html for user learn, assessment 27
-INFO 2025-06-23 15:24:35,468 views load_content: Rendering learner/my_course.html for user learn, material 25
-INFO 2025-06-23 15:24:52,993 views Partner logo found: https://ini.icei.ac.id/media/logos/oxford.png
-INFO 2025-06-23 15:24:52,996 views Certificate 0a9965a2-5b43-4207-957c-91bd8d810864 already exists for user learn
-INFO 2025-06-23 15:24:53,002 __init__ Step 1 - Fetching and parsing HTML - HTML string
-INFO 2025-06-23 15:24:53,031 __init__ Step 2 - Fetching and parsing CSS - CSS string
-INFO 2025-06-23 15:24:53,036 __init__ Step 2 - Fetching and parsing CSS - https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@400;700&display=swap
-DEBUG 2025-06-23 15:24:54,856 __init__ Ignored `pointer-events: none` at 197:13, the property does not apply for the print media.
-INFO 2025-06-23 15:24:54,858 __init__ Step 3 - Applying CSS
-INFO 2025-06-23 15:24:54,865 document Step 4 - Creating formatting structure
-INFO 2025-06-23 15:24:55,107 page Step 5 - Creating layout - Page 1
-INFO 2025-06-23 15:24:55,227 page Step 5 - Creating layout - Page 2
-INFO 2025-06-23 15:24:55,320 __init__ Step 6 - Creating PDF
-INFO 2025-06-23 15:24:55,381 __init__ Step 7 - Adding PDF metadata
-DEBUG 2025-06-23 15:24:55,384 ttFont Reading 'maxp' table from disk
-DEBUG 2025-06-23 15:24:55,384 ttFont Decompiling 'maxp' table
-DEBUG 2025-06-23 15:24:55,384 loggingTools Took 0.001s to load 'maxp'
-DEBUG 2025-06-23 15:24:55,384 loggingTools Took 0.000s to prune 'maxp'
-INFO 2025-06-23 15:24:55,385 __init__ maxp pruned
-DEBUG 2025-06-23 15:24:55,386 ttFont Reading 'cmap' table from disk
-DEBUG 2025-06-23 15:24:55,386 ttFont Decompiling 'cmap' table
-DEBUG 2025-06-23 15:24:55,387 ttFont Reading 'post' table from disk
-DEBUG 2025-06-23 15:24:55,387 ttFont Decompiling 'post' table
-DEBUG 2025-06-23 15:24:55,388 loggingTools Took 0.003s to load 'cmap'
-DEBUG 2025-06-23 15:24:55,388 loggingTools Took 0.000s to prune 'cmap'
-INFO 2025-06-23 15:24:55,389 __init__ cmap pruned
-INFO 2025-06-23 15:24:55,389 __init__ prep dropped
-DEBUG 2025-06-23 15:24:55,389 loggingTools Took 0.000s to load 'post'
-DEBUG 2025-06-23 15:24:55,390 loggingTools Took 0.000s to prune 'post'
-INFO 2025-06-23 15:24:55,390 __init__ post pruned
-INFO 2025-06-23 15:24:55,391 __init__ GPOS dropped
-INFO 2025-06-23 15:24:55,391 __init__ GSUB dropped
-DEBUG 2025-06-23 15:24:55,392 ttFont Reading 'glyf' table from disk
-DEBUG 2025-06-23 15:24:55,392 ttFont Decompiling 'glyf' table
-DEBUG 2025-06-23 15:24:55,392 ttFont Reading 'loca' table from disk
-DEBUG 2025-06-23 15:24:55,392 ttFont Decompiling 'loca' table
-DEBUG 2025-06-23 15:24:55,392 ttFont Reading 'head' table from disk
-DEBUG 2025-06-23 15:24:55,393 ttFont Decompiling 'head' table
-DEBUG 2025-06-23 15:24:55,394 loggingTools Took 0.003s to load 'glyf'
-DEBUG 2025-06-23 15:24:55,395 loggingTools Took 0.000s to prune 'glyf'
-INFO 2025-06-23 15:24:55,395 __init__ glyf pruned
-DEBUG 2025-06-23 15:24:55,395 loggingTools Took 0.000s to close glyph list over 'cmap'
-INFO 2025-06-23 15:24:55,395 __init__ Added gid0 to subset
-INFO 2025-06-23 15:24:55,396 __init__ Closing glyph list over 'glyf': 29 glyphs before
-INFO 2025-06-23 15:24:55,396 __init__ Glyph names: ['.notdef', 'A', 'C', 'E', 'F', 'I', 'L', 'M', 'N', 'O', 'P', 'R', 'T', 'a', 'c', 'd', 'e', 'f', 'fi', 'h', 'i', 'm', 'n', 'o', 'r', 's', 'space', 't', 'v']
-INFO 2025-06-23 15:24:55,396 __init__ Glyph IDs:   [0, 1, 26, 36, 56, 69, 87, 93, 94, 100, 125, 128, 140, 190, 215, 221, 225, 246, 255, 259, 286, 287, 294, 322, 326, 334, 359, 387, 633]
-INFO 2025-06-23 15:24:55,397 __init__ Closed glyph list over 'glyf': 31 glyphs after
-INFO 2025-06-23 15:24:55,397 __init__ Glyph names: ['.notdef', 'A', 'C', 'E', 'F', 'I', 'L', 'M', 'N', 'O', 'P', 'R', 'T', 'a', 'c', 'd', 'dotlessi', 'e', 'f', 'fi', 'h', 'i', 'm', 'n', 'o', 'r', 's', 'space', 't', 'uni0307', 'v']
-INFO 2025-06-23 15:24:55,397 __init__ Glyph IDs:   [0, 1, 26, 36, 56, 69, 87, 93, 94, 100, 125, 128, 140, 190, 215, 221, 225, 246, 255, 259, 260, 286, 287, 294, 322, 326, 334, 359, 387, 633, 700]
-DEBUG 2025-06-23 15:24:55,397 loggingTools Took 0.002s to close glyph list over 'glyf'
-INFO 2025-06-23 15:24:55,398 __init__ Retaining 31 glyphs
-INFO 2025-06-23 15:24:55,399 __init__ head subsetting not needed
-INFO 2025-06-23 15:24:55,399 __init__ hhea subsetting not needed
-INFO 2025-06-23 15:24:55,400 __init__ maxp subsetting not needed
-INFO 2025-06-23 15:24:55,400 __init__ OS/2 subsetting not needed
-DEBUG 2025-06-23 15:24:55,401 ttFont Reading 'hmtx' table from disk
-DEBUG 2025-06-23 15:24:55,401 ttFont Decompiling 'hmtx' table
-DEBUG 2025-06-23 15:24:55,401 ttFont Reading 'hhea' table from disk
-DEBUG 2025-06-23 15:24:55,402 ttFont Decompiling 'hhea' table
-DEBUG 2025-06-23 15:24:55,403 loggingTools Took 0.002s to subset 'hmtx'
-INFO 2025-06-23 15:24:55,403 __init__ hmtx subsetted
-DEBUG 2025-06-23 15:24:55,403 loggingTools Took 0.000s to subset 'cmap'
-INFO 2025-06-23 15:24:55,404 __init__ cmap subsetted
-INFO 2025-06-23 15:24:55,404 __init__ loca subsetting not needed
-DEBUG 2025-06-23 15:24:55,404 loggingTools Took 0.000s to subset 'post'
-INFO 2025-06-23 15:24:55,404 __init__ post subsetted
-INFO 2025-06-23 15:24:55,405 __init__ gasp subsetting not needed
-INFO 2025-06-23 15:24:55,405 __init__ STAT subsetting not needed
-DEBUG 2025-06-23 15:24:55,405 ttFont Reading 'GDEF' table from disk
-DEBUG 2025-06-23 15:24:55,405 ttFont Decompiling 'GDEF' table
-DEBUG 2025-06-23 15:24:55,407 loggingTools Took 0.001s to subset 'GDEF'
-INFO 2025-06-23 15:24:55,407 __init__ GDEF subsetted
-INFO 2025-06-23 15:24:55,407 __init__ name subsetting not needed
-DEBUG 2025-06-23 15:24:55,408 loggingTools Took 0.001s to subset 'glyf'
-INFO 2025-06-23 15:24:55,408 __init__ glyf subsetted
-DEBUG 2025-06-23 15:24:55,408 loggingTools Took 0.000s to subset GlyphOrder
-DEBUG 2025-06-23 15:24:55,409 loggingTools Took 0.000s to prune 'head'
-INFO 2025-06-23 15:24:55,409 __init__ head pruned
-DEBUG 2025-06-23 15:24:55,409 ttFont Reading 'OS/2' table from disk
-DEBUG 2025-06-23 15:24:55,409 ttFont Decompiling 'OS/2' table
-INFO 2025-06-23 15:24:55,410 __init__ OS/2 Unicode ranges pruned: [0, 62]
-INFO 2025-06-23 15:24:55,411 __init__ OS/2 CodePage ranges pruned: [0]
-DEBUG 2025-06-23 15:24:55,412 loggingTools Took 0.001s to prune 'glyf'
-INFO 2025-06-23 15:24:55,412 __init__ glyf pruned
-DEBUG 2025-06-23 15:24:55,412 loggingTools Took 0.000s to prune 'GDEF'
-INFO 2025-06-23 15:24:55,413 __init__ GDEF pruned
-DEBUG 2025-06-23 15:24:55,413 ttFont Reading 'name' table from disk
-DEBUG 2025-06-23 15:24:55,413 ttFont Decompiling 'name' table
-DEBUG 2025-06-23 15:24:55,414 ttFont Reading 'gasp' table from disk
-DEBUG 2025-06-23 15:24:55,414 ttFont Decompiling 'gasp' table
-DEBUG 2025-06-23 15:24:55,414 ttFont Reading 'STAT' table from disk
-DEBUG 2025-06-23 15:24:55,414 ttFont Decompiling 'STAT' table
-DEBUG 2025-06-23 15:24:55,415 loggingTools Took 0.002s to prune 'name'
-INFO 2025-06-23 15:24:55,415 __init__ name pruned
-DEBUG 2025-06-23 15:24:55,436 ttFont Reading 'maxp' table from disk
-DEBUG 2025-06-23 15:24:55,436 ttFont Decompiling 'maxp' table
-DEBUG 2025-06-23 15:24:55,437 loggingTools Took 0.001s to load 'maxp'
-DEBUG 2025-06-23 15:24:55,437 loggingTools Took 0.000s to prune 'maxp'
-INFO 2025-06-23 15:24:55,437 __init__ maxp pruned
-DEBUG 2025-06-23 15:24:55,437 ttFont Reading 'cmap' table from disk
-DEBUG 2025-06-23 15:24:55,438 ttFont Decompiling 'cmap' table
-DEBUG 2025-06-23 15:24:55,439 ttFont Reading 'post' table from disk
-DEBUG 2025-06-23 15:24:55,440 ttFont Decompiling 'post' table
-DEBUG 2025-06-23 15:24:55,449 loggingTools Took 0.012s to load 'cmap'
-DEBUG 2025-06-23 15:24:55,450 loggingTools Took 0.000s to prune 'cmap'
-INFO 2025-06-23 15:24:55,450 __init__ cmap pruned
-INFO 2025-06-23 15:24:55,450 __init__ prep dropped
-DEBUG 2025-06-23 15:24:55,451 loggingTools Took 0.000s to load 'post'
-DEBUG 2025-06-23 15:24:55,451 loggingTools Took 0.000s to prune 'post'
-INFO 2025-06-23 15:24:55,451 __init__ post pruned
-INFO 2025-06-23 15:24:55,451 __init__ GPOS dropped
-INFO 2025-06-23 15:24:55,451 __init__ GSUB dropped
-DEBUG 2025-06-23 15:24:55,452 ttFont Reading 'glyf' table from disk
-DEBUG 2025-06-23 15:24:55,452 ttFont Decompiling 'glyf' table
-DEBUG 2025-06-23 15:24:55,452 ttFont Reading 'loca' table from disk
-DEBUG 2025-06-23 15:24:55,453 ttFont Decompiling 'loca' table
-DEBUG 2025-06-23 15:24:55,453 ttFont Reading 'head' table from disk
-DEBUG 2025-06-23 15:24:55,453 ttFont Decompiling 'head' table
-DEBUG 2025-06-23 15:24:55,458 loggingTools Took 0.007s to load 'glyf'
-DEBUG 2025-06-23 15:24:55,459 loggingTools Took 0.000s to prune 'glyf'
-INFO 2025-06-23 15:24:55,459 __init__ glyf pruned
-DEBUG 2025-06-23 15:24:55,460 loggingTools Took 0.000s to close glyph list over 'cmap'
-INFO 2025-06-23 15:24:55,461 __init__ Added gid0 to subset
-INFO 2025-06-23 15:24:55,461 __init__ Closing glyph list over 'glyf': 39 glyphs before
-INFO 2025-06-23 15:24:55,461 __init__ Glyph names: ['.notdef', 'A', 'I', 'O', 'P', 'S', 'T', 'U', 'V', 'a', 'b', 'c', 'colon', 'd', 'e', 'f', 'five', 'four', 'g', 'h', 'hyphen.case', 'i', 'l', 'n', 'o', 'one', 'period', 'r', 's', 'space', 't', 'three', 'two', 'u', 'v', 'w', 'x', 'y', 'zero']
-INFO 2025-06-23 15:24:55,462 __init__ Glyph IDs:   [0, 2, 197, 321, 375, 397, 411, 424, 456, 507, 578, 586, 597, 614, 647, 658, 670, 689, 736, 773, 790, 852, 871, 888, 913, 978, 982, 991, 996, 1339, 1340, 1341, 1343, 1344, 1345, 1469, 1500, 1503, 1747]
-INFO 2025-06-23 15:24:55,462 __init__ Closed glyph list over 'glyf': 42 glyphs after
-INFO 2025-06-23 15:24:55,462 __init__ Glyph names: ['.notdef', 'A', 'I', 'O', 'P', 'S', 'T', 'U', 'V', 'a', 'b', 'c', 'colon', 'd', 'dotlessi', 'e', 'f', 'five', 'four', 'g', 'h', 'hyphen', 'hyphen.case', 'i', 'l', 'n', 'o', 'one', 'period', 'r', 's', 'space', 't', 'three', 'two', 'u', 'uni0307', 'v', 'w', 'x', 'y', 'zero']
-INFO 2025-06-23 15:24:55,463 __init__ Glyph IDs:   [0, 2, 197, 321, 375, 397, 411, 424, 456, 507, 578, 586, 597, 614, 647, 658, 670, 689, 690, 736, 773, 790, 852, 871, 888, 913, 978, 982, 991, 996, 1339, 1340, 1341, 1343, 1344, 1345, 1457, 1469, 1500, 1503, 1747, 2645]
-DEBUG 2025-06-23 15:24:55,463 loggingTools Took 0.002s to close glyph list over 'glyf'
-INFO 2025-06-23 15:24:55,466 __init__ Retaining 42 glyphs
-INFO 2025-06-23 15:24:55,466 __init__ head subsetting not needed
-INFO 2025-06-23 15:24:55,467 __init__ hhea subsetting not needed
-INFO 2025-06-23 15:24:55,467 __init__ maxp subsetting not needed
-INFO 2025-06-23 15:24:55,467 __init__ OS/2 subsetting not needed
-DEBUG 2025-06-23 15:24:55,467 ttFont Reading 'hmtx' table from disk
-DEBUG 2025-06-23 15:24:55,468 ttFont Decompiling 'hmtx' table
-DEBUG 2025-06-23 15:24:55,468 ttFont Reading 'hhea' table from disk
-DEBUG 2025-06-23 15:24:55,468 ttFont Decompiling 'hhea' table
-DEBUG 2025-06-23 15:24:55,471 loggingTools Took 0.004s to subset 'hmtx'
-INFO 2025-06-23 15:24:55,471 __init__ hmtx subsetted
-DEBUG 2025-06-23 15:24:55,473 loggingTools Took 0.002s to subset 'cmap'
-INFO 2025-06-23 15:24:55,473 __init__ cmap subsetted
-INFO 2025-06-23 15:24:55,474 __init__ loca subsetting not needed
-DEBUG 2025-06-23 15:24:55,474 loggingTools Took 0.000s to subset 'post'
-INFO 2025-06-23 15:24:55,474 __init__ post subsetted
-INFO 2025-06-23 15:24:55,474 __init__ gasp subsetting not needed
-INFO 2025-06-23 15:24:55,475 __init__ STAT subsetting not needed
-DEBUG 2025-06-23 15:24:55,475 ttFont Reading 'GDEF' table from disk
-DEBUG 2025-06-23 15:24:55,475 ttFont Decompiling 'GDEF' table
-DEBUG 2025-06-23 15:24:55,478 loggingTools Took 0.003s to subset 'GDEF'
-INFO 2025-06-23 15:24:55,478 __init__ GDEF subsetted
-INFO 2025-06-23 15:24:55,479 __init__ name subsetting not needed
-DEBUG 2025-06-23 15:24:55,482 loggingTools Took 0.003s to subset 'glyf'
-INFO 2025-06-23 15:24:55,482 __init__ glyf subsetted
-DEBUG 2025-06-23 15:24:55,482 loggingTools Took 0.000s to subset GlyphOrder
-DEBUG 2025-06-23 15:24:55,483 loggingTools Took 0.000s to prune 'head'
-INFO 2025-06-23 15:24:55,483 __init__ head pruned
-DEBUG 2025-06-23 15:24:55,483 ttFont Reading 'OS/2' table from disk
-DEBUG 2025-06-23 15:24:55,483 ttFont Decompiling 'OS/2' table
-INFO 2025-06-23 15:24:55,484 __init__ OS/2 Unicode ranges pruned: [0, 60]
-INFO 2025-06-23 15:24:55,484 __init__ OS/2 CodePage ranges pruned: [0]
-DEBUG 2025-06-23 15:24:55,486 loggingTools Took 0.001s to prune 'glyf'
-INFO 2025-06-23 15:24:55,486 __init__ glyf pruned
-DEBUG 2025-06-23 15:24:55,487 loggingTools Took 0.000s to prune 'GDEF'
-INFO 2025-06-23 15:24:55,487 __init__ GDEF pruned
-DEBUG 2025-06-23 15:24:55,487 ttFont Reading 'name' table from disk
-DEBUG 2025-06-23 15:24:55,488 ttFont Decompiling 'name' table
-DEBUG 2025-06-23 15:24:55,488 ttFont Reading 'gasp' table from disk
-DEBUG 2025-06-23 15:24:55,488 ttFont Decompiling 'gasp' table
-DEBUG 2025-06-23 15:24:55,488 ttFont Reading 'STAT' table from disk
-DEBUG 2025-06-23 15:24:55,489 ttFont Decompiling 'STAT' table
-DEBUG 2025-06-23 15:24:55,490 loggingTools Took 0.002s to prune 'name'
-INFO 2025-06-23 15:24:55,490 __init__ name pruned
-DEBUG 2025-06-23 15:24:55,517 ttFont Reading 'maxp' table from disk
-DEBUG 2025-06-23 15:24:55,517 ttFont Decompiling 'maxp' table
-DEBUG 2025-06-23 15:24:55,517 loggingTools Took 0.001s to load 'maxp'
-DEBUG 2025-06-23 15:24:55,518 loggingTools Took 0.000s to prune 'maxp'
-INFO 2025-06-23 15:24:55,518 __init__ maxp pruned
-DEBUG 2025-06-23 15:24:55,518 ttFont Reading 'cmap' table from disk
-DEBUG 2025-06-23 15:24:55,518 ttFont Decompiling 'cmap' table
-DEBUG 2025-06-23 15:24:55,520 ttFont Reading 'post' table from disk
-DEBUG 2025-06-23 15:24:55,520 ttFont Decompiling 'post' table
-DEBUG 2025-06-23 15:24:55,530 loggingTools Took 0.011s to load 'cmap'
-DEBUG 2025-06-23 15:24:55,530 loggingTools Took 0.000s to prune 'cmap'
-INFO 2025-06-23 15:24:55,530 __init__ cmap pruned
-INFO 2025-06-23 15:24:55,530 __init__ prep dropped
-DEBUG 2025-06-23 15:24:55,531 loggingTools Took 0.000s to load 'post'
-DEBUG 2025-06-23 15:24:55,531 loggingTools Took 0.000s to prune 'post'
-INFO 2025-06-23 15:24:55,531 __init__ post pruned
-INFO 2025-06-23 15:24:55,532 __init__ GPOS dropped
-INFO 2025-06-23 15:24:55,532 __init__ GSUB dropped
-DEBUG 2025-06-23 15:24:55,532 ttFont Reading 'glyf' table from disk
-DEBUG 2025-06-23 15:24:55,532 ttFont Decompiling 'glyf' table
-DEBUG 2025-06-23 15:24:55,532 ttFont Reading 'loca' table from disk
-DEBUG 2025-06-23 15:24:55,533 ttFont Decompiling 'loca' table
-DEBUG 2025-06-23 15:24:55,533 ttFont Reading 'head' table from disk
-DEBUG 2025-06-23 15:24:55,533 ttFont Decompiling 'head' table
-DEBUG 2025-06-23 15:24:55,632 loggingTools Took 0.100s to load 'glyf'
-DEBUG 2025-06-23 15:24:55,633 loggingTools Took 0.000s to prune 'glyf'
-INFO 2025-06-23 15:24:55,633 __init__ glyf pruned
-DEBUG 2025-06-23 15:24:55,634 loggingTools Took 0.001s to close glyph list over 'cmap'
-INFO 2025-06-23 15:24:55,635 __init__ Added gid0 to subset
-INFO 2025-06-23 15:24:55,635 __init__ Closing glyph list over 'glyf': 42 glyphs before
-INFO 2025-06-23 15:24:55,635 __init__ Glyph names: ['.notdef', 'A', 'C', 'D', 'E', 'F', 'H', 'I', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'X', 'a', 'at', 'c', 'd', 'e', 'f', 'i', 'l', 'm', 'n', 'o', 'one', 'p', 'period', 'r', 's', 'six', 'space', 't', 'u', 'v', 'x', 'y', 'zero']
-INFO 2025-06-23 15:24:55,636 __init__ Glyph IDs:   [0, 2, 73, 84, 95, 137, 161, 197, 292, 300, 321, 375, 384, 397, 411, 424, 456, 466, 507, 586, 597, 614, 647, 689, 736, 766, 773, 790, 843, 852, 871, 888, 913, 978, 991, 996, 1339, 1340, 1347, 1443, 1500, 1747]
-INFO 2025-06-23 15:24:55,636 __init__ Closed glyph list over 'glyf': 44 glyphs after
-INFO 2025-06-23 15:24:55,636 __init__ Glyph names: ['.notdef', 'A', 'C', 'D', 'E', 'F', 'H', 'I', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'V', 'X', 'a', 'at', 'c', 'd', 'dotlessi', 'e', 'f', 'i', 'l', 'm', 'n', 'o', 'one', 'p', 'period', 'r', 's', 'six', 'space', 't', 'u', 'uni0307', 'v', 'x', 'y', 'zero']
-INFO 2025-06-23 15:24:55,637 __init__ Glyph IDs:   [0, 2, 73, 84, 95, 137, 161, 197, 292, 300, 321, 375, 384, 397, 411, 424, 456, 466, 507, 586, 597, 614, 647, 689, 690, 736, 766, 773, 790, 843, 852, 871, 888, 913, 978, 991, 996, 1339, 1340, 1347, 1443, 1500, 1747, 2645]
-DEBUG 2025-06-23 15:24:55,637 loggingTools Took 0.002s to close glyph list over 'glyf'
-INFO 2025-06-23 15:24:55,639 __init__ Retaining 44 glyphs
-INFO 2025-06-23 15:24:55,640 __init__ head subsetting not needed
-INFO 2025-06-23 15:24:55,640 __init__ hhea subsetting not needed
-INFO 2025-06-23 15:24:55,640 __init__ maxp subsetting not needed
-INFO 2025-06-23 15:24:55,641 __init__ OS/2 subsetting not needed
-DEBUG 2025-06-23 15:24:55,641 ttFont Reading 'hmtx' table from disk
-DEBUG 2025-06-23 15:24:55,641 ttFont Decompiling 'hmtx' table
-DEBUG 2025-06-23 15:24:55,641 ttFont Reading 'hhea' table from disk
-DEBUG 2025-06-23 15:24:55,641 ttFont Decompiling 'hhea' table
-DEBUG 2025-06-23 15:24:55,644 loggingTools Took 0.003s to subset 'hmtx'
-INFO 2025-06-23 15:24:55,644 __init__ hmtx subsetted
-DEBUG 2025-06-23 15:24:55,646 loggingTools Took 0.002s to subset 'cmap'
-INFO 2025-06-23 15:24:55,646 __init__ cmap subsetted
-INFO 2025-06-23 15:24:55,647 __init__ loca subsetting not needed
-DEBUG 2025-06-23 15:24:55,647 loggingTools Took 0.000s to subset 'post'
-INFO 2025-06-23 15:24:55,647 __init__ post subsetted
-INFO 2025-06-23 15:24:55,647 __init__ gasp subsetting not needed
-INFO 2025-06-23 15:24:55,647 __init__ STAT subsetting not needed
-DEBUG 2025-06-23 15:24:55,648 ttFont Reading 'GDEF' table from disk
-DEBUG 2025-06-23 15:24:55,648 ttFont Decompiling 'GDEF' table
-DEBUG 2025-06-23 15:24:55,652 loggingTools Took 0.004s to subset 'GDEF'
-INFO 2025-06-23 15:24:55,652 __init__ GDEF subsetted
-INFO 2025-06-23 15:24:55,653 __init__ name subsetting not needed
-DEBUG 2025-06-23 15:24:55,658 loggingTools Took 0.005s to subset 'glyf'
-INFO 2025-06-23 15:24:55,658 __init__ glyf subsetted
-DEBUG 2025-06-23 15:24:55,658 loggingTools Took 0.000s to subset GlyphOrder
-DEBUG 2025-06-23 15:24:55,659 loggingTools Took 0.000s to prune 'head'
-INFO 2025-06-23 15:24:55,659 __init__ head pruned
-DEBUG 2025-06-23 15:24:55,660 ttFont Reading 'OS/2' table from disk
-DEBUG 2025-06-23 15:24:55,660 ttFont Decompiling 'OS/2' table
-INFO 2025-06-23 15:24:55,660 __init__ OS/2 Unicode ranges pruned: [0]
-INFO 2025-06-23 15:24:55,661 __init__ OS/2 CodePage ranges pruned: [0]
-DEBUG 2025-06-23 15:24:55,663 loggingTools Took 0.002s to prune 'glyf'
-INFO 2025-06-23 15:24:55,663 __init__ glyf pruned
-DEBUG 2025-06-23 15:24:55,664 loggingTools Took 0.000s to prune 'GDEF'
-INFO 2025-06-23 15:24:55,664 __init__ GDEF pruned
-DEBUG 2025-06-23 15:24:55,664 ttFont Reading 'name' table from disk
-DEBUG 2025-06-23 15:24:55,665 ttFont Decompiling 'name' table
-DEBUG 2025-06-23 15:24:55,665 ttFont Reading 'gasp' table from disk
-DEBUG 2025-06-23 15:24:55,666 ttFont Decompiling 'gasp' table
-DEBUG 2025-06-23 15:24:55,666 ttFont Reading 'STAT' table from disk
-DEBUG 2025-06-23 15:24:55,666 ttFont Decompiling 'STAT' table
-DEBUG 2025-06-23 15:24:55,667 loggingTools Took 0.003s to prune 'name'
-INFO 2025-06-23 15:24:55,667 __init__ name pruned
-INFO 2025-06-23 15:27:19,208 views load_content: Rendering learner/partials/content.html for user learn, material 23
-INFO 2025-06-23 15:27:24,424 views load_content: Rendering learner/my_course.html for user learn, material 23
-INFO 2025-06-23 15:27:35,908 views load_content: Rendering learner/partials/content.html for user learn, material 24
-INFO 2025-06-23 15:27:37,283 views load_content: Rendering learner/partials/content.html for user learn, material 21
-INFO 2025-06-23 15:27:39,188 views load_content: Rendering learner/partials/content.html for user learn, assessment 23
-INFO 2025-06-23 15:27:41,052 views load_content: Rendering learner/partials/content.html for user learn, assessment 24
-INFO 2025-06-23 15:27:42,805 views load_content: Rendering learner/partials/content.html for user learn, material 23
-INFO 2025-06-23 15:27:49,585 views load_content: Rendering learner/partials/content.html for user learn, assessment 25
-INFO 2025-06-23 15:27:51,137 views load_content: Rendering learner/partials/content.html for user learn, material 24
-INFO 2025-06-23 15:27:53,825 views load_content: Rendering learner/partials/content.html for user learn, material 26
-INFO 2025-06-23 15:28:02,167 views load_content: Rendering learner/partials/content.html for user learn, material 21
-INFO 2025-06-23 15:28:02,945 views load_content: Rendering learner/partials/content.html for user learn, assessment 23
-INFO 2025-06-23 15:28:06,228 views load_content: Rendering learner/partials/content.html for user learn, assessment 24
-INFO 2025-06-23 15:28:08,864 views load_content: Rendering learner/partials/content.html for user learn, material 23
-INFO 2025-06-23 15:28:11,605 views load_content: Rendering learner/partials/content.html for user learn, assessment 27
-INFO 2025-06-23 15:28:14,152 views load_content: Rendering learner/partials/content.html for user learn, assessment 27
-INFO 2025-06-23 15:30:37,940 views load_content: Rendering learner/partials/content.html for user admin, assessment 1
-INFO 2025-06-23 15:31:07,865 views load_content: Rendering learner/my_course.html for user admin, material 1
-INFO 2025-06-23 15:31:57,980 views load_content: Rendering learner/partials/content.html for user admin, assessment 1
-INFO 2025-06-23 15:32:02,610 views load_content: Rendering learner/my_course.html for user admin, assessment 1
-INFO 2025-06-23 15:41:46,877 views my_course: Rendering for user learn, course front-end-developer, assessment_id=None
-INFO 2025-06-23 15:43:45,860 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-23 15:43:45,928 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-23 15:43:46,056 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-23 15:43:52,364 views my_course: Rendering for user learn, course front-end-developer, assessment_id=None
-INFO 2025-06-23 15:44:00,348 views load_content: Rendering learner/partials/content.html for user learn, material 21
-INFO 2025-06-23 15:44:05,621 views load_content: Rendering learner/partials/content.html for user learn, material 23
-INFO 2025-06-23 15:44:11,805 views load_content: Rendering learner/partials/content.html for user learn, assessment 28
-INFO 2025-06-23 15:46:49,280 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-23 15:46:49,492 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-23 15:46:49,707 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-23 15:46:54,683 views load_content: Rendering learner/my_course.html for user learn, assessment 28
-INFO 2025-06-23 15:46:58,832 views load_content: Rendering learner/partials/content.html for user learn, material 21
-INFO 2025-06-23 15:47:02,538 views load_content: Rendering learner/my_course.html for user learn, material 21
-INFO 2025-06-23 15:47:07,046 views load_content: Rendering learner/partials/content.html for user learn, material 22
-INFO 2025-06-23 15:47:20,660 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-23 15:47:20,837 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-23 15:47:20,911 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-23 15:47:24,998 views load_content: Rendering learner/my_course.html for user learn, material 22
-INFO 2025-06-23 15:47:27,526 views load_content: Rendering learner/partials/content.html for user learn, material 21
-INFO 2025-06-23 15:47:34,958 views load_content: Rendering learner/my_course.html for user learn, material 21
-INFO 2025-06-23 15:47:37,741 views load_content: Rendering learner/partials/content.html for user learn, material 21
-INFO 2025-06-23 15:47:43,060 views my_course: Rendering for user learn, course front-end-developer, assessment_id=None
-INFO 2025-06-23 15:48:24,176 views my_course: Rendering for user learn, course build-powerful-web-applications-with-django-2026, assessment_id=None
-INFO 2025-06-23 15:48:26,715 views load_content: Rendering learner/partials/content.html for user learn, assessment 50
-INFO 2025-06-23 15:48:30,077 views load_content: Rendering learner/partials/content.html for user learn, material 51
-INFO 2025-06-23 15:48:33,192 views load_content: Rendering learner/partials/content.html for user learn, assessment 51
-INFO 2025-06-23 15:48:35,726 views load_content: Rendering learner/partials/content.html for user learn, material 52
-INFO 2025-06-23 15:48:36,647 views load_content: Rendering learner/partials/content.html for user learn, assessment 52
-INFO 2025-06-23 15:48:38,182 views load_content: Rendering learner/partials/content.html for user learn, material 53
-INFO 2025-06-23 15:48:39,324 views load_content: Rendering learner/partials/content.html for user learn, assessment 53
-INFO 2025-06-23 15:48:40,825 views load_content: Rendering learner/partials/content.html for user learn, material 54
-INFO 2025-06-23 15:48:41,917 views load_content: Rendering learner/partials/content.html for user learn, assessment 54
-INFO 2025-06-23 15:48:42,736 views load_content: Rendering learner/partials/content.html for user learn, material 55
-INFO 2025-06-23 15:48:43,489 views load_content: Rendering learner/partials/content.html for user learn, assessment 55
-INFO 2025-06-23 15:48:46,605 views load_content: Rendering learner/partials/content.html for user learn, material 55
-INFO 2025-06-23 15:48:47,309 views load_content: Rendering learner/partials/content.html for user learn, assessment 54
-INFO 2025-06-23 15:48:49,662 views load_content: Rendering learner/partials/content.html for user learn, material 54
-INFO 2025-06-23 15:51:06,163 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-23 15:51:06,250 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-23 15:51:06,371 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-06-23 15:51:11,932 views load_content: Rendering learner/my_course.html for user learn, material 54
-INFO 2025-06-23 15:51:13,890 views load_content: Rendering learner/partials/content.html for user learn, assessment 54
-INFO 2025-06-23 15:51:15,364 views load_content: Rendering learner/partials/content.html for user learn, material 55
-INFO 2025-06-23 15:51:16,651 views load_content: Rendering learner/partials/content.html for user learn, assessment 55
-INFO 2025-06-23 15:51:30,038 views my_course: Rendering for user learn, course front-end-developer, assessment_id=None
-INFO 2025-06-23 15:51:33,647 views load_content: Rendering learner/partials/content.html for user learn, assessment 23
-INFO 2025-06-23 15:51:35,059 views load_content: Rendering learner/partials/content.html for user learn, material 22
-INFO 2025-06-23 15:51:37,249 views load_content: Rendering learner/partials/content.html for user learn, assessment 24
-INFO 2025-06-23 15:51:38,727 views load_content: Rendering learner/partials/content.html for user learn, material 23
-INFO 2025-06-23 15:51:41,358 views load_content: Rendering learner/partials/content.html for user learn, assessment 25
-INFO 2025-06-23 15:51:42,875 views load_content: Rendering learner/partials/content.html for user learn, material 24
-INFO 2025-06-23 15:51:45,984 views load_content: Rendering learner/partials/content.html for user learn, assessment 26
-INFO 2025-06-23 15:51:47,526 views load_content: Rendering learner/partials/content.html for user learn, material 25
-INFO 2025-06-23 15:51:53,116 views load_content: Rendering learner/partials/content.html for user learn, material 26
-INFO 2025-06-23 15:51:54,913 views load_content: Rendering learner/partials/content.html for user learn, assessment 28
-INFO 2025-06-23 15:52:26,667 views load_content: Rendering learner/partials/content.html for user learn, material 26
-INFO 2025-06-23 15:52:29,703 views load_content: Rendering learner/partials/content.html for user learn, assessment 27
-INFO 2025-06-23 15:52:31,201 views load_content: Rendering learner/partials/content.html for user learn, material 25
-INFO 2025-06-23 15:52:34,242 views load_content: Rendering learner/partials/content.html for user learn, assessment 26
-INFO 2025-06-23 15:52:36,185 views load_content: Rendering learner/partials/content.html for user learn, material 24
-INFO 2025-06-23 15:52:39,107 views load_content: Rendering learner/partials/content.html for user learn, assessment 25
-INFO 2025-06-23 15:52:40,514 views load_content: Rendering learner/partials/content.html for user learn, material 24
-INFO 2025-06-23 15:52:43,930 views load_content: Rendering learner/partials/content.html for user learn, assessment 26
-INFO 2025-06-23 15:52:45,433 views load_content: Rendering learner/partials/content.html for user learn, material 25
-INFO 2025-06-23 15:52:49,193 views load_content: Rendering learner/partials/content.html for user learn, assessment 27
-INFO 2025-06-23 15:52:51,837 views load_content: Rendering learner/partials/content.html for user learn, material 26
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 961, in do_if
+    condition = TemplateIfParser(parser, bits).parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 894, in __init__
+    super().__init__(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/smartif.py", line 171, in __init__
+    mapped_tokens.append(self.translate_token(token))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/smartif.py", line 182, in translate_token
+    return self.create_var(token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 897, in create_var
+    return TemplateLiteral(self.template_parser.compile_filter(value), value)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 705, in __init__
+    filter_func = parser.find_filter(filter_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 615, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'is_content_read'
+INFO 2025-06-23 16:34:55,297 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 16:34:55,333 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 16:34:55,453 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 16:34:59,833 views load_content: Rendering learner/my_course.html for user learn, material 23
+INFO 2025-06-23 16:35:06,600 views load_content: Rendering learner/partials/content.html for user learn, material 21
+INFO 2025-06-23 16:35:22,146 views my_course: Rendering for user learn, course big-data-developer-2026, assessment_id=None
