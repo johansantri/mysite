@@ -238,3 +238,405 @@ WARNING 2025-06-23 11:52:50,039 views Unauthorized access attempt by admin for k
 WARNING 2025-06-23 11:52:55,676 views Unauthorized access attempt by admin for kuruk
 INFO 2025-06-23 11:53:02,705 views Payment required for certificate in course 16 for user johan
 INFO 2025-06-23 11:53:02,845 views Processing payment for course 16, payment_type: certificate
+INFO 2025-06-23 11:56:38,564 views Payment required for exam in course 11 for user johan
+INFO 2025-06-23 11:56:41,366 views Processing payment for course 11, payment_type: exam
+INFO 2025-06-23 11:57:23,107 views Payment required for exam in course 11 for user johan
+INFO 2025-06-23 11:57:28,825 views Processing payment for course 11, payment_type: exam
+INFO 2025-06-23 12:03:01,360 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:03:01,509 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:03:01,632 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:03:19,213 views my_course: Rendering for user johan, course kursus-uiux-design-dari-nol-hingga-mahir, assessment_id=None
+INFO 2025-06-23 12:03:22,994 views load_content: Rendering learner/partials/content.html for user johan, material 79
+INFO 2025-06-23 12:03:24,646 views load_content: Rendering learner/partials/content.html for user johan, material 80
+INFO 2025-06-23 12:03:26,092 views load_content: Rendering learner/partials/content.html for user johan, material 81
+INFO 2025-06-23 12:03:28,298 views load_content: Rendering learner/partials/content.html for user johan, material 82
+INFO 2025-06-23 12:03:29,529 views load_content: Rendering learner/partials/content.html for user johan, material 83
+INFO 2025-06-23 12:03:30,664 views load_content: Rendering learner/partials/content.html for user johan, material 84
+INFO 2025-06-23 12:03:32,474 views load_content: Rendering learner/partials/content.html for user johan, assessment 80
+INFO 2025-06-23 12:03:57,658 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:03:57,659 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:03:57,843 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:04:00,106 views load_content: Rendering learner/my_course.html for user johan, assessment 80
+INFO 2025-06-23 12:04:02,546 views load_content: Rendering learner/partials/content.html for user johan, material 84
+INFO 2025-06-23 12:04:05,358 views load_content: Rendering learner/partials/content.html for user johan, assessment 80
+INFO 2025-06-23 12:04:51,096 views load_content: Rendering learner/my_course.html for user johan, assessment 80
+INFO 2025-06-23 12:04:53,369 views load_content: Rendering learner/partials/content.html for user johan, material 84
+INFO 2025-06-23 12:04:54,778 views load_content: Rendering learner/partials/content.html for user johan, material 83
+INFO 2025-06-23 12:04:56,008 views load_content: Rendering learner/partials/content.html for user johan, material 82
+INFO 2025-06-23 12:04:56,796 views load_content: Rendering learner/partials/content.html for user johan, material 81
+INFO 2025-06-23 12:04:58,705 views load_content: Rendering learner/partials/content.html for user johan, material 80
+INFO 2025-06-23 12:04:59,765 views load_content: Rendering learner/partials/content.html for user johan, material 79
+INFO 2025-06-23 12:05:01,039 views load_content: Rendering learner/partials/content.html for user johan, material 78
+INFO 2025-06-23 12:15:08,210 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:15:08,389 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:15:08,481 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:15:11,580 views load_content: Rendering learner/my_course.html for user johan, material 78, is_completed=False, assessments_completed_percentage=100
+INFO 2025-06-23 12:15:15,738 views load_content: Rendering learner/partials/content-area.html for user johan, material 79, is_completed=False, assessments_completed_percentage=100
+ERROR 2025-06-23 12:15:15,760 log Internal Server Error: /johan/kursus-uiux-design-dari-nol-hingga-mahir/material/79/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/learner/views.py", line 613, in load_content
+    response = render(request, template, context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: learner/partials/content-area.html
+WARNING 2025-06-23 12:20:33,123 log Forbidden (Referer checking failed - no Referer.): /
+INFO 2025-06-23 12:37:12,205 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:37:12,206 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:37:12,246 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:37:16,428 views load_content: Rendering learner/my_course.html for user johan, material 78
+ERROR 2025-06-23 12:37:16,480 log Internal Server Error: /johan/kursus-uiux-design-dari-nol-hingga-mahir/material/78/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 510, in parse
+    compile_func = self.tags[command]
+KeyError: 'static'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/learner/views.py", line 460, in load_content
+    response = render(request, template, context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 199, in render
+    template = context.template.engine.select_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 208, in select_template
+    return self.get_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 962, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 567, in invalid_block_tag
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 617: 'static', expected 'elif', 'else' or 'endif'. Did you forget to register or load this tag?
+INFO 2025-06-23 12:38:48,080 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:38:48,176 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:38:48,213 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:38:49,843 views load_content: Rendering learner/my_course.html for user johan, material 78
+INFO 2025-06-23 12:38:58,793 views load_content: Rendering learner/partials/content.html for user johan, assessment 80
+ERROR 2025-06-23 12:38:58,845 log Internal Server Error: /johan/kursus-uiux-design-dari-nol-hingga-mahir/assessment/80/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/learner/views.py", line 460, in load_content
+    response = render(request, template, context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 327, in render
+    return nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/library.py", line 321, in render
+    output = self.func(*resolved_args, **resolved_kwargs)
+  File "/home/TIM/mysite/learner/templatetags/learner_tags.py", line 147, in get_course_completion_status
+    certificate_url = reverse('learner:generate_certificate', kwargs={'course_id': course.id}) if is_completed else None
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'generate_certificate' not found. 'generate_certificate' is not a valid view function or pattern name.
+INFO 2025-06-23 12:39:03,709 views load_content: Rendering learner/partials/content.html for user johan, assessment 80
+ERROR 2025-06-23 12:39:03,757 log Internal Server Error: /johan/kursus-uiux-design-dari-nol-hingga-mahir/assessment/80/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/learner/views.py", line 460, in load_content
+    response = render(request, template, context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 327, in render
+    return nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/library.py", line 321, in render
+    output = self.func(*resolved_args, **resolved_kwargs)
+  File "/home/TIM/mysite/learner/templatetags/learner_tags.py", line 147, in get_course_completion_status
+    certificate_url = reverse('learner:generate_certificate', kwargs={'course_id': course.id}) if is_completed else None
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'generate_certificate' not found. 'generate_certificate' is not a valid view function or pattern name.
+INFO 2025-06-23 12:39:07,346 views load_content: Rendering learner/partials/content.html for user johan, assessment 80
+ERROR 2025-06-23 12:39:07,391 log Internal Server Error: /johan/kursus-uiux-design-dari-nol-hingga-mahir/assessment/80/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/learner/views.py", line 460, in load_content
+    response = render(request, template, context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 327, in render
+    return nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/library.py", line 321, in render
+    output = self.func(*resolved_args, **resolved_kwargs)
+  File "/home/TIM/mysite/learner/templatetags/learner_tags.py", line 147, in get_course_completion_status
+    certificate_url = reverse('learner:generate_certificate', kwargs={'course_id': course.id}) if is_completed else None
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'generate_certificate' not found. 'generate_certificate' is not a valid view function or pattern name.
+INFO 2025-06-23 12:40:14,381 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:40:14,431 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:40:14,516 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:40:15,943 views load_content: Rendering learner/my_course.html for user johan, material 78
+INFO 2025-06-23 12:40:18,839 views load_content: Rendering learner/partials/content.html for user johan, assessment 80
+INFO 2025-06-23 12:42:35,411 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:42:35,515 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:42:35,601 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:42:38,289 views load_content: Rendering learner/my_course.html for user johan, assessment 80
+INFO 2025-06-23 12:44:12,348 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:44:12,462 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:44:12,483 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:44:15,310 views load_content: Rendering learner/my_course.html for user johan, assessment 80
+INFO 2025-06-23 12:45:40,326 views load_content: Rendering learner/partials/content.html for user johan, material 84
+INFO 2025-06-23 12:45:42,233 views load_content: Rendering learner/partials/content.html for user johan, assessment 80
+INFO 2025-06-23 12:46:46,558 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:46:46,594 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:46:46,648 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:46:48,532 views load_content: Rendering learner/my_course.html for user johan, assessment 80
+INFO 2025-06-23 12:47:27,963 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:47:27,987 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:47:28,089 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:47:29,406 views load_content: Rendering learner/my_course.html for user johan, assessment 80
+INFO 2025-06-23 12:48:17,237 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:48:17,280 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:48:17,367 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:48:19,393 views load_content: Rendering learner/my_course.html for user johan, assessment 80
+INFO 2025-06-23 12:49:45,211 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:49:45,320 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:49:45,332 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:49:47,458 views load_content: Rendering learner/my_course.html for user johan, assessment 80
+INFO 2025-06-23 12:50:55,908 views load_content: Rendering learner/my_course.html for user johan, assessment 80
+INFO 2025-06-23 12:54:54,678 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:54:54,694 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:54:54,720 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:54:57,581 views load_content: Rendering learner/my_course.html for user johan, assessment 80
+INFO 2025-06-23 12:55:02,687 views load_content: Rendering learner/partials/content.html for user johan, material 84
+INFO 2025-06-23 12:55:04,495 views load_content: Rendering learner/partials/content.html for user johan, assessment 80
+INFO 2025-06-23 12:55:27,578 views load_content: Rendering learner/my_course.html for user johan, assessment 80
+INFO 2025-06-23 12:55:29,496 views load_content: Rendering learner/partials/content.html for user johan, material 84
+INFO 2025-06-23 12:55:31,106 views load_content: Rendering learner/partials/content.html for user johan, assessment 80
+INFO 2025-06-23 12:56:28,902 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:56:29,276 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:56:29,357 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:56:31,809 views load_content: Rendering learner/my_course.html for user johan, assessment 80
+INFO 2025-06-23 12:57:02,253 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:57:02,511 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:57:02,649 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:57:05,346 views load_content: Rendering learner/my_course.html for user johan, assessment 80
+INFO 2025-06-23 12:58:02,051 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:58:02,211 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:58:02,213 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:58:04,218 views load_content: Rendering learner/my_course.html for user johan, assessment 80
+INFO 2025-06-23 12:58:06,865 views load_content: Rendering learner/my_course.html for user johan, assessment 80
+INFO 2025-06-23 12:58:09,547 views load_content: Rendering learner/my_course.html for user johan, assessment 80
+INFO 2025-06-23 12:59:45,267 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:59:45,487 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:59:45,564 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 12:59:47,234 views load_content: Rendering learner/my_course.html for user johan, assessment 80
+INFO 2025-06-23 13:00:31,843 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 13:00:32,056 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 13:00:32,135 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 13:00:33,757 views load_content: Rendering learner/my_course.html for user johan, assessment 80
+INFO 2025-06-23 13:03:14,470 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 13:03:14,496 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 13:03:14,583 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 13:03:16,614 views load_content: Rendering learner/my_course.html for user johan, assessment 80
+INFO 2025-06-23 13:03:36,768 views load_content: Rendering learner/my_course.html for user johan, assessment 80
+INFO 2025-06-23 13:04:03,242 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 13:04:03,389 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 13:04:03,443 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 13:06:14,617 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 13:06:15,030 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 13:06:15,109 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 13:06:15,842 views load_content: Rendering learner/my_course.html for user johan, assessment 80
+INFO 2025-06-23 13:07:36,915 views load_content: Rendering learner/my_course.html for user johan, assessment 80
+INFO 2025-06-23 13:08:17,853 views Payment required for certificate in course 16 for user johan
+INFO 2025-06-23 13:08:17,994 views Processing payment for course 16, payment_type: certificate
+INFO 2025-06-23 13:08:30,133 views load_content: Rendering learner/my_course.html for user johan, assessment 80
+INFO 2025-06-23 13:08:32,847 views Payment required for certificate in course 16 for user johan
+INFO 2025-06-23 13:08:32,983 views Processing payment for course 16, payment_type: certificate
+INFO 2025-06-23 13:08:39,291 views load_content: Rendering learner/my_course.html for user johan, assessment 80
+INFO 2025-06-23 13:10:45,856 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 13:10:46,019 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 13:10:46,043 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 13:10:46,840 views load_content: Rendering learner/my_course.html for user johan, assessment 80
+INFO 2025-06-23 13:11:08,589 views my_course: Rendering for user johan, course kursus-uiux-design-dari-nol-hingga-mahir, assessment_id=None
+INFO 2025-06-23 13:11:11,302 views load_content: Rendering learner/partials/content.html for user johan, material 79
+INFO 2025-06-23 13:11:12,955 views load_content: Rendering learner/partials/content.html for user johan, material 80
+INFO 2025-06-23 13:11:26,010 views load_content: Rendering learner/partials/content.html for user johan, material 81
+INFO 2025-06-23 13:11:30,935 views load_content: Rendering learner/partials/content.html for user johan, material 82
+INFO 2025-06-23 13:13:06,606 views load_content: Rendering learner/my_course.html for user johan, material 82
+INFO 2025-06-23 13:13:15,945 views load_content: Rendering learner/partials/content.html for user johan, material 84
+INFO 2025-06-23 13:13:21,869 views load_content: Rendering learner/partials/content.html for user johan, assessment 80
+INFO 2025-06-23 13:14:29,484 views load_content: Rendering learner/my_course.html for user johan, assessment 80
+INFO 2025-06-23 13:14:35,199 views load_content: Rendering learner/my_course.html for user johan, assessment 80
+INFO 2025-06-23 13:15:16,803 views my_course: Rendering for user johan, course kursus-uiux-design-dari-nol-hingga-mahir, assessment_id=None
+INFO 2025-06-23 13:15:35,227 views load_content: Rendering learner/partials/content.html for user johan, material 79
+INFO 2025-06-23 13:15:38,701 views load_content: Rendering learner/partials/content.html for user johan, material 80
+INFO 2025-06-23 13:15:41,575 views load_content: Rendering learner/partials/content.html for user johan, material 81
+INFO 2025-06-23 13:15:45,952 views load_content: Rendering learner/partials/content.html for user johan, material 82
+INFO 2025-06-23 13:15:50,047 views load_content: Rendering learner/partials/content.html for user johan, material 84
+INFO 2025-06-23 13:16:22,790 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 13:16:22,848 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 13:16:22,874 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 13:16:24,298 views load_content: Rendering learner/my_course.html for user johan, material 84
+INFO 2025-06-23 13:16:28,467 views load_content: Rendering learner/partials/content.html for user johan, assessment 80
+INFO 2025-06-23 13:16:37,399 views load_content: Rendering learner/partials/content.html for user johan, material 84
+INFO 2025-06-23 13:16:41,400 views load_content: Rendering learner/partials/content.html for user johan, material 82
+INFO 2025-06-23 13:16:44,024 views load_content: Rendering learner/partials/content.html for user johan, material 81
+INFO 2025-06-23 13:16:46,305 views load_content: Rendering learner/partials/content.html for user johan, material 80
+INFO 2025-06-23 13:16:48,980 views load_content: Rendering learner/partials/content.html for user johan, material 79
+INFO 2025-06-23 13:16:51,812 views load_content: Rendering learner/partials/content.html for user johan, material 78
+INFO 2025-06-23 13:17:18,652 views load_content: Rendering learner/my_course.html for user johan, material 78
+INFO 2025-06-23 13:17:23,081 views load_content: Rendering learner/partials/content.html for user johan, material 79
+INFO 2025-06-23 13:17:24,865 views load_content: Rendering learner/partials/content.html for user johan, material 80
+INFO 2025-06-23 13:17:26,354 views load_content: Rendering learner/partials/content.html for user johan, material 81
+INFO 2025-06-23 13:17:28,434 views load_content: Rendering learner/partials/content.html for user johan, material 82
+INFO 2025-06-23 13:17:29,954 views load_content: Rendering learner/partials/content.html for user johan, material 84
+INFO 2025-06-23 13:17:31,878 views load_content: Rendering learner/partials/content.html for user johan, assessment 80
+INFO 2025-06-23 13:19:12,574 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 13:19:12,593 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 13:19:12,623 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 13:19:14,456 views load_content: Rendering learner/my_course.html for user johan, assessment 80
+INFO 2025-06-23 13:19:25,353 views my_course: Rendering for user johan, course kursus-uiux-design-dari-nol-hingga-mahir, assessment_id=None
+INFO 2025-06-23 13:19:29,159 views load_content: Rendering learner/partials/content.html for user johan, material 79
+INFO 2025-06-23 13:19:31,513 views load_content: Rendering learner/partials/content.html for user johan, material 80
+INFO 2025-06-23 13:19:33,398 views load_content: Rendering learner/partials/content.html for user johan, material 81
+INFO 2025-06-23 13:19:35,892 views load_content: Rendering learner/my_course.html for user johan, material 81
+INFO 2025-06-23 13:19:37,611 views load_content: Rendering learner/partials/content.html for user johan, material 82
+INFO 2025-06-23 13:19:39,351 views load_content: Rendering learner/partials/content.html for user johan, material 84
+INFO 2025-06-23 13:19:41,374 views load_content: Rendering learner/partials/content.html for user johan, assessment 80

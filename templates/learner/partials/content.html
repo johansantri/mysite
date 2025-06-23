@@ -532,34 +532,7 @@
                 {% endif %}
 
                 <!-- Tombol Navigasi -->
-                <div class="d-flex justify-content-between mt-4">
-                    {% if previous_url %}
-                        <a href="{{ previous_url }}"
-                           hx-get="{{ previous_url }}"
-                           hx-target="#content-area"
-                           hx-swap="innerHTML"
-                           hx-push-url="true"
-                           class="btn btn-primary"
-                           hx-on::after-request="document.body.dispatchEvent(new Event('contentLoaded'))">
-                            <i class="bi bi-chevron-left me-2"></i>Sebelumnya
-                        </a>
-                    {% else %}
-                        <button class="btn btn-primary" disabled><i class="bi bi-chevron-left me-2"></i>Sebelumnya</button>
-                    {% endif %}
-                    {% if next_url %}
-                        <a href="{{ next_url }}"
-                           hx-get="{{ next_url }}"
-                           hx-target="#content-area"
-                           hx-swap="innerHTML"
-                           hx-push-url="true"
-                           class="btn btn-primary"
-                           hx-on::after-request="document.body.dispatchEvent(new Event('contentLoaded'))">
-                            Selanjutnya<i class="bi bi-chevron-right ms-2"></i>
-                        </a>
-                    {% else %}
-                        <button class="btn btn-primary" disabled>Selanjutnya<i class="bi bi-chevron-right ms-2"></i></button>
-                    {% endif %}
-                </div>
+                {% include 'learner/partials/navigation.html' %}
 
             {% else %}
                 <p>Pilih materi atau penilaian dari sidebar.</p>

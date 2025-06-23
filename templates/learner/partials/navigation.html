@@ -1,0 +1,144 @@
+{% load learner_tags %}
+<!-- Completion Card atau Warning -->
+{% get_course_completion_status as completion_status %}
+{% with is_completed=completion_status.is_completed certificate_url=completion_status.certificate_url assessments_completed_percentage=completion_status.assessments_completed_percentage course_progress=completion_status.course_progress %}
+    {% if is_completed %}
+        <div class="completion-overlay" id="completion-overlay">
+            <div class="card shadow-lg border-0 text-center p-5 completed-card mx-auto" style="max-width: 900px; width: 90%;" role="alert" aria-label="Selamat, Anda telah lulus kursus {{ course_name }}">
+                <div class="mb-4">
+                    <i class="bi bi-trophy display-2 text-success"></i>
+                </div>
+                <h1 class="fw-bold text-success mb-3">Selamat, Anda Lulus!</h1>
+                <p class="text-muted mb-4 fs-4">
+                    Anda telah menyelesaikan kursus <strong>{{ course_name }}</strong> dengan sukses!
+                    {% if course_scores %}
+                        <br>Skor akhir: <strong>{{ course_scores.last.grade }}%</strong>.
+                    {% endif %}
+                </p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="{% url 'authentication:dashbord' %}"
+                       class="btn btn-primary btn-lg"
+                       onclick="document.getElementById('completion-overlay').style.display='none';">
+                        <i class="bi bi-house-door me-2"></i>Kembali ke Dashboard
+                    </a>
+                    {% if certificate_url %}
+                        <a href="{{ certificate_url }}"
+                           class="btn btn-outline-success btn-lg"
+                           target="_blank">
+                            <i class="bi bi-award me-2"></i>Unduh Sertifikat
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% elif course_progress >= 100 and assessments_completed_percentage < 100 %}
+        <div class="mt-4">
+            <div class="alert alert-warning text-center p-4 mx-auto" style="max-width: 800px;" role="alert" aria-label="Peringatan: Penilaian belum selesai">
+                <i class="bi bi-exclamation-triangle me-2 fs-4"></i>
+                Anda belum menyelesaikan semua penilaian. Silakan selesaikan untuk lulus kursus ini.
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Tombol Navigasi -->
+    <div class="d-flex justify-content-between mt-4 mb-4">
+        <!-- Tombol Sebelumnya -->
+        {% if previous_url %}
+            <a href="{{ previous_url }}"
+               hx-get="{{ previous_url }}"
+               hx-target="#content-area"
+               hx-swap="innerHTML"
+               hx-push-url="true"
+               class="btn btn-primary"
+               hx-on::after-request="document.body.dispatchEvent(new Event('contentLoaded'))">
+                <i class="bi bi-chevron-left me-2"></i>Sebelumnya
+            </a>
+        {% else %}
+            <button class="btn btn-primary" disabled><i class="bi bi-chevron-left me-2"></i>Sebelumnya</button>
+        {% endif %}
+
+        <!-- Tombol Selanjutnya -->
+        {% if not is_completed %}
+            {% if next_url %}
+                <a href="{{ next_url }}"
+                   hx-get="{{ next_url }}"
+                   hx-target="#content-area"
+                   hx-swap="innerHTML"
+                   hx-push-url="true"
+                   class="btn btn-primary"
+                   hx-on::after-request="document.body.dispatchEvent(new Event('contentLoaded'))">
+                    Selanjutnya<i class="bi bi-chevron-right ms-2"></i>
+                </a>
+            {% else %}
+                {% if not course_progress >= 100 or assessments_completed_percentage >= 100 %}
+                    <button class="btn btn-primary" disabled>Selanjutnya<i class="bi bi-chevron-right ms-2"></i></button>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+    </div>
+{% endwith %}
+
+<!-- Animasi CSS -->
+<style>
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+.completion-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    overflow-y: auto;
+}
+.completed-card {
+    animation: fadeIn 0.8s ease-out;
+    background: linear-gradient(135deg, #ffffff, #f1f3f5);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    padding: 2rem;
+}
+@media (max-width: 576px) {
+    .completed-card {
+        width: 95%;
+        padding: 1.5rem;
+    }
+    .completed-card h1 {
+        font-size: 1.75rem;
+    }
+    .completed-card p {
+        font-size: 1rem;
+    }
+}
+</style>
+
+<!-- Efek Confetti -->
+<script src="https://cdn.jsdelivr.net/npm/js-confetti@0.11.0/dist/js-confetti.browser.js"></script>
+<script>
+    {% if completion_status.is_completed %}
+        const jsConfetti = new JSConfetti();
+        jsConfetti.addConfetti({
+            confettiNumber: 300,
+            confettiRadius: 8,
+            confettiSpeed: 30,
+            confettiColors: ['#ff0a54', '#ff477e', '#ff7096', '#ff85a1', '#00d4ff', '#00b7eb', '#ffd700'],
+            spread: 360
+        }).then(() => {
+            // Repeat confetti for extra celebration
+            setTimeout(() => {
+                jsConfetti.addConfetti({
+                    confettiNumber: 200,
+                    confettiRadius: 6,
+                    confettiSpeed: 25,
+                    confettiColors: ['#ff0a54', '#ff477e', '#00d4ff', '#ffd700']
+                });
+            }, 1000);
+        });
+    {% endif %}
+</script>
