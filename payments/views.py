@@ -121,6 +121,17 @@ def process_payment(request, course_id, payment_type='enrollment'):
         messages.error(request, "Invalid payment type.")
         return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
 
+    # Jika payment_type adalah exam atau certificate, arahkan user ke keranjang
+    if payment_type in ['exam', 'certificate']:
+        CartItem.objects.get_or_create(
+            user=request.user,
+            course=course,
+            defaults={'added_at': timezone.now()}
+        )
+        messages.info(request, f"{course.course_name} telah ditambahkan ke keranjang. Silakan lanjutkan pembayaran melalui checkout.")
+        return redirect('payments:view_cart')
+
+
     # Cek apakah pembayaran sudah selesai
     if Payment.objects.filter(
         user=request.user,
