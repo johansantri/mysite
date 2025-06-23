@@ -94,7 +94,7 @@ class Instructor(models.Model):
 
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="instructors")
     bio = models.TextField()
-    tech = models.CharField(max_length=255)
+    tech = models.TextField()
     expertise = models.CharField(max_length=255)
     experience_years = models.PositiveIntegerField()
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
