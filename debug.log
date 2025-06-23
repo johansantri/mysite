@@ -136,3 +136,105 @@ INFO 2025-06-23 11:24:11,581 apps AXES: BEGIN version 8.0.0, blocking by usernam
 INFO 2025-06-23 11:24:11,638 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
 INFO 2025-06-23 11:24:11,652 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
 WARNING 2025-06-23 11:24:57,639 views Unauthorized access attempt by admin for report
+WARNING 2025-06-23 11:26:20,794 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-23 11:26:27,524 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-23 11:26:30,877 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-23 11:26:36,752 views Unauthorized access attempt by admin for kuruk
+INFO 2025-06-23 11:26:54,463 views Payment required for certificate in course 16 for user johan
+INFO 2025-06-23 11:26:54,606 views Processing payment for course 16, payment_type: certificate
+WARNING 2025-06-23 11:27:13,634 views Unauthorized access attempt by johan for add-to-cart
+INFO 2025-06-23 11:27:49,462 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 11:27:49,514 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 11:27:49,664 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+WARNING 2025-06-23 11:29:26,475 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-23 11:29:31,405 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-23 11:29:51,548 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-23 11:37:12,924 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-23 11:37:16,867 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-23 11:38:03,451 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-23 11:38:06,273 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-23 11:38:31,136 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-23 11:39:27,918 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-23 11:39:29,844 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-23 11:40:15,510 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-23 11:40:19,765 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-23 11:40:20,912 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-23 11:41:01,353 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-23 11:42:30,843 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-23 11:42:36,155 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-23 11:42:39,159 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-23 11:42:44,039 views Unauthorized access attempt by admin for kuruk
+INFO 2025-06-23 11:43:10,440 views Payment required for certificate in course 16 for user johan
+INFO 2025-06-23 11:43:10,596 views Processing payment for course 16, payment_type: certificate
+INFO 2025-06-23 11:44:40,443 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 11:44:40,449 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 11:44:40,535 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+WARNING 2025-06-23 11:45:23,649 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-23 11:45:28,087 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-23 11:46:21,118 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-23 11:46:23,442 views Unauthorized access attempt by admin for kuruk
+ERROR 2025-06-23 11:46:56,976 log Internal Server Error: /checkout/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+sqlite3.IntegrityError: UNIQUE constraint failed: payments_payment.user_id, payments_payment.course_id, payments_payment.payment_model
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/payments/views.py", line 284, in checkout
+    Payment.objects.create(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 663, in create
+    obj.save(force_insert=True, using=self.db)
+  File "/home/TIM/mysite/payments/models.py", line 101, in save
+    super().save(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/base.py", line 902, in save
+    self.save_base(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/base.py", line 1008, in save_base
+    updated = self._save_table(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/base.py", line 1169, in _save_table
+    results = self._do_insert(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/base.py", line 1210, in _do_insert
+    return manager._insert(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1864, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1882, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+django.db.utils.IntegrityError: UNIQUE constraint failed: payments_payment.user_id, payments_payment.course_id, payments_payment.payment_model
+WARNING 2025-06-23 11:47:54,382 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-23 11:48:00,881 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-23 11:48:03,457 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-23 11:48:09,058 views Unauthorized access attempt by admin for kuruk
+INFO 2025-06-23 11:52:05,891 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 11:52:06,099 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-23 11:52:06,120 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+WARNING 2025-06-23 11:52:38,252 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-23 11:52:45,531 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-23 11:52:50,039 views Unauthorized access attempt by admin for kuruk
+WARNING 2025-06-23 11:52:55,676 views Unauthorized access attempt by admin for kuruk
+INFO 2025-06-23 11:53:02,705 views Payment required for certificate in course 16 for user johan
+INFO 2025-06-23 11:53:02,845 views Processing payment for course 16, payment_type: certificate

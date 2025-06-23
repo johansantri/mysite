@@ -274,39 +274,65 @@ def checkout(request):
             status='pending',
             description='Course purchase',
         )
-
         for item in cart_items:
             transaction.courses.add(item.course)
-
-            # Buat 1 payment per course
             price = item.course.get_course_price()
 
-            Payment.objects.create(
+            # Cek apakah payment sudah ada
+            existing_payment = Payment.objects.filter(
                 user=request.user,
                 course=item.course,
                 payment_model=item.course.payment_model,
-                status='pending',
-                amount=price.user_payment,
-                course_price=price,
-                snapshot_price=price.normal_price,
-                snapshot_discount=price.discount_amount,
-                snapshot_tax=price.tax,
-                snapshot_ppn=price.ppn,
-                snapshot_user_payment=price.user_payment,
-                snapshot_partner_earning=price.partner_earning,
-                snapshot_ice_earning=price.ice_earning,
-                linked_transaction=transaction,
-                ip_address=ip,
-                user_agent=user_agent,
-                location=f"{geo['city']}, {geo['country']}" if geo else None,
-                isp=geo['isp'] if geo else None,
-                latitude=geo['lat'] if geo else None,
-                longitude=geo['lon'] if geo else None,
-            )
+            ).first()
 
-            # Auto-enroll jika dibayar di awal (jika transaksi paid)
-            if item.course.payment_model == 'buy_first' and transaction.status == 'paid':
-                item.course.enroll_user(request.user)
+            if existing_payment:
+                if existing_payment.status in ['pending', 'failed']:
+                    # Update jika sudah ada tapi belum berhasil
+                    existing_payment.amount = price.user_payment
+                    existing_payment.course_price = price
+                    existing_payment.linked_transaction = transaction
+                    existing_payment.status = 'pending'
+                    existing_payment.snapshot_price = price.normal_price
+                    existing_payment.snapshot_discount = price.discount_amount
+                    existing_payment.snapshot_tax = price.tax
+                    existing_payment.snapshot_ppn = price.ppn
+                    existing_payment.snapshot_user_payment = price.user_payment
+                    existing_payment.snapshot_partner_earning = price.partner_earning
+                    existing_payment.snapshot_ice_earning = price.ice_earning
+                    existing_payment.ip_address = ip
+                    existing_payment.user_agent = user_agent
+                    existing_payment.location = f"{geo['city']}, {geo['country']}" if geo else None
+                    existing_payment.isp = geo['isp'] if geo else None
+                    existing_payment.latitude = geo['lat'] if geo else None
+                    existing_payment.longitude = geo['lon'] if geo else None
+                    existing_payment.save()
+                else:
+                    # Lewati jika payment sudah completed
+                    continue
+            else:
+                # Baru buat jika belum ada
+                Payment.objects.create(
+                    user=request.user,
+                    course=item.course,
+                    payment_model=item.course.payment_model,
+                    status='pending',
+                    amount=price.user_payment,
+                    course_price=price,
+                    snapshot_price=price.normal_price,
+                    snapshot_discount=price.discount_amount,
+                    snapshot_tax=price.tax,
+                    snapshot_ppn=price.ppn,
+                    snapshot_user_payment=price.user_payment,
+                    snapshot_partner_earning=price.partner_earning,
+                    snapshot_ice_earning=price.ice_earning,
+                    linked_transaction=transaction,
+                    ip_address=ip,
+                    user_agent=user_agent,
+                    location=f"{geo['city']}, {geo['country']}" if geo else None,
+                    isp=geo['isp'] if geo else None,
+                    latitude=geo['lat'] if geo else None,
+                    longitude=geo['lon'] if geo else None,
+                )    
 
         # Kosongkan keranjang
         cart_items.delete()

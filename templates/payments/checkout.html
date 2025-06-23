@@ -9,12 +9,12 @@
             {% for item in cart_items %}
                 <li class="flex justify-between items-center px-4 py-3">
                     <span class="text-gray-700">{{ item.course.course_name }}</span>
-                    <strong class="text-gray-900">IDR {{ item.course.get_course_price.user_payment|floatformat:0 }}</strong>
+                    <strong class="text-gray-900">IDR {{ item.course.get_course_price.user_payment|intcomma }}</strong>
                 </li>
             {% endfor %}
         </ul>
 
-        <h4 class="text-xl font-semibold text-gray-800 mb-4">Total: IDR {{ total_price|floatformat:0 }}</h4>
+        <h4 class="text-xl font-semibold text-gray-800 mb-4">Total: IDR {{ total_price|intcomma }}</h4>
 
         <form method="POST" novalidate class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
             {% csrf_token %}
