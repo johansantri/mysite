@@ -1037,6 +1037,7 @@ def submit_answer_askora_new(request, ask_ora_id):
         prev = combined_content[current_index - 1]
         context['previous_url'] = reverse('learner:load_content', kwargs={
             'username': request.user.username,
+            'id':course.id,
             'slug': course.slug,
             'content_type': prev[0],
             'content_id': prev[1].id
@@ -1045,6 +1046,7 @@ def submit_answer_askora_new(request, ask_ora_id):
         next_item = combined_content[current_index + 1]
         context['next_url'] = reverse('learner:load_content', kwargs={
             'username': request.user.username,
+            'id': course.id,
             'slug': course.slug,
             'content_type': next_item[0],
             'content_id': next_item[1].id
