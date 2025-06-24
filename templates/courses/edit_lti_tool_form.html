@@ -4,15 +4,19 @@
 {% block content %}
 <div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-12 col-md-8">
+        <div class="col-12 col-md-10 col-lg-8">
             <div class="card shadow-lg border-0 animate__animated animate__fadeIn">
-                <div class="card-body p-4 p-md-5">
-                    <h2 class="text-center mb-4">Edit Alat LTI</h2>
-                    <p class="text-center text-muted mb-4">Edit alat LTI untuk asesmen di "{{ assessment.name }}".</p>
+                <div class="card-header bg-primary text-white text-center">
+                    <h3 class="mb-0">Edit LTI Tool</h3>
+                </div>
+                <div class="card-body p-4">
+                    <p class="text-muted text-center mb-4">
+                        Edit LTI tool for assessment <strong>"{{ assessment.name }}"</strong>.
+                    </p>
 
                     {% if messages %}
                         {% for message in messages %}
-                            <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'warning' %}alert-warning{% else %}alert-danger{% endif %} alert-dismissible fade show" role="alert">
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
                                 {{ message }}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
@@ -21,125 +25,35 @@
 
                     <form method="POST" id="lti-tool-form" novalidate>
                         {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="{{ form.name.id_for_label }}" class="form-label">{{ form.name.label }} <span class="text-muted">(opsional, diambil dari cartridge jika kosong)</span></label>
-                            {{ form.name }}
-                            {% if form.name.errors %}
-                                <div class="invalid-feedback d-block">{{ form.name.errors|join:", " }}</div>
-                            {% endif %}
-                        </div>
-                        <div class="mb-3">
-                            <label for="{{ form.shared_secret.id_for_label }}" class="form-label">{{ form.shared_secret.label }} <span class="text-danger">*</span></label>
-                            {{ form.shared_secret }}
-                            {% if form.shared_secret.errors %}
-                                <div class="invalid-feedback d-block">{{ form.shared_secret.errors|join:", " }}</div>
-                            {% endif %}
-                        </div>
-                        <div class="mb-3">
-                            <label for="{{ form.cartridge_url.id_for_label }}" class="form-label">{{ form.cartridge_url.label }} <span class="text-danger">*</span></label>
-                            {{ form.cartridge_url }}
-                            {% if form.cartridge_url.errors %}
-                                <div class="invalid-feedback d-block">{{ form.cartridge_url.errors|join:", " }}</div>
-                            {% endif %}
-                        </div>
-                        <div class="mb-3">
-                            <label for="{{ form.launch_url.id_for_label }}" class="form-label">{{ form.launch_url.label }} <span class="text-muted">(opsional, diambil dari cartridge jika kosong)</span></label>
-                            {{ form.launch_url }}
-                            {% if form.launch_url.errors %}
-                                <div class="invalid-feedback d-block">{{ form.launch_url.errors|join:", " }}</div>
-                            {% endif %}
-                        </div>
-                        <div class="mb-3 form-check">
-                            {{ form.has_grade }}
-                            <label for="{{ form.has_grade.id_for_label }}" class="form-check-label">{{ form.has_grade.label }}</label>
-                            {% if form.has_grade.errors %}
-                                <div class="invalid-feedback d-block">{{ form.has_grade.errors|join:", " }}</div>
-                            {% endif %}
-                        </div>
+                        {% for field in form %}
+                            <div class="mb-3">
+                                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                                {{ field }}
+                                {% if field.help_text %}
+                                    <div class="form-text text-muted">{{ field.help_text }}</div>
+                                {% endif %}
+                                {% for error in field.errors %}
+                                    <div class="text-danger small">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+
                         <div class="d-flex justify-content-center mt-4">
-                            <button type="submit" class="btn btn-primary btn-lg px-5 me-2" id="submit-btn">
-                                <span class="spinner-border spinner-border-sm me-2 d-none" role="status" aria-hidden="true"></span>
-                                Perbarui
+                            <button type="submit" class="btn btn-primary btn-lg px-5 me-3" id="submit-btn">
+                                <span class="spinner-border spinner-border-sm me-2 d-none" role="status"></span>
+                                Update
                             </button>
-                            <a href="{% url 'courses:view-question' idcourse=course.id idsection=section.id idassessment=assessment.id %}" class="btn btn-outline-secondary btn-lg px-5">Batal</a>
+                            <a href="{% url 'courses:view-question' idcourse=course.id idsection=section.id idassessment=assessment.id %}" class="btn btn-outline-secondary btn-lg px-5">Cancel</a>
                         </div>
                     </form>
+                </div>
+                <div class="card-footer text-center text-muted small">
+                    Please ensure all LTI details are accurate before saving.
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<!-- CSS Kustom -->
-<style>
-body {
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    min-height: 100vh;
-}
-
-.card {
-    border-radius: 1rem;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-}
-
-.form-control, .form-select {
-    border-radius: 0.5rem;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.form-control:focus, .form-select:focus {
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-}
-
-.btn-primary {
-    background: linear-gradient(45deg, #0d6efd, #6610f2);
-    border: none;
-    border-radius: 0.5rem;
-    transition: transform 0.2s ease;
-}
-
-.btn-primary:hover {
-    transform: scale(1.05);
-}
-
-.btn-outline-secondary {
-    border-radius: 0.5rem;
-    transition: transform 0.2s ease;
-}
-
-.btn-outline-secondary:hover {
-    transform: scale(1.05);
-    background: #f8f9fa;
-}
-
-.invalid-feedback {
-    font-size: 0.875rem;
-    color: #dc3545;
-}
-
-@media (max-width: 576px) {
-    .btn-lg {
-        padding: 0.5rem 1rem;
-        font-size: 1rem;
-    }
-
-    .card-body {
-        padding: 1.5rem;
-    }
-
-    .form-control, .form-select {
-        font-size: 0.9rem;
-    }
-}
-</style>
 {% endblock %}
 
 {% block scripts %}
@@ -159,48 +73,26 @@ function getCookie(name) {
     return cookieValue;
 }
 
-function validateForm() {
-    const form = document.getElementById('lti-tool-form');
-    const requiredInputs = form.querySelectorAll('input[required], select[required], textarea[required]');
-    let isValid = true;
-
-    requiredInputs.forEach(input => {
-        if (!input.value.trim()) {
-            input.classList.add('is-invalid');
-            isValid = false;
-        } else {
-            input.classList.remove('is-invalid');
-        }
-    });
-
-    form.querySelector('#submit-btn').disabled = !isValid;
-}
-
-document.getElementById('lti-tool-form').addEventListener('input', validateForm);
-
 document.getElementById('lti-tool-form').addEventListener('submit', function(e) {
     e.preventDefault();
+    const form = this;
     const submitBtn = document.getElementById('submit-btn');
     const spinner = submitBtn.querySelector('.spinner-border');
 
     submitBtn.disabled = true;
     spinner.classList.remove('d-none');
 
-    let formData = new FormData(this);
-    fetch(this.action, {
-        method: 'POST',
+    const formData = new FormData(form);
+
+    fetch("", {
+        method: "POST",
         body: formData,
         headers: {
             'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRFToken': getCookie('csrftoken')
+            'X-CSRFToken': getCookie('csrftoken'),
         }
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
         submitBtn.disabled = false;
         spinner.classList.add('d-none');
@@ -208,9 +100,9 @@ document.getElementById('lti-tool-form').addEventListener('submit', function(e) 
         if (data.success) {
             Swal.fire({
                 icon: 'success',
-                title: 'Sukses',
+                title: 'Success',
                 text: data.message,
-                timer: 1500,
+                timer: 2000,
                 showConfirmButton: false
             }).then(() => {
                 window.location.href = data.redirect_url;
@@ -228,13 +120,10 @@ document.getElementById('lti-tool-form').addEventListener('submit', function(e) 
         spinner.classList.add('d-none');
         Swal.fire({
             icon: 'error',
-            title: 'Error',
-            text: 'Terjadi kesalahan: ' + error.message,
+            title: 'Request Failed',
+            text: error.message
         });
-        console.error('Error:', error);
     });
 });
-
-validateForm();
 </script>
 {% endblock %}

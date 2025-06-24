@@ -46,6 +46,24 @@ class LTIExternalToolForm(forms.ModelForm):
     class Meta:
         model = LTIExternalTool
         fields = ['name', 'launch_url', 'consumer_key', 'shared_secret']
+        widgets = {
+           'name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'LTI Tool Name (e.g., Google Form Quiz)'
+            }),
+            'launch_url': forms.URLInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'https://example.com/launch'
+            }),
+            'consumer_key': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter Consumer Key'
+            }),
+            'shared_secret': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter Shared Secret'
+            }),
+        }
 
     def clean_launch_url(self):
         launch_url = self.cleaned_data.get('launch_url')

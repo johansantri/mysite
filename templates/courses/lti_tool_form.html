@@ -1,31 +1,54 @@
 <!-- templates/courses/lti_tool_form.html -->
 {% extends 'home/tes.html' %}
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-12 col-md-8">
-            <div class="card shadow-lg border-0 animate__animated animate__fadeIn">
-                <div class="card-body p-4 p-md-5">
-                    <h2 class="text-center mb-4">Tambah Alat LTI</h2>
-                    <p class="text-center text-muted mb-4">Tambahkan alat LTI untuk asesmen di "{{ assessment.name }}".</p>
 
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'warning' %}alert-warning{% else %}alert-danger{% endif %} alert-dismissible fade show" role="alert">
-                                {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
+<div class="col-12 col-md-10 col-lg-8">
+    <div class="card shadow border-0 animate__animated animate__fadeIn">
+        <div class="card-header bg-primary text-white text-center rounded-top">
+            <h3 class="mb-0">🎯 Add LTI Tool</h3>
+        </div>
+        <div class="card-body p-4">
+            <p class="text-muted text-center mb-4">
+                Please fill in the details to add an LTI tool for the assessment <strong>"{{ assessment.name }}"</strong>.
+            </p>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" class="needs-validation" novalidate>
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="mb-3">
+                        <label for="{{ field.id_for_label }}" class="form-label">
+                            {{ field.label }}
+                        </label>
+                        {{ field }}
+                        {% if field.help_text %}
+                            <div class="form-text text-muted">{{ field.help_text }}</div>
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <div class="text-danger small">{{ error }}</div>
                         {% endfor %}
-                    {% endif %}
+                    </div>
+                {% endfor %}
 
-                    <form method="POST">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <button type="submit" class="btn btn-primary">Simpan</button>
-                    </form>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="bi bi-save"></i> Save LTI Tool
+                    </button>
                 </div>
-            </div>
+            </form>
+        </div>
+        <div class="card-footer text-center text-muted small">
+            Make sure the URL and credentials are correct before saving.
         </div>
     </div>
 </div>
+
 {% endblock %}
