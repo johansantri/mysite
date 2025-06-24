@@ -1,7 +1,8 @@
 {% load learner_tags %}
 <div class="comments mt-4" id="comments-section">
-    <h5 class="fw-semibold text-dark">Komentar</h5>
-    <p class="text-muted small mb-3">Komen sesuai topik diskusi, tidak mengandung SARA, pornografi, dan spam.</p>
+    <h5 class="fw-semibold text-dark">Comments</h5>
+    <p class="text-muted small mb-3">Please keep comments relevant to the discussion topic and avoid content containing hate speech, pornography, or spam.</p>
+
 
     {% if messages %}
         {% for message in messages %}
@@ -22,17 +23,18 @@
             <input type="hidden" name="parent_id" value="">
 
             <div class="mb-3">
-                <label for="comment_text" class="form-label">Tulis Komentar</label>
-                <textarea name="comment_text" class="form-control" rows="4" placeholder="Tulis komentar Anda..." required></textarea>
+                <label for="comment_text" class="form-label">Write your feedback</label>
+                <textarea name="comment_text" class="form-control" rows="4" placeholder="Leave your comment..." required></textarea>
             </div>
 
             <button type="submit" class="btn btn-primary">
-                <i class="bi bi-send me-1"></i> Kirim Komentar
+                <i class="bi bi-send me-1"></i> Post Comment
             </button>
         </form>
     {% else %}
         <div class="alert alert-secondary small" role="alert">
-            Silakan <a href="{% url 'login' %}" class="alert-link">login</a> untuk menambahkan komentar.
+            Please <a href="{% url 'login' %}" class="alert-link">log in</a> to add a comment.
+
         </div>
     {% endif %}
 
@@ -40,7 +42,7 @@
         {% for comment in comments %}
             {% include 'learner/partials/comment.html' with comment=comment user_reactions=user_reactions level=0 %}
         {% empty %}
-            <p class="text-muted fst-italic">Belum ada komentar.</p>
+            <p class="text-muted fst-italic">No comments available.</p>
         {% endfor %}
     </div>
 </div>

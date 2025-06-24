@@ -14,11 +14,11 @@
         <div class="flex-grow-1 ms-3">
             <div class="d-flex justify-content-between">
                 <strong>{{ comment.user.username }}</strong>
-                <small class="text-muted">{{ comment.created_at|timesince }} yang lalu</small>
+                <small class="text-muted">{{ comment.created_at|timesince }} Ago</small>
             </div>
 
             {% if comment.parent %}
-                <small class="text-muted d-block">Balasan untuk <strong>{{ comment.parent.user.username }}</strong></small>
+                <small class="text-muted d-block">reply to <strong>{{ comment.parent.user.username }}</strong></small>
             {% endif %}
 
             <p class="mb-2 mt-1 text-break">{{ comment.content }}</p>
@@ -56,7 +56,7 @@
                             data-bs-toggle="collapse"
                             data-bs-target="#reply-form-{{ comment.id }}"
                             aria-expanded="false" aria-controls="reply-form-{{ comment.id }}">
-                        Balas
+                        reply
                     </button>
                 {% else %}
                     <span class="me-2">👍 {{ comment.likes }}</span>
@@ -75,13 +75,13 @@
                         <input type="hidden" name="parent_id" value="{{ comment.id }}">
                         <div class="mb-2">
                             <textarea name="comment_text" rows="2" class="form-control form-control-sm"
-                                      placeholder="Tulis balasan Anda..." required></textarea>
+                                      placeholder="Write your reply..." required></textarea>
                         </div>
                         <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-sm btn-primary">Kirim</button>
+                            <button type="submit" class="btn btn-sm btn-primary">Send</button>
                             <button type="button" class="btn btn-sm btn-secondary"
                                     data-bs-toggle="collapse" data-bs-target="#reply-form-{{ comment.id }}">
-                                Batal
+                                Discard
                             </button>
                         </div>
                     </form>
@@ -96,7 +96,7 @@
                         data-bs-target="#child-comments-{{ comment.id }}"
                         aria-expanded="false"
                         aria-controls="child-comments-{{ comment.id }}">
-                    <i class="bi bi-chat-left-text"></i> Tampilkan {{ comment.children.count }} balasan
+                    <i class="bi bi-chat-left-text"></i> View {{ comment.children.count }} Response
                 </button>
 
                 <div class="collapse mt-2" id="child-comments-{{ comment.id }}">
