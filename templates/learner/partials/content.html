@@ -540,7 +540,7 @@
                                                   hx-post="{% url 'learner:start_assessment' assessment.id %}"
                                                   hx-target="#content-area"
                                                   hx-swap="innerHTML"
-                                                  hx-push-url="{% url 'learner:load_content' username=username slug=slug content_type='assessment' content_id=assessment.id %}">
+                                                  hx-push-url="{% url 'learner:load_content' username=username id=course.id slug=slug content_type='assessment' content_id=assessment.id %}">
                                                 <button type="submit" class="btn btn-lg btn-primary w-100">
                                                     <i class="bi bi-play-circle me-2"></i> Mulai Sekarang
                                                 </button>

@@ -549,7 +549,7 @@ def start_assessment_courses(request, assessment_id):
 
     combined_content = _build_combined_content(context['sections'])
     current_index = next((i for i, c in enumerate(combined_content) if c[0] == 'assessment' and c[1].id == assessment_id), 0)
-    context['previous_url'], context['next_url'] = _get_navigation_urls(request.user.username, course.slug, combined_content, current_index)
+    context['previous_url'], context['next_url'] = _get_navigation_urls(request.user.username, course.id,course.slug, combined_content, current_index)
 
     if course.payment_model == 'pay_for_exam':
         has_paid = Payment.objects.filter(
@@ -658,7 +658,7 @@ def submit_assessment_new(request, assessment_id):
 
     combined_content = _build_combined_content(context['sections'])
     current_index = next((i for i, c in enumerate(combined_content) if c[0] == 'assessment' and c[1].id == assessment_id), 0)
-    context['previous_url'], context['next_url'] = _get_navigation_urls(request.user.username, course.slug, combined_content, current_index)
+    context['previous_url'], context['next_url'] = _get_navigation_urls(request.user.username, course.id, course.slug, combined_content, current_index)
 
     is_htmx = request.headers.get('HX-Request') == 'true'
     if not is_htmx:
@@ -757,7 +757,7 @@ def submit_answer(request):
 
     combined_content = _build_combined_content(context['sections'])
     current_index = next((i for i, c in enumerate(combined_content) if c[0] == 'assessment' and c[1].id == assessment.id), 0)
-    context['previous_url'], context['next_url'] = _get_navigation_urls(request.user.username, course.slug, combined_content, current_index)
+    context['previous_url'], context['next_url'] = _get_navigation_urls(request.user.username,course.id, course.slug, combined_content, current_index)
 
     is_htmx = request.headers.get('HX-Request') == 'true'
     logger.info(f"submit_answer: Rendering HTMX for user {request.user.username}, assessment {assessment.id}, question {question_id}")
@@ -1245,6 +1245,7 @@ def render_content(request, assessment, course):
         next_item = combined_content[current_index + 1]
         context['next_url'] = reverse('learner:load_content', kwargs={
             'username': request.user.username,
+            'id': course.id,
             'slug': course.slug,
             'content_type': next_item[0],
             'content_id': next_item[1].id

@@ -98,11 +98,11 @@
                     <div class="card-header bg-transparent border-0 p-4">
                         <div class="d-flex align-items-center justify-content-between">
                             <h5 class="card-title mb-0">
-                                <a href="{% url 'courses:course_learn' data.enrollment.user.username data.enrollment.course.slug %}" 
+                                <a href="{% url 'learner:course_learn' data.enrollment.user.username data.enrollment.course.id data.enrollment.course.slug %}" 
                                    class="text-decoration-none fw-semibold {% if data.certificate_issued or data.certificate_eligible %}text-success{% else %}text-dark{% endif %}">
                                     {{ data.enrollment.course.course_name }}
                                 </a>
-                            </h5>
+                            x</h5>
                             <div>
                                 <div class="progress" style="width: 100px; height: 10px;">
                                     <div class="progress-bar {% if data.certificate_issued or data.certificate_eligible %}bg-success{% else %}bg-primary{% endif %}" 

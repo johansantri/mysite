@@ -499,7 +499,7 @@
                                 {% endfor %}
                                {% if request.user.is_authenticated %}
                                     {% if is_enrolled %}
-                                        <a href="{% url 'courses:course_learn' request.user.username course.slug %}" class="block bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">Start Course</a>
+                                        <a href="{% url 'learner:course_learn' request.user.username course.id course.slug %}" class="block bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">Start Course</a>
                                     {% else %}
                                         {% with course_price=course.get_course_price %}
                                             {% if course.payment_model == 'free' or course.payment_model == 'pay_for_exam' or course.payment_model == 'pay_for_certificate' %}
