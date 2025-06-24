@@ -6,9 +6,9 @@ app_name = 'learner'
 
 urlpatterns = [
     path('learner/<str:username>/', views.learner_detail, name='learner_detail'),
-    path('<str:username>/<str:slug>/', views.my_course, name='course_learn'),
+    path('<str:username>/<int:id>/<str:slug>/', views.my_course, name='course_learn'),
     path('toggle-reaction/<int:comment_id>/<str:reaction_type>/', views.toggle_reaction, name='toggle_reaction'),
-    path('<str:username>/<str:slug>/<str:content_type>/<int:content_id>/', views.load_content, name='load_content'),
+    path('<str:username>/<int:id>/<str:slug>/<str:content_type>/<int:content_id>/', views.load_content, name='load_content'),
     path('start-assessment/<int:assessment_id>/courses', views.start_assessment_courses, name='start_assessment'),
     path('submit-assessment/<int:assessment_id>/new', views.submit_assessment_new, name='submit_assessment_new'),
     path('submit-answer/', views.submit_answer, name='submit_answer'),

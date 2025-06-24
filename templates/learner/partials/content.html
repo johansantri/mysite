@@ -75,8 +75,8 @@
                             <ul class="list-group list-group-flush ms-4 collapse" id="section-{{ section.id }}">
                                 {% for material in section.materials.all %}
                                     <li class="list-group-item border-0 py-2" data-material-id="{{ material.id }}">
-                                        <a href="{% url 'learner:load_content' username=username slug=slug content_type='material' content_id=material.id %}"
-                                        hx-get="{% url 'learner:load_content' username=username slug=slug content_type='material' content_id=material.id %}"
+                                        <a href="{% url 'learner:load_content' username=username id=course.id slug=slug content_type='material' content_id=material.id %}"
+                                        hx-get="{% url 'learner:load_content' username=username id=course.id slug=slug content_type='material' content_id=material.id %}"
                                         hx-target="#content-area"
                                         hx-swap="innerHTML"
                                         hx-push-url="true"
@@ -95,8 +95,8 @@
                                 {% endfor %}
                                 {% for assessment in section.assessments.all %}
                                     <li class="list-group-item border-0 py-2" data-assessment-id="{{ assessment.id }}">
-                                        <a href="{% url 'learner:load_content' username=username slug=slug content_type='assessment' content_id=assessment.id %}"
-                                        hx-get="{% url 'learner:load_content' username=username slug=slug content_type='assessment' content_id=assessment.id %}"
+                                        <a href="{% url 'learner:load_content' username=username id=course.id slug=slug content_type='assessment' content_id=assessment.id %}"
+                                        hx-get="{% url 'learner:load_content' username=username id=course.id slug=slug content_type='assessment' content_id=assessment.id %}"
                                         hx-target="#content-area"
                                         hx-swap="innerHTML"
                                         hx-push-url="true"

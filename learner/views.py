@@ -45,37 +45,7 @@ def _build_combined_content(sections):
             combined_content.append(('assessment', assessment, section))
     return combined_content
 
-def _get_navigation_urls(username, slug, combined_content, current_index):
-    """
-    Generate previous and next URLs for navigation.
-    
-    Args:
-        username: Username of the current user.
-        slug: Course slug.
-        combined_content: List of combined content.
-        current_index: Current content index.
-    
-    Returns:
-        Tuple: (previous_url, next_url).
-    """
-    previous_url = None
-    next_url = None
-    try:
-        if current_index > 0:
-            previous_url = reverse('learner:load_content', kwargs={
-                'username': username, 'slug': slug,
-                'content_type': combined_content[current_index - 1][0],
-                'content_id': combined_content[current_index - 1][1].id
-            })
-        if current_index < len(combined_content) - 1:
-            next_url = reverse('learner:load_content', kwargs={
-                'username': username, 'slug': slug,
-                'content_type': combined_content[current_index + 1][0],
-                'content_id': combined_content[current_index + 1][1].id
-            })
-    except NoReverseMatch as e:
-        logger.error(f"NoReverseMatch in _get_navigation_urls: {str(e)}")
-    return previous_url, next_url
+
 
 def _build_assessment_context(assessment, user):
     """
@@ -223,29 +193,72 @@ def toggle_reaction(request, comment_id, reaction_type):
 
 logger = logging.getLogger(__name__)
 
-@login_required
-def my_course(request, username, slug):
+
+def _get_navigation_urls(username, id, slug, combined_content, current_index):
     """
-    Display the user's course page with materials and assessments.
+    Menghasilkan URL sebelumnya dan berikutnya untuk navigasi konten.
     
     Args:
-        request: HTTP request object.
-        username: Username of the user.
-        slug: Course slug.
+        username: Nama pengguna.
+        id: ID kursus.
+        slug: Slug kursus.
+        combined_content: Daftar konten gabungan (material/assessment).
+        current_index: Indeks konten saat ini.
     
     Returns:
-        HttpResponse: Rendered course page.
+        Tuple: (previous_url, next_url).
+    """
+    previous_url = None
+    next_url = None
+    try:
+        if current_index > 0:
+            prev_content = combined_content[current_index - 1]
+            previous_url = reverse('learner:load_content', kwargs={
+                'username': username,
+                'id': id,  # Sertakan id
+                'slug': slug,
+                'content_type': prev_content[0],
+                'content_id': prev_content[1].id
+            })
+        if current_index < len(combined_content) - 1:
+            next_content = combined_content[current_index + 1]
+            next_url = reverse('learner:load_content', kwargs={
+                'username': username,
+                'id': id,  # Sertakan id
+                'slug': slug,
+                'content_type': next_content[0],
+                'content_id': next_content[1].id
+            })
+    except NoReverseMatch as e:
+        logger.error(f"NoReverseMatch di _get_navigation_urls: {str(e)}")
+        previous_url = None
+        next_url = None
+    return previous_url, next_url
+
+@login_required
+def my_course(request, username, id, slug):
+    """
+    Menampilkan halaman kursus pengguna dengan materi dan penilaian.
+    
+    Args:
+        request: Objek permintaan HTTP.
+        username: Nama pengguna.
+        id: ID kursus.
+        slug: Slug kursus.
+    
+    Returns:
+        HttpResponse: Halaman kursus yang dirender.
     """
     if request.user.username != username:
-        logger.warning(f"Unauthorized access attempt by {request.user.username} for {username}")
+        logger.warning(f"Upaya akses tidak sah oleh {request.user.username} untuk {username}")
         return HttpResponse(status=403)
 
-    course = get_object_or_404(Course, slug=slug)
+    course = get_object_or_404(Course, id=id, slug=slug)
     if not Enrollment.objects.filter(user=request.user, course=course).exists():
-        logger.warning(f"User {request.user.username} not enrolled in course {slug}")
+        logger.warning(f"Pengguna {request.user.username} tidak terdaftar di kursus {slug}")
         return HttpResponse(status=403)
 
-    sections = Section.objects.filter(courses=course).prefetch_related(  # Fixed: 'course' to 'courses'
+    sections = Section.objects.filter(courses=course).prefetch_related(
         Prefetch('materials', queryset=Material.objects.all()),
         Prefetch('assessments', queryset=Assessment.objects.all())
     ).order_by('order')
@@ -301,7 +314,7 @@ def my_course(request, username, slug):
                     'course_id': course.id,
                     'payment_type': 'exam'
                 })
-                logger.info(f"Payment required for assessment {assessment_id} in course {course.id} for user {request.user.username}")
+                logger.info(f"Pembayaran diperlukan untuk penilaian {assessment_id} di kursus {course.id} untuk pengguna {request.user.username}")
             else:
                 AssessmentRead.objects.get_or_create(user=request.user, assessment=assessment)
         else:
@@ -337,7 +350,7 @@ def my_course(request, username, slug):
                 context['assessment'] = context['current_content'][1]
                 context.update(_build_assessment_context(context['assessment'], request.user))
 
-    context['previous_url'], context['next_url'] = _get_navigation_urls(username, slug, combined_content, current_index)
+    context['previous_url'], context['next_url'] = _get_navigation_urls(username, id, slug, combined_content, current_index)
     user_progress, _ = CourseProgress.objects.get_or_create(user=request.user, course=course)
     if context['current_content'] and (current_index + 1) > user_progress.progress_percentage / 100 * total_content:
         user_progress.progress_percentage = (current_index + 1) / total_content * 100
@@ -345,35 +358,37 @@ def my_course(request, username, slug):
     context['course_progress'] = user_progress.progress_percentage
     context['can_review'] = bool(context['submissions'])
 
-    logger.info(f"my_course: Rendering for user {username}, course {slug}, assessment_id={assessment_id}")
+    logger.info(f"my_course: Rendering untuk pengguna {username}, kursus {slug}, assessment_id={assessment_id}")
     response = render(request, 'learner/my_course.html', context)
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     return response
+
 @login_required
-def load_content(request, username, slug, content_type, content_id):
+def load_content(request, username, id, slug, content_type, content_id):
     """
-    Load specific course content (material or assessment).
+    Memuat konten spesifik kursus (materi atau penilaian).
     
     Args:
-        request: HTTP request object.
-        username: Username of the user.
-        slug: Course slug.
-        content_type: Type of content ('material' or 'assessment').
-        content_id: ID of the content.
+        request: Objek permintaan HTTP.
+        username: Nama pengguna.
+        id: ID kursus.
+        slug: Slug kursus.
+        content_type: Tipe konten ('material' atau 'assessment').
+        content_id: ID konten.
     
     Returns:
-        HttpResponse: Rendered content partial or redirect.
+        HttpResponse: Konten parsial yang dirender atau redirect.
     """
     if request.user.username != username:
-        logger.warning(f"Unauthorized access attempt by {request.user.username} for {username}")
+        logger.warning(f"Upaya akses tidak sah oleh {request.user.username} untuk {username}")
         return HttpResponse(status=403)
 
-    course = get_object_or_404(Course, slug=slug)
+    course = get_object_or_404(Course, id=id, slug=slug)
     if not Enrollment.objects.filter(user=request.user, course=course).exists():
-        logger.warning(f"User {request.user.username} not enrolled in course {slug}")
+        logger.warning(f"Pengguna {request.user.username} tidak terdaftar di kursus {slug}")
         return HttpResponse(status=403)
 
-    sections = Section.objects.filter(courses=course).prefetch_related(  # Fixed: 'course' to 'courses'
+    sections = Section.objects.filter(courses=course).prefetch_related(
         Prefetch('materials', queryset=Material.objects.all()),
         Prefetch('assessments', queryset=Assessment.objects.all())
     ).order_by('order')
@@ -434,7 +449,7 @@ def load_content(request, username, slug, content_type, content_id):
                     'course_id': course.id,
                     'payment_type': 'exam'
                 })
-                logger.info(f"Payment required for assessment {content_id} in course {course.id} for user {request.user.username}")
+                logger.info(f"Pembayaran diperlukan untuk penilaian {content_id} di kursus {course.id} untuk pengguna {request.user.username}")
             else:
                 AssessmentRead.objects.get_or_create(user=request.user, assessment=assessment)
         else:
@@ -453,10 +468,10 @@ def load_content(request, username, slug, content_type, content_id):
             }
         context.update(_build_assessment_context(assessment, request.user))
 
-    context['previous_url'], context['next_url'] = _get_navigation_urls(username, slug, combined_content, current_index)
+    context['previous_url'], context['next_url'] = _get_navigation_urls(username, id, slug, combined_content, current_index)
     template = 'learner/partials/content.html' if request.headers.get('HX-Request') == 'true' else 'learner/my_course.html'
 
-    logger.info(f"load_content: Rendering {template} for user {username}, {content_type} {content_id}")
+    logger.info(f"load_content: Rendering {template} untuk pengguna {username}, {content_type} {content_id}")
     response = render(request, template, context)
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     return response
