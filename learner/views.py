@@ -1174,6 +1174,7 @@ def render_content(request, assessment, course):
         'course': course,
         'course_name': course.course_name,
         'username': request.user.username,
+        'id': course.id,
         'slug': course.slug,
         'sections': sections,
         'current_content': ('assessment', assessment, assessment.section),
@@ -1239,6 +1240,7 @@ def render_content(request, assessment, course):
         prev = combined_content[current_index - 1]
         context['previous_url'] = reverse('learner:load_content', kwargs={
             'username': request.user.username,
+            'id': course.id,
             'slug': course.slug,
             'content_type': prev[0],
             'content_id': prev[1].id
