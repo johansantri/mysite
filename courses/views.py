@@ -3529,7 +3529,7 @@ def enroll_course(request, course_id):
         if not active_license:
             logger.error(f"No active license found for user {user.email} in course {course.course_name}")
             messages.error(request, "Lisensi Anda sudah tidak aktif atau tidak valid. Silakan hubungi admin untuk perpanjangan.")
-            return redirect('courses:course_learn', username=user.username, slug=course.slug)
+            return redirect('learner:course_learn', username=user.username,id=course.id, slug=course.slug)
 
     # Pilih price type sesuai skema pembayaran
     price_type_map = {

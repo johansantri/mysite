@@ -141,7 +141,7 @@ def process_payment(request, course_id, payment_type='enrollment'):
     ).exists():
         messages.info(request, f"Payment for {payment_type} already completed.")
         if payment_type == 'exam':
-            return redirect('courses:course_learn', username=request.user.username, slug=course.slug)
+            return redirect('learner:course_learn', username=request.user.username,id=course.id, slug=course.slug)
         elif payment_type == 'certificate':
             return redirect('courses:claim_certificate', course_id=course.id)
         return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
