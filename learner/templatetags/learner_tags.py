@@ -3,11 +3,18 @@ from django.db.models import Count
 from django.urls import reverse
 from courses.models import PeerReview, Submission,Course, Section, Material, Assessment,MaterialRead, AssessmentRead, QuestionAnswer, Submission, AssessmentScore, GradeRange, CourseProgress
 import random
+import re
 from decimal import Decimal
 
 
 register = template.Library()
 
+@register.filter
+def make_iframes_responsive(value):
+    # Tambahkan wrapper div responsive pada semua iframe
+    pattern = r'(<iframe.*?</iframe>)'
+    replacement = r'<div class="ratio ratio-16x9">\1</div>'
+    return re.sub(pattern, replacement, value, flags=re.DOTALL)
 
 @register.filter
 def shuffled(value):

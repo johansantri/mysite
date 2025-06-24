@@ -131,7 +131,7 @@
             {% if current_content %}
                 {% if current_content.0 == 'material' %}
                     <h3 class="mb-4">{{ material.title }}</h3>
-                    <div class="content-body">{{ material.description|safe }}</div>
+                    <div class="content-body">{{ material.description|make_iframes_responsive|safe }}</div>
                     <div id="comments-section" class="mt-5">
                         {% include 'learner/partials/comments.html' %}
                     </div>

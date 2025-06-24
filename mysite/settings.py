@@ -553,6 +553,8 @@ CONTENT_SECURITY_POLICY = {
             "https://idols.ui.ac.id",  # Moodle iframe
             "https://www.youtube-nocookie.com",
             "https://pakaimata.h5p.com",  # Izinkan YouTube iframe (tanpa cookie)
+            "https://www.youtube.com",
+            "https://www.youtube-nocookie.com",
         ),
 
         # Izinkan gambar dari domain sendiri dan dari inline base64 (data:)
