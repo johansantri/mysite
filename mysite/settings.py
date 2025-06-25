@@ -555,6 +555,7 @@ CONTENT_SECURITY_POLICY = {
             "https://pakaimata.h5p.com",  # Izinkan YouTube iframe (tanpa cookie)
             "https://www.youtube.com",
             "https://www.youtube-nocookie.com",
+            'https://asimarif.h5p.com',  # Tambahkan ini
         ),
 
         # Izinkan gambar dari domain sendiri dan dari inline base64 (data:)
@@ -573,6 +574,7 @@ CONTENT_SECURITY_POLICY = {
             'https://cdnjs.cloudflare.com',  # CDN umum
             "'unsafe-inline'",  # mengizinkan <script> inline — sebaiknya dihindari untuk keamanan
             "'unsafe-eval'",
+            'https://asimarif.h5p.com', 
         ),
 
         # Izinkan file CSS dari domain sendiri dan CDN berikut
@@ -597,6 +599,7 @@ CONTENT_SECURITY_POLICY = {
             "https://vclass.unila.ac.id",  # domain Moodle tujuan POST LTI
             "https://idols.ui.ac.id",
             "https://pakaimata.h5p.com",
+            'https://asimarif.h5p.com', 
         ),
     }
 }

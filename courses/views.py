@@ -551,19 +551,20 @@ def launch_lti(request, idcourse, idsection, idlti, id_lti_tool):
         if not lti_tool.launch_url or not lti_tool.consumer_key or not lti_tool.shared_secret:
             messages.error(request, "Invalid LTI tool configuration.")
             logger.error(f"LTI tool {lti_tool.id} has missing or invalid configuration: "
-                        f"launch_url={lti_tool.launch_url}, "
-                        f"consumer_key={lti_tool.consumer_key}, "
-                        f"shared_secret={'[REDACTED]' if lti_tool.shared_secret else 'None'}")
+                         f"launch_url={lti_tool.launch_url}, "
+                         f"consumer_key={lti_tool.consumer_key}, "
+                         f"shared_secret={'[REDACTED]' if lti_tool.shared_secret else 'None'}")
             return redirect('authentication:home')
 
-        logger.debug(f"LTI tool config: launch_url={lti_tool.launch_url}, consumer_key={lti_tool.consumer_key}")
-
         roles = "Instructor" if is_instructor else "Learner"
+        launch_url = lti_tool.launch_url.strip()
 
+        # Build LTI parameters (LTI 1.1 style)
         lti_params = {
             'lti_message_type': 'basic-lti-launch-request',
             'lti_version': 'LTI-1p0',
             'resource_link_id': f"{course.id}-{section.id}-{assessment.id}-{lti_tool.id}",
+            'resource_link_title': assessment.name,
             'user_id': str(user.id),
             'roles': roles,
             'oauth_consumer_key': lti_tool.consumer_key,
@@ -571,57 +572,54 @@ def launch_lti(request, idcourse, idsection, idlti, id_lti_tool):
             'oauth_timestamp': str(int(datetime.now(pytz.UTC).timestamp())),
             'oauth_nonce': str(uuid.uuid4()),
             'oauth_version': '1.0',
+            'lis_person_name_full': user.get_full_name(),
+            'lis_person_name_given': user.first_name,
+            'lis_person_name_family': user.last_name,
+            'lis_person_contact_email_primary': user.email,
+            'lis_person_sourcedid': str(user.id),
+            'context_id': str(course.id),
+            'context_title': course.course_name,
+            'context_label': course.course_name[:10],
+            'launch_presentation_locale': 'id-ID',
+            'launch_presentation_document_target': 'iframe',
         }
 
+        # Tambahkan custom param jika ada
         if lti_tool.custom_params:
             lti_params.update({k: str(v) for k, v in lti_tool.custom_params.items()})
             logger.debug(f"Added custom params: {lti_tool.custom_params}")
 
-        logger.debug(f"LTI params before signing: {lti_params}")
+        # Hitung signature
+        params_to_sign = lti_params.copy()
+        sorted_params = sorted(params_to_sign.items())
+        encoded_params = urllib.parse.urlencode(sorted_params, quote_via=urllib.parse.quote)
 
-        uri = lti_tool.launch_url.strip()
-        parsed_uri = urllib.parse.urlparse(uri)
-        uri = urllib.parse.urlunparse(parsed_uri._replace(path=parsed_uri.path.rstrip('/')))
+        method = 'POST'
+        base_string = f"{method}&{urllib.parse.quote(launch_url, safe='')}&{urllib.parse.quote(encoded_params, safe='')}"
+        signing_key = f"{urllib.parse.quote(lti_tool.shared_secret, safe='')}&".encode('utf-8')
 
-        try:
-            encoded_params = urllib.parse.urlencode(lti_params, doseq=True)
-        except Exception as e:
-            logger.error(f"Failed to encode LTI params: {str(e)}")
-            raise ValueError("Invalid LTI parameters for encoding.")
+        logger.debug(f"Base string: {base_string}")
+        logger.debug(f"Signing key: {signing_key.decode()}")
 
-        logger.debug(f"Signing URI: {uri}")
-        logger.debug(f"Encoded params: {encoded_params}")
+        hashed = hmac.new(signing_key, base_string.encode('utf-8'), hashlib.sha1)
+        signature = base64.b64encode(hashed.digest()).decode('utf-8')
+        lti_params['oauth_signature'] = signature
 
-        try:
-            sorted_params = sorted(lti_params.items())
-            encoded_params = urllib.parse.urlencode(sorted_params, doseq=True)
-            method = 'POST'
-            base_string = f"{method}&{urllib.parse.quote(uri, safe='')}&{urllib.parse.quote(encoded_params, safe='')}"
-            logger.debug(f"Base string: {base_string}")
-            key = f"{urllib.parse.quote(lti_tool.shared_secret, safe='')}&".encode('utf-8')
-            hashed = hmac.new(key, base_string.encode('utf-8'), hashlib.sha1)
-            signature = base64.b64encode(hashed.digest()).decode('utf-8')
-            lti_params['oauth_signature'] = signature
-        except Exception as e:
-            logger.error(f"Failed to generate manual OAuth signature: {str(e)}")
-            raise ValueError(f"Failed to generate manual OAuth signature: {str(e)}")
-
-        logger.debug(f"Final LTI params: {lti_params}")
+        logger.debug(f"Final signed LTI params: {lti_params}")
 
         return render(
             request,
             'courses/lti_launch.html',
             {
-                'launch_url': lti_tool.launch_url,
+                'launch_url': launch_url,
                 'lti_params': lti_params,
             }
         )
 
     except Exception as e:
+        logger.exception(f"Error launching LTI tool {id_lti_tool}: {str(e)}")
         messages.error(request, "An error occurred while launching the LTI tool.")
-        logger.error(f"Error launching LTI tool {id_lti_tool}: {str(e)}", exc_info=True)
         return redirect('authentication:home')
-
 
 
 

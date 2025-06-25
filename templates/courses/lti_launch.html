@@ -1,23 +1,33 @@
-{% extends 'home/tes.html' %}
+{% extends "home/tes.html" %}
+{% load static %}
 
 {% block content %}
-<body onload="document.forms[0].submit();">
-  <p>Sedang mengarahkan ke Moodle, mohon tunggu...</p>
+<div class="flex flex-col items-center justify-center min-h-screen bg-gray-100 py-10">
+    <div class="text-center mb-8">
+        <h1 class="text-2xl font-semibold text-gray-800">Launching LTI Tool...</h1>
+        <p class="text-gray-600">Please wait while we connect you to the learning tool.</p>
+    </div>
 
- <h1>Launching LTI Tool</h1>
-      <h1>Launching LTI Tool</h1>
-    <p>Tool LTI akan diluncurkan dengan parameter berikut:</p>
-  
-
-             <form id="lti_launch_form" action="{{ launch_url }}" method="POST">
+    <form id="ltiLaunchForm" method="POST" action="{{ launch_url }}" class="hidden">
         {% for key, value in lti_params.items %}
-            <input type="hidden" name="{{ key }}" value="{{ value }}">
+            <input type="hidden" name="{{ key }}" value="{{ value|escape }}">
         {% endfor %}
+        <noscript>
+            <p class="text-red-600">JavaScript is required for launching the LTI tool.</p>
+            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Launch Manually</button>
+        </noscript>
     </form>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('lti_launch_form').submit();
-        });
-    </script>
-</body>
+
+    <p class="text-sm text-gray-500">If you are not redirected automatically, click the button below.</p>
+    <button onclick="document.getElementById('ltiLaunchForm').submit();" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+        Launch LTI Tool
+    </button>
+</div>
+
+<script>
+    // Auto-submit form on load
+    window.onload = function () {
+        document.getElementById('ltiLaunchForm').submit();
+    };
+</script>
 {% endblock %}
