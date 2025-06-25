@@ -127,7 +127,7 @@
             </ul>
         </div>
         <!-- Konten Utama -->
-        <div class="col-md-9 content-column" id="content-area">
+        <div class="col-md-12 content-column" id="content-area">
             {% if current_content %}
                 {% if current_content.0 == 'material' %}
                     <h3 class="mb-4">{{ material.title }}</h3>
@@ -569,6 +569,22 @@
                                     </div>
                                 </div>
                             {% endif %}
+                        {% endif %}
+
+                          <!-- Bagian untuk lti lunch -->
+                        {% if is_lti %}
+                            {% if lti_tool and lti_tool.id %}
+                             <a href="{% url 'learner:launch_lti_new' course.id lti_tool.id %}" class="btn btn-outline-primary btn-sm mt-1">
+                            Launch LTI Tool
+                            </a>
+
+
+                            {% else %}
+                                <p class="text-red-500">LTI Tool tidak tersedia.</p>
+                            {% endif %}
+
+
+
                         {% endif %}
                     {% endif %}
                 {% endif %}

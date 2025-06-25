@@ -16,6 +16,9 @@ urlpatterns = [
     path('<str:username>/<str:slug>/progress/', views.get_progress, name='get_progress'),
     path('submit-answer-askora/<int:ask_ora_id>/new', views.submit_answer_askora_new, name='submit_answer_askora_new'),
     path('submit-peer-review/<int:submission_id>/ora', views.submit_peer_review_new, name='submit_peer_review_new'),
+    # urls.py
+    path('launch-lti-new/<int:course_id>/<int:lti_tool_id>/new/', views.launch_lti_new, name='launch_lti_new'),
+
     
    
    

@@ -1,5 +1,14 @@
 import csv
 import logging
+import uuid
+import base64
+import hmac
+import hashlib
+import urllib.parse
+from urllib.parse import urlparse, urlunparse,quote, urlencode
+from datetime import datetime
+import time
+import pytz
 from datetime import timedelta
 from decimal import Decimal
 from django.contrib import messages
@@ -9,11 +18,12 @@ from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.db.models import Avg, Count, Prefetch, F
 from django.db import transaction
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import get_object_or_404, render
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse,HttpResponseBadRequest,HttpResponseForbidden
+from django.shortcuts import get_object_or_404, render,redirect
 from django.urls import reverse, NoReverseMatch
 from django.utils import timezone
 from django.template.defaultfilters import linebreaks
+
 from django.middleware.csrf import get_token
 from authentication.models import CustomUser, Universiti
 from django.template.loader import render_to_string
@@ -26,6 +36,93 @@ from courses.models import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+def generate_oauth_signature(method, url, params, consumer_secret):
+    # 1. Sort parameters by key then value (unencoded)
+    sorted_items = sorted(params.items())
+    
+    # 2. Percent-encode keys and values
+    encoded_pairs = [f"{quote(str(k), safe='')}={quote(str(v), safe='')}" for k, v in sorted_items]
+    encoded_param_string = '&'.join(encoded_pairs)
+
+    # 3. Create base string
+    base_string = '&'.join([
+        method.upper(),
+        quote(url, safe=''),
+        quote(encoded_param_string, safe=''),
+    ])
+
+    # 4. Create signing key
+    signing_key = f"{quote(consumer_secret)}&"
+
+    # 5. Sign the base string using HMAC-SHA1
+    hashed = hmac.new(signing_key.encode(), base_string.encode(), hashlib.sha1)
+    signature = base64.b64encode(hashed.digest()).decode()
+
+    return signature
+
+@login_required
+def launch_lti_new(request, course_id, lti_tool_id):
+    user = request.user
+    course = get_object_or_404(Course, id=course_id)
+    lti_tool = get_object_or_404(LTIExternalTool, id=lti_tool_id, assessment__section__courses=course)
+
+    is_instructor = user.is_superuser or user == course.instructor.user or user == course.org_partner.user
+    is_learner = course.enrollments.filter(user=user).exists()
+    if not (is_instructor or is_learner):
+        messages.error(request, "You do not have permission to access this LTI tool.")
+        return redirect('authentication:home')
+
+    launch_url = lti_tool.launch_url.strip()
+    roles = "Instructor" if is_instructor else "Learner"
+
+    lti_params = {
+        'lti_message_type': 'basic-lti-launch-request',
+        'lti_version': 'LTI-1p0',
+        'resource_link_id': f"{course.id}-{lti_tool.id}",
+        'resource_link_title': lti_tool.name,
+        'user_id': str(user.id),
+        'roles': roles,
+        'oauth_consumer_key': lti_tool.consumer_key,
+        'oauth_signature_method': 'HMAC-SHA1',
+        'oauth_timestamp': str(int(datetime.now(pytz.UTC).timestamp())),
+        'oauth_nonce': str(uuid.uuid4()),
+        'oauth_version': '1.0',
+        'lis_person_name_full': user.get_full_name(),
+        'lis_person_name_given': user.first_name,
+        'lis_person_name_family': user.last_name,
+        'lis_person_contact_email_primary': user.email,
+        'lis_person_sourcedid': str(user.id),
+        'context_id': str(course.id),
+        'context_title': course.course_name,
+        'context_label': course.course_name[:10],
+        'launch_presentation_locale': 'id-ID',
+        'launch_presentation_document_target': 'iframe',
+    }
+
+    if lti_tool.custom_params:
+        lti_params.update({k: str(v) for k, v in lti_tool.custom_params.items()})
+
+    sorted_params = sorted(lti_params.items())
+    encoded_params = urllib.parse.urlencode(sorted_params, quote_via=urllib.parse.quote)
+
+    base_string = f"POST&{urllib.parse.quote(launch_url, safe='')}&{urllib.parse.quote(encoded_params, safe='')}"
+    signing_key = f"{urllib.parse.quote(lti_tool.shared_secret, safe='')}&".encode('utf-8')
+
+    hashed = hmac.new(signing_key, base_string.encode('utf-8'), hashlib.sha1)
+    signature = base64.b64encode(hashed.digest()).decode('utf-8')
+    lti_params['oauth_signature'] = signature
+
+    return render(request, 'learner/lti_launch.html', {
+        'launch_url': launch_url,
+        'lti_params': lti_params,
+    })
+
+
+
+
+
 
 def _build_combined_content(sections):
     """
@@ -49,28 +146,38 @@ def _build_combined_content(sections):
 
 def _build_assessment_context(assessment, user):
     """
-    Build context for assessment-related data (AskOra, submissions, peer reviews).
-    
-    Args:
-        assessment: Assessment object.
-        user: CustomUser object.
-    
-    Returns:
-        Dict: Context dictionary with assessment-related data.
+    Build context for assessment-related data.
+    Includes AskOra, submissions, peer reviews, quiz flags.
     """
+    # Periksa apakah asesmen memiliki alat LTI terkait
+    lti_tool = assessment.lti_tools.first()  # Ambil alat LTI pertama (jika ada)
+    if lti_tool:
+        return {
+            'ask_oras': [],
+            'user_submissions': [],
+            'askora_submit_status': {},
+            'askora_can_submit': {},
+            'can_review': False,
+            'submissions': [],
+            'has_other_submissions': False,
+            'is_quiz': False,
+            'peer_review_stats': None,
+            'is_lti': True,
+            'lti_tool': lti_tool,  # Sertakan objek LTIExternalTool untuk digunakan di template
+        }
+
+    # --- Lanjutan untuk assessment biasa (non-LTI) ---
     ask_oras = AskOra.objects.filter(assessment=assessment)
     user_submissions = Submission.objects.filter(askora__assessment=assessment, user=user)
     submitted_askora_ids = set(user_submissions.values_list('askora_id', flat=True))
     now = timezone.now()
-    
-    # Filter submisi yang belum direview
+
     submissions = Submission.objects.filter(
         askora__assessment=assessment
     ).exclude(user=user).exclude(
         id__in=PeerReview.objects.filter(reviewer=user).values('submission__id')
     )
-    
-    # Periksa apakah ada submisi dari pengguna lain
+
     has_other_submissions = Submission.objects.filter(
         askora__assessment=assessment
     ).exclude(user=user).exists()
@@ -88,11 +195,12 @@ def _build_assessment_context(assessment, user):
         },
         'can_review': submissions.exists(),
         'submissions': submissions,
-        'has_other_submissions': has_other_submissions,  # Tambahan
+        'has_other_submissions': has_other_submissions,
         'is_quiz': assessment.questions.exists(),
         'peer_review_stats': None,
+        'is_lti': False,
     }
-    
+
     if user_submissions.exists():
         total_participants = Submission.objects.filter(
             askora__assessment=assessment
@@ -114,9 +222,8 @@ def _build_assessment_context(assessment, user):
                 submission__in=user_submissions
             ).aggregate(avg_score=Avg('score'))['avg_score']
             context['peer_review_stats']['avg_score'] = round(avg_score, 2) if avg_score else None
-    
-    return context
 
+    return context
 
 @login_required
 def toggle_reaction(request, comment_id, reaction_type):
@@ -237,18 +344,6 @@ def _get_navigation_urls(username, id, slug, combined_content, current_index):
 
 @login_required
 def my_course(request, username, id, slug):
-    """
-    Menampilkan halaman kursus pengguna dengan materi dan penilaian.
-    
-    Args:
-        request: Objek permintaan HTTP.
-        username: Nama pengguna.
-        id: ID kursus.
-        slug: Slug kursus.
-    
-    Returns:
-        HttpResponse: Halaman kursus yang dirender.
-    """
     if request.user.username != username:
         logger.warning(f"Upaya akses tidak sah oleh {request.user.username} untuk {username}")
         return HttpResponse(status=403)
@@ -293,7 +388,9 @@ def my_course(request, username, id, slug):
         'can_submit': False,
         'can_review': False,
         'is_quiz': False,
+        'is_lti': False,
         'show_timer': False,
+        'lti_tool': None,
     }
 
     assessment_id = request.GET.get('assessment_id')
@@ -303,6 +400,11 @@ def my_course(request, username, id, slug):
         context['assessment'] = assessment
         context['current_content'] = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
         current_index = next((i for i, c in enumerate(combined_content) if c[0] == 'assessment' and c[1].id == assessment.id), 0)
+
+        # Tambahkan dukungan LTI Tool
+        lti_tool = assessment.lti_tools.first() if assessment.lti_tools.exists() else None
+        context['lti_tool'] = lti_tool
+        context['is_lti'] = bool(lti_tool)
 
         if course.payment_model == 'pay_for_exam':
             payment = Payment.objects.filter(
@@ -335,6 +437,7 @@ def my_course(request, username, id, slug):
         else:
             if assessment.duration_in_minutes == 0:
                 context['is_started'] = True
+
         context.update(_build_assessment_context(assessment, request.user))
     else:
         context['current_content'] = combined_content[0] if combined_content else None
@@ -348,7 +451,11 @@ def my_course(request, username, id, slug):
                 MaterialRead.objects.get_or_create(user=request.user, material=context['material'])
             elif context['current_content'][0] == 'assessment':
                 context['assessment'] = context['current_content'][1]
-                context.update(_build_assessment_context(context['assessment'], request.user))
+                assessment = context['assessment']
+                lti_tool = assessment.lti_tools.first() if assessment.lti_tools.exists() else None
+                context['lti_tool'] = lti_tool
+                context['is_lti'] = bool(lti_tool)
+                context.update(_build_assessment_context(assessment, request.user))
 
     context['previous_url'], context['next_url'] = _get_navigation_urls(username, id, slug, combined_content, current_index)
     user_progress, _ = CourseProgress.objects.get_or_create(user=request.user, course=course)
@@ -363,22 +470,10 @@ def my_course(request, username, id, slug):
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     return response
 
+
+
 @login_required
 def load_content(request, username, id, slug, content_type, content_id):
-    """
-    Memuat konten spesifik kursus (materi atau penilaian).
-    
-    Args:
-        request: Objek permintaan HTTP.
-        username: Nama pengguna.
-        id: ID kursus.
-        slug: Slug kursus.
-        content_type: Tipe konten ('material' atau 'assessment').
-        content_id: ID konten.
-    
-    Returns:
-        HttpResponse: Konten parsial yang dirender atau redirect.
-    """
     if request.user.username != username:
         logger.warning(f"Upaya akses tidak sah oleh {request.user.username} untuk {username}")
         return HttpResponse(status=403)
@@ -421,7 +516,9 @@ def load_content(request, username, id, slug, content_type, content_id):
         'can_submit': False,
         'can_review': False,
         'is_quiz': False,
+        'is_lti': False,
         'show_timer': False,
+        'lti_tool': None,
     }
 
     combined_content = _build_combined_content(sections)
@@ -434,11 +531,18 @@ def load_content(request, username, id, slug, content_type, content_id):
         context['comments'] = Comment.objects.filter(material=material, parent=None).select_related('user', 'parent').prefetch_related('children').order_by('-created_at')
         MaterialRead.objects.get_or_create(user=request.user, material=material)
         current_index = next((i for i, c in enumerate(combined_content) if c[0] == 'material' and c[1].id == material.id), 0)
+
     elif content_type == 'assessment':
         assessment = get_object_or_404(Assessment.objects.select_related('section__courses'), id=content_id)
         context['assessment'] = assessment
         context['current_content'] = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
         current_index = next((i for i, c in enumerate(combined_content) if c[0] == 'assessment' and c[1].id == assessment.id), 0)
+
+        # Tambahkan dukungan LTI Tool
+        lti_tool = assessment.lti_tools.first() if assessment.lti_tools.exists() else None
+        context['lti_tool'] = lti_tool
+        context['is_lti'] = bool(lti_tool)
+
         if course.payment_model == 'pay_for_exam':
             payment = Payment.objects.filter(
                 user=request.user, course=course, status='completed', payment_model='pay_for_exam'
@@ -454,6 +558,7 @@ def load_content(request, username, id, slug, content_type, content_id):
                 AssessmentRead.objects.get_or_create(user=request.user, assessment=assessment)
         else:
             AssessmentRead.objects.get_or_create(user=request.user, assessment=assessment)
+
         session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
         if session:
             context['is_started'] = True
@@ -475,6 +580,8 @@ def load_content(request, username, id, slug, content_type, content_id):
     response = render(request, template, context)
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     return response
+
+
 
 @login_required
 def start_assessment_courses(request, assessment_id):

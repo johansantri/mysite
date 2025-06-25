@@ -1,0 +1,6 @@
+<form id="lti-launch-form" action="{{ launch_url }}" method="post" target="_blank">
+  {% for key, value in params.items %}
+    <input type="hidden" name="{{ key }}" value="{{ value }}">
+  {% endfor %}
+  <button type="submit" class="btn btn-success">Launch LTI Tool</button>
+</form>
