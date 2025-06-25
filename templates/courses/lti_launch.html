@@ -2,30 +2,32 @@
 {% load static %}
 
 {% block content %}
-<div class="flex flex-col items-center justify-center min-h-screen bg-gray-100 py-10">
-    <div class="text-center mb-8">
-        <h1 class="text-2xl font-semibold text-gray-800">Launching LTI Tool...</h1>
-        <p class="text-gray-600">Please wait while we connect you to the learning tool.</p>
+<div class="container d-flex flex-column justify-content-center align-items-center min-vh-100 bg-light py-5">
+    <div class="text-center mb-4">
+        <h1 class="h4 text-dark">Launching LTI Tool...</h1>
+        <p class="text-muted">Please wait while we connect you to the learning tool.</p>
     </div>
 
-    <form id="ltiLaunchForm" method="POST" action="{{ launch_url }}" class="hidden">
+    <form id="ltiLaunchForm" method="POST" action="{{ launch_url }}" target="_blank" class="d-none">
         {% for key, value in lti_params.items %}
             <input type="hidden" name="{{ key }}" value="{{ value|escape }}">
         {% endfor %}
         <noscript>
-            <p class="text-red-600">JavaScript is required for launching the LTI tool.</p>
-            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Launch Manually</button>
+            <div class="alert alert-warning" role="alert">
+                JavaScript is required for launching the LTI tool.
+            </div>
+            <button type="submit" class="btn btn-primary">Launch Manually</button>
         </noscript>
     </form>
 
-    <p class="text-sm text-gray-500">If you are not redirected automatically, click the button below.</p>
-    <button onclick="document.getElementById('ltiLaunchForm').submit();" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+    <p class="text-secondary small">If you are not redirected automatically, click the button below.</p>
+    <button onclick="document.getElementById('ltiLaunchForm').submit();" class="btn btn-primary mt-3">
         Launch LTI Tool
     </button>
 </div>
 
 <script>
-    // Auto-submit form on load
+    // Auto-submit form on load (tab baru)
     window.onload = function () {
         document.getElementById('ltiLaunchForm').submit();
     };
