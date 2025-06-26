@@ -109,5 +109,7 @@ urlpatterns = [
     path('sosial/search/', views.search_posts, name='search_posts'),  # Rute baru
    #menuju home category
     path('category/<slug:slug>/', views.category_course_list, name='category_list'),
-   
+
+    #jwks
+    path(".well-known/jwks/<slug:slug>.json", views.jwks_by_partner, name="jwks-by-partner"),
 ]

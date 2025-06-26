@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LTI Launch</title>
+</head>
+<body onload="document.getElementById('ltiLaunchForm').submit();">
+    <p>Launching LTI Tool...</p>
+    <form id="ltiLaunchForm" action="{{ launch_url }}" method="POST">
+        {% for key, value in lti_params.items %}
+            <input type="hidden" name="{{ key }}" value="{{ value|escape }}">
+        {% endfor %}
+        <noscript>
+            <button type="submit">Click here to launch</button>
+        </noscript>
+    </form>
+</body>
+</html>

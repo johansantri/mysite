@@ -16,7 +16,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import MicroCredentialCommentForm,MicroCredentialReviewForm,LTIExternalToolForm,CoursePriceForm,CourseRatingForm,SosPostForm,MicroCredentialForm,AskOraForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from .utils import user_has_passed_course,check_for_blacklisted_keywords,is_suspicious
 from django.http import JsonResponse
-from .models import LastAccessCourse,UserActivityLog,MicroClaim,CourseViewIP,CourseViewLog,UserMicroCredential,MicroCredentialComment,MicroCredentialReview,UserMicroProgress,SearchHistory,Certificate,LTIExternalTool,Course,CourseRating,Like,SosPost,Hashtag,UserProfile,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
+from .models import PlatformKey,LastAccessCourse,UserActivityLog,MicroClaim,CourseViewIP,CourseViewLog,UserMicroCredential,MicroCredentialComment,MicroCredentialReview,UserMicroProgress,SearchHistory,Certificate,LTIExternalTool,Course,CourseRating,Like,SosPost,Hashtag,UserProfile,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
 from authentication.models import CustomUser, Universiti
 from blog.models import BlogPost
 from licensing.models import License
@@ -75,6 +75,15 @@ import logging
 from django.core.exceptions import PermissionDenied
 from oauthlib.oauth1 import Client as OAuth1Client
 from payments.models import Payment
+
+#public jwks
+def jwks_by_partner(request, slug):
+    try:
+        key = get_object_or_404(PlatformKey, partner__name__slug=slug)
+        return JsonResponse({"keys": [key.public_jwk]})
+    except PlatformKey.DoesNotExist:
+        raise Http404("No key found for this partner.")
+
 
 @login_required
 def microcredential_report_view(request, microcredential_id):

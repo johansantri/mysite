@@ -1,0 +1,9 @@
+<!-- templates/lti/launch_form_fragment.html -->
+<form action="{{ launch_url }}" method="post" id="lti-launch-form">
+    {% for key, value in parameters.items %}
+        <input type="hidden" name="{{ key }}" value="{{ value|escape }}">
+    {% endfor %}
+</form>
+<script>
+    document.getElementById('lti-launch-form').submit();
+</script>

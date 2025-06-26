@@ -1,0 +1,32 @@
+ERROR 2025-06-26 16:28:13,228 log Internal Server Error: /.well-known/jwks/university-of-oxford.json
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 82, in jwks_by_partner
+    key = PlatformKey.objects.get(partner__slug=slug)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 619, in get
+    clone = self._chain() if self.query.combinator else self.filter(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1491, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1509, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1516, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1643, in add_q
+    clause, _ = self._add_q(q_object, can_reuse)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1675, in _add_q
+    child_clause, needed_inner = self.build_filter(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1585, in build_filter
+    condition = self.build_lookup(lookups, col, value)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1406, in build_lookup
+    lhs = self.try_transform(lhs, lookup_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1455, in try_transform
+    raise FieldError(
+django.core.exceptions.FieldError: Unsupported lookup 'slug' for ForeignKey or join on the field not permitted.
+INFO 2025-06-26 16:29:05,959 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-26 16:29:06,250 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-06-26 16:29:06,300 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address

@@ -25,6 +25,10 @@ from payments.models import Payment
 from licensing.models import Invitation
 import logging
 from django.db.models import Count
+import json
+from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.hazmat.primitives import serialization
+from jwcrypto import jwk
 
 logger = logging.getLogger(__name__)
 
@@ -1322,6 +1326,48 @@ class LTIExternalTool(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
+        return self.name
+
+
+def generate_rsa_key_pair():
+    private_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+
+    private_pem = private_key.private_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PrivateFormat.PKCS8,
+        encryption_algorithm=serialization.NoEncryption()
+    ).decode()
+
+    public_key = private_key.public_key()
+    public_jwk = jwk.JWK.from_pyca(public_key)
+    public_jwk_json = json.loads(public_jwk.export_public())  # fix untuk versi lama
+
+    return private_pem, public_jwk_json
+
+class PlatformKey(models.Model):
+    partner = models.ForeignKey(Partner, on_delete=models.CASCADE, null=True, blank=True)
+    name = models.CharField(max_length=255, default="Default LMS Key")
+    private_key = models.TextField(help_text="RSA private key in PEM format", blank=True)
+    public_jwk = models.JSONField(help_text="Public JWK for LTI 1.3", blank=True, null=True)
+    created_by = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def save(self, *args, **kwargs):
+        if not self.private_key or not self.public_jwk:
+            self.private_key, self.public_jwk = generate_rsa_key_pair()
+        super().save(*args, **kwargs)
+
+
+    class Meta:
+        verbose_name = "Platform RSA Key"
+        verbose_name_plural = "Platform RSA Keys"
+        permissions = [
+            ("can_generate_rsa_key", "Can generate RSA Key Pair for LTI 1.3")
+        ]
+
+    def __str__(self):
+        if self.partner and self.partner.name:
+            return f"{self.name} ({self.partner.name.slug})"
         return self.name
 
 class Certificate(models.Model):

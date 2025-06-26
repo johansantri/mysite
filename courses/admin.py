@@ -1,6 +1,6 @@
 from django.contrib import admin
 from . import models 
-from .models import  MicroClaim,UserMicroProgress,MicroCredentialComment,Certificate,LTIExternalTool,Submission,CourseRating,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
+from .models import  PlatformKey,MicroClaim,UserMicroProgress,MicroCredentialComment,Certificate,LTIExternalTool,Submission,CourseRating,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
 from import_export.admin import ImportExportModelAdmin
 from django.utils.html import format_html
 # Kelas admin untuk model MicroClaim
@@ -65,6 +65,33 @@ class LTIExternalToolAdmin(admin.ModelAdmin):
     list_filter = ('assessment',)
 
 admin.site.register(LTIExternalTool, LTIExternalToolAdmin)
+
+@admin.register(PlatformKey)
+class PlatformKeyAdmin(admin.ModelAdmin):
+    list_display = ('name', 'created_by', 'created_at')
+    readonly_fields = ('created_at', 'private_key', 'public_jwk')
+    search_fields = ('name', 'created_by__username')
+    ordering = ('-created_at',)
+
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'partner', 'created_by', 'created_at')
+        }),
+        ("Key Details", {
+            'fields': ('private_key', 'public_jwk'),
+        }),
+    )
+
+    def save_model(self, request, obj, form, change):
+        if not obj.created_by:
+            obj.created_by = request.user
+
+        # Tidak perlu generate key di sini karena sudah otomatis di model
+        super().save_model(request, obj, form, change)
+
+
+
+
 
 @admin.register(CourseRating)
 class CourseRatingAdmin(admin.ModelAdmin):
