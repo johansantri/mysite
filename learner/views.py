@@ -32,92 +32,12 @@ from courses.models import (
     AskOra, Choice, Comment, Course, CourseProgress, CourseStatusHistory,
     Enrollment, GradeRange, Instructor, LTIExternalTool, Material,
     MaterialRead, Payment, PeerReview, Question, QuestionAnswer,
-    Score, Section, Submission, UserActivityLog, CommentReaction, AttemptedQuestion
+    Score, Section, Submission, UserActivityLog, CommentReaction, AttemptedQuestion,
+    LTIPlatform,
 )
 
 logger = logging.getLogger(__name__)
 
-
-def generate_oauth_signature(method, url, params, consumer_secret):
-    # 1. Sort parameters by key then value (unencoded)
-    sorted_items = sorted(params.items())
-    
-    # 2. Percent-encode keys and values
-    encoded_pairs = [f"{quote(str(k), safe='')}={quote(str(v), safe='')}" for k, v in sorted_items]
-    encoded_param_string = '&'.join(encoded_pairs)
-
-    # 3. Create base string
-    base_string = '&'.join([
-        method.upper(),
-        quote(url, safe=''),
-        quote(encoded_param_string, safe=''),
-    ])
-
-    # 4. Create signing key
-    signing_key = f"{quote(consumer_secret)}&"
-
-    # 5. Sign the base string using HMAC-SHA1
-    hashed = hmac.new(signing_key.encode(), base_string.encode(), hashlib.sha1)
-    signature = base64.b64encode(hashed.digest()).decode()
-
-    return signature
-
-@login_required
-def launch_lti_new(request, course_id, lti_tool_id):
-    user = request.user
-    course = get_object_or_404(Course, id=course_id)
-    lti_tool = get_object_or_404(LTIExternalTool, id=lti_tool_id, assessment__section__courses=course)
-
-    is_instructor = user.is_superuser or user == course.instructor.user or user == course.org_partner.user
-    is_learner = course.enrollments.filter(user=user).exists()
-    if not (is_instructor or is_learner):
-        messages.error(request, "You do not have permission to access this LTI tool.")
-        return redirect('authentication:home')
-
-    launch_url = lti_tool.launch_url.strip()
-    roles = "Instructor" if is_instructor else "Learner"
-
-    lti_params = {
-        'lti_message_type': 'basic-lti-launch-request',
-        'lti_version': 'LTI-1p0',
-        'resource_link_id': f"{course.id}-{lti_tool.id}",
-        'resource_link_title': lti_tool.name,
-        'user_id': str(user.id),
-        'roles': roles,
-        'oauth_consumer_key': lti_tool.consumer_key,
-        'oauth_signature_method': 'HMAC-SHA1',
-        'oauth_timestamp': str(int(datetime.now(pytz.UTC).timestamp())),
-        'oauth_nonce': str(uuid.uuid4()),
-        'oauth_version': '1.0',
-        'lis_person_name_full': user.get_full_name(),
-        'lis_person_name_given': user.first_name,
-        'lis_person_name_family': user.last_name,
-        'lis_person_contact_email_primary': user.email,
-        'lis_person_sourcedid': str(user.id),
-        'context_id': str(course.id),
-        'context_title': course.course_name,
-        'context_label': course.course_name[:10],
-        'launch_presentation_locale': 'id-ID',
-        'launch_presentation_document_target': 'iframe',
-    }
-
-    if lti_tool.custom_params:
-        lti_params.update({k: str(v) for k, v in lti_tool.custom_params.items()})
-
-    sorted_params = sorted(lti_params.items())
-    encoded_params = urllib.parse.urlencode(sorted_params, quote_via=urllib.parse.quote)
-
-    base_string = f"POST&{urllib.parse.quote(launch_url, safe='')}&{urllib.parse.quote(encoded_params, safe='')}"
-    signing_key = f"{urllib.parse.quote(lti_tool.shared_secret, safe='')}&".encode('utf-8')
-
-    hashed = hmac.new(signing_key, base_string.encode('utf-8'), hashlib.sha1)
-    signature = base64.b64encode(hashed.digest()).decode('utf-8')
-    lti_params['oauth_signature'] = signature
-
-    return render(request, 'learner/lti_launch.html', {
-        'launch_url': launch_url,
-        'lti_params': lti_params,
-    })
 
 
 

@@ -529,7 +529,7 @@ CONTENT_SECURITY_POLICY = {
         # Izinkan permintaan (AJAX, WebSocket, fetch, dsb) hanya ke domain sendiri dan ke Moodle
         'connect-src': (
             "'self'",  # domain aplikasi ini sendiri
-            "https://pakaimata.h5p.com",  # domain Moodle untuk integrasi LTI
+            "https://scholldecodewp.h5p.com",  # domain Moodle untuk integrasi LTI
         ),
 
         # Default untuk semua jenis resource, kecuali yang punya aturan khusus di bawah
@@ -555,7 +555,7 @@ CONTENT_SECURITY_POLICY = {
             "https://pakaimata.h5p.com",  # Izinkan YouTube iframe (tanpa cookie)
             "https://www.youtube.com",
             "https://www.youtube-nocookie.com",
-            'https://asimarif.h5p.com',  # Tambahkan ini
+            'https://scholldecodewp.h5p.com',  # Tambahkan ini
         ),
 
         # Izinkan gambar dari domain sendiri dan dari inline base64 (data:)
@@ -574,7 +574,7 @@ CONTENT_SECURITY_POLICY = {
             'https://cdnjs.cloudflare.com',  # CDN umum
             "'unsafe-inline'",  # mengizinkan <script> inline — sebaiknya dihindari untuk keamanan
             "'unsafe-eval'",
-            'https://asimarif.h5p.com', 
+            'https://scholldecodewp.h5p.com', 
         ),
 
         # Izinkan file CSS dari domain sendiri dan CDN berikut
@@ -598,8 +598,8 @@ CONTENT_SECURITY_POLICY = {
             "'self'",
             "https://vclass.unila.ac.id",  # domain Moodle tujuan POST LTI
             "https://idols.ui.ac.id",
-            "https://pakaimata.h5p.com",
-            'https://asimarif.h5p.com', 
+            "https://scholldecodewp.h5p.com",
+          
         ),
     }
 }
@@ -617,4 +617,8 @@ AUTHENTICATION_BACKENDS = [
 AXES_FAILURE_LIMIT = 5
 AXES_COOLOFF_TIME = 1  # 1 jam
 AXES_LOCKOUT_PARAMETERS = ['username', 'ip_address']  # ganti yang deprecated
+
+LTI_ISSUER = "https://ini.icei.ac.id"  # domain lms to lti
+LTI_CLIENT_ID = "https://scholldecodewp.h5p.com"  # Sesuaikan dengan data dari H5P
+
 

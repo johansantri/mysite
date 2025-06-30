@@ -1,6 +1,6 @@
 from django.contrib import admin
 from . import models 
-from .models import  PlatformKey,MicroClaim,UserMicroProgress,MicroCredentialComment,Certificate,LTIExternalTool,Submission,CourseRating,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
+from .models import  LTIPlatform,PlatformKey,MicroClaim,UserMicroProgress,MicroCredentialComment,Certificate,LTIExternalTool,Submission,CourseRating,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
 from import_export.admin import ImportExportModelAdmin
 from django.utils.html import format_html
 # Kelas admin untuk model MicroClaim
@@ -59,12 +59,17 @@ class MicroCredentialCommentAdmin(admin.ModelAdmin):
 # Registrasi model dan admin
 admin.site.register(MicroCredentialComment, MicroCredentialCommentAdmin)
 
+@admin.register(LTIExternalTool)
 class LTIExternalToolAdmin(admin.ModelAdmin):
-    list_display = ('name', 'launch_url', 'consumer_key', 'shared_secret', 'assessment')
-    search_fields = ('name', 'launch_url', 'consumer_key')
-    list_filter = ('assessment',)
+    list_display = ('name', 'platform', 'assessment', 'created_at')
+    search_fields = ('name', 'platform__name', 'assessment__title')
+    list_filter = ('platform', 'assessment')
 
-admin.site.register(LTIExternalTool, LTIExternalToolAdmin)
+
+@admin.register(LTIPlatform)
+class LTIPlatformAdmin(admin.ModelAdmin):
+    list_display = ("name", "issuer", "client_id", "created_at")
+    search_fields = ("name", "issuer", "client_id")
 
 @admin.register(PlatformKey)
 class PlatformKeyAdmin(admin.ModelAdmin):

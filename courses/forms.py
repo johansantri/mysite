@@ -45,31 +45,31 @@ class MicroCredentialReviewForm(forms.ModelForm):
 class LTIExternalToolForm(forms.ModelForm):
     class Meta:
         model = LTIExternalTool
-        fields = ['name', 'launch_url', 'consumer_key', 'shared_secret']
+        fields = ['name', 'platform', 'custom_params']  # gunakan platform, bukan consumer key
         widgets = {
-           'name': forms.TextInput(attrs={
+            'name': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'LTI Tool Name (e.g., Google Form Quiz)'
+                'placeholder': 'LTI Tool Name (e.g., H5P Integration)'
             }),
-            'launch_url': forms.URLInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'https://example.com/launch'
+            'platform': forms.Select(attrs={
+                'class': 'form-control'
             }),
-            'consumer_key': forms.TextInput(attrs={
+            'custom_params': forms.Textarea(attrs={
                 'class': 'form-control',
-                'placeholder': 'Enter Consumer Key'
-            }),
-            'shared_secret': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Enter Shared Secret'
+                'placeholder': 'Contoh: {"context_id": "abc", "user_id": "xyz"}',
+                'rows': 3
             }),
         }
 
-    def clean_launch_url(self):
-        launch_url = self.cleaned_data.get('launch_url')
-        if not launch_url.startswith("https://"):
-            raise forms.ValidationError("Launch URL harus dimulai dengan 'https://'")
-        return launch_url
+    def clean_custom_params(self):
+        import json
+        custom_params = self.cleaned_data.get('custom_params')
+        if custom_params:
+            try:
+                json.loads(custom_params)
+            except Exception:
+                raise forms.ValidationError("Format harus berupa JSON yang valid.")
+        return custom_params
 
 
 

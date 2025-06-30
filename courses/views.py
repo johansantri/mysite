@@ -3,6 +3,7 @@ import csv
 from io import BytesIO
 from PIL import Image
 import qrcode
+import jwt  # PyJWT
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.cache import cache
@@ -16,7 +17,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import MicroCredentialCommentForm,MicroCredentialReviewForm,LTIExternalToolForm,CoursePriceForm,CourseRatingForm,SosPostForm,MicroCredentialForm,AskOraForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
 from .utils import user_has_passed_course,check_for_blacklisted_keywords,is_suspicious
 from django.http import JsonResponse
-from .models import PlatformKey,LastAccessCourse,UserActivityLog,MicroClaim,CourseViewIP,CourseViewLog,UserMicroCredential,MicroCredentialComment,MicroCredentialReview,UserMicroProgress,SearchHistory,Certificate,LTIExternalTool,Course,CourseRating,Like,SosPost,Hashtag,UserProfile,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
+from .models import LTIPlatform,PlatformKey,LastAccessCourse,UserActivityLog,MicroClaim,CourseViewIP,CourseViewLog,UserMicroCredential,MicroCredentialComment,MicroCredentialReview,UserMicroProgress,SearchHistory,Certificate,LTIExternalTool,Course,CourseRating,Like,SosPost,Hashtag,UserProfile,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
 from authentication.models import CustomUser, Universiti
 from blog.models import BlogPost
 from licensing.models import License
@@ -25,7 +26,7 @@ from django.views.decorators.cache import cache_page
 from django.urls import reverse
 from django.contrib import messages
 from django.db.models import F
-from django.http import HttpResponseForbidden,HttpResponse,HttpResponseNotFound
+from django.http import HttpResponseForbidden,HttpResponse,HttpResponseNotFound,HttpResponseBadRequest,HttpResponseRedirect
 from django_ckeditor_5.widgets import CKEditor5Widget
 from django import forms
 from django.http import JsonResponse
@@ -39,6 +40,12 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Prefetch
 import time
 import re
+
+from datetime import datetime  # Pastikan impor ini ada di atas file
+import uuid
+
+from django.contrib.auth import login
+from jwt import algorithms
 from django.utils.timezone import now
 from django.db import DatabaseError
 from django.views.decorators.csrf import csrf_protect
@@ -75,14 +82,275 @@ import logging
 from django.core.exceptions import PermissionDenied
 from oauthlib.oauth1 import Client as OAuth1Client
 from payments.models import Payment
+from jwt import get_unverified_header, decode as jwt_decode, algorithms
+from jose import jwt
+from jose import jwk as jose_jwk
+from jose.utils import base64url_decode
+from jwt.algorithms import RSAAlgorithm
+from datetime import datetime, timezone
 
-#public jwks
-def jwks_by_partner(request, slug):
+logger = logging.getLogger(__name__)
+User = CustomUser
+
+# === NONCE ===
+def generate_nonce(request):
+    nonce = uuid.uuid4().hex
+    request.session['lti_nonce'] = nonce
+    request.session['lti_nonce_timestamp'] = datetime.now(timezone.utc).timestamp()
+    logger.debug("[NONCE] Generated nonce: %s, timestamp: %s", nonce, request.session['lti_nonce_timestamp'])
+    return nonce
+
+def validate_nonce(request, nonce):
+    stored = request.session.get('lti_nonce')
+    ts = request.session.get('lti_nonce_timestamp')
+    logger.debug("[NONCE] Validating nonce: %s, stored: %s, timestamp: %s", nonce, stored, ts)
+    if stored != nonce or not ts:
+        logger.error("[NONCE] Invalid nonce: stored=%s, received=%s, timestamp=%s", stored, nonce, ts)
+        return False
+    now = datetime.now(timezone.utc).timestamp()
+    valid = (now - ts) <= 300
+    logger.debug("[NONCE] Nonce validation result: %s", valid)
+    return valid
+
+
+# === 1. LMS → TOOL ===
+@login_required
+def lti_login_initiation(request, tool_id):
     try:
-        key = get_object_or_404(PlatformKey, partner__name__slug=slug)
+        tool = get_object_or_404(LTIExternalTool, id=tool_id)
+        platform = tool.platform
+        launch_url = request.build_absolute_uri(reverse("courses:lti_launch"))
+        params = {
+            "iss": settings.LTI_ISSUER,
+            "login_hint": str(request.user.id),
+            "target_link_uri": launch_url,
+            "redirect_uri": launch_url,
+            "client_id": platform.client_id,
+            "lti_message_hint": str(tool.id),
+        }
+        logger.debug("[LTI INIT] Tool ID: %s, Platform: %s, Login URL: %s", tool_id, platform.name, platform.login_url)
+        logger.debug("[LTI INIT] Parameters: %s", params)
+        # Perbaiki encoding manual
+        encoded_params = "&".join(f"{quote(k)}={quote(str(v))}" for k, v in params.items())
+        logger.debug("[LTI INIT] Encoded parameters: %s", encoded_params)
+        login_url = f"{platform.login_url}?{encoded_params}"
+        logger.info("[LTI INIT] Redirecting to: %s", login_url)
+        return redirect(login_url)
+    except Exception as e:
+        logger.exception("[LTI INIT] Error in lti_login_initiation: %s", str(e))
+        return HttpResponseBadRequest(f"Error initiating LTI login: {str(e)}")
+
+
+# === 2. TOOL → LMS ===
+@csrf_exempt
+def lti_tool_login_handler(request):
+    try:
+        logger.debug("[LTI LOGIN HANDLER] Query Params: %s", request.GET.dict())
+        iss = request.GET.get("iss")
+        login_hint = request.GET.get("login_hint")
+        target_link_uri = request.GET.get("target_link_uri")
+        client_id = request.GET.get("client_id")
+        received_redirect_uri = request.GET.get("redirect_uri")
+        lti_message_hint = request.GET.get("lti_message_hint")
+
+        # Jika iss atau target_link_uri hilang, coba ambil dari LTIPlatform
+        if not iss or not target_link_uri or not client_id:
+            platform = LTIPlatform.objects.filter(client_id=client_id).first()
+            if not platform:
+                logger.error("[LTI LOGIN HANDLER] No platform found for client_id: %s", client_id)
+                return HttpResponseBadRequest(f"No platform found for client_id: {client_id}")
+            iss = iss or platform.issuer
+            target_link_uri = target_link_uri or request.build_absolute_uri(reverse("courses:lti_launch"))
+        
+        # Paksa redirect_uri ke nilai yang benar
+        correct_redirect_uri = request.build_absolute_uri(reverse("courses:lti_launch"))
+        if received_redirect_uri and received_redirect_uri != correct_redirect_uri:
+            logger.warning("[LTI LOGIN HANDLER] Incorrect redirect_uri received: %s, using correct redirect_uri: %s",
+                           received_redirect_uri, correct_redirect_uri)
+        
+        if not all([iss, login_hint, target_link_uri, client_id]):
+            logger.error("[LTI LOGIN HANDLER] Missing required parameters: iss=%s, login_hint=%s, target_link_uri=%s, client_id=%s",
+                         iss, login_hint, target_link_uri, client_id)
+            return HttpResponseBadRequest(f"Missing required parameters. Got: iss={iss}, login_hint={login_hint}, target_link_uri={target_link_uri}, client_id={client_id}")
+        
+        nonce = generate_nonce(request)
+        state = uuid.uuid4().hex
+        auth_params = {
+            "scope": "openid",
+            "response_type": "id_token",
+            "client_id": client_id,
+            "redirect_uri": correct_redirect_uri,
+            "login_hint": login_hint,
+            "state": state,
+            "response_mode": "form_post",
+            "nonce": nonce,
+            "prompt": "none",
+            "lti_message_hint": lti_message_hint,
+        }
+        logger.debug("[LTI LOGIN HANDLER] Auth parameters: %s", auth_params)
+        # Perbaiki encoding manual
+        encoded_auth_params = "&".join(f"{quote(k)}={quote(str(v))}" for k, v in auth_params.items())
+        authorize_url = f"{iss}/authorize?{encoded_auth_params}"
+        logger.debug("[LTI LOGIN HANDLER] Redirecting to: %s", authorize_url)
+        return redirect(authorize_url)
+    except Exception as e:
+        logger.exception("[LTI LOGIN HANDLER] Error in lti_tool_login_handler: %s", str(e))
+        return HttpResponseBadRequest(f"Error in LTI login handler: {str(e)}")
+# === 3. Launch Endpoint ===
+@csrf_exempt
+def lti_launch(request):
+    try:
+        logger.debug("[LTI LAUNCH] Received request: method=%s, POST=%s", request.method, request.POST)
+        if request.method != "POST":
+            logger.error("[LTI LAUNCH] Invalid method: %s", request.method)
+            return HttpResponseBadRequest("Invalid method")
+
+        id_token = request.POST.get("id_token")
+        if not id_token:
+            logger.error("[LTI LAUNCH] Missing id_token")
+            return HttpResponseBadRequest("Missing id_token")
+
+        logger.debug("[LTI LAUNCH] Received id_token: %s", id_token)
+        header = jwt.get_unverified_header(id_token)
+        kid = header.get("kid")
+        logger.debug("[LTI LAUNCH] JWT header: %s, kid: %s", header, kid)
+
+        claims = jwt.decode(id_token, options={"verify_signature": False})
+        logger.debug("[LTI LAUNCH] Unverified claims: %s", claims)
+        iss = claims.get("iss")
+        aud = claims.get("aud")
+        nonce = claims.get("nonce")
+        sub = claims.get("sub")
+        name = claims.get("name")
+        email = claims.get("email") or f"lti-{sub}@tool.com"
+
+        if not validate_nonce(request, nonce):
+            logger.error("[LTI LAUNCH] Invalid or expired nonce: %s", nonce)
+            return HttpResponseBadRequest("Invalid or expired nonce")
+
+        jwks_url = f"{iss}/.well-known/jwks.json"
+        logger.debug("[LTI LAUNCH] Fetching JWKS from: %s", jwks_url)
+        res = requests.get(jwks_url)
+        if res.status_code != 200:
+            logger.error("[LTI LAUNCH] Failed to fetch JWKS: status=%s, response=%s", res.status_code, res.text)
+            return HttpResponseBadRequest("Failed to fetch JWKS")
+
+        jwks = res.json().get("keys", [])
+        public_key = None
+        for key in jwks:
+            if key.get("kid") == kid:
+                public_key = RSAAlgorithm.from_jwk(json.dumps(key))
+                logger.debug("[LTI LAUNCH] Found matching public key for kid: %s", kid)
+                break
+
+        if not public_key:
+            logger.error("[LTI LAUNCH] No matching key for kid: %s", kid)
+            return HttpResponseBadRequest("No matching key")
+
+        payload = jwt.decode(
+            id_token,
+            public_key,
+            algorithms=["RS256"],
+            audience=aud,
+            issuer=iss
+        )
+        logger.debug("[LTI LAUNCH] Verified payload: %s", payload)
+
+        user, created = User.objects.get_or_create(
+            username=email,
+            defaults={"email": email, "full_name": name or "LTI User", "is_active": True}
+        )
+        logger.debug("[LTI LAUNCH] User: %s, created: %s", user.username, created)
+        login(request, user)
+        logger.info("[LTI LAUNCH] Redirecting to learner dashboard")
+        return redirect("learner:dashboard")
+    except Exception as e:
+        logger.exception("[LTI LAUNCH] Error in lti_launch: %s", str(e))
+        return HttpResponseBadRequest(f"LTI launch failed: {str(e)}")
+# === 4. Token Endpoint (optional) ===
+@csrf_exempt
+def lti_token_endpoint(request):
+    try:
+        logger.debug("[LTI TOKEN] Received request: method=%s, POST=%s, headers=%s", 
+                     request.method, request.POST, request.headers)
+        if request.method != "POST":
+            logger.error("[LTI TOKEN] Invalid method: %s", request.method)
+            return HttpResponseBadRequest("Invalid method")
+
+        auth = request.headers.get("Authorization", "")
+        if not auth.startswith("Basic "):
+            logger.error("[LTI TOKEN] Missing or invalid Authorization header: %s", auth)
+            return HttpResponseForbidden("Missing Authorization header")
+
+        try:
+            decoded = base64.b64decode(auth.split(" ")[1]).decode()
+            client_id, _ = decoded.split(":")
+            logger.debug("[LTI TOKEN] Decoded client_id: %s", client_id)
+        except Exception as e:
+            logger.error("[LTI TOKEN] Invalid credentials: %s", str(e))
+            return HttpResponseForbidden("Invalid credentials")
+
+        platform = LTIPlatform.objects.filter(client_id=client_id).first()
+        key = PlatformKey.objects.filter(partner__name=platform.name).first()
+
+        if not key or not key.private_key:
+            logger.error("[LTI TOKEN] No private key for platform: %s", client_id)
+            return JsonResponse({"error": "No private key"}, status=500)
+
+        now = datetime.now(timezone.utc)
+        token = {
+            "iss": settings.LTI_ISSUER,
+            "sub": client_id,
+            "aud": client_id,
+            "iat": int(now.timestamp()),
+            "exp": int((now + timedelta(minutes=5)).timestamp()),
+            "scope": request.POST.get("scope", ""),
+        }
+        logger.debug("[LTI TOKEN] Generating token: %s", token)
+        jwt_token = jwt.encode(token, key.private_key, algorithm="RS256")
+        logger.debug("[LTI TOKEN] Generated JWT token: %s", jwt_token)
+        return JsonResponse({
+            "access_token": jwt_token,
+            "token_type": "bearer",
+            "expires_in": 300,
+            "scope": token["scope"],
+        })
+    except Exception as e:
+        logger.exception("[LTI TOKEN] Error in lti_token_endpoint: %s", str(e))
+        return JsonResponse({"error": f"Token endpoint failed: {str(e)}"}, status=500)
+
+# === 5. JWKS ===
+def jwks_public(request):
+    try:
+        key = PlatformKey.objects.first()
+        if not key:
+            logger.error("[JWKS] No platform key configured")
+            raise Http404("No platform key")
+        logger.debug("[JWKS] Returning public JWK: %s", key.public_jwk)
         return JsonResponse({"keys": [key.public_jwk]})
-    except PlatformKey.DoesNotExist:
-        raise Http404("No key found for this partner.")
+    except Exception as e:
+        logger.exception("[JWKS] Error in jwks_public: %s", str(e))
+        return JsonResponse({"error": f"JWKS endpoint failed: {str(e)}"}, status=500)
+
+def openid_configuration(request):
+    try:
+        base = request.build_absolute_uri("/")[:-1]
+        config = {
+            "issuer": base,
+            "authorization_endpoint": base + reverse("courses:lti_login"),
+            "token_endpoint": base + reverse("courses:lti_token"),
+            "jwks_uri": base + reverse("courses:jwks-public"),
+            "response_types_supported": ["id_token"],
+            "subject_types_supported": ["public"],
+            "id_token_signing_alg_values_supported": ["RS256"],
+        }
+        logger.debug("[OPENID CONFIG] Returning configuration: %s", config)
+        return JsonResponse(config)
+    except Exception as e:
+        logger.exception("[OPENID CONFIG] Error in openid_configuration: %s", str(e))
+        return JsonResponse({"error": f"OpenID configuration failed: {str(e)}"}, status=500)
+
+
 
 
 @login_required

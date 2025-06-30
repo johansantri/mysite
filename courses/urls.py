@@ -67,7 +67,7 @@ urlpatterns = [
     path('add-comment/<int:material_id>/', views.add_comment, name='add_comment'),
     path('add-comment-course/<int:course_id>/', views.add_comment_course, name='add_comment_course'),  # Add this line
     path('course/<int:idcourse>/section/<int:idsection>/assessment/<int:idassessment>/create/', views.create_askora, name='create_askora'),
-    #add lti
+    #add lti 1.1
     path('course/<int:idcourse>/section/<int:idsection>/lti/<int:idlti>/create/', views.create_lti, name='create_lti'),
     path('course/<int:idcourse>/section/<int:idsection>/lti/<int:idlti>/edit/<int:id_lti_tool>/', views.edit_lti, name='edit_lti'),
     path('course/<int:idcourse>/section/<int:idsection>/lti/<int:idlti>/delete/<int:id_lti_tool>/', views.delete_lti, name='delete_lti'),
@@ -110,6 +110,12 @@ urlpatterns = [
    #menuju home category
     path('category/<slug:slug>/', views.category_course_list, name='category_list'),
 
-    #jwks
-    path(".well-known/jwks/<slug:slug>.json", views.jwks_by_partner, name="jwks-by-partner"),
+    #jwks and lti 1.3
+    path("lti/login-initiation/<int:tool_id>/", views.lti_login_initiation, name="lti_login_initiation"),
+    path("lti/login/", views.lti_tool_login_handler, name="lti_login"),
+    path("lti/launch/", views.lti_launch, name="lti_launch"),
+    path("lti/token/", views.lti_token_endpoint, name="lti_token"),  # optional
+    path(".well-known/jwks.json", views.jwks_public, name="jwks-public"),
+    path(".well-known/openid-configuration/", views.openid_configuration, name="openid_config"),
+    
 ]
