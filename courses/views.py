@@ -580,7 +580,7 @@ def add_microcredential_review(request, microcredential_id):
                 messages.success(request, "Your review has been submitted.")
             else:
                 messages.success(request, "Your review has been updated.")
-            return redirect('courses:micro_detail', slug=microcredential.slug)
+            return redirect('courses:micro_detail', id=microcredential.id, slug=microcredential.slug)
     else:
         existing_review = MicroCredentialReview.objects.filter(user=request.user, microcredential=microcredential).first()
         if existing_review:
