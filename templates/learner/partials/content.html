@@ -52,6 +52,7 @@
             <h4 class="mb-3"><a href="{% url 'authentication:dashbord' %}">
                 {{ course_name|default:"Kursus" }}
             </a></h4>
+            <div id="course-data" data-course-id="{{ id }}" data-csrf-token="{{ csrf_token }}"></div>
             <div class="progress mb-3" id="progress-bar"
                  hx-get="{% url 'learner:get_progress' username=username slug=slug %}"
                  hx-trigger="load, contentLoaded from:body"
@@ -627,3 +628,5 @@
     vertical-align: middle;
 }
 </style>
+
+<script src="{% static 'js/pingSession.js' %}"></script>

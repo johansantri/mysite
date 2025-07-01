@@ -124,3 +124,66 @@ INFO 2025-07-01 08:34:19,692 apps AXES: BEGIN version 8.0.0, blocking by usernam
 INFO 2025-07-01 08:37:20,918 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
 INFO 2025-07-01 08:37:21,060 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
 INFO 2025-07-01 08:37:21,124 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+WARNING 2025-07-01 09:20:31,984 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-01 10:05:57,129 views Invalid referer:  from IP 
+WARNING 2025-07-01 10:06:01,435 views Invalid referer:  from IP 
+INFO 2025-07-01 10:40:19,901 views my_course: Rendering untuk pengguna admin, kursus front-end-developer, assessment_id=None
+INFO 2025-07-01 10:40:23,030 views load_content: Rendering learner/partials/content.html untuk pengguna admin, assessment 23
+INFO 2025-07-01 10:40:24,364 views load_content: Rendering learner/partials/content.html untuk pengguna admin, material 22
+INFO 2025-07-01 10:40:26,341 views load_content: Rendering learner/partials/content.html untuk pengguna admin, assessment 24
+INFO 2025-07-01 10:40:27,709 views load_content: Rendering learner/partials/content.html untuk pengguna admin, material 23
+INFO 2025-07-01 10:40:30,092 views load_content: Rendering learner/partials/content.html untuk pengguna admin, assessment 25
+INFO 2025-07-01 10:40:31,323 views load_content: Rendering learner/partials/content.html untuk pengguna admin, material 24
+INFO 2025-07-01 10:40:33,577 views load_content: Rendering learner/partials/content.html untuk pengguna admin, assessment 26
+WARNING 2025-07-01 11:55:09,976 views Invalid referer:  from IP 
+WARNING 2025-07-01 11:59:57,609 views Invalid referer:  from IP 
+WARNING 2025-07-01 12:06:08,674 views Invalid referer:  from IP 
+WARNING 2025-07-01 12:28:00,523 views Invalid referer:  from IP 
+WARNING 2025-07-01 12:48:12,719 views Invalid referer:  from IP 
+WARNING 2025-07-01 12:53:23,006 views Invalid referer:  from IP 
+WARNING 2025-07-01 12:58:03,338 views Invalid referer:  from IP 
+WARNING 2025-07-01 13:31:46,391 views Invalid referer:  from IP 
+WARNING 2025-07-01 13:49:47,833 views Invalid referer:  from IP 
+WARNING 2025-07-01 14:17:46,340 views Invalid referer:  from IP 
+WARNING 2025-07-01 14:27:41,652 views Invalid referer:  from IP 
+WARNING 2025-07-01 14:51:45,463 views Invalid referer:  from IP 
+INFO 2025-07-01 14:56:18,936 database AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0", path_info: "/login/"}.
+INFO 2025-07-01 14:56:18,938 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-01 06:56:18.101268+00:00
+INFO 2025-07-01 14:56:39,377 views User Mr Admin (ID: 1) attempting to launch LTI.
+ERROR 2025-07-01 14:56:39,381 views Error launching LTI tool 1: 'LTIExternalTool' object has no attribute 'launch_url'
+Traceback (most recent call last):
+  File "/home/TIM/mysite/courses/views.py", line 837, in launch_lti
+    if not lti_tool.launch_url or not lti_tool.consumer_key or not lti_tool.shared_secret:
+AttributeError: 'LTIExternalTool' object has no attribute 'launch_url'
+ERROR 2025-07-01 14:56:58,237 signals Error in audit log (post_delete) for Section pk=195: Section matching query does not exist.
+INFO 2025-07-01 14:58:35,984 views my_course: Rendering untuk pengguna admin, kursus backend-development, assessment_id=None
+INFO 2025-07-01 14:58:39,091 views load_content: Rendering learner/partials/content.html untuk pengguna admin, assessment 1
+INFO 2025-07-01 14:58:40,739 views load_content: Rendering learner/partials/content.html untuk pengguna admin, material 85
+INFO 2025-07-01 14:58:52,851 views load_content: Rendering learner/my_course.html untuk pengguna admin, material 85
+INFO 2025-07-01 14:59:30,577 views my_course: Rendering untuk pengguna admin, kursus backend-development, assessment_id=None
+INFO 2025-07-01 14:59:32,827 views load_content: Rendering learner/partials/content.html untuk pengguna admin, assessment 1
+INFO 2025-07-01 14:59:34,466 views load_content: Rendering learner/partials/content.html untuk pengguna admin, material 85
+INFO 2025-07-01 14:59:42,338 views load_content: Rendering learner/partials/content.html untuk pengguna admin, assessment 56
+WARNING 2025-07-01 15:02:35,207 views Invalid referer:  from IP 
+INFO 2025-07-01 15:04:15,490 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-01 15:04:15,712 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-01 15:04:15,753 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-01 15:04:35,359 database AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36", path_info: "/login/"}.
+INFO 2025-07-01 15:04:35,361 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-01 07:04:34.462129+00:00
+INFO 2025-07-01 15:04:40,807 views my_course: Rendering untuk pengguna admin, kursus backend-development, assessment_id=None
+INFO 2025-07-01 15:04:46,313 views load_content: Rendering learner/partials/content.html untuk pengguna admin, assessment 1
+INFO 2025-07-01 15:04:47,956 views load_content: Rendering learner/partials/content.html untuk pengguna admin, material 85
+INFO 2025-07-01 15:04:50,038 views load_content: Rendering learner/partials/content.html untuk pengguna admin, assessment 56
+INFO 2025-07-01 15:06:19,257 views my_course: Rendering untuk pengguna admin, kursus backend-development, assessment_id=None
+INFO 2025-07-01 15:06:26,432 views load_content: Rendering learner/partials/content.html untuk pengguna admin, assessment 1
+WARNING 2025-07-01 15:08:11,955 views Invalid referer:  from IP 
+INFO 2025-07-01 15:10:47,543 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-01 15:10:47,560 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-01 15:10:47,668 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-01 15:10:51,401 views load_content: Rendering learner/my_course.html untuk pengguna admin, assessment 1
+INFO 2025-07-01 15:12:04,130 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-01 15:12:04,438 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-01 15:12:04,591 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-01 15:12:11,087 views load_content: Rendering learner/my_course.html untuk pengguna admin, assessment 1
+INFO 2025-07-01 15:12:16,387 views load_content: Rendering learner/partials/content.html untuk pengguna admin, material 85
+INFO 2025-07-01 15:12:21,709 views load_content: Rendering learner/partials/content.html untuk pengguna admin, assessment 56
