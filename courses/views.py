@@ -1,93 +1,102 @@
+# Standard library
 import os
-import csv
-from io import BytesIO
-from PIL import Image
-import qrcode
-import jwt  # PyJWT
-from django.conf import settings
-from django.core.files.base import ContentFile
-from django.core.cache import cache
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import Http404
-from django.http import HttpResponse
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models import Q,OuterRef, Subquery, IntegerField
-from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.decorators import login_required
-from .forms import MicroCredentialCommentForm,MicroCredentialReviewForm,LTIExternalToolForm,CoursePriceForm,CourseRatingForm,SosPostForm,MicroCredentialForm,AskOraForm,CourseForm,CourseRerunForm, PartnerForm,PartnerFormUpdate,CourseInstructorForm, SectionForm,GradeRangeForm, ProfilForm,InstructorForm,InstructorAddCoruseForm,TeamMemberForm, MatrialForm,QuestionForm,ChoiceFormSet,AssessmentForm
-from .utils import user_has_passed_course,check_for_blacklisted_keywords,is_suspicious
-from django.http import JsonResponse
-from .models import LTIPlatform,PlatformKey,LastAccessCourse,UserActivityLog,MicroClaim,CourseViewIP,CourseViewLog,UserMicroCredential,MicroCredentialComment,MicroCredentialReview,UserMicroProgress,SearchHistory,Certificate,LTIExternalTool,Course,CourseRating,Like,SosPost,Hashtag,UserProfile,MicroCredentialEnrollment,MicroCredential,AskOra,PeerReview,AssessmentScore,Submission,CourseStatus,AssessmentSession,CourseComment,Comment, Choice,Score,CoursePrice,AssessmentRead,QuestionAnswer,Enrollment,PricingType, Partner,CourseProgress,MaterialRead,GradeRange,Category, Section,Instructor,TeamMember,Material,Question,Assessment
-from authentication.models import CustomUser, Universiti
-from blog.models import BlogPost
-from licensing.models import License
-from django.template.loader import render_to_string
-from django.views.decorators.cache import cache_page
-from django.urls import reverse
-from django.contrib import messages
-from django.db.models import F
-from django.http import HttpResponseForbidden,HttpResponse,HttpResponseNotFound,HttpResponseBadRequest,HttpResponseRedirect
-from django_ckeditor_5.widgets import CKEditor5Widget
-from django import forms
-from django.http import JsonResponse
-from decimal import Decimal,ROUND_DOWN
-from django.db.models import Sum
-from datetime import datetime
-from django.db.models import Count,Avg
-from django.utils.text import slugify
-from django.utils import timezone
-from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Prefetch
-import time
 import re
-
-from datetime import datetime  # Pastikan impor ini ada di atas file
-import uuid
-
-from django.contrib.auth import login
-from jwt import algorithms
-from django.utils.timezone import now
-from django.db import DatabaseError
-from django.views.decorators.csrf import csrf_protect
-import bleach
-import html  # Tambahkan impor ini
-from django.db import IntegrityError
-from django.middleware.csrf import get_token
-from django.core.exceptions import ValidationError
-import logging
-from datetime import timedelta
-from django.db.models import Prefetch
-from weasyprint import HTML
-import pytz
-from django_ratelimit.decorators import ratelimit
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
+import csv
+import time
 import json
-from oauthlib.oauth1 import Client
-from requests_oauthlib import OAuth1
-from urllib.parse import quote, urlparse, parse_qs, urlencode
 import uuid
-import urllib.parse
+import hmac
+import html
+import base64
 import random
 import string
-from requests_oauthlib import OAuth1Session
-import requests  # Add this import
 import logging
-from oauthlib.common import to_unicode  # For encoding utilities
-import hmac
 import hashlib
-import base64
+import urllib
+from io import BytesIO
+from datetime import datetime, timedelta, timezone
 from decimal import Decimal, ROUND_DOWN
-import logging
-from django.core.exceptions import PermissionDenied
-from oauthlib.oauth1 import Client as OAuth1Client
-from payments.models import Payment
-from jwt import get_unverified_header, decode as jwt_decode, algorithms
+from urllib.parse import quote, urlparse, parse_qs, urlencode
+
+
+# Third-party packages
+import pytz
+import qrcode
+import bleach
+import requests
+from PIL import Image
 from jose import jwt
 from jose import jwk as jose_jwk
 from jose.utils import base64url_decode
+from jwt import get_unverified_header, decode as jwt_decode, algorithms
 from jwt.algorithms import RSAAlgorithm
-from datetime import datetime, timezone
+from oauthlib.oauth1 import Client, Client as OAuth1Client
+from oauthlib.common import to_unicode
+from requests_oauthlib import OAuth1, OAuth1Session
+from weasyprint import HTML
+from django_ckeditor_5.widgets import CKEditor5Widget
+
+# Django core
+from django import forms
+from django.conf import settings
+from django.urls import reverse
+from django.db import DatabaseError, IntegrityError
+from django.db.models import (
+    Q, F, Sum, Count, Avg,
+    OuterRef, Subquery, IntegerField, Prefetch
+)
+from django.core.cache import cache
+from django.core.files.base import ContentFile
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied, ValidationError
+from django.middleware.csrf import get_token
+from django.template.loader import render_to_string
+from django.shortcuts import render, redirect, get_object_or_404
+from django.utils import timezone
+from django.utils.timezone import now
+from django.utils.text import slugify
+from django.http import (
+    JsonResponse, Http404, HttpResponse, HttpResponseForbidden,
+    HttpResponseNotFound, HttpResponseBadRequest, HttpResponseRedirect
+)
+from django.contrib import messages
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import cache_page
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from django.views.decorators.http import require_POST
+from django_ratelimit.decorators import ratelimit
+
+# Internal imports - forms
+from .forms import (
+    MicroCredentialCommentForm, MicroCredentialReviewForm, LTIExternalToolForm,
+    CoursePriceForm, CourseRatingForm, SosPostForm, MicroCredentialForm, AskOraForm,
+    CourseForm, CourseRerunForm, PartnerForm, PartnerFormUpdate, CourseInstructorForm,
+    SectionForm, GradeRangeForm, ProfilForm, InstructorForm, InstructorAddCoruseForm,
+    TeamMemberForm, MatrialForm, QuestionForm, ChoiceFormSet, AssessmentForm
+)
+
+# Internal imports - utils
+from .utils import user_has_passed_course, check_for_blacklisted_keywords, is_suspicious
+
+# Internal imports - models
+from .models import (
+    LTIPlatform, PlatformKey, LastAccessCourse, UserActivityLog, MicroClaim, CourseViewIP,
+    CourseViewLog, UserMicroCredential, MicroCredentialComment, MicroCredentialReview,
+    UserMicroProgress, SearchHistory, Certificate, LTIExternalTool, Course, CourseRating,
+    Like, SosPost, Hashtag, UserProfile, MicroCredentialEnrollment, MicroCredential,
+    AskOra, PeerReview, AssessmentScore, Submission, CourseStatus, AssessmentSession,
+    CourseComment, Comment, Choice, Score, CoursePrice, AssessmentRead, QuestionAnswer,
+    Enrollment, PricingType, Partner, CourseProgress, MaterialRead, GradeRange, Category,
+    Section, Instructor, TeamMember, Material, Question, Assessment
+)
+
+# Project-level apps
+from authentication.models import CustomUser, Universiti
+from blog.models import BlogPost
+from licensing.models import License
+from payments.models import Payment
+
 
 logger = logging.getLogger(__name__)
 User = CustomUser
@@ -3883,9 +3892,11 @@ def course_lms_detail(request, id, slug):
     except CourseStatus.DoesNotExist:
         return redirect('/')
 
+    today = now().date()  # ✅ hanya panggil sekali
+
     is_enrolled = request.user.is_authenticated and course.enrollments.filter(user=request.user).exists()
 
-    if not is_enrolled and (course.status_course != published_status or course.end_enrol < timezone.now().date()):
+    if not is_enrolled and (course.status_course != published_status or course.end_enrol < today):
         return redirect('/')
 
     # ✅ Hitung view unik per IP (bukan bot)
@@ -3896,8 +3907,6 @@ def course_lms_detail(request, id, slug):
             CourseViewIP.objects.create(course=course, ip_address=ip)
             Course.objects.filter(id=course.id).update(view_count=F('view_count') + 1)
 
-        # ✅ Log harian (opsional)
-        today = timezone.now().date()
         view_log, created = CourseViewLog.objects.get_or_create(course=course, date=today)
         if not created:
             CourseViewLog.objects.filter(pk=view_log.pk).update(count=F('count') + 1)
@@ -3905,7 +3914,7 @@ def course_lms_detail(request, id, slug):
     similar_courses = Course.objects.filter(
         category=course.category,
         status_course=published_status,
-        end_enrol__gte=timezone.now().date()
+        end_enrol__gte=today
     ).exclude(id=course.id)[:5]
 
     comments = CourseComment.objects.filter(course=course, parent=None).order_by('-created_at')
@@ -3923,7 +3932,7 @@ def course_lms_detail(request, id, slug):
     instructor_courses = Course.objects.filter(
         instructor=instructor,
         status_course=published_status,
-        end_enrol__gte=timezone.now().date()
+        end_enrol__gte=today
     )
 
     instructor_total_courses = instructor_courses.count()

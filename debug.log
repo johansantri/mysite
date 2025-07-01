@@ -96,3 +96,31 @@ AttributeError: type object 'datetime.timezone' has no attribute 'now'
 INFO 2025-07-01 08:32:14,095 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
 INFO 2025-07-01 08:32:14,104 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
 INFO 2025-07-01 08:32:14,221 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+ERROR 2025-07-01 08:32:53,109 log Internal Server Error: /course-detail/11/big-data-developer-2026/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django_ratelimit/decorators.py", line 27, in _wrapped
+    return fn(request, *args, **kw)
+  File "/home/TIM/mysite/courses/views.py", line 3888, in course_lms_detail
+    if not is_enrolled and (course.status_course != published_status or course.end_enrol < timezone.now().date()):
+AttributeError: type object 'datetime.timezone' has no attribute 'now'
+ERROR 2025-07-01 08:33:00,818 log Internal Server Error: /course-detail/1/backend-development/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django_ratelimit/decorators.py", line 27, in _wrapped
+    return fn(request, *args, **kw)
+  File "/home/TIM/mysite/courses/views.py", line 3900, in course_lms_detail
+    today = timezone.now().date()
+AttributeError: type object 'datetime.timezone' has no attribute 'now'
+INFO 2025-07-01 08:34:19,575 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-01 08:34:19,607 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-01 08:34:19,692 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-01 08:37:20,918 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-01 08:37:21,060 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-01 08:37:21,124 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
