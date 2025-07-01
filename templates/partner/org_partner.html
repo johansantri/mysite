@@ -6,9 +6,43 @@
 {% endblock %}
 
 {% block meta %}
+    <!-- Standard Meta Tags -->
     <meta name="description" content="{{ partner.description|striptags|truncatewords:30 }}">
     <meta name="keywords" content="{{ partner.name }}, online courses, {{ partner.address.city|default:'education' }}, {{ categories|join:', ' }}">
     <meta name="robots" content="index, follow">
+    <meta name="author" content="{{ partner.name }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Open Graph (OG) Tags for Social Media (Facebook, LinkedIn, etc.) -->
+    <meta property="og:title" content="{{ partner.name }} - Courses and Details">
+    <meta property="og:description" content="{{ partner.description|striptags|truncatewords:50 }}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    {% if partner.logo %}
+        <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ partner.logo.url }}">
+    {% else %}
+        <meta property="og:image" content="https://via.placeholder.com/1200x630">
+    {% endif %}
+    <meta property="og:image:alt" content="Logo of {{ partner.name }}">
+    <meta property="og:site_name" content="{{ partner.name }}">
+
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ partner.name }} - Courses and Details">
+    <meta name="twitter:description" content="{{ partner.description|striptags|truncatewords:50 }}">
+    {% if partner.logo %}
+        <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ partner.logo.url }}">
+    {% else %}
+        <meta name="twitter:image" content="https://via.placeholder.com/1200x630">
+    {% endif %}
+    <meta name="twitter:image:alt" content="Logo of {{ partner.name }}">
+
+    <!-- Additional SEO Meta Tags -->
+    <meta name="geo.region" content="{{ partner.address.country|default:'Unknown' }}">
+    <meta name="geo.placename" content="{{ partner.address.city|default:'Unknown' }}">
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days">
 {% endblock %}
 
 {% block content %}

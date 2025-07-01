@@ -2,11 +2,54 @@
 {% load static %}
 
 {% block meta %}
-<title>{{ instructor.user.first_name }} {{ instructor.user.last_name }} - Instructor Profile | LMSKu</title>
-<meta name="description" content="Learn more about {{ instructor.user.first_name }} {{ instructor.user.last_name }}, an expert instructor at LMSKu offering {{ courses_count }} courses with {{ total_participants }} students.">
-<meta name="keywords" content="{{ instructor.user.first_name }}, {{ instructor.user.last_name }}, LMSKu, online courses, {{ instructor.user.university }}, instructor profile">
-<link rel="canonical" href="{% url 'courses:instructor_profile' username=instructor.user.username %}">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Standard Meta Tags -->
+    <title>{{ instructor.user.first_name }} {{ instructor.user.last_name }} - Instructor Profile | LMSKu</title>
+    <meta name="description" content="Learn more about {{ instructor.user.first_name }} {{ instructor.user.last_name }}, an expert instructor at LMSKu offering {{ courses_count }} courses with {{ total_participants }} students.">
+    <meta name="keywords" content="{{ instructor.user.first_name }}, {{ instructor.user.last_name }}, LMSKu, online courses, {{ instructor.user.university|default:'education' }}, {{ instructor.expertise|default:'instructor' }}, instructor profile">
+    <meta name="author" content="{{ instructor.user.first_name }} {{ instructor.user.last_name }}">
+    <meta name="robots" content="index, follow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+    <!-- Open Graph (OG) Tags for Social Media (Facebook, LinkedIn, etc.) -->
+    <meta property="og:title" content="{{ instructor.user.first_name }} {{ instructor.user.last_name }} - Instructor Profile | LMSKu">
+    <meta property="og:description" content="{{ instructor.bio|striptags|truncatewords:50|default:'Learn more about '}}{{ instructor.user.first_name }} {{ instructor.user.last_name }}, an expert instructor at LMSKu with {{ courses_count }} courses.">
+    <meta property="og:type" content="profile">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    {% if instructor.user.photo %}
+        <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ instructor.user.photo.url }}">
+    {% else %}
+        <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'images/default-profile.jpg' %}">
+    {% endif %}
+    <meta property="og:image:alt" content="Profile photo of {{ instructor.user.first_name }} {{ instructor.user.last_name }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="LMSKu">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ instructor.user.first_name }} {{ instructor.user.last_name }} - Instructor Profile | LMSKu">
+    <meta name="twitter:description" content="{{ instructor.bio|striptags|truncatewords:50|default:'Learn more about '}}{{ instructor.user.first_name }} {{ instructor.user.last_name }}, an expert instructor at LMSKu with {{ courses_count }} courses.">
+    {% if instructor.user.photo %}
+        <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ instructor.user.photo.url }}">
+    {% else %}
+        <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'images/default-profile.jpg' %}">
+    {% endif %}
+    <meta name="twitter:image:alt" content="Profile photo of {{ instructor.user.first_name }} {{ instructor.user.last_name }}">
+    <meta name="twitter:site" content="@LMSKu">
+
+    <!-- Additional SEO Meta Tags -->
+    <meta name="geo.placename" content="{{ instructor.user.city|default:'Unknown' }}">
+    <meta name="geo.region" content="{{ instructor.user.country|default:'Unknown' }}">
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days">
+
+    <!-- Profile-Specific Meta Tags -->
+    <meta property="profile:first_name" content="{{ instructor.user.first_name }}">
+    <meta property="profile:last_name" content="{{ instructor.user.last_name }}">
+    <meta property="profile:username" content="{{ instructor.user.username }}">
 {% endblock %}
 
 {% block content %}

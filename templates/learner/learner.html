@@ -2,6 +2,18 @@
 {% load static %}
 {% load extra_custom_filters %}
 
+{% block meta %}
+    <title>{{ learner.first_name }} {{ learner.last_name }} - Profile | LMSKu</title>
+    <meta name="description" content="View the profile of {{ learner.first_name }} {{ learner.last_name }}, including personal information, completed courses, and social media connections.">
+    <meta name="keywords" content="{{ learner.first_name }}, {{ learner.last_name }}, learner profile, courses, {{ learner.hobby|default:'' }}, {{ learner.country|default:'' }}">
+    <meta name="author" content="{{ learner.first_name }} {{ learner.last_name }}">
+    <meta property="og:title" content="{{ learner.first_name }} {{ learner.last_name }} - Profile">
+    <meta property="og:description" content="Explore the profile of {{ learner.first_name }} {{ learner.last_name }} on LMSku, showcasing their educational achievements and social media presence.">
+    <meta property="og:image" content="{% if learner.photo %}{{ learner.photo.url }}{% else %}{% static 'img/default-avatar.png' %}{% endif %}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta name="twitter:card" content="summary_large_image">
+{% endblock %}
+
 {% block content %}
 <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
     <div class="flex justify-center">
