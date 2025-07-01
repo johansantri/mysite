@@ -5,11 +5,12 @@
 <div class="container py-5">
   <div class="row justify-content-center">
     <div class="col-12 col-lg-10">
+      <!-- Judul & Subjudul -->
       <h2 class="text-center mb-4 text-primary fw-bold">
         <i class="bi bi-clock-history me-2"></i>Learning Duration Analytics
       </h2>
       <p class="text-center text-muted mb-5 lead">
-        Monitor study time across courses
+        Monitor study time across courses to better understand learner engagement.
       </p>
 
       <!-- Navigasi -->
@@ -19,7 +20,7 @@
         </a>
       </div>
 
-      <!-- Stat Boxes -->
+      <!-- Stat Box Durasi Mingguan & Bulanan -->
       <div class="row mb-5">
         <div class="col-12 col-sm-6 mb-4 mb-sm-0">
           <div class="card text-center border-0 shadow-lg rounded-3 h-100">
@@ -39,7 +40,8 @@
         </div>
       </div>
 
-      <!-- Grafik Durasi per Course -->
+      <!-- Chart Durasi per Course -->
+      {% if duration_by_course %}
       <div class="card shadow-lg border-0 rounded-3 mb-5">
         <div class="card-body p-4">
           <h3 class="text-center text-muted mb-3">Study Duration per Course</h3>
@@ -48,14 +50,22 @@
           </div>
         </div>
       </div>
+      {% else %}
+      <div class="alert alert-info text-center" role="alert">
+        <i class="bi bi-info-circle me-2"></i>No study duration data available for the selected period.
+      </div>
+      {% endif %}
     </div>
   </div>
 </div>
 
-<!-- Bootstrap Icons -->
+<!-- CDN Bootstrap Icons -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<!-- Chart.js -->
 <script src="{% static 'js/chart.umd.min.js' %}"></script>
 
+{% if duration_by_course %}
 <script>
   const durationChart = document.getElementById('durationChart');
   new Chart(durationChart, {
@@ -103,7 +113,12 @@
             padding: 10
           },
           grid: { display: false },
-          ticks: { color: '#4b5563', font: { size: 12 } }
+          ticks: {
+            color: '#4b5563',
+            font: { size: 12 },
+            maxRotation: 45,
+            minRotation: 30
+          }
         },
         y: {
           title: {
@@ -121,6 +136,7 @@
     }
   });
 </script>
+{% endif %}
 
 <style>
   .chart-container {
