@@ -1,19 +1,39 @@
 {% extends 'home/base.html' %}
 {% load extra_filters %}
 {% load static %}
+
 {% block meta %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="LMSKu: Platform pembelajaran online untuk kursus dan pengembangan diri.">
+    <meta name="description" content="Join LMSKu to explore {{ total_courses }}+ online courses, learn from {{ total_instructors }} expert instructors, and earn recognized certificates anytime, anywhere.">
+    <meta name="keywords" content="online learning, LMSKu, e-learning, courses, education, {{ popular_categories|join:', ' }}, certifications">
+    <meta name="author" content="LMSKu Team">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="LMSKu - Home">
-    <meta name="twitter:description" content="LMSKu adalah platform pembelajaran online untuk kursus dan pengembangan diri.">
-    <meta name="twitter:image" content="{% static 'assets/img/icon/certificate.svg' %}">
-    <meta property="og:title" content="LMSKu - Home">
-    <meta property="og:description" content="LMSKu adalah platform pembelajaran online untuk kursus dan pengembangan diri.">
-    <meta property="og:image" content="{% static 'assets/img/icon/certificate.svg' %}">
-    <meta property="og:url" content="https://ini.icei.ac.id/">
+    <meta name="twitter:title" content="LMSKu - Learn Without Limits">
+    <meta name="twitter:description" content="Discover {{ total_courses }}+ courses on LMSKu, taught by {{ total_instructors }} expert instructors. Start your learning journey today!">
+    <meta name="twitter:image" content="{% static 'assets/img/lmsku-banner.jpg' %}">
+    <meta name="twitter:site" content="@LMSKu">
+    <meta property="og:title" content="LMSKu - Your Online Learning Platform">
+    <meta property="og:description" content="Explore {{ total_courses }}+ courses, connect with {{ total_instructors }} instructors, and grow your skills with LMSKu's flexible learning platform.">
+    <meta property="og:image" content="{% static 'assets/img/lmsku-banner.jpg' %}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
     <meta property="og:type" content="website">
+    <meta property="og:site_name" content="LMSKu">
+    <!-- Structured Data for Website -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "LMSKu",
+        "url": "{{ request.build_absolute_uri }}",
+        "description": "LMSKu is an online learning platform offering {{ total_courses }}+ courses and certifications.",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "{{ request.build_absolute_uri }}search?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
 {% endblock %}
 {% block content %}
 
