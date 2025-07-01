@@ -610,6 +610,12 @@
                                 <i class="bi bi-receipt me-2"></i> Transaction Report
                             </a>
                         </li>
+                        <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'dashbord' %}active{% endif %}" 
+                            href="{% url 'authentication:dashbord' %}">
+                            <i class="bi bi-journal-bookmark-fill me-2"></i>My Courses
+                        </a>
+                        </li>
                     {% elif user.is_subscription %}
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'licens_dashboard' %}active{% endif %}" href="{% url 'licensing:licens_dashboard' %}" aria-current="page">
@@ -631,6 +637,12 @@
                                 <i class="bi bi-journal-bookmark me-2"></i> Courses
                             </a>
                         </li>
+                        <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'dashbord' %}active{% endif %}" 
+                            href="{% url 'authentication:dashbord' %}">
+                            <i class="bi bi-journal-bookmark-fill me-2"></i>My Courses
+                        </a>
+                        </li>
                     {% elif user.is_instructor %}
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'dasbord' %}active{% endif %}" href="{% url 'authentication:dasbord' %}" aria-current="page">
@@ -645,6 +657,12 @@
                                 <li><a class="dropdown-item" href="{% url 'courses:course_view' %}">My Course</a></li>
                                 <li><a class="dropdown-item" href="{% url 'instructor:instructor_learning_report' %}">Report Course</a></li>
                             </ul>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'dashbord' %}active{% endif %}" 
+                            href="{% url 'authentication:dashbord' %}">
+                            <i class="bi bi-journal-bookmark-fill me-2"></i>My Courses
+                        </a>
                         </li>
                     {% elif user.is_superuser %}
                         <li class="nav-item">
@@ -692,6 +710,13 @@
                                 <i class="bi bi-receipt me-2"></i> Transaction Report
                             </a>
                         </li>
+                       <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'dashbord' %}active{% endif %}" 
+                            href="{% url 'authentication:dashbord' %}">
+                            <i class="bi bi-journal-bookmark-fill me-2"></i>My Courses
+                        </a>
+                        </li>
+
                     {% else %}
                         <!-- Learner Menu -->
                         <li class="nav-item">
