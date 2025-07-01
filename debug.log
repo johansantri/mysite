@@ -7,3 +7,92 @@ WARNING 2025-06-30 16:15:01,626 views [LTI LOGIN HANDLER] Incorrect redirect_uri
 DEBUG 2025-06-30 16:15:01,628 views [NONCE] Generated nonce: 2954533137eb423d822be8aba509ecf9, timestamp: 1751274901.628246
 DEBUG 2025-06-30 16:15:01,628 views [LTI LOGIN HANDLER] Auth parameters: {'scope': 'openid', 'response_type': 'id_token', 'client_id': 'https://scholldecodewp.h5p.com', 'redirect_uri': 'https://ini.icei.ac.id/lti/launch/', 'login_hint': '4', 'state': '7fe01bed88564be798e75eeb1c15eb65', 'response_mode': 'form_post', 'nonce': '2954533137eb423d822be8aba509ecf9', 'prompt': 'none', 'lti_message_hint': '1'}
 DEBUG 2025-06-30 16:15:01,628 views [LTI LOGIN HANDLER] Redirecting to: https://scholldecodewp.h5p.com/authorize?scope=openid&response_type=id_token&client_id=https%3A//scholldecodewp.h5p.com&redirect_uri=https%3A//ini.icei.ac.id/lti/launch/&login_hint=4&state=7fe01bed88564be798e75eeb1c15eb65&response_mode=form_post&nonce=2954533137eb423d822be8aba509ecf9&prompt=none&lti_message_hint=1
+WARNING 2025-06-30 18:34:57,318 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-30 18:58:01,129 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-30 20:27:55,701 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-06-30 21:43:58,409 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-01 00:27:48,145 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-01 01:55:07,536 log Forbidden (Referer checking failed - no Referer.): /
+ERROR 2025-07-01 02:49:06,748 exception Invalid HTTP_HOST header: 'localhost'. You may need to add 'localhost' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'localhost'. You may need to add 'localhost' to ALLOWED_HOSTS.
+INFO 2025-07-01 08:22:50,239 database AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0", path_info: "/login/"}.
+INFO 2025-07-01 08:22:50,240 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-01 00:22:49.314279+00:00
+ERROR 2025-07-01 08:23:18,181 log Internal Server Error: /org-partner/university-of-oxford/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 5650, in org_partner
+    end_enrol__gte=timezone.now()
+AttributeError: type object 'datetime.timezone' has no attribute 'now'
+ERROR 2025-07-01 08:23:21,540 log Internal Server Error: /org-partner/university-of-cambridge/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 5650, in org_partner
+    end_enrol__gte=timezone.now()
+AttributeError: type object 'datetime.timezone' has no attribute 'now'
+INFO 2025-07-01 08:27:00,176 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-01 08:27:00,194 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-01 08:27:00,240 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+ERROR 2025-07-01 08:27:06,045 log Internal Server Error: /org-partner/university-of-cambridge/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 5652, in org_partner
+    end_enrol__gte=timezone.now()
+AttributeError: type object 'datetime.timezone' has no attribute 'now'
+WARNING 2025-07-01 08:27:15,020 log Forbidden (Referer checking failed - no Referer.): /
+INFO 2025-07-01 08:28:19,088 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-01 08:28:19,146 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-01 08:28:19,198 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+ERROR 2025-07-01 08:28:24,590 log Internal Server Error: /org-partner/university-of-oxford/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 5652, in org_partner
+    end_enrol__gte=timezone.now()
+AttributeError: type object 'datetime.timezone' has no attribute 'now'
+INFO 2025-07-01 08:29:49,226 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-01 08:29:49,283 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-01 08:29:49,330 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+ERROR 2025-07-01 08:29:50,073 log Internal Server Error: /org-partner/university-of-oxford/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 5654, in org_partner
+    end_enrol__gte=timezone.now()
+AttributeError: type object 'datetime.timezone' has no attribute 'now'
+INFO 2025-07-01 08:30:35,140 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-01 08:30:35,205 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-01 08:30:35,231 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+ERROR 2025-07-01 08:30:36,813 log Internal Server Error: /org-partner/university-of-oxford/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 5655, in org_partner
+    end_enrol__gte=timezone.now()
+AttributeError: type object 'datetime.timezone' has no attribute 'now'
+INFO 2025-07-01 08:32:14,095 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-01 08:32:14,104 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-01 08:32:14,221 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address

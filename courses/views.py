@@ -5632,6 +5632,8 @@ logger = logging.getLogger(__name__)
 
 
 
+logger = logging.getLogger(__name__)
+
 def org_partner(request, slug):
     partner = get_object_or_404(Partner, name__slug=slug)
     search_query = request.GET.get('search', '')
@@ -5644,10 +5646,11 @@ def org_partner(request, slug):
         published_status = None
 
     if published_status:
+        now_time = now()  # ✅ Simpan agar tidak dipanggil berulang-ulang
         related_courses = Course.objects.filter(
             org_partner_id=partner.id,
             status_course=published_status,
-            end_enrol__gte=timezone.now()
+            end_enrol__gte=now_time
         ).select_related(
             'category', 'instructor__user', 'org_partner'
         ).prefetch_related('enrollments')
@@ -5659,7 +5662,9 @@ def org_partner(request, slug):
             related_courses = related_courses.filter(category__name=selected_category)
 
         if sort_by == 'learners':
-            related_courses = related_courses.annotate(total_enrollments=Count('enrollments')).order_by('-total_enrollments')
+            related_courses = related_courses.annotate(
+                total_enrollments=Count('enrollments')
+            ).order_by('-total_enrollments')
         elif sort_by == 'date':
             related_courses = related_courses.order_by('created_at')
         else:
@@ -5668,9 +5673,8 @@ def org_partner(request, slug):
         categories = Category.objects.filter(
             category_courses__org_partner_id=partner.id,
             category_courses__status_course=published_status,
-            category_courses__end_enrol__gte=timezone.now()
+            category_courses__end_enrol__gte=now_time
         ).annotate(course_count=Count('category_courses')).distinct()
-
     else:
         related_courses = Course.objects.none()
         categories = Category.objects.none()
@@ -5684,8 +5688,8 @@ def org_partner(request, slug):
         unique_users=Count('enrollments__user', distinct=True)
     )['unique_users'] or 0
 
-    total_reviews = 0  # Initialize total_reviews
-    total_rating_sum = 0  # Initialize total rating sum
+    total_reviews = 0
+    total_rating_sum = 0
     courses_data = []
     total_enrollments = 0
 
@@ -5701,15 +5705,9 @@ def org_partner(request, slug):
         review_qs = CourseRating.objects.filter(course=course)
         review_count = review_qs.count()
         total_reviews += review_count
-
-        # Sum all ratings to calculate average
         total_rating_sum += review_qs.aggregate(total_rating=Sum('rating'))['total_rating'] or 0
 
-        if review_count > 0:
-            average_rating = round(total_rating_sum / review_count, 1)
-        else:
-            average_rating = 0
-
+        average_rating = round(total_rating_sum / review_count, 1) if review_count > 0 else 0
         full_stars = int(average_rating)
         half_star = (average_rating % 1) >= 0.5
         empty_stars = 5 - full_stars - (1 if half_star else 0)
@@ -5736,7 +5734,6 @@ def org_partner(request, slug):
         }
         courses_data.append(course_data)
 
-    # Now calculate the total reviews and total ratings for the partner
     average_rating_all_courses = round(total_rating_sum / total_reviews, 1) if total_reviews > 0 else 0
 
     context = {
