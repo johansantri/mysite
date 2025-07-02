@@ -3,7 +3,8 @@
 
 
 <h1>Edit MicroCredential: {{ microcredential.title }}</h1>
-
+<!-- Letakkan di atas form -->
+<div id="course-autocomplete-config" data-url="{% url 'courses:course_autocomplete' %}"></div>
   <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}  <!-- Render form fields -->
@@ -15,27 +16,37 @@
   <a href="{% url 'courses:microcredential-list' %}" class="btn btn-info btn-sm">Cancel</a>  <!-- Link to go back to the list -->
 
 <script>
-  $(document).ready(function() {
-    $('.select2').select2({
-      placeholder: 'Search for a course',  // Add a placeholder for better UX
-      ajax: {
-        url: '{% url "courses:course_autocomplete" %}',  // URL for your autocomplete endpoint
-        dataType: 'json',
-        delay: 250,  // Delay to wait for user to stop typing
-        data: function (params) {
-          return {
-            q: params.term  // Send the search term as a parameter
-          };
+  document.addEventListener("DOMContentLoaded", function () {
+    const configDiv = document.getElementById("course-autocomplete-config");
+    const autocompleteUrl = configDiv?.dataset?.url;
+
+    if (typeof $ !== 'undefined' && $('.select2').length > 0 && autocompleteUrl) {
+      $('.select2').select2({
+        placeholder: 'Search for a course',
+        ajax: {
+          url: autocompleteUrl,
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return { q: params.term };
+          },
+          processResults: function (data) {
+            return { results: data.results };
+          },
+          cache: true
         },
-        processResults: function (data) {
-          return {
-            results: data.results  // Assuming response contains a "results" key with list of courses
-          };
-        },
-        cache: true  // Optional: improves performance by caching requests
-      },
-      minimumInputLength: 1  // Wait until the user types at least one character
-    });
+        minimumInputLength: 1
+      });
+
+      // ✅ Pre-populate selected options for edit
+      $('.select2 option:selected').each(function () {
+        var $option = $(this);
+        if (!$option.attr('data-select2-id')) {
+          var newOption = new Option($option.text(), $option.val(), true, true);
+          $('.select2').append(newOption).trigger('change');
+        }
+      });
+    }
   });
 </script>
 <script>
