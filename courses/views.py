@@ -4721,6 +4721,32 @@ def delete_instructor(request, instructor_id):
     # Redirect to the list of instructors
     return redirect('courses:instructor_view')
 
+@login_required
+def partner_autocomplete(request):
+    query = request.GET.get('q', '').strip()
+    page = int(request.GET.get('page', 1))
+    page_size = 10
+    offset = (page - 1) * page_size
+
+    partners = Partner.objects.select_related('name')
+
+    if query:
+        partners = partners.filter(Q(name__name__icontains=query))
+
+    total_count = partners.count()
+    partners = partners.order_by('name__name')[offset:offset + page_size]
+
+    results = [
+        {
+            'id': partner.id,
+            'text': partner.name.name
+        } for partner in partners
+    ]
+
+    return JsonResponse({
+        'results': results,
+        'pagination': {'more': total_count > offset + page_size}
+    })
 
 #intructor form for new request
 #@login_required

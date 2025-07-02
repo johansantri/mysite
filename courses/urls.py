@@ -8,6 +8,7 @@ urlpatterns = [
     path('courses/', views.courseView, name='course_view'),
     path('course/<int:course_id>/enroll/', views.enroll_course, name='enroll_course'),
     path('instructor-add/', views.become_instructor, name='instructor_add'),
+    path('partner-autocomplete/', views.partner_autocomplete, name='partner_autocomplete'),
     path('instructor/', views.instructor_view, name='instructor_view'),
     path('instructor/<int:instructor_id>/check/', views.instructor_check, name='instructor_check'),
     path('instructor/<int:instructor_id>/delete/', views.delete_instructor, name='delete_instructor'),

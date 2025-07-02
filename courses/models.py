@@ -100,7 +100,7 @@ class Instructor(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="instructors")
     bio = models.TextField()
     tech = models.TextField()
-    expertise = models.CharField(max_length=255)
+    expertise = models.TextField()
     experience_years = models.PositiveIntegerField()
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='Pending')
     agreement = models.BooleanField(default=False, help_text="Check if the user agrees to the terms and conditions")

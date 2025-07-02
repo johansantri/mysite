@@ -741,25 +741,42 @@ class PartnerFormUpdate(forms.ModelForm):
         }
 
 
-#instructor
 class InstructorForm(forms.ModelForm):
+    expertise = forms.CharField(
+        widget=CKEditor5Widget(),  # atau CKEditorWidget()
+        required=False  # jangan required di browser, validasi manual di Python
+    )
+
     class Meta:
         model = Instructor
-        fields = ['bio', 'expertise', 'experience_years','provider','agreement','tech']
+        fields = ['bio', 'expertise', 'experience_years', 'provider', 'agreement', 'tech']
+        labels = {
+            'bio': 'Tell us about yourself',
+            'expertise': 'Your Area of Expertise',
+            'experience_years': 'Years of Experience',
+            'provider': 'Select Your Institution',
+            'tech': 'Technology Stack (URL)',
+            'agreement': 'I agree to the terms and conditions',
+        }
         widgets = {
             'bio': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
-            'expertise': forms.Textarea(attrs={'class': 'form-control','row':4}),
             'experience_years': forms.NumberInput(attrs={'class': 'form-control'}),
-            'provider': forms.Select(attrs={'class': 'form-control','required':'True'}),
-            'tech': forms.URLInput(attrs={'class': 'form-control','required':'True'}),
-            'agreement': forms.CheckboxInput(attrs={'class': 'form-check-input','required':'True'}),
-
+            'provider': forms.Select(attrs={'class': 'form-control select2', 'required': 'True'}),
+            'tech': forms.URLInput(attrs={'class': 'form-control', 'required': 'True'}),
+            'agreement': forms.CheckboxInput(attrs={'class': 'form-check-input', 'required': 'True'}),
         }
+
     def clean_experience_years(self):
         experience = self.cleaned_data.get('experience_years')
         if experience is not None and experience < 0:
             raise forms.ValidationError("Experience years cannot be negative.")
         return experience
+
+    def clean_expertise(self):
+        data = self.cleaned_data.get('expertise')
+        if not data or len(data.strip()) < 10:
+            raise forms.ValidationError("Please provide at least 10 characters for your expertise.")
+        return data
     
 #instructor add coruse
 class InstructorAddCoruseForm(forms.ModelForm):

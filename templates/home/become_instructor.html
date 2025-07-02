@@ -1,125 +1,106 @@
-
 {% extends 'home/tes.html' %}
-  
+{% load static %}
 
 {% block content %}
 
-
-
-    
-  
-
-            <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    background-color: #f8f9fa;
-                }
-                .hero-section {
-                    background-color: #dc3545;
-                    color: white;
-                    padding: 50px 0;
-                    text-align: center;
-                }
-                .features-section, .form-section {
-                    padding: 30px 0;
-                }
-                .feature-card {
-                    text-align: center;
-                    padding: 20px;
-                    border: 1px solid #eaeaea;
-                    border-radius: 8px;
-                }
-            </style>
-
-          <div class="support-wrap">
-                 <!-- /Instructor become -->
-            <!-- Hero Section -->
-<div class="hero-section">
-    <div class="container">
-        <h1>Become an Instructor</h1>
-        <p>Share your knowledge, inspire others, and earn money by teaching your passion.</p>
-        <a href="#form-section" class="btn btn-light btn-lg">Get Started</a>
-    </div>
-</div>
+<!-- Hero Section -->
+<section class="py-5 bg-danger text-white text-center">
+  <div class="container">
+    <h1 class="display-5 fw-bold">Become an Instructor</h1>
+    <p class="lead">Share your knowledge, inspire others, and earn money by teaching your passion.</p>
+    <a href="#form-section" class="btn btn-light btn-lg mt-3">Get Started</a>
+  </div>
+</section>
 
 <!-- Features Section -->
-<div class="features-section">
-    <div class="container">
-        <h2 class="text-center mb-4">Why Teach with Us?</h2>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <h6>Reach a Global Audience</h6>
-                    <p>Share your expertise with millions of learners worldwide.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <h6>Earn Money</h6>
-                    <p>Earn revenue from every student who enrolls in your course.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <h6>Flexible Schedule</h6>
-                    <p>Create courses at your own pace and teach whenever you want.</p>
-                </div>
-            </div>
+<section class="py-5 bg-white">
+  <div class="container">
+    <h2 class="text-center fw-bold mb-5">Why Teach with Us?</h2>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="p-4 border rounded shadow-sm h-100 text-center">
+          <i class="fas fa-globe fa-2x mb-3 text-danger"></i>
+          <h5>Reach a Global Audience</h5>
+          <p class="text-muted">Share your expertise with millions of learners worldwide.</p>
         </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-4 border rounded shadow-sm h-100 text-center">
+          <i class="fas fa-money-bill-wave fa-2x mb-3 text-danger"></i>
+          <h5>Earn Money</h5>
+          <p class="text-muted">Earn revenue from every student who enrolls in your course.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-4 border rounded shadow-sm h-100 text-center">
+          <i class="fas fa-clock fa-2x mb-3 text-danger"></i>
+          <h5>Flexible Schedule</h5>
+          <p class="text-muted">Create courses at your own pace and teach whenever you want.</p>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
+</section>
+
+<!-- Partner Autocomplete Config -->
+<div id="partner-autocomplete-config" data-url="{% url 'courses:partner_autocomplete' %}"></div>
 
 <!-- Application Form Section -->
-<div class="form-section bg-light" id="form-section">
-    <div class="container">
-        <h2 class="text-center mb-4">Apply to Become an Instructor</h2>
-        <form class="row g-3" method="POST">
+<section class="py-5 bg-light" id="form-section">
+  
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="p-5 bg-white rounded shadow-sm">
+          <h2 class="mb-4 text-center fw-bold">Apply to Become an Instructor</h2>
+          <form method="POST" enctype="multipart/form-data" novalidate>
             {% csrf_token %}
-            
-            <div class="col-md-12">
-                <label for="bio" class="form-label">about me</label>
-                {{ form.bio }}
+            {{ form.media }}
+            {{ form.as_p }}
+            <div class="text-center mt-4">
+              <button type="submit" class="btn btn-primary btn-lg w-50">Submit Application</button>
             </div>
-            <div class="col-12">
-                <label for="experience" class="form-label">Teaching Experience</label>
-                {{ form.expertise }}
-            </div>
-           
-            <div class="col-12">
-                <label for="topic" class="form-label">instructor at</label>
-                
-                {{ form.provider }}
-                <label class="form-label">*if your university/org not list, your contact adminstrator</label>
-            </div>
-            <div class="col-12">
-                <label for="topic" class="form-label">url/link matrial open access</label>
-                
-                {{ form.tech }}
-                
-            </div>
-            <div class="col-2">
-                <label for="topic" class="form-label">experience years</label>
-                {{ form.experience_years }}
-            </div>
-            <div class="col-12">
-                <label for="topic" class="form-label">agreement</label>
-                
-                {{ form.agreement }}
-                <label for="topic" class="form-label">*Before submitting you are required to read our electronic agreement, if you agree with this agreement please click checkmark</label>
-            </div>
-            <div class="col-12 text-center">
-                <button type="submit" class="btn btn-primary btn-lg">Submit Application</button>
-            </div>
-        </form>
+          </form>
+        </div>
+      </div>
     </div>
-</div>
-
-          </div>	
-   
  
+</section>
 
+<!-- Inisialisasi Select2 -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const configDiv = document.getElementById("partner-autocomplete-config");
+  const autocompleteUrl = configDiv?.dataset?.url;
 
-    
+  if (typeof $ !== 'undefined' && $('.select2').length > 0 && autocompleteUrl) {
+    $('.select2').select2({
+      placeholder: 'Search for a partner',
+      ajax: {
+        url: autocompleteUrl,
+        dataType: 'json',
+        delay: 250,
+        data: function (params) {
+          return {
+            q: params.term,
+            page: params.page || 1
+          };
+        },
+        processResults: function (data, params) {
+          return {
+            results: data.results,
+            pagination: {
+              more: data.pagination && data.pagination.more
+            }
+          };
+        },
+        cache: true
+      },
+      minimumInputLength: 1,
+      allowClear: true,
+      width: '100%'
+    });
+  }
+});
+</script>
 
-
-{% endblock content %}
+{% endblock %}
