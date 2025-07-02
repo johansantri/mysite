@@ -642,8 +642,9 @@
                                     <!-- Instagram Share -->
                                     <button onclick="copyToClipboard('{{ request.build_absolute_uri }}')"
                                             class="flex items-center justify-center border border-gray-300 text-gray-700 px-2 py-2 sm:px-3 sm:py-2 rounded-lg hover:bg-gray-100 transition-colors w-full sm:w-24"
-                                            aria-label="Copy link for Instagram">
-                                        <i class="fab fa-instagram text-pink-600 text-sm sm:text-base mr-1"></i>
+                                            aria-label="Copy link for your share">
+                                        <i class="fas fa-share-alt text-gray-600 text-sm sm:text-base mr-1"></i>
+
                                         <span class="text-xs sm:text-sm"></span>
                                     </button>
                                 </div>
@@ -651,7 +652,7 @@
                             <script>
                             function copyToClipboard(url) {
                                 navigator.clipboard.writeText(url).then(() => {
-                                    alert('Link copied to clipboard! Paste it in Instagram to share.');
+                                    alert('Link copied to clipboard! Paste it anywhere to share.');
                                 }).catch(err => {
                                     console.error('Failed to copy: ', err);
                                     alert('Failed to copy link. Please copy the URL manually.');
