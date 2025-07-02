@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'axes',#LOGIN LIMIT
     "django_htmx",
+    'django_select2',
     
  
     

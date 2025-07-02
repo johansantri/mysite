@@ -19,6 +19,7 @@ from django.utils import timezone
 from captcha.fields import CaptchaField
 import xml.etree.ElementTree as ET
 import hashlib
+from django_select2.forms import ModelSelect2MultipleWidget
 logger = logging.getLogger(__name__)
 
 

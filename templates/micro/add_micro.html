@@ -1,62 +1,75 @@
 {% extends 'home/tes.html' %}
+{% load static %}
+
 {% block content %}
 
+<h1>Add New MicroCredential</h1>
 
-        <h1>Add New MicroCredential</h1>
+<!-- Letakkan di atas form -->
+<div id="course-autocomplete-config" data-url="{% url 'courses:course_autocomplete' %}"></div>
 
-        <form method="POST" enctype="multipart/form-data">
-          {% csrf_token %}
-          {{ form.as_p }}  <!-- Render form fields -->
-          {{ form.media }}
-          <button type="submit" class="btn btn-success btn-sm">Save</button>
-          <a href="{% url 'courses:microcredential-list' %}" class="btn btn-info btn-sm">Cancel</a>
-        </form>
-
-      <br>
-     <!-- Link to go back to the list -->
-
+<form method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+  {{ form.media }}
+  <button type="submit" class="btn btn-success btn-sm">Save</button>
+  <a href="{% url 'courses:microcredential-list' %}" class="btn btn-info btn-sm">Cancel</a>
+</form>
 
 
 <script>
-  $(document).ready(function() {
-    $('.select2').select2({
-      placeholder: 'Search for a course',  // Add a placeholder for better UX
-      ajax: {
-        url: '{% url "courses:course_autocomplete" %}',  // URL for your autocomplete endpoint
-        dataType: 'json',
-        delay: 250,  // Delay to wait for user to stop typing
-        data: function (params) {
-          return {
-            q: params.term  // Send the search term as a parameter
-          };
-        },
-        processResults: function (data) {
-          return {
-            results: data.results  // Assuming response contains a "results" key with list of courses
-          };
-        },
-        cache: true  // Optional: improves performance by caching requests
-      },
-      minimumInputLength: 1  // Wait until the user types at least one character
+function slugify(text) {
+  return text.toString()
+    .toLowerCase()
+    .normalize('NFD')
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w\-]+/g, '')
+    .replace(/\-\-+/g, '-');
+}
+
+function listingslug(text) {
+  const slugField = document.getElementById("id_slug");
+  if (slugField) {
+    slugField.value = slugify(text);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  // Slugify event
+  const titleInput = document.querySelector("#id_title");
+  if (titleInput) {
+    titleInput.addEventListener("input", function () {
+      listingslug(titleInput.value);
     });
-  });
-</script>
-
-<script>
-  function slugify(text) {
-    return text
-      .toString() // Cast to string
-      .toLowerCase() // Convert the string to lowercase letters
-      .normalize('NFD') // The normalize() method returns the Unicode Normalization Form of a given string.
-      .trim() // Remove whitespace from both sides of a string
-      .replace(/\s+/g, '-') // Replace spaces with -
-      .replace(/[^\w\-]+/g, '') // Remove all non-word chars
-      .replace(/\-\-+/g, '-'); // Replace multiple - with single -
   }
-  
-  function listingslug(text) {
-    document.getElementById("id_slug").value = slugify(text);
-  }
-</script>
 
+  // Select2 init
+  if (typeof $ !== 'undefined' && $('.select2').length > 0) {
+    const configDiv = document.getElementById("course-autocomplete-config");
+    const autocompleteUrl = configDiv?.dataset?.url;
+    console.log("Detected autocompleteUrl:", autocompleteUrl);
+
+    if (autocompleteUrl) {
+      $('.select2').select2({
+        placeholder: 'Search for a course',
+        ajax: {
+          url: autocompleteUrl,
+          dataType: 'json',
+          delay: 250,
+          data: function (params) {
+            return { q: params.term };
+          },
+          processResults: function (data) {
+            return { results: data.results };
+          },
+          cache: true
+        },
+        minimumInputLength: 1
+      });
+    }
+  }
+});
+
+</script>
 {% endblock %}

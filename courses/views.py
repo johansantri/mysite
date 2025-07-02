@@ -2262,14 +2262,21 @@ def editmic(request, pk):
         form = MicroCredentialForm(instance=microcredential)
 
     return render(request, 'micro/edit_micro.html', {'form': form, 'microcredential': microcredential})
+
+@login_required  # Cara yang lebih bersih daripada manual redirect
 def course_autocomplete(request):
-    if not request.user.is_authenticated:
-        return redirect("/login/?next=%s" % request.path)
-    query = request.GET.get('q', '')  # Get the search term
-    courses = Course.objects.filter(course_name__icontains=query, status_course__status='published')  # Adjust based on your model
-    
-    results = [{'id': course.id, 'text': course.course_name} for course in courses]  # Prepare response
-    
+    query = request.GET.get('q', '').strip()
+    results = []
+
+    if query:
+        courses = Course.objects.filter(
+            Q(course_name__icontains=query),
+            status_course__status='published',
+            end_enrol__gte=timezone.now()
+        ).order_by('course_name')[:20]  # Limit hasil pencarian
+
+        results = [{'id': c.id, 'text': c.course_name} for c in courses]
+
     return JsonResponse({'results': results})
 
 def addmic(request):

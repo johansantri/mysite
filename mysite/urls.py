@@ -31,6 +31,7 @@ urlpatterns = [
     path('kuruk/', admin.site.urls),
     path('captcha/', include('captcha.urls')),
     path('accounts/',include("allauth.urls")),
+    path('select2/', include('django_select2.urls')),  # <- tambahkan ini
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += [
     path("ckeditor5/", include('django_ckeditor_5.urls')),
