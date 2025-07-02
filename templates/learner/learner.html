@@ -15,210 +15,94 @@
 {% endblock %}
 
 {% block content %}
-<div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+<div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 text-black bg-white">
     <div class="flex justify-center">
         <!-- Profil Learner -->
         <div class="w-full lg:w-2/3">
-            <div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg hover:-translate-y-2 transition-all duration-300 relative">
-                <div class="p-4 md:p-6 relative">
-                    <div class="absolute inset-0 bg-gradient-to-br from-red-500 to-cyan-500 opacity-90 z-0"></div>
-                    
-                    <div class="relative z-10 flex flex-col md:flex-row items-center">
+            <div class="bg-white rounded-xl overflow-hidden shadow-md border border-gray-200">
+                <div class="p-4 md:p-6">
+                    <div class="flex flex-col md:flex-row items-center">
                         <div class="md:w-1/3 text-center mb-6 md:mb-0">
                             <div class="w-32 h-32 md:w-40 md:h-40 mx-auto">
                                 <img src="{% if learner.photo %}{{ learner.photo.url }}{% else %}{% static 'img/default-avatar.png' %}{% endif %}" 
-                                     class="w-full h-full object-cover rounded-full border-4 border-white shadow-lg hover:scale-105 transition-transform duration-300" 
+                                     class="w-full h-full object-cover rounded-full border border-gray-300" 
                                      alt="Profile">
                             </div>
-                            <h3 class="font-bold text-white mt-3 text-xl md:text-2xl text-shadow">{{ learner.first_name }} {{ learner.last_name }}</h3>
+                            <h3 class="font-bold text-black mt-3 text-xl md:text-2xl">{{ learner.first_name }} {{ learner.last_name }}</h3>
                         </div>
-                        <div class="md:w-2/3 text-white">
+                        <div class="md:w-2/3">
                             <h5 class="font-semibold mb-4 text-lg">Personal Information</h5>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                {% if learner.gender %}
-                                    <div class="bg-blue bg-opacity-20 p-3 rounded-lg flex items-center gap-2 hover:bg-opacity-30 hover:translate-x-1 transition-all duration-300">
-                                        <i class="fas fa-venus-mars"></i>
-                                        <span>{{ learner.get_gender_display }}</span>
-                                    </div>
-                                {% endif %}
-                                {% if learner.education %}
-                                    <div class="bg-blue bg-opacity-20 p-3 rounded-lg flex items-center gap-2 hover:bg-opacity-30 hover:translate-x-1 transition-all duration-300">
-                                        <i class="fas fa-graduation-cap"></i>
-                                        <span>{{ learner.get_education_display }}</span>
-                                    </div>
-                                {% endif %}
-                                {% if learner.country %}
-                                    <div class="bg-blue bg-opacity-20 p-3 rounded-lg flex items-center gap-2 hover:bg-opacity-30 hover:translate-x-1 transition-all duration-300">
-                                        <i class="fas fa-globe"></i>
-                                        <span>{{ learner.country }}</span>
-                                    </div>
-                                {% endif %}
-                                {% if learner.birth %}
-                                    <div class="bg-blue bg-opacity-20 p-3 rounded-lg flex items-center gap-2 hover:bg-opacity-30 hover:translate-x-1 transition-all duration-300">
-                                        <i class="fas fa-birthday-cake"></i>
-                                        <span>{{ learner.birth|mask_year }}</span>
-                                    </div>
-                                {% endif %}
-                                {% if learner.phone %}
-                                    <div class="bg-blue bg-opacity-20 p-3 rounded-lg flex items-center gap-2 hover:bg-opacity-30 hover:translate-x-1 transition-all duration-300">
-                                        <i class="fas fa-phone"></i>
-                                        <span>{{ learner.phone|mask_phone }}</span>
-                                    </div>
-                                {% endif %}
-                                {% if learner.hobby %}
-                                    <div class="bg-blue bg-opacity-20 p-3 rounded-lg flex items-center gap-2 hover:bg-opacity-30 hover:translate-x-1 transition-all duration-300">
-                                        <i class="fas fa-heart"></i>
-                                        <span>{{ learner.hobby }}</span>
-                                    </div>
-                                {% endif %}
-                                {% if learner.university %}
-                                    <div class="bg-blue bg-opacity-20 p-3 rounded-lg flex items-center gap-2 hover:bg-opacity-30 hover:translate-x-1 transition-all duration-300">
-                                        <i class="fas fa-university"></i>
-                                        <span>{{ learner.university.name }}</span>
-                                    </div>
-                                {% endif %}
+                                {% if learner.gender %}<div class="p-3 rounded border border-gray-200 flex items-center gap-2"><i class="fas fa-venus-mars"></i><span>{{ learner.get_gender_display }}</span></div>{% endif %}
+                                {% if learner.education %}<div class="p-3 rounded border border-gray-200 flex items-center gap-2"><i class="fas fa-graduation-cap"></i><span>{{ learner.get_education_display }}</span></div>{% endif %}
+                                {% if learner.country %}<div class="p-3 rounded border border-gray-200 flex items-center gap-2"><i class="fas fa-globe"></i><span>{{ learner.country }}</span></div>{% endif %}
+                                {% if learner.birth %}<div class="p-3 rounded border border-gray-200 flex items-center gap-2"><i class="fas fa-birthday-cake"></i><span>{{ learner.birth|mask_year }}</span></div>{% endif %}
+                                {% if learner.phone %}<div class="p-3 rounded border border-gray-200 flex items-center gap-2"><i class="fas fa-phone"></i><span>{{ learner.phone|mask_phone }}</span></div>{% endif %}
+                                {% if learner.hobby %}<div class="p-3 rounded border border-gray-200 flex items-center gap-2"><i class="fas fa-heart"></i><span>{{ learner.hobby }}</span></div>{% endif %}
+                                {% if learner.university %}<div class="p-3 rounded border border-gray-200 flex items-center gap-2"><i class="fas fa-university"></i><span>{{ learner.university.name }}</span></div>{% endif %}
                             </div>
-
                             {% if learner.tiktok or learner.youtube or learner.facebook or learner.instagram or learner.linkedin or learner.twitter %}
-                                <h5 class="font-semibold mt-6 mb-3 text-lg">Connect With Me</h5>
-                                <div class="flex flex-wrap gap-2">
-                                    {% if learner.tiktok %}
-                                        <a href="{{ learner.tiktok }}" target="_blank" 
-                                           class="w-10 h-10 flex items-center justify-center rounded-full bg-black text-white text-lg hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-                                            <i class="fab fa-tiktok"></i>
-                                        </a>
-                                    {% endif %}
-                                    {% if learner.youtube %}
-                                        <a href="{{ learner.youtube }}" target="_blank" 
-                                           class="w-10 h-10 flex items-center justify-center rounded-full bg-red-600 text-white text-lg hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-                                            <i class="fab fa-youtube"></i>
-                                        </a>
-                                    {% endif %}
-                                    {% if learner.facebook %}
-                                        <a href="{{ learner.facebook }}" target="_blank" 
-                                           class="w-10 h-10 flex items-center justify-center rounded-full bg-blue-800 text-white text-lg hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-                                            <i class="fab fa-facebook"></i>
-                                        </a>
-                                    {% endif %}
-                                    {% if learner.instagram %}
-                                        <a href="{{ learner.instagram }}" target="_blank" 
-                                           class="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-r from-orange-500 via-red-500 to-purple-600 text-white text-lg hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-                                            <i class="fab fa-instagram"></i>
-                                        </a>
-                                    {% endif %}
-                                    {% if learner.linkedin %}
-                                        <a href="{{ learner.linkedin }}" target="_blank" 
-                                           class="w-10 h-10 flex items-center justify-center rounded-full bg-blue-700 text-white text-lg hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-                                            <i class="fab fa-linkedin"></i>
-                                        </a>
-                                    {% endif %}
-                                    {% if learner.twitter %}
-                                        <a href="{{ learner.twitter }}" target="_blank" 
-                                           class="w-10 h-10 flex items-center justify-center rounded-full bg-blue-500 text-white text-lg hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-                                            <i class="fab fa-twitter"></i>
-                                        </a>
-                                    {% endif %}
-                                </div>
+                            <h5 class="font-semibold mt-6 mb-3 text-lg">Social Media</h5>
+                            <div class="flex flex-wrap gap-2">
+                                {% if learner.tiktok %}<a href="{{ learner.tiktok }}" class="w-10 h-10 flex items-center justify-center rounded-full bg-black text-white"><i class="fab fa-tiktok"></i></a>{% endif %}
+                                {% if learner.youtube %}<a href="{{ learner.youtube }}" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-900 text-white"><i class="fab fa-youtube"></i></a>{% endif %}
+                                {% if learner.facebook %}<a href="{{ learner.facebook }}" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 text-white"><i class="fab fa-facebook"></i></a>{% endif %}
+                                {% if learner.instagram %}<a href="{{ learner.instagram }}" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-700 text-white"><i class="fab fa-instagram"></i></a>{% endif %}
+                                {% if learner.linkedin %}<a href="{{ learner.linkedin }}" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-700 text-white"><i class="fab fa-linkedin-in"></i></a>{% endif %}
+                                {% if learner.twitter %}<a href="{{ learner.twitter }}" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-700 text-white"><i class="fab fa-twitter"></i></a>{% endif %}
+                            </div>
                             {% endif %}
                         </div>
                     </div>
 
                     {% if instructor %}
-                        <div class="mt-6 p-4 rounded-lg bg-gray-50 shadow-sm">
-                            <h5 class="font-semibold text-green-600 mb-3 text-lg">Instructor Profile</h5>
-                            <p class="text-gray-500 mb-3">{{ instructor.bio }}</p>
+                        <div class="mt-6 p-4 rounded border border-gray-200">
+                            <h5 class="font-semibold mb-2 text-lg">Instructor Profile</h5>
+                            <p class="text-gray-700 mb-3">{{ instructor.bio }}</p>
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                <div class="flex items-center gap-2 p-3 rounded-lg bg-white shadow-sm">
-                                    <i class="fas fa-laptop-code text-green-600"></i>
-                                    <span>{{ instructor.tech }}</span>
-                                </div>
-                                <div class="flex items-center gap-2 p-3 rounded-lg bg-white shadow-sm">
-                                    <i class="fas fa-brain text-green-600"></i>
-                                    <span>{{ instructor.expertise }}</span>
-                                </div>
-                                <div class="flex items-center gap-2 p-3 rounded-lg bg-white shadow-sm">
-                                    <i class="fas fa-clock text-green-600"></i>
-                                    <span>{{ instructor.experience_years }} years</span>
-                                </div>
+                                <div class="flex items-center gap-2 p-3 rounded border border-gray-200"><i class="fas fa-laptop-code"></i><span>{{ instructor.tech }}</span></div>
+                                <div class="flex items-center gap-2 p-3 rounded border border-gray-200"><i class="fas fa-brain"></i><span>{{ instructor.expertise }}</span></div>
+                                <div class="flex items-center gap-2 p-3 rounded border border-gray-200"><i class="fas fa-clock"></i><span>{{ instructor.experience_years }} years</span></div>
                             </div>
                         </div>
                     {% endif %}
                 </div>
             </div>
 
-            <!-- Daftar Kursus dan Partner -->
-            <div class="mt-4 bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg hover:-translate-y-2 transition-all duration-300">
-                <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-3">
-                    <h4 class="font-semibold text-lg mb-0 relative">Completed Courses</h4>
+            <div class="mt-4 bg-white rounded-xl shadow-md border border-gray-200">
+                <div class="border-b border-gray-200 p-3">
+                    <h4 class="font-semibold text-lg mb-0">Completed Courses</h4>
                 </div>
-                <div class="p-4 md:p-6">
-                    <div class="grid grid-cols-1 md:grid-cols-{% if instructor %}3{% else %}1{% endif %} gap-6">
-                        <div class="md:col-span-{% if instructor %}2{% else %}1{% endif %}">
-                            {% if completed_courses %}
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                    {% for course_data in completed_courses %}
-                                        <a href="{% url 'courses:course_lms_detail' course_data.enrollment.course.id course_data.enrollment.course.slug %}" 
-                                           class="flex items-center p-3 rounded-lg bg-white shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300"
-                                           title="Score: {{ course_data.total_score|floatformat:1 }} | Threshold: {{ course_data.threshold|floatformat:1 }} | Completion: {{ course_data.overall_percentage|floatformat:0 }}%">
-                                            <i class="fas fa-check-circle text-green-600 text-xl mr-3"></i>
-                                            <div class="flex-grow">
-                                                <h6 class="font-semibold mb-0 text-gray-900">{{ course_data.enrollment.course.course_name }}</h6>
-                                                <small class="text-gray-500"> {{ course_data.enrollment.course.org_partner.name.name }}</small>
-                                                <br>
-                                                <small class="text-gray-500">
-                                                    Score: {{ course_data.total_score|floatformat:1 }} /
-                                                    Threshold: {{ course_data.threshold|floatformat:1 }}
-                                                </small>
-                                            </div>
-                                            <span class="bg-green-600 text-white text-xs font-medium px-2 py-1 rounded">{{ course_data.overall_percentage|floatformat:0 }}%</span>
-                                        </a>
-                                    {% endfor %}
+                <div class="p-4">
+                    {% if completed_courses %}
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            {% for course_data in completed_courses %}
+                            <a href="{% url 'courses:course_lms_detail' course_data.enrollment.course.id course_data.enrollment.course.slug %}" class="flex items-center p-3 rounded border border-gray-200 hover:bg-gray-100 transition">
+                                <i class="fas fa-check-circle text-black text-xl mr-3"></i>
+                                <div class="flex-grow">
+                                    <h6 class="font-semibold text-black mb-0">{{ course_data.enrollment.course.course_name }}</h6>
+                                    <small class="text-gray-500">{{ course_data.enrollment.course.org_partner.name.name }}</small><br>
+                                    <small class="text-gray-500">Score: {{ course_data.total_score|floatformat:1 }} / Threshold: {{ course_data.threshold|floatformat:1 }}</small>
                                 </div>
-                            {% else %}
-                                <p class="text-gray-500 text-center">
-                                    <i class="fas fa-exclamation-circle mr-2"></i>
-                                    <a href="{% url 'authentication:course_list' %}" class="text-blue-600 hover:underline">Explore now</a>
-                                </p>
-                            {% endif %}
+                                <span class="bg-black text-white text-xs font-medium px-2 py-1 rounded">{{ course_data.overall_percentage|floatformat:0 }}%</span>
+                            </a>
+                            {% endfor %}
                         </div>
-
-                        {% if instructor %}
-                            <div class="md:col-span-1">
-                                <div class="p-4 rounded-lg bg-white shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300">
-                                    <h5 class="font-semibold text-blue-600 mb-3 text-lg">Partner Organization</h5>
-                                    <div class="flex items-center">
-                                        <i class="fas fa-building text-blue-600 text-2xl mr-3"></i>
-                                        <p class="mb-0 font-semibold text-gray-900">{{ instructor.provider.name }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endif %}
-                    </div>
+                    {% else %}
+                        <p class="text-gray-500 text-center">No completed courses yet. <a href="{% url 'authentication:course_list' %}" class="text-black underline">Explore now</a></p>
+                    {% endif %}
                 </div>
             </div>
 
             {% if completed_courses %}
-                <!-- Tombol Share -->
-                <div class="mt-6">
-                    <h5 class="font-semibold text-gray-900 mb-3 text-lg">Share This Profile</h5>
-                    <div class="flex flex-wrap gap-2">
-                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" 
-                           target="_blank" 
-                           class="px-3 py-1 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 transition-colors duration-300">
-                            <i class="fab fa-facebook-f mr-1"></i> Facebook
-                        </a>
-                        <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text=Lihat%20profil%20{{ learner.username }}" 
-                           target="_blank" 
-                           class="px-3 py-1 bg-blue-400 text-white rounded-lg text-sm hover:bg-blue-500 transition-colors duration-300">
-                            <i class="fab fa-twitter mr-1"></i> Twitter
-                        </a>
-                        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" 
-                           target="_blank" 
-                           class="px-3 py-1 bg-gray-600 text-white rounded-lg text-sm hover:bg-gray-700 transition-colors duration-300">
-                            <i class="fab fa-linkedin-in mr-1"></i> LinkedIn
-                        </a>
-                    </div>
+            <div class="mt-6">
+                <h5 class="font-semibold text-black mb-3 text-lg">Share This Profile</h5>
+                <div class="flex flex-wrap gap-2">
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="px-3 py-1 bg-black text-white rounded text-sm"><i class="fab fa-facebook-f mr-1"></i> Facebook</a>
+                    <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text=Lihat%20profil%20{{ learner.username }}" target="_blank" class="px-3 py-1 bg-black text-white rounded text-sm"><i class="fab fa-twitter mr-1"></i> Twitter</a>
+                    <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" target="_blank" class="px-3 py-1 bg-black text-white rounded text-sm"><i class="fab fa-linkedin-in mr-1"></i> LinkedIn</a>
                 </div>
+            </div>
             {% endif %}
         </div>
     </div>
