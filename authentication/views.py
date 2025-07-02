@@ -432,91 +432,98 @@ def course_list(request):
 
 
 #detailuser
+from django.http import HttpResponseForbidden
+
 @login_required
 @ratelimit(key='ip', rate='100/h')
 def user_detail(request, user_id):
-    # Ambil pengguna berdasarkan user_id
-    user = get_object_or_404(CustomUser, id=user_id)
+    target_user = get_object_or_404(CustomUser, id=user_id)
+    current_user = request.user
 
-    # Ambil daftar enrollment untuk pengguna ini
-    enrollments = Enrollment.objects.filter(user=user).select_related('course')
+    # Akses dibolehkan jika:
+    allowed = (
+        current_user == target_user or
+        current_user.is_superuser or
+        current_user.is_staff or
+        (
+            current_user.is_partner and
+            hasattr(current_user, 'org_partner') and
+            hasattr(target_user, 'org_partner') and
+            current_user.org_partner == target_user.org_partner
+        )
+    )
 
-    # Implementasi pencarian berdasarkan course_name
+    if not allowed:
+        messages.warning(request, "Access denied: You are not authorized to view this page.")
+        return redirect('authentication:dashbord')
+
+
+    # ... lanjutkan proses seperti biasa
+    enrollments = Enrollment.objects.filter(user=target_user).select_related('course')
+
     search_query = request.GET.get('search', '')
     if search_query:
         enrollments = enrollments.filter(course__course_name__icontains=search_query)
 
-    # Siapkan data untuk pagination
     course_details = []
     for enrollment in enrollments:
         course = enrollment.course
-
-        # Ambil total skor dan status dari setiap kursus
         total_max_score = 0
         total_score = 0
-        all_assessments_submitted = True  # Untuk memastikan semua asesmen diselesaikan
+        all_assessments_submitted = True
 
-        # Ambil grade range untuk kursus tersebut
         grade_range = GradeRange.objects.filter(course=course).first()
         passing_threshold = grade_range.min_grade if grade_range else 0
 
-        # Hitung skor dari asesmen
         assessments = Assessment.objects.filter(section__courses=course)
         for assessment in assessments:
             score_value = Decimal(0)
             total_correct_answers = 0
             total_questions = assessment.questions.count()
 
-            if total_questions > 0:  # Multiple choice
+            if total_questions > 0:
                 answers_exist = False
                 for question in assessment.questions.all():
-                    answers = QuestionAnswer.objects.filter(question=question, user=user)
+                    answers = QuestionAnswer.objects.filter(question=question, user=target_user)
                     if answers.exists():
                         answers_exist = True
                     total_correct_answers += answers.filter(choice__is_correct=True).count()
                 if not answers_exist:
                     all_assessments_submitted = False
-                if total_questions > 0:
-                    score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
-            # Anda bisa tambahkan logika untuk AskOra di sini jika relevan (seperti di dashbord)
+                score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
 
             total_max_score += assessment.weight
             total_score += score_value
 
-        # Hitung persentase skor
         overall_percentage = (total_score / total_max_score) * 100 if total_max_score > 0 else 0
-
-        # Ambil progress dari CourseProgress
-        course_progress = CourseProgress.objects.filter(user=user, course=course).first()
+        course_progress = CourseProgress.objects.filter(user=target_user, course=course).first()
         progress_percentage = course_progress.progress_percentage if course_progress else 0
 
-        # Tentukan status kelulusan
-        status = "Fail"  # Default status
+        status = "Fail"
         if progress_percentage == 100 and all_assessments_submitted and overall_percentage >= passing_threshold:
             status = "Pass"
 
-        # Tambahkan detail kursus ke daftar
         course_details.append({
             'course_name': course.course_name,
             'total_score': total_score,
             'total_max_score': total_max_score,
             'status': status,
-            'progress_percentage': progress_percentage,  # Untuk debug atau tampilan
-            'overall_percentage': overall_percentage,    # Untuk debug atau tampilan
+            'progress_percentage': progress_percentage,
+            'overall_percentage': overall_percentage,
         })
 
-    # Pagination untuk hasil kursus
-    paginator = Paginator(course_details, 5)  # 5 kursus per halaman
+    paginator = Paginator(course_details, 5)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
     context = {
-        'user': user,
+        'user': target_user,
         'course_details': page_obj,
         'search_query': search_query,
     }
-    
+
     return render(request, 'authentication/user_detail.html', context)
+
 
 @login_required
 @ratelimit(key='ip', rate='100/h')

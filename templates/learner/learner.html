@@ -3,16 +3,59 @@
 {% load extra_custom_filters %}
 
 {% block meta %}
-    <title>{{ learner.first_name }} {{ learner.last_name }} - Profile | LMSKu</title>
-    <meta name="description" content="View the profile of {{ learner.first_name }} {{ learner.last_name }}, including personal information, completed courses, and social media connections.">
-    <meta name="keywords" content="{{ learner.first_name }}, {{ learner.last_name }}, learner profile, courses, {{ learner.hobby|default:'' }}, {{ learner.country|default:'' }}">
+    <!-- Standard Meta Tags -->
+    <title>{{ learner.first_name }} {{ learner.last_name }} - Learner Profile | LMSKu</title>
+    <meta name="description" content="Lihat profil lengkap {{ learner.first_name }} {{ learner.last_name }} di LMSKu. Temukan informasi pribadi, kursus yang telah diselesaikan, dan koneksi sosial.">
+    <meta name="keywords" content="{{ learner.first_name }}, {{ learner.last_name }}, LMSKu, learner profile, online learning, {{ learner.hobby|default:'hobi' }}, {{ learner.country|default:'negara' }}, {{ learner.university.name|default:'universitas' }}">
     <meta name="author" content="{{ learner.first_name }} {{ learner.last_name }}">
-    <meta property="og:title" content="{{ learner.first_name }} {{ learner.last_name }} - Profile">
-    <meta property="og:description" content="Explore the profile of {{ learner.first_name }} {{ learner.last_name }} on LMSku, showcasing their educational achievements and social media presence.">
-    <meta property="og:image" content="{% if learner.photo %}{{ learner.photo.url }}{% else %}{% static 'img/default-avatar.png' %}{% endif %}">
+    <meta name="robots" content="index, follow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+    <!-- Open Graph (OG) Tags -->
+    <meta property="og:title" content="{{ learner.first_name }} {{ learner.last_name }} - Learner Profile | LMSKu">
+    <meta property="og:description" content="Lihat profil {{ learner.first_name }} {{ learner.last_name }} di LMSKu. Informasi pribadi, kursus yang diselesaikan, dan media sosial.">
+    <meta property="og:type" content="profile">
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    {% if learner.photo %}
+        <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ learner.photo.url }}">
+    {% else %}
+        <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'img/default-avatar.png' %}">
+    {% endif %}
+    <meta property="og:image:alt" content="Foto profil {{ learner.first_name }} {{ learner.last_name }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="LMSKu">
+    <meta property="og:locale" content="id_ID">
+
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ learner.first_name }} {{ learner.last_name }} - Learner Profile | LMSKu">
+    <meta name="twitter:description" content="Temukan perjalanan belajar {{ learner.first_name }} di LMSKu, lengkap dengan kursus yang diselesaikan dan profil pribadi.">
+    {% if learner.photo %}
+        <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ learner.photo.url }}">
+    {% else %}
+        <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'img/default-avatar.png' %}">
+    {% endif %}
+    <meta name="twitter:image:alt" content="Foto profil {{ learner.first_name }} {{ learner.last_name }}">
+    <meta name="twitter:site" content="@LMSKuOfficial">
+
+    <!-- Additional SEO Meta Tags -->
+    <meta name="geo.placename" content="{{ learner.city|default:'Indonesia' }}">
+    <meta name="geo.region" content="{{ learner.country|default:'ID' }}">
+    <meta name="language" content="id">
+    <meta name="revisit-after" content="7 days">
+
+    <!-- Profile-Specific Meta Tags -->
+    <meta property="profile:first_name" content="{{ learner.first_name }}">
+    <meta property="profile:last_name" content="{{ learner.last_name }}">
+    <meta property="profile:username" content="{{ learner.username }}">
 {% endblock %}
+
+
+
+
 
 {% block content %}
 <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 text-black bg-white">
@@ -32,15 +75,51 @@
                         </div>
                         <div class="md:w-2/3">
                             <h5 class="font-semibold mb-4 text-lg">Personal Information</h5>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                {% if learner.gender %}<div class="p-3 rounded border border-gray-200 flex items-center gap-2"><i class="fas fa-venus-mars"></i><span>{{ learner.get_gender_display }}</span></div>{% endif %}
-                                {% if learner.education %}<div class="p-3 rounded border border-gray-200 flex items-center gap-2"><i class="fas fa-graduation-cap"></i><span>{{ learner.get_education_display }}</span></div>{% endif %}
-                                {% if learner.country %}<div class="p-3 rounded border border-gray-200 flex items-center gap-2"><i class="fas fa-globe"></i><span>{{ learner.country }}</span></div>{% endif %}
-                                {% if learner.birth %}<div class="p-3 rounded border border-gray-200 flex items-center gap-2"><i class="fas fa-birthday-cake"></i><span>{{ learner.birth|mask_year }}</span></div>{% endif %}
-                                {% if learner.phone %}<div class="p-3 rounded border border-gray-200 flex items-center gap-2"><i class="fas fa-phone"></i><span>{{ learner.phone|mask_phone }}</span></div>{% endif %}
-                                {% if learner.hobby %}<div class="p-3 rounded border border-gray-200 flex items-center gap-2"><i class="fas fa-heart"></i><span>{{ learner.hobby }}</span></div>{% endif %}
-                                {% if learner.university %}<div class="p-3 rounded border border-gray-200 flex items-center gap-2"><i class="fas fa-university"></i><span>{{ learner.university.name }}</span></div>{% endif %}
+                           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                {% if learner.gender %}
+                                    <div class="p-3 rounded border border-gray-200 flex items-center gap-2">
+                                        <i class="fas fa-venus-mars"></i><span>{{ learner.get_gender_display }}</span>
+                                    </div>
+                                {% endif %}
+                                {% if learner.education %}
+                                    <div class="p-3 rounded border border-gray-200 flex items-center gap-2">
+                                        <i class="fas fa-graduation-cap"></i><span>{{ learner.get_education_display }}</span>
+                                    </div>
+                                {% endif %}
+                                {% if learner.country %}
+                                    <div class="p-3 rounded border border-gray-200 flex items-center gap-2">
+                                        <i class="fas fa-globe"></i><span>{{ learner.country }}</span>
+                                    </div>
+                                {% endif %}
+                                {% if learner.birth %}
+                                    <div class="p-3 rounded border border-gray-200 flex items-center gap-2">
+                                        <i class="fas fa-birthday-cake"></i><span>{{ learner.birth|mask_year }}</span>
+                                    </div>
+                                {% endif %}
+                                {% if learner.phone %}
+                                    <div class="p-3 rounded border border-gray-200 flex items-center gap-2">
+                                        <i class="fas fa-phone"></i><span>{{ learner.phone|mask_phone }}</span>
+                                    </div>
+                                {% endif %}
+                                {% if learner.hobby %}
+                                    <div class="p-3 rounded border border-gray-200 flex items-center gap-2">
+                                        <i class="fas fa-heart"></i><span>{{ learner.hobby }}</span>
+                                    </div>
+                                {% endif %}
+                                {% if learner.university %}
+                                    <div class="p-3 rounded border border-gray-200 flex items-center gap-2">
+                                        <i class="fas fa-university"></i><span>{{ learner.university.name }}</span>
+                                    </div>
+                                {% endif %}
                             </div>
+
+                            {% if learner.address %}
+                                <div class="mt-3 p-3 rounded border border-gray-200 flex items-start gap-2">
+                                    <i class="fas fa-map-marker-alt pt-1 text-gray-500"></i>
+                                    <span class="break-words">{{ learner.address }}</span>
+                                </div>
+                            {% endif %}
+
                             {% if learner.tiktok or learner.youtube or learner.facebook or learner.instagram or learner.linkedin or learner.twitter %}
                             <h5 class="font-semibold mt-6 mb-3 text-lg">Social Media</h5>
                             <div class="flex flex-wrap gap-2">
@@ -98,10 +177,41 @@
             <div class="mt-6">
                 <h5 class="font-semibold text-black mb-3 text-lg">Share This Profile</h5>
                 <div class="flex flex-wrap gap-2">
-                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="px-3 py-1 bg-black text-white rounded text-sm"><i class="fab fa-facebook-f mr-1"></i> Facebook</a>
-                    <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text=Lihat%20profil%20{{ learner.username }}" target="_blank" class="px-3 py-1 bg-black text-white rounded text-sm"><i class="fab fa-twitter mr-1"></i> Twitter</a>
-                    <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" target="_blank" class="px-3 py-1 bg-black text-white rounded text-sm"><i class="fab fa-linkedin-in mr-1"></i> LinkedIn</a>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="px-3 py-1 bg-black text-white rounded text-sm">
+                        <i class="fab fa-facebook-f mr-1"></i> Facebook
+                    </a>
+                    <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text=Lihat%20profil%20{{ learner.username }}" target="_blank" class="px-3 py-1 bg-black text-white rounded text-sm">
+                        <i class="fab fa-x-twitter mr-1"></i> X
+                    </a>
+                    <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" target="_blank" class="px-3 py-1 bg-black text-white rounded text-sm">
+                        <i class="fab fa-linkedin-in mr-1"></i> LinkedIn
+                    </a>
+                    <a href="https://wa.me/?text={{ request.build_absolute_uri|urlencode }}" target="_blank" class="px-3 py-1 bg-black text-white rounded text-sm">
+                        <i class="fab fa-whatsapp mr-1"></i> WhatsApp
+                    </a>
+                    <button id="copyLinkBtn" type="button" class="px-3 py-1 bg-black text-white rounded text-sm">
+                        <i class="fas fa-link mr-1"></i> Copy URL
+                    </button>
                 </div>
+
+                <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    const copyBtn = document.getElementById("copyLinkBtn");
+                    copyBtn.addEventListener("click", function () {
+                        navigator.clipboard.writeText("{{ request.build_absolute_uri }}")
+                            .then(() => {
+                                copyBtn.innerHTML = '<i class="fas fa-check mr-1"></i> Copied!';
+                                setTimeout(() => {
+                                    copyBtn.innerHTML = '<i class="fas fa-link mr-1"></i> Copy URL';
+                                }, 2000);
+                            })
+                            .catch(err => {
+                                console.error("Failed to copy URL", err);
+                            });
+                    });
+                });
+                </script>
+
             </div>
             {% endif %}
         </div>
