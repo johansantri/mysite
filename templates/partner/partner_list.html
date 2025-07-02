@@ -1,6 +1,24 @@
 {% extends 'home/base.html' %}
 {% load custom_filters %}
 {% load static %}
+{% block title %}Our Partners | {{ block.super }}{% endblock %}
+{% block meta %}
+    <meta name="description" content="Discover our trusted educational partners from various institutions, organizations, and industries. Join them in delivering quality learning.">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:title" content="Our Partners | LMSKu">
+    <meta property="og:description" content="Discover our trusted educational partners from various institutions, organizations, and industries.">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="{% static 'images/meta/partners-banner.jpg' %}">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Our Partners | LMSKu">
+    <meta name="twitter:description" content="Explore our wide range of verified learning partners.">
+    <meta name="twitter:image" content="{% static 'images/meta/partners-banner.jpg' %}">
+{% endblock %}
+
 {% block content %}
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Heading -->
@@ -13,17 +31,20 @@
         {% for partner in partners %}
             {% if partner.name and partner.name.slug %}
                 <a href="{% url 'courses:org_partner' partner.name.slug %}"
-                   class="block bg-white shadow-lg rounded-xl p-4 border border-gray-200 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 active:scale-95 group">
+                   class="block bg-white shadow-lg rounded-xl p-4 border border-gray-200 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 active:scale-95 group"
+                   aria-label="View details for {{ partner.name|default:'Unnamed Partner' }}">
                     <!-- Partner Name -->
                     <h3 class="text-lg font-semibold text-gray-900 mb-3 text-center">
                         {{ partner.name|default:"Unnamed Partner" }}
                     </h3>
                     <!-- Partner Logo -->
                     {% if partner.logo %}
-                        <img src="{{ partner.logo.url }}" alt="{{ partner.name }} logo"
-                             class="h-24 sm:h-32 w-full object-contain mx-auto transition-transform duration-300 group-hover:scale-105">
+                        <img src="{{ partner.logo.url }}" alt="{{ partner.name|default:'Unnamed Partner' }} logo"
+                             class="max-h-24 sm:max-h-32 w-full object-contain mx-auto transition-transform duration-300 group-hover:scale-105"
+                             loading="lazy">
                     {% else %}
-                        <div class="h-24 sm:h-32 w-full flex items-center justify-center bg-gray-100 rounded-lg">
+                        <div class="max-h-24 sm:max-h-32 w-full flex items-center justify-center bg-gray-100 rounded-lg"
+                             role="img" aria-label="No logo available for {{ partner.name|default:'Unnamed Partner' }}">
                             <span class="text-gray-500 text-sm">No logo available</span>
                         </div>
                     {% endif %}
@@ -36,10 +57,12 @@
                     </h3>
                     <!-- Partner Logo -->
                     {% if partner.logo %}
-                        <img src="{{ partner.logo.url }}" alt="{{ partner.name }} logo"
-                             class="h-24 sm:h-32 w-full object-contain mx-auto">
+                        <img src="{{ partner.logo.url }}" alt="{{ partner.name|default:'Unnamed Partner' }} logo"
+                             class="max-h-24 sm:max-h-32 w-full object-contain mx-auto"
+                             loading="lazy">
                     {% else %}
-                        <div class="h-24 sm:h-32 w-full flex items-center justify-center bg-gray-100 rounded-lg">
+                        <div class="max-h-24 sm:max-h-32 w-full flex items-center justify-center bg-gray-100 rounded-lg"
+                             role="img" aria-label="No logo available for {{ partner.name|default:'Unnamed Partner' }}">
                             <span class="text-gray-500 text-sm">No logo available</span>
                         </div>
                     {% endif %}
@@ -54,15 +77,17 @@
 
     <!-- Pagination Controls -->
     {% if partners.paginator.num_pages > 1 %}
-        <div class="mt-8 flex flex-wrap justify-center gap-2">
+        <nav class="mt-8 flex flex-wrap justify-center gap-2" aria-label="Pagination">
             <!-- Previous Button -->
             {% if partners.has_previous %}
-                <a href="?page={{ partners.previous_page_number }}"
-                   class="px-3 py-2 sm:px-4 sm:py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm sm:text-base">
+                <a href="{% url 'courses:partners' %}?page={{ partners.previous_page_number }}"
+                   class="px-3 py-2 sm:px-4 sm:py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm sm:text-base"
+                   rel="prev" aria-label="Previous page">
                     « Prev
                 </a>
             {% else %}
-                <span class="px-3 py-2 sm:px-4 sm:py-2 bg-gray-100 text-gray-400 rounded-lg text-sm sm:text-base cursor-not-allowed">
+                <span class="px-3 py-2 sm:px-4 sm:py-2 bg-gray-100 text-gray-400 rounded-lg text-sm sm:text-base cursor-not-allowed"
+                      aria-disabled="true">
                     « Prev
                 </span>
             {% endif %}
@@ -71,12 +96,14 @@
             {% for num in partners.paginator.page_range %}
                 {% if num|add:-2 <= partners.number and num|add:2 >= partners.number %}
                     {% if num == partners.number %}
-                        <span class="px-3 py-2 sm:px-4 sm:py-2 bg-red-600 text-white rounded-lg text-sm sm:text-base font-semibold">
+                        <span class="px-3 py-2 sm:px-4 sm:py-2 bg-red-600 text-white rounded-lg text-sm sm:text-base font-semibold"
+                              aria-current="page">
                             {{ num }}
                         </span>
                     {% else %}
-                        <a href="?page={{ num }}"
-                           class="px-3 py-2 sm:px-4 sm:py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm sm:text-base">
+                        <a href="{% url 'courses:partners' %}?page={{ num }}"
+                           class="px-3 py-2 sm:px-4 sm:py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm sm:text-base"
+                           aria-label="Page {{ num }}">
                             {{ num }}
                         </a>
                     {% endif %}
@@ -85,16 +112,20 @@
 
             <!-- Next Button -->
             {% if partners.has_next %}
-                <a href="?page={{ partners.next_page_number }}"
-                   class="px-3 py-2 sm:px-4 sm:py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm sm:text-base">
+                <a href="{% url 'courses:partners' %}?page={{ partners.next_page_number }}"
+                   class="px-3 py-2 sm:px-4 sm:py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm sm:text-base"
+                   rel="next" aria-label="Next page">
                     Next »
                 </a>
             {% else %}
-                <span class="px-3 py-2 sm:px-4 sm:py-2 bg-gray-100 text-gray-400 rounded-lg text-sm sm:text-base cursor-not-allowed">
+                <span class="px-3 py-2 sm:px-4 sm:py-2 bg-gray-100 text-gray-400 rounded-lg text-sm sm:text-base cursor-not-allowed"
+                      aria-disabled="true">
                     Next »
                 </span>
             {% endif %}
-        </div>
+        </nav>
     {% endif %}
 </div>
+
+
 {% endblock %}

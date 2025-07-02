@@ -1,4 +1,4 @@
-ERROR 2025-07-02 10:22:58,699 log Internal Server Error: /org-partner/
+ERROR 2025-07-02 10:35:12,265 log Internal Server Error: /org-partner/
 Traceback (most recent call last):
   File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
     response = get_response(request)
@@ -44,8 +44,60 @@ Traceback (most recent call last):
     return SafeString("".join([node.render_annotated(context) for node in self]))
   File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
     return self.render(context)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 243, in render
-    nodelist.append(node.render_annotated(context))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'partners' not found. 'partners' is not a valid view function or pattern name.
+INFO 2025-07-02 10:37:41,361 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-02 10:37:41,579 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-02 10:37:41,654 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+ERROR 2025-07-02 10:37:43,273 log Internal Server Error: /org-partner/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django_ratelimit/decorators.py", line 27, in _wrapped
+    return fn(request, *args, **kw)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/views/decorators/http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+  File "/home/TIM/mysite/partner/views.py", line 55, in partner_list_view
+    return render(request, 'partner/partner_list.html', {
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
   File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
     return self.render(context)
   File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 480, in render
@@ -54,16 +106,67 @@ Traceback (most recent call last):
     resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
   File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
     raise NoReverseMatch(msg)
-django.urls.exceptions.NoReverseMatch: Reverse for 'org_partner' with arguments '('',)' not found. 1 pattern(s) tried: ['org\\-partner/(?P<slug>[-a-zA-Z0-9_]+)/\\Z']
-INFO 2025-07-02 10:25:20,209 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-02 10:25:20,443 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-02 10:25:20,497 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-02 10:26:40,654 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-02 10:26:40,707 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-02 10:26:40,802 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-02 10:28:46,669 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-02 10:28:46,685 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-02 10:28:46,771 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-02 10:30:30,516 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-02 10:30:30,645 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-02 10:30:30,695 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+django.urls.exceptions.NoReverseMatch: Reverse for 'org_partner' with no arguments not found. 1 pattern(s) tried: ['org\\-partner/(?P<slug>[-a-zA-Z0-9_]+)/\\Z']
+WARNING 2025-07-02 10:38:23,293 views Invalid referer:  from IP 
+INFO 2025-07-02 10:39:08,434 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-02 10:39:08,459 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-02 10:39:08,991 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+ERROR 2025-07-02 10:39:09,590 log Internal Server Error: /org-partner/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django_ratelimit/decorators.py", line 27, in _wrapped
+    return fn(request, *args, **kw)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/views/decorators/http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+  File "/home/TIM/mysite/partner/views.py", line 55, in partner_list_view
+    return render(request, 'partner/partner_list.html', {
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'partners' not found. 'partners' is not a valid view function or pattern name.
+INFO 2025-07-02 10:39:59,112 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-02 10:39:59,270 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-02 10:39:59,397 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-02 10:41:15,853 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-02 10:41:15,872 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-02 10:41:15,898 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
