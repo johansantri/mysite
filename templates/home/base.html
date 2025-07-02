@@ -42,7 +42,12 @@
                     <li><a class="hover:text-red-500 no-underline text-base" href="{% url 'authentication:course_list' %}">Courses</a></li>
                     <li><a class="hover:text-red-500 no-underline text-base" href="{% url 'blog:blog-list' %}">Blog's</a></li>
                     <li><a class="hover:text-red-500 no-underline text-base" href="{% url 'authentication:about' %}">About</a></li>
-                    
+                    <li>
+                    <a class="hover:text-red-500 no-underline text-base" href="{% url 'partner:partner_list' %}">
+                        Partners
+                    </a>
+                    </li>
+
                 </ul>
                 <div class="flex items-center space-x-2 min-w-[250px]">
                     <form class="flex w-full" role="search" action="{% url 'authentication:search' %}" method="get">
@@ -106,6 +111,11 @@
             <li>
             <a class="hover:text-red-500 no-underline text-base min-h-[44px] flex items-center" href="{% url 'authentication:about' %}">
                 About
+            </a>
+            </li>
+            <li>
+            <a class="hover:text-red-500 no-underline text-base min-h-[44px] flex items-center" href="{% url 'partner:partner_list' %}">
+                Partners
             </a>
             </li>
         </ul>
