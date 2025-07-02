@@ -2,18 +2,131 @@
 {% load humanize %}
 {% load static %}
 {% block meta %}
-    <meta name="description" content="{{ course.sort_description|default:'Pelajari kursus menarik ini di LMSKu.' }}">
+    <!-- Standard Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="description" content="{{ course.sort_description|default:'Pelajari kursus menarik ini di LMSKu untuk meningkatkan keterampilan Anda dengan panduan dari instruktur ahli.'|truncatechars:160|safe }}">
+    <meta name="keywords" content="{{ course.course_name }}, {{ course.category.name }}, online course, e-learning, LMSKu, {{ course.instructor.user.get_full_name }}, {{ course.get_language_display }}, {{ course.level }}">
+    <meta name="author" content="{{ course.instructor.user.get_full_name|default:'LMSKu Team' }}">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" content="{{ request.build_absolute_uri }}">
+
+    <!-- Additional SEO Meta Tags -->
+    <meta name="geo.placename" content="{{ course.instructor.user.city|default:'Unknown' }}">
+    <meta name="geo.region" content="{{ course.instructor.user.country|default:'Unknown' }}">
+    <meta name="language" content="{{ course.get_language_display|default:'Indonesian' }}">
+    <meta name="revisit-after" content="7 days">
+
+    <!-- Open Graph (OG) Tags for Social Media (Facebook, LinkedIn, WhatsApp) -->
+    <meta property="og:title" content="{{ course.course_name }} - LMSKu">
+    <meta property="og:description" content="{{ course.sort_description|default:'Pelajari kursus menarik ini di LMSKu untuk meningkatkan keterampilan Anda dengan panduan dari instruktur ahli.'|truncatechars:256|safe }}">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    {% if course.image %}
+        <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ course.image.url }}">
+        <meta property="og:image:secure_url" content="{{ request.scheme }}://{{ request.get_host }}{{ course.image.url }}">
+    {% else %}
+        <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'assets/img/icon/course-default.jpg' %}">
+        <meta property="og:image:secure_url" content="{{ request.scheme }}://{{ request.get_host }}{% static 'assets/img/icon/course-default.jpg' %}">
+    {% endif %}
+    <meta property="og:image:alt" content="Gambar untuk kursus {{ course.course_name }} di LMSKu">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="LMSKu">
+    <meta property="og:locale" content="id_ID">
+
+    <!-- Twitter Card Tags (for X) -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ course.course_name }} - LMSKu">
-    <meta name="twitter:description" content="{{ course.sort_description|default:'Pelajari kursus menarik ini di LMSKu.' }}">
-    <meta name="twitter:image" content="{% if course.image %}{{ course.image.url }}{% else %}{% static 'assets/img/icon/certificate.svg' %}{% endif %}">
-    <meta property="og:title" content="{{ course.course_name }} - LMSKu">
-    <meta property="og:description" content="{{ course.sort_description|default:'Pelajari kursus menarik ini di LMSKu.' }}">
-    <meta property="og:image" content="{% if course.image %}{{ course.image.url }}{% else %}{% static 'assets/img/icon/certificate.svg' %}{% endif %}">
-    <meta property="og:image:width" content="{% if course.image %}1200{% else %}512{% endif %}">
-    <meta property="og:image:height" content="{% if course.image %}630{% else %}512{% endif %}">
-    <meta property="og:url" content="{{ request.build_absolute_uri }}">
-    <meta property="og:type" content="article">
+    <meta name="twitter:description" content="{{ course.sort_description|default:'Pelajari kursus menarik ini di LMSKu untuk meningkatkan keterampilan Anda dengan panduan dari instruktur ahli.'|truncatechars:200|safe }}">
+    {% if course.image %}
+        <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ course.image.url }}">
+        <meta name="twitter:image:src" content="{{ request.scheme }}://{{ request.get_host }}{{ course.image.url }}">
+    {% else %}
+        <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'assets/img/icon/course-default.jpg' %}">
+        <meta name="twitter:image:src" content="{{ request.scheme }}://{{ request.get_host }}{% static 'assets/img/icon/course-default.jpg' %}">
+    {% endif %}
+    <meta name="twitter:image:alt" content="Gambar untuk kursus {{ course.course_name }} di LMSKu">
+    <meta name="twitter:site" content="@LMSKu">
+    <meta name="twitter:creator" content="@{{ course.instructor.user.username|default:'LMSKu' }}">
+
+    <!-- Structured Data (JSON-LD) for Course -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Course",
+        "name": "{{ course.course_name|safe }}",
+        "description": "{{ course.sort_description|default:'Pelajari kursus menarik ini di LMSKu untuk meningkatkan keterampilan Anda dengan panduan dari instruktur ahli.'|truncatechars:256|safe }}",
+        "url": "{{ request.build_absolute_uri }}",
+        "image": "{% if course.image %}{{ request.scheme }}://{{ request.get_host }}{{ course.image.url }}{% else %}{{ request.scheme }}://{{ request.get_host }}{% static 'assets/img/icon/course-default.jpg' %}{% endif %}",
+        "provider": {
+            "@type": "Organization",
+            "name": "LMSKu",
+            "sameAs": "{{ request.scheme }}://{{ request.get_host }}"
+        },
+        "instructor": {
+            "@type": "Person",
+            "name": "{{ course.instructor.user.get_full_name|default:'LMSKu Instructor'|safe }}",
+            "url": "{% url 'courses:instructor_profile' course.instructor.user.username %}"
+        },
+        "courseCode": "{{ course.course_number|safe }}",
+        "educationalLevel": "{{ course.level|safe }}",
+        "inLanguage": "{{ course.get_language_display|safe }}",
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "{{ average_rating|default:'0' }}",
+            "reviewCount": "{{ reviews.count|default:'0' }}"
+        },
+        "offers": {
+            "@type": "Offer",
+            "price": "{% if course.payment_model == 'free' %}0{% else %}{{ course.get_course_price.user_payment|default:'0' }}{% endif %}",
+            "priceCurrency": "IDR",
+            "availability": "https://schema.org/InStock"
+        },
+        "hasCourseInstance": {
+            "@type": "CourseInstance",
+            "courseMode": "online",
+            "startDate": "{{ course.start_date|date:'c' }}",
+            "endDate": "{{ course.end_date|date:'c' }}"
+        }
+    }
+    </script>
+
+    <!-- Structured Data for Breadcrumb -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "{{ request.scheme }}://{{ request.get_host }}"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "{{ course.category.name|safe }}",
+                "item": "{% url 'courses:category_list' course.category.slug %}"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "{{ course.course_name|safe }}",
+                "item": "{{ request.build_absolute_uri }}"
+            }
+        ]
+    }
+    </script>
+
+    <!-- Favicon and App Icons -->
+    <link rel="icon" href="{% static 'assets/img/icon/course-default.jpg' %}" type="image/jpeg">
+    <link rel="apple-touch-icon" href="{% static 'assets/img/icon/apple-touch-icon.png' %}">
+
+    <!-- Security and Performance -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 {% endblock %}
 {% block content %}
 
@@ -477,18 +590,74 @@
                                     {% endwith %}
 
 
-                                <div class="grid grid-cols-2 gap-2 mb-4">
-                                    <div>
-                                        <a href="#" class="block border border-red-500 text-red-500 px-4 py-2 rounded-lg hover:bg-red-500 hover:text-white transition-colors">
-                                            <i class="fas fa-heart mr-1"></i> Wishlist
-                                        </a>
-                                    </div>
-                                    <div>
-                                        <button class="block border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors" onclick="openShareWindow()">
-                                            <i class="fas fa-share-alt mr-1"></i> Share
-                                        </button>
-                                    </div>
+                               <div class="flex flex-col gap-2 sm:gap-3 mb-4">
+                                <!-- Baris Atas: Wishlist, WhatsApp, Facebook -->
+                                <div class="flex flex-wrap justify-center gap-2 sm:gap-3">
+                                    <!-- Wishlist -->
+                                    <a href="#" 
+                                    class="flex items-center justify-center border border-red-500 text-red-500 px-2 py-2 sm:px-3 sm:py-2 rounded-lg hover:bg-red-500 hover:text-white transition-colors w-full sm:w-24"
+                                    aria-label="Add to Wishlist">
+                                        <i class="fas fa-heart text-sm sm:text-base mr-1"></i>
+                                        <span class="text-xs sm:text-sm"></span>
+                                    </a>
+                                    <!-- WhatsApp Share -->
+                                    <a href="https://api.whatsapp.com/send?text={{ course.course_name|urlencode }}%0A{{ course.sort_description|default:'Pelajari kursus menarik ini di LMSKu!'|truncatechars:200|urlencode }}%0A{{ request.build_absolute_uri|urlencode }}"
+                                    class="flex items-center justify-center border border-gray-300 text-gray-700 px-2 py-2 sm:px-3 sm:py-2 rounded-lg hover:bg-gray-100 transition-colors w-full sm:w-24"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label="Share on WhatsApp">
+                                        <i class="fab fa-whatsapp text-green-500 text-sm sm:text-base mr-1"></i>
+                                        <span class="text-xs sm:text-sm"></span>
+                                    </a>
+                                    <!-- Facebook Share -->
+                                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri|urlencode }}"
+                                    class="flex items-center justify-center border border-gray-300 text-gray-700 px-2 py-2 sm:px-3 sm:py-2 rounded-lg hover:bg-gray-100 transition-colors w-full sm:w-24"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label="Share on Facebook">
+                                        <i class="fab fa-facebook-f text-blue-600 text-sm sm:text-base mr-1"></i>
+                                        <span class="text-xs sm:text-sm"></span>
+                                    </a>
                                 </div>
+                                <!-- Baris Bawah: LinkedIn, X, Instagram -->
+                                <div class="flex flex-wrap justify-center gap-2 sm:gap-3">
+                                    <!-- LinkedIn Share -->
+                                    <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri|urlencode }}&title={{ course.course_name|urlencode }}&summary={{ course.sort_description|default:'Pelajari kursus menarik ini di LMSKu untuk meningkatkan keterampilan Anda dengan panduan dari instruktur ahli.'|truncatechars:256|urlencode }}&source={{ request.scheme }}://{{ request.get_host }}"
+                                    class="flex items-center justify-center border border-gray-300 text-gray-700 px-2 py-2 sm:px-3 sm:py-2 rounded-lg hover:bg-gray-100 transition-colors w-full sm:w-24"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label="Share on LinkedIn">
+                                        <i class="fab fa-linkedin-in text-blue-700 text-sm sm:text-base mr-1"></i>
+                                        <span class="text-xs sm:text-sm"></span>
+                                    </a>
+                                    <!-- X Share -->
+                                    <a href="https://x.com/intent/tweet?url={{ request.build_absolute_uri|urlencode }}&text={{ course.course_name|urlencode }}%20-%20{{ course.sort_description|default:'Pelajari kursus menarik ini di LMSKu!'|truncatechars:200|urlencode }}"
+                                    class="flex items-center justify-center border border-gray-300 text-gray-700 px-2 py-2 sm:px-3 sm:py-2 rounded-lg hover:bg-gray-100 transition-colors w-full sm:w-24"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label="Share on X">
+                                        <i class="fab fa-x-twitter text-black text-sm sm:text-base mr-1"></i>
+                                        <span class="text-xs sm:text-sm"></span>
+                                    </a>
+                                    <!-- Instagram Share -->
+                                    <button onclick="copyToClipboard('{{ request.build_absolute_uri }}')"
+                                            class="flex items-center justify-center border border-gray-300 text-gray-700 px-2 py-2 sm:px-3 sm:py-2 rounded-lg hover:bg-gray-100 transition-colors w-full sm:w-24"
+                                            aria-label="Copy link for Instagram">
+                                        <i class="fab fa-instagram text-pink-600 text-sm sm:text-base mr-1"></i>
+                                        <span class="text-xs sm:text-sm"></span>
+                                    </button>
+                                </div>
+                            </div>
+                            <script>
+                            function copyToClipboard(url) {
+                                navigator.clipboard.writeText(url).then(() => {
+                                    alert('Link copied to clipboard! Paste it in Instagram to share.');
+                                }).catch(err => {
+                                    console.error('Failed to copy: ', err);
+                                    alert('Failed to copy link. Please copy the URL manually.');
+                                });
+                            }
+                            </script>
                                 {% for message in messages %}
                                     <div class="bg-{{ message.tags }}-100 text-{{ message.tags }}-800 p-4 rounded-xl mb-4 relative">
                                         {{ message }}
