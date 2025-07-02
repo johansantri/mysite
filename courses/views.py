@@ -3735,66 +3735,58 @@ def add_course_price(request, id):
 
 
 #instrcutor profile
+
+@cache_page(60 * 5)  # Cache selama 5 menit (300 detik)
+@ratelimit(key='ip', rate='30/h', block=True)  # Rate limit 30 kali per jam per IP
 def instructor_profile(request, username):
-    # Fetch the instructor object
+    # Ambil objek instructor berdasarkan username
     instructor = get_object_or_404(Instructor, user__username=username)
 
-    # Ensure that the instructor has a provider (Partner) with a slug in the related Universiti
-    if not instructor.provider or not hasattr(instructor.provider.name, 'slug'):
-        partner_slug = None
-    else:
-        partner_slug = instructor.provider.name.slug  # Access slug from Universiti model
+    # Cek apakah instructor punya partner (universitas) dan slug-nya
+    partner_slug = getattr(getattr(instructor.provider, 'name', None), 'slug', None)
 
-    # Get the search term from the GET request (if any)
+    # Ambil parameter pencarian (jika ada)
     search_term = request.GET.get('search', '')
 
-    # Get the 'published' status from CourseStatus model
-    published_status = CourseStatus.objects.get(status='published')  # Assuming 'status' field is used to store 'published'
+    # Ambil status "published"
+    published_status = CourseStatus.objects.get(status='published')
 
-    # Filter courses based on the search term, published status, and end_date
+    # Filter kursus berdasarkan pencarian, status publish, dan tanggal selesai
     courses = instructor.courses.filter(
-        Q(course_name__icontains=search_term) &  # Search by course name
-        Q(status_course=published_status) &      # Filter by 'published' status (corrected)
-        Q(end_date__gte=datetime.now())          # Only courses that haven't ended yet
-    ).order_by('start_date')  # Optional: Order by start date or any other field
+        Q(course_name__icontains=search_term),
+        Q(status_course=published_status),
+        Q(end_date__gte=now())
+    ).annotate(total_enrollments=Count('enrollments')).order_by('start_date')
 
-    # Annotate each course with the total number of enrollments (participants)
-    courses = courses.annotate(total_enrollments=Count('enrollments'))
-
-    # Get the count of filtered courses
+    # Hitung jumlah kursus dan total peserta unik
     courses_count = courses.count()
+    total_participants = courses.aggregate(
+        total_participants=Count('enrollments__user', distinct=True)
+    )['total_participants']
 
-    # Calculate the total number of unique participants across all courses
-    total_participants = courses.aggregate(total_participants=Count('enrollments__user', distinct=True))['total_participants']
-
-    # Implement pagination: Show 6 courses per page
+    # Pagination (6 kursus per halaman)
     paginator = Paginator(courses, 6)
-
-    # Get the current page number from GET params (default to 1 if invalid)
-    page_number = request.GET.get('page', 1)  # Default to page 1 if not specified
-
-    # Ensure the page number is a positive integer
+    page_number = request.GET.get('page', 1)
     try:
         page_number = int(page_number)
         if page_number < 1:
-            page_number = 1  # If the page number is less than 1, set it to 1
+            page_number = 1
     except ValueError:
-        page_number = 1  # If the page number is not a valid integer, set it to 1
+        page_number = 1
 
-    # Get the page object
     try:
         page_obj = paginator.get_page(page_number)
     except EmptyPage:
-        page_obj = paginator.get_page(1)  # If page number is out of range, show first page
+        page_obj = paginator.get_page(1)
 
-    # Pass the instructor, courses, paginated courses, and courses count to the template
+    # Render template
     return render(request, 'home/instructor_profile.html', {
         'instructor': instructor,
         'page_obj': page_obj,
-        'courses_count': courses_count,  # Pass the count to the template
+        'courses_count': courses_count,
         'search_term': search_term,
-        'partner_slug': partner_slug,  # Pass partner_slug to the template
-        'total_participants': total_participants,  # Pass total participants to the template
+        'partner_slug': partner_slug,
+        'total_participants': total_participants,
     })
 #ernroll
 

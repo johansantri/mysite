@@ -54,200 +54,117 @@
 
 {% block content %}
 <!-- Instructor Profile Section -->
-<section class="py-8 bg-gray-100 font-sans">
+<section class="py-10 bg-white font-sans">
   <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-0 bg-white rounded-xl shadow-md overflow-hidden">
-      <!-- Left Column: Sidebar -->
-      <div x-data="{ showBio: false }" class="lg:col-span-4 bg-white border-r border-gray-200 py-6 px-4 flex flex-col items-center">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <!-- Sidebar -->
+      <div x-data="{ showBio: false }" class="lg:col-span-4 bg-gray-50 border border-gray-200 p-6 rounded-xl">
         <!-- Profile Image -->
-        {% if instructor.user.photo %}
-        <img src="{{ instructor.user.photo.url }}" 
-             class="w-40 h-40 rounded-full border-4 border-red-500 shadow-md mb-4 object-cover" 
-             alt="Profile photo of {{ instructor.user.first_name }} {{ instructor.user.last_name }}" 
-             loading="lazy">
-        {% else %}
-        <img src="{% static 'images/default-profile.jpg' %}" 
-             class="w-40 h-40 rounded-full border-4 border-red-500 shadow-md mb-4 object-cover" 
-             alt="Profile photo of {{ instructor.user.first_name }} {{ instructor.user.last_name }}" 
-             loading="lazy">
-        {% endif %}
+        <div class="flex justify-center">
+          <img src="{% if instructor.user.photo %}{{ instructor.user.photo.url }}{% else %}{% static 'images/default-profile.jpg' %}{% endif %}" 
+               alt="{{ instructor.user.first_name }} {{ instructor.user.last_name }}" 
+               class="w-36 h-36 rounded-full object-cover shadow">
+        </div>
 
         <!-- Name and Hobby -->
-        <h1 class="text-2xl font-bold text-gray-900 text-center mb-2">{{ instructor.user.first_name }} {{ instructor.user.last_name }}</h1>
-        <p class="text-gray-500 text-sm mb-4">{{ instructor.user.hobby|default:"No hobby listed" }}</p>
+        <h1 class="text-xl font-semibold text-center mt-4 text-gray-800">{{ instructor.user.first_name }} {{ instructor.user.last_name }}</h1>
+        <p class="text-center text-gray-500 text-sm">{{ instructor.user.hobby|default:"No hobby listed" }}</p>
 
         <!-- University Badge -->
-        {% if partner_slug %}
-        <a href="{% url 'courses:org_partner' partner_slug %}" 
-           class="inline-block bg-red-500 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-red-600 transition-colors mb-4">
-          {{ instructor.user.university }} <i class="fa fa-check ml-1"></i>
-        </a>
-        {% else %}
-        <span class="inline-block bg-gray-500 text-white text-sm font-medium px-4 py-2 rounded-lg mb-4">No University</span>
-        {% endif %}
-
-        <!-- Social Media Icons -->
-        <div class="flex gap-4 mb-4">
-          {% if instructor.user.email %}
-          <a href="mailto:{{ instructor.user.email }}" 
-             class="text-red-500 hover:text-red-600 hover:scale-110 transition-transform" 
-             aria-label="Email {{ instructor.user.first_name }}">
-            <i class="fas fa-envelope fa-lg"></i>
-          </a>
-          {% endif %}
-          {% if instructor.user.twitter %}
-          <a href="{{ instructor.user.twitter }}" 
-             target="_blank" 
-             class="text-red-500 hover:text-red-600 hover:scale-110 transition-transform" 
-             aria-label="Twitter Profile">
-            <i class="fab fa-twitter fa-lg"></i>
-          </a>
-          {% endif %}
-          {% if instructor.user.linkedin %}
-          <a href="{{ instructor.user.linkedin }}" 
-             target="_blank" 
-             class="text-red-500 hover:text-red-600 hover:scale-110 transition-transform" 
-             aria-label="LinkedIn Profile">
-            <i class="fab fa-linkedin fa-lg"></i>
-          </a>
-          {% endif %}
-          {% if instructor.user.youtube %}
-          <a href="{{ instructor.user.youtube }}" 
-             target="_blank" 
-             class="text-red-500 hover:text-red-600 hover:scale-110 transition-transform" 
-             aria-label="YouTube Channel">
-            <i class="fab fa-youtube fa-lg"></i>
-          </a>
-          {% endif %}
-          {% if instructor.user.instagram %}
-          <a href="{{ instructor.user.instagram }}" 
-             target="_blank" 
-             class="text-red-500 hover:text-red-600 hover:scale-110 transition-transform" 
-             aria-label="Instagram Profile">
-            <i class="fab fa-instagram fa-lg"></i>
-          </a>
+        <div class="text-center mt-4">
+          {% if partner_slug %}
+            <a href="{% url 'courses:org_partner' partner_slug %}" class="text-sm text-white bg-gray-800 px-3 py-1 rounded shadow hover:bg-gray-700">
+              {{ instructor.user.university }}
+            </a>
+          {% else %}
+            <span class="text-sm text-white bg-gray-400 px-3 py-1 rounded shadow">No University</span>
           {% endif %}
         </div>
 
-        <!-- Statistics -->
-        <div class="w-full mb-6">
-          <div class="flex flex-col sm:flex-row justify-between gap-4">
-            <div class="text-center flex-1">
-              <p class="text-gray-500 text-sm mb-1">Students</p>
-              <p class="font-bold text-red-500 text-lg">{{ total_participants|default:"0" }}</p>
-            </div>
-            <div class="text-center flex-1">
-              <p class="text-gray-500 text-sm mb-1">Reviews</p>
-              <p class="font-bold text-red-500 text-lg">{{ total_reviews|default:"0" }}</p>
-            </div>
-            <div class="text-center flex-1">
-              <p class="text-gray-500 text-sm mb-1">Courses</p>
-              <p class="font-bold text-red-500 text-lg">{{ courses_count|default:"0" }}</p>
-            </div>
+        <!-- Social Media -->
+        <div class="flex justify-center mt-4 space-x-4 text-gray-600">
+          {% if instructor.user.twitter %}<a href="{{ instructor.user.twitter }}" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>{% endif %}
+          {% if instructor.user.linkedin %}<a href="{{ instructor.user.linkedin }}" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>{% endif %}
+          {% if instructor.user.youtube %}<a href="{{ instructor.user.youtube }}" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>{% endif %}
+          {% if instructor.user.instagram %}<a href="{{ instructor.user.instagram }}" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>{% endif %}
+          {% if instructor.user.facebook %}<a href="{{ instructor.user.facebook }}" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>{% endif %}
+          {% if instructor.user.tiktok %}<a href="{{ instructor.user.tiktok }}" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>{% endif %}
+          {% if instructor.user.email %}<a href="mailto:{{ instructor.user.email }}" aria-label="Email"><i class="fas fa-envelope"></i></a>{% endif %}
+        </div>
+
+        <!-- Stats -->
+        <div class="mt-6 space-y-2">
+          <div class="flex justify-between text-sm text-gray-600">
+            <span>Students</span>
+            <span class="font-medium text-gray-800">{{ total_participants|default:"0" }}</span>
+          </div>
+          <div class="flex justify-between text-sm text-gray-600">
+            <span>Reviews</span>
+            <span class="font-medium text-gray-800">{{ total_reviews|default:"0" }}</span>
+          </div>
+          <div class="flex justify-between text-sm text-gray-600">
+            <span>Courses</span>
+            <span class="font-medium text-gray-800">{{ courses_count|default:"0" }}</span>
           </div>
         </div>
 
         <!-- About Me -->
-        <div class="w-full mb-6">
-          <h4 class="text-red-500 text-sm font-bold uppercase mb-2">About Me</h4>
-          <p class="text-gray-500 text-sm">{{ instructor.bio|truncatechars:100|default:"No bio available" }}</p>
+        <div class="mt-6">
+          <h2 class="text-sm font-semibold text-gray-700 uppercase mb-1">About Me</h2>
+          <p class="text-sm text-gray-600">{{ instructor.bio|truncatechars:100|default:"No bio available" }}</p>
           {% if instructor.bio|length > 100 %}
-          <button 
-            @click="showBio = true" 
-            x-show="!showBio" 
-            class="text-red-500 text-sm hover:text-red-600 transition-colors">
-            Read More
-          </button>
-          <p 
-            x-show="showBio" 
-            x-transition 
-            class="text-gray-500 text-sm">{{ instructor.bio }}</p>
+          <button @click="showBio = true" x-show="!showBio" class="text-sm text-blue-500 hover:underline mt-1">Read More</button>
+          <p x-show="showBio" x-transition class="text-sm text-gray-600 mt-2">{{ instructor.bio }}</p>
           {% endif %}
         </div>
 
         <!-- Experience -->
-        <div class="w-full">
-          <h4 class="text-red-500 text-sm font-bold uppercase mb-2">Experience</h4>
-          <p class="text-gray-500 text-sm mb-1">
-            <strong>{{ instructor.experience_years|default:"0" }} years</strong> | {{ instructor.user.university|default:"N/A" }}
-          </p>
-          <ul class="text-gray-500 text-sm list-disc pl-4">
-            <li>{{ instructor.expertise|default:"No expertise listed" }}</li>
-          </ul>
+        <div class="mt-6">
+          <h2 class="text-sm font-semibold text-gray-700 uppercase mb-1">Experience</h2>
+          <p class="text-sm text-gray-600">{{ instructor.experience_years|default:"0" }} years | {{ instructor.user.university|default:"N/A" }}</p>
+          <p class="text-sm text-gray-600 mt-1">{{ instructor.expertise|default:"No expertise listed" }}</p>
         </div>
       </div>
 
-      <!-- Right Column: Main Content -->
-      <div class="lg:col-span-8 py-6 px-6">
-        <!-- Courses -->
-        <div class="mb-8">
-          <!-- Course Cards -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {% for course in page_obj %}
-            <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow">
-              <img 
-                src="{{ course.image.url|default:'https://via.placeholder.com/300x180' }}" 
-                class="w-full h-44 object-cover rounded-t-xl" 
-                alt="{{ course.course_name }}" 
-                loading="lazy">
-              <div class="p-4">
-                <h6 class="text-base font-bold">
-                  <a href="{% url 'courses:course_lms_detail' course.id course.slug %}" 
-                     class="text-gray-900 hover:text-red-500 transition-colors">
-                    {{ course.course_name|truncatechars:40|default:"Untitled Course" }}
-                  </a>
-                </h6>
-                <p class="text-gray-500 text-sm mb-1">End: {{ course.end_date|default:"N/A" }}</p>
-                <p class="text-gray-500 text-sm mb-1">
-                  Status: <strong>{% if course.status_course %}Published{% else %}Unpublished{% endif %}</strong>
-                </p>
-                <p class="text-gray-500 text-sm mb-0">Enrolled: {{ course.total_enrollments|default:"0" }}</p>
-              </div>
+      <!-- Course List -->
+      <div class="lg:col-span-8">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Courses by {{ instructor.user.first_name }}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {% for course in page_obj %}
+          <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+            <img src="{{ course.image.url|default:'https://via.placeholder.com/300x180' }}" alt="{{ course.course_name }}" class="w-full h-40 object-cover">
+            <div class="p-4">
+              <h3 class="font-semibold text-gray-800 text-base truncate">{{ course.course_name }}</h3>
+              <p class="text-sm text-gray-500">Ends: {{ course.end_date|default:"N/A" }}</p>
+              <p class="text-sm text-gray-500">Enrolled: {{ course.total_enrollments|default:"0" }}</p>
+              <a href="{% url 'courses:course_lms_detail' course.id course.slug %}" class="text-sm text-blue-500 hover:underline">View Course</a>
             </div>
-            {% empty %}
-            <p class="text-gray-500">No courses found.</p>
-            {% endfor %}
           </div>
+          {% empty %}
+          <p class="text-gray-500">No courses available.</p>
+          {% endfor %}
+        </div>
 
-          <!-- Pagination -->
-          {% if page_obj.paginator.num_pages > 1 %}
-          <nav class="mt-6" aria-label="Course pagination">
-            <ul class="flex justify-center gap-2">
-              <li class="{% if not page_obj.has_previous %}opacity-50{% endif %}">
-                {% if page_obj.has_previous %}
-                <a class="inline-flex px-3 py-1 rounded-lg text-red-500 border border-gray-200 hover:bg-red-500 hover:text-white transition-colors" 
-                   href="?page={{ page_obj.previous_page_number }}" 
-                   aria-label="Previous page">
-                  ‹
-                </a>
-                {% else %}
-                <span class="inline-flex px-3 py-1 rounded-lg text-gray-400 border border-gray-200">‹</span>
-                {% endif %}
-              </li>
-              {% for page_num in page_obj.paginator.page_range %}
-              <li>
-                <a class="inline-flex px-3 py-1 rounded-lg border border-gray-200 transition-colors {% if page_obj.number == page_num %}bg-red-500 text-white{% else %}text-red-500 hover:bg-red-500 hover:text-white{% endif %}" 
-                   href="?page={{ page_num }}" 
-                   {% if page_obj.number == page_num %}aria-current="page"{% endif %}>
-                  {{ page_num }}
-                </a>
-              </li>
-              {% endfor %}
-              <li class="{% if not page_obj.has_next %}opacity-50{% endif %}">
-                {% if page_obj.has_next %}
-                <a class="inline-flex px-3 py-1 rounded-lg text-red-500 border border-gray-200 hover:bg-red-500 hover:text-white transition-colors" 
-                   href="?page={{ page_obj.next_page_number }}" 
-                   aria-label="Next page">
-                  ›
-                </a>
-                {% else %}
-                <span class="inline-flex px-3 py-1 rounded-lg text-gray-400 border border-gray-200">›</span>
-                {% endif %}
-              </li>
-            </ul>
-          </nav>
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="mt-6 flex justify-center space-x-2">
+          {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}" class="text-sm px-3 py-1 border rounded hover:bg-gray-200">Previous</a>
+          {% endif %}
+
+          {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+              <span class="text-sm px-3 py-1 border rounded bg-gray-800 text-white">{{ num }}</span>
+            {% else %}
+              <a href="?page={{ num }}" class="text-sm px-3 py-1 border rounded hover:bg-gray-200">{{ num }}</a>
+            {% endif %}
+          {% endfor %}
+
+          {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}" class="text-sm px-3 py-1 border rounded hover:bg-gray-200">Next</a>
           {% endif %}
         </div>
+        {% endif %}
       </div>
     </div>
   </div>
