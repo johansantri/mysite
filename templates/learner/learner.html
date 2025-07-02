@@ -163,6 +163,8 @@
                                             <i class="fas fa-check-circle text-green-600 text-xl mr-3"></i>
                                             <div class="flex-grow">
                                                 <h6 class="font-semibold mb-0 text-gray-900">{{ course_data.enrollment.course.course_name }}</h6>
+                                                <small class="text-gray-500"> {{ course_data.enrollment.course.org_partner.name.name }}</small>
+                                                <br>
                                                 <small class="text-gray-500">
                                                     Score: {{ course_data.total_score|floatformat:1 }} /
                                                     Threshold: {{ course_data.threshold|floatformat:1 }}

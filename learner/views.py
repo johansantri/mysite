@@ -1288,48 +1288,49 @@ def render_content(request, assessment, course):
     return response
 
 def learner_detail(request, username):
-    """
-    Menampilkan profil learner secara publik, termasuk kursus yang diselesaikan (lulus),
-    informasi instructor jika ada, dan progres belajar.
-    """
     learner = get_object_or_404(CustomUser, username=username)
 
-    # Ambil semua enrollment dan prefetch relasi yang diperlukan
-    enrollments = Enrollment.objects.filter(user=learner).select_related('course')
+    # Ambil semua enrollment dan course-nya sekaligus
+    enrollments = Enrollment.objects.filter(user=learner).select_related('course').prefetch_related(
+        'course__sections__materials',
+        'course__sections__assessments__questions'
+    )
 
-    # Jika learner juga instructor, ambil profil instructor-nya
     instructor = Instructor.objects.filter(user=learner).first()
 
+    all_courses_data = []
     completed_courses_data = []
 
     for enrollment in enrollments:
         course = enrollment.course
 
-        # Hitung progress materi
+        # Ambil semua materials & assessments untuk course ini
         materials = Material.objects.filter(section__courses=course).distinct()
-        total_materials = materials.count()
-        materials_read = MaterialRead.objects.filter(user=learner, material__in=materials).count()
-        materials_read_percentage = (materials_read / total_materials * 100) if total_materials > 0 else 0
-
-        # Hitung progress assessment
         assessments = Assessment.objects.filter(section__courses=course).distinct()
+
+        total_materials = materials.count()
         total_assessments = assessments.count()
-        assessments_completed = AssessmentRead.objects.filter(user=learner, assessment__in=assessments).count()
-        assessments_completed_percentage = (assessments_completed / total_assessments * 100) if total_assessments > 0 else 0
 
-        # Gabungkan progress keseluruhan
-        progress = (materials_read_percentage + assessments_completed_percentage) / 2 if (total_materials + total_assessments) > 0 else 0
+        # Progress material
+        materials_read = MaterialRead.objects.filter(user=learner, material__in=materials).count()
+        materials_progress = (materials_read / total_materials * 100) if total_materials > 0 else 0
 
-        # Simpan atau update ke model CourseProgress
+        # Progress assessment
+        assessments_read = AssessmentRead.objects.filter(user=learner, assessment__in=assessments).count()
+        assessments_progress = (assessments_read / total_assessments * 100) if total_assessments > 0 else 0
+
+        progress = (materials_progress + assessments_progress) / 2 if (total_materials + total_assessments) > 0 else 0
+
+        # Simpan ke CourseProgress
         course_progress, _ = CourseProgress.objects.get_or_create(user=learner, course=course)
         course_progress.progress_percentage = progress
         course_progress.save()
 
-        # Ambil ambang batas kelulusan
+        # Ambang batas kelulusan
         grade_range = GradeRange.objects.filter(course=course, name='Pass').first()
         passing_threshold = grade_range.min_grade if grade_range else Decimal('52.00')
 
-        # Hitung nilai akhir
+        # Hitung skor akhir
         total_score = Decimal('0')
         total_max_score = Decimal('0')
 
@@ -1338,38 +1339,44 @@ def learner_detail(request, username):
             total_questions = assessment.questions.count()
 
             if total_questions > 0:
-                correct_answers = QuestionAnswer.objects.filter(
+                correct = QuestionAnswer.objects.filter(
                     user=learner, question__assessment=assessment, choice__is_correct=True
                 ).count()
-                score_value = (Decimal(correct_answers) / Decimal(total_questions)) * assessment.weight
+                score_value = (Decimal(correct) / Decimal(total_questions)) * assessment.weight
             else:
                 submission = Submission.objects.filter(askora__assessment=assessment, user=learner).order_by('-submitted_at').first()
                 if submission:
                     assessment_score = AssessmentScore.objects.filter(submission=submission).first()
-                    if assessment_score:
+                    if assessment_score and assessment_score.final_score is not None:
                         score_value = assessment_score.final_score
 
+            # Tambahkan ke total
             total_score += min(score_value, assessment.weight)
             total_max_score += assessment.weight
 
         overall_percentage = (total_score / total_max_score * 100) if total_max_score > 0 else 0
-
-        # Penentu apakah kursus dianggap selesai/lulus
         is_completed = progress == 100 and overall_percentage >= passing_threshold
 
+        course_data = {
+            'enrollment': enrollment,
+            'course': course,
+            'progress': round(progress, 2),
+            'overall_percentage': round(overall_percentage, 2),
+            'threshold': passing_threshold,
+            'total_score': round(total_score, 2),
+            'is_completed': is_completed,
+        }
+
+        all_courses_data.append(course_data)
+
         if is_completed:
-            completed_courses_data.append({
-                'enrollment': enrollment,
-                'progress': progress,
-                'overall_percentage': overall_percentage,
-                'threshold': passing_threshold,
-                'total_score': total_score,
-            })
+            completed_courses_data.append(course_data)
 
     context = {
         'learner': learner,
-        'completed_courses': completed_courses_data,
         'instructor': instructor,
+        'all_courses': all_courses_data,
+        'completed_courses': completed_courses_data,
     }
 
     return render(request, 'learner/learner.html', context)
