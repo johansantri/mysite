@@ -28,7 +28,34 @@ from django.db.models.functions import TruncMonth
 from collections import defaultdict
 from decimal import Decimal
 from django.db.models.functions import TruncWeek
+from django.views.decorators.http import require_GET
+from django_ratelimit.decorators import ratelimit
+from django.views.decorators.cache import cache_page
 
+@ratelimit(key='ip', rate='60/m', block=True)
+@require_GET
+def partner_list_view(request):
+    partners = Partner.objects.all().order_by('id')
+
+    page_number = request.GET.get('page', '1')
+    if not page_number.isdigit():
+        page_number = '1'
+
+    paginator = Paginator(partners, 12)
+    page_obj = paginator.get_page(page_number)
+
+    tw_colors = [
+        "bg-green-100 text-green-700 hover:border-green-500",
+        "bg-blue-100 text-blue-700 hover:border-blue-500",
+        "bg-yellow-100 text-yellow-700 hover:border-yellow-500",
+        "bg-teal-100 text-teal-700 hover:border-teal-500",
+        "bg-purple-100 text-purple-700 hover:border-purple-500",
+    ]
+
+    return render(request, 'partner/partner_list.html', {
+        'partners': page_obj,
+        'tw_colors': tw_colors,
+    })
 
 
 @login_required

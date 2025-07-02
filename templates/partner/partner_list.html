@@ -1,0 +1,100 @@
+{% extends 'home/base.html' %}
+{% load custom_filters %}
+{% load static %}
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Heading -->
+    <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 text-center sm:text-left">
+        Our Partners
+    </h2>
+
+    <!-- Partner Cards Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {% for partner in partners %}
+            {% if partner.name and partner.name.slug %}
+                <a href="{% url 'courses:org_partner' partner.name.slug %}"
+                   class="block bg-white shadow-lg rounded-xl p-4 border border-gray-200 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 active:scale-95 group">
+                    <!-- Partner Name -->
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3 text-center">
+                        {{ partner.name|default:"Unnamed Partner" }}
+                    </h3>
+                    <!-- Partner Logo -->
+                    {% if partner.logo %}
+                        <img src="{{ partner.logo.url }}" alt="{{ partner.name }} logo"
+                             class="h-24 sm:h-32 w-full object-contain mx-auto transition-transform duration-300 group-hover:scale-105">
+                    {% else %}
+                        <div class="h-24 sm:h-32 w-full flex items-center justify-center bg-gray-100 rounded-lg">
+                            <span class="text-gray-500 text-sm">No logo available</span>
+                        </div>
+                    {% endif %}
+                </a>
+            {% else %}
+                <div class="bg-white shadow-lg rounded-xl p-4 border border-gray-200">
+                    <!-- Partner Name -->
+                    <h3 class="text-lg font-semibold text-gray-900 mb-3 text-center">
+                        {{ partner.name|default:"Unnamed Partner" }}
+                    </h3>
+                    <!-- Partner Logo -->
+                    {% if partner.logo %}
+                        <img src="{{ partner.logo.url }}" alt="{{ partner.name }} logo"
+                             class="h-24 sm:h-32 w-full object-contain mx-auto">
+                    {% else %}
+                        <div class="h-24 sm:h-32 w-full flex items-center justify-center bg-gray-100 rounded-lg">
+                            <span class="text-gray-500 text-sm">No logo available</span>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% empty %}
+            <div class="col-span-full text-center py-8">
+                <p class="text-gray-500 text-lg">No partners available at the moment.</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination Controls -->
+    {% if partners.paginator.num_pages > 1 %}
+        <div class="mt-8 flex flex-wrap justify-center gap-2">
+            <!-- Previous Button -->
+            {% if partners.has_previous %}
+                <a href="?page={{ partners.previous_page_number }}"
+                   class="px-3 py-2 sm:px-4 sm:py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm sm:text-base">
+                    « Prev
+                </a>
+            {% else %}
+                <span class="px-3 py-2 sm:px-4 sm:py-2 bg-gray-100 text-gray-400 rounded-lg text-sm sm:text-base cursor-not-allowed">
+                    « Prev
+                </span>
+            {% endif %}
+
+            <!-- Page Numbers -->
+            {% for num in partners.paginator.page_range %}
+                {% if num|add:-2 <= partners.number and num|add:2 >= partners.number %}
+                    {% if num == partners.number %}
+                        <span class="px-3 py-2 sm:px-4 sm:py-2 bg-red-600 text-white rounded-lg text-sm sm:text-base font-semibold">
+                            {{ num }}
+                        </span>
+                    {% else %}
+                        <a href="?page={{ num }}"
+                           class="px-3 py-2 sm:px-4 sm:py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm sm:text-base">
+                            {{ num }}
+                        </a>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+
+            <!-- Next Button -->
+            {% if partners.has_next %}
+                <a href="?page={{ partners.next_page_number }}"
+                   class="px-3 py-2 sm:px-4 sm:py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm sm:text-base">
+                    Next »
+                </a>
+            {% else %}
+                <span class="px-3 py-2 sm:px-4 sm:py-2 bg-gray-100 text-gray-400 rounded-lg text-sm sm:text-base cursor-not-allowed">
+                    Next »
+                </span>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

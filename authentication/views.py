@@ -54,6 +54,14 @@ from django.http import HttpResponseServerError, HttpResponseBadRequest
 from django.db import DatabaseError
 from django.utils.text import slugify
 
+
+from django.core.paginator import Paginator
+from django.shortcuts import render
+
+
+
+
+
 def about(request):
     return render(request, 'home/about.html')
 
