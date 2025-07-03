@@ -46,32 +46,50 @@ document.addEventListener('DOMContentLoaded', function() {
                 const instructorPhoto = course.instructor_photo || '/static/images/default-avatar.png';
 
                 const courseHtml = `
-                    <article>
-                        <div class="bg-white border border-red-500 rounded-xl shadow-md hover:shadow-lg hover:-translate-y-1 transition-all h-full">
-                            <img src="${course.image}" alt="${course.course_name}" class="card-img-top rounded-t-xl" loading="lazy" />
-                            <div class="p-4">
-                                <h5 class="font-bold text-base mb-2">${course.course_name}</h5>
-                                <div class="flex items-center mb-2">
-                                    <img src="${course.org_logo}" alt="Logo ${course.org_kode}" class="rounded-full w-8 h-8" />
-                                    <div class="ml-2">
-                                        <p class="text-xs mb-0">
-                                            <a href="${universityUrl}" class="text-gray-900 font-semibold no-underline">${course.org_kode}</a>
-                                        </p>
-                                        <p class="text-gray-500 text-xs">${course.instructor_name}</p>
+                                <article class="group relative bg-white rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 overflow-hidden">
+                                    <!-- Diagonal Cut Background -->
+                                    <div class="absolute top-0 left-0 w-full h-1/2 bg-[linear-gradient(45deg,#000000_0%,#333333_100%)] opacity-10 transform -skew-y-6"></div>
+                                    
+                                    <!-- Course Thumbnail -->
+                                    <div class="relative z-10">
+                                    <img src="${course.image || 'https://via.placeholder.com/300x150'}" alt="Thumbnail for ${course.course_name}" class="w-full h-48 object-cover rounded-t-2xl" loading="lazy" width="300" height="150">
                                     </div>
-                                </div>
-                                <div class="flex items-center mb-3">
-                                    ${stars}
-                                    <small class="text-gray-500 ml-1 text-xs">(${course.avg_rating.toFixed(1)}) (${course.num_ratings} reviews)</small>
-                                </div>
-                                <div class="mb-3">
-                                    <small class="text-gray-500 text-xs">Enrolled: ${course.num_enrollments}</small>
-                                </div>
-                                <a href="${courseUrl}" class="block w-full text-center bg-white border border-red-500 text-red-500 px-4 py-2 rounded hover:bg-red-500 hover:text-white no-underline text-xs min-h-[44px] flex items-center justify-center">Detail</a>
-                            </div>
-                        </div>
-                    </article>
-                `;
+
+                                    <!-- Card Content -->
+                                    <div class="relative z-10 p-6">
+                                    <!-- Course Title -->
+                                    <h5 class="font-semibold text-lg text-black group-hover:text-red-500 transition-colors mb-3">
+                                        <a href="${courseUrl}" class="no-underline text-black group-hover:text-red-500 focus:text-red-500">${course.course_name}</a>
+                                    </h5>
+
+                                    <!-- Organization and Instructor -->
+                                    <div class="flex items-center mb-4">
+                                        <img src="${course.org_logo || 'https://via.placeholder.com/40x40'}" alt="Logo of ${course.org_kode}" class="w-10 h-10 rounded-full" loading="lazy" width="40" height="40">
+                                        <div class="ml-3">
+                                        <p class="text-sm font-medium text-black hover:text-red-500 transition-colors mb-1">
+                                            <a href="${universityUrl}" class="no-underline text-black hover:text-red-500 focus:text-red-500">${course.org_kode}</a>
+                                        </p>
+                                        <p class="text-sm text-gray-600 hover:text-red-500 transition-colors">${course.instructor_name}</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Rating and Enrollment -->
+                                    <div class="flex items-center mb-4">
+                                        <div class="flex">
+                                        ${stars} <!-- Assuming stars is a string of star icons (e.g., <i class="fas fa-star text-yellow-500"></i>) -->
+                                        </div>
+                                        <span class="text-sm text-gray-600 ml-2 hover:text-red-500 transition-colors">(${course.avg_rating.toFixed(1)}) (${course.num_ratings} reviews)</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 mb-4 hover:text-red-500 transition-colors">Enrolled: ${course.num_enrollments}</p>
+
+                                    <!-- Action Buttons -->
+                                    <div class="flex justify-between gap-4">
+                                        <a href="${courseUrl}" class="flex-1 text-center bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 hover:text-red-500 focus:outline focus:outline-2 focus:outline-red-500 transition-colors text-sm font-medium">View Details</a>
+                                        <button class="flex-1 text-center bg-gray-200 text-black px-4 py-2 rounded-lg hover:bg-gray-300 hover:text-red-500 focus:outline focus:outline-2 focus:outline-red-500 transition-colors text-sm font-medium">Add to Cart</button>
+                                    </div>
+                                    </div>
+                                </article>
+                                `;
 
                 coursesList.insertAdjacentHTML('beforeend', courseHtml);
             });

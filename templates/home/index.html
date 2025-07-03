@@ -5,28 +5,27 @@
 {% block meta %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Join LMSKu to explore {{ total_courses }}+ online courses, learn from {{ total_instructors }} expert instructors, and earn recognized certificates anytime, anywhere.">
+    <meta name="description" content="Master new skills with LMSKu’s {{ total_courses }}+ online courses, guided by {{ total_instructors }} expert instructors. Start your journey today!">
     <meta name="keywords" content="online learning, LMSKu, e-learning, courses, education, {{ popular_categories|join:', ' }}, certifications">
     <meta name="author" content="LMSKu Team">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="LMSKu - Learn Without Limits">
-    <meta name="twitter:description" content="Discover {{ total_courses }}+ courses on LMSKu, taught by {{ total_instructors }} expert instructors. Start your learning journey today!">
+    <meta name="twitter:title" content="LMSKu - Master Skills, Unleash Potential">
+    <meta name="twitter:description" content="Explore {{ total_courses }}+ courses and earn certifications with LMSKu. Learn from {{ total_instructors }} experts, anytime, anywhere!">
     <meta name="twitter:image" content="{% static 'assets/img/lmsku-banner.jpg' %}">
     <meta name="twitter:site" content="@LMSKu">
-    <meta property="og:title" content="LMSKu - Your Online Learning Platform">
-    <meta property="og:description" content="Explore {{ total_courses }}+ courses, connect with {{ total_instructors }} instructors, and grow your skills with LMSKu's flexible learning platform.">
+    <meta property="og:title" content="LMSKu - Your Path to Mastery">
+    <meta property="og:description" content="Join {{ total_users }}+ learners on LMSKu to explore {{ total_courses }}+ courses and unlock your potential with expert-led education.">
     <meta property="og:image" content="{% static 'assets/img/lmsku-banner.jpg' %}">
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="LMSKu">
-    <!-- Structured Data for Website -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "WebSite",
         "name": "LMSKu",
         "url": "{{ request.build_absolute_uri }}",
-        "description": "LMSKu is an online learning platform offering {{ total_courses }}+ courses and certifications.",
+        "description": "LMSKu offers {{ total_courses }}+ courses and certifications to empower your learning journey.",
         "potentialAction": {
             "@type": "SearchAction",
             "target": "{{ request.build_absolute_uri }}search?q={search_term_string}",
@@ -35,294 +34,269 @@
     }
     </script>
 {% endblock %}
+
 {% block content %}
-
-
- <section class="relative bg-gradient-to-r from-red-500 to-blue-500 text-white py-16 md:py-20 text-center overflow-hidden border-b-4 border-red-600" aria-labelledby="hero-heading">
-    <div class="container mx-auto px-4 relative z-10">
-        <h1 id="hero-heading" class="text-3xl sm:text-4xl md:text-5xl font-bold mb-5 animate-[fadeInDown_1s_ease-out] [text-shadow:_2px_2px_6px_rgba(0,0,0,0.3)]">Learn Without Limits</h1>
-        <p class="text-base md:text-xl mb-8 animate-[fadeInUp_1s_ease-out_0.3s] animate-fill-both">Discover the best courses to enhance your skills anytime, anywhere.</p>
-        {% if request.user.is_authenticated %}
-            <a class="inline-block bg-white text-red-500 font-semibold px-6 py-3 rounded-full hover:bg-red-600 hover:text-white border-2 border-red-500 hover:border-white transition-all shadow-lg hover:shadow-xl animate-[fadeInUp_1s_ease-out_0.6s] animate-fill-both text-sm md:text-lg min-w-[150px]" href="{% url 'authentication:course_list' %}">Explore</a>
-        {% else %}
-            <a class="inline-block bg-white text-red-500 font-semibold px-6 py-3 rounded-full hover:bg-red-600 hover:text-white border-2 border-red-500 hover:border-white transition-all shadow-lg hover:shadow-xl animate-[fadeInUp_1s_ease-out_0.6s] animate-fill-both text-sm md:text-lg min-w-[150px]" href="{% url 'authentication:register' %}">Register</a>
-        {% endif %}
-       
+<!-- Hero Section -->
+<section class="bg-gray-900 text-white py-16 sm:py-20 md:py-24 relative overflow-hidden" aria-labelledby="hero-heading">
+  <div class="absolute inset-0 bg-gradient-to-br from-black to-gray-700 opacity-50"></div>
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <h1 id="hero-heading" class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 text-center hover:text-red-500 transition-colors duration-300">Master New Skills Today!</h1>
+    <p class="text-base sm:text-lg md:text-xl lg:text-2xl mb-8 text-center text-gray-200 hover:text-red-500 transition-colors duration-300 max-w-3xl mx-auto">Join {{ total_users }}+ learners exploring {{ total_courses }}+ expert-led courses, anytime, anywhere.</p>
+    <div class="text-center">
+      {% if request.user.is_authenticated %}
+        <a href="{% url 'authentication:course_list' %}" class="inline-block bg-white text-black font-semibold px-6 py-3 sm:px-8 sm:py-4 rounded-lg hover:bg-gray-200 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base">Discover Courses</a>
+      {% else %}
+        <a href="{% url 'authentication:register' %}" class="inline-block bg-white text-black font-semibold px-6 py-3 sm:px-8 sm:py-4 rounded-lg hover:bg-gray-200 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base">Start Learning Now</a>
+      {% endif %}
     </div>
+  </div>
 </section>
 
+<!-- Why LMSKu Section -->
+<section class="py-16 sm:py-20 bg-white" aria-labelledby="why-lmsku-heading">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 id="why-lmsku-heading" class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-12 text-center text-black hover:text-red-500 transition-colors duration-300">Why Learn with LMSKu?</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+      <div class="bg-gray-100 p-6 sm:p-8 rounded-2xl text-center transform rotate-2 hover:scale-105 transition-all duration-300 animate-fade-in-up">
+        <i class="fas fa-book text-3xl sm:text-4xl text-black mb-4"></i>
+        <p class="font-bold text-lg sm:text-xl text-black">{{ total_courses }}</p>
+        <p class="text-sm sm:text-base text-gray-600 hover:text-red-500 transition-colors duration-300">Expert-Curated Courses</p>
+      </div>
+      <div class="bg-gray-100 p-6 sm:p-8 rounded-2xl text-center transform -rotate-2 hover:scale-105 transition-all duration-300 animate-fade-in-up">
+        <i class="fas fa-users text-3xl sm:text-4xl text-black mb-4"></i>
+        <p class="font-bold text-lg sm:text-xl text-black">{{ total_users }}</p>
+        <p class="text-sm sm:text-base text-gray-600 hover:text-red-500 transition-colors duration-300">Global Learners</p>
+      </div>
+      <div class="bg-gray-100 p-6 sm:p-8 rounded-2xl text-center transform rotate-2 hover:scale-105 transition-all duration-300 animate-fade-in-up">
+        <i class="fas fa-chalkboard-teacher text-3xl sm:text-4xl text-black mb-4"></i>
+        <p class="font-bold text-lg sm:text-xl text-black">{{ total_instructors }}</p>
+        <p class="text-sm sm:text-base text-gray-600 hover:text-red-500 transition-colors duration-300">Top Instructors</p>
+      </div>
+      <div class="bg-gray-100 p-6 sm:p-8 rounded-2xl text-center transform -rotate-2 hover:scale-105 transition-all duration-300 animate-fade-in-up">
+        <i class="fas fa-certificate text-3xl sm:text-4xl text-black mb-4"></i>
+        <p class="font-bold text-lg sm:text-xl text-black">5K+</p>
+        <p class="text-sm sm:text-base text-gray-600 hover:text-red-500 transition-colors duration-300">Certificates Earned</p>
+      </div>
+    </div>
+  </div>
+</section>
 
+<!-- Popular Categories Section -->
+<section class="py-16 sm:py-20 bg-gray-50 relative overflow-hidden" aria-labelledby="categories-heading">
+  <div class="absolute inset-0 bg-gradient-to-br from-black to-gray-700 opacity-10 transform -skew-y-6"></div>
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <h2 id="categories-heading" class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-12 text-center text-black hover:text-red-500 transition-colors duration-300">Explore Top Categories</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
+      {% for category in popular_categories %}
+        <a href="{% url 'courses:category_list' category.slug %}" class="no-underline" aria-label="Explore {{ category.name }} courses">
+          <div class="bg-white p-6 sm:p-8 rounded-2xl text-center hover:bg-gray-100 hover:scale-105 transition-all duration-300 animate-fade-in-up shadow-md">
+            <span class="font-semibold text-base sm:text-lg text-black hover:text-red-500 transition-colors duration-300">{{ category.name }}</span>
+            <p class="text-xs sm:text-sm text-gray-600 mt-2">{{ category.num_courses }} Courses</p>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
 
-
-<section class="py-10 bg-white" aria-label="Statistik LMS">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 text-center">
-                <div class="bg-gray-50 p-3 rounded-lg shadow-md hover:shadow-lg hover:-translate-y-1 transition-transform">
-                    <i class="fas fa-book text-2xl md:text-4xl mb-2 text-red-500"></i>
-                    <p class="font-bold text-lg md:text-2xl mb-0 text-red-500">{{ total_courses }}</p>
-                    <p class="text-xs md:text-base">Courses</p>
-                </div>
-                <div class="bg-gray-50 p-3 rounded-lg shadow-md hover:shadow-lg hover:-translate-y-1 transition-transform">
-                    <i class="fas fa-users text-2xl md:text-4xl mb-2 text-red-500"></i>
-                    <p class="font-bold text-lg md:text-2xl mb-0 text-red-500">{{ total_users }}</p>
-                    <p class="text-xs md:text-base">Users</p>
-                </div>
-                <div class="bg-gray-50 p-3 rounded-lg shadow-md hover:shadow-lg hover:-translate-y-1 transition-transform">
-                    <i class="fas fa-chalkboard-teacher text-2xl md:text-4xl mb-2 text-red-500"></i>
-                    <p class="font-bold text-lg md:text-2xl mb-0 text-red-500">{{ total_instructors }}</p>
-                    <p class="text-xs md:text-base">Instructors</p>
-                </div>
-                <div class="bg-gray-50 p-3 rounded-lg shadow-md hover:shadow-lg hover:-translate-y-1 transition-transform">
-                    <i class="fas fa-handshake text-2xl md:text-4xl mb-2 text-red-500"></i>
-                    <p class="font-bold text-lg md:text-2xl mb-0 text-red-500">{{ total_partners }}+</p>
-                    <p class="text-xs md:text-base">Partners</p>
-                </div>
-                <div class="bg-gray-50 p-3 rounded-lg shadow-md hover:shadow-lg hover:-translate-y-1 transition-transform">
-                    <i class="fas fa-certificate text-2xl md:text-4xl mb-2 text-red-500"></i>
-                    <p class="font-bold text-lg md:text-2xl mb-0 text-red-500">5K+</p>
-                    <p class="text-xs md:text-base">Certificates</p>
-                </div>
+<!-- Popular Courses Section -->
+<section class="py-16 sm:py-20 bg-gray-50 relative overflow-hidden" aria-labelledby="courses-heading">
+  <div class="absolute inset-0 bg-gradient-to-br from-black to-gray-700 opacity-10 transform -skew-y-6"></div>
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <h2 id="courses-heading" class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-12 text-center text-black hover:text-red-500 transition-colors duration-300">Top 4 Courses to Transform Your Skills</h2>
+    <div id="courses-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+      {% for course in popular_courses|slice:":4" %}
+        <div class="relative bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 group overflow-hidden animate-fade-in-up">
+          <div class="absolute top-0 left-0 w-full h-1/3 bg-gradient-to-br from-black to-gray-700 opacity-20 transform -skew-y-6"></div>
+          <div class="relative z-10">
+            <div class="relative w-full h-40 sm:h-48 bg-gray-200">
+              <img src="{{ course.thumbnail.url|default:'https://via.placeholder.com/300x150' }}" alt="Thumbnail for {{ course.title }}" class="w-full h-full object-contain rounded-t-2xl" loading="lazy" width="300" height="150">
             </div>
+            <div class="p-4 sm:p-6">
+              <h3 class="font-semibold text-base sm:text-lg text-black group-hover:text-red-500 transition-colors duration-300 line-clamp-2">
+                <a href="{% url 'courses:course_detail' course.id course.slug %}" class="no-underline text-black group-hover:text-red-500 focus:text-red-500">{{ course.title }}</a>
+              </h3>
+              <p class="text-xs sm:text-sm text-gray-600 mb-3 group-hover:text-red-500 transition-colors duration-300">{{ course.instructor_name|default:"Expert Instructor" }} • {{ course.org_name|default:"LMSKu" }}</p>
+              <div class="flex items-center mb-3">
+                <div class="flex">
+                  {% for i in "12345" %}
+                    <i class="fas fa-star text-yellow-500 text-xs sm:text-sm"></i>
+                  {% endfor %}
+                </div>
+                <span class="text-xs sm:text-sm text-gray-600 ml-2 group-hover:text-red-500 transition-colors duration-300">{{ course.rating|default:"4.5" }} ({{ course.num_reviews|default:"100" }} reviews)</span>
+              </div>
+              <p class="text-xs sm:text-sm text-gray-600 mb-4 group-hover:text-red-500 transition-colors duration-300">Enrolled: {{ course.num_enrollments|default:"500" }}</p>
+              <div class="flex justify-between gap-3 sm:gap-4">
+                <button class="flex-1 bg-black text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-gray-800 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-xs sm:text-sm font-medium">Add to Cart</button>
+                <button class="flex-1 bg-gray-200 text-black px-3 sm:px-4 py-2 rounded-lg hover:bg-gray-300 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-xs sm:text-sm font-medium">Wishlist</button>
+              </div>
+            </div>
+            {% if course.is_bestseller %}
+              <span class="absolute top-3 left-3 bg-gray-800 text-white text-xs font-semibold px-2 sm:px-3 py-1 rounded-full shadow-md">Bestseller</span>
+            {% endif %}
+          </div>
         </div>
-    </section>
-   
-    
-<section class="py-10 bg-gray-50" aria-labelledby="categories-heading">
-    <div class="container mx-auto px-4">
-        <h2 id="categories-heading" class="text-xl md:text-3xl font-bold mb-6 text-left">Popular Categories</h2>
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-            {% for category in popular_categories %}
-                {% with color=tw_colors|index:forloop.counter0 %}
-                <a href="{% url 'courses:category_list' category.slug %}" class="no-underline" aria-label="Lihat kursus dalam kategori {{ category.name }}">
-                    <div class="{{ color }} p-3 rounded-xl text-center shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all border-2 border-transparent hover:border-current min-h-[80px] flex flex-col justify-center">
-                        <span class="font-bold text-xs md:text-base">{{ category.name }}</span>
-                        <small class="mt-1 text-xs">{{ category.num_courses }} Courses</small>
-                    </div>
-                </a>
-                {% endwith %}
+      {% empty %}
+        <p class="text-center text-gray-600 text-base sm:text-lg col-span-full">No courses available.</p>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-10 sm:mt-12">
+      <a href="{% url 'authentication:course_list' %}" class="inline-block bg-black text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-lg hover:bg-gray-800 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base">Explore All Courses</a>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-16 sm:py-20 bg-gray-50" aria-labelledby="testimonials-heading">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 id="testimonials-heading" class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-12 text-center text-black hover:text-red-500 transition-colors duration-300">What Our Learners Say</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+      {% for testimonial in testimonials|slice:":3" %}
+        <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-md hover:scale-105 transition-all duration-300 animate-fade-in-up">
+          <p class="text-sm sm:text-base text-gray-600 italic group-hover:text-red-500 transition-colors duration-300 line-clamp-3">"{{ testimonial.quote|truncatewords:20 }}"</p>
+          <p class="font-semibold text-base sm:text-lg text-black mt-4">{{ testimonial.author }}</p>
+          <p class="text-xs sm:text-sm text-gray-600">{{ testimonial.role|default:"Learner" }}</p>
+          <div class="flex justify-center mt-3 sm:mt-4">
+            {% for i in "12345" %}
+              <i class="fas fa-star text-yellow-500 text-xs sm:text-sm"></i>
             {% endfor %}
-
+          </div>
         </div>
+      {% empty %}
+        <p class="text-center text-gray-600 text-base sm:text-lg col-span-full">No testimonials available.</p>
+      {% endfor %}
     </div>
+  </div>
 </section>
 
-        <section class="py-10 bg-white" aria-labelledby="features-heading">
-            <div class="container mx-auto px-4">
-                <h2 id="features-heading" class="text-xl md:text-3xl font-bold mb-6 text-left">Why Choose Us?</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-gray-50 p-4 text-center rounded-lg shadow-md hover:shadow-lg hover:-translate-y-1 transition-all border border-transparent hover:border-red-500">
-                        <i class="fas fa-book text-2xl md:text-4xl mb-3 text-red-500"></i>
-                        <h5 class="font-bold text-base md:text-lg">Quality Courses</h5>
-                        <p class="text-xs md:text-base">Curated by industry experts.</p>
-                    </div>
-                    <div class="bg-gray-50 p-4 text-center rounded-lg shadow-md hover:shadow-lg hover:-translate-y-1 transition-all border border-transparent hover:border-red-500">
-                        <i class="fas fa-clock text-2xl md:text-4xl mb-3 text-red-500"></i>
-                        <h5 class="font-bold text-base md:text-lg">Flexible Learning</h5>
-                        <p class="text-xs md:text-base">Study at your own pace.</p>
-                    </div>
-                    <div class="bg-gray-50 p-4 text-center rounded-lg shadow-md hover:shadow-lg hover:-translate-y-1 transition-all border border-transparent hover:border-red-500">
-                        <i class="fas fa-certificate text-2xl md:text-4xl mb-3 text-red-500"></i>
-                        <h5 class="font-bold text-base md:text-lg">Certified</h5>
-                        <p class="text-xs md:text-base">Earn recognized certificates.</p>
-                    </div>
-                </div>
+<!-- Partners Section -->
+<section class="py-16 sm:py-20 bg-gray-50 relative overflow-hidden" aria-labelledby="partners-heading">
+  <div class="absolute inset-0 bg-gradient-to-br from-black to-gray-700 opacity-10 transform -skew-y-6"></div>
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <h2 id="partners-heading" class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-12 text-center text-black hover:text-red-500 transition-colors duration-300">Partnered with Industry Pioneers</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
+      {% for partner in partners|slice:":4" %}
+        <div class="relative bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 group overflow-hidden transform hover:scale-105 hover:-rotate-3 animate-fade-in-up">
+          <div class="absolute top-0 left-0 w-full h-2/3 bg-gradient-to-br from-black to-gray-700 opacity-15 transform -skew-y-6"></div>
+          <div class="relative z-10 p-6 sm:p-8 text-center">
+            <div class="relative w-full h-20 sm:h-24 bg-gray-100 rounded-2xl flex items-center justify-center border border-gray-200 group-hover:border-red-500 transition-colors duration-300">
+              <p class="text-base sm:text-xl font-bold text-black group-hover:text-red-500 transition-colors duration-300 line-clamp-2 px-4">
+                <a href="{% url 'courses:org_partner' partner.name.slug %}" class="no-underline text-black group-hover:text-red-500 focus:text-red-500">{{ partner.name.name }}</a>
+              </p>
             </div>
-        </section>
-
-<section class="py-10 bg-gray-50" aria-labelledby="courses-heading">
-    <div class="container mx-auto px-4">
-        <h2 id="courses-heading" class="text-xl md:text-3xl font-bold mb-6 text-left">Popular Courses</h2>
-        <div id="courses-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            <!-- Kursus akan di-inject di sini oleh JS -->
+            {% if partner.is_featured %}
+              <span class="absolute top-3 right-3 bg-gray-900 text-white text-xs font-semibold px-2 sm:px-3 py-1 rounded-full shadow-md">Featured</span>
+            {% endif %}
+          </div>
         </div>
+      {% empty %}
+        <p class="text-center text-gray-600 text-base sm:text-lg col-span-full">No partners available.</p>
+      {% endfor %}
     </div>
+    <div class="text-center mt-10 sm:mt-12">
+      <a href="{% url 'partner:partner_list' %}" class="inline-block bg-black text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-lg hover:bg-gray-800 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base">Discover All Partners</a>
+    </div>
+  </div>
 </section>
-
-
-
-
-    <section class="py-10" aria-labelledby="partners-heading">
-        <div class="container mx-auto px-4">
-            <h2 id="partners-heading" class="text-xl md:text-3xl font-bold mb-6 text-center">Our Trusted Partners</h2>
-            <div class="overflow-hidden">
-                <div class="grid grid-cols-4 gap-5 max-w-5xl mx-auto">
-                    {% for partner in partners %}
-                        <div class="flex-none w-48 bg-gray-50 p-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
-                            <a href="{% url 'courses:org_partner' partner.name.slug %}" class="no-underline">
-                                {% if partner.logo %}
-                                    <img src="{{ partner.logo.url }}" alt="Logo {{ partner.name.name }}" class="h-14 w-auto mx-auto object-contain" loading="lazy">
-                                {% else %}
-                                    <img src="https://via.placeholder.com/150x60?text={{ partner.name.name|urlencode }}" alt="{{ partner.name.name }}" class="h-14 w-auto mx-auto object-contain" loading="lazy">
-                                {% endif %}
-                                <p class="text-center text-xs mt-2 text-gray-600">{{ partner.name.name }}</p>
-                            </a>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    </section>
-
 
 <!-- Micro Courses Section -->
-<section class="py-10 bg-gray-50" aria-labelledby="micro-courses-heading">
-    <div class="container mx-auto px-4">
-        <h2 id="micro-courses-heading" class="text-xl md:text-3xl font-bold mb-6 text-center">Popular Micro Courses</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {% for microcredential in popular_microcredentials %}
-                <div class="bg-white p-3 flex justify-between items-center rounded-lg shadow-md border-l-4 border-red-500 hover:shadow-lg hover:-translate-y-1 transition-all">
-                    <div class="flex-grow mr-3">
-                        <h5 class="font-bold text-blue-500 text-sm md:text-base mb-0">
-                            <a href="{% url 'courses:micro_detail' microcredential.id microcredential.slug %}" 
-                               class="no-underline" 
-                               title="View details about {{ microcredential.title }}">
-                                {{ microcredential.title }}
-                            </a>
-                        </h5>
-                    </div>
-                    <img src="{{ microcredential.image.url }}" 
-                         alt="Image of {{ microcredential.title }} course" 
-                         class="h-8 rounded shadow-sm" 
-                         loading="lazy" 
-                         width="40" height="40">
-                </div>
-            {% empty %}
-                <p class="text-center text-gray-500">No popular micro-credentials found.</p>
-            {% endfor %}
+<section class="py-16 sm:py-20 bg-gray-50" aria-labelledby="micro-courses-heading">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 id="micro-courses-heading" class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-12 text-center text-black hover:text-red-500 transition-colors duration-300">Quick Micro Courses</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+      {% for microcredential in popular_microcredentials|slice:":3" %}
+        <div class="bg-white p-6 sm:p-8 rounded-2xl flex items-center hover:bg-gray-100 hover:scale-105 transition-all duration-300 animate-fade-in-up shadow-md">
+          <img src="{{ microcredential.image.url|default:'https://via.placeholder.com/48x48' }}" alt="Image of {{ microcredential.title }}" class="h-12 w-12 sm:h-16 sm:w-16 rounded mr-3 sm:mr-4" loading="lazy" width="48" height="48">
+          <div class="flex-grow">
+            <h3 class="font-semibold text-base sm:text-lg text-black hover:text-red-500 transition-colors duration-300 line-clamp-2">
+              <a href="{% url 'courses:micro_detail' microcredential.id microcredential.slug %}" class="no-underline text-black hover:text-red-500 focus:text-red-500">{{ microcredential.title }}</a>
+            </h3>
+            <p class="text-xs sm:text-sm text-gray-600 line-clamp-2">{{ microcredential.description|safe|truncatewords:10 }}</p>
+          </div>
         </div>
+      {% empty %}
+        <p class="text-center text-gray-600 text-base sm:text-lg col-span-full">No micro-credentials available.</p>
+      {% endfor %}
     </div>
+  </div>
 </section>
-
-
-
-
 
 <!-- Blog Section -->
-<section class="py-10 bg-white" aria-labelledby="blog-heading">
-    <div class="container mx-auto px-4">
-        <h2 id="blog-heading" class="text-xl md:text-3xl font-bold mb-6 text-left">Latest Articles</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {% for article in latest_articles %}
-                <article class="bg-gray-50 p-3 rounded-lg shadow-md border-l-4 border-red-500 hover:shadow-lg hover:-translate-y-1 transition-all">
-                    <h5 class="font-bold text-sm md:text-base">{{ article.title|truncatewords:10 }}</h5>
-                    <p class="text-xs">
-                        <a href="{% url 'blog:blog-detail' slug=article.slug %}" 
-                           class="text-red-500 hover:text-red-600 hover:underline no-underline" 
-                           title="{{ article.title }}">
-                            {{ article.title|truncatewords:15 }}
-                        </a>
-                    </p>
-                </article>
-            {% empty %}
-                <article class="bg-gray-50 p-3 rounded-lg shadow-md border-l-4 border-red-500">
-                    <h5 class="font-bold text-sm md:text-base">No articles found.</h5>
-                    <p class="text-xs">Please check back later.</p>
-                </article>
-            {% endfor %}
-        </div>
+<section class="py-16 sm:py-20 bg-white" aria-labelledby="blog-heading">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 id="blog-heading" class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-12 text-center text-black hover:text-red-500 transition-colors duration-300">Stay Inspired with Our Blog</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+      {% for article in latest_articles|slice:":3" %}
+        <article class="bg-gray-50 p-6 sm:p-8 rounded-2xl shadow-md hover:bg-gray-100 hover:scale-105 transition-all duration-300 animate-fade-in-up">
+          <h3 class="font-semibold text-base sm:text-lg text-black hover:text-red-500 transition-colors duration-300 line-clamp-2">
+            <a href="{% url 'blog:blog-detail' slug=article.slug %}" class="no-underline text-black hover:text-red-500 focus:text-red-500">{{ article.title }}</a>
+          </h3>
+          <p class="text-xs sm:text-base text-gray-600 hover:text-red-500 transition-colors duration-300 line-clamp-3">{{ article.excerpt|truncatewords:15 }}</p>
+        </article>
+      {% empty %}
+        <p class="text-center text-gray-600 text-base sm:text-lg col-span-full">No articles available.</p>
+      {% endfor %}
     </div>
+  </div>
 </section>
-
 
 <!-- Instructors Section -->
-<section class="py-10 bg-gray-50" aria-labelledby="instructors-heading">
-    <div class="container mx-auto px-4">
-        <h2 id="instructors-heading" class="text-xl md:text-3xl font-bold mb-4 text-left">Featured Online Instructors</h2>
-        <p class="mb-6 text-xs md:text-base">Our instructors are industry leaders dedicated to your success.</p>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {% for instructor in instructors %}
-            <div class="bg-white p-3 rounded-xl shadow-md hover:shadow-lg transition-all relative overflow-hidden bg-gradient-to-br from-red-50 to-blue-50 group">
-                <div class="text-center">
-                    {% if instructor.user.photo %}
-                        <img src="{{ instructor.user.photo.url }}"
-                             alt="Foto {{ instructor.user.first_name }} {{ instructor.user.last_name }}, Instruktur di LMSKu"
-                             class="instructor-card w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-red-500 mx-auto mb-3"
-                             loading="lazy">
-                    {% else %}
-                        <img src="{% static 'images/default.jpg' %}"
-                             alt="Foto Default Instruktur"
-                             class="instructor-card w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-red-500 mx-auto mb-3"
-                             loading="lazy">
-                    {% endif %}
-                    <h3 class="font-bold text-sm md:text-lg">{{ instructor.user.first_name }} {{ instructor.user.last_name }}</h3>
-                    <span class="inline-block bg-red-500 text-white text-xs px-2 py-1 rounded-full mt-1">{{ instructor.job_title|default:"Instructor" }}</span>
-                    <p class="text-gray-600 text-xs mt-2 hidden group-hover:block">{{ instructor.bio|default:"Dedicated professional." }}</p>
-                    <div class="flex justify-center space-x-2 mt-2 hidden group-hover:flex">
-                        {% if instructor.linkedin %}
-                            <a href="{{ instructor.linkedin }}" class="text-blue-500 hover:text-blue-600" target="_blank" rel="noopener">
-                                <i class="fab fa-linkedin"></i>
-                            </a>
-                        {% endif %}
-                        {% if instructor.twitter %}
-                            <a href="{{ instructor.twitter }}" class="text-blue-500 hover:text-blue-600" target="_blank" rel="noopener">
-                                <i class="fab fa-twitter"></i>
-                            </a>
-                        {% endif %}
-                    </div>
-                </div>
-                <a href="{% url 'courses:instructor_profile' username=instructor.user.username %}" class="absolute inset-0" aria-label="View {{ instructor.user.first_name }} {{ instructor.user.last_name }} profile"></a>
+<section class="py-16 sm:py-20 bg-gray-50 relative overflow-hidden" aria-labelledby="instructors-heading">
+  <div class="absolute inset-0 bg-gradient-to-br from-black to-gray-700 opacity-10 transform -skew-y-6"></div>
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <h2 id="instructors-heading" class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-12 text-center text-black hover:text-red-500 transition-colors duration-300">Learn from Top Experts</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+      {% for instructor in instructors|slice:":3" %}
+        <div class="relative bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 group overflow-hidden animate-fade-in-up">
+          <div class="absolute top-0 left-0 w-full h-2/3 bg-gradient-to-br from-black to-gray-700 opacity-15 transform -skew-y-6"></div>
+          <div class="relative z-10 p-6 sm:p-8 text-center">
+            <div class="relative w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-4 sm:mb-6 border-4 border-gray-200 group-hover:border-red-500 rounded-full transition-colors duration-300">
+              <img 
+                src="{{ instructor.user.photo.url|default:'/static/images/default.jpg' }}" 
+                alt="Photo of {{ instructor.user.first_name }} {{ instructor.user.last_name }}" 
+                class="w-full h-full rounded-full object-cover" 
+                loading="lazy" 
+                width="128" 
+                height="128"
+              >
             </div>
-
-            <script type="application/ld+json">
-            {
-                "@context": "https://schema.org",
-                "@type": "Person",
-                "name": "{{ instructor.user.first_name }} {{ instructor.user.last_name }}",
-                "jobTitle": "{{ instructor.job_title|default:'Instructor' }}",
-                "url": "{% url 'courses:instructor_profile' username=instructor.user.username %}",
-                "image": "{% if instructor.user.photo %}{{ instructor.user.photo.url }}{% else %}{% static 'images/default.jpg' %}{% endif %}"
-            }
-            </script>
-            {% empty %}
-                <p>No instructors found.</p>
-            {% endfor %}
+            <h3 class="font-bold text-base sm:text-xl text-black group-hover:text-red-500 transition-colors duration-300 line-clamp-1">
+              {{ instructor.user.first_name }} {{ instructor.user.last_name }}
+            </h3>
+            <p class="text-xs sm:text-sm text-gray-600 group-hover:text-red-500 transition-colors duration-300 mb-4">{{ instructor.job_title|default:"Expert Instructor" }}</p>
+            <a 
+              href="{% url 'courses:instructor_profile' username=instructor.user.username %}" 
+              class="inline-block bg-black text-white font-semibold px-4 sm:px-6 py-2 rounded-lg hover:bg-gray-800 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-xs sm:text-sm"
+            >
+              View Profile
+            </a>
+            {% if instructor.is_top_rated %}
+              <span class="absolute top-3 right-3 bg-gray-900 text-white text-xs font-semibold px-2 sm:px-3 py-1 rounded-full shadow-md">Top Instructor</span>
+            {% endif %}
+          </div>
         </div>
+      {% empty %}
+        <p class="text-center text-gray-600 text-base sm:text-lg col-span-full">No instructors available.</p>
+      {% endfor %}
     </div>
+    <div class="text-center mt-10 sm:mt-12">
+      <a 
+        href="#" 
+        class="inline-block bg-black text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-lg hover:bg-gray-800 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base"
+      >
+        Meet More Experts
+      </a>
+    </div>
+  </div>
 </section>
-<section class="py-10 bg-white" aria-labelledby="facts-heading">
-            <div class="container mx-auto px-4">
-                <h2 id="facts-heading" class="text-xl md:text-3xl font-bold mb-6 text-left">Interesting Facts on LMSKu</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-gray-50 p-4 text-center rounded-lg shadow-md hover:shadow-lg hover:-translate-y-1 transition-all border border-transparent hover:border-red-500">
-                        <i class="fas fa-globe text-2xl md:text-4xl mb-3 text-red-500"></i>
-                        <h5 class="font-bold text-base md:text-lg">Global Access</h5>
-                        <p class="text-xs md:text-base">Learn from anywhere in the world.</p>
-                    </div>
-                    <div class="bg-gray-50 p-4 text-center rounded-lg shadow-md hover:shadow-lg hover:-translate-y-1 transition-all border border-transparent hover:border-red-500">
-                        <i class="fas fa-comments text-2xl md:text-4xl mb-3 text-red-500"></i>
-                        <h5 class="font-bold text-base md:text-lg">Active Community</h5>
-                        <p class="text-xs md:text-base">Join 10,000+ learners.</p>
-                    </div>
-                    <div class="bg-gray-50 p-4 text-center rounded-lg shadow-md hover:shadow-lg hover:-translate-y-1 transition-all border border-transparent hover:border-red-500">
-                        <i class="fas fa-rocket text-2xl md:text-4xl mb-3 text-red-500"></i>
-                        <h5 class="font-bold text-base md:text-lg">Career Booster</h5>
-                        <p class="text-xs md:text-base">Advance your career with certified skills.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
 
-      
-
-        <section class="py-12 bg-red-600 text-white text-center" aria-labelledby="cta-heading">
-            <div class="container mx-auto px-4 max-w-xl">
-                <h2 id="cta-heading" class="text-2xl md:text-4xl font-extrabold mb-4 drop-shadow-md">
-                Ready to Upgrade Your Skills?
-                </h2>
-                <p class="text-base md:text-lg mb-8 font-medium drop-shadow-sm">
-                Join thousands of learners today!
-                </p>
-                <a href="/register/"
-                class="inline-block bg-white text-red-600 font-semibold px-8 py-3 rounded-lg shadow-lg
-                        hover:bg-red-700 hover:text-white transition duration-300 transform hover:scale-105
-                        border-2 border-white min-w-[160px]">
-                Sign Up Now
-                </a>
-            </div>
-            </section>
-
-
-
-
-
+<!-- Call to Action Section -->
+<section class="py-16 sm:py-20 bg-gray-900 text-white text-center relative overflow-hidden" aria-labelledby="cta-heading">
+  <div class="absolute inset-0 bg-gradient-to-br from-black to-gray-700 opacity-50"></div>
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl relative z-10">
+    <h2 id="cta-heading" class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-6 hover:text-red-500 transition-colors duration-300">Ready to Unleash Your Potential?</h2>
+    <p class="text-base sm:text-lg md:text-xl mb-8 text-gray-200 hover:text-red-500 transition-colors duration-300">Join {{ total_users }}+ learners and start your journey with LMSKu today!</p>
+    <a href="{% url 'authentication:register' %}" class="inline-block bg-white text-black font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-lg hover:bg-gray-200 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base">Get Started Now</a>
+  </div>
+</section>
 {% endblock %}
