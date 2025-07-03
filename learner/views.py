@@ -48,8 +48,8 @@ logger = logging.getLogger(__name__)
 
 
 @login_required
-@user_passes_test(lambda u: u.is_staff)  # Hanya staff/admin bisa akses
-@cache_page(60 * 5)  # Cache 5 menit per kombinasi query
+@user_passes_test(lambda u: u.is_staff)
+@cache_page(60 * 5)
 def user_analytics_view(request):
     gender_filter = request.GET.get('gender')
     start_date = request.GET.get('start_date')
@@ -64,7 +64,6 @@ def user_analytics_view(request):
         'instagram', 'linkedin', 'twitter'
     )
 
-    # Filter
     filters = Q()
     if gender_filter in ['male', 'female']:
         filters &= Q(gender=gender_filter)
@@ -72,91 +71,55 @@ def user_analytics_view(request):
         filters &= Q(date_joined__gte=start_date)
     if end_date:
         filters &= Q(date_joined__lte=end_date)
-
     users = users.filter(filters)
 
-    # CSV Export
     if download == "csv":
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="user_analytics.csv"'
         writer = csv.writer(response)
-        writer.writerow([
-            'Full Name', 'Email', 'Gender', 'Education', 'Country',
-            'Birthdate', 'Last Login'
-        ])
-        for u in users.iterator(chunk_size=1000):  # Streaming-safe
-            writer.writerow([
-                u.get_full_name(), u.email, u.gender, u.education,
-                u.country, u.birth, u.last_login
-            ])
+        writer.writerow(['Full Name', 'Email', 'Gender', 'Education', 'Country', 'Birthdate', 'Last Login'])
+        for u in users.iterator(chunk_size=1000):
+            writer.writerow([u.get_full_name(), u.email, u.gender, u.education, u.country, u.birth, u.last_login])
         return response
 
-    # Colors & Constants
     genders = ['male', 'female']
     colors = ['#60A5FA', '#F472B6']
 
-    # Aggregations
     gender_counts = users.values('gender').annotate(total=Count('id'))
     education_counts = users.values('education').annotate(total=Count('id'))
 
     edu_labels = sorted(set(users.exclude(education='').values_list('education', flat=True)))
-    edu_gender_data = [
-        {
-            'label': gender.capitalize(),
-            'data': [
-                users.filter(gender=gender, education=edu).count() for edu in edu_labels
-            ],
-            'backgroundColor': colors[i]
-        } for i, gender in enumerate(genders)
-    ]
+    edu_gender_data = [{
+        'label': gender.capitalize(),
+        'data': [users.filter(gender=gender, education=edu).count() for edu in edu_labels],
+        'backgroundColor': colors[i]
+    } for i, gender in enumerate(genders)]
 
     country_counts = users.values('country').annotate(total=Count('id')).order_by('-total')[:10]
     role_fields = ['is_learner', 'is_instructor', 'is_partner', 'is_subscription', 'is_audit', 'is_member']
     role_labels = ['Learner', 'Instructor', 'Partner', 'Subscription', 'Audit', 'Member']
-
-    # Precompute role counts
     role_data_count = [users.filter(**{role: True}).count() for role in role_fields]
-    role_gender_data_sets = [
-        {
-            'label': gender.capitalize(),
-            'data': [users.filter(gender=gender, **{r: True}).count() for r in role_fields],
-            'backgroundColor': colors[i]
-        } for i, gender in enumerate(genders)
-    ]
+    role_gender_data_sets = [{
+        'label': gender.capitalize(),
+        'data': [users.filter(gender=gender, **{r: True}).count() for r in role_fields],
+        'backgroundColor': colors[i]
+    } for i, gender in enumerate(genders)]
 
     social_fields = ['tiktok', 'youtube', 'facebook', 'instagram', 'linkedin', 'twitter']
-    social_data_count = [
-        users.exclude(**{field: ""}).exclude(**{field: None}).count() for field in social_fields
-    ]
+    social_data_count = [users.exclude(**{f: ""}).exclude(**{f: None}).count() for f in social_fields]
 
     growth = users.annotate(month=TruncMonth('date_joined')).values('month').annotate(total=Count('id')).order_by('month')
     months = [g['month'] for g in growth]
-
-    growth_gender_data_sets = [
-        {
-            'label': gender.capitalize(),
-            'data': [
-                users.filter(
-                    gender=gender,
-                    date_joined__year=m.year,
-                    date_joined__month=m.month
-                ).count() for m in months
-            ],
-            'fill': False,
-            'borderColor': colors[i]
-        } for i, gender in enumerate(genders)
-    ]
+    growth_gender_data_sets = [{
+        'label': gender.capitalize(),
+        'data': [users.filter(gender=gender, date_joined__year=m.year, date_joined__month=m.month).count() for m in months],
+        'fill': False,
+        'borderColor': colors[i]
+    } for i, gender in enumerate(genders)]
 
     today = datetime.date.today()
     age_bins = [(0, 17), (18, 24), (25, 34), (35, 44), (45, 54), (55, 64), (65, 120)]
-
-    age_bin_counts = [
-        users.filter(
-            birth__isnull=False,
-            birth__lte=today - datetime.timedelta(days=s * 365),
-            birth__gt=today - datetime.timedelta(days=e * 365)
-        ).count() for s, e in age_bins
-    ]
+    age_bin_counts = [users.filter(birth__isnull=False, birth__lte=today - datetime.timedelta(days=s * 365), birth__gt=today - datetime.timedelta(days=e * 365)).count() for s, e in age_bins]
 
     profile_completion_count = [
         users.exclude(photo="").exclude(photo=None).count(),
@@ -168,39 +131,101 @@ def user_analytics_view(request):
     active_count = users.filter(last_login__gte=threshold).count()
     inactive_count = users.exclude(last_login__gte=threshold).count()
 
-    context = {
-        'gender_data': json.dumps({
-            'labels': [g['gender'].capitalize() if g['gender'] else 'Unspecified' for g in gender_counts],
-            'datasets': [{'data': [g['total'] for g in gender_counts], 'backgroundColor': colors + ['#D1D5DB']}]
-        }),
-        'education_data': json.dumps({
-            'labels': [e['education'] if e['education'] else 'Unspecified' for e in education_counts],
-            'datasets': [{'label': 'Users', 'data': [e['total'] for e in education_counts], 'backgroundColor': '#34D399'}]
-        }),
-        'edu_gender_data': json.dumps({'labels': edu_labels, 'datasets': edu_gender_data}),
-        'country_data': json.dumps({
-            'labels': [c['country'].upper() if c['country'] else 'UN' for c in country_counts],
-            'datasets': [{'label': 'Users', 'data': [c['total'] for c in country_counts], 'backgroundColor': '#FBBF24'}]
-        }),
-        'role_data': json.dumps({'labels': role_labels, 'datasets': [{'label': 'Users', 'data': role_data_count, 'backgroundColor': '#818CF8'}]}),
-        'role_gender_data': json.dumps({'labels': role_labels, 'datasets': role_gender_data_sets}),
-        'social_data': json.dumps({'labels': [f.capitalize() for f in social_fields], 'datasets': [{'label': 'Users with Account', 'data': social_data_count, 'backgroundColor': '#A78BFA'}]}),
-        'growth_data': json.dumps({'labels': [m.strftime('%b %Y') for m in months], 'datasets': [{'label': 'New Users', 'data': [g['total'] for g in growth], 'borderColor': '#4F46E5'}]}),
-        'growth_gender_data': json.dumps({'labels': [m.strftime('%b %Y') for m in months], 'datasets': growth_gender_data_sets}),
-        'age_data': json.dumps({'labels': [f"{s}-{e}" for s, e in age_bins], 'datasets': [{'label': 'Users by Age Group', 'data': age_bin_counts, 'backgroundColor': '#F87171'}]}),
-        'profile_completion_data': json.dumps({'labels': ['Photo', 'Birthdate', 'Address'], 'datasets': [{'label': 'Field Filled', 'data': profile_completion_count, 'backgroundColor': '#10B981'}]}),
-        'active_data': json.dumps({'labels': ['Active', 'Inactive'], 'datasets': [{'data': [active_count, inactive_count], 'backgroundColor': ['#10B981', '#F87171']}]})
-    }
+    chart_list = [
+        {
+            'id': 'genderChart',
+            'title': 'Gender Distribution',
+            'type': 'pie',
+            'data': json.dumps({
+                'labels': [g['gender'].capitalize() if g['gender'] else 'Unspecified' for g in gender_counts],
+                'datasets': [{'data': [g['total'] for g in gender_counts], 'backgroundColor': colors + ['#D1D5DB']}]
+            })
+        },
+        {
+            'id': 'educationChart',
+            'title': 'Education Level',
+            'type': 'bar',
+            'index_axis': 'y',
+            'data': json.dumps({
+                'labels': [e['education'] if e['education'] else 'Unspecified' for e in education_counts],
+                'datasets': [{'label': 'Users', 'data': [e['total'] for e in education_counts], 'backgroundColor': '#34D399'}]
+            })
+        },
+        {
+            'id': 'eduGenderChart',
+            'title': 'Education by Gender',
+            'type': 'bar',
+            'data': json.dumps({'labels': edu_labels, 'datasets': edu_gender_data})
+        },
+        {
+            'id': 'countryChart',
+            'title': 'Top Countries',
+            'type': 'bar',
+            'index_axis': 'y',
+            'data': json.dumps({
+                'labels': [c['country'].upper() if c['country'] else 'UN' for c in country_counts],
+                'datasets': [{'label': 'Users', 'data': [c['total'] for c in country_counts], 'backgroundColor': '#FBBF24'}]
+            })
+        },
+        {
+            'id': 'roleChart',
+            'title': 'Role Distribution',
+            'type': 'bar',
+            'index_axis': 'y',
+            'data': json.dumps({'labels': role_labels, 'datasets': [{'label': 'Users', 'data': role_data_count, 'backgroundColor': '#818CF8'}]})
+        },
+        {
+            'id': 'roleGenderChart',
+            'title': 'Role Distribution by Gender',
+            'type': 'bar',
+            'data': json.dumps({'labels': role_labels, 'datasets': role_gender_data_sets})
+        },
+        {
+            'id': 'socialChart',
+            'title': 'Social Media Usage',
+            'type': 'bar',
+            'index_axis': 'y',
+            'data': json.dumps({'labels': [f.capitalize() for f in social_fields], 'datasets': [{'label': 'Users with Account', 'data': social_data_count, 'backgroundColor': '#A78BFA'}]})
+        },
+        {
+            'id': 'growthChart',
+            'title': 'User Growth (Last 12 Months)',
+            'type': 'line',
+            'data': json.dumps({'labels': [m.strftime('%b %Y') for m in months], 'datasets': [{'label': 'New Users', 'data': [g['total'] for g in growth], 'borderColor': '#4F46E5'}]})
+        },
+        {
+            'id': 'growthGenderChart',
+            'title': 'User Growth by Gender',
+            'type': 'line',
+            'data': json.dumps({'labels': [m.strftime('%b %Y') for m in months], 'datasets': growth_gender_data_sets})
+        },
+        {
+            'id': 'ageChart',
+            'title': 'Age Group Distribution',
+            'type': 'bar',
+            'data': json.dumps({'labels': [f"{s}-{e}" for s, e in age_bins], 'datasets': [{'label': 'Users by Age Group', 'data': age_bin_counts, 'backgroundColor': '#F87171'}]})
+        },
+        {
+            'id': 'activeChart',
+            'title': 'Active vs Inactive Users',
+            'type': 'doughnut',
+            'data': json.dumps({'labels': ['Active', 'Inactive'], 'datasets': [{'data': [active_count, inactive_count], 'backgroundColor': ['#10B981', '#F87171']}]})
+        },
+        {
+            'id': 'profileChart',
+            'title': 'Profile Completion',
+            'type': 'bar',
+            'data': json.dumps({'labels': ['Photo', 'Birthdate', 'Address'], 'datasets': [{'label': 'Field Filled', 'data': profile_completion_count, 'backgroundColor': '#10B981'}]})
+        },
+    ]
 
-    # Reinject filters to form
-    context.update({
+    context = {
+        'chart_list': chart_list,
         'gender_filter': gender_filter,
         'start_date': start_date,
         'end_date': end_date,
-    })
-
+    }
     return render(request, 'learner/analytics.html', context)
-
 
 
 def _build_combined_content(sections):

@@ -28,167 +28,43 @@
   </form>
 
   <div class="row g-4">
-    <!-- Gender Distribution -->
-    <div class="col-md-6">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">Gender Distribution</h5>
-          <canvas id="genderChart" height="200"></canvas>
+    {% for chart in chart_list %}
+      <div class="col-md-{{ chart.width|default:6 }}">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">{{ chart.title }}</h5>
+            <canvas id="{{ chart.id }}" height="200"></canvas>
+          </div>
         </div>
       </div>
-    </div>
-
-    <!-- Education Level -->
-    <div class="col-md-6">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">Education Level</h5>
-          <canvas id="educationChart" height="200"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- Education by Gender -->
-    <div class="col-md-12">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">Education by Gender</h5>
-          <canvas id="eduGenderChart" height="200"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- Top Countries -->
-    <div class="col-md-6">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">Top Countries</h5>
-          <canvas id="countryChart" height="200"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- Role Distribution -->
-    <div class="col-md-6">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">Role Distribution</h5>
-          <canvas id="roleChart" height="200"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- Role Distribution by Gender -->
-    <div class="col-md-12">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">Role Distribution by Gender</h5>
-          <canvas id="roleGenderChart" height="200"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- Social Media Usage -->
-    <div class="col-md-6">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">Social Media Usage</h5>
-          <canvas id="socialChart" height="200"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- User Growth -->
-    <div class="col-md-6">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">User Growth (Last 12 Months)</h5>
-          <canvas id="growthChart" height="200"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- User Growth by Gender -->
-    <div class="col-md-12">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">User Growth by Gender</h5>
-          <canvas id="growthGenderChart" height="200"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- Age Group Distribution -->
-    <div class="col-md-6">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">Age Group Distribution</h5>
-          <canvas id="ageChart" height="200"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- Active vs Inactive Users -->
-    <div class="col-md-6">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">Active vs Inactive Users</h5>
-          <canvas id="activeChart" height="200"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- Profile Completion -->
-    <div class="col-md-6">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">Profile Completion</h5>
-          <canvas id="profileChart" height="200"></canvas>
-        </div>
-      </div>
-    </div>
+    {% endfor %}
   </div>
-
 
 <!-- Chart.js -->
 <script src="{% static 'js/chart.umd.min.js' %}"></script>
 <script>
-  const genderData = {{ gender_data|safe }};
-  const educationData = {{ education_data|safe }};
-  const eduGenderData = {{ edu_gender_data|safe }};
-  const countryData = {{ country_data|safe }};
-  const roleData = {{ role_data|safe }};
-  const roleGenderData = {{ role_gender_data|safe }};
-  const socialData = {{ social_data|safe }};
-  const growthData = {{ growth_data|safe }};
-  const growthGenderData = {{ growth_gender_data|safe }};
-  const ageData = {{ age_data|safe }};
-  const profileCompletionData = {{ profile_completion_data|safe }};
-  const activeData = {{ active_data|safe }};
+  const chartConfigs = {
+    {% for chart in chart_list %}
+    "{{ chart.id }}": {
+      type: "{{ chart.type }}",
+      data: {{ chart.data|safe }},
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: "{{ chart.legend_position|default:'top' }}" },
+          title: { display: true, text: "{{ chart.title }}" }
+        },
+        {% if chart.index_axis %}indexAxis: "{{ chart.index_axis }}",{% endif %}
+      }
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  };
 
-  new Chart(document.getElementById("genderChart"), { type: 'pie', data: genderData });
-  new Chart(document.getElementById("educationChart"), { type: 'bar', data: educationData, options: { indexAxis: 'y' } });
-  new Chart(document.getElementById("eduGenderChart"), {
-    type: 'bar',
-    data: eduGenderData,
-    options: { responsive: true, plugins: { legend: { position: 'top' } } }
-  });
-  new Chart(document.getElementById("countryChart"), { type: 'bar', data: countryData, options: { indexAxis: 'y' } });
-  new Chart(document.getElementById("roleChart"), { type: 'bar', data: roleData, options: { indexAxis: 'y' } });
-  new Chart(document.getElementById("roleGenderChart"), {
-    type: 'bar',
-    data: roleGenderData,
-    options: { responsive: true, plugins: { legend: { position: 'top' } } }
-  });
-  new Chart(document.getElementById("socialChart"), { type: 'bar', data: socialData, options: { indexAxis: 'y' } });
-  new Chart(document.getElementById("growthChart"), { type: 'line', data: growthData });
-  new Chart(document.getElementById("growthGenderChart"), {
-    type: 'line',
-    data: growthGenderData,
-    options: { responsive: true, plugins: { legend: { position: 'top' } } }
-  });
-  new Chart(document.getElementById("ageChart"), { type: 'bar', data: ageData });
-  new Chart(document.getElementById("activeChart"), { type: 'doughnut', data: activeData });
-  new Chart(document.getElementById("profileChart"), { type: 'bar', data: profileCompletionData });
+  for (const [id, config] of Object.entries(chartConfigs)) {
+    const ctx = document.getElementById(id);
+    if (ctx) {
+      new Chart(ctx, config);
+    }
+  }
 </script>
 {% endblock %}
