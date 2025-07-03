@@ -8,3 +8,10 @@ def div(value, divisor):
         return float(value) / float(divisor)
     except (ValueError, ZeroDivisionError):
         return 0
+    
+@register.filter
+def add_class(field, css_class):
+    """
+    Add CSS classes to a form field's widget.
+    """
+    return field.as_widget(attrs={"class": css_class})

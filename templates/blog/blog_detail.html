@@ -1,11 +1,13 @@
 {% extends 'home/base.html' %}
 {% load static blog_filters %}
 
-
 {% block meta %}
-    <meta name="description" content="{{ post.meta_description|default:post.title }}">
-    <meta name="keywords" content="{{ post.tags.all|join:', ' }}, {{ post.category.name|default:'blog' }}, education, technology">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{ post.meta_description|default:post.title|truncatewords:30 }}">
+    <meta name="keywords" content="{{ post.tags.all|join:', ' }}, {{ post.category.name|default:'blog' }}, education, technology, LMSKu">
     <meta name="robots" content="index, follow">
+    <meta name="author" content="{{ post.author|default:'LMSKu Team' }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
     <!-- Open Graph Meta Tags -->
@@ -23,287 +25,427 @@
     <meta name="twitter:title" content="{{ post.title }} - LMSKu Blog">
     <meta name="twitter:description" content="{{ post.meta_description|default:post.title|truncatewords:20 }}">
     <meta name="twitter:image" content="{% if post.image %}{{ post.image.url }}{% else %}{% static 'assets/img/icon/certificate.svg' %}{% endif %}">
+    <meta name="twitter:site" content="@LMSKu">
+
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "{{ post.title }}",
+        "description": "{{ post.meta_description|default:post.title|truncatewords:20 }}",
+        "image": "{% if post.image %}{{ post.image.url }}{% else %}{% static 'assets/img/icon/certificate.svg' %}{% endif %}",
+        "author": {
+            "@type": "Person",
+            "name": "{{ post.author|default:'LMSKu Team' }}"
+        },
+        "datePublished": "{{ post.date_posted|date:'c' }}",
+        "publisher": {
+            "@type": "Organization",
+            "name": "LMSKu",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "{% static 'assets/img/lmsku-logo.svg' %}"
+            }
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "{{ request.build_absolute_uri }}"
+        }
+    }
+    </script>
 {% endblock %}
 
 {% block content %}
-<section class="py-8 bg-gray-100" style="font-family: 'Inter', system-ui, -apple-system, sans-serif;">
-  <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <!-- Blog Detail -->
-      <div class="lg:col-span-2">
-        <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 mb-6">
-          <div class="p-4 md:p-6">
-            <!-- Title -->
-            <h1 class="text-2xl md:text-3xl font-bold text-red-600 mb-3">{{ post.title }}</h1>
-            
-            <!-- Image and Metadata Container -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <!-- Image -->
-              <div class="md:col-span-1">
-                {% if post.image %}
-                  <img src="{{ post.image.url }}" class="w-full rounded-lg object-cover h-40 md:h-38" alt="{{ post.title }}">
-                {% else %}
-                  <div class="w-full h-40 md:h-48 bg-gray-500 text-white flex items-center justify-center rounded-lg text-center">
-                    No Image
-                  </div>
-                {% endif %}
-              </div>
-              
-              <!-- Metadata -->
-              <div class="md:col-span-2">
-                <p class="text-gray-500 text-sm mb-3">
-                  By {{ post.author|default:"Unknown" }} |
-                  {{ post.date_posted|date:"F d, Y" }} |
-                  <a href="{{ post.category.get_absolute_url }}" rel="canonical" class="text-blue-600 hover:underline">
-                    {{ post.category|default:"Uncategorized" }}
-                  </a> |
-                  {{ post.views }} View{{ post.views|pluralize }} |
-                  {{ post.number_of_comments }} Comment{{ post.number_of_comments|pluralize }}
-                </p>
-              </div>
-            </div>
-
-            <!-- Content -->
-            <div class="mt-4 mb-4 text-gray-800 leading-relaxed">{{ post.content|safe }}</div>
-
-            <!-- Share Buttons -->
-              <div class="flex gap-2 items-center justify-center mt-4">
-                <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ post.title }}"
-                  class="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-blue-600 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
-                  target="_blank" rel="noopener noreferrer">
-                  <i class="fab fa-twitter"></i>
-                  <span class="text-sm font-medium">Twitter</span>
-                </a>
-                <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}"
-                  class="flex items-center gap-2 px-4 py-2 bg-red-700 text-white rounded-lg shadow-md hover:bg-blue-800 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
-                  target="_blank" rel="noopener noreferrer">
-                  <i class="fab fa-facebook-f"></i>
-                  <span class="text-sm font-medium">Facebook</span>
-                </a>
-                <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri }}&title={{ post.title }}&summary={{ post.meta_description|default:post.title|truncatewords:20 }}"
-                  class="flex items-center gap-2 px-4 py-2 bg-red-800 text-white rounded-lg shadow-md hover:bg-blue-900 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
-                  target="_blank" rel="noopener noreferrer">
-                  <i class="fab fa-linkedin-in"></i>
-                  <span class="text-sm font-medium">LinkedIn</span>
-                </a>
-              </div>
-          </div>
-        </div>
-
-        <!-- Comment Section -->
-        <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 mb-6">
-          <div class="p-4">
-            <h3 class="text-xl font-bold text-blue-600 mb-4">Comments ({{ post.number_of_comments }})</h3>
-
-            {% if comments %}
-              <ul class="list-none">
-                {% for comment in comments %}
-                <li class="mb-4 {% if comment.parent %}ml-4{% endif %}">
-                  <div class="flex items-start">
-                    <!-- Foto profil -->
-                    <img src="{% if comment.author and comment.author.photo %}{{ comment.author.photo.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}" 
-                         alt="Avatar for {{ comment.author.username|default:'Anonymous' }}" 
-                         class="w-12 h-12 rounded-full mr-3 mt-1 object-cover">
-
-                    <!-- Konten komentar -->
-                    <div class="flex-grow">
-                      <div class="flex justify-between items-center">
-                        <h6 class="mb-0 font-semibold text-blue-600">{{ comment.author.username|default:"Anonymous" }}</h6>
-                        <small class="text-gray-500">{{ comment.date_posted|date:"F d, Y, H:i" }}</small>
-                      </div>
-                      <p class="mt-2 mb-2 text-gray-800">{{ comment.content }}</p>
-                      <button type="button" class="text-sm text-gray-500 hover:text-blue-600 transition-colors" 
-                              onclick="showReplyForm('{{ comment.id }}')">Reply</button>
-
-                      <!-- Formulir balasan -->
-                      <form method="POST" class="mt-3 hidden" id="reply-form-{{ comment.id }}">
-                        {% csrf_token %}
-                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
-                        {% if comment_form.errors %}
-                          <div class="bg-red-50 text-red-800 p-2 rounded-lg mb-2">{{ comment_form.errors }}</div>
-                        {% endif %}
-                        <div class="mb-2">{{ comment_form.content }}</div>
-                        <button type="submit" class="px-3 py-1 border border-blue-600 text-blue-600 rounded-lg text-sm hover:bg-blue-600 hover:text-white transition-all duration-300">
-                          Submit Reply
-                        </button>
-                      </form>
-
-                      <!-- Balasan -->
-                      {% for reply in comment.replies.all %}
-                      <div class="mt-4 ml-4">
-                        <div class="flex items-start">
-                          <img src="{% if reply.author and reply.author.photo %}{{ reply.author.photo.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}" 
-                               alt="Avatar for {{ reply.author.username|default:'Anonymous' }}" 
-                               class="w-10 h-10 rounded-full mr-2 mt-1 object-cover">
-                          <div class="flex-grow">
-                            <div class="flex justify-between items-center">
-                              <h6 class="mb-0 font-semibold text-blue-600">{{ reply.author.username|default:"Anonymous" }}</h6>
-                              <small class="text-gray-500">{{ reply.date_posted|date:"F d, Y, H:i" }}</small>
-                            </div>
-                            <p class="mt-2 mb-2 text-gray-800">{{ reply.content }}</p>
-                          </div>
+<section class="py-12 sm:py-16 bg-gray-50 relative overflow-hidden" style="font-family: 'Inter', system-ui, -apple-system, sans-serif;">
+    <div class="absolute inset-0 bg-gradient-to-tr from-black/5 to-gray-700/5"></div>
+    <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+            <!-- Blog Detail -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Blog Post Card -->
+                <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group animate-fade-in">
+                    <div class="p-6 sm:p-8">
+                        <!-- Featured Image -->
+                        <div class="relative mb-6 w-full aspect-[16/9] bg-gray-200 rounded-lg overflow-hidden group-hover:scale-[1.02] transition-transform duration-300">
+                            {% if post.image %}
+                                <img src="{{ post.image.url }}" 
+                                     alt="{{ post.title }}" 
+                                     class="w-full h-full object-cover rounded-lg" 
+                                     loading="lazy" 
+                                     width="1200" 
+                                     height="675">
+                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
+                            {% else %}
+                                <div class="w-full h-full bg-gray-500 text-white flex items-center justify-center rounded-lg text-center">
+                                    No Image Available
+                                </div>
+                            {% endif %}
                         </div>
-                      </div>
-                      {% endfor %}
+
+                        <!-- Title -->
+                        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-black group-hover:text-red-500 transition-colors duration-300 mb-4">
+                            {{ post.title }}
+                        </h1>
+
+                        <!-- Metadata -->
+                        <div class="flex flex-wrap items-center gap-2 sm:gap-4 text-sm text-gray-600 mb-6">
+                            <span>By {{ post.author|default:"Unknown" }}</span>
+                            <span class="hidden sm:inline">•</span>
+                            <span>{{ post.date_posted|date:"F d, Y" }}</span>
+                            <span class="hidden sm:inline">•</span>
+                            <a href="{{ post.category.get_absolute_url }}" 
+                               class="text-red-600 hover:text-red-500 font-medium transition-colors duration-300" 
+                               rel="canonical">
+                                {{ post.category|default:"Uncategorized" }}
+                            </a>
+                            <span class="hidden sm:inline">•</span>
+                            <span>{{ post.views }} View{{ post.views|pluralize }}</span>
+                            <span class="hidden sm:inline">•</span>
+                            <span>{{ post.number_of_comments }} Comment{{ post.number_of_comments|pluralize }}</span>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="prose prose-gray max-w-none text-gray-800 leading-relaxed mb-6">
+                            {{ post.content|safe }}
+                        </div>
+
+                        <!-- Share Buttons -->
+                        <div class="flex flex-wrap gap-2 sm:gap-3 justify-center">
+                            <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ post.title|urlencode }}" 
+                               class="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 transform hover:-translate-y-1" 
+                               target="_blank" 
+                               rel="noopener noreferrer" 
+                               aria-label="Share on Twitter">
+                                <i class="fab fa-twitter"></i>
+                                <span class="text-sm font-medium"></span>
+                            </a>
+                            <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" 
+                               class="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 transform hover:-translate-y-1" 
+                               target="_blank" 
+                               rel="noopener noreferrer" 
+                               aria-label="Share on Facebook">
+                                <i class="fab fa-facebook-f"></i>
+                                <span class="text-sm font-medium"></span>
+                            </a>
+                            <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri }}&title={{ post.title|urlencode }}&summary={{ post.meta_description|default:post.title|truncatewords:20|urlencode }}" 
+                               class="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 transform hover:-translate-y-1" 
+                               target="_blank" 
+                               rel="noopener noreferrer" 
+                               aria-label="Share on LinkedIn">
+                                <i class="fab fa-linkedin-in"></i>
+                                <span class="text-sm font-medium"></span>
+                            </a>
+                        </div>
                     </div>
-                  </div>
-                </li>
-                {% endfor %}
-              </ul>
-              {% if comments.has_previous or comments.has_next %}
-                <div class="flex justify-center gap-2 mt-4">
-                  {% if comments.has_previous %}
-                    <a href="?page={{ comments.previous_page_number }}" 
-                       class="px-3 py-1 border border-blue-600 text-blue-600 rounded-lg text-sm hover:bg-blue-600 hover:text-white transition-all duration-300">
-                      Previous
-                    </a>
-                  {% else %}
-                    <span class="px-3 py-1 border border-gray-300 text-gray-400 rounded-lg text-sm cursor-not-allowed">
-                      Previous
-                    </span>
-                  {% endif %}
-                  {% if comments.has_next %}
-                    <a href="?page={{ comments.next_page_number }}" 
-                       class="px-3 py-1 border border-blue-600 text-blue-600 rounded-lg text-sm hover:bg-blue-600 hover:text-white transition-all duration-300">
-                      Next
-                    </a>
-                  {% else %}
-                    <span class="px-3 py-1 border border-gray-300 text-gray-400 rounded-lg text-sm cursor-not-allowed">
-                      Next
-                    </span>
-                  {% endif %}
                 </div>
-              {% endif %}
-            {% else %}
-              <p class="text-gray-500">No comments yet. Be the first to comment!</p>
-            {% endif %}
 
-            <!-- Form Komentar Baru -->
-            <h4 class="mt-6 mb-3 text-lg font-bold text-blue-600">Leave a Comment</h4>
-            <form method="POST">
-              {% csrf_token %}
-              {% if comment_form.errors %}
-                <div class="bg-red-50 text-red-800 p-2 rounded-lg mb-2">{{ comment_form.errors }}</div>
-              {% endif %}
-              <div class="mb-3">{{ comment_form.content }}</div>
-              <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300">
-                Submit Comment
-              </button>
-            </form>
-          </div>
-        </div>
+                <!-- Comment Section -->
+                <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300">
+                    <div class="p-6 sm:p-8">
+                        <h3 class="text-xl sm:text-2xl font-bold text-black mb-6">Comments ({{ post.number_of_comments }})</h3>
 
-        <!-- Related Posts Section -->
-        {% if related_posts %}
-          <div class="mb-6">
-            <h3 class="text-xl font-bold text-blue-600 mb-4">Related Posts</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {% for related_post in related_posts %}
-                <div class="bg-white rounded-xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 animate-fade-in">
-                  {% if related_post.image %}
-                    <img src="{{ related_post.image.url }}" class="w-full h-36 object-cover rounded-t-xl" alt="{{ related_post.title }}">
-                  {% else %}
-                    <div class="w-full h-36 bg-gray-500 text-white flex items-center justify-center rounded-t-xl text-center">
-                      No Image
+                        {% if comments %}
+                            <ul class="list-none space-y-6">
+                                {% for comment in comments %}
+                                    <li class="relative {% if comment.parent %}ml-4 sm:ml-8 border-l-2 border-gray-200 pl-4{% endif %} animate-fade-in-up">
+                                        <div class="flex items-start gap-3 sm:gap-4">
+                                            <img src="{% if comment.author and comment.author.photo %}{{ comment.author.photo.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}" 
+                                                 alt="Avatar for {{ comment.author.username|default:'Anonymous' }}" 
+                                                 class="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover" 
+                                                 loading="lazy">
+                                            <div class="flex-grow">
+                                                <div class="flex justify-between items-center">
+                                                    <h6 class="font-semibold text-base text-black group-hover:text-red-500 transition-colors">{{ comment.author.username|default:"Anonymous" }}</h6>
+                                                    <span class="text-xs text-gray-500">{{ comment.date_posted|date:"F d, Y, H:i" }}</span>
+                                                </div>
+                                                <p class="mt-2 text-gray-800 text-sm sm:text-base">{{ comment.content }}</p>
+                                                <button type="button" 
+                                                        class="text-sm text-gray-600 hover:text-red-500 transition-colors mt-2" 
+                                                        onclick="showReplyForm('{{ comment.id }}')"
+                                                        aria-label="Reply to {{ comment.author.username|default:'Anonymous' }}'s comment">
+                                                    Reply
+                                                </button>
+
+                                                <!-- Reply Form -->
+                                                <form method="POST" class="mt-4 hidden" id="reply-form-{{ comment.id }}">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                                    {% if comment_form.errors %}
+                                                        <div class="bg-red-50 text-red-800 p-3 rounded-lg mb-3 text-sm">{{ comment_form.errors }}</div>
+                                                    {% endif %}
+                                                    <div class="mb-3">
+                                                        {{ comment_form.content|add_class:"w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-300 text-sm sm:text-base" }}
+                                                    </div>
+                                                    <button type="submit" 
+                                                            class="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 text-sm">
+                                                        Submit Reply
+                                                    </button>
+                                                </form>
+
+                                                <!-- Replies -->
+                                                {% for reply in comment.replies.all %}
+                                                    <div class="mt-4 ml-4 sm:ml-6 border-l-2 border-gray-200 pl-4 animate-fade-in-up">
+                                                        <div class="flex items-start gap-3">
+                                                            <img src="{% if reply.author and reply.author.photo %}{{ reply.author.photo.url }}{% else %}{% static 'images/default-avatar.png' %}{% endif %}" 
+                                                                 alt="Avatar for {{ reply.author.username|default:'Anonymous' }}" 
+                                                                 class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover" 
+                                                                 loading="lazy">
+                                                            <div class="flex-grow">
+                                                                <div class="flex justify-between items-center">
+                                                                    <h6 class="font-semibold text-sm text-black group-hover:text-red-500 transition-colors">{{ reply.author.username|default:"Anonymous" }}</h6>
+                                                                    <span class="text-xs text-gray-500">{{ reply.date_posted|date:"F d, Y, H:i" }}</span>
+                                                                </div>
+                                                                <p class="mt-2 text-gray-800 text-sm">{{ reply.content }}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+
+                            <!-- Comment Pagination -->
+                            {% if comments.has_previous or comments.has_next %}
+                                <div class="flex justify-center gap-3 mt-6">
+                                    {% if comments.has_previous %}
+                                        <a href="?page={{ comments.previous_page_number }}" 
+                                           class="px-4 py-2 border border-gray-600 text-gray-600 rounded-lg text-sm hover:bg-gray-800 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300">
+                                            Previous
+                                        </a>
+                                    {% else %}
+                                        <span class="px-4 py-2 border border-gray-300 text-gray-400 rounded-lg text-sm cursor-not-allowed">Previous</span>
+                                    {% endif %}
+                                    {% if comments.has_next %}
+                                        <a href="?page={{ comments.next_page_number }}" 
+                                           class="px-4 py-2 border border-gray-600 text-gray-600 rounded-lg text-sm hover:bg-gray-800 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300">
+                                            Next
+                                        </a>
+                                    {% else %}
+                                        <span class="px-4 py-2 border border-gray-300 text-gray-400 rounded-lg text-sm cursor-not-allowed">Next</span>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <p class="text-gray-600 text-sm sm:text-base">No comments yet. Be the first to comment!</p>
+                        {% endif %}
+
+                        <!-- New Comment Form -->
+                        <h4 class="mt-8 text-lg sm:text-xl font-bold text-black">Leave a Comment</h4>
+                        <form method="POST" class="mt-4">
+                            {% csrf_token %}
+                            {% if comment_form.errors %}
+                                <div class="bg-red-50 text-red-800 p-3 rounded-lg mb-3 text-sm">{{ comment_form.errors }}</div>
+                            {% endif %}
+                            <div class="mb-4">
+                                {{ comment_form.content|add_class:"w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-300 text-sm sm:text-base" }}
+                            </div>
+                            <button type="submit" 
+                                    class="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 text-sm sm:text-base">
+                                Submit Comment
+                            </button>
+                        </form>
                     </div>
-                  {% endif %}
-                  <div class="p-4 flex flex-col">
-                    <h5 class="text-base font-semibold text-gray-900">{{ related_post.title }}</h5>
-                    <p class="text-sm text-gray-500 mb-2">
-                      By {{ related_post.author|default:"Unknown" }} | {{ related_post.date_posted|date:"M d, Y" }}
-                    </p>
-                    <div class="mt-auto">
-                      <a href="{% url 'blog:blog-detail' slug=related_post.slug %}" 
-                         rel="canonical" 
-                         class="block w-full px-3 py-1 border border-blue-600 text-blue-600 rounded-lg text-sm text-center hover:bg-blue-600 hover:text-white transition-all duration-300">
-                        Read More
-                      </a>
-                    </div>
-                  </div>
                 </div>
-              {% endfor %}
+
+                <!-- Related Posts Section -->
+                {% if related_posts %}
+                    <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300">
+                        <div class="p-6 sm:p-8">
+                            <h3 class="text-xl sm:text-2xl font-bold text-black mb-6">Related Posts</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                                {% for related_post in related_posts %}
+                                    <div class="bg-white rounded-lg shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group animate-fade-in-up min-w-[150px] w-full aspect-[4/5] flex flex-col">
+                                        <div class="relative w-full aspect-[16/9] bg-gray-200 group-hover:scale-[1.02] transition-transform duration-300">
+                                            {% if related_post.image %}
+                                                <img src="{{ related_post.image.url }}" 
+                                                     alt="{{ related_post.title }}" 
+                                                     class="w-full h-full object-cover rounded-t-lg" 
+                                                     loading="lazy" 
+                                                     width="400" 
+                                                     height="225">
+                                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
+                                            {% else %}
+                                                <div class="w-full h-full bg-gray-500 text-white flex items-center justify-center rounded-t-lg text-center text-sm">
+                                                    No Image
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="p-4 flex flex-col flex-grow">
+                                            <h5 class="font-semibold text-sm sm:text-base text-black group-hover:text-red-500 transition-colors line-clamp-2 mb-2">
+                                                <a href="{% url 'blog:blog-detail' slug=related_post.slug %}" 
+                                                   class="no-underline text-black group-hover:text-red-500 focus:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2" 
+                                                   rel="canonical">
+                                                    {{ related_post.title }}
+                                                </a>
+                                            </h5>
+                                            <p class="text-xs text-gray-600 mb-3">{{ related_post.author|default:"Unknown" }} • {{ related_post.date_posted|date:"M d, Y" }}</p>
+                                            <div class="mt-auto">
+                                                <a href="{% url 'blog:blog-detail' slug=related_post.slug %}" 
+                                                   class="block w-full px-3 py-1.5 border border-gray-600 text-gray-600 rounded-lg text-xs sm:text-sm text-center hover:bg-gray-800 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300" 
+                                                   rel="canonical">
+                                                    Read More
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <!-- Related Posts Pagination -->
+                            {% if related_posts.has_previous or related_posts.has_next %}
+                                <div class="flex justify-center gap-3 mt-6">
+                                    {% if related_posts.has_previous %}
+                                        <a href="?page={{ related_posts.previous_page_number }}" 
+                                           class="px-4 py-2 border border-gray-600 text-gray-600 rounded-lg text-sm hover:bg-gray-800 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300">
+                                            Previous
+                                        </a>
+                                    {% else %}
+                                        <span class="px-4 py-2 border border-gray-300 text-gray-400 rounded-lg text-sm cursor-not-allowed">Previous</span>
+                                    {% endif %}
+                                    {% if related_posts.has_next %}
+                                        <a href="?page={{ related_posts.next_page_number }}" 
+                                           class="px-4 py-2 border border-gray-600 text-gray-600 rounded-lg text-sm hover:bg-gray-800 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300">
+                                            Next
+                                        </a>
+                                    {% else %}
+                                        <span class="px-4 py-2 border border-gray-300 text-gray-400 rounded-lg text-sm cursor-not-allowed">Next</span>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
             </div>
 
-            <!-- Pagination untuk Related Posts -->
-            <div class="flex justify-center gap-2 mt-4">
-              {% if related_posts.has_previous %}
-                <a href="?page={{ related_posts.previous_page_number }}" 
-                   class="px-3 py-1 border border-blue-600 text-blue-600 rounded-lg text-sm hover:bg-blue-600 hover:text-white transition-all duration-300">
-                  Previous
-                </a>
-              {% endif %}
-              {% if related_posts.has_next %}
-                <a href="?page={{ related_posts.next_page_number }}" 
-                   class="px-3 py-1 border border-blue-600 text-blue-600 rounded-lg text-sm hover:bg-blue-600 hover:text-white transition-all duration-300">
-                  Next
-                </a>
-              {% endif %}
+            <!-- Sidebar -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Categories -->
+                <div class="bg-white rounded-2xl shadow-lg p-4 sm:p-6 sticky top-4">
+                    <h5 class="text-lg sm:text-xl font-bold text-black mb-4">Categories</h5>
+                    <ul class="list-none space-y-2">
+                        {% for cat_data in categories %}
+                            <li>
+                                <a href="{{ cat_data.url }}" 
+                                   class="text-gray-600 hover:text-red-500 transition-colors duration-300 text-sm sm:text-base {% if post.category == cat_data.category %}font-bold text-red-500{% endif %}" 
+                                   rel="canonical">
+                                    {{ cat_data.category.name }} ({{ cat_data.post_count }})
+                                </a>
+                            </li>
+                        {% empty %}
+                            <li class="text-gray-600 text-sm">No categories available.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- Popular Tags -->
+                <div class="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
+                    <h5 class="text-lg sm:text-xl font-bold text-black mb-4">Popular Tags</h5>
+                    <div class="flex flex-wrap gap-2">
+                        {% for tag_data in tags %}
+                            <a href="{{ tag_data.tag.get_absolute_url }}" 
+                               class="inline-block bg-gray-100 text-gray-800 text-xs sm:text-sm font-medium px-2.5 py-1 rounded-full hover:bg-red-500 hover:text-white transition-all duration-300" 
+                               rel="canonical">
+                                #{{ tag_data.tag.name }} ({{ tag_data.post_count }})
+                            </a>
+                        {% empty %}
+                            <span class="text-gray-600 text-sm">No tags available.</span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Related Courses -->
+                {% if related_courses %}
+                    <div class="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
+                        <h5 class="text-lg sm:text-xl font-bold text-black mb-4">Related Courses</h5>
+                        <div class="grid grid-cols-1 gap-4">
+                            {% for course in related_courses %}
+                                <div class="bg-white rounded-lg shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group animate-fade-in-up min-w-[150px] w-full aspect-[4/5] flex flex-col">
+                                    <div class="relative w-full aspect-[16/9] bg-gray-200 group-hover:scale-[1.02] transition-transform duration-300">
+                                        {% if course.image %}
+                                            <img src="{{ course.image.url }}" 
+                                                 alt="{{ course.course_name }}" 
+                                                 class="w-full h-full object-cover rounded-t-lg" 
+                                                 loading="lazy" 
+                                                 width="400" 
+                                                 height="225">
+                                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
+                                        {% else %}
+                                            <div class="w-full h-full bg-gray-500 text-white flex items-center justify-center rounded-t-lg text-center text-sm">
+                                                No Image
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="p-3 flex flex-col flex-grow">
+                                        <h6 class="font-semibold text-sm sm:text-base text-black group-hover:text-red-500 transition-colors line-clamp-2 mb-2">
+                                            <a href="{% url 'courses:course_lms_detail' id=course.id slug=course.slug %}" 
+                                               class="no-underline text-black group-hover:text-red-500 focus:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2" 
+                                               rel="canonical">
+                                                {{ course.course_name }}
+                                            </a>
+                                        </h6>
+                                        <p class="text-xs text-gray-600 mb-3">Instructor: {{ course.instructor|default:"Unknown" }}</p>
+                                        <div class="mt-auto">
+                                            <a href="{% url 'courses:course_lms_detail' id=course.id slug=course.slug %}" 
+                                               class="block w-full px-3 py-1.5 border border-gray-600 text-gray-600 rounded-lg text-xs sm:text-sm text-center hover:bg-gray-800 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300" 
+                                               rel="canonical">
+                                                View Course
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
             </div>
-          </div>
-        {% endif %}
-      </div>
-
-      <!-- Sidebar -->
-      <div class="lg:col-span-1">
-        <div class="bg-white rounded-xl shadow-md p-4 mb-4">
-          <h5 class="text-lg font-bold text-red-600 mb-3">Categories</h5>
-          <ul class="list-none">
-            {% for cat_data in categories %}
-              <li class="mb-2">
-                <a href="{{ cat_data.url }}" 
-                   rel="canonical" 
-                   class="text-gray-500 hover:text-red-600 transition-colors {% if post.category == cat_data.category %}font-bold{% endif %}">
-                  {{ cat_data.category.name }} ({{ cat_data.post_count }})
-                </a>
-              </li>
-            {% empty %}
-              <li class="text-gray-500">No categories available.</li>
-            {% endfor %}
-          </ul>
         </div>
-
-        <div class="bg-white rounded-xl shadow-md p-4 mb-4">
-          <h5 class="text-lg font-bold text-red-600 mb-3">Popular Tags</h5>
-          <div class="flex flex-wrap gap-1">
-            {% for tag_data in tags %}
-              <a href="{{ tag_data.tag.get_absolute_url }}" 
-                 rel="canonical" 
-                 class="inline-block bg-gray-500 text-white text-xs font-medium px-2 py-1 rounded-full hover:bg-blue-600 transition-all duration-300">
-                #{{ tag_data.tag.name }} ({{ tag_data.post_count }})
-              </a>
-            {% empty %}
-              <span class="text-gray-500">No tags available.</span>
-            {% endfor %}
-          </div>
-        </div>
-
-        {% if related_courses %}
-        <div class="bg-white rounded-xl shadow-md p-4">
-          <h5 class="text-lg font-bold text-red-600 mb-3">Related Courses</h5>
-          <div class="grid grid-cols-1 gap-3">
-            {% for course in related_courses %}
-            <div class="bg-white rounded-lg shadow-sm">
-              {% if course.image %}
-                <img src="{{ course.image.url }}" class="w-full h-32 object-cover rounded-t-lg" alt="{{ course.course_name }}">
-              {% endif %}
-              <div class="p-3">
-                <h6 class="font-semibold text-blue-600">{{ course.course_name }}</h6>
-                <p class="text-sm text-gray-500 mb-2">Instructor: {{ course.instructor|default:"Unknown" }}</p>
-                <a href="{% url 'courses:course_lms_detail' id=course.id slug=course.slug %}" 
-                   rel="canonical" 
-                   class="block w-full px-3 py-1 border border-red-600 text-red-600 rounded-lg text-sm text-center hover:bg-red-600 hover:text-white transition-all duration-300">
-                  View Course
-                </a>
-              </div>
-            </div>
-            {% endfor %}
-          </div>
-        </div>
-        {% endif %}
-      </div>
     </div>
-  </div>
 </section>
 
+<!-- JavaScript for Reply Form Toggle -->
+<script>
+function showReplyForm(commentId) {
+    const form = document.getElementById(`reply-form-${commentId}`);
+    form.classList.toggle('hidden');
+    if (!form.classList.contains('hidden')) {
+        form.querySelector('textarea').focus();
+    }
+}
+</script>
+{% endblock %}
 
+{% block extra_css %}
+<style>
+    /* Custom animations */
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-up {
+        animation: fadeInUp 0.5s ease-out forwards;
+    }
+    /* Prose styles for better typography */
+    .prose {
+        font-size: 1rem;
+        line-height: 1.75;
+    }
+    .prose p {
+        margin-bottom: 1.25rem;
+    }
+    .prose h2, .prose h3, .prose h4 {
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+    }
+    .prose img {
+        border-radius: 0.5rem;
+        max-width: 100%;
+    }
+    /* Ensure inputs and textareas match LMSKu aesthetic */
+    input, textarea {
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+</style>
 {% endblock %}
