@@ -3838,7 +3838,10 @@ def enroll_course(request, course_id):
 
     if response["status"] == "success":
         messages.success(request, response["message"])
-        return redirect('courses:course_learn', username=user.username, slug=course.slug)
+        return redirect('learner:course_learn', username=user.username, id=course.id, slug=course.slug)
+
+
+
     elif response["status"] == "error":
         if course.payment_model == 'buy_first' and "Payment required" in response["message"]:
             logger.info("Redirecting to payment for buy_first")
