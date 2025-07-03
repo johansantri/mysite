@@ -6,7 +6,14 @@
 <div class="container-fluid py-4">
     <!-- Judul -->
     <h1 class="display-5 fw-bold text-danger mb-4">Learner Area</h1>
-
+    {% if request.user.is_staff or request.user.is_superuser %}
+    <!-- Toolbar untuk Staff atau Superuser -->
+    <div class="btn-group me-3 mb-2 mb-md-0">
+        <a href="{% url 'learner:user_analytics' %}" class="btn btn-info btn-sm shadow-sm">
+            <i class="bi bi-bar-chart-line me-1"></i>Analytics
+        </a>
+    </div>
+    {% endif %}
     {% if request.user.is_superuser or request.user.is_partner %}
     <!-- Toolbar dan Pencarian untuk Superuser atau Partner -->
     <div class="card border-0 shadow-sm mb-4">
@@ -42,7 +49,7 @@
                         <option value="most" {% if request.GET.sort_courses == 'most' %}selected{% endif %}>Most Enrolled</option>
                         <option value="least" {% if request.GET.sort_courses == 'least' %}selected{% endif %}>Least Enrolled</option>
                     </select>
-                    {% if request.user.is_superuser %}
+                    {% if request.user.is_staff or request.user.is_superuser %}
                         <select name="partner" class="form-select shadow-sm" style="max-width: 200px;">
                             <option value="">-- Filter by Partner --</option>
                             {% for partner in partners %}
@@ -51,6 +58,7 @@
                                 </option>
                             {% endfor %}
                         </select>
+                       
                     {% endif %}
                     <input type="date" class="form-control shadow-sm" name="date_from"
                         value="{{ request.GET.date_from }}" placeholder="Dari Tanggal" style="max-width: 200px;">

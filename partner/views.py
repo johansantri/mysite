@@ -31,6 +31,111 @@ from django.db.models.functions import TruncWeek
 from django.views.decorators.http import require_GET
 from django_ratelimit.decorators import ratelimit
 from django.views.decorators.cache import cache_page
+from django.http import HttpResponse
+import datetime, csv, json
+from django.db.models import Count, Avg, Max, Min
+from django.contrib.admin.views.decorators import staff_member_required
+import pprint
+
+@staff_member_required
+@cache_page(60 * 5)  # Cache 5 menit
+def partner_analytics_admin(request):
+    download = request.GET.get('download')
+    partners = Partner.objects.select_related('name', 'author')
+
+    # === CSV DOWNLOAD ===
+    if download == 'csv':
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="partner_analytics.csv"'
+        writer = csv.writer(response)
+        writer.writerow(['Universiti', 'Author', 'Phone', 'Tax', 'ICEI Share', 'Balance', 'Created', 'Social Media'])
+        for p in partners:
+            writer.writerow([
+                getattr(p.name, 'name', 'N/A'),  # Ganti 'name' jika Universiti model pakai field lain
+                p.author.get_full_name() or p.author.email,
+                p.phone,
+                f"{p.tax}%",
+                f"{p.iceiprice}%",
+                p.balance,
+                p.created_ad.strftime("%Y-%m-%d"),
+                ", ".join([f for f in ['tiktok', 'youtube', 'facebook', 'instagram', 'linkedin', 'twitter'] if getattr(p, f)])
+            ])
+        return response
+
+    # === 1. Growth Over Time ===
+    monthly = partners.annotate(month=TruncMonth('created_ad')) \
+                      .values('month') \
+                      .annotate(total=Count('id')).order_by('month')
+    growth_data = {
+        'labels': [m['month'].strftime('%b %Y') for m in monthly],
+        'datasets': [{'label': 'New Partners', 'data': [m['total'] for m in monthly], 'borderColor': '#3B82F6', 'fill': False}]
+    }
+
+    # === 2. Distribution by Universitas ===
+    univ = partners.values('name__name').annotate(total=Count('id')).order_by('-total')[:10]
+    university_data = {
+        'labels': [u['name__name'] for u in univ],
+        'datasets': [{'label': 'Partners', 'data': [u['total'] for u in univ], 'backgroundColor': '#10B981'}]
+    }
+
+    # === 3. Balance Summary ===
+    balance_stats = partners.aggregate(avg=Avg('balance'), max=Max('balance'), min=Min('balance'))
+
+    # === 4. Tax Distribution ===
+    tax_qs = partners.values('tax').annotate(total=Count('id')).order_by('tax')
+    tax_data = {
+        'labels': [str(t['tax']) for t in tax_qs],
+        'datasets': [{
+            'label': 'Tax (%)',
+            'data': [t['total'] for t in tax_qs],
+            'backgroundColor': '#F87171'
+        }]
+    }
+
+    # === 5. ICEI Share Distribution ===
+    icei_qs = partners.values('iceiprice').annotate(total=Count('id')).order_by('iceiprice')
+    icei_data = {
+        'labels': [str(i['iceiprice']) for i in icei_qs],
+        'datasets': [{
+            'label': 'ICEI Share (%)',
+            'data': [i['total'] for i in icei_qs],
+            'backgroundColor': '#60A5FA'
+        }]
+    }
+
+    # === 6. Social Media Presence ===
+    social_fields = ['tiktok', 'youtube', 'facebook', 'instagram', 'linkedin', 'twitter']
+    social_data = {
+        'labels': [f.capitalize() for f in social_fields],
+        'datasets': [{
+            'label': 'Partners with Account',
+            'data': [partners.exclude(**{f: ''}).exclude(**{f: None}).count() for f in social_fields],
+            'backgroundColor': '#F59E0B'
+        }]
+    }
+
+    # === 7. Top Authors ===
+    top_authors = partners.values('author__email').annotate(total=Count('id')).order_by('-total')[:5]
+    author_data = {
+        'labels': [a['author__email'] for a in top_authors],
+        'datasets': [{'label': 'Partners Created', 'data': [a['total'] for a in top_authors], 'backgroundColor': '#8B5CF6'}]
+    }
+
+    # === Context ===
+    context = {
+        'growth_data': json.dumps(growth_data),
+        'univ_data': json.dumps(university_data),
+        'social_data': json.dumps(social_data),
+        'author_data': json.dumps(author_data),
+        'tax_data': json.dumps(tax_data),
+        'icei_data': json.dumps(icei_data),
+        'balance_avg': balance_stats['avg'],
+        'balance_min': balance_stats['min'],
+        'balance_max': balance_stats['max'],
+    }
+
+    pprint.pprint(context)
+    return render(request, 'partner/partner_analytics.html', context)
 
 @ratelimit(key='ip', rate='60/m', block=True)
 @require_GET

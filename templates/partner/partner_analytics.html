@@ -1,0 +1,139 @@
+{% extends 'home/tes.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+  <h2 class="mb-4 fw-bold text-primary">Partner Analytics Dashboard</h2>
+
+  <!-- Filter and Download -->
+  <form method="get" class="row g-3 mb-4">
+    <div class="col-md-4">
+      <input type="text" name="univ" class="form-control" placeholder="Search Universitas" value="{{ request.GET.univ }}">
+    </div>
+    <div class="col-md-2 d-grid">
+      <button type="submit" class="btn btn-primary">Filter</button>
+    </div>
+    <div class="col-md-2 d-grid">
+      <a href="?download=csv" class="btn btn-success">
+        <i class="bi bi-download"></i> Download CSV
+      </a>
+    </div>
+  </form>
+
+  <div class="row g-4">
+
+    <!-- Partner Growth -->
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Partner Growth (12 Months)</h5>
+          <canvas id="growthChart" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- University Distribution -->
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Distribution by Universitas</h5>
+          <canvas id="univChart" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Balance Summary -->
+    <div class="col-md-4">
+      <div class="card text-bg-light shadow-sm">
+        <div class="card-body">
+          <h6 class="card-title">Saldo Summary</h6>
+          <p>Average: <strong>Rp{{ balance_avg|default:0 }}</strong></p>
+          <p>Min: <strong>Rp{{ balance_min|default:0 }}</strong></p>
+          <p>Max: <strong>Rp{{ balance_max|default:0 }}</strong></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tax & ICEI Chart -->
+    <div class="col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Tax (%) Distribution</h5>
+          <canvas id="taxChart" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">ICEI Share (%)</h5>
+          <canvas id="iceiChart" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Social Media -->
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Social Media Presence</h5>
+          <canvas id="socialChart" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Authors -->
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Top 5 Authors</h5>
+          <canvas id="authorChart" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="{% static 'js/chart.umd.min.js' %}"></script>
+
+<script>
+  const growthData = {{ growth_data|default:"{}"|safe }};
+  const universityData = {{ univ_data|default:"{}"|safe }};
+  const taxData = {{ tax_data|default:"{}"|safe }};
+  const iceiData = {{ icei_data|default:"{}"|safe }};
+  const socialData = {{ social_data|default:"{}"|safe }};
+  const authorData = {{ author_data|default:"{}"|safe }};
+
+  new Chart(document.getElementById("growthChart"), {
+    type: 'line',
+    data: growthData
+  });
+
+  new Chart(document.getElementById("univChart"), {
+    type: 'bar',
+    data: universityData,
+    options: { indexAxis: 'y' }
+  });
+
+  new Chart(document.getElementById("taxChart"), {
+    type: 'bar',
+    data: taxData
+  });
+
+  new Chart(document.getElementById("iceiChart"), {
+    type: 'bar',
+    data: iceiData
+  });
+
+  new Chart(document.getElementById("socialChart"), {
+    type: 'bar',
+    data: socialData
+  });
+
+  new Chart(document.getElementById("authorChart"), {
+    type: 'bar',
+    data: authorData
+  });
+</script>
+{% endblock %}
