@@ -290,13 +290,26 @@
   </div>
 </section>
 
+
+{% if request.user.is_authenticated %}
 <!-- Call to Action Section -->
 <section class="py-16 sm:py-20 bg-gray-900 text-white text-center relative overflow-hidden" aria-labelledby="cta-heading">
   <div class="absolute inset-0 bg-gradient-to-br from-black to-gray-700 opacity-50"></div>
   <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl relative z-10">
     <h2 id="cta-heading" class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-6 hover:text-red-500 transition-colors duration-300">Ready to Unleash Your Potential?</h2>
     <p class="text-base sm:text-lg md:text-xl mb-8 text-gray-200 hover:text-red-500 transition-colors duration-300">Join {{ total_users }}+ learners and start your journey with LMSKu today!</p>
-    <a href="{% url 'authentication:register' %}" class="inline-block bg-white text-black font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-lg hover:bg-gray-200 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base">Get Started Now</a>
+    <a href="{% url 'authentication:course_list' %}" class="inline-block bg-white text-black font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-lg hover:bg-gray-200 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base">Get Started Now</a>
   </div>
 </section>
+{% else %}
+<!-- Call to Action Section for Non-Authenticated Users -->
+<section class="py-16 sm:py-20 bg-gray-900 text-white text-center relative overflow-hidden" aria-labelledby="cta-heading">
+  <div class="absolute inset-0 bg-gradient-to-br from-black to-gray-700 opacity-50"></div>
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl relative z-10">
+    <h2 id="cta-heading" class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-6 hover:text-red-500 transition-colors duration-300">Join the LMSKu Community!</h2>
+    <p class="text-base sm:text-lg md:text-xl mb-8 text-gray-200 hover:text-red-500 transition-colors duration-300">Sign up now to explore {{ total_courses }}+ courses and start learning with expert instructors.</p>
+    <a href="{% url 'authentication:register' %}" class="inline-block bg-white text-black font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-lg hover:bg-gray-200 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base">Create Your Account</a>
+  </div>
+</section>      
+{% endif %}
 {% endblock %}
