@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-
+<div class="container py-5">
   <h2 class="mb-4 fw-bold text-primary">Partner Analytics Dashboard</h2>
 
   <!-- Filter and Download -->
@@ -21,32 +21,32 @@
   </form>
 
   <div class="row g-4">
-
-    <!-- Partner Growth -->
+    {# Chart Blocks in Loop with Bootstrap Collapse #}
+    {% for chart in chart_list %}
     <div class="col-md-6">
       <div class="card shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">Partner Growth (12 Months)</h5>
-          <canvas id="growthChart" height="200"></canvas>
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">{{ chart.title }}</h5>
+          <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ chart.id }}">
+            Toggle
+          </button>
+        </div>
+        <div id="collapse{{ chart.id }}" class="collapse show">
+          <div class="card-body">
+            <div class="ratio ratio-16x9">
+              <canvas id="{{ chart.id }}"></canvas>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-
-    <!-- University Distribution -->
-    <div class="col-md-6">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">Distribution by Universitas</h5>
-          <canvas id="univChart" height="200"></canvas>
-        </div>
-      </div>
-    </div>
+    {% endfor %}
 
     <!-- Balance Summary -->
-    <div class="col-md-4">
+    <div class="col-md-6">
       <div class="card text-bg-light shadow-sm">
         <div class="card-body">
-          <h6 class="card-title">Saldo Summary</h6>
+          <h6 class="card-title">Balance Summary</h6>
           <p>Average: <strong>Rp{{ balance_avg|default:0 }}</strong></p>
           <p>Min: <strong>Rp{{ balance_min|default:0 }}</strong></p>
           <p>Max: <strong>Rp{{ balance_max|default:0 }}</strong></p>
@@ -54,86 +54,39 @@
       </div>
     </div>
 
-    <!-- Tax & ICEI Chart -->
-    <div class="col-md-4">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">Tax (%) Distribution</h5>
-          <canvas id="taxChart" height="200"></canvas>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">ICEI Share (%)</h5>
-          <canvas id="iceiChart" height="200"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- Social Media -->
-    <div class="col-md-6">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">Social Media Presence</h5>
-          <canvas id="socialChart" height="200"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- Top Authors -->
-    <div class="col-md-6">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title">Top 5 Authors</h5>
-          <canvas id="authorChart" height="200"></canvas>
-        </div>
-      </div>
-    </div>
-
   </div>
+</div>
 
-
+<!-- Chart.js -->
 <script src="{% static 'js/chart.umd.min.js' %}"></script>
-
 <script>
-  const growthData = {{ growth_data|default:"{}"|safe }};
-  const universityData = {{ univ_data|default:"{}"|safe }};
-  const taxData = {{ tax_data|default:"{}"|safe }};
-  const iceiData = {{ icei_data|default:"{}"|safe }};
-  const socialData = {{ social_data|default:"{}"|safe }};
-  const authorData = {{ author_data|default:"{}"|safe }};
+  const chartConfigs = {
+    growthChart: {type: 'line', data: {{ growth_data|safe }}},
+    univChart: {type: 'bar', data: {{ univ_data|safe }}},
+    revenueChart: {type: 'bar', data: {{ revenue_data|safe }}},
+    monthlyRevenueChart: {type: 'line', data: {{ monthly_revenue_data|safe }}},
+    completionChart: {type: 'bar', data: {{ completion_data|safe }}},
+    taxChart: {type: 'bar', data: {{ tax_data|safe }}},
+    iceiChart: {type: 'bar', data: {{ icei_data|safe }}},
+    socialChart: {type: 'bar', data: {{ social_data|safe }}},
+    authorChart: {type: 'bar', data: {{ author_data|safe }}},
+    courseCountChart: {type: 'bar', data: {{ course_count_data|safe }}},
+  };
 
-  new Chart(document.getElementById("growthChart"), {
-    type: 'line',
-    data: growthData
-  });
-
-  new Chart(document.getElementById("univChart"), {
-    type: 'bar',
-    data: universityData,
-    options: { indexAxis: 'y' }
-  });
-
-  new Chart(document.getElementById("taxChart"), {
-    type: 'bar',
-    data: taxData
-  });
-
-  new Chart(document.getElementById("iceiChart"), {
-    type: 'bar',
-    data: iceiData
-  });
-
-  new Chart(document.getElementById("socialChart"), {
-    type: 'bar',
-    data: socialData
-  });
-
-  new Chart(document.getElementById("authorChart"), {
-    type: 'bar',
-    data: authorData
-  });
+  for (const [id, config] of Object.entries(chartConfigs)) {
+    const ctx = document.getElementById(id);
+    if (ctx) {
+      new Chart(ctx, {
+        type: config.type,
+        data: config.data,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: true } },
+          layout: { padding: 10 }
+        }
+      });
+    }
+  }
 </script>
 {% endblock %}

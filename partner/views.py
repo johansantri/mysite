@@ -38,7 +38,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 import pprint
 
 @staff_member_required
-@cache_page(60 * 5)  # Cache 5 menit
+@cache_page(60 * 5)
 def partner_analytics_admin(request):
     download = request.GET.get('download')
     partners = Partner.objects.select_related('name', 'author')
@@ -51,14 +51,14 @@ def partner_analytics_admin(request):
         writer.writerow(['Universiti', 'Author', 'Phone', 'Tax', 'ICEI Share', 'Balance', 'Created', 'Social Media'])
         for p in partners:
             writer.writerow([
-                getattr(p.name, 'name', 'N/A'),  # Ganti 'name' jika Universiti model pakai field lain
+                getattr(p.name, 'name', 'N/A'),
                 p.author.get_full_name() or p.author.email,
                 p.phone,
                 f"{p.tax}%",
                 f"{p.iceiprice}%",
                 p.balance,
                 p.created_ad.strftime("%Y-%m-%d"),
-                ", ".join([f for f in ['tiktok', 'youtube', 'facebook', 'instagram', 'linkedin', 'twitter'] if getattr(p, f)])
+                ", ".join([f for f in ['tiktok','youtube','facebook','instagram','linkedin','twitter'] if getattr(p, f)])
             ])
         return response
 
@@ -85,22 +85,14 @@ def partner_analytics_admin(request):
     tax_qs = partners.values('tax').annotate(total=Count('id')).order_by('tax')
     tax_data = {
         'labels': [str(t['tax']) for t in tax_qs],
-        'datasets': [{
-            'label': 'Tax (%)',
-            'data': [t['total'] for t in tax_qs],
-            'backgroundColor': '#F87171'
-        }]
+        'datasets': [{'label': 'Tax (%)', 'data': [t['total'] for t in tax_qs], 'backgroundColor': '#F87171'}]
     }
 
     # === 5. ICEI Share Distribution ===
     icei_qs = partners.values('iceiprice').annotate(total=Count('id')).order_by('iceiprice')
     icei_data = {
         'labels': [str(i['iceiprice']) for i in icei_qs],
-        'datasets': [{
-            'label': 'ICEI Share (%)',
-            'data': [i['total'] for i in icei_qs],
-            'backgroundColor': '#60A5FA'
-        }]
+        'datasets': [{'label': 'ICEI Share (%)', 'data': [i['total'] for i in icei_qs], 'backgroundColor': '#60A5FA'}]
     }
 
     # === 6. Social Media Presence ===
@@ -121,7 +113,58 @@ def partner_analytics_admin(request):
         'datasets': [{'label': 'Partners Created', 'data': [a['total'] for a in top_authors], 'backgroundColor': '#8B5CF6'}]
     }
 
-    # === Context ===
+    # === 8. Revenue per Partner ===
+    revenue_per_partner = Payment.objects.filter(status='completed') \
+        .values('course__org_partner__name__name') \
+        .annotate(total=Sum('amount')) \
+        .order_by('-total')[:10]
+    revenue_data = {
+        'labels': [r['course__org_partner__name__name'] for r in revenue_per_partner],
+        'datasets': [{'label': 'Total Revenue', 'data': [r['total'] for r in revenue_per_partner], 'backgroundColor': '#4ADE80'}]
+    }
+
+    # === 9. Monthly Revenue Trend ===
+    monthly_revenue = Payment.objects.filter(status='completed') \
+        .annotate(month=TruncMonth('created_at')) \
+        .values('month') \
+        .annotate(total=Sum('amount')).order_by('month')
+    monthly_revenue_data = {
+        'labels': [m['month'].strftime('%b %Y') for m in monthly_revenue],
+        'datasets': [{'label': 'Revenue', 'data': [m['total'] for m in monthly_revenue], 'borderColor': '#6366F1', 'fill': False}]
+    }
+
+    # === 10. Completion Rate per Partner ===
+    completion_qs = Enrollment.objects.filter(certificate_issued=True) \
+        .values('course__org_partner__name__name') \
+        .annotate(total=Count('id')) \
+        .order_by('-total')[:10]
+    completion_data = {
+        'labels': [c['course__org_partner__name__name'] for c in completion_qs],
+        'datasets': [{'label': 'Certificates Issued', 'data': [c['total'] for c in completion_qs], 'backgroundColor': '#FB923C'}]
+    }
+
+    # === 11. Courses per Partner ===
+    courses_per_partner = Course.objects.values('org_partner__name__name') \
+        .annotate(total=Count('id')).order_by('-total')[:10]
+    course_count_data = {
+        'labels': [c['org_partner__name__name'] for c in courses_per_partner],
+        'datasets': [{'label': 'Courses', 'data': [c['total'] for c in courses_per_partner], 'backgroundColor': '#0EA5E9'}]
+    }
+
+    # === Dynamic Chart List for Looping in Template ===
+    chart_list = [
+        {"id": "growthChart", "title": "Partner Growth (12 Months)"},
+        {"id": "univChart", "title": "Top 10 Universitas"},
+        {"id": "revenueChart", "title": "Top Revenue by Partner"},
+        {"id": "monthlyRevenueChart", "title": "Revenue Trend (Monthly)"},
+        {"id": "completionChart", "title": "Completion Rate (Top 10)"},
+        {"id": "taxChart", "title": "Tax (%) Distribution"},
+        {"id": "iceiChart", "title": "ICEI Share (%)"},
+        {"id": "socialChart", "title": "Social Media Presence"},
+        {"id": "authorChart", "title": "Top 5 Authors"},
+        {"id": "courseCountChart", "title": "Total Courses by Partner"},
+    ]
+
     context = {
         'growth_data': json.dumps(growth_data),
         'univ_data': json.dumps(university_data),
@@ -132,9 +175,13 @@ def partner_analytics_admin(request):
         'balance_avg': balance_stats['avg'],
         'balance_min': balance_stats['min'],
         'balance_max': balance_stats['max'],
+        'revenue_data': json.dumps(revenue_data),
+        'monthly_revenue_data': json.dumps(monthly_revenue_data),
+        'completion_data': json.dumps(completion_data),
+        'course_count_data': json.dumps(course_count_data),
+        'chart_list': chart_list,  # ✅ Untuk loop di template
     }
 
-    pprint.pprint(context)
     return render(request, 'partner/partner_analytics.html', context)
 
 @ratelimit(key='ip', rate='60/m', block=True)
