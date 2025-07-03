@@ -31,7 +31,7 @@ urlpatterns = [
     path('transaction-trends/', views.transaction_trends_view, name='transaction_trends'),
     path('analytics/top-transaction-partners/', views.top_transaction_partners_view, name='top_transaction_partners'),
     path('top-courses-revenue/', views.top_courses_by_revenue_view, name='top_courses_revenue'),
-    path('analytics/partner/all/', views.partner_analytics_admin, name='partner_analytics'),
+    path('analytics/partner/all/', views.partner_analytics_admin, name='partner_analytics_admin'),
 
 
 ]
