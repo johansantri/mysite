@@ -2,19 +2,20 @@
 {% load static blog_filters %}
 
 {% block extra_head %}
-<meta name="description" content="{% if current_category %}{{ current_category.name }} blog posts{% elif current_tag %}Posts tagged with {{ current_tag.name }}{% else %}Discover the latest insights and stories from our blog{% endif %}">
-<meta name="keywords" content="blog, {{ current_category.name|default:'articles' }}, {{ current_tag.name|default:'insights' }}, education, technology">
-<meta name="robots" content="index, follow">
+  <meta name="description" content="{% if current_category %}Read blog posts about {{ current_category.name }}{% elif current_tag %}Explore posts tagged {{ current_tag.name }}{% else %}Discover the latest insights, stories, and updates from our education and tech community{% endif %}">
+  <meta name="keywords" content="blog, {{ current_category.name|default:'articles' }}, {{ current_tag.name|default:'insights' }}, education, technology, learning, tips">
+  <meta name="robots" content="index, follow">
 {% endblock %}
 
 {% block content %}
-<section class="py-10 bg-gray-100">
+<section class="py-12 bg-gray-100">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex flex-col lg:flex-row gap-8">
+      
       <!-- Blog Content -->
       <div class="w-full lg:w-2/3">
-        <div class="text-center mb-10">
-          <h1 class="text-3xl font-bold text-red-600">
+        <header class="text-center mb-10">
+          <h1 class="text-3xl font-bold text-gray-900 hover:text-red-600 transition-colors">
             {% if current_category %}
               {{ current_category.name }}
             {% elif current_tag %}
@@ -23,35 +24,41 @@
               Our Blog
             {% endif %}
           </h1>
-          <p class="text-gray-500 mt-2">Explore stories, insights, and ideas from our team and community.</p>
-        </div>
+          <p class="text-gray-600 mt-2 text-base">Explore stories, insights, and updates from our team and community.</p>
+        </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           {% for post in posts %}
-          <div class="bg-white rounded shadow-sm flex flex-col h-full">
-            <div class="p-4 flex flex-col flex-1">
-              <h2 class="text-lg font-semibold mb-1">
+          <article class="bg-white rounded-xl shadow-md hover:shadow-lg transition overflow-hidden flex flex-col h-full">
+            {% if post.image %}
+              <a href="{% url 'blog:blog-detail' slug=post.slug %}">
+                <img src="{{ post.image.url }}" alt="{{ post.title }}" class="w-full h-48 object-cover">
+              </a>
+            {% else %}
+              <a href="{% url 'blog:blog-detail' slug=post.slug %}">
+                <img src="https://via.placeholder.com/640x360?text=Blog+Thumbnail" alt="Default Thumbnail" class="w-full h-48 object-cover">
+              </a>
+            {% endif %}
+            <div class="p-5 flex flex-col flex-1">
+              <h2 class="text-lg font-semibold leading-snug mb-1">
                 <a href="{% url 'blog:blog-detail' slug=post.slug %}" class="text-gray-800 hover:text-blue-600">
-                  {{ post.title|truncatewords:10 }}
+                  {{ post.title|truncatewords:12 }}
                 </a>
               </h2>
               <p class="text-sm text-gray-500 mb-2">
-                By {{ post.author|default:"Unknown" }} • {{ post.date_posted|date:"M d, Y" }}
+                By {{ post.author|default:"Unknown" }} • {{ post.date_posted|date:"F d, Y" }}
               </p>
-              <p class="text-gray-600 text-sm mb-4">{{ post.content|safe|truncatewords:25 }}</p>
-
+              <p class="text-gray-600 text-sm mb-4">{{ post.content|safe|truncatewords:30 }}</p>
               <div class="mt-auto">
                 <a href="{% url 'blog:blog-detail' slug=post.slug %}" class="inline-block w-full text-center text-sm text-blue-500 border border-blue-500 rounded px-4 py-2 hover:bg-blue-500 hover:text-white transition">
                   Read More
                 </a>
               </div>
             </div>
-          </div>
+          </article>
           {% empty %}
-          <div class="col-span-1 md:col-span-2 lg:col-span-3">
-            <div class="text-center bg-yellow-100 border border-yellow-300 text-yellow-800 py-4 px-6 rounded">
-              No posts found in this section.
-            </div>
+          <div class="col-span-full text-center text-gray-600 bg-yellow-50 border border-yellow-200 p-6 rounded">
+            No blog posts found in this section.
           </div>
           {% endfor %}
         </div>
@@ -59,43 +66,45 @@
         <!-- Pagination -->
         {% if is_paginated %}
         <nav class="mt-10 flex justify-center">
-          <ul class="inline-flex items-center space-x-1">
+          <ul class="inline-flex items-center gap-1">
             {% if page_obj.has_previous %}
               <li>
                 <a href="?page={{ page_obj.previous_page_number }}"
-                  class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-200">«</a>
+                   class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-200">«</a>
               </li>
             {% endif %}
             {% for num in page_obj.paginator.page_range %}
-              <li>
-                <a href="?page={{ num }}"
-                  class="px-3 py-1 border rounded {% if page_obj.number == num %}bg-blue-500 text-white{% else %}border-gray-300 hover:bg-gray-200{% endif %}">
-                  {{ num }}
-                </a>
-              </li>
+              {% if page_obj.number == num %}
+                <li><span class="px-3 py-1 rounded bg-blue-500 text-white">{{ num }}</span></li>
+              {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li>
+                  <a href="?page={{ num }}"
+                     class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-200">{{ num }}</a>
+                </li>
+              {% endif %}
             {% endfor %}
             {% if page_obj.has_next %}
               <li>
                 <a href="?page={{ page_obj.next_page_number }}"
-                  class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-200">»</a>
+                   class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-200">»</a>
               </li>
             {% endif %}
           </ul>
         </nav>
-
         {% endif %}
       </div>
 
       <!-- Sidebar -->
-      <div class="w-full lg:w-1/3 space-y-6">
+      <aside class="w-full lg:w-1/3 space-y-6">
+        
         <!-- Categories -->
-        <div class="bg-white p-6 rounded shadow-sm">
-          <h3 class="text-xl font-semibold text-blue-600 mb-4">Categories</h3>
+        <div class="bg-white p-6 rounded-xl shadow-md">
+          <h3 class="text-lg font-semibold text-blue-600 mb-4">Categories</h3>
           <ul class="space-y-2">
             {% for cat_data in categories %}
               <li>
                 <a href="{{ cat_data.url }}" class="block text-gray-700 hover:text-blue-500 {% if current_category == cat_data.category %}font-bold{% endif %}">
-                  {{ cat_data.category.name }} ({{ cat_data.post_count }})
+                  {{ cat_data.category.name }} <span class="text-sm text-gray-500">({{ cat_data.post_count }})</span>
                 </a>
               </li>
             {% empty %}
@@ -105,11 +114,12 @@
         </div>
 
         <!-- Tags -->
-        <div class="bg-white p-6 rounded shadow-sm">
-          <h3 class="text-xl font-semibold text-blue-600 mb-4">Popular Tags</h3>
+        <div class="bg-white p-6 rounded-xl shadow-md">
+          <h3 class="text-lg font-semibold text-blue-600 mb-4">Popular Tags</h3>
           <div class="flex flex-wrap gap-2">
             {% for tag_data in tags %}
-              <a href="{{ tag_data.tag.get_absolute_url }}" class="text-sm bg-gray-700 text-white px-3 py-1 rounded hover:bg-gray-800 transition">
+              <a href="{{ tag_data.tag.get_absolute_url }}"
+                 class="text-sm bg-gray-700 text-white px-3 py-1 rounded hover:bg-gray-800 transition">
                 #{{ tag_data.tag.name }} ({{ tag_data.post_count }})
               </a>
             {% empty %}
@@ -117,7 +127,35 @@
             {% endfor %}
           </div>
         </div>
-      </div>
+
+        <!-- Recent Posts -->
+        <div class="bg-white p-6 rounded-xl shadow-md">
+          <h3 class="text-lg font-semibold text-blue-600 mb-4">Recent Posts</h3>
+          <ul class="space-y-4">
+            {% for recent in recent_posts %}
+              <li class="flex items-center gap-4">
+                {% if recent.image %}
+                  <a href="{% url 'blog:blog-detail' slug=recent.slug %}">
+                    <img src="{{ recent.image.url }}" alt="{{ recent.title }}" class="w-16 h-16 object-cover rounded">
+                  </a>
+                {% else %}
+                  <a href="{% url 'blog:blog-detail' slug=recent.slug %}">
+                    <img src="https://via.placeholder.com/64x64?text=Post" class="w-16 h-16 object-cover rounded" alt="Post">
+                  </a>
+                {% endif %}
+                <div>
+                  <a href="{% url 'blog:blog-detail' slug=recent.slug %}" class="text-sm font-medium text-gray-800 hover:text-blue-600">
+                    {{ recent.title|truncatewords:8 }}
+                  </a>
+                  <p class="text-xs text-gray-500">{{ recent.date_posted|date:"M d, Y" }}</p>
+                </div>
+              </li>
+            {% empty %}
+              <li class="text-gray-400">No recent posts available.</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </aside>
     </div>
   </div>
 </section>
