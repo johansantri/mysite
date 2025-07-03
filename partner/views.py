@@ -37,9 +37,12 @@ from django.db.models import Count, Avg, Max, Min
 from django.contrib.admin.views.decorators import staff_member_required
 import pprint
 
-@staff_member_required
+
 @cache_page(60 * 5)
 def partner_analytics_admin(request):
+    if not request.user.is_superuser and not request.user.is_staff:
+        return redirect('/')  # Redirect ke halaman utama jika bukan superuser atau staf
+    
     download = request.GET.get('download')
     partners = Partner.objects.select_related('name', 'author')
 
