@@ -182,9 +182,91 @@
             {% endfor %}
         </div>
     {% endif %}
-  <footer class="bg-gray-800 text-white text-center py-4">
-        <p class="text-xs md:text-sm">© 2025 LMSKu. All rights reserved.</p>
-    </footer>
+  <footer class="bg-gray-800 text-white py-12 sm:py-16 relative overflow-hidden" aria-label="Footer">
+  <div class="absolute inset-0 bg-gradient-to-br from-red-500 to-gray-700 opacity-20 transform -skew-y-6"></div>
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <!-- Grid Footer Content -->
+    <div class="grid grid-cols-6 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      
+      <!-- About LMSKu -->
+      <div class="col-span-6 sm:col-span-1 lg:col-span-1 animate-fade-in-up">
+        <h3 class="text-lg sm:text-xl font-bold mb-4 text-white">About LMSKu</h3>
+        <p class="text-sm sm:text-base text-gray-300 mb-4">
+          Empowering {{ total_users|default:"100K" }}+ learners with {{ total_courses|default:"500" }}+ expert-led courses to master new skills.
+        </p>
+        <a href="#" class="inline-block text-gray-300 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base">Learn More</a>
+      </div>
+
+      <!-- Explore -->
+      <div class="col-span-3 sm:col-span-1 lg:col-span-1 animate-fade-in-up">
+        <h3 class="text-lg sm:text-xl font-bold mb-4 text-white">Explore</h3>
+        <ul class="space-y-2">
+          <li><a href="#" class="text-gray-300 hover:text-red-500 transition-colors duration-300 text-sm sm:text-base">Courses</a></li>
+          <li><a href="#" class="text-gray-300 hover:text-red-500 transition-colors duration-300 text-sm sm:text-base">Instructors</a></li>
+          <li><a href="#" class="text-gray-300 hover:text-red-500 transition-colors duration-300 text-sm sm:text-base">Partners</a></li>
+          <li><a href="#" class="text-gray-300 hover:text-red-500 transition-colors duration-300 text-sm sm:text-base">Blog</a></li>
+        </ul>
+      </div>
+
+      <!-- Support -->
+      <div class="col-span-3 sm:col-span-1 lg:col-span-1 animate-fade-in-up">
+        <h3 class="text-lg sm:text-xl font-bold mb-4 text-white">Support</h3>
+        <ul class="space-y-2">
+          <li><a href="#" class="text-gray-300 hover:text-red-500 transition-colors duration-300 text-sm sm:text-base">FAQ</a></li>
+          <li><a href="#" class="text-gray-300 hover:text-red-500 transition-colors duration-300 text-sm sm:text-base">Contact Us</a></li>
+          <li><a href="#" class="text-gray-300 hover:text-red-500 transition-colors duration-300 text-sm sm:text-base">Terms of Service</a></li>
+          <li><a href="#" class="text-gray-300 hover:text-red-500 transition-colors duration-300 text-sm sm:text-base">Privacy Policy</a></li>
+        </ul>
+      </div>
+
+      <!-- Stay Connected -->
+      <div class="col-span-6 sm:col-span-2 lg:col-span-1 animate-fade-in-up">
+        <h3 class="text-lg sm:text-xl font-bold mb-4 text-white">Stay Connected</h3>
+        <form action="#" method="POST" class="mb-6">
+          {% csrf_token %}
+          <label for="newsletter-email" class="sr-only">Email address</label>
+          <div class="flex items-center">
+            <input type="email" id="newsletter-email" name="email" placeholder="Enter your email"
+              class="w-full px-4 py-2 rounded-l-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors duration-300 text-sm sm:text-base"
+              required>
+            <button type="submit"
+              class="bg-black text-white px-4 py-2 rounded-r-lg hover:bg-gray-900 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base">
+              Subscribe
+            </button>
+          </div>
+        </form>
+        <div class="flex justify-center space-x-4">
+          <a href="https://twitter.com/LMSKu" target="_blank" rel="noopener noreferrer"
+            class="text-gray-300 hover:text-red-500 transition-colors duration-300" aria-label="Twitter">
+            <i class="fab fa-twitter text-xl sm:text-2xl"></i>
+          </a>
+          <a href="https://facebook.com/LMSKu" target="_blank" rel="noopener noreferrer"
+            class="text-gray-300 hover:text-red-500 transition-colors duration-300" aria-label="Facebook">
+            <i class="fab fa-facebook-f text-xl sm:text-2xl"></i>
+          </a>
+          <a href="https://linkedin.com/company/LMSKu" target="_blank" rel="noopener noreferrer"
+            class="text-gray-300 hover:text-red-500 transition-colors duration-300" aria-label="LinkedIn">
+            <i class="fab fa-linkedin-in text-xl sm:text-2xl"></i>
+          </a>
+          <a href="https://instagram.com/LMSKu" target="_blank" rel="noopener noreferrer"
+            class="text-gray-300 hover:text-red-500 transition-colors duration-300" aria-label="Instagram">
+            <i class="fab fa-instagram text-xl sm:text-2xl"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Footer -->
+    <div class="mt-12 pt-8 border-t border-gray-700 text-center animate-fade-in-up">
+      <p class="text-xs sm:text-sm text-gray-300">© 2025 LMSKu. All rights reserved.</p>
+      <p class="text-xs sm:text-sm text-gray-300 mt-2">
+        Contact: <a href="mailto:support@lmsku.com" class="hover:text-red-500 transition-colors duration-300">support@lmsku.com</a>
+        | Phone: <a href="tel:+6281234567890" class="hover:text-red-500 transition-colors duration-300">+62 812-3456-7890</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>

@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <!-- Action Buttons -->
                                     <div class="flex justify-between gap-4">
                                         <a href="${courseUrl}" class="flex-1 text-center bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 hover:text-red-500 focus:outline focus:outline-2 focus:outline-red-500 transition-colors text-sm font-medium">View Details</a>
-                                        <button class="flex-1 text-center bg-gray-200 text-black px-4 py-2 rounded-lg hover:bg-gray-300 hover:text-red-500 focus:outline focus:outline-2 focus:outline-red-500 transition-colors text-sm font-medium">Add to Cart</button>
+                                        
                                     </div>
                                     </div>
                                 </article>

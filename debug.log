@@ -477,3 +477,548 @@ WARNING 2025-07-03 14:25:02,869 views Invalid referer:  from IP
 INFO 2025-07-03 14:26:49,644 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
 INFO 2025-07-03 14:26:49,924 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
 INFO 2025-07-03 14:26:49,946 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 14:40:11,040 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 14:40:11,127 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 14:40:11,340 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 14:45:15,861 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 14:45:15,973 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 14:45:16,085 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+WARNING 2025-07-03 14:49:23,237 views Invalid referer:  from IP 
+INFO 2025-07-03 14:51:59,916 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 14:51:59,938 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 14:52:00,068 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 14:54:55,851 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 14:54:55,879 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 14:54:55,918 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+ERROR 2025-07-03 14:54:57,287 log Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/base.py", line 81, in reverse
+    extra, resolver = resolver.namespace_dict[ns]
+KeyError: 'home'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django_ratelimit/decorators.py", line 27, in _wrapped
+    return fn(request, *args, **kw)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/views/decorators/http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+  File "/home/TIM/mysite/authentication/views.py", line 1159, in home
+    return render(request, 'home/index.html', {
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/base.py", line 92, in reverse
+    raise NoReverseMatch("%s is not a registered namespace" % key)
+django.urls.exceptions.NoReverseMatch: 'home' is not a registered namespace
+INFO 2025-07-03 14:56:44,848 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 14:56:44,981 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 14:56:45,105 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+WARNING 2025-07-03 14:58:01,457 views Invalid referer:  from IP 
+INFO 2025-07-03 15:00:06,634 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:00:06,806 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:00:06,945 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+WARNING 2025-07-03 15:00:07,507 views Invalid referer:  from IP 
+INFO 2025-07-03 15:03:10,833 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:03:11,080 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:03:11,126 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:15:17,480 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:15:17,503 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:15:17,529 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:20:33,616 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:20:33,622 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:20:33,691 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:22:27,407 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:22:27,595 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:22:27,747 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:32:05,933 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:32:06,062 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:32:06,193 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+ERROR 2025-07-03 15:32:07,082 log Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django_ratelimit/decorators.py", line 27, in _wrapped
+    return fn(request, *args, **kw)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/views/decorators/http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+  File "/home/TIM/mysite/authentication/views.py", line 1159, in home
+    return render(request, 'home/index.html', {
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 489, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 487, in parse
+    filter_expression = self.compile_filter(token.contents)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 705, in __init__
+    filter_func = parser.find_filter(filter_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 615, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'div'
+ERROR 2025-07-03 15:37:02,985 log Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django_ratelimit/decorators.py", line 27, in _wrapped
+    return fn(request, *args, **kw)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/views/decorators/http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+  File "/home/TIM/mysite/authentication/views.py", line 1159, in home
+    return render(request, 'home/index.html', {
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 489, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 487, in parse
+    filter_expression = self.compile_filter(token.contents)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 705, in __init__
+    filter_func = parser.find_filter(filter_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 615, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'div'
+WARNING 2025-07-03 15:39:02,031 views Invalid referer:  from IP 
+INFO 2025-07-03 15:39:08,467 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:39:08,800 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:39:08,849 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+ERROR 2025-07-03 15:39:09,848 log Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/base.py", line 81, in reverse
+    extra, resolver = resolver.namespace_dict[ns]
+KeyError: 'home'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django_ratelimit/decorators.py", line 27, in _wrapped
+    return fn(request, *args, **kw)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/views/decorators/http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+  File "/home/TIM/mysite/authentication/views.py", line 1159, in home
+    return render(request, 'home/index.html', {
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 327, in render
+    return nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/base.py", line 92, in reverse
+    raise NoReverseMatch("%s is not a registered namespace" % key)
+django.urls.exceptions.NoReverseMatch: 'home' is not a registered namespace
+WARNING 2025-07-03 15:39:20,267 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:39:21,098 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:39:21,516 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:39:22,257 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:39:26,151 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:39:28,673 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:39:31,875 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:39:32,020 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:39:33,349 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:39:33,385 log Forbidden (Referer checking failed - no Referer.): /
+INFO 2025-07-03 15:39:48,678 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:39:48,955 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:39:49,088 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+ERROR 2025-07-03 15:39:49,834 log Internal Server Error: /
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django_ratelimit/decorators.py", line 27, in _wrapped
+    return fn(request, *args, **kw)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/views/decorators/http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+  File "/home/TIM/mysite/authentication/views.py", line 1159, in home
+    return render(request, 'home/index.html', {
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'instructors_list' not found. 'instructors_list' is not a valid view function or pattern name.
+WARNING 2025-07-03 15:39:50,306 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:40:05,402 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:40:06,248 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:40:06,523 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:40:06,644 log Forbidden (Referer checking failed - no Referer.): /
+INFO 2025-07-03 15:40:35,762 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:40:35,794 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:40:35,955 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:41:25,959 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:41:26,393 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:41:26,449 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+WARNING 2025-07-03 15:42:01,839 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:42:02,471 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:42:12,451 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:42:13,770 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:42:38,146 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:42:39,081 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:42:39,111 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:42:41,530 views Invalid referer:  from IP 
+WARNING 2025-07-03 15:42:45,648 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:42:57,551 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:42:58,342 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:42:58,485 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:42:58,614 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:42:58,637 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:42:58,640 log Forbidden (Referer checking failed - no Referer.): /
+INFO 2025-07-03 15:43:08,424 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:43:08,439 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:43:08,458 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+WARNING 2025-07-03 15:43:25,204 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:43:30,823 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:43:31,278 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:43:32,023 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:43:32,209 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:43:33,884 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:43:46,081 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:43:48,836 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:43:50,249 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:43:50,270 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:44:08,674 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:44:28,005 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:44:29,813 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:44:30,069 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:44:30,660 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:44:31,133 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:44:31,777 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:44:48,849 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:44:49,768 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:44:50,399 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:45:11,136 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:45:12,130 log Forbidden (Referer checking failed - no Referer.): /
+INFO 2025-07-03 15:45:20,961 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:45:21,058 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:45:21,233 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+WARNING 2025-07-03 15:45:22,338 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:45:31,853 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:45:32,240 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:45:32,741 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:45:32,783 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:45:32,948 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:45:33,186 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:45:33,187 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:49:14,528 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:49:24,167 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:49:24,730 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:49:24,753 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:49:25,222 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:49:39,561 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:49:40,000 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:49:40,020 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:49:40,502 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:49:42,736 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:50:04,788 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:50:05,943 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:50:13,892 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:50:40,968 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:50:41,122 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:50:41,165 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:50:49,859 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:50:52,111 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:50:52,338 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:51:37,735 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:51:41,829 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:51:43,578 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:52:13,371 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:52:13,937 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:52:13,959 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:52:14,027 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:52:14,056 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:52:24,537 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:52:57,322 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:55:41,254 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:55:46,560 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:55:47,223 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:55:47,479 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:55:57,154 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:55:57,512 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:55:58,503 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:55:59,216 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:56:23,978 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:56:25,198 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:56:38,960 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:56:41,260 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:56:41,833 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:56:42,013 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:56:43,609 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:57:05,513 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:57:37,032 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:57:37,118 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:57:39,591 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:57:40,318 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:57:40,437 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:57:40,805 log Forbidden (Referer checking failed - no Referer.): /
+INFO 2025-07-03 15:57:44,892 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:57:45,060 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:57:45,098 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+WARNING 2025-07-03 15:57:51,906 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:57:53,709 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:57:55,955 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:57:56,374 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:58:16,205 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:58:16,740 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:58:18,299 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:58:19,149 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:58:19,975 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:58:36,145 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:58:36,564 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:58:36,722 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:58:42,013 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 15:58:45,231 log Forbidden (Referer checking failed - no Referer.): /
+INFO 2025-07-03 15:59:13,941 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:59:14,380 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 15:59:14,435 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 16:00:54,550 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 16:00:54,652 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 16:00:54,660 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 16:06:28,539 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 16:06:28,542 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 16:06:28,681 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 16:07:23,533 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 16:07:23,625 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 16:07:23,659 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+WARNING 2025-07-03 16:08:42,273 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:08:48,275 log Forbidden (Referer checking failed - no Referer.): /
+INFO 2025-07-03 16:08:54,799 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 16:08:54,872 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 16:08:55,187 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+WARNING 2025-07-03 16:08:56,775 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:08:56,987 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:09:05,757 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:09:05,943 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:09:06,532 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:09:06,538 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:09:06,606 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:09:06,624 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:09:37,102 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:09:37,729 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:09:39,390 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:09:49,472 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:09:49,475 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:09:51,775 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:09:54,006 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:09:54,800 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:09:56,971 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:09:57,113 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:10:18,951 log Forbidden (Referer checking failed - no Referer.): /
+INFO 2025-07-03 16:10:28,012 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 16:10:28,234 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-03 16:10:28,508 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+WARNING 2025-07-03 16:10:30,869 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:10:31,013 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:10:31,681 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:10:36,821 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:10:42,071 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:10:42,967 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:10:44,441 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:10:44,798 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:10:45,761 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:11:13,920 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:11:14,424 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:11:14,615 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:11:15,552 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:11:16,798 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:11:29,750 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:11:29,775 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:11:30,842 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:11:31,203 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:11:31,553 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:12:00,687 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:12:01,685 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:12:01,771 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:12:11,768 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:12:16,058 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:12:16,180 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:12:23,852 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:12:24,257 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:12:24,295 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:12:24,301 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:12:46,304 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:12:47,030 log Forbidden (Referer checking failed - no Referer.): /
+WARNING 2025-07-03 16:12:47,492 log Forbidden (Referer checking failed - no Referer.): /
