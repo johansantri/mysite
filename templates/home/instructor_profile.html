@@ -57,61 +57,65 @@
 <section class="py-10 bg-white font-sans">
   <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-      <!-- Sidebar -->
-      <div x-data="{ showBio: false }" class="lg:col-span-4 bg-gray-50 border border-gray-200 p-6 rounded-xl">
-        <!-- Profile Image -->
+      
+      <!-- Sidebar: Instructor Profile -->
+      <div x-data="{ showBio: false }" class="lg:col-span-4 bg-gray-50 border border-gray-200 p-6 rounded-xl shadow">
         <div class="flex justify-center">
-          <img src="{% if instructor.user.photo %}{{ instructor.user.photo.url }}{% else %}{% static 'images/default-profile.jpg' %}{% endif %}" 
-               alt="{{ instructor.user.first_name }} {{ instructor.user.last_name }}" 
+          <img loading="lazy"
+               width="144"
+               height="144"
+               src="{% if instructor.user.photo %}{{ instructor.user.photo.url }}{% else %}{% static 'images/default-profile.jpg' %}{% endif %}"
+               alt="{{ instructor.user.get_full_name }}'s profile picture"
                class="w-36 h-36 rounded-full object-cover shadow">
         </div>
 
-        <!-- Name and Hobby -->
-        <h1 class="text-xl font-semibold text-center mt-4 text-gray-800">{{ instructor.user.first_name }} {{ instructor.user.last_name }}</h1>
+        <h1 class="text-2xl font-bold text-center mt-4 text-gray-800">{{ instructor.user.first_name }} {{ instructor.user.last_name }}</h1>
         <p class="text-center text-gray-500 text-sm">{{ instructor.user.hobby|default:"No hobby listed" }}</p>
 
         <!-- University Badge -->
         <div class="text-center mt-4">
           {% if partner_slug %}
-            <a href="{% url 'courses:org_partner' partner_slug %}" class="text-sm text-white bg-gray-800 px-3 py-1 rounded shadow hover:bg-gray-700">
+            <a href="{% url 'courses:org_partner' partner_slug %}" class="text-xs text-white bg-gray-800 px-3 py-1 rounded shadow hover:bg-gray-700">
               {{ instructor.user.university }}
             </a>
           {% else %}
-            <span class="text-sm text-white bg-gray-400 px-3 py-1 rounded shadow">No University</span>
+            <span class="text-xs text-white bg-gray-400 px-3 py-1 rounded shadow">No University</span>
           {% endif %}
         </div>
 
-        <!-- Social Media -->
-        <div class="flex justify-center mt-4 space-x-4 text-gray-600">
-          {% if instructor.user.twitter %}<a href="{{ instructor.user.twitter }}" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>{% endif %}
-          {% if instructor.user.linkedin %}<a href="{{ instructor.user.linkedin }}" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>{% endif %}
-          {% if instructor.user.youtube %}<a href="{{ instructor.user.youtube }}" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>{% endif %}
-          {% if instructor.user.instagram %}<a href="{{ instructor.user.instagram }}" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>{% endif %}
-          {% if instructor.user.facebook %}<a href="{{ instructor.user.facebook }}" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>{% endif %}
-          {% if instructor.user.tiktok %}<a href="{{ instructor.user.tiktok }}" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>{% endif %}
+        <!-- Social Media Icons -->
+        <div class="flex justify-center mt-4 space-x-3 text-gray-600 text-lg">
+          {% if instructor.user.twitter %}<a href="{{ instructor.user.twitter }}" aria-label="Twitter" target="_blank"><i class="fab fa-twitter"></i></a>{% endif %}
+          {% if instructor.user.linkedin %}<a href="{{ instructor.user.linkedin }}" aria-label="LinkedIn" target="_blank"><i class="fab fa-linkedin"></i></a>{% endif %}
+          {% if instructor.user.youtube %}<a href="{{ instructor.user.youtube }}" aria-label="YouTube" target="_blank"><i class="fab fa-youtube"></i></a>{% endif %}
+          {% if instructor.user.instagram %}<a href="{{ instructor.user.instagram }}" aria-label="Instagram" target="_blank"><i class="fab fa-instagram"></i></a>{% endif %}
+          {% if instructor.user.facebook %}<a href="{{ instructor.user.facebook }}" aria-label="Facebook" target="_blank"><i class="fab fa-facebook"></i></a>{% endif %}
+          {% if instructor.user.tiktok %}<a href="{{ instructor.user.tiktok }}" aria-label="TikTok" target="_blank"><i class="fab fa-tiktok"></i></a>{% endif %}
           {% if instructor.user.email %}<a href="mailto:{{ instructor.user.email }}" aria-label="Email"><i class="fas fa-envelope"></i></a>{% endif %}
         </div>
 
         <!-- Stats -->
-        <div class="mt-6 space-y-2">
-          <div class="flex justify-between text-sm text-gray-600">
-            <span>Students</span>
-            <span class="font-medium text-gray-800">{{ total_participants|default:"0" }}</span>
+        <div class="mt-6 space-y-2 text-sm text-gray-700">
+          <div class="flex justify-between">
+            <span>👥 Students</span>
+            <span class="font-semibold">{{ total_participants|default:"0" }}</span>
           </div>
-          <div class="flex justify-between text-sm text-gray-600">
-            <span>Reviews</span>
-            <span class="font-medium text-gray-800">{{ total_reviews|default:"0" }}</span>
+          <div class="flex justify-between">
+            <span>⭐ Reviews</span>
+            <span class="font-semibold">{{ total_reviews|default:"0" }}</span>
           </div>
-          <div class="flex justify-between text-sm text-gray-600">
-            <span>Courses</span>
-            <span class="font-medium text-gray-800">{{ courses_count|default:"0" }}</span>
+          <div class="flex justify-between">
+            <span>🎓 Courses</span>
+            <span class="font-semibold">{{ courses_count|default:"0" }}</span>
           </div>
         </div>
 
         <!-- About Me -->
         <div class="mt-6">
           <h2 class="text-sm font-semibold text-gray-700 uppercase mb-1">About Me</h2>
-          <p class="text-sm text-gray-600">{{ instructor.bio|truncatechars:100|default:"No bio available" }}</p>
+          <p class="text-sm text-gray-600">
+            {{ instructor.bio|truncatechars:100|default:"No bio available" }}
+          </p>
           {% if instructor.bio|length > 100 %}
           <button @click="showBio = true" x-show="!showBio" class="text-sm text-blue-500 hover:underline mt-1">Read More</button>
           <p x-show="showBio" x-transition class="text-sm text-gray-600 mt-2">{{ instructor.bio }}</p>
@@ -121,18 +125,23 @@
         <!-- Experience -->
         <div class="mt-6">
           <h2 class="text-sm font-semibold text-gray-700 uppercase mb-1">Experience</h2>
-          <p class="text-sm text-gray-600">{{ instructor.experience_years|default:"0" }} years | {{ instructor.user.university|default:"N/A" }}</p>
+          <p class="text-sm text-gray-600">{{ instructor.experience_years|default:"0" }} years</p>
           <p class="text-sm text-gray-600 mt-1">{{ instructor.expertise|default:"No expertise listed" }}</p>
         </div>
       </div>
 
       <!-- Course List -->
       <div class="lg:col-span-8">
-        <h2 class="text-lg font-semibold text-gray-800 mb-4">Courses by {{ instructor.user.first_name }}</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Courses by {{ instructor.user.first_name }}</h2>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {% for course in page_obj %}
-          <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-            <img src="{{ course.image.url|default:'https://via.placeholder.com/300x180' }}" alt="{{ course.course_name }}" class="w-full h-40 object-cover">
+          <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow hover:shadow-md transition-transform duration-200 hover:scale-105">
+            <img loading="lazy"
+                 width="400"
+                 height="180"
+                 src="{{ course.image.url|default:'https://via.placeholder.com/400x180' }}"
+                 alt="{{ course.course_name }}"
+                 class="w-full h-40 object-cover">
             <div class="p-4">
               <h3 class="font-semibold text-gray-800 text-base truncate">{{ course.course_name }}</h3>
               <p class="text-sm text-gray-500">Ends: {{ course.end_date|default:"N/A" }}</p>
@@ -141,7 +150,7 @@
             </div>
           </div>
           {% empty %}
-          <p class="text-gray-500">No courses available.</p>
+          <p class="text-gray-500 col-span-full">No courses available.</p>
           {% endfor %}
         </div>
 
@@ -169,6 +178,7 @@
     </div>
   </div>
 </section>
+
 
 <!-- Schema Markup -->
 <script type="application/ld+json">
