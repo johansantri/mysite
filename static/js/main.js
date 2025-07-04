@@ -46,50 +46,67 @@ document.addEventListener('DOMContentLoaded', function() {
                 const instructorPhoto = course.instructor_photo || '/static/images/default-avatar.png';
 
                 const courseHtml = `
-                                <article class="group relative bg-white rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 overflow-hidden">
-                                    <!-- Diagonal Cut Background -->
-                                    <div class="absolute top-0 left-0 w-full h-1/2 bg-[linear-gradient(45deg,#000000_0%,#333333_100%)] opacity-10 transform -skew-y-6"></div>
-                                    
-                                    <!-- Course Thumbnail -->
-                                    <div class="relative z-10">
-                                    <img src="${course.image || 'https://via.placeholder.com/300x150'}" alt="Thumbnail for ${course.course_name}" class="w-full h-48 object-cover rounded-t-2xl" loading="lazy" width="300" height="150">
-                                    </div>
+                            <article class="group relative bg-white rounded-xl shadow-md hover:shadow-lg transition-colors duration-300 overflow-hidden">
+                                <!-- Course Thumbnail -->
+                                <div class="relative w-full h-32 sm:h-40 bg-gray-200">
+                                <img 
+                                    src="${course.image || '/static/images/placeholder-300.webp'}" 
+                                    srcset="${course.image || '/static/images/placeholder-150.webp'} 150w, ${course.image || '/static/images/placeholder-300.webp'} 300w" 
+                                    sizes="(max-width: 600px) 150px, 300px" 
+                                    alt="Thumbnail for ${course.course_name}" 
+                                    class="w-full h-full object-contain rounded-t-xl" 
+                                    loading="lazy" 
+                                    width="300" 
+                                    height="150">
+                                </div>
 
-                                    <!-- Card Content -->
-                                    <div class="relative z-10 p-6">
-                                    <!-- Course Title -->
-                                    <h5 class="font-semibold text-lg text-black group-hover:text-red-500 transition-colors mb-3">
-                                        <a href="${courseUrl}" class="no-underline text-black group-hover:text-red-500 focus:text-red-500">${course.course_name}</a>
-                                    </h5>
+                                <!-- Card Content -->
+                                <div class="p-4 sm:p-6">
+                                <!-- Course Title -->
+                                <h5 class="font-semibold text-sm sm:text-base text-black group-hover:text-red-500 transition-colors mb-3">
+                                    <a href="${courseUrl}" class="no-underline text-black group-hover:text-red-500 focus:text-red-500">${course.course_name}</a>
+                                </h5>
 
-                                    <!-- Organization and Instructor -->
-                                    <div class="flex items-center mb-4">
-                                        <img src="${course.org_logo || 'https://via.placeholder.com/40x40'}" alt="Logo of ${course.org_kode}" class="w-10 h-10 rounded-full" loading="lazy" width="40" height="40">
-                                        <div class="ml-3">
-                                        <p class="text-sm font-medium text-black hover:text-red-500 transition-colors mb-1">
-                                            <a href="${universityUrl}" class="no-underline text-black hover:text-red-500 focus:text-red-500">${course.org_kode}</a>
-                                        </p>
-                                        <p class="text-sm text-gray-600 hover:text-red-500 transition-colors">${course.instructor_name}</p>
-                                        </div>
+                                <!-- Organization and Instructor -->
+                                <div class="flex items-center mb-3">
+                                    <img 
+                                    src="${course.org_logo || '/static/images/org-logo-40.webp'}" 
+                                    srcset="${course.org_logo || '/static/images/org-logo-20.webp'} 20w, ${course.org_logo || '/static/images/org-logo-40.webp'} 40w" 
+                                    sizes="(max-width: 600px) 20px, 40px" 
+                                    alt="Logo of ${course.org_kode}" 
+                                    class="w-8 h-8 sm:w-10 sm:h-10 rounded-full" 
+                                    loading="lazy" 
+                                    width="40" 
+                                    height="40">
+                                    <div class="ml-2 sm:ml-3">
+                                    <p class="text-xs sm:text-sm font-medium text-black hover:text-red-500 transition-colors mb-1">
+                                        <a href="${universityUrl}" class="no-underline text-black hover:text-red-500 focus:text-red-500">${course.org_kode}</a>
+                                    </p>
+                                    <p class="text-xs sm:text-sm text-gray-600 hover:text-red-500 transition-colors">${course.instructor_name}</p>
                                     </div>
+                                </div>
 
-                                    <!-- Rating and Enrollment -->
-                                    <div class="flex items-center mb-4">
-                                        <div class="flex">
-                                        ${stars} <!-- Assuming stars is a string of star icons (e.g., <i class="fas fa-star text-yellow-500"></i>) -->
-                                        </div>
-                                        <span class="text-sm text-gray-600 ml-2 hover:text-red-500 transition-colors">(${course.avg_rating.toFixed(1)}) (${course.num_ratings} reviews)</span>
+                                <!-- Rating and Enrollment -->
+                                <div class="flex items-center mb-3">
+                                    <div class="flex">
+                                    ${Array(5).fill().map(() => '<svg class="w-3 h-3 sm:w-4 sm:h-4 text-yellow-500" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>').join('')}
                                     </div>
-                                    <p class="text-sm text-gray-600 mb-4 hover:text-red-500 transition-colors">Enrolled: ${course.num_enrollments}</p>
+                                    <span class="text-xs sm:text-sm text-gray-600 ml-2 hover:text-red-500 transition-colors">(${course.avg_rating.toFixed(1)}) (${course.num_ratings} reviews)</span>
+                                </div>
+                                <div class="flex items-center mb-4">
+                                    <svg class="w-3 h-3 sm:w-4 sm:h-4 text-gray-600 group-hover:text-red-500 mr-1" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                                    </svg>
+                                    <span class="text-xs sm:text-sm text-gray-600 group-hover:text-red-500 transition-colors">${course.num_enrollments}</span>
+                                </div>
 
-                                    <!-- Action Buttons -->
-                                    <div class="flex justify-between gap-4">
-                                        <a href="${courseUrl}" class="flex-1 text-center bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 hover:text-red-500 focus:outline focus:outline-2 focus:outline-red-500 transition-colors text-sm font-medium">View Details</a>
-                                        
-                                    </div>
-                                    </div>
-                                </article>
-                                `;
+                                <!-- Action Buttons -->
+                                <div class="flex justify-between gap-3">
+                                    <a href="${courseUrl}" class="flex-1 text-center bg-black text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-gray-800 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors text-xs sm:text-sm font-medium">View Details</a>
+                                </div>
+                                </div>
+                            </article>
+                            `;
 
                 coursesList.insertAdjacentHTML('beforeend', courseHtml);
             });

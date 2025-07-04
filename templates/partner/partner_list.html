@@ -21,111 +21,121 @@
 
 {% block content %}
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Heading -->
-    <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 text-center sm:text-left">
-        Our Partners
-    </h2>
+  <!-- Heading -->
+  <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center">
+    Our Partners
+  </h2>
 
-    <!-- Partner Cards Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {% for partner in partners %}
-            {% if partner.name and partner.name.slug %}
-                <a href="{% url 'courses:org_partner' partner.name.slug %}"
-                   class="block bg-white shadow-lg rounded-xl p-4 border border-gray-200 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 active:scale-95 group"
-                   aria-label="View details for {{ partner.name|default:'Unnamed Partner' }}">
-                    <!-- Partner Name -->
-                    <h3 class="text-lg font-semibold text-gray-900 mb-3 text-center">
-                        {{ partner.name|default:"Unnamed Partner" }}
-                    </h3>
-                    <!-- Partner Logo -->
-                    {% if partner.logo %}
-                        <img src="{{ partner.logo.url }}" alt="{{ partner.name|default:'Unnamed Partner' }} logo"
-                             class="max-h-24 sm:max-h-32 w-full object-contain mx-auto transition-transform duration-300 group-hover:scale-105"
-                             loading="lazy">
-                    {% else %}
-                        <div class="max-h-24 sm:max-h-32 w-full flex items-center justify-center bg-gray-100 rounded-lg"
-                             role="img" aria-label="No logo available for {{ partner.name|default:'Unnamed Partner' }}">
-                            <span class="text-gray-500 text-sm">No logo available</span>
-                        </div>
-                    {% endif %}
-                </a>
-            {% else %}
-                <div class="bg-white shadow-lg rounded-xl p-4 border border-gray-200">
-                    <!-- Partner Name -->
-                    <h3 class="text-lg font-semibold text-gray-900 mb-3 text-center">
-                        {{ partner.name|default:"Unnamed Partner" }}
-                    </h3>
-                    <!-- Partner Logo -->
-                    {% if partner.logo %}
-                        <img src="{{ partner.logo.url }}" alt="{{ partner.name|default:'Unnamed Partner' }} logo"
-                             class="max-h-24 sm:max-h-32 w-full object-contain mx-auto"
-                             loading="lazy">
-                    {% else %}
-                        <div class="max-h-24 sm:max-h-32 w-full flex items-center justify-center bg-gray-100 rounded-lg"
-                             role="img" aria-label="No logo available for {{ partner.name|default:'Unnamed Partner' }}">
-                            <span class="text-gray-500 text-sm">No logo available</span>
-                        </div>
-                    {% endif %}
-                </div>
-            {% endif %}
-        {% empty %}
-            <div class="col-span-full text-center py-8">
-                <p class="text-gray-500 text-lg">No partners available at the moment.</p>
+  <!-- Partner Cards Grid -->
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-6">
+    {% for partner in partners|slice:":6" %}
+      {% if partner.name and partner.name.slug %}
+        <a href="{% url 'courses:org_partner' partner.name.slug %}"
+           class="block bg-white rounded-xl p-4 border border-gray-200 hover:bg-gray-50 transition-colors duration-300 group"
+           aria-label="View details for {{ partner.name|default:'Unnamed Partner' }}">
+          <!-- Partner Logo -->
+          {% if partner.logo %}
+            <img 
+              src="{{ partner.logo.url|default:'/static/images/partner-100.webp' }}" 
+              srcset="{{ partner.logo.url|default:'/static/images/partner-50.webp' }} 50w, {{ partner.logo.url|default:'/static/images/partner-100.webp' }} 100w" 
+              sizes="(max-width: 600px) 50px, 100px" 
+              alt="{{ partner.name|default:'Unnamed Partner' }} logo"
+              class="max-h-20 sm:max-h-24 w-full object-contain mx-auto mb-3"
+              loading="lazy" 
+              width="100" 
+              height="100">
+          {% else %}
+            <div class="max-h-20 sm:max-h-24 w-full flex items-center justify-center bg-gray-100 rounded-lg mb-3"
+                 role="img" aria-label="No logo available for {{ partner.name|default:'Unnamed Partner' }}">
+              <span class="text-gray-500 text-xs sm:text-sm">No logo</span>
             </div>
-        {% endfor %}
-    </div>
+          {% endif %}
+          <!-- Partner Name -->
+          <h3 class="text-sm sm:text-base font-semibold text-gray-900 text-center line-clamp-2">
+            {{ partner.name|default:"Unnamed Partner" }}
+          </h3>
+        </a>
+      {% else %}
+        <div class="bg-white rounded-xl p-4 border border-gray-200">
+          <!-- Partner Logo -->
+          {% if partner.logo %}
+            <img 
+              src="{{ partner.logo.url|default:'/static/images/partner-100.webp' }}" 
+              srcset="{{ partner.logo.url|default:'/static/images/partner-50.webp' }} 50w, {{ partner.logo.url|default:'/static/images/partner-100.webp' }} 100w" 
+              sizes="(max-width: 600px) 50px, 100px" 
+              alt="{{ partner.name|default:'Unnamed Partner' }} logo"
+              class="max-h-20 sm:max-h-24 w-full object-contain mx-auto mb-3"
+              loading="lazy" 
+              width="100" 
+              height="100">
+          {% else %}
+            <div class="max-h-20 sm:max-h-24 w-full flex items-center justify-center bg-gray-100 rounded-lg mb-3"
+                 role="img" aria-label="No logo available for {{ partner.name|default:'Unnamed Partner' }}">
+              <span class="text-gray-500 text-xs sm:text-sm">No logo</span>
+            </div>
+          {% endif %}
+          <!-- Partner Name -->
+          <h3 class="text-sm sm:text-base font-semibold text-gray-900 text-center line-clamp-2">
+            {{ partner.name|default:"Unnamed Partner" }}
+          </h3>
+        </div>
+      {% endif %}
+    {% empty %}
+      <div class="col-span-full text-center py-6">
+        <p class="text-gray-500 text-sm sm:text-base">No partners available at the moment.</p>
+      </div>
+    {% endfor %}
+  </div>
 
-    <!-- Pagination Controls -->
-    {% if partners.paginator.num_pages > 1 %}
-        <nav class="mt-8 flex flex-wrap justify-center gap-2" aria-label="Pagination">
-            <!-- Previous Button -->
-            {% if partners.has_previous %}
-                <a href="{% url 'courses:partners' %}?page={{ partners.previous_page_number }}"
-                   class="px-3 py-2 sm:px-4 sm:py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm sm:text-base"
-                   rel="prev" aria-label="Previous page">
-                    « Prev
-                </a>
-            {% else %}
-                <span class="px-3 py-2 sm:px-4 sm:py-2 bg-gray-100 text-gray-400 rounded-lg text-sm sm:text-base cursor-not-allowed"
-                      aria-disabled="true">
-                    « Prev
-                </span>
-            {% endif %}
+  <!-- Pagination Controls -->
+  {% if partners.paginator.num_pages > 1 %}
+    <nav class="mt-6 flex flex-wrap justify-center gap-2" aria-label="Pagination">
+      <!-- Previous Button -->
+      {% if partners.has_previous %}
+        <a href="{% url 'courses:partners' %}?page={{ partners.previous_page_number }}"
+           class="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm"
+           rel="prev" aria-label="Previous page">
+          « Prev
+        </a>
+      {% else %}
+        <span class="px-3 py-2 bg-gray-100 text-gray-400 rounded-lg text-sm cursor-not-allowed"
+              aria-disabled="true">
+          « Prev
+        </span>
+      {% endif %}
 
-            <!-- Page Numbers -->
-            {% for num in partners.paginator.page_range %}
-                {% if num|add:-2 <= partners.number and num|add:2 >= partners.number %}
-                    {% if num == partners.number %}
-                        <span class="px-3 py-2 sm:px-4 sm:py-2 bg-red-600 text-white rounded-lg text-sm sm:text-base font-semibold"
-                              aria-current="page">
-                            {{ num }}
-                        </span>
-                    {% else %}
-                        <a href="{% url 'courses:partners' %}?page={{ num }}"
-                           class="px-3 py-2 sm:px-4 sm:py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm sm:text-base"
-                           aria-label="Page {{ num }}">
-                            {{ num }}
-                        </a>
-                    {% endif %}
-                {% endif %}
-            {% endfor %}
+      <!-- Page Numbers -->
+      {% for num in partners.paginator.page_range %}
+        {% if num|add:-2 <= partners.number and num|add:2 >= partners.number %}
+          {% if num == partners.number %}
+            <span class="px-3 py-2 bg-red-600 text-white rounded-lg text-sm font-semibold"
+                  aria-current="page">
+              {{ num }}
+            </span>
+          {% else %}
+            <a href="{% url 'courses:partners' %}?page={{ num }}"
+               class="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm"
+               aria-label="Page {{ num }}">
+              {{ num }}
+            </a>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
 
-            <!-- Next Button -->
-            {% if partners.has_next %}
-                <a href="{% url 'courses:partners' %}?page={{ partners.next_page_number }}"
-                   class="px-3 py-2 sm:px-4 sm:py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm sm:text-base"
-                   rel="next" aria-label="Next page">
-                    Next »
-                </a>
-            {% else %}
-                <span class="px-3 py-2 sm:px-4 sm:py-2 bg-gray-100 text-gray-400 rounded-lg text-sm sm:text-base cursor-not-allowed"
-                      aria-disabled="true">
-                    Next »
-                </span>
-            {% endif %}
-        </nav>
-    {% endif %}
+      <!-- Next Button -->
+      {% if partners.has_next %}
+        <a href="{% url 'courses:partners' %}?page={{ partners.next_page_number }}"
+           class="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm"
+           rel="next" aria-label="Next page">
+          Next »
+        </a>
+      {% else %}
+        <span class="px-3 py-2 bg-gray-100 text-gray-400 rounded-lg text-sm cursor-not-allowed"
+              aria-disabled="true">
+          Next »
+        </span>
+      {% endif %}
+    </nav>
+  {% endif %}
 </div>
-
-
 {% endblock %}

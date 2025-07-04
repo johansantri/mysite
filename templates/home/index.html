@@ -37,60 +37,68 @@
 
 {% block content %}
 <!-- Hero Section -->
-<section class="bg-gray-900 text-white py-16 sm:py-20 md:py-24 relative overflow-hidden" aria-labelledby="hero-heading">
+<section class="bg-gray-900 text-white py-12 sm:py-16 md:py-20 relative overflow-hidden" aria-labelledby="hero-heading">
   <div class="absolute inset-0 bg-gradient-to-br from-black to-gray-700 opacity-50"></div>
   <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-    <h1 id="hero-heading" class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 text-center hover:text-red-500 transition-colors duration-300">Master New Skills Today!</h1>
-    <p class="text-base sm:text-lg md:text-xl lg:text-2xl mb-8 text-center text-gray-200 hover:text-red-500 transition-colors duration-300 max-w-3xl mx-auto">Join {{ total_users }}+ learners exploring {{ total_courses }}+ expert-led courses, anytime, anywhere.</p>
+    <h1 id="hero-heading" class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold mb-6 text-center hover:text-red-500 transition-colors duration-300">Master New Skills Today!</h1>
+    <p class="text-sm sm:text-base md:text-lg lg:text-xl mb-8 text-center text-gray-200 hover:text-red-500 transition-colors duration-300 max-w-3xl mx-auto">Join {{ total_users }}+ learners exploring {{ total_courses }}+ expert-led courses, anytime, anywhere.</p>
     <div class="text-center">
       {% if request.user.is_authenticated %}
-        <a href="{% url 'authentication:course_list' %}" class="inline-block bg-white text-black font-semibold px-6 py-3 sm:px-8 sm:py-4 rounded-lg hover:bg-gray-200 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base">Discover Courses</a>
+        <a href="{% url 'authentication:course_list' %}" class="inline-block bg-white text-black font-semibold px-4 py-2 sm:px-6 sm:py-3 rounded-lg hover:bg-gray-200 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base">Discover Courses</a>
       {% else %}
-        <a href="{% url 'authentication:register' %}" class="inline-block bg-white text-black font-semibold px-6 py-3 sm:px-8 sm:py-4 rounded-lg hover:bg-gray-200 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base">Start Learning Now</a>
+        <a href="{% url 'authentication:register' %}" class="inline-block bg-white text-black font-semibold px-4 py-2 sm:px-6 sm:py-3 rounded-lg hover:bg-gray-200 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base">Start Learning Now</a>
       {% endif %}
     </div>
   </div>
 </section>
 
 <!-- Why LMSKu Section -->
-<section class="py-16 sm:py-20 bg-white" aria-labelledby="why-lmsku-heading">
+<section class="py-12 sm:py-16 bg-white" aria-labelledby="why-lmsku-heading">
   <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-    <h2 id="why-lmsku-heading" class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-12 text-center text-black hover:text-red-500 transition-colors duration-300">Why Learn with LMSKu?</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-      <div class="bg-gray-100 p-6 sm:p-8 rounded-2xl text-center transform rotate-2 hover:scale-105 transition-all duration-300 animate-fade-in-up">
-        <i class="fas fa-book text-3xl sm:text-4xl text-black mb-4"></i>
-        <p class="font-bold text-lg sm:text-xl text-black">{{ total_courses }}</p>
-        <p class="text-sm sm:text-base text-gray-600 hover:text-red-500 transition-colors duration-300">Expert-Curated Courses</p>
+    <h2 id="why-lmsku-heading" class="text-xl sm:text-2xl md:text-3xl font-extrabold mb-8 text-center text-black hover:text-red-500 transition-colors duration-300">Why Learn with LMSKu?</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      <div class="bg-gray-100 p-4 sm:p-6 rounded-xl text-center">
+        <svg class="w-6 h-6 sm:w-8 sm:h-8 text-black mb-3 inline-block" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+        </svg>
+        <p class="font-bold text-base sm:text-lg text-black">{{ total_courses }}</p>
+        <p class="text-xs sm:text-sm text-gray-600 hover:text-red-500 transition-colors duration-300">Expert-Curated Courses</p>
       </div>
-      <div class="bg-gray-100 p-6 sm:p-8 rounded-2xl text-center transform -rotate-2 hover:scale-105 transition-all duration-300 animate-fade-in-up">
-        <i class="fas fa-users text-3xl sm:text-4xl text-black mb-4"></i>
-        <p class="font-bold text-lg sm:text-xl text-black">{{ total_users }}</p>
-        <p class="text-sm sm:text-base text-gray-600 hover:text-red-500 transition-colors duration-300">Global Learners</p>
+      <div class="bg-gray-100 p-4 sm:p-6 rounded-xl text-center">
+        <svg class="w-6 h-6 sm:w-8 sm:h-8 text-black mb-3 inline-block" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+        </svg>
+        <p class="font-bold text-base sm:text-lg text-black">{{ total_users }}</p>
+        <p class="text-xs sm:text-sm text-gray-600 hover:text-red-500 transition-colors duration-300">Global Learners</p>
       </div>
-      <div class="bg-gray-100 p-6 sm:p-8 rounded-2xl text-center transform rotate-2 hover:scale-105 transition-all duration-300 animate-fade-in-up">
-        <i class="fas fa-chalkboard-teacher text-3xl sm:text-4xl text-black mb-4"></i>
-        <p class="font-bold text-lg sm:text-xl text-black">{{ total_instructors }}</p>
-        <p class="text-sm sm:text-base text-gray-600 hover:text-red-500 transition-colors duration-300">Top Instructors</p>
+      <div class="bg-gray-100 p-4 sm:p-6 rounded-xl text-center">
+        <svg class="w-6 h-6 sm:w-8 sm:h-8 text-black mb-3 inline-block" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h2v2H6zm0 4h8v2H6zm10 0h2v2h-2zm-6-4h8v2h-8z"/>
+        </svg>
+        <p class="font-bold text-base sm:text-lg text-black">{{ total_instructors }}</p>
+        <p class="text-xs sm:text-sm text-gray-600 hover:text-red-500 transition-colors duration-300">Top Instructors</p>
       </div>
-      <div class="bg-gray-100 p-6 sm:p-8 rounded-2xl text-center transform -rotate-2 hover:scale-105 transition-all duration-300 animate-fade-in-up">
-        <i class="fas fa-certificate text-3xl sm:text-4xl text-black mb-4"></i>
-        <p class="font-bold text-lg sm:text-xl text-black">5K+</p>
-        <p class="text-sm sm:text-base text-gray-600 hover:text-red-500 transition-colors duration-300">Certificates Earned</p>
+      <div class="bg-gray-100 p-4 sm:p-6 rounded-xl text-center">
+        <svg class="w-6 h-6 sm:w-8 sm:h-8 text-black mb-3 inline-block" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.22-1.66-.59-2.34z"/>
+        </svg>
+        <p class="font-bold text-base sm:text-lg text-black">5K+</p>
+        <p class="text-xs sm:text-sm text-gray-600 hover:text-red-500 transition-colors duration-300">Certificates Earned</p>
       </div>
     </div>
   </div>
 </section>
 
 <!-- Popular Categories Section -->
-<section class="py-16 sm:py-20 bg-gray-50 relative overflow-hidden" aria-labelledby="categories-heading">
+<section class="py-12 sm:py-16 bg-gray-50 relative overflow-hidden" aria-labelledby="categories-heading">
   <div class="absolute inset-0 bg-gradient-to-br from-black to-gray-700 opacity-10 transform -skew-y-6"></div>
   <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-    <h2 id="categories-heading" class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-12 text-center text-black hover:text-red-500 transition-colors duration-300">Explore Top Categories</h2>
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
-      {% for category in popular_categories %}
+    <h2 id="categories-heading" class="text-xl sm:text-2xl md:text-3xl font-extrabold mb-8 text-center text-black hover:text-red-500 transition-colors duration-300">Explore Top Categories</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+      {% for category in popular_categories|slice:":4" %}
         <a href="{% url 'courses:category_list' category.slug %}" class="no-underline" aria-label="Explore {{ category.name }} courses">
-          <div class="bg-white p-6 sm:p-8 rounded-2xl text-center hover:bg-gray-100 hover:scale-105 transition-all duration-300 animate-fade-in-up shadow-md">
-            <span class="font-semibold text-base sm:text-lg text-black hover:text-red-500 transition-colors duration-300">{{ category.name }}</span>
+          <div class="bg-white p-4 sm:p-6 rounded-xl text-center hover:bg-provence-100 transition-colors duration-300 shadow-md">
+            <span class="font-semibold text-sm sm:text-base text-black hover:text-red-500 transition-colors duration-300">{{ category.name }}</span>
             <p class="text-xs sm:text-sm text-gray-600 mt-2">{{ category.num_courses }} Courses</p>
           </div>
         </a>
@@ -100,77 +108,78 @@
 </section>
 
 <!-- Popular Courses Section -->
-<section class="py-16 sm:py-20 bg-gray-50 relative overflow-hidden" aria-labelledby="courses-heading">
+<section class="py-12 sm:py-16 bg-gray-50 relative overflow-hidden" aria-labelledby="courses-heading">
   <div class="absolute inset-0 bg-gradient-to-br from-black to-gray-700 opacity-10 transform -skew-y-6"></div>
   <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-    <h2 id="courses-heading" class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-12 text-center text-black hover:text-red-500 transition-colors duration-300">Top 4 Courses to Transform Your Skills</h2>
-    <div id="courses-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-      {% for course in popular_courses|slice:":4" %}
-        <div class="relative bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 group overflow-hidden animate-fade-in-up">
-          <div class="absolute top-0 left-0 w-full h-1/3 bg-gradient-to-br from-black to-gray-700 opacity-20 transform -skew-y-6"></div>
-          <div class="relative z-10">
-            <div class="relative w-full h-40 sm:h-48 bg-gray-200">
-              <img src="{{ course.thumbnail.url|default:'https://via.placeholder.com/300x150' }}" alt="Thumbnail for {{ course.title }}" class="w-full h-full object-contain rounded-t-2xl" loading="lazy" width="300" height="150">
-            </div>
-            <div class="p-4 sm:p-6">
-              <h3 class="font-semibold text-base sm:text-lg text-black group-hover:text-red-500 transition-colors duration-300 line-clamp-2">
-                <a href="{% url 'courses:course_detail' course.id course.slug %}" class="no-underline text-black group-hover:text-red-500 focus:text-red-500">{{ course.title }}</a>
-              </h3>
-              <p class="text-xs sm:text-sm text-gray-600 mb-3 group-hover:text-red-500 transition-colors duration-300">{{ course.instructor_name|default:"Expert Instructor" }} • {{ course.org_name|default:"LMSKu" }}</p>
-              <div class="flex items-center mb-3">
-                <div class="flex">
-                  {% for i in "12345" %}
-                    <i class="fas fa-star text-yellow-500 text-xs sm:text-sm"></i>
-                  {% endfor %}
-                </div>
-                <span class="text-xs sm:text-sm text-gray-600 ml-2 group-hover:text-red-500 transition-colors duration-300">{{ course.rating|default:"4.5" }} ({{ course.num_reviews|default:"100" }} reviews)</span>
-              </div>
-              <p class="text-xs sm:text-sm text-gray-600 mb-4 group-hover:text-red-500 transition-colors duration-300">Enrolled: {{ course.num_enrollments|default:"500" }}</p>
-              
-            </div>
-            {% if course.is_bestseller %}
-              <span class="absolute top-3 left-3 bg-gray-800 text-white text-xs font-semibold px-2 sm:px-3 py-1 rounded-full shadow-md">Bestseller</span>
-            {% endif %}
+    <h2 id="courses-heading" class="text-xl sm:text-2xl md:text-3xl font-extrabold mb-8 text-center text-black hover:text-red-500 transition-colors duration-300">Top Courses to Transform Your Skills</h2>
+    <div id="courses-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      {% for course in popular_courses|slice:":2" %}
+        <div class="relative bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 group overflow-hidden">
+          <div class="relative w-full h-32 sm:h-40 bg-gray-200">
+            <img 
+              src="{{ course.thumbnail.url|default:'/static/images/placeholder-300.webp' }}" 
+              srcset="{{ course.thumbnail.url|default:'/static/images/placeholder-150.webp' }} 150w, {{ course.thumbnail.url|default:'/static/images/placeholder-300.webp' }} 300w" 
+              sizes="(max-width: 600px) 150px, 300px" 
+              alt="Thumbnail for {{ course.title }}" 
+              class="w-full h-full object-contain rounded-t-xl" 
+              loading="lazy" 
+              width="300" 
+              height="150">
           </div>
+          <div class="p-4 sm:p-6">
+            <h3 class="font-semibold text-sm sm:text-base text-black group-hover:text-red-500 transition-colors duration-300 line-clamp-2">
+              <a href="{% url 'courses:course_detail' course.id course.slug %}" class="no-underline text-black group-hover:text-red-500 focus:text-red-500">{{ course.title }}</a>
+            </h3>
+            <p class="text-xs sm:text-sm text-gray-600 mb-3 group-hover:text-red-500 transition-colors duration-300">{{ course.instructor_name|default:"Expert Instructor" }} • {{ course.org_name|default:"LMSKu" }}</p>
+            <div class="flex items-center mb-3">
+              <div class="flex">
+                {% for i in "12345" %}
+                  <svg class="w-3 h-3 sm:w-4 sm:h-4 text-yellow-500" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                  </svg>
+                {% endfor %}
+              </div>
+              <span class="text-xs sm:text-sm text-gray-600 ml-2 group-hover:text-red-500 transition-colors duration-300">{{ course.rating|default:"4.5" }} ({{ course.num_reviews|default:"100" }} reviews)</span>
+            </div>
+            <p class="text-xs sm:text-sm text-gray-600 mb-4 group-hover:text-red-500 transition-colors duration-300">Enrolled: {{ course.num_enrollments|default:"500" }}</p>
+          </div>
+          {% if course.is_bestseller %}
+            <span class="absolute top-2 left-2 bg-gray-800 text-white text-xs font-semibold px-2 py-1 rounded-full shadow-md">Bestseller</span>
+          {% endif %}
         </div>
       {% empty %}
-        <p class="text-center text-gray-600 text-base sm:text-lg col-span-full">No courses available.</p>
+        <p class="text-center text-gray-600 text-sm sm:text-base col-span-full">No courses available.</p>
       {% endfor %}
     </div>
-    <div class="text-center mt-10 sm:mt-12">
-      <a href="{% url 'authentication:course_list' %}" class="inline-block bg-black text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-lg hover:bg-gray-800 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base">Explore All Courses</a>
+    <div class="text-center mt-8 sm:mt-10">
+      <a href="{% url 'authentication:course_list' %}" class="inline-block bg-black text-white font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-gray-800 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base">Explore All Courses</a>
     </div>
   </div>
 </section>
 
-
-
-<!-- Partners Section (Full Logo Card Version) -->
-<!-- Partners Section (Compact Square Version) -->
-<section class="py-16 bg-gray-50" aria-labelledby="partners-heading">
+<!-- Partners Section -->
+<section class="py-12 bg-gray-50" aria-labelledby="partners-heading">
   <div class="container mx-auto px-4">
-    <h2 id="partners-heading" class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-12 text-center text-black hover:text-red-500 transition-colors duration-300">
-      Our Trusted Partners
-    </h2>
-
+    <h2 id="partners-heading" class="text-xl sm:text-2xl md:text-3xl font-extrabold mb-8 text-center text-black hover:text-red-500 transition-colors duration-300">Our Trusted Partners</h2>
     <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
-      {% for partner in partners|slice:":12" %}
+      {% for partner in partners|slice:":6" %}
         <div class="bg-white rounded-lg shadow hover:shadow-md transition-all duration-300 group w-full aspect-square flex flex-col">
           <a href="{% url 'courses:org_partner' partner.name.slug %}" class="block w-full h-full" aria-label="Visit {{ partner.name.name }} partner page">
-            <div class="w-full h-full p-4 flex items-center justify-center">
-              <img src="{{ partner.logo.url|default:'https://via.placeholder.com/160x160' }}"
-                   alt="{{ partner.name.name }}"
-                   class="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-300"
-                   loading="lazy"
-                   width="160"
-                   height="160">
+            <div class="w-full h-full p-3 flex items-center justify-center">
+              <img 
+                src="{{ partner.logo.url|default:'/static/images/partner-100.webp' }}" 
+                srcset="{{ partner.logo.url|default:'/static/images/partner-50.webp' }} 50w, {{ partner.logo.url|default:'/static/images/partner-100.webp' }} 100w" 
+                sizes="(max-width: 600px) 50px, 100px" 
+                alt="{{ partner.name.name }}" 
+                class="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-300" 
+                loading="lazy" 
+                width="100" 
+                height="100">
             </div>
           </a>
           {% if partner.is_featured %}
             <div class="text-center mb-2">
-              <span class="inline-block text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full font-medium">
-                ⭐ Featured
-              </span>
+              <span class="inline-block text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full font-medium">⭐ Featured</span>
             </div>
           {% endif %}
         </div>
@@ -178,128 +187,127 @@
         <p class="col-span-full text-center text-gray-500">No partners available.</p>
       {% endfor %}
     </div>
-
-    <div class="text-center mt-10">
-      <a href="{% url 'partner:partner_list' %}" 
-         class="inline-block bg-black text-white font-semibold px-6 py-3 rounded-lg hover:bg-gray-800 hover:text-red-500 transition duration-300 text-sm">
-        View All Partners
-      </a>
+    <div class="text-center mt-8">
+      <a href="{% url 'partner:partner_list' %}" class="inline-block bg-black text-white font-semibold px-4 py-2 rounded-lg hover:bg-gray-800 hover:text-red-500 transition duration-300 text-sm">View All Partners</a>
     </div>
   </div>
 </section>
 
-
-
 <!-- Micro Courses Section -->
-<section class="py-16 sm:py-20 bg-gray-50" aria-labelledby="micro-courses-heading">
+<section class="py-12 sm:py-16 bg-gray-50" aria-labelledby="micro-courses-heading">
   <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-    <h2 id="micro-courses-heading" class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-12 text-center text-black hover:text-red-500 transition-colors duration-300">Quick Micro Courses</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-      {% for microcredential in popular_microcredentials|slice:":3" %}
-        <div class="bg-white p-6 sm:p-8 rounded-2xl flex items-center hover:bg-gray-100 hover:scale-105 transition-all duration-300 animate-fade-in-up shadow-md">
-          <img src="{{ microcredential.image.url|default:'https://via.placeholder.com/48x48' }}" alt="Image of {{ microcredential.title }}" class="h-12 w-12 sm:h-16 sm:w-16 rounded mr-3 sm:mr-4" loading="lazy" width="48" height="48">
+    <h2 id="micro-courses-heading" class="text-xl sm:text-2xl md:text-3xl font-extrabold mb-8 text-center text-black hover:text-red-500 transition-colors duration-300">Quick Micro Courses</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+      {% for microcredential in popular_microcredentials|slice:":2" %}
+        <div class="bg-white p-4 sm:p-6 rounded-xl flex items-center hover:bg-gray-100 transition-all duration-300 shadow-md">
+          <img 
+            src="{{ microcredential.image.url|default:'/static/images/micro-48.webp' }}" 
+            srcset="{{ microcredential.image.url|default:'/static/images/micro-24.webp' }} 24w, {{ microcredential.image.url|default:'/static/images/micro-48.webp' }} 48w" 
+            sizes="(max-width: 600px) 24px, 48px" 
+            alt="Image of {{ microcredential.title }}" 
+            class="h-10 w-10 sm:h-12 sm:w-12 rounded mr-2 sm:mr-3" 
+            loading="lazy" 
+            width="48" 
+            height="48">
           <div class="flex-grow">
-            <h3 class="font-semibold text-base sm:text-lg text-black hover:text-red-500 transition-colors duration-300 line-clamp-2">
+            <h3 class="font-semibold text-sm sm:text-base text-black hover:text-red-500 transition-colors duration-300 line-clamp-2">
               <a href="{% url 'courses:micro_detail' microcredential.id microcredential.slug %}" class="no-underline text-black hover:text-red-500 focus:text-red-500">{{ microcredential.title }}</a>
             </h3>
             <p class="text-xs sm:text-sm text-gray-600 line-clamp-2">{{ microcredential.description|safe|truncatewords:10 }}</p>
           </div>
         </div>
       {% empty %}
-        <p class="text-center text-gray-600 text-base sm:text-lg col-span-full">No micro-credentials available.</p>
+        <p class="text-center text-gray-600 text-sm sm:text-base col-span-full">No micro-credentials available.</p>
       {% endfor %}
     </div>
   </div>
 </section>
 
 <!-- Blog Section -->
-<section class="py-16 sm:py-20 bg-white" aria-labelledby="blog-heading">
+<section class="py-12 sm:py-16 bg-white" aria-labelledby="blog-heading">
   <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-    <h2 id="blog-heading" class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-12 text-center text-black hover:text-red-500 transition-colors duration-300">Stay Inspired with Our Blog</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-      {% for article in latest_articles|slice:":3" %}
-        <article class="bg-gray-50 p-6 sm:p-8 rounded-2xl shadow-md hover:bg-gray-100 hover:scale-105 transition-all duration-300 animate-fade-in-up">
-          <h3 class="font-semibold text-base sm:text-lg text-black hover:text-red-500 transition-colors duration-300 line-clamp-2">
+    <h2 id="blog-heading" class="text-xl sm:text-2xl md:text-3xl font-extrabold mb-8 text-center text-black hover:text-red-500 transition-colors duration-300">Stay Inspired with Our Blog</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+      {% for article in latest_articles|slice:":2" %}
+        <article class="bg-gray-50 p-4 sm:p-6 rounded-xl shadow-md hover:bg-gray-100 transition-all duration-300">
+          <h3 class="font-semibold text-sm sm:text-base text-black hover:text-red-500 transition-colors duration-300 line-clamp-2">
             <a href="{% url 'blog:blog-detail' slug=article.slug %}" class="no-underline text-black hover:text-red-500 focus:text-red-500">{{ article.title }}</a>
           </h3>
-          <p class="text-xs sm:text-base text-gray-600 hover:text-red-500 transition-colors duration-300 line-clamp-3">{{ article.excerpt|truncatewords:15 }}</p>
+          <p class="text-xs sm:text-sm text-gray-600 hover:text-red-500 transition-colors duration-300 line-clamp-3">{{ article.excerpt|truncatewords:15 }}</p>
         </article>
       {% empty %}
-        <p class="text-center text-gray-600 text-base sm:text-lg col-span-full">No articles available.</p>
+        <p class="text-center text-gray-600 text-sm sm:text-base col-span-full">No articles available.</p>
       {% endfor %}
     </div>
   </div>
 </section>
 
 <!-- Instructors Section -->
-<section class="py-16 sm:py-20 bg-gray-50 relative overflow-hidden" aria-labelledby="instructors-heading">
+<section class="py-12 sm:py-16 bg-gray-50 relative overflow-hidden" aria-labelledby="instructors-heading">
   <div class="absolute inset-0 bg-gradient-to-br from-black to-gray-700 opacity-10 transform -skew-y-6"></div>
   <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-    <h2 id="instructors-heading" class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-12 text-center text-black hover:text-red-500 transition-colors duration-300">Learn from Top Experts</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-      {% for instructor in instructors|slice:":3" %}
-        <div class="relative bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 group overflow-hidden animate-fade-in-up">
-          <div class="absolute top-0 left-0 w-full h-2/3 bg-gradient-to-br from-black to-gray-700 opacity-15 transform -skew-y-6"></div>
-          <div class="relative z-10 p-6 sm:p-8 text-center">
-            <div class="relative w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-4 sm:mb-6 border-4 border-gray-200 group-hover:border-red-500 rounded-full transition-colors duration-300">
+    <h2 id="instructors-heading" class="text-xl sm:text-2xl md:text-3xl font-extrabold mb-8 text-center text-black hover:text-red-500 transition-colors duration-300">Learn from Top Experts</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+      {% for instructor in instructors|slice:":2" %}
+        <div class="relative bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 group overflow-hidden">
+          <div class="relative z-10 p-4 sm:p-6 text-center">
+            <div class="relative w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-3 sm:mb-4 border-4 border-gray-200 group-hover:border-red-500 rounded-full transition-colors duration-300">
               <img 
-                src="{{ instructor.user.photo.url|default:'/static/images/default.jpg' }}" 
+                src="{{ instructor.user.photo.url|default:'/static/images/default-128.webp' }}" 
+                srcset="{{ instructor.user.photo.url|default:'/static/images/default-64.webp' }} 64w, {{ instructor.user.photo.url|default:'/static/images/default-128.webp' }} 128w" 
+                sizes="(max-width: 600px) 64px, 128px" 
                 alt="Photo of {{ instructor.user.first_name }} {{ instructor.user.last_name }}" 
                 class="w-full h-full rounded-full object-cover" 
                 loading="lazy" 
                 width="128" 
-                height="128"
-              >
+                height="128">
             </div>
-            <h3 class="font-bold text-base sm:text-xl text-black group-hover:text-red-500 transition-colors duration-300 line-clamp-1">
+            <h3 class="font-bold text-sm sm:text-base text-black group-hover:text-red-500 transition-colors duration-300 line-clamp-1">
               {{ instructor.user.first_name }} {{ instructor.user.last_name }}
             </h3>
-            <p class="text-xs sm:text-sm text-gray-600 group-hover:text-red-500 transition-colors duration-300 mb-4">{{ instructor.user.hobby|default:"Expert Instructor" }}</p>
+            <p class="text-xs sm:text-sm text-gray-600 group-hover:text-red-500 transition-colors duration-300 mb-3">{{ instructor.user.hobby|default:"Expert Instructor" }}</p>
             <a 
               href="{% url 'courses:instructor_profile' username=instructor.user.username %}" 
-              class="inline-block bg-black text-white font-semibold px-4 sm:px-6 py-2 rounded-lg hover:bg-gray-800 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-xs sm:text-sm"
-            >
+              class="inline-block bg-black text-white font-semibold px-3 sm:px-4 py-2 rounded-lg hover:bg-gray-800 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-xs sm:text-sm">
               View Profile
             </a>
             {% if instructor.is_top_rated %}
-              <span class="absolute top-3 right-3 bg-gray-900 text-white text-xs font-semibold px-2 sm:px-3 py-1 rounded-full shadow-md">Top Instructor</span>
+              <span class="absolute top-2 right-2 bg-gray-900 text-white text-xs font-semibold px-2 py-1 rounded-full shadow-md">Top Instructor</span>
             {% endif %}
           </div>
         </div>
       {% empty %}
-        <p class="text-center text-gray-600 text-base sm:text-lg col-span-full">No instructors available.</p>
+        <p class="text-center text-gray-600 text-sm sm:text-base col-span-full">No instructors available.</p>
       {% endfor %}
     </div>
-    <div class="text-center mt-10 sm:mt-12">
+    <div class="text-center mt-8 sm:mt-10">
       <a 
         href="#" 
-        class="inline-block bg-black text-white font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-lg hover:bg-gray-800 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base"
-      >
+        class="inline-block bg-black text-white font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-gray-800 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base">
         Meet More Experts
       </a>
     </div>
   </div>
 </section>
 
-
 {% if request.user.is_authenticated %}
 <!-- Call to Action Section -->
-<section class="py-16 sm:py-20 bg-gray-900 text-white text-center relative overflow-hidden" aria-labelledby="cta-heading">
+<section class="py-12 sm:py-16 bg-gray-900 text-white text-center relative overflow-hidden" aria-labelledby="cta-heading">
   <div class="absolute inset-0 bg-gradient-to-br from-black to-gray-700 opacity-50"></div>
   <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl relative z-10">
-    <h2 id="cta-heading" class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-6 hover:text-red-500 transition-colors duration-300">Ready to Unleash Your Potential?</h2>
-    <p class="text-base sm:text-lg md:text-xl mb-8 text-gray-200 hover:text-red-500 transition-colors duration-300">Join {{ total_users }}+ learners and start your journey with LMSKu today!</p>
-    <a href="{% url 'authentication:course_list' %}" class="inline-block bg-white text-black font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-lg hover:bg-gray-200 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base">Get Started Now</a>
+    <h2 id="cta-heading" class="text-xl sm:text-2xl md:text-3xl font-extrabold mb-6 hover:text-red-500 transition-colors duration-300">Ready to Unleash Your Potential?</h2>
+    <p class="text-sm sm:text-base mdlg mb-8 text-gray-200 hover:text-red-500 transition-colors duration-300">Join {{ total_users }}+ learners and start your journey with LMSKu today!</p>
+    <a href="{% url 'authentication:course_list' %}" class="inline-block bg-white text-black font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-gray-200 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base">Get Started Now</a>
   </div>
 </section>
 {% else %}
 <!-- Call to Action Section for Non-Authenticated Users -->
-<section class="py-16 sm:py-20 bg-gray-900 text-white text-center relative overflow-hidden" aria-labelledby="cta-heading">
+<section class="py-12 sm:py-16 bg-gray-900 text-white text-center relative overflow-hidden" aria-labelledby="cta-heading">
   <div class="absolute inset-0 bg-gradient-to-br from-black to-gray-700 opacity-50"></div>
   <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl relative z-10">
-    <h2 id="cta-heading" class="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-6 hover:text-red-500 transition-colors duration-300">Join the LMSKu Community!</h2>
-    <p class="text-base sm:text-lg md:text-xl mb-8 text-gray-200 hover:text-red-500 transition-colors duration-300">Sign up now to explore {{ total_courses }}+ courses and start learning with expert instructors.</p>
-    <a href="{% url 'authentication:register' %}" class="inline-block bg-white text-black font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-lg hover:bg-gray-200 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base">Create Your Account</a>
+    <h2 id="cta-heading" class="text-xl sm:text-2xl md:text-3xl font-extrabold mb-6 hover:text-red-500 transition-colors duration-300">Join the LMSKu Community!</h2>
+    <p class="text-sm sm:text-base md:text-lg mb-8 text-gray-200 hover:text-red-500 transition-colors duration-300">Sign up now to explore {{ total_courses }}+ courses and start learning with expert instructors.</p>
+    <a href="{% url 'authentication:register' %}" class="inline-block bg-white text-black font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-gray-200 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base">Create Your Account</a>
   </div>
 </section>      
 {% endif %}
