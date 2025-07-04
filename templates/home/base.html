@@ -222,38 +222,46 @@
       <!-- Stay Connected -->
       <div class="col-span-6 sm:col-span-2 lg:col-span-1 animate-fade-in-up">
         <h3 class="text-lg sm:text-xl font-bold mb-4 text-white">Stay Connected</h3>
-        <form action="#" method="POST" class="mb-6">
-          {% csrf_token %}
-          <label for="newsletter-email" class="sr-only">Email address</label>
-          <div class="flex items-center">
-            <input type="email" id="newsletter-email" name="email" placeholder="Enter your email"
-              class="w-full px-4 py-2 rounded-l-lg bg-gray-700 text-white border border-gray-600 focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors duration-300 text-sm sm:text-base"
-              required>
-            <button type="submit"
-              class="bg-black text-white px-4 py-2 rounded-r-lg hover:bg-gray-900 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base">
-              Subscribe
-            </button>
-          </div>
-        </form>
-        <div class="flex justify-center space-x-4">
-          <a href="https://twitter.com/LMSKu" target="_blank" rel="noopener noreferrer"
-            class="text-gray-300 hover:text-red-500 transition-colors duration-300" aria-label="Twitter">
-            <i class="fab fa-twitter text-xl sm:text-2xl"></i>
+        <div class="flex justify-start flex-wrap gap-4 mt-2">
+          <!-- X (Twitter) -->
+          <a href="https://x.com/LMSKu" target="_blank" rel="noopener noreferrer"
+            class="text-gray-300 hover:text-red-500 transition-colors duration-300" aria-label="X (formerly Twitter)">
+            <i class="fab fa-x-twitter text-xl sm:text-2xl"></i>
           </a>
+          <!-- Facebook -->
           <a href="https://facebook.com/LMSKu" target="_blank" rel="noopener noreferrer"
             class="text-gray-300 hover:text-red-500 transition-colors duration-300" aria-label="Facebook">
             <i class="fab fa-facebook-f text-xl sm:text-2xl"></i>
           </a>
+          <!-- LinkedIn -->
           <a href="https://linkedin.com/company/LMSKu" target="_blank" rel="noopener noreferrer"
             class="text-gray-300 hover:text-red-500 transition-colors duration-300" aria-label="LinkedIn">
             <i class="fab fa-linkedin-in text-xl sm:text-2xl"></i>
           </a>
+          <!-- Instagram -->
           <a href="https://instagram.com/LMSKu" target="_blank" rel="noopener noreferrer"
             class="text-gray-300 hover:text-red-500 transition-colors duration-300" aria-label="Instagram">
             <i class="fab fa-instagram text-xl sm:text-2xl"></i>
           </a>
+          <!-- YouTube -->
+          <a href="https://youtube.com/@LMSKu" target="_blank" rel="noopener noreferrer"
+            class="text-gray-300 hover:text-red-500 transition-colors duration-300" aria-label="YouTube">
+            <i class="fab fa-youtube text-xl sm:text-2xl"></i>
+          </a>
+          <!-- TikTok -->
+          <a href="https://www.tiktok.com/@LMSKu" target="_blank" rel="noopener noreferrer"
+            class="text-gray-300 hover:text-red-500 transition-colors duration-300" aria-label="TikTok">
+            <i class="fab fa-tiktok text-xl sm:text-2xl"></i>
+          </a>
+          <!-- WhatsApp -->
+          <a href="https://wa.me/6281234567890" target="_blank" rel="noopener noreferrer"
+            class="text-gray-300 hover:text-red-500 transition-colors duration-300" aria-label="WhatsApp">
+            <i class="fab fa-whatsapp text-xl sm:text-2xl"></i>
+          </a>
         </div>
       </div>
+
+
     </div>
 
     <!-- Bottom Footer -->
