@@ -8,14 +8,14 @@
 {% endblock %}
 
 {% block content %}
-<section class="py-12 bg-gray-100">
+<section class="py-8 sm:py-12 bg-gray-50">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex flex-col lg:flex-row gap-8">
+    <div class="flex flex-col lg:flex-row gap-6 sm:gap-8">
       
       <!-- Blog Content -->
       <div class="w-full lg:w-2/3">
-        <header class="text-center mb-10">
-          <h1 class="text-3xl font-bold text-gray-900 hover:text-red-600 transition-colors">
+        <header class="text-center mb-8">
+          <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 hover:text-red-600 transition-colors">
             {% if current_category %}
               {{ current_category.name }}
             {% elif current_tag %}
@@ -24,69 +24,94 @@
               Our Blog
             {% endif %}
           </h1>
-          <p class="text-gray-600 mt-2 text-base">Explore stories, insights, and updates from our team and community.</p>
+          <p class="text-gray-600 mt-2 text-sm sm:text-base">Explore stories, insights, and updates from our team and community.</p>
         </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {% for post in posts %}
-          <article class="bg-white rounded-xl shadow-md hover:shadow-lg transition overflow-hidden flex flex-col h-full">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+          {% for post in posts|slice:":4" %}
+          <article class="bg-white rounded-xl shadow-md hover:bg-gray-50 transition-colors duration-300 flex flex-col h-full">
             {% if post.image %}
               <a href="{% url 'blog:blog-detail' slug=post.slug %}">
-                <img src="{{ post.image.url }}" alt="{{ post.title }}" class="w-full h-48 object-cover">
+                <img 
+                  src="{{ post.image.url|default:'/static/images/blog-300.webp' }}" 
+                  srcset="{{ post.image.url|default:'/static/images/blog-150.webp' }} 150w, {{ post.image.url|default:'/static/images/blog-300.webp' }} 300w" 
+                  sizes="(max-width: 600px) 150px, 300px" 
+                  alt="{{ post.title }}" 
+                  class="w-full h-32 sm:h-40 object-contain rounded-t-xl" 
+                  loading="lazy" 
+                  width="300" 
+                  height="150">
               </a>
             {% else %}
               <a href="{% url 'blog:blog-detail' slug=post.slug %}">
-                <img src="https://via.placeholder.com/640x360?text=Blog+Thumbnail" alt="Default Thumbnail" class="w-full h-48 object-cover">
+                <img 
+                  src="/static/images/blog-300.webp" 
+                  srcset="/static/images/blog-150.webp 150w, /static/images/blog-300.webp 300w" 
+                  sizes="(max-width: 600px) 150px, 300px" 
+                  alt="Default Blog Thumbnail" 
+                  class="w-full h-32 sm:h-40 object-contain rounded-t-xl" 
+                  loading="lazy" 
+                  width="300" 
+                  height="150">
               </a>
             {% endif %}
-            <div class="p-5 flex flex-col flex-1">
-              <h2 class="text-lg font-semibold leading-snug mb-1">
-                <a href="{% url 'blog:blog-detail' slug=post.slug %}" class="text-gray-800 hover:text-blue-600">
-                  {{ post.title|truncatewords:12 }}
+            <div class="p-4 sm:p-5 flex flex-col flex-1">
+              <h2 class="text-base sm:text-lg font-semibold leading-tight mb-1">
+                <a href="{% url 'blog:blog-detail' slug=post.slug %}" class="text-gray-800 hover:text-red-600 no-underline">
+                  {{ post.title|truncatewords:10 }}
                 </a>
               </h2>
-              <p class="text-sm text-gray-500 mb-2">
-                By {{ post.author|default:"Unknown" }} • {{ post.date_posted|date:"F d, Y" }}
+              <p class="text-xs sm:text-sm text-gray-500 mb-2">
+                By {{ post.author|default:"Unknown" }} • {{ post.date_posted|date:"M d, Y" }}
               </p>
-              <p class="text-gray-600 text-sm mb-4">{{ post.content|safe|truncatewords:30 }}</p>
+              <p class="text-xs sm:text-sm text-gray-600 mb-3 line-clamp-3">{{ post.content|safe|truncatewords:20 }}</p>
               <div class="mt-auto">
-                <a href="{% url 'blog:blog-detail' slug=post.slug %}" class="inline-block w-full text-center text-sm text-blue-500 border border-blue-500 rounded px-4 py-2 hover:bg-blue-500 hover:text-white transition">
+                <a href="{% url 'blog:blog-detail' slug=post.slug %}" 
+                   class="inline-block w-full text-center text-xs sm:text-sm text-red-600 border border-red-600 rounded px-3 py-2 hover:bg-red-600 hover:text-white transition-colors">
                   Read More
                 </a>
               </div>
             </div>
           </article>
           {% empty %}
-          <div class="col-span-full text-center text-gray-600 bg-yellow-50 border border-yellow-200 p-6 rounded">
-            No blog posts found in this section.
+          <div class="col-span-full text-center text-gray-600 bg-yellow-50 border border-yellow-200 p-4 sm:p-6 rounded-xl">
+            <p class="text-sm sm:text-base">No blog posts found in this section.</p>
           </div>
           {% endfor %}
         </div>
 
         <!-- Pagination -->
         {% if is_paginated %}
-        <nav class="mt-10 flex justify-center">
+        <nav class="mt-6 flex justify-center">
           <ul class="inline-flex items-center gap-1">
             {% if page_obj.has_previous %}
               <li>
                 <a href="?page={{ page_obj.previous_page_number }}"
-                   class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-200">«</a>
+                   class="px-2 py-1 sm:px-3 sm:py-1 border border-gray-300 rounded hover:bg-gray-200 text-sm" 
+                   aria-label="Previous page">«</a>
               </li>
             {% endif %}
             {% for num in page_obj.paginator.page_range %}
-              {% if page_obj.number == num %}
-                <li><span class="px-3 py-1 rounded bg-blue-500 text-white">{{ num }}</span></li>
-              {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                <li>
-                  <a href="?page={{ num }}"
-                     class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-200">{{ num }}</a>
-                </li>
+              {% if num|add:-2 <= page_obj.number and num|add:2 >= page_obj.number %}
+                {% if page_obj.number == num %}
+                  <li>
+                    <span class="px-2 py-1 sm:px-3 sm:py-1 rounded bg-red-600 text-white text-sm font-semibold" 
+                          aria-current="page">{{ num }}</span>
+                  </li>
+                {% else %}
+                  <li>
+                    <a href="?page={{ num }}"
+                       class="px-2 py-1 sm:px-3 sm:py-1 border border-gray-300 rounded hover:bg-gray-200 text-sm" 
+                       aria-label="Page {{ num }}">{{ num }}</a>
+                  </li>
+                {% endif %}
               {% endif %}
             {% endfor %}
             {% if page_obj.has_next %}
               <li>
                 <a href="?page={{ page_obj.next_page_number }}"
-                   class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-200">»</a>
+                   class="px-2 py-1 sm:px-3 sm:py-1 border border-gray-300 rounded hover:bg-gray-200 text-sm" 
+                   aria-label="Next page">»</a>
               </li>
             {% endif %}
           </ul>
@@ -95,63 +120,80 @@
       </div>
 
       <!-- Sidebar -->
-      <aside class="w-full lg:w-1/3 space-y-6">
-        
+      <aside class="w-full lg:w-1/3 space-y-4 sm:space-y-6">
         <!-- Categories -->
-        <div class="bg-white p-6 rounded-xl shadow-md">
-          <h3 class="text-lg font-semibold text-blue-600 mb-4">Categories</h3>
+        <div class="bg-white p-4 sm:p-6 rounded-xl shadow-md">
+          <h3 class="text-base sm:text-lg font-semibold text-red-600 mb-3">Categories</h3>
           <ul class="space-y-2">
-            {% for cat_data in categories %}
+            {% for cat_data in categories|slice:":5" %}
               <li>
-                <a href="{{ cat_data.url }}" class="block text-gray-700 hover:text-blue-500 {% if current_category == cat_data.category %}font-bold{% endif %}">
-                  {{ cat_data.category.name }} <span class="text-sm text-gray-500">({{ cat_data.post_count }})</span>
+                <a href="{{ cat_data.url }}" 
+                   class="block text-sm sm:text-base text-gray-700 hover:text-red-600 {% if current_category == cat_data.category %}font-bold{% endif %}">
+                  {{ cat_data.category.name }} <span class="text-xs text-gray-500">({{ cat_data.post_count }})</span>
                 </a>
               </li>
             {% empty %}
-              <li class="text-gray-400">No categories available.</li>
+              <li class="text-gray-400 text-sm">No categories available.</li>
             {% endfor %}
           </ul>
         </div>
 
         <!-- Tags -->
-        <div class="bg-white p-6 rounded-xl shadow-md">
-          <h3 class="text-lg font-semibold text-blue-600 mb-4">Popular Tags</h3>
+        <div class="bg-white p-4 sm:p-6 rounded-xl shadow-md">
+          <h3 class="text-base sm:text-lg font-semibold text-red-600 mb-3">Popular Tags</h3>
           <div class="flex flex-wrap gap-2">
-            {% for tag_data in tags %}
+            {% for tag_data in tags|slice:":6" %}
               <a href="{{ tag_data.tag.get_absolute_url }}"
-                 class="text-sm bg-gray-700 text-white px-3 py-1 rounded hover:bg-gray-800 transition">
+                 class="text-xs sm:text-sm bg-gray-700 text-white px-2 sm:px-3 py-1 rounded hover:bg-gray-800 transition-colors">
                 #{{ tag_data.tag.name }} ({{ tag_data.post_count }})
               </a>
             {% empty %}
-              <span class="text-gray-400">No tags available.</span>
+              <span class="text-gray-400 text-sm">No tags available.</span>
             {% endfor %}
           </div>
         </div>
 
         <!-- Recent Posts -->
-        <div class="bg-white p-6 rounded-xl shadow-md">
-          <h3 class="text-lg font-semibold text-blue-600 mb-4">Recent Posts</h3>
-          <ul class="space-y-4">
-            {% for recent in recent_posts %}
-              <li class="flex items-center gap-4">
+        <div class="bg-white p-4 sm:p-6 rounded-xl shadow-md">
+          <h3 class="text-base sm:text-lg font-semibold text-red-600 mb-3">Recent Posts</h3>
+          <ul class="space-y-3">
+            {% for recent in recent_posts|slice:":3" %}
+              <li class="flex items-center gap-3 sm:gap-4">
                 {% if recent.image %}
                   <a href="{% url 'blog:blog-detail' slug=recent.slug %}">
-                    <img src="{{ recent.image.url }}" alt="{{ recent.title }}" class="w-16 h-16 object-cover rounded">
+                    <img 
+                      src="{{ recent.image.url|default:'/static/images/post-64.webp' }}" 
+                      srcset="{{ recent.image.url|default:'/static/images/post-32.webp' }} 32w, {{ recent.image.url|default:'/static/images/post-64.webp' }} 64w" 
+                      sizes="(max-width: 600px) 32px, 64px" 
+                      alt="{{ recent.title }}" 
+                      class="w-12 h-12 sm:w-16 sm:h-16 object-contain rounded" 
+                      loading="lazy" 
+                      width="64" 
+                      height="64">
                   </a>
                 {% else %}
                   <a href="{% url 'blog:blog-detail' slug=recent.slug %}">
-                    <img src="https://via.placeholder.com/64x64?text=Post" class="w-16 h-16 object-cover rounded" alt="Post">
+                    <img 
+                      src="/static/images/post-64.webp" 
+                      srcset="/static/images/post-32.webp 32w, /static/images/post-64.webp 64w" 
+                      sizes="(max-width: 600px) 32px, 64px" 
+                      alt="Default Post Thumbnail" 
+                      class="w-12 h-12 sm:w-16 sm:h-16 object-contain rounded" 
+                      loading="lazy" 
+                      width="64" 
+                      height="64">
                   </a>
                 {% endif %}
                 <div>
-                  <a href="{% url 'blog:blog-detail' slug=recent.slug %}" class="text-sm font-medium text-gray-800 hover:text-blue-600">
-                    {{ recent.title|truncatewords:8 }}
+                  <a href="{% url 'blog:blog-detail' slug=recent.slug %}" 
+                     class="text-xs sm:text-sm font-medium text-gray-800 hover:text-red-600 no-underline">
+                    {{ recent.title|truncatewords:6 }}
                   </a>
                   <p class="text-xs text-gray-500">{{ recent.date_posted|date:"M d, Y" }}</p>
                 </div>
               </li>
             {% empty %}
-              <li class="text-gray-400">No recent posts available.</li>
+              <li class="text-gray-400 text-sm">No recent posts available.</li>
             {% endfor %}
           </ul>
         </div>
