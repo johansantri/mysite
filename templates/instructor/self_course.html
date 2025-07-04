@@ -10,7 +10,7 @@
         <!-- Material Content -->
         <div class="material-item" style="border-bottom: 2px solid rgb(116, 114, 114); padding: 20px; background-color: #f9f9f9;">
           <h2 class="material-title h4" style="color: rgb(0, 0, 0);">{{ current_content.1.title }}</h2>
-          <p class="material-description" style="font-size: 14px; color: #555;">{{ current_content.1.description |safe}}</p>
+          <p class="material-description" style="font-size: 14px; color: #555;">{{ current_content.1.description |make_iframes_responsive|safe}}</p>
           <div class="comment-section" style="margin-top: 30px;">
             <h4>Leave a Comment for discussion</h4>
             <form method="POST" action="{% url 'courses:add_comment' material_id=current_content.1.id %}">

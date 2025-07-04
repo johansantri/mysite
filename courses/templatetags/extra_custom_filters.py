@@ -5,8 +5,15 @@ from datetime import datetime
 from courses.models import Course  # ✅ Tambahkan ini
 from io import BytesIO
 from PIL import Image  # Pastikan ini ada
+import re
 register = template.Library()
 
+@register.filter
+def make_iframes_responsive(value):
+    # Tambahkan wrapper div responsive pada semua iframe
+    pattern = r'(<iframe.*?</iframe>)'
+    replacement = r'<div class="ratio ratio-16x9">\1</div>'
+    return re.sub(pattern, replacement, value, flags=re.DOTALL)
 
 @register.filter
 def get_item(dictionary, key):
