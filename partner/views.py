@@ -5,7 +5,7 @@ from courses.forms import PartnerFormUpdate
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator,EmptyPage, PageNotAnInteger
 from django.http import HttpResponseForbidden
-from courses.models import Course, Enrollment,CourseRating,CourseComment,CourseViewLog,UserActivityLog,CourseSessionLog,Certificate
+from courses.models import Course, Material,GradeRange,MaterialRead,Question,AssessmentRead,Submission,QuestionAnswer,AssessmentScore,Section,Assessment, Enrollment,CourseRating,CourseComment,CourseViewLog,UserActivityLog,CourseSessionLog,Certificate
 from payments.models import Payment
 from authentication.models import CustomUser
 from collections import defaultdict
@@ -36,7 +36,7 @@ import datetime, csv, json
 from django.db.models import Count, Avg, Max, Min
 from django.contrib.admin.views.decorators import staff_member_required
 import pprint
-
+from decimal import Decimal, ROUND_HALF_UP
 
 
 
@@ -1111,7 +1111,6 @@ def partner_enrollment_view(request):
     if not user.is_partner:
         return HttpResponseForbidden("You are not authorized to view this page.")
 
-    # Ambil universitas partner & course miliknya
     partner_university = user.university
     if not partner_university:
         return HttpResponseForbidden("Your account is not linked to any university.")
@@ -1121,42 +1120,90 @@ def partner_enrollment_view(request):
 
     direction = request.GET.get("direction", "")  # inbound / outbound / internal / all
 
-    # Inisialisasi query user berdasarkan arah
     if direction == "inbound":
-        # Peserta dari universitas lain, mendaftar ke kursus partner ini
         enrollments = Enrollment.objects.select_related("user", "course").filter(
             course__in=owned_course_ids
         ).exclude(user__university=partner_university)
 
     elif direction == "outbound":
-        # Peserta dari universitas ini, mendaftar ke kursus luar
         enrollments = Enrollment.objects.select_related("user", "course").filter(
             user__university=partner_university
         ).exclude(course__in=owned_course_ids)
 
     elif direction == "internal":
-        # Peserta dari universitas ini, mendaftar ke kursus milik sendiri
         enrollments = Enrollment.objects.select_related("user", "course").filter(
             user__university=partner_university,
             course__in=owned_course_ids
         )
 
     else:
-        # Default: semua peserta di course milik partner ini
         enrollments = Enrollment.objects.select_related("user", "course").filter(
             course__in=owned_course_ids
         )
 
-    # Ambil semua user unik dan mapping course-nya
     user_courses_map = defaultdict(list)
     user_list = {}
 
     for enroll in enrollments:
-        user = enroll.user
-        user_list[user.id] = user
-        user_courses_map[user.id].append(enroll.course.course_name)
+        u = enroll.user
+        course = enroll.course
+        user_list[u.id] = u
 
-    # Pagination
+        # Hitung materials
+        materials = Material.objects.filter(section__courses=course)
+        total_materials = materials.count()
+        materials_read = MaterialRead.objects.filter(user=u, material__in=materials).count()
+        materials_read_pct = (Decimal(materials_read) / total_materials * 100) if total_materials > 0 else Decimal('0')
+
+        # Hitung assessments
+        assessments = Assessment.objects.filter(section__courses=course)
+        total_assessments = assessments.count()
+        assessments_completed = AssessmentRead.objects.filter(user=u, assessment__in=assessments).count()
+        assessments_completed_pct = (Decimal(assessments_completed) / total_assessments * 100) if total_assessments > 0 else Decimal('0')
+
+        # Hitung progress
+        progress = ((materials_read_pct + assessments_completed_pct) / 2).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
+
+        # Hitung skor
+        total_score = Decimal('0')
+        total_max_score = Decimal('0')
+        for assessment in assessments:
+            score_value = Decimal('0')
+            total_questions = assessment.questions.count()
+
+            if total_questions > 0:
+                total_correct = QuestionAnswer.objects.filter(
+                    question__in=assessment.questions.all(),
+                    user=u,
+                    choice__is_correct=True
+                ).count()
+                score_value = (Decimal(total_correct) / Decimal(total_questions)) * Decimal(assessment.weight)
+            else:
+                submission = Submission.objects.filter(askora__assessment=assessment, user=u).order_by('-submitted_at').first()
+                if submission:
+                    score_obj = AssessmentScore.objects.filter(submission=submission).first()
+                    if score_obj:
+                        score_value = Decimal(score_obj.final_score)
+
+            total_score += score_value
+            total_max_score += Decimal(assessment.weight)
+
+        overall_percentage = (total_score / total_max_score * 100) if total_max_score > 0 else Decimal('0')
+
+        # Threshold kelulusan
+        grade_range = GradeRange.objects.filter(course=course, name='Pass').first()
+        passing_threshold = grade_range.min_grade if grade_range else Decimal('52.00')
+        certificate_eligible = progress == 100 and overall_percentage >= passing_threshold
+
+        user_courses_map[u.id].append({
+            "name": course.course_name,
+            "progress": float(progress),
+            "passed": enroll.certificate_issued,
+            "eligible": certificate_eligible,
+            "score": float(overall_percentage),
+            "threshold": float(passing_threshold),
+        })
+
     users = list(user_list.values())
     users.sort(key=lambda u: u.id)
     paginator = Paginator(users, 10)
@@ -1170,7 +1217,9 @@ def partner_enrollment_view(request):
         "user_courses_map": user_courses_map,
         "total_users": len(users),
     }
+
     return render(request, "partner/partner_enrollments.html", context)
+
 
 # Create your views here.
 @login_required

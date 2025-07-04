@@ -24,41 +24,63 @@
 
 <!-- Table -->
 <div class="table-responsive">
-  <table class="table table-bordered table-striped align-middle">
-    <thead class="table-light">
+  <table class="table table-hover align-middle table-bordered shadow-sm">
+    <thead class="table-primary text-center">
       <tr>
-        <th>Username</th>
-        <th>Email</th>
-        <th>University</th>
-        <th>Courses Enrolled</th>
+        <th>👤 Username</th>
+        <th>📧 Email</th>
+        <th>🏛️ University</th>
+        <th>📚 Courses Enrolled</th>
       </tr>
     </thead>
     <tbody>
       {% for user in users %}
-        <tr>
-          <td>{{ user.username }}</td>
-          <td>{{ user.email }}</td>
-          <td>{{ user.university.name|default:"-" }}</td>
-          <td>
+      <tr>
+        <td class="fw-semibold text-primary">{{ user.username }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.university.name|default:"-" }}</td>
+        <td>
+          <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#courses-{{ user.id }}">
+            Show Details
+          </button>
+          <div class="collapse mt-2" id="courses-{{ user.id }}">
             {% with user_courses_map|get_item:user.id as courses %}
               {% if courses %}
-                {% for course in courses %}
-                  <div>{{ course }}</div>
-                {% endfor %}
+                <ul class="list-group mt-2">
+                  {% for c in courses %}
+                  <li class="list-group-item">
+                    <div class="fw-bold">{{ c.name }}</div>
+                    <div class="small text-muted mb-1">
+                      Progress: <span class="text-success">{{ c.progress }}%</span> |
+                      Score: <span class="text-info">{{ c.score|floatformat:2 }}%</span>
+                    </div>
+                    <div>
+                      <span class="badge bg-{% if c.passed %}success{% else %}secondary{% endif %}">
+                        {% if c.passed %}Pass{% else %}Not Yet{% endif %}
+                      </span>
+                      {% if not c.passed and c.eligible %}
+                        <span class="badge bg-info">Eligible</span>
+                      {% endif %}
+                    </div>
+                  </li>
+                  {% endfor %}
+                </ul>
               {% else %}
-                <em>No courses</em>
+                <p class="text-muted mt-2"><em>No courses found.</em></p>
               {% endif %}
             {% endwith %}
-          </td>
-        </tr>
+          </div>
+        </td>
+      </tr>
       {% empty %}
-        <tr>
-          <td colspan="4" class="text-center text-muted">No users found.</td>
-        </tr>
+      <tr>
+        <td colspan="4" class="text-center text-muted">No users found.</td>
+      </tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
+
 
 <!-- Pagination -->
 {% if users.has_other_pages %}
