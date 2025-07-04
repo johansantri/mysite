@@ -1105,20 +1105,10 @@ def partner_course_ratings(request):
     return render(request, 'partner/partner_course_ratings.html', context)
 
 
-@login_required
-def partner_enrollment_view(request):
-    user = request.user
-    if not user.is_partner:
-        return HttpResponseForbidden("You are not authorized to view this page.")
-
+def get_enrollments_filtered(user, direction, search_query):
     partner_university = user.university
-    if not partner_university:
-        return HttpResponseForbidden("Your account is not linked to any university.")
-
     owned_courses = Course.objects.filter(org_partner__user=user)
     owned_course_ids = owned_courses.values_list('id', flat=True)
-
-    direction = request.GET.get("direction", "")  # inbound / outbound / internal / all
 
     if direction == "inbound":
         enrollments = Enrollment.objects.select_related("user", "course").filter(
@@ -1141,6 +1131,22 @@ def partner_enrollment_view(request):
             course__in=owned_course_ids
         )
 
+    if search_query:
+        enrollments = enrollments.filter(user__email__icontains=search_query)
+
+    return enrollments, owned_courses
+
+@login_required
+def partner_enrollment_view(request):
+    user = request.user
+    if not user.is_partner:
+        return HttpResponseForbidden("You are not authorized to view this page.")
+
+    direction = request.GET.get("direction", "")
+    search_query = request.GET.get("search", "")
+
+    enrollments, owned_courses = get_enrollments_filtered(user, direction, search_query)
+
     user_courses_map = defaultdict(list)
     user_list = {}
 
@@ -1149,22 +1155,18 @@ def partner_enrollment_view(request):
         course = enroll.course
         user_list[u.id] = u
 
-        # Hitung materials
         materials = Material.objects.filter(section__courses=course)
         total_materials = materials.count()
         materials_read = MaterialRead.objects.filter(user=u, material__in=materials).count()
         materials_read_pct = (Decimal(materials_read) / total_materials * 100) if total_materials > 0 else Decimal('0')
 
-        # Hitung assessments
         assessments = Assessment.objects.filter(section__courses=course)
         total_assessments = assessments.count()
         assessments_completed = AssessmentRead.objects.filter(user=u, assessment__in=assessments).count()
         assessments_completed_pct = (Decimal(assessments_completed) / total_assessments * 100) if total_assessments > 0 else Decimal('0')
 
-        # Hitung progress
         progress = ((materials_read_pct + assessments_completed_pct) / 2).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
 
-        # Hitung skor
         total_score = Decimal('0')
         total_max_score = Decimal('0')
         for assessment in assessments:
@@ -1190,7 +1192,6 @@ def partner_enrollment_view(request):
 
         overall_percentage = (total_score / total_max_score * 100) if total_max_score > 0 else Decimal('0')
 
-        # Threshold kelulusan
         grade_range = GradeRange.objects.filter(course=course, name='Pass').first()
         passing_threshold = grade_range.min_grade if grade_range else Decimal('52.00')
         certificate_eligible = progress == 100 and overall_percentage >= passing_threshold
@@ -1213,13 +1214,101 @@ def partner_enrollment_view(request):
     context = {
         "users": page_obj,
         "direction": direction,
+        "search_query": search_query,
         "owned_courses": owned_courses,
         "user_courses_map": user_courses_map,
         "total_users": len(users),
     }
-
     return render(request, "partner/partner_enrollments.html", context)
 
+@login_required
+def export_enrollments_csv(request):
+    user = request.user
+    if not user.is_partner:
+        return HttpResponseForbidden("Not allowed")
+
+    direction = request.GET.get("direction", "")
+    search_query = request.GET.get("search", "")
+
+    enrollments, _ = get_enrollments_filtered(user, direction, search_query)
+
+    user_courses_map = defaultdict(list)
+    user_list = {}
+
+    for enroll in enrollments:
+        u = enroll.user
+        course = enroll.course
+        user_list[u.id] = u
+
+        materials = Material.objects.filter(section__courses=course)
+        total_materials = materials.count()
+        materials_read = MaterialRead.objects.filter(user=u, material__in=materials).count()
+        materials_read_pct = (Decimal(materials_read) / total_materials * 100) if total_materials > 0 else Decimal('0')
+
+        assessments = Assessment.objects.filter(section__courses=course)
+        total_assessments = assessments.count()
+        assessments_completed = AssessmentRead.objects.filter(user=u, assessment__in=assessments).count()
+        assessments_completed_pct = (Decimal(assessments_completed) / total_assessments * 100) if total_assessments > 0 else Decimal('0')
+
+        progress = ((materials_read_pct + assessments_completed_pct) / 2).quantize(Decimal('1'), rounding=ROUND_HALF_UP)
+
+        total_score = Decimal('0')
+        total_max_score = Decimal('0')
+        for assessment in assessments:
+            score_value = Decimal('0')
+            total_questions = assessment.questions.count()
+
+            if total_questions > 0:
+                total_correct = QuestionAnswer.objects.filter(
+                    question__in=assessment.questions.all(),
+                    user=u,
+                    choice__is_correct=True
+                ).count()
+                score_value = (Decimal(total_correct) / Decimal(total_questions)) * Decimal(assessment.weight)
+            else:
+                submission = Submission.objects.filter(askora__assessment=assessment, user=u).order_by('-submitted_at').first()
+                if submission:
+                    score_obj = AssessmentScore.objects.filter(submission=submission).first()
+                    if score_obj:
+                        score_value = Decimal(score_obj.final_score)
+
+            total_score += score_value
+            total_max_score += Decimal(assessment.weight)
+
+        overall_percentage = (total_score / total_max_score * 100) if total_max_score > 0 else Decimal('0')
+
+        grade_range = GradeRange.objects.filter(course=course, name='Pass').first()
+        passing_threshold = grade_range.min_grade if grade_range else Decimal('52.00')
+        certificate_eligible = progress == 100 and overall_percentage >= passing_threshold
+
+        user_courses_map[u.id].append({
+            "name": course.course_name,
+            "progress": float(progress),
+            "passed": enroll.certificate_issued,
+            "eligible": certificate_eligible,
+            "score": float(overall_percentage),
+            "threshold": float(passing_threshold),
+        })
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="enrollments.csv"'
+    writer = csv.writer(response)
+    writer.writerow(['Username', 'Email', 'University', 'Course', 'Progress', 'Score', 'Status'])
+
+    for user_id, courses in user_courses_map.items():
+        u = user_list[user_id]
+        for course in courses:
+            writer.writerow([
+                u.username,
+                u.email,
+                u.university.name if u.university else '-',
+                course["name"],
+                f"{course['progress']}%",
+                f"{course['score']}%",
+                "Pass" if course["passed"] else "Not Yet"
+            ])
+
+    return response
 
 # Create your views here.
 @login_required

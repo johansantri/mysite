@@ -7,6 +7,7 @@ app_name = 'partner'
 urlpatterns = [
     path('partner/update/<int:partner_id>/<slug:universiti_slug>/', views.partner_update_view, name='partner_update'),
     path("partner/enrollments/", views.partner_enrollment_view, name="partner_enrollments"),
+    path("enrollments/export/", views.export_enrollments_csv, name="export_enrollments_csv"),
     path('reports/course-ratings/', views.partner_course_ratings, name='partner_course_ratings'),
     path('org-partner/', views.partner_list_view, name='partner_list'),
     path('course-detail/<int:course_id>/comment/reply/<int:comment_id>/', views.post_comment_reply, name='post_comment_reply'),

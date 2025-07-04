@@ -6,21 +6,36 @@
 
 <p class="text-muted">Total Enrolled Users: <strong>{{ total_users }}</strong></p>
 
+
 <!-- Filter Form -->
 <form method="get" class="row g-2 mb-4 align-items-end">
   <div class="col-md-4">
     <label for="direction" class="form-label">Filter by Enrollment Direction</label>
     <select name="direction" id="direction" class="form-select">
       <option value="">-- All --</option>
-      <option value="inbound" {% if direction == 'inbound' %}selected{% endif %}>Inbound (Dari luar ke kursus saya)</option>
-      <option value="outbound" {% if direction == 'outbound' %}selected{% endif %}>Outbound (Dari univ saya ke luar)</option>
-      <option value="internal" {% if direction == 'internal' %}selected{% endif %}>Internal (Univ saya ke kursus saya)</option>
+      <option value="inbound" {% if direction == 'inbound' %}selected{% endif %}>Inbound (Users from other universities)</option>
+      <option value="outbound" {% if direction == 'outbound' %}selected{% endif %}>Outbound (My university to other courses)</option>
+      <option value="internal" {% if direction == 'internal' %}selected{% endif %}>Internal (My university to our courses)</option>
     </select>
   </div>
+
+  <div class="col-md-3">
+    <label for="search" class="form-label">Search by Email</label>
+    <input type="text" id="search" name="search" value="{{ request.GET.search }}" class="form-control" placeholder="e.g. user@example.com">
+  </div>
+
   <div class="col-md-2">
     <button type="submit" class="btn btn-primary w-100">Filter</button>
   </div>
+
+  <div class="col-md-3 text-end">
+    <label class="form-label d-block">&nbsp;</label>
+    <a href="{% url 'partner:export_enrollments_csv' %}?direction={{ direction }}&search={{ request.GET.search }}" class="btn btn-success w-100">
+      <i class="bi bi-download"></i> Download CSV
+    </a>
+  </div>
 </form>
+
 
 <!-- Table -->
 <div class="table-responsive">
