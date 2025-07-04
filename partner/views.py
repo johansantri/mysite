@@ -38,6 +38,8 @@ from django.contrib.admin.views.decorators import staff_member_required
 import pprint
 
 
+
+
 @cache_page(60 * 5)
 def partner_analytics_admin(request):
     if not request.user.is_superuser and not request.user.is_staff:
@@ -1105,58 +1107,58 @@ def partner_course_ratings(request):
 
 @login_required
 def partner_enrollment_view(request):
-    if not request.user.is_partner:
+    user = request.user
+    if not user.is_partner:
         return HttpResponseForbidden("You are not authorized to view this page.")
 
-    # Ambil universitas partner
-    partner_university = request.user.university
+    # Ambil universitas partner & course miliknya
+    partner_university = user.university
     if not partner_university:
         return HttpResponseForbidden("Your account is not linked to any university.")
 
-    # Ambil semua course milik partner
-    owned_courses = Course.objects.filter(org_partner__user=request.user)
+    owned_courses = Course.objects.filter(org_partner__user=user)
+    owned_course_ids = owned_courses.values_list('id', flat=True)
 
-    # Ambil parameter arah enroll
     direction = request.GET.get("direction", "")  # inbound / outbound / internal / all
 
-    # Filter berdasarkan arah enroll
+    # Inisialisasi query user berdasarkan arah
     if direction == "inbound":
-        users = CustomUser.objects.filter(
-            enrollments__course__in=owned_courses
-        ).exclude(university=partner_university).distinct()
+        # Peserta dari universitas lain, mendaftar ke kursus partner ini
+        enrollments = Enrollment.objects.select_related("user", "course").filter(
+            course__in=owned_course_ids
+        ).exclude(user__university=partner_university)
 
     elif direction == "outbound":
-        users = CustomUser.objects.filter(
-            university=partner_university
-        ).exclude(enrollments__course__in=owned_courses).distinct()
+        # Peserta dari universitas ini, mendaftar ke kursus luar
+        enrollments = Enrollment.objects.select_related("user", "course").filter(
+            user__university=partner_university
+        ).exclude(course__in=owned_course_ids)
 
     elif direction == "internal":
-        users = CustomUser.objects.filter(
-            university=partner_university,
-            enrollments__course__in=owned_courses
-        ).distinct()
+        # Peserta dari universitas ini, mendaftar ke kursus milik sendiri
+        enrollments = Enrollment.objects.select_related("user", "course").filter(
+            user__university=partner_university,
+            course__in=owned_course_ids
+        )
 
     else:
-        # Default: semua user yang enroll ke course milik partner
-        users = CustomUser.objects.filter(
-            enrollments__course__in=owned_courses
-        ).distinct()
+        # Default: semua peserta di course milik partner ini
+        enrollments = Enrollment.objects.select_related("user", "course").filter(
+            course__in=owned_course_ids
+        )
 
-    # ORDER BY untuk hindari warning dari Paginator
-    users = users.order_by('id')
-
-    # Hitung total user sebelum paginasi
-    total_users = users.count()
-
-    # Ambil enrollments
-    enrollments = Enrollment.objects.select_related('course').filter(user__in=users)
-
-    # Mapping user.id → course names
+    # Ambil semua user unik dan mapping course-nya
     user_courses_map = defaultdict(list)
+    user_list = {}
+
     for enroll in enrollments:
-        user_courses_map[enroll.user_id].append(enroll.course.course_name)
+        user = enroll.user
+        user_list[user.id] = user
+        user_courses_map[user.id].append(enroll.course.course_name)
 
     # Pagination
+    users = list(user_list.values())
+    users.sort(key=lambda u: u.id)
     paginator = Paginator(users, 10)
     page_number = request.GET.get("page", 1)
     page_obj = paginator.get_page(page_number)
@@ -1166,9 +1168,8 @@ def partner_enrollment_view(request):
         "direction": direction,
         "owned_courses": owned_courses,
         "user_courses_map": user_courses_map,
-        "total_users": total_users,
+        "total_users": len(users),
     }
-
     return render(request, "partner/partner_enrollments.html", context)
 
 # Create your views here.
