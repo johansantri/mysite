@@ -1142,7 +1142,7 @@ def home(request):
 
         latest_articles = BlogPost.objects.filter(
             status='published'
-        ).order_by('-date_posted')[:2]
+        ).order_by('-date_posted')[:3]
 
     # Pagination untuk partners
     partner_paginator = Paginator(partners, 6)

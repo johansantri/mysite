@@ -254,7 +254,7 @@
             <h3 class="font-bold text-base sm:text-xl text-black group-hover:text-red-500 transition-colors duration-300 line-clamp-1">
               {{ instructor.user.first_name }} {{ instructor.user.last_name }}
             </h3>
-            <p class="text-xs sm:text-sm text-gray-600 group-hover:text-red-500 transition-colors duration-300 mb-4">{{ instructor.job_title|default:"Expert Instructor" }}</p>
+            <p class="text-xs sm:text-sm text-gray-600 group-hover:text-red-500 transition-colors duration-300 mb-4">{{ instructor.user.hobby|default:"Expert Instructor" }}</p>
             <a 
               href="{% url 'courses:instructor_profile' username=instructor.user.username %}" 
               class="inline-block bg-black text-white font-semibold px-4 sm:px-6 py-2 rounded-lg hover:bg-gray-800 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-xs sm:text-sm"
