@@ -140,7 +140,7 @@
     </div>
 
     <!-- Course Grid (populated via JS) -->
-    <div id="courses-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-6">
+    <div id="courses-list" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
       <!-- JS Injected Courses -->
     </div>
 
@@ -323,50 +323,76 @@
 
 
 <!-- Instructors Section -->
-<section class="py-12 sm:py-16 bg-gray-50 relative overflow-hidden" aria-labelledby="instructors-heading">
+<section class="py-14 bg-gray-50 relative overflow-hidden" aria-labelledby="instructors-heading">
   <div class="absolute inset-0 bg-gradient-to-br from-black to-gray-700 opacity-10 transform -skew-y-6"></div>
-  <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-    <h2 id="instructors-heading" class="text-xl sm:text-2xl md:text-3xl font-extrabold mb-8 text-center text-black hover:text-red-500 transition-colors duration-300">Learn from Top Experts</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-      {% for instructor in instructors|slice:":2" %}
-        <div class="relative bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 group overflow-hidden">
-          <div class="relative z-10 p-4 sm:p-6 text-center">
-            <div class="relative w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-3 sm:mb-4 border-4 border-gray-200 group-hover:border-red-500 rounded-full transition-colors duration-300">
-              <img 
-                src="{{ instructor.user.photo.url|default:'/static/images/default-128.webp' }}" 
-                srcset="{{ instructor.user.photo.url|default:'/static/images/default-64.webp' }} 64w, {{ instructor.user.photo.url|default:'/static/images/default-128.webp' }} 128w" 
-                sizes="(max-width: 600px) 64px, 128px" 
-                alt="Photo of {{ instructor.user.first_name }} {{ instructor.user.last_name }}" 
-                class="w-full h-full rounded-full object-cover" 
-                loading="lazy" 
-                width="128" 
-                height="128">
-            </div>
-            <h3 class="font-bold text-sm sm:text-base text-black group-hover:text-red-500 transition-colors duration-300 line-clamp-1">
-              {{ instructor.user.first_name }} {{ instructor.user.last_name }}
-            </h3>
-            <p class="text-xs sm:text-sm text-gray-600 group-hover:text-red-500 transition-colors duration-300 mb-3">{{ instructor.user.hobby|default:"Expert Instructor" }}</p>
-            <a 
-              href="{% url 'courses:instructor_profile' username=instructor.user.username %}" 
-              class="inline-block bg-black text-white font-semibold px-3 sm:px-4 py-2 rounded-lg hover:bg-gray-800 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-xs sm:text-sm">
-              View Profile
-            </a>
-            {% if instructor.is_top_rated %}
-              <span class="absolute top-2 right-2 bg-gray-900 text-white text-xs font-semibold px-2 py-1 rounded-full shadow-md">Top Instructor</span>
-            {% endif %}
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Title & Intro -->
+    <div class="text-center mb-10">
+      <h2 id="instructors-heading" class="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-3">
+        Learn from World-Class Instructors
+      </h2>
+      <p class="text-gray-600 text-sm sm:text-base max-w-2xl mx-auto">
+        Our top-rated experts bring real-world knowledge and passion for teaching to help you succeed—no matter where you start.
+      </p>
+    </div>
+
+    <!-- Instructor Grid -->
+    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+
+      {% for instructor in instructors|slice:":4" %}
+        <div class="bg-white rounded-2xl shadow hover:shadow-lg transition-all duration-300 overflow-hidden group text-center p-6 relative">
+          <!-- Avatar -->
+          <div class="w-24 h-24 mx-auto mb-4 relative">
+            <img 
+              src="{{ instructor.user.photo.url|default:'/static/images/default-128.webp' }}" 
+              srcset="{{ instructor.user.photo.url|default:'/static/images/default-64.webp' }} 64w, {{ instructor.user.photo.url|default:'/static/images/default-128.webp' }} 128w" 
+              sizes="(max-width: 600px) 64px, 128px" 
+              alt="{{ instructor.user.get_full_name }}" 
+              class="w-24 h-24 rounded-full object-cover border-4 border-gray-200 group-hover:border-red-500 transition">
           </div>
+
+          <!-- Name -->
+          <h3 class="text-sm sm:text-base font-bold text-gray-900 group-hover:text-red-600 transition-colors">
+            {{ instructor.user.first_name }} {{ instructor.user.last_name }}
+          </h3>
+
+          <!-- Hobby / Title -->
+          <p class="text-xs text-gray-600 group-hover:text-red-500 transition mb-2">
+            {{ instructor.user.hobby|default:"Expert Instructor" }}
+          </p>
+
+          <!-- CTA -->
+          <a href="{% url 'courses:instructor_profile' username=instructor.user.username %}"
+             class="inline-block mt-2 bg-black text-white text-xs sm:text-sm font-medium px-4 py-2 rounded-md hover:bg-gray-800 hover:text-red-500 transition-all focus:outline-none focus:ring-2 focus:ring-red-500">
+            View Profile
+          </a>
+
+          <!-- Top Instructor Badge -->
+          {% if instructor.is_top_rated %}
+            <span class="absolute top-3 right-3 bg-red-600 text-white text-xs font-semibold px-2 py-1 rounded shadow">
+              Top Rated
+            </span>
+          {% endif %}
         </div>
-      {% empty %}
-        <p class="text-center text-gray-600 text-sm sm:text-base col-span-full">No instructors available.</p>
       {% endfor %}
     </div>
-    <div class="text-center mt-8 sm:mt-10">
-      <a 
-        href="#" 
-        class="inline-block bg-black text-white font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-gray-800 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base">
+
+    <!-- CTA: Show More -->
+    {% if instructors|length > 4 %}
+    <div class="text-center mt-10">
+      <a href="{% url 'courses:instructor_list' %}" 
+         class="inline-block bg-black text-white font-semibold px-6 py-3 rounded-lg hover:bg-gray-800 hover:text-red-400 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors text-sm sm:text-base">
         Meet More Experts
       </a>
     </div>
+    {% endif %}
+
+    <!-- Empty Case -->
+    {% if instructors|length == 0 %}
+    <p class="text-center text-gray-600 mt-8">No instructors available at the moment.</p>
+    {% endif %}
+
   </div>
 </section>
 

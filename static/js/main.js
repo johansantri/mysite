@@ -89,17 +89,33 @@ document.addEventListener('DOMContentLoaded', function() {
                                     </div>
 
                                     <!-- Rating -->
-                                    <div class="flex items-center gap-2 text-sm">
+                                        <div class="flex items-center gap-2 text-sm">
                                         <div class="flex gap-0.5">
-                                        ${Array(5).fill().map(() =>
-                                            `<svg class="w-4 h-4 text-yellow-500" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                                            </svg>`).join('')}
+                                            ${
+                                            course.num_ratings === 0
+                                                ? Array(5).fill().map(() => `
+                                                <svg class="w-4 h-4 text-gray-300" viewBox="0 0 24 24" fill="currentColor">
+                                                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                                                </svg>`).join('')
+                                                : (
+                                                    Array(Math.round(course.avg_rating)).fill().map(() => `
+                                                    <svg class="w-4 h-4 text-yellow-500" viewBox="0 0 24 24" fill="currentColor">
+                                                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                                                    </svg>`)
+                                                    .concat(
+                                                    Array(5 - Math.round(course.avg_rating)).fill().map(() => `
+                                                        <svg class="w-4 h-4 text-gray-300" viewBox="0 0 24 24" fill="currentColor">
+                                                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                                                        </svg>`)
+                                                    ).join('')
+                                                )
+                                            }
                                         </div>
                                         <span class="text-gray-600 group-hover:text-red-600">
-                                        ${course.avg_rating.toFixed(1)} (${course.num_ratings} reviews)
+                                            ${course.num_ratings > 0 ? `${course.avg_rating.toFixed(1)} (${course.num_ratings})` : 'No reviews yet'}
                                         </span>
-                                    </div>
+                                        </div>
+
 
                                     <!-- Enrollment -->
                                     <div class="flex items-center text-sm text-gray-600 group-hover:text-red-600">
