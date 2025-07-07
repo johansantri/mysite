@@ -90,16 +90,28 @@
 </section>
 
 <!-- Popular Categories Section -->
-<section class="py-12 sm:py-16 bg-gray-50 relative overflow-hidden" aria-labelledby="categories-heading">
+<section class="py-14 sm:py-20 bg-gray-50 relative overflow-hidden" aria-labelledby="categories-heading">
+  <!-- Background Layer -->
   <div class="absolute inset-0 bg-gradient-to-br from-black to-gray-700 opacity-10 transform -skew-y-6"></div>
+
   <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-    <h2 id="categories-heading" class="text-xl sm:text-2xl md:text-3xl font-extrabold mb-8 text-center text-black hover:text-red-500 transition-colors duration-300">Explore Top Categories</h2>
+    <!-- Section Header -->
+    <div class="text-center mb-10">
+      <h2 id="categories-heading" class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 mb-3 hover:text-red-500 transition">
+        Explore Top Categories
+      </h2>
+      <p class="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">
+        Find the right learning path for you—whether it's data science, creative design, business strategy, or personal development. Start where your curiosity leads.
+      </p>
+    </div>
+
+    <!-- Categories Grid -->
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
       {% for category in popular_categories|slice:":4" %}
-        <a href="{% url 'courses:category_list' category.slug %}" class="no-underline" aria-label="Explore {{ category.name }} courses">
-          <div class="bg-white p-4 sm:p-6 rounded-xl text-center hover:bg-provence-100 transition-colors duration-300 shadow-md">
-            <span class="font-semibold text-sm sm:text-base text-black hover:text-red-500 transition-colors duration-300">{{ category.name }}</span>
-            <p class="text-xs sm:text-sm text-gray-600 mt-2">{{ category.num_courses }} Courses</p>
+        <a href="{% url 'courses:category_list' category.slug %}" class="no-underline group block" aria-label="Explore {{ category.name }} courses">
+          <div class="bg-white p-5 sm:p-6 rounded-xl text-center shadow-md hover:shadow-lg hover:bg-white transition-all duration-300 ring-1 ring-gray-100 group-hover:ring-red-400">
+            <span class="text-base sm:text-lg font-semibold text-gray-800 group-hover:text-red-500 transition-colors">{{ category.name }}</span>
+            <p class="text-xs sm:text-sm text-gray-600 mt-2">{{ category.num_courses }} Courses Available</p>
           </div>
         </a>
       {% endfor %}
@@ -107,18 +119,29 @@
   </div>
 </section>
 
-<!-- Popular Courses Section -->
-<!-- Popular Courses Section -->
-<section class="py-12 sm:py-16 bg-gray-50 relative overflow-hidden" aria-labelledby="courses-heading">
-  <div class="absolute inset-0 bg-gradient-to-br from-black to-gray-700 opacity-10 transform -skew-y-6"></div>
-  <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-    <h2 id="courses-heading" class="text-xl sm:text-2xl md:text-3xl font-extrabold mb-8 text-center text-black hover:text-red-500 transition-colors duration-300">
-      Top Courses to Transform Your Skills
-    </h2>
 
-    <!-- Course Grid -->
+<!-- Popular Courses Section -->
+<!-- Popular Courses Section -->
+<!-- Top Courses Section -->
+<section class="py-14 sm:py-20 bg-gray-50 relative overflow-hidden" aria-labelledby="courses-heading">
+  <!-- Background Skew -->
+  <div class="absolute inset-0 bg-gradient-to-br from-black to-gray-700 opacity-10 transform -skew-y-6"></div>
+  
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+
+    <!-- Heading -->
+    <div class="text-center mb-10">
+      <h2 id="courses-heading" class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 mb-3 hover:text-red-500 transition">
+        Top Courses to Transform Your Skills
+      </h2>
+      <p class="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">
+        Whether you're looking to switch careers, level up in your profession, or just learn something new, these handpicked courses are designed to help you grow—quickly and effectively.
+      </p>
+    </div>
+
+    <!-- Course Grid (populated via JS) -->
     <div id="courses-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-6">
-      <!-- Populated via JS -->
+      <!-- JS Injected Courses -->
     </div>
 
     <!-- CTA -->
@@ -128,8 +151,10 @@
         Explore All Courses
       </a>
     </div>
+
   </div>
 </section>
+
 
 
 <!-- Global Trust Section -->
@@ -179,53 +204,123 @@
 
 
 <!-- Micro Courses Section -->
-<section class="py-12 sm:py-16 bg-gray-50" aria-labelledby="micro-courses-heading">
-  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-    <h2 id="micro-courses-heading" class="text-xl sm:text-2xl md:text-3xl font-extrabold mb-8 text-center text-black hover:text-red-500 transition-colors duration-300">Quick Micro Courses</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-      {% for microcredential in popular_microcredentials|slice:":2" %}
-        <div class="bg-white p-4 sm:p-6 rounded-xl flex items-center hover:bg-gray-100 transition-all duration-300 shadow-md">
-          <img 
-            src="{{ microcredential.image.url|default:'/static/images/micro-48.webp' }}" 
-            srcset="{{ microcredential.image.url|default:'/static/images/micro-24.webp' }} 24w, {{ microcredential.image.url|default:'/static/images/micro-48.webp' }} 48w" 
-            sizes="(max-width: 600px) 24px, 48px" 
-            alt="Image of {{ microcredential.title }}" 
-            class="h-10 w-10 sm:h-12 sm:w-12 rounded mr-2 sm:mr-3" 
-            loading="lazy" 
-            width="48" 
-            height="48">
-          <div class="flex-grow">
-            <h3 class="font-semibold text-sm sm:text-base text-black hover:text-red-500 transition-colors duration-300 line-clamp-2">
-              <a href="{% url 'courses:micro_detail' microcredential.id microcredential.slug %}" class="no-underline text-black hover:text-red-500 focus:text-red-500">{{ microcredential.title }}</a>
-            </h3>
-            <p class="text-xs sm:text-sm text-gray-600 line-clamp-2">{{ microcredential.description|safe|truncatewords:10 }}</p>
+<section class="py-14 bg-white" aria-labelledby="micro-courses-heading">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Title & Narasi -->
+    <div class="text-center mb-10">
+      <h2 id="micro-courses-heading" class="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-3">
+        Build Skills Fast with Microcredentials
+      </h2>
+      <p class="text-gray-600 text-sm sm:text-base max-w-2xl mx-auto">
+        Gain job-ready expertise in record time. Our microcredential courses are designed for professionals who want practical skills without the long-term commitment — all in 2 hours or less.
+      </p>
+    </div>
+
+    <!-- Micro Course Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for microcredential in popular_microcredentials|slice:":3" %}
+        <a href="{% url 'courses:micro_detail' microcredential.id microcredential.slug %}"
+           class="group block bg-gray-50 hover:bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
+          
+          <div class="flex items-center gap-4">
+            <!-- Icon or Thumbnail -->
+            <img 
+              src="{{ microcredential.image.url|default:'/static/images/micro-48.webp' }}" 
+              srcset="{{ microcredential.image.url|default:'/static/images/micro-24.webp' }} 24w, {{ microcredential.image.url|default:'/static/images/micro-48.webp' }} 48w" 
+              sizes="(max-width: 600px) 24px, 48px" 
+              alt="{{ microcredential.title }}" 
+              class="h-12 w-12 sm:h-14 sm:w-14 rounded-full object-cover shadow"
+              loading="lazy"
+              width="48" height="48">
+            
+            <div class="flex-grow">
+              <h3 class="text-sm sm:text-base font-semibold text-gray-900 group-hover:text-red-600 transition-colors line-clamp-2">
+                {{ microcredential.title }}
+              </h3>
+              <p class="text-xs sm:text-sm text-gray-600 mt-1 line-clamp-2">
+                {{ microcredential.description|safe|truncatewords:14 }}
+              </p>
+            </div>
           </div>
-        </div>
+
+        </a>
       {% empty %}
-        <p class="text-center text-gray-600 text-sm sm:text-base col-span-full">No micro-credentials available.</p>
+        <p class="text-center text-gray-500 text-sm sm:text-base col-span-full">
+          No microcredentials available at the moment.
+        </p>
       {% endfor %}
     </div>
+
+    <!-- CTA -->
+    {% if popular_microcredentials|length > 3 %}
+    <div class="text-center mt-10">
+      <a href="{% url 'courses:micro_list' %}" class="inline-block bg-black text-white font-semibold px-6 py-2 rounded-md hover:bg-gray-800 hover:text-red-400 focus:ring-2 focus:ring-red-500 transition-colors">
+        Explore All Microcredentials
+      </a>
+    </div>
+    {% endif %}
+
   </div>
 </section>
 
+
+
 <!-- Blog Section -->
-<section class="py-12 sm:py-16 bg-white" aria-labelledby="blog-heading">
-  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-    <h2 id="blog-heading" class="text-xl sm:text-2xl md:text-3xl font-extrabold mb-8 text-center text-black hover:text-red-500 transition-colors duration-300">Stay Inspired with Our Blog</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-      {% for article in latest_articles|slice:":2" %}
-        <article class="bg-gray-50 p-4 sm:p-6 rounded-xl shadow-md hover:bg-gray-100 transition-all duration-300">
-          <h3 class="font-semibold text-sm sm:text-base text-black hover:text-red-500 transition-colors duration-300 line-clamp-2">
-            <a href="{% url 'blog:blog-detail' slug=article.slug %}" class="no-underline text-black hover:text-red-500 focus:text-red-500">{{ article.title }}</a>
-          </h3>
-          <p class="text-xs sm:text-sm text-gray-600 hover:text-red-500 transition-colors duration-300 line-clamp-3">{{ article.excerpt|truncatewords:15 }}</p>
+<section class="py-14 bg-white" aria-labelledby="blog-heading">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Heading & Narasi -->
+    <div class="text-center mb-10">
+      <h2 id="blog-heading" class="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-3">
+        Stay Inspired with Our Blog
+      </h2>
+      <p class="text-gray-600 text-sm sm:text-base max-w-2xl mx-auto">
+        Get tips, insights, and inspiring stories from the world of online education and professional development.
+      </p>
+    </div>
+
+    <!-- Blog Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for article in latest_articles|slice:":3" %}
+        <article class="bg-gray-50 hover:bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
+          
+          <a href="{% url 'blog:blog-detail' slug=article.slug %}" class="block p-5">
+            <!-- Optional Image -->
+            {% if article.image %}
+              <img src="{{ article.image.url }}" alt="{{ article.title }}" class="rounded mb-4 w-full h-40 object-cover" loading="lazy">
+            {% endif %}
+
+            <!-- Title -->
+            <h3 class="text-base sm:text-lg font-semibold text-gray-900 group-hover:text-red-600 line-clamp-2 mb-2">
+              {{ article.title }}
+            </h3>
+
+            <!-- Excerpt -->
+            <p class="text-sm text-gray-600 line-clamp-3">
+              {{ article.excerpt|truncatewords:20 }}
+            </p>
+          </a>
         </article>
       {% empty %}
-        <p class="text-center text-gray-600 text-sm sm:text-base col-span-full">No articles available.</p>
+        <p class="text-center text-gray-500 text-sm sm:text-base col-span-full">
+          No blog articles available at the moment.
+        </p>
       {% endfor %}
     </div>
+
+    <!-- CTA (optional) -->
+    {% if latest_articles|length > 3 %}
+    <div class="text-center mt-10">
+      <a href="{% url 'blog:blog-list' %}" class="inline-block bg-black text-white px-6 py-2 rounded-md font-semibold hover:bg-gray-800 hover:text-red-400 focus:ring-2 focus:ring-red-500 transition">
+        Read All Articles
+      </a>
+    </div>
+    {% endif %}
+
   </div>
 </section>
+
 
 <!-- Instructors Section -->
 <section class="py-12 sm:py-16 bg-gray-50 relative overflow-hidden" aria-labelledby="instructors-heading">
