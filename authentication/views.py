@@ -1145,7 +1145,7 @@ def home(request):
         ).order_by('-date_posted')[:3]
 
     # Pagination untuk partners
-    partner_paginator = Paginator(partners, 6)
+    partner_paginator = Paginator(partners, 14)
     page_number = request.GET.get('partner_page')
     page_obj = partner_paginator.get_page(page_number)
 

@@ -108,19 +108,31 @@
 </section>
 
 <!-- Popular Courses Section -->
+<!-- Popular Courses Section -->
 <section class="py-12 sm:py-16 bg-gray-50 relative overflow-hidden" aria-labelledby="courses-heading">
   <div class="absolute inset-0 bg-gradient-to-br from-black to-gray-700 opacity-10 transform -skew-y-6"></div>
   <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-    <h2 id="courses-heading" class="text-xl sm:text-2xl md:text-3xl font-extrabold mb-8 text-center text-black hover:text-red-500 transition-colors duration-300">Top Courses to Transform Your Skills</h2>
-    <div id="courses-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-      
+    <h2 id="courses-heading" class="text-xl sm:text-2xl md:text-3xl font-extrabold mb-8 text-center text-black hover:text-red-500 transition-colors duration-300">
+      Top Courses to Transform Your Skills
+    </h2>
+
+    <!-- Course Grid -->
+    <div id="courses-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-6">
+      <!-- Populated via JS -->
     </div>
-    <div class="text-center mt-8 sm:mt-10">
-      <a href="{% url 'authentication:course_list' %}" class="inline-block bg-black text-white font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-gray-800 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base">Explore All Courses</a>
+
+    <!-- CTA -->
+    <div class="text-center mt-10">
+      <a href="{% url 'authentication:course_list' %}"
+         class="inline-block bg-black text-white font-semibold px-6 py-3 rounded-lg hover:bg-gray-800 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition text-sm sm:text-base">
+        Explore All Courses
+      </a>
     </div>
   </div>
 </section>
 
+
+<!-- Global Trust Section -->
 <!-- Global Trust Section -->
 <section class="py-12 bg-gray-50">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -131,28 +143,39 @@
       <p class="text-gray-600 max-w-xl mx-auto mb-6">
         Join thousands of users from over 40 countries who trust LMSKu for personal and professional growth.
       </p>
-      
+
       <!-- Partner Logos Grid -->
       <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-6 justify-items-center text-gray-400 text-3xl sm:text-4xl">
         {% for partner in partners|slice:":14" %}
-          {% if partner.icon_class %}
-            <!-- Font Awesome Icon -->
-            <i class="{{ partner.icon_class }} hover:text-red-500 transition duration-300" title="{{ partner.name }}"></i>
-          {% else %}
-            <!-- Image Logo Fallback -->
-            <img src="{% if partner.logo %}{{ partner.logo.url }}{% else %}/static/images/partner-100.webp{% endif %}"
-            alt="{{ partner.name }}"
-            class="w-16 h-16 sm:w-20 sm:h-20 object-contain grayscale hover:grayscale-0 transition duration-300"
-            loading="lazy"
-            width="64"
-            height="64">
+          {% if partner.name and partner.name.slug %}
+            <a href="{% url 'courses:org_partner' partner.name.slug %}"
+               class="flex flex-col items-center group transition"
+               aria-label="View {{ partner.name }}">
+               
+              {% if partner.icon_class %}
+                <!-- Font Awesome Icon -->
+                <i class="{{ partner.icon_class }} group-hover:text-red-500 transition duration-300"
+                   title="{{ partner.name }}"></i>
+              {% else %}
+                <!-- Image Logo Fallback -->
+                <img src="{% if partner.logo %}{{ partner.logo.url }}{% else %}/static/images/partner-100.webp{% endif %}"
+                     alt="{{ partner.name }}"
+                     class="w-16 h-16 sm:w-20 sm:h-20 object-contain grayscale group-hover:grayscale-0 transition duration-300"
+                     loading="lazy">
+              {% endif %}
 
+              <!-- Partner Name on hover -->
+              <span class="text-xs text-gray-500 mt-2 opacity-0 group-hover:opacity-100 transition duration-300">
+                {{ partner.name }}
+              </span>
+            </a>
           {% endif %}
         {% endfor %}
       </div>
     </div>
   </div>
 </section>
+
 
 
 <!-- Micro Courses Section -->
