@@ -53,37 +53,25 @@
 </section>
 
 <!-- Why LMSKu Section -->
-<section class="py-12 sm:py-16 bg-white" aria-labelledby="why-lmsku-heading">
-  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-    <h2 id="why-lmsku-heading" class="text-xl sm:text-2xl md:text-3xl font-extrabold mb-8 text-center text-black hover:text-red-500 transition-colors duration-300">Why Learn with LMSKu?</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-      <div class="bg-gray-100 p-4 sm:p-6 rounded-xl text-center">
-        <svg class="w-6 h-6 sm:w-8 sm:h-8 text-black mb-3 inline-block" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
-        </svg>
-        <p class="font-bold text-base sm:text-lg text-black">{{ total_courses }}</p>
-        <p class="text-xs sm:text-sm text-gray-600 hover:text-red-500 transition-colors duration-300">Expert-Curated Courses</p>
+<section class="py-14 bg-white">
+  <div class="mx-auto px-4 md:px-8 max-w-7xl">
+    <h2 class="text-3xl font-extrabold mb-10 text-center text-black">Why Learn with LMSKu?</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+      <div class="bg-gray-100 p-6 rounded-xl">
+        <p class="font-bold text-black text-xl">{{ total_courses }}</p>
+        <p class="text-sm text-gray-600">Expert-Curated Courses</p>
       </div>
-      <div class="bg-gray-100 p-4 sm:p-6 rounded-xl text-center">
-        <svg class="w-6 h-6 sm:w-8 sm:h-8 text-black mb-3 inline-block" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
-        </svg>
-        <p class="font-bold text-base sm:text-lg text-black">{{ total_users }}</p>
-        <p class="text-xs sm:text-sm text-gray-600 hover:text-red-500 transition-colors duration-300">Global Learners</p>
+      <div class="bg-gray-100 p-6 rounded-xl">
+        <p class="font-bold text-black text-xl">{{ total_users }}</p>
+        <p class="text-sm text-gray-600">Global Learners</p>
       </div>
-      <div class="bg-gray-100 p-4 sm:p-6 rounded-xl text-center">
-        <svg class="w-6 h-6 sm:w-8 sm:h-8 text-black mb-3 inline-block" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12zM6 10h2v2H6zm0 4h8v2H6zm10 0h2v2h-2zm-6-4h8v2h-8z"/>
-        </svg>
-        <p class="font-bold text-base sm:text-lg text-black">{{ total_instructors }}</p>
-        <p class="text-xs sm:text-sm text-gray-600 hover:text-red-500 transition-colors duration-300">Top Instructors</p>
+      <div class="bg-gray-100 p-6 rounded-xl">
+        <p class="font-bold text-black text-xl">{{ total_instructors }}</p>
+        <p class="text-sm text-gray-600">Top Instructors</p>
       </div>
-      <div class="bg-gray-100 p-4 sm:p-6 rounded-xl text-center">
-        <svg class="w-6 h-6 sm:w-8 sm:h-8 text-black mb-3 inline-block" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.22-1.66-.59-2.34z"/>
-        </svg>
-        <p class="font-bold text-base sm:text-lg text-black">5K+</p>
-        <p class="text-xs sm:text-sm text-gray-600 hover:text-red-500 transition-colors duration-300">Certificates Earned</p>
+      <div class="bg-gray-100 p-6 rounded-xl">
+        <p class="font-bold text-black text-xl">5K+</p>
+        <p class="text-sm text-gray-600">Certificates Earned</p>
       </div>
     </div>
   </div>
@@ -288,7 +276,7 @@
           <a href="{% url 'blog:blog-detail' slug=article.slug %}" class="block p-5">
             <!-- Optional Image -->
             {% if article.image %}
-              <img src="{{ article.image.url }}" alt="{{ article.title }}" class="rounded mb-4 w-full h-40 object-cover" loading="lazy">
+              <img src="{{ article.image.url }}" alt="{{ article.title }}" class="rounded mb-4 w-full h-45 object-cover" loading="lazy">
             {% endif %}
 
             <!-- Title -->
