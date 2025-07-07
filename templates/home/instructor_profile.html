@@ -126,7 +126,7 @@
         <div class="mt-6">
           <h2 class="text-sm font-semibold text-gray-700 uppercase mb-1">Experience</h2>
           <p class="text-sm text-gray-600">{{ instructor.experience_years|default:"0" }} years</p>
-          <p class="text-sm text-gray-600 mt-1">{{ instructor.expertise|default:"No expertise listed" }}</p>
+          <p class="text-sm text-gray-600 mt-1">{{ instructor.expertise|default:"No expertise listed"|safe }}</p>
         </div>
       </div>
 

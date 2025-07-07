@@ -33,6 +33,21 @@ def payment_detail_view(request, pk):
 @login_required
 @user_passes_test(lambda u: u.is_authenticated and (u.is_superuser or getattr(u, 'is_partner', False)))
 def payment_report_view(request):
+    user = request.user
+    required_fields = {
+        'first_name': 'First Name',
+        'last_name': 'Last Name',
+        'email': 'Email',
+        'phone': 'Phone Number',
+        'gender': 'Gender',
+        'birth': 'Date of Birth',
+
+    }
+    missing_fields = [label for field, label in required_fields.items() if not getattr(user, field)]
+
+    if missing_fields:
+        messages.warning(request, f"Please complete the following information: {', '.join(missing_fields)}")
+        return redirect('authentication:edit-profile', pk=user.pk)
     payments = Payment.objects.select_related('user', 'course__org_partner').all()
 
     # Filter berdasarkan role

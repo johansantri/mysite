@@ -635,17 +635,18 @@ def dasbord(request):
 
     user = request.user
     required_fields = {
-        'first_name': 'Nama Depan',
-        'last_name': 'Nama Belakang',
+        'first_name': 'First Name',
+        'last_name': 'Last Name',
         'email': 'Email',
-        'phone': 'Nomor Telepon',
-        'gender': 'Jenis Kelamin',
-        'birth': 'Tanggal Lahir',
+        'phone': 'Phone Number',
+        'gender': 'Gender',
+        'birth': 'Date of Birth',
+
     }
     missing_fields = [label for field, label in required_fields.items() if not getattr(user, field)]
 
     if missing_fields:
-        messages.warning(request, f"Harap lengkapi data berikut: {', '.join(missing_fields)}")
+        messages.warning(request, f"Please complete the following information: {', '.join(missing_fields)}")
         return redirect('authentication:edit-profile', pk=user.pk)
 
     # Get page number from GET parameters

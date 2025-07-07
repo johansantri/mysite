@@ -43,7 +43,7 @@
         <p><strong>{{ instructor.experience_years }} years.</strong> | {{ instructor.user.university }}</p>
             <ul>
                 {% if instructor %}
-                <li>{{ instructor.expertise }}</li>
+                <li>{{ instructor.expertise|safe }}</li>
                 {% endif %}
                 
             </ul>

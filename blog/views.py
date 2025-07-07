@@ -137,73 +137,84 @@ class BlogPostListAdminView(LoginRequiredMixin, ListView):
     context_object_name = 'posts'
     paginate_by = 10
 
-    def get_queryset(self):
-        # Cache key berdasarkan user dan parameter filter
-        cache_key = f'blog_posts_{self.request.user.id}_'
-        cache_key += f'q_{self.request.GET.get("q", "")}_'
-        cache_key += f'status_{self.request.GET.get("status", "")}_'
-        cache_key += f'category_{self.request.GET.get("category", "")}_'
-        cache_key += f'tag_{self.request.GET.get("tag", "")}_'
-       
+    required_fields = {
+        'first_name': 'First Name',
+        'last_name': 'Last Name',
+        'email': 'Email',
+        'phone': 'Phone Number',
+        'gender': 'Gender',
+        'birth': 'Date of Birth',
+    }
 
-        # Cek cache
+    def dispatch(self, request, *args, **kwargs):
+        user = request.user
+        missing_fields = [
+            label for field, label in self.required_fields.items() if not getattr(user, field)
+        ]
+        if missing_fields:
+            messages.warning(
+                request,
+                f"Please complete the following information: {', '.join(missing_fields)}"
+            )
+            return redirect('authentication:edit-profile', pk=user.pk)
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        user = self.request.user
+        cache_key = (
+            f'blog_posts_{user.id}_'
+            f'q_{self.request.GET.get("q", "")}_'
+            f'status_{self.request.GET.get("status", "")}_'
+            f'category_{self.request.GET.get("category", "")}_'
+            f'tag_{self.request.GET.get("tag", "")}'
+        )
+
         cached_queryset = cache.get(cache_key)
-        if cached_queryset is not None:
+        if cached_queryset:
             return cached_queryset
 
-        # Query dasar
         queryset = BlogPost.objects.exclude(status='deleted')
         queryset = queryset.select_related('author', 'category').prefetch_related('tags')
 
-        # Pencarian
         search_query = self.request.GET.get('q', '')
         if search_query:
-            queryset = queryset.filter(
-                Q(title__icontains=search_query) | Q(content__icontains=search_query)
-            )
+            queryset = queryset.filter(Q(title__icontains=search_query) | Q(content__icontains=search_query))
 
-        # Filter status
         status = self.request.GET.get('status', '')
         if status in ['draft', 'published']:
             queryset = queryset.filter(status=status)
 
-        # Filter kategori
         category_id = self.request.GET.get('category', '')
         if category_id:
             queryset = queryset.filter(category__id=category_id)
 
-        # Filter tag
         tag_id = self.request.GET.get('tag', '')
         if tag_id:
             queryset = queryset.filter(tags__id=tag_id)
 
-       
+        if not user.is_superuser:
+            queryset = queryset.filter(author=user)
 
-        # Filter berdasarkan user (kecuali superuser)
-        if self.request.user.is_superuser:
-            queryset = queryset.order_by('-date_posted')
-        else:
-            queryset = queryset.filter(author=self.request.user).order_by('-date_posted')
+        queryset = queryset.order_by('-date_posted')
 
-        # Simpan ke cache (timeout 5 menit)
         cache.set(cache_key, queryset, 300)
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Manage Blog Posts'
-        # Data untuk dropdown filter
-        context['categories'] = CourseCategory.objects.all()
-        context['tags'] = Tag.objects.all()
-        
-        context['status_choices'] = BlogPost.STATUS_CHOICES[:2]  # Exclude 'deleted'
-        # Parameter pencarian/filter untuk template
-        context['search_query'] = self.request.GET.get('q', '')
-        context['selected_status'] = self.request.GET.get('status', '')
-        context['selected_category'] = self.request.GET.get('category', '')
-        context['selected_tag'] = self.request.GET.get('tag', '')
-        
+        context.update({
+            'title': 'Manage Blog Posts',
+            'categories': CourseCategory.objects.all(),
+            'tags': Tag.objects.all(),
+            'status_choices': BlogPost.STATUS_CHOICES[:2],  # draft & published only
+            'search_query': self.request.GET.get('q', ''),
+            'selected_status': self.request.GET.get('status', ''),
+            'selected_category': self.request.GET.get('category', ''),
+            'selected_tag': self.request.GET.get('tag', ''),
+        })
         return context
+
 
 
 class BlogListView(ListView):

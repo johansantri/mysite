@@ -4659,7 +4659,21 @@ def instructor_view(request):
     # Check if the user is authenticated
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
+    user = request.user
+    required_fields = {
+        'first_name': 'First Name',
+        'last_name': 'Last Name',
+        'email': 'Email',
+        'phone': 'Phone Number',
+        'gender': 'Gender',
+        'birth': 'Date of Birth',
 
+    }
+    missing_fields = [label for field, label in required_fields.items() if not getattr(user, field)]
+
+    if missing_fields:
+        messages.warning(request, f"Please complete the following information: {', '.join(missing_fields)}")
+        return redirect('authentication:edit-profile', pk=user.pk)
     # Get search query from GET parameters
     search_query = request.GET.get('q', '').strip()
     
@@ -5180,6 +5194,21 @@ def courseView(request):
         return redirect("/login/?next=%s" % request.path)
 
     user = request.user
+    required_fields = {
+        'first_name': 'First Name',
+        'last_name': 'Last Name',
+        'email': 'Email',
+        'phone': 'Phone Number',
+        'gender': 'Gender',
+        'birth': 'Date of Birth',
+
+    }
+    missing_fields = [label for field, label in required_fields.items() if not getattr(user, field)]
+
+    if missing_fields:
+        messages.warning(request, f"Please complete the following information: {', '.join(missing_fields)}")
+        return redirect('authentication:edit-profile', pk=user.pk)
+
     course_filter = request.GET.get('filter', 'all')  # Get filter from query string
 
     # Update status for published courses that have passed end_enrol

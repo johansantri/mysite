@@ -313,12 +313,26 @@ def transaction_trends_view(request):
 @user_passes_test(lambda u: u.is_superuser or u.is_partner)
 def active_partners_view(request):
     partners = Partner.objects.all()
+    user = request.user
+    required_fields = {
+        'first_name': 'First Name',
+        'last_name': 'Last Name',
+        'email': 'Email',
+        'phone': 'Phone Number',
+        'gender': 'Gender',
+        'birth': 'Date of Birth',
 
+    }
+    missing_fields = [label for field, label in required_fields.items() if not getattr(user, field)]
+
+    if missing_fields:
+        messages.warning(request, f"Please complete the following information: {', '.join(missing_fields)}")
+        return redirect('authentication:edit-profile', pk=user.pk)
     if request.user.is_partner and not request.user.is_superuser:
         try:
             partners = partners.filter(user=request.user)
         except Partner.DoesNotExist:
-            messages.error(request, "Akun Anda belum terhubung ke data Partner.")
+            messages.error(request, "Your account is not linked to Partner data.")
             return redirect('authentication:dashboard')
 
     partners = partners.annotate(
@@ -929,7 +943,20 @@ def heatmap_view(request):
 @login_required
 def partner_analytics_view(request):
     user = request.user
+    required_fields = {
+        'first_name': 'First Name',
+        'last_name': 'Last Name',
+        'email': 'Email',
+        'phone': 'Phone Number',
+        'gender': 'Gender',
+        'birth': 'Date of Birth',
 
+    }
+    missing_fields = [label for field, label in required_fields.items() if not getattr(user, field)]
+
+    if missing_fields:
+        messages.warning(request, f"Please complete the following information: {', '.join(missing_fields)}")
+        return redirect('authentication:edit-profile', pk=user.pk)
     # Cek apakah user superuser atau partner
     if not (user.is_superuser or getattr(user, 'is_partner', False)):
         raise Http404("You are not authorized to access this page.")
