@@ -136,46 +136,60 @@
 
                     {% if instructor %}
                         <div class="mt-8 p-6 bg-white rounded-xl border border-gray-200 shadow-sm">
-                        <!-- Judul -->
+
+                        <!-- Header -->
                         <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
                             <i class="fas fa-chalkboard-teacher text-gray-600"></i> Instructor Profile
                         </h2>
 
-                        <!-- Bio -->
-                        <p class="text-gray-600 text-sm leading-relaxed mb-5">
+                        <!-- Bio Singkat -->
+                        <p class="text-gray-600 text-sm leading-relaxed mb-4">
                             {{ instructor.bio|default:"No biography available." }}
                         </p>
 
-                        <!-- Keunggulan -->
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                        <!-- Highlight: Experience & Revenue -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                            <!-- Revenue Info -->
                             <div class="flex items-center gap-3 p-4 bg-gray-50 border rounded-lg">
-                            <i class="fas fa-money-bill-wave text-green-500"></i>
+                            <i class="fas fa-money-bill-wave text-green-500 text-lg"></i>
                             <span class="text-sm text-gray-700">Earn revenue from every student</span>
                             </div>
+
+                            <!-- Experience Info -->
                             <div class="flex items-center gap-3 p-4 bg-gray-50 border rounded-lg">
-                            <i class="fas fa-briefcase text-blue-500"></i>
-                            <span class="text-sm text-gray-700">{{ instructor.experience_years|default:"20" }} years of experience</span>
-                            </div>
-                            <div class="flex items-center gap-3 p-4 bg-gray-50 border rounded-lg">
-                            <i class="fas fa-star text-yellow-500"></i>
-                            <span class="text-sm text-gray-700">{{ instructor.expertise|default:"Expert in education" }}</span>
+                            <i class="fas fa-briefcase text-blue-500 text-lg"></i>
+                            <span class="text-sm text-gray-700">
+                                {{ instructor.experience_years|default:"0" }} year{{ instructor.experience_years|pluralize }} of experience
+                            </span>
                             </div>
                         </div>
 
-                        <!-- Video YouTube -->
+                        <!-- Detail: Expertise (panjang) -->
+                        {% if instructor.expertise %}
+                        <div class="mb-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Area of Expertise</h3>
+                            <div class="text-sm text-gray-700 leading-relaxed">
+                            {{ instructor.expertise|safe }}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Optional YouTube Video -->
                         {% if instructor.youtube %}
-                        <div class="aspect-w-16 aspect-h-9 mb-4">
+                        <div class="aspect-w-16 aspect-h-9">
                             <iframe 
-                            class="w-full rounded-lg border" 
+                            class="w-full rounded-lg border"
                             src="https://www.youtube.com/embed/{{ instructor.youtube|slice:'https://www.youtube.com/watch?v='|cut:'&' }}" 
-                            title="Instructor Intro" 
+                            title="Instructor Introduction Video" 
                             allowfullscreen 
                             loading="lazy">
                             </iframe>
                         </div>
                         {% endif %}
+
                         </div>
                         {% endif %}
+
 
                 </div>
             </div>
