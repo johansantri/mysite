@@ -584,9 +584,13 @@
                                             </h2>
 
                                             {% if course.payment_model == 'pay_for_exam' %}
-                                                <p class="text-gray-600 mb-0">Free to enroll, pay only when taking the exam</p>
+                                                <div class="bg-blue-50 text-blue-800 p-3 rounded-lg">
+                                                <p class="text-red-600 mb-0">Free to enroll, pay only when taking the exam</p>
+                                                </div>
                                             {% elif course.payment_model == 'pay_for_certificate' %}
-                                                <p class="text-gray-600 mb-0">Free to enroll and take the exam, pay only when claiming certificate</p>
+                                                <div class="bg-blue-50 text-blue-800 p-3 rounded-lg">
+                                                <p class="text-red-600 mb-0">Free to enroll and take the exam, pay only when claiming certificate</p>
+                                                </div>
                                                 {% if course_price.discount_percent > 0 %}
                                                     <p class="text-gray-600 mb-0">
                                                         <span class="line-through">IDR {{ course_price.normal_price|intcomma }}</span>
@@ -600,7 +604,9 @@
                                                         <span class="inline-block bg-red-500 text-white text-sm font-medium px-3 py-1 rounded-md">{{ course_price.discount_percent }}% off</span>
                                                     </p>
                                                 {% endif %}
-                                                <p class="text-gray-600 mb-0">Payment required before enrollment</p>
+                                                <div class="bg-blue-50 text-blue-800 p-3 rounded-lg">
+                                                <p class="text-red-600 mb-0">Payment required before enrollment</p>
+                                                </div>
                                             {% endif %}
                                         {% else %}
                                             <h2 class="text-2xl font-bold text-gray-900 mb-1">Price not available</h2>
@@ -695,7 +701,7 @@
                                             {% if course.payment_model == 'free' or course.payment_model == 'pay_for_exam' or course.payment_model == 'pay_for_certificate' %}
                                                 <form id="enrollForm" method="POST" action="{% url 'courses:enroll' course.id %}">
                                                     {% csrf_token %}
-                                                    <button type="submit" class="block w-full border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors">Enroll Now</button>
+                                                    <button type="submit" class="block w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">Enroll Now</button>
                                                 </form>
                                             {% else %}
                                                 <form method="POST" action="{% url 'payments:add_to_cart' course.id %}">

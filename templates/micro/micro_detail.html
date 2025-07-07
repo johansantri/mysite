@@ -1,6 +1,51 @@
 {% extends 'home/base.html' %}
 {% load static %}
 {% load extra_custom_filters %}
+{% block meta %}
+  {% if microcredential.image %}
+    {% with image_url=request.scheme|add:"://"|add:request.get_host|add:microcredential.image.url %}
+      <meta property="og:image" content="{{ image_url }}">
+      <meta property="og:image:type" content="image/jpeg">
+      <meta property="og:image:width" content="1200">
+      <meta property="og:image:height" content="630">
+      <meta name="twitter:image" content="{{ image_url }}">
+      <meta name="twitter:image:alt" content="{{ microcredential.title|striptags }}">
+    {% endwith %}
+  {% else %}
+    {% with image_url=request.scheme|add:"://"|add:request.get_host|add:"/static/images/default-og.png" %}
+      <meta property="og:image" content="{{ image_url }}">
+      <meta property="og:image:type" content="image/png">
+      <meta property="og:image:width" content="1200">
+      <meta property="og:image:height" content="630">
+      <meta name="twitter:image" content="{{ image_url }}">
+      <meta name="twitter:image:alt" content="{{ microcredential.title|striptags }}">
+    {% endwith %}
+  {% endif %}
+
+  <title>{{ microcredential.title|striptags }} - {{ site_name|default:"LMSKu" }}</title>
+  <meta name="description" content="{{ microcredential.description|striptags|truncatechars:155|safe }}">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="{{ microcredential.title|striptags }}">
+  <meta property="og:description" content="{{ microcredential.description|striptags|truncatechars:200|safe }}">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta property="og:site_name" content="{{ site_name|default:'LMSKu' }}">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@LMSKuID">  {# Ganti dengan akun Twitter resmimu #}
+  <meta name="twitter:creator" content="@LMSKuID">  {# Opsional #}
+  <meta name="twitter:title" content="{{ microcredential.title|striptags }}">
+  <meta name="twitter:description" content="{{ microcredential.description|striptags|truncatechars:200|safe }}">
+
+  <!-- Canonical -->
+  <link rel="canonical" href="{{ request.build_absolute_uri }}">
+{% endblock %}
+
+
+
+
 
 {% block content %}
 
@@ -268,15 +313,75 @@
                                     <span class="inline-block bg-red-600 text-white text-xs font-medium px-2 py-1 rounded-lg">50% off</span>
                                 </p>
                             </div>
-                            <div class="grid grid-cols-2 gap-2 mb-3">
-                                <a href="#" class="px-3 py-2 border border-red-600 text-red-600 rounded-lg text-sm hover:bg-red-600 hover:text-white hover:-translate-y-0.5 transition-all duration-300">
-                                    <i class="fas fa-heart mr-1"></i> Wishlist
-                                </a>
-                                <button class="px-3 py-2 border border-gray-500 text-gray-500 rounded-lg text-sm hover:bg-gray-500 hover:text-white hover:-translate-y-0.5 transition-all duration-300" 
-                                        onclick="openShareWindow()">
-                                    <i class="fas fa-share-alt mr-1"></i> Share
-                                </button>
+                           <div class="flex flex-col gap-2 sm:gap-3 mb-4">
+                                <!-- Baris Atas: Wishlist, WhatsApp, Facebook -->
+                                <div class="flex flex-wrap justify-center gap-2 sm:gap-3">
+                                    <!-- Wishlist -->
+                                    <a href="#" 
+                                    class="flex items-center justify-center border border-red-500 text-red-500 px-2 py-2 sm:px-3 sm:py-2 rounded-lg hover:bg-red-500 hover:text-white transition-colors w-full sm:w-24"
+                                    aria-label="Add to Wishlist">
+                                        <i class="fas fa-heart text-sm sm:text-base mr-1"></i>
+                                        <span class="text-xs sm:text-sm"></span>
+                                    </a>
+                                    <!-- WhatsApp Share -->
+                                    <a href="https://api.whatsapp.com/send?text={{ microcredential.title|urlencode }}%0A{{ microcredential.description|default:'Pelajari kursus menarik ini di LMSKu!'|truncatechars:200|urlencode }}%0A{{ request.build_absolute_uri|urlencode }}"
+                                    class="flex items-center justify-center border border-gray-300 text-gray-700 px-2 py-2 sm:px-3 sm:py-2 rounded-lg hover:bg-gray-100 transition-colors w-full sm:w-24"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label="Share on WhatsApp">
+                                        <i class="fab fa-whatsapp text-green-500 text-sm sm:text-base mr-1"></i>
+                                        <span class="text-xs sm:text-sm"></span>
+                                    </a>
+                                    <!-- Facebook Share -->
+                                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri|urlencode }}"
+                                    class="flex items-center justify-center border border-gray-300 text-gray-700 px-2 py-2 sm:px-3 sm:py-2 rounded-lg hover:bg-gray-100 transition-colors w-full sm:w-24"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label="Share on Facebook">
+                                        <i class="fab fa-facebook-f text-blue-600 text-sm sm:text-base mr-1"></i>
+                                        <span class="text-xs sm:text-sm"></span>
+                                    </a>
+                                </div>
+                                <!-- Baris Bawah: LinkedIn, X, Instagram -->
+                                <div class="flex flex-wrap justify-center gap-2 sm:gap-3">
+                                    <!-- LinkedIn Share -->
+                                    <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri|urlencode }}&title={{ microcredential.title|urlencode }}&summary={{ microcredential.description|default:'Pelajari kursus menarik ini di LMSKu untuk meningkatkan keterampilan Anda dengan panduan dari instruktur ahli.'|truncatechars:256|urlencode }}&source={{ request.scheme }}://{{ request.get_host }}"
+                                    class="flex items-center justify-center border border-gray-300 text-gray-700 px-2 py-2 sm:px-3 sm:py-2 rounded-lg hover:bg-gray-100 transition-colors w-full sm:w-24"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label="Share on LinkedIn">
+                                        <i class="fab fa-linkedin-in text-blue-700 text-sm sm:text-base mr-1"></i>
+                                        <span class="text-xs sm:text-sm"></span>
+                                    </a>
+                                    <!-- X Share -->
+                                    <a href="https://x.com/intent/tweet?url={{ request.build_absolute_uri|urlencode }}&text={{ microcredential.title|urlencode }}%20-%20{{ microcredential.description|default:'Pelajari kursus menarik ini di LMSKu!'|truncatechars:200|urlencode }}"
+                                    class="flex items-center justify-center border border-gray-300 text-gray-700 px-2 py-2 sm:px-3 sm:py-2 rounded-lg hover:bg-gray-100 transition-colors w-full sm:w-24"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label="Share on X">
+                                        <i class="fab fa-x-twitter text-black text-sm sm:text-base mr-1"></i>
+                                        <span class="text-xs sm:text-sm"></span>
+                                    </a>
+                                    <!-- Instagram Share -->
+                                    <button onclick="copyToClipboard('{{ request.build_absolute_uri }}')"
+                                            class="flex items-center justify-center border border-gray-300 text-gray-700 px-2 py-2 sm:px-3 sm:py-2 rounded-lg hover:bg-gray-100 transition-colors w-full sm:w-24"
+                                            aria-label="Copy link for your share">
+                                        <i class="fas fa-share-alt text-gray-600 text-sm sm:text-base mr-1"></i>
+
+                                        <span class="text-xs sm:text-sm"></span>
+                                    </button>
+                                </div>
                             </div>
+                            <script>
+                            function copyToClipboard(url) {
+                                navigator.clipboard.writeText(url).then(() => {
+                                    alert('Link copied to clipboard! Paste it anywhere to share.');
+                                }).catch(err => {
+                                    console.error('Failed to copy: ', err);
+                                    alert('Failed to copy link. Please copy the URL manually.');
+                                });
+                            }
+                            </script>
                             {% if user.is_authenticated %}
                                 {% if not is_enrolled %}
                                     <!-- User is logged in but not enrolled -->
@@ -349,6 +454,19 @@
 </section>
 
 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Course",
+  "name": "{{ microcredential.title|escapejs }}",
+  "description": "{{ microcredential.description|striptags|truncatechars:200|escapejs }}",
+  "provider": {
+    "@type": "Organization",
+    "name": "{{ site_name|default:'LMSKu' }}",
+    "sameAs": "{{ request.scheme }}://{{ request.get_host }}"
+  }
+}
+</script>
 
 
 {% endblock %}
