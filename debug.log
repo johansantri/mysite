@@ -1,55 +1,85 @@
-INFO 2025-07-07 08:27:25,602 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-07 08:27:25,741 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-07 08:27:25,821 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-07 08:27:35,955 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-07 00:27:35.952998+00:00
-INFO 2025-07-07 08:27:35,955 database AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0", path_info: "/logout/"}.
-INFO 2025-07-07 08:28:08,629 database AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0", path_info: "/login/"}.
-INFO 2025-07-07 08:28:08,631 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-07 00:28:07.720114+00:00
-INFO 2025-07-07 08:29:20,460 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-07 08:30:21,144 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-07 08:31:43,898 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-07 08:31:44,074 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-07 08:31:44,226 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-07 08:33:37,224 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-07 08:34:02,750 database AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0", path_info: "/login/"}.
-INFO 2025-07-07 08:34:02,752 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-07 00:34:01.799819+00:00
-INFO 2025-07-07 08:35:38,785 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-WARNING 2025-07-07 08:39:28,101 views Invalid referer:  from IP 
-INFO 2025-07-07 09:04:58,760 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-07 09:06:18,231 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-07 09:06:18,260 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-07 09:06:18,308 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-07 09:06:25,307 database AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0", path_info: "/kuruk/login/"}.
-INFO 2025-07-07 09:06:25,308 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-07 01:06:24.333597+00:00
-INFO 2025-07-07 09:07:27,107 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-07 01:07:27.105341+00:00
-INFO 2025-07-07 09:07:27,107 database AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0", path_info: "/logout/"}.
-INFO 2025-07-07 09:07:39,131 database AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0", path_info: "/login/"}.
-INFO 2025-07-07 09:07:39,132 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-07 01:07:38.179102+00:00
-INFO 2025-07-07 09:11:12,173 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-07 09:11:12,363 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-07 09:11:12,394 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-WARNING 2025-07-07 09:13:50,901 views Invalid referer:  from IP 
-INFO 2025-07-07 09:14:47,315 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-07 09:14:47,464 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-07 09:14:47,471 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-07 09:20:25,850 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-07 09:20:26,004 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-07 09:20:26,011 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-ERROR 2025-07-07 09:21:12,964 log Internal Server Error: /partner/1/update/
+ERROR 2025-07-07 09:33:00,643 log Internal Server Error: /org-partner/
 Traceback (most recent call last):
   File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
     response = get_response(request)
   File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
-    return view_func(request, *args, **kwargs)
-  File "/home/TIM/mysite/courses/views.py", line 5530, in update_partner
-    if old_logo and old_logo != partner.logo.path:
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/fields/files.py", line 64, in path
-    self._require_file()
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/fields/files.py", line 44, in _require_file
-    raise ValueError(
-ValueError: The 'logo' attribute has no file associated with it.
-INFO 2025-07-07 09:23:35,672 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-07 09:23:35,729 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-07 09:23:35,820 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django_ratelimit/decorators.py", line 27, in _wrapped
+    return fn(request, *args, **kw)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/views/decorators/http.py", line 64, in inner
+    return func(request, *args, **kwargs)
+  File "/home/TIM/mysite/partner/views.py", line 212, in partner_list_view
+    return render(request, 'partner/partner_list.html', {
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 327, in render
+    return nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 327, in render
+    return nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 327, in render
+    return nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'partners' not found. 'partners' is not a valid view function or pattern name.
+INFO 2025-07-07 09:36:57,028 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-07 09:36:57,107 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-07 09:36:57,151 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+WARNING 2025-07-07 09:37:13,705 views Invalid referer:  from IP 

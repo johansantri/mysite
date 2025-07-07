@@ -201,17 +201,8 @@ def partner_list_view(request):
     paginator = Paginator(partners, 12)
     page_obj = paginator.get_page(page_number)
 
-    tw_colors = [
-        "bg-green-100 text-green-700 hover:border-green-500",
-        "bg-blue-100 text-blue-700 hover:border-blue-500",
-        "bg-yellow-100 text-yellow-700 hover:border-yellow-500",
-        "bg-teal-100 text-teal-700 hover:border-teal-500",
-        "bg-purple-100 text-purple-700 hover:border-purple-500",
-    ]
-
     return render(request, 'partner/partner_list.html', {
         'partners': page_obj,
-        'tw_colors': tw_colors,
     })
 
 
