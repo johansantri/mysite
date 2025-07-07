@@ -5485,60 +5485,54 @@ def convert_image_to_webp(uploaded_image):
 
 @login_required
 def update_partner(request, partner_id):
-       # Cek apakah user adalah superuser atau staf
     if not request.user.is_superuser and not request.user.is_staff:
-        return redirect('/')  # Redirect ke halaman utama jika bukan superuser atau staf
+        return redirect('/')
 
     partner = get_object_or_404(Partner, pk=partner_id)
-    
-    # Pastikan pengguna yang mengakses adalah pemilik partner atau admin
+
     if not request.user.is_authenticated or (request.user != partner.user and not request.user.is_superuser):
         return redirect("/login/?next=%s" % request.path)
 
-    old_logo = partner.logo.path if partner.logo else None
-    old_user = partner.user  # Menyimpan user lama
+    try:
+        old_logo = partner.logo.path
+    except ValueError:
+        old_logo = None
+
+    old_user = partner.user
 
     if request.method == "POST":
         form = PartnerForm(request.POST, request.FILES, instance=partner)
-        print("POST data:", request.POST)  # Debug data mentah
         if form.is_valid():
-            print("Cleaned data:", form.cleaned_data)  # Debug setelah validasi
             partner_instance = form.save(commit=False)
-            print("Instance before save:", partner_instance.__dict__)  # Debug sebelum simpan
 
-            # Jika ada logo yang di-upload, ganti dengan yang baru
             if 'logo' in request.FILES:
                 uploaded_logo = request.FILES['logo']
                 converted_logo = convert_image_to_webp(uploaded_logo)
                 partner_instance.logo = converted_logo
 
-            # Simpan partner instance
             partner_instance.save()
-            print("Instance after save:", partner_instance.__dict__)  # Debug setelah simpan
 
-            # Jika ada perubahan user, update status is_partner
-            if old_user != partner_instance.user:  # Jika user lama berbeda dengan user baru
-                # Update status is_partner user lama menjadi False
+            if old_user != partner_instance.user:
                 old_user.is_partner = False
-                old_user.save()  # Simpan perubahan status user lama
+                old_user.save()
 
-                # Pastikan user baru mendapatkan status is_partner=True
                 partner_instance.user.is_partner = True
-                partner_instance.user.save()  # Simpan perubahan status user baru
+                partner_instance.user.save()
 
-            # Hapus logo lama jika sudah diganti
-            if old_logo and old_logo != partner.logo.path:
-                if os.path.exists(old_logo):
+            try:
+                if old_logo and old_logo != partner_instance.logo.path and os.path.exists(old_logo):
                     os.remove(old_logo)
+            except ValueError:
+                pass
 
-            # Redirect ke detail partner setelah update
             return redirect('courses:partner_detail', partner_id=partner.id)
         else:
-            print("Form errors:", form.errors)  # Debug jika form tidak valid
+            print("Form errors:", form.errors)
     else:
         form = PartnerForm(instance=partner)
 
     return render(request, 'partner/update_partner.html', {'form': form, 'partner': partner})
+
 
 
 #partner view
@@ -5810,23 +5804,26 @@ def search_partner(request):  # Dalam kasus ini, saya asumsikan mencari Universi
 
 @login_required
 def partner_create_view(request):
-    # Cek apakah user adalah superuser atau staf
+    # Hanya superuser dan staff yang diizinkan
     if not request.user.is_superuser and not request.user.is_staff:
-        return redirect('/')  # Redirect ke halaman utama jika bukan superuser atau staf
+        return redirect('/')
 
     if request.method == 'POST':
-        form = PartnerForm(request.POST)
+        form = PartnerForm(request.POST, request.FILES)  # Tambahkan request.FILES
         if form.is_valid():
-            partner = form.save(commit=False)  # Simpan instance ke variabel terpisah
+            partner = form.save(commit=False)
             partner.author_id = request.user.id
-            partner.save()  # Simpan instance
-            # Update user's is_partner field
-            user = partner.user  # Ambil user dari instance
+            partner.save()
+
+            # Set user sebagai partner
+            user = partner.user
             user.is_partner = True
             user.save()
+
             return redirect('/partner')
     else:
         form = PartnerForm()
+
     return render(request, 'partner/partner_add.html', {'form': form})
 
 
