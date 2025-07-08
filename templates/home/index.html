@@ -172,7 +172,7 @@
               {% else %}
                 <!-- Image Logo Fallback -->
                 <img src="{% if partner.logo %}{{ partner.logo.url }}{% else %}/static/images/partner-100.webp{% endif %}"
-                     alt="{{ partner.name }}"
+                     alt="{{ partner.name.kode }}"
                      class="w-16 h-16 sm:w-20 sm:h-20 object-contain grayscale group-hover:grayscale-0 transition duration-300"
                      loading="lazy">
               {% endif %}
@@ -276,7 +276,7 @@
           <a href="{% url 'blog:blog-detail' slug=article.slug %}" class="block p-5">
             <!-- Optional Image -->
             {% if article.image %}
-              <img src="{{ article.image.url }}" alt="{{ article.title }}" class="rounded mb-4 w-full h-45 object-cover" loading="lazy">
+              <img src="{{ article.image.url }}" alt="" class="rounded mb-4 w-full h-45 object-cover" loading="lazy">
             {% endif %}
 
             <!-- Title -->
