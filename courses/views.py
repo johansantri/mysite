@@ -14,7 +14,8 @@ import logging
 import hashlib
 import urllib
 from io import BytesIO
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
+from django.utils import timezone
 from decimal import Decimal, ROUND_DOWN
 from urllib.parse import quote, urlparse, parse_qs, urlencode
 
@@ -129,22 +130,24 @@ def lti_login_initiation(request, tool_id):
         tool = get_object_or_404(LTIExternalTool, id=tool_id)
         platform = tool.platform
         launch_url = request.build_absolute_uri(reverse("courses:lti_launch"))
+
         params = {
-            "iss": settings.LTI_ISSUER,
+            "client_id": platform.client_id,
             "login_hint": str(request.user.id),
             "target_link_uri": launch_url,
-            "redirect_uri": launch_url,
-            "client_id": platform.client_id,
             "lti_message_hint": str(tool.id),
         }
+
         logger.debug("[LTI INIT] Tool ID: %s, Platform: %s, Login URL: %s", tool_id, platform.name, platform.login_url)
         logger.debug("[LTI INIT] Parameters: %s", params)
-        # Perbaiki encoding manual
+
+        # Encode manual querystring (URL safe)
         encoded_params = "&".join(f"{quote(k)}={quote(str(v))}" for k, v in params.items())
-        logger.debug("[LTI INIT] Encoded parameters: %s", encoded_params)
-        login_url = f"{platform.login_url}?{encoded_params}"
-        logger.info("[LTI INIT] Redirecting to: %s", login_url)
-        return redirect(login_url)
+        final_url = f"{platform.login_url}?{encoded_params}"
+
+        logger.info("[LTI INIT] Redirecting to: %s", final_url)
+        return redirect(final_url)
+
     except Exception as e:
         logger.exception("[LTI INIT] Error in lti_login_initiation: %s", str(e))
         return HttpResponseBadRequest(f"Error initiating LTI login: {str(e)}")
@@ -223,6 +226,12 @@ def lti_tool_login_handler(request):
 def lti_launch(request):
     try:
         logger.debug("[LTI LAUNCH] Received request: method=%s, POST=%s", request.method, request.POST)
+
+        # === [Tambahan untuk validasi dari Moodle] ===
+        if request.method == "GET":
+            return HttpResponse("LTI launch endpoint is ready.", status=200)
+
+        # === Lanjut ke LTI launch (POST) ===
         if request.method != "POST":
             logger.error("[LTI LAUNCH] Invalid method: %s", request.method)
             return HttpResponseBadRequest("Invalid method")
@@ -286,9 +295,11 @@ def lti_launch(request):
         login(request, user)
         logger.info("[LTI LAUNCH] Redirecting to learner dashboard")
         return redirect("learner:dashboard")
+
     except Exception as e:
         logger.exception("[LTI LAUNCH] Error in lti_launch: %s", str(e))
         return HttpResponseBadRequest(f"LTI launch failed: {str(e)}")
+
 # === 4. Token Endpoint (optional) ===
 @csrf_exempt
 def lti_token_endpoint(request):
