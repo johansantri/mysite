@@ -52,7 +52,7 @@ from django.core.exceptions import ObjectDoesNotExist, PermissionDenied, Validat
 from django.middleware.csrf import get_token
 from django.template.loader import render_to_string
 from django.shortcuts import render, redirect, get_object_or_404
-from django.utils import timezone
+#from django.utils import timezone
 from django.utils.timezone import now
 from django.utils.text import slugify
 from django.http import (
@@ -155,35 +155,46 @@ def lti_login_initiation(request, tool_id):
 def lti_tool_login_handler(request):
     try:
         logger.debug("[LTI LOGIN HANDLER] Query Params: %s", request.GET.dict())
+
+        # Ambil semua parameter dari GET
+        client_id = request.GET.get("client_id")
         iss = request.GET.get("iss")
         login_hint = request.GET.get("login_hint")
-        target_link_uri = request.GET.get("target_link_uri")
-        client_id = request.GET.get("client_id")
-        received_redirect_uri = request.GET.get("redirect_uri")
         lti_message_hint = request.GET.get("lti_message_hint")
+        target_link_uri = request.GET.get("target_link_uri")
+        received_redirect_uri = request.GET.get("redirect_uri")
 
-        # Jika iss atau target_link_uri hilang, coba ambil dari LTIPlatform
-        if not iss or not target_link_uri or not client_id:
-            platform = LTIPlatform.objects.filter(client_id=client_id).first()
-            if not platform:
-                logger.error("[LTI LOGIN HANDLER] No platform found for client_id: %s", client_id)
-                return HttpResponseBadRequest(f"No platform found for client_id: {client_id}")
-            iss = iss or platform.issuer
-            target_link_uri = target_link_uri or request.build_absolute_uri(reverse("courses:lti_launch"))
-        
-        # Paksa redirect_uri ke nilai yang benar
+        # Validasi wajib
+        if not client_id or not iss:
+            logger.error("[LTI LOGIN HANDLER] Missing required 'client_id' or 'iss'")
+            return HttpResponseBadRequest("Missing required 'client_id' or 'iss'")
+
+        # Cari konfigurasi platform dari DB
+        platform = LTIPlatform.objects.filter(client_id=client_id, issuer=iss).first()
+        if not platform:
+            logger.error("[LTI LOGIN HANDLER] No platform found for client_id=%s and iss=%s", client_id, iss)
+            return HttpResponseBadRequest(f"No platform found for client_id={client_id} and iss={iss}")
+
+        # Fallback target_link_uri
+        if not target_link_uri:
+            target_link_uri = request.build_absolute_uri(reverse("courses:lti_launch"))
+
+        # Redirect URI (selalu ke endpoint lti_launch)
         correct_redirect_uri = request.build_absolute_uri(reverse("courses:lti_launch"))
+
         if received_redirect_uri and received_redirect_uri != correct_redirect_uri:
-            logger.warning("[LTI LOGIN HANDLER] Incorrect redirect_uri received: %s, using correct redirect_uri: %s",
+            logger.warning("[LTI LOGIN HANDLER] Incorrect redirect_uri received: %s, using correct: %s",
                            received_redirect_uri, correct_redirect_uri)
-        
-        if not all([iss, login_hint, target_link_uri, client_id]):
-            logger.error("[LTI LOGIN HANDLER] Missing required parameters: iss=%s, login_hint=%s, target_link_uri=%s, client_id=%s",
-                         iss, login_hint, target_link_uri, client_id)
-            return HttpResponseBadRequest(f"Missing required parameters. Got: iss={iss}, login_hint={login_hint}, target_link_uri={target_link_uri}, client_id={client_id}")
-        
-        nonce = generate_nonce(request)
+
+        # Validasi minimal semua parameter kritis
+        if not all([login_hint, target_link_uri]):
+            logger.error("[LTI LOGIN HANDLER] Missing login_hint or target_link_uri")
+            return HttpResponseBadRequest("Missing login_hint or target_link_uri")
+
+        # Siapkan parameter redirect ke platform (OIDC Auth endpoint)
         state = uuid.uuid4().hex
+        nonce = generate_nonce(request)
+
         auth_params = {
             "scope": "openid",
             "response_type": "id_token",
@@ -196,15 +207,17 @@ def lti_tool_login_handler(request):
             "prompt": "none",
             "lti_message_hint": lti_message_hint,
         }
-        logger.debug("[LTI LOGIN HANDLER] Auth parameters: %s", auth_params)
-        # Perbaiki encoding manual
+
+        # Encode manual querystring
         encoded_auth_params = "&".join(f"{quote(k)}={quote(str(v))}" for k, v in auth_params.items())
-        authorize_url = f"{iss}/authorize?{encoded_auth_params}"
+        authorize_url = f"{platform.auth_login_url}?{encoded_auth_params}"
+
         logger.debug("[LTI LOGIN HANDLER] Redirecting to: %s", authorize_url)
-        return redirect(authorize_url)
+        return HttpResponseRedirect(authorize_url)
+
     except Exception as e:
-        logger.exception("[LTI LOGIN HANDLER] Error in lti_tool_login_handler: %s", str(e))
-        return HttpResponseBadRequest(f"Error in LTI login handler: {str(e)}")
+        logger.exception("[LTI LOGIN HANDLER] Exception: %s", str(e))
+        return HttpResponseBadRequest("Internal error during login initiation")
 # === 3. Launch Endpoint ===
 @csrf_exempt
 def lti_launch(request):

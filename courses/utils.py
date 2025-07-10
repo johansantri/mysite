@@ -5,6 +5,14 @@ from .models import Assessment, GradeRange, QuestionAnswer, Submission, Assessme
 from django.core.cache import cache
 from django.utils.timezone import now
 from datetime import timedelta
+import uuid
+from datetime import datetime, timezone
+
+def generate_nonce(request):
+    nonce = uuid.uuid4().hex
+    request.session['lti_nonce'] = nonce
+    request.session['lti_nonce_timestamp'] = datetime.now(timezone.utc).timestamp()  # ✅ UTC benar
+    return nonce
 
 def user_has_passed_course(user, course):
     assessments = Assessment.objects.filter(section__courses=course).distinct()

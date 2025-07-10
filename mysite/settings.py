@@ -490,6 +490,11 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
         },
+        'lti': {  # <<== Tambahkan ini
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
         'django.request': {
             'handlers': ['file'],
             'level': 'ERROR',
@@ -544,6 +549,11 @@ CONTENT_SECURITY_POLICY = {
             'https://cdn.jsdelivr.net',  # CDN umum
             'https://fonts.googleapis.com',  # stylesheet Google Fonts (kadang diminta juga)
             'https://fonts.gstatic.com',  # tempat file font Google Fonts di-host
+        ),
+
+        'frame-ancestors': (
+            "'self'",  # agar bisa embed sendiri (opsional)
+            'https://moodle.icei.ac.id',  # izinkan Moodle sebagai LTI consumer
         ),
 
         # Form hanya bisa dikirim (POST) ke domain sendiri

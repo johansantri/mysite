@@ -1398,6 +1398,8 @@ class LTIPlatform(models.Model):
         null=True,
         help_text="(Opsional) Nilai 'aud' dalam id_token. Jika kosong, akan dianggap sama dengan client_id."
     )
+    auth_login_url = models.URLField()      # ✅ Tambahkan ini
+    auth_token_url = models.URLField()      # ✅ Tambahkan ini jika perlu
     created_at = models.DateTimeField(
         auto_now_add=True,
         help_text="Waktu entri ini dibuat. Diisi otomatis oleh sistem."

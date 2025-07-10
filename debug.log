@@ -1,309 +1,67 @@
-WARNING 2025-07-07 16:34:36,794 views Invalid referer:  from IP 
-WARNING 2025-07-07 16:34:44,978 views Invalid referer:  from IP 
-WARNING 2025-07-07 16:49:57,162 log Forbidden (Referer checking failed - Referer is insecure while host is secure.): /
-WARNING 2025-07-07 17:22:17,108 views Invalid referer:  from IP 
-WARNING 2025-07-07 17:32:26,147 views Invalid referer:  from IP 
-WARNING 2025-07-07 17:58:34,440 views Invalid referer:  from IP 
-WARNING 2025-07-07 18:42:39,475 views Invalid referer:  from IP 
-WARNING 2025-07-07 19:08:16,627 views Invalid referer:  from IP 
-WARNING 2025-07-07 19:22:56,153 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-07 19:31:08,791 views Invalid referer:  from IP 
-WARNING 2025-07-07 19:35:27,884 views Invalid referer:  from IP 
-WARNING 2025-07-07 19:35:29,308 views Invalid referer:  from IP 
-WARNING 2025-07-07 19:39:01,599 views Invalid referer:  from IP 
-WARNING 2025-07-07 19:49:24,959 views Invalid referer:  from IP 
-WARNING 2025-07-07 20:38:55,965 views Invalid referer:  from IP 
-WARNING 2025-07-07 21:04:22,563 views Invalid referer:  from IP 
-WARNING 2025-07-07 21:56:30,940 views Invalid referer:  from IP 
-WARNING 2025-07-07 22:01:13,324 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-07 22:14:49,302 views Invalid referer:  from IP 
-WARNING 2025-07-07 22:24:33,809 views Invalid referer:  from IP 
-WARNING 2025-07-07 22:35:35,006 views Invalid referer:  from IP 
-WARNING 2025-07-07 22:47:17,105 views Invalid referer:  from IP 
-WARNING 2025-07-07 22:49:21,177 views Invalid referer:  from IP 
-WARNING 2025-07-07 23:13:18,921 views Invalid referer:  from IP 
-WARNING 2025-07-07 23:24:50,641 views Invalid referer:  from IP 
-WARNING 2025-07-07 23:38:01,891 views Invalid referer:  from IP 
-WARNING 2025-07-07 23:48:21,468 views Invalid referer:  from IP 
-WARNING 2025-07-08 00:22:05,721 views Invalid referer:  from IP 
-WARNING 2025-07-08 00:45:37,160 views Invalid referer:  from IP 
-WARNING 2025-07-08 00:46:26,938 views Invalid referer:  from IP 
-WARNING 2025-07-08 00:51:49,133 views Invalid referer:  from IP 
-WARNING 2025-07-08 01:02:39,844 views Invalid referer:  from IP 
-WARNING 2025-07-08 01:06:11,524 views Invalid referer:  from IP 
-WARNING 2025-07-08 02:10:11,209 views Invalid referer:  from IP 
-ERROR 2025-07-08 02:11:36,911 exception Invalid HTTP_HOST header: 'localhost'. You may need to add 'localhost' to ALLOWED_HOSTS.
+INFO 2025-07-10 11:13:53,409 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-10 11:13:53,927 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-10 11:13:54,062 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+DEBUG 2025-07-10 11:13:54,557 views [LTI LOGIN HANDLER] Query Params: {'iss': 'https://moodle.icei.ac.id', 'login_hint': 'abc', 'client_id': 'GaZTD4QsBcUGfJq', 'target_link_uri': 'https://ini.icei.ac.id/lti/launch/'}
+ERROR 2025-07-10 11:13:54,724 views [LTI LOGIN HANDLER] Exception: module 'django.utils.timezone' has no attribute 'utc'
 Traceback (most recent call last):
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
-    response = get_response(request)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
-    response = self.process_request(request)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
-    host = request.get_host()
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
-    raise DisallowedHost(msg)
-django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'localhost'. You may need to add 'localhost' to ALLOWED_HOSTS.
-WARNING 2025-07-08 02:29:52,142 views Invalid referer:  from IP 
-WARNING 2025-07-08 02:31:32,581 views Invalid referer:  from IP 
-WARNING 2025-07-08 02:56:29,080 views Invalid referer:  from IP 
-WARNING 2025-07-08 03:13:41,882 views Invalid referer:  from IP 
-WARNING 2025-07-08 03:31:08,382 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 03:49:02,711 views Invalid referer:  from IP 
-WARNING 2025-07-08 03:54:41,883 views Invalid referer:  from IP 
-WARNING 2025-07-08 04:24:22,475 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 04:47:45,569 views Invalid referer:  from IP 
-WARNING 2025-07-08 05:07:23,882 views Invalid referer:  from IP 
-WARNING 2025-07-08 05:10:47,879 views Invalid referer:  from IP 
-WARNING 2025-07-08 05:19:52,376 views Invalid referer:  from IP 
-WARNING 2025-07-08 05:33:54,373 views Invalid referer:  from IP 
-WARNING 2025-07-08 05:42:51,813 views Invalid referer:  from IP 
-WARNING 2025-07-08 05:43:31,113 views Invalid referer:  from IP 
-WARNING 2025-07-08 06:50:50,908 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 11:11:21,309 log Forbidden (Referer checking failed - no Referer.): /
-INFO 2025-07-08 12:18:25,243 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 12:18:25,529 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 12:18:25,714 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 12:21:32,332 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 12:21:32,350 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 12:21:32,532 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 12:22:13,860 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 12:22:13,980 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 12:22:14,047 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 12:23:14,999 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 12:23:15,183 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 12:23:15,265 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 12:24:24,360 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 12:24:24,528 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 12:24:24,549 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 12:29:00,217 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 12:29:00,250 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 12:29:00,317 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 13:12:28,397 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 13:12:28,427 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 13:12:28,565 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 13:15:36,033 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 13:15:36,278 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 13:15:36,290 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 13:15:53,418 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 13:15:53,766 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 13:15:53,868 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 13:17:07,727 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 13:17:07,790 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 13:17:07,906 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 13:18:44,830 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 13:18:45,051 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 13:18:45,155 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 13:21:31,094 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 13:21:31,175 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 13:21:31,214 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 13:24:34,952 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 13:24:34,988 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 13:24:34,992 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 13:28:01,665 database AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0", path_info: "/login/"}.
-INFO 2025-07-08 13:28:01,667 database AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-08 05:28:00.751302+00:00
-INFO 2025-07-08 13:31:30,519 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 13:31:30,562 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 13:31:30,732 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:15:16,340 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:15:16,356 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:15:16,439 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:21:41,462 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:21:41,511 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:21:41,573 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:26:01,667 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:26:01,871 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:26:01,893 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-ERROR 2025-07-08 15:26:52,855 exception Invalid HTTP_HOST header: 'tequaous-hoff.izgafuornaqtkyhpamcimljp.org'. You may need to add 'tequaous-hoff.izgafuornaqtkyhpamcimljp.org' to ALLOWED_HOSTS.
+  File "/home/TIM/mysite/courses/views.py", line 196, in lti_tool_login_handler
+    nonce = generate_nonce(request)
+  File "/home/TIM/mysite/courses/views.py", line 108, in generate_nonce
+    request.session['lti_nonce_timestamp'] = datetime.now(timezone.utc).timestamp()
+AttributeError: module 'django.utils.timezone' has no attribute 'utc'
+INFO 2025-07-10 11:16:49,064 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-10 11:16:49,147 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-10 11:16:49,208 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+DEBUG 2025-07-10 11:16:55,774 views [LTI LOGIN HANDLER] Query Params: {'iss': 'https://moodle.icei.ac.id', 'login_hint': 'abc', 'client_id': 'GaZTD4QsBcUGfJq', 'target_link_uri': 'https://ini.icei.ac.id/lti/launch/'}
+ERROR 2025-07-10 11:16:55,930 views [LTI LOGIN HANDLER] Exception: module 'django.utils.timezone' has no attribute 'utc'
 Traceback (most recent call last):
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
-    response = get_response(request)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
-    response = self.process_request(request)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
-    host = request.get_host()
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
-    raise DisallowedHost(msg)
-django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'tequaous-hoff.izgafuornaqtkyhpamcimljp.org'. You may need to add 'tequaous-hoff.izgafuornaqtkyhpamcimljp.org' to ALLOWED_HOSTS.
-ERROR 2025-07-08 15:26:53,068 exception Invalid HTTP_HOST header: 'tequaous-hoff.izgafuornaqtkyhpamcimljp.org'. You may need to add 'tequaous-hoff.izgafuornaqtkyhpamcimljp.org' to ALLOWED_HOSTS.
+  File "/home/TIM/mysite/courses/views.py", line 196, in lti_tool_login_handler
+    nonce = generate_nonce(request)
+  File "/home/TIM/mysite/courses/views.py", line 108, in generate_nonce
+    request.session['lti_nonce_timestamp'] = datetime.now(timezone.utc).timestamp()
+AttributeError: module 'django.utils.timezone' has no attribute 'utc'
+INFO 2025-07-10 11:18:32,920 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-10 11:18:33,090 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-10 11:18:33,295 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+DEBUG 2025-07-10 11:18:34,425 views [LTI LOGIN HANDLER] Query Params: {'iss': 'https://moodle.icei.ac.id', 'login_hint': 'abc', 'client_id': 'GaZTD4QsBcUGfJq', 'target_link_uri': 'https://ini.icei.ac.id/lti/launch/'}
+DEBUG 2025-07-10 11:18:34,689 views [NONCE] Generated nonce: 11219d20fa384b07b2620134676a21ff, timestamp: 1752121114.689857
+ERROR 2025-07-10 11:18:34,690 views [LTI LOGIN HANDLER] Exception: 'LTIPlatform' object has no attribute 'auth_login_url'
 Traceback (most recent call last):
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
-    response = get_response(request)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
-    response = self.process_request(request)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
-    host = request.get_host()
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
-    raise DisallowedHost(msg)
-django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'tequaous-hoff.izgafuornaqtkyhpamcimljp.org'. You may need to add 'tequaous-hoff.izgafuornaqtkyhpamcimljp.org' to ALLOWED_HOSTS.
-INFO 2025-07-08 15:27:22,145 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:27:22,247 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:27:22,293 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:27:53,561 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:27:53,715 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:27:53,746 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:28:32,493 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:28:32,724 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:28:32,816 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:29:54,725 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:29:54,798 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:29:55,091 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:30:21,349 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:30:21,482 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:30:21,735 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:33:43,370 views Access course_list
-INFO 2025-07-08 15:38:03,753 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:38:03,809 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:38:03,832 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:39:03,819 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:39:03,844 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:39:04,012 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:40:23,465 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:40:23,533 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:40:23,660 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:41:16,811 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:41:17,141 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:41:17,193 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:42:13,475 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:42:13,635 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-08 15:42:13,703 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-ERROR 2025-07-08 15:47:41,425 exception Invalid HTTP_HOST header: '0.0.0.0'. You may need to add '0.0.0.0' to ALLOWED_HOSTS.
-Traceback (most recent call last):
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
-    response = get_response(request)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
-    response = self.process_request(request)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
-    host = request.get_host()
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
-    raise DisallowedHost(msg)
-django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '0.0.0.0'. You may need to add '0.0.0.0' to ALLOWED_HOSTS.
-WARNING 2025-07-08 16:28:11,514 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 16:59:38,030 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 16:59:42,003 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 16:59:42,807 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 16:59:43,172 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 16:59:43,209 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 16:59:43,729 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 16:59:44,123 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 16:59:44,432 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 16:59:47,463 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 16:59:49,289 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:00:08,223 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:00:08,233 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:00:08,682 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:00:08,915 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:00:13,062 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:00:13,376 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:00:14,114 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:00:15,243 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:00:15,466 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:00:15,778 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:00:27,661 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:00:31,130 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:00:31,996 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:00:32,757 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:00:33,631 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:00:34,063 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:00:34,150 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:00:35,009 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:00:36,694 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:00:39,506 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:12,085 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:12,359 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:12,510 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:13,270 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:13,489 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:13,518 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:13,991 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:16,825 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:16,904 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:20,551 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:29,914 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:32,390 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:32,435 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:33,131 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:34,193 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:37,450 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:37,896 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:38,778 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:38,986 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:39,090 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:51,977 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:52,008 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:52,139 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:53,386 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:53,496 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:54,396 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:54,405 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:58,281 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:58,860 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:04:59,305 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:05:10,199 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:05:14,250 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:05:14,504 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:05:14,573 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:05:14,579 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:05:14,954 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:05:15,037 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:05:18,782 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:05:19,377 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:05:19,918 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:05:28,438 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:05:32,156 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:05:33,126 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:05:35,556 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:05:39,851 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:05:40,073 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:05:40,215 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:05:40,242 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:05:40,291 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:05:40,390 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:06:34,144 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:06:34,217 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:06:34,870 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:06:35,871 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:06:37,022 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:06:37,169 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:06:37,307 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:06:37,355 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:06:37,491 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:06:37,500 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:06:52,737 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:06:54,266 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:06:54,741 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:06:54,917 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:06:54,951 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:06:54,967 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:06:56,058 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:06:57,372 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:06:57,953 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:06:58,043 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:07:13,812 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:07:13,941 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:07:15,187 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:07:15,299 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:07:16,217 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:07:17,548 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:07:19,412 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:07:19,914 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:07:19,980 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 17:07:20,080 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 21:13:29,329 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-08 23:24:51,397 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-09 01:10:00,114 log Forbidden (Referer checking failed - no Referer.): /
-ERROR 2025-07-09 02:17:23,723 exception Invalid HTTP_HOST header: 'localhost'. You may need to add 'localhost' to ALLOWED_HOSTS.
-Traceback (most recent call last):
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
-    response = get_response(request)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
-    response = self.process_request(request)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
-    host = request.get_host()
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
-    raise DisallowedHost(msg)
-django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'localhost'. You may need to add 'localhost' to ALLOWED_HOSTS.
-WARNING 2025-07-09 04:17:38,657 log Forbidden (Referer checking failed - no Referer.): /
-WARNING 2025-07-09 06:29:41,911 log Forbidden (Referer checking failed - no Referer.): /
-INFO 2025-07-09 08:34:05,688 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-09 08:34:05,863 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
-INFO 2025-07-09 08:34:05,925 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+  File "/home/TIM/mysite/courses/views.py", line 213, in lti_tool_login_handler
+    authorize_url = f"{platform.auth_login_url}?{encoded_auth_params}"
+AttributeError: 'LTIPlatform' object has no attribute 'auth_login_url'
+INFO 2025-07-10 11:20:22,644 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-10 11:20:51,295 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-10 11:22:54,926 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-10 11:23:06,906 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-10 11:23:07,111 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+INFO 2025-07-10 11:23:07,138 apps AXES: BEGIN version 8.0.0, blocking by username or ip_address
+DEBUG 2025-07-10 11:23:44,361 views [LTI LOGIN HANDLER] Query Params: {'iss': 'https://moodle.icei.ac.id', 'login_hint': 'abc', 'client_id': 'GaZTD4QsBcUGfJq', 'target_link_uri': 'https://ini.icei.ac.id/lti/launch/'}
+DEBUG 2025-07-10 11:23:44,367 views [NONCE] Generated nonce: 833ef1e937d14bf6b609e73753e1711b, timestamp: 1752121424.367421
+DEBUG 2025-07-10 11:23:44,367 views [LTI LOGIN HANDLER] Redirecting to: https://moodle.icei.ac.id/mod/lti/auth.php?scope=openid&response_type=id_token&client_id=GaZTD4QsBcUGfJq&redirect_uri=https%3A//ini.icei.ac.id/lti/launch/&login_hint=abc&state=4ecb458a1eef4624963274990537f291&response_mode=form_post&nonce=833ef1e937d14bf6b609e73753e1711b&prompt=none&lti_message_hint=None
+DEBUG 2025-07-10 11:24:34,372 views [LTI LOGIN HANDLER] Query Params: {}
+ERROR 2025-07-10 11:24:34,372 views [LTI LOGIN HANDLER] Missing required 'client_id' or 'iss'
+DEBUG 2025-07-10 11:24:36,768 views [LTI LOGIN HANDLER] Query Params: {}
+ERROR 2025-07-10 11:24:36,768 views [LTI LOGIN HANDLER] Missing required 'client_id' or 'iss'
+DEBUG 2025-07-10 11:30:02,499 views [LTI LOGIN HANDLER] Query Params: {}
+ERROR 2025-07-10 11:30:02,499 views [LTI LOGIN HANDLER] Missing required 'client_id' or 'iss'
+WARNING 2025-07-10 11:34:15,983 log Forbidden (Referer checking failed - no Referer.): /
+DEBUG 2025-07-10 11:35:04,741 views [LTI LOGIN HANDLER] Query Params: {}
+ERROR 2025-07-10 11:35:04,741 views [LTI LOGIN HANDLER] Missing required 'client_id' or 'iss'
+DEBUG 2025-07-10 11:36:23,337 views [LTI LOGIN HANDLER] Query Params: {'iss': 'https://moodle.icei.ac.id', 'client_id': 'j4nqlzDfxHIryG4', 'login_hint': 'abc123', 'lti_message_hint': 'xyz456', 'target_link_uri': 'https://ini.icei.ac.id/lti/launch/'}
+DEBUG 2025-07-10 11:36:23,342 views [NONCE] Generated nonce: 7a7dea4337ba4a6f8e9623284c3b08e9, timestamp: 1752122183.342154
+DEBUG 2025-07-10 11:36:23,342 views [LTI LOGIN HANDLER] Redirecting to: https://moodle.icei.ac.id/mod/lti/auth.php?scope=openid&response_type=id_token&client_id=j4nqlzDfxHIryG4&redirect_uri=https%3A//ini.icei.ac.id/lti/launch/&login_hint=abc123&state=88ea54a8a7624708b9564f8dc5deb4bf&response_mode=form_post&nonce=7a7dea4337ba4a6f8e9623284c3b08e9&prompt=none&lti_message_hint=xyz456
+DEBUG 2025-07-10 11:45:47,813 views [LTI LAUNCH] Received request: method=GET, POST=<QueryDict: {}>
+ERROR 2025-07-10 11:45:47,813 views [LTI LAUNCH] Invalid method: GET
+DEBUG 2025-07-10 11:46:00,217 views [LTI LAUNCH] Received request: method=GET, POST=<QueryDict: {}>
+ERROR 2025-07-10 11:46:00,217 views [LTI LAUNCH] Invalid method: GET
+DEBUG 2025-07-10 11:46:47,934 views [LTI LOGIN HANDLER] Query Params: {}
+ERROR 2025-07-10 11:46:47,934 views [LTI LOGIN HANDLER] Missing required 'client_id' or 'iss'
+DEBUG 2025-07-10 11:48:06,635 views [LTI LOGIN HANDLER] Query Params: {}
+ERROR 2025-07-10 11:48:06,635 views [LTI LOGIN HANDLER] Missing required 'client_id' or 'iss'
+DEBUG 2025-07-10 11:49:52,880 views [LTI LOGIN HANDLER] Query Params: {}
+ERROR 2025-07-10 11:49:52,881 views [LTI LOGIN HANDLER] Missing required 'client_id' or 'iss'
+https://ini.icei.ac.id/lti/login/?iss=https://moodle.icei.ac.id&client_id=WZT5Y5v2W1tgSqn&login_hint=abc123&lti_message_hint=xyz456&target_link_uri=https://ini.icei.ac.id/lti/launch/
+DEBUG 2025-07-10 11:51:35,195 views [LTI LOGIN HANDLER] Query Params: {'iss': 'https://moodle.icei.ac.id', 'client_id': 'WZT5Y5v2W1tgSqn', 'login_hint': 'abc123', 'lti_message_hint': 'xyz456', 'target_link_uri': 'https://ini.icei.ac.id/lti/launch/'}
+DEBUG 2025-07-10 11:51:35,201 views [NONCE] Generated nonce: 66fb5994e389496a8e2a8744115284d1, timestamp: 1752123095.201226
+DEBUG 2025-07-10 11:51:35,201 views [LTI LOGIN HANDLER] Redirecting to: https://moodle.icei.ac.id/mod/lti/auth.php?scope=openid&response_type=id_token&client_id=WZT5Y5v2W1tgSqn&redirect_uri=https%3A//ini.icei.ac.id/lti/launch/&login_hint=abc123&state=56e5f8eefcd94e4aa7e97cc9600213a7&response_mode=form_post&nonce=66fb5994e389496a8e2a8744115284d1&prompt=none&lti_message_hint=xyz456
