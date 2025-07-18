@@ -643,6 +643,7 @@ logger = logging.getLogger(__name__)
 
 @login_required
 def create_lti(request, idcourse, idsection, idlti):
+    # Verifikasi hak akses pengguna
     if request.user.is_superuser:
         course = get_object_or_404(Course, id=idcourse)
     elif request.user.is_partner:
@@ -653,21 +654,23 @@ def create_lti(request, idcourse, idsection, idlti):
         messages.error(request, "Anda tidak memiliki izin untuk membuat alat LTI di kursus ini.")
         return redirect('courses:home')
 
+    # Ambil section dan assessment terkait
     section = get_object_or_404(Section, id=idsection, courses=course)
     assessment = get_object_or_404(Assessment, id=idlti, section=section)
 
+    # Jika form disubmit
     if request.method == 'POST':
         form = LTIExternalToolForm(request.POST)
         if form.is_valid():
-            lti_tool = form.save(commit=False)
-            lti_tool.assessment = assessment
-            
-            # Generate random shared_secret if not provided
-            lti_tool.shared_secret = ''.join(random.choices(string.ascii_letters + string.digits, k=32))  # 32-character random string
-            
-            lti_tool.save()
-            messages.success(request, "Alat LTI berhasil ditambahkan!")
-            return redirect('courses:view-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
+            # Cek apakah LTI tool sudah ada untuk assessment ini
+            if hasattr(assessment, 'lti_tool'):
+                messages.error(request, "Assessment ini sudah memiliki alat LTI.")
+            else:
+                lti_tool = form.save(commit=False)
+                lti_tool.assessment = assessment
+                lti_tool.save()
+                messages.success(request, "Alat LTI berhasil ditambahkan!")
+                return redirect('courses:view-question', idcourse=course.id, idsection=section.id, idassessment=assessment.id)
     else:
         form = LTIExternalToolForm()
 
