@@ -1368,3 +1368,20 @@ class LTIExternalTool1(models.Model):
 
     def __str__(self):
         return f"{self.tool_name} ({self.assessment})"
+    
+class LTIResult(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    assessment = models.ForeignKey('Assessment', on_delete=models.CASCADE)
+    result_sourcedid = models.TextField()
+    outcome_service_url = models.URLField()
+    consumer_key = models.CharField(max_length=255)
+
+    score = models.FloatField(null=True, blank=True)  # nilai 0.0 - 1.0
+    last_sent_at = models.DateTimeField(null=True, blank=True)  # kapan nilai terakhir dikirim
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'assessment')
+
+    def __str__(self):
+        return f"LTIResult({self.user}, {self.assessment}, score={self.score})"

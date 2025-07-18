@@ -43,7 +43,7 @@ from courses.models import (
     Assessment, AssessmentRead, AssessmentScore, AssessmentSession,
     AskOra, Choice, Comment, Course, CourseProgress, CourseStatusHistory,
     Enrollment, GradeRange, Instructor, LTIExternalTool1, Material,
-    MaterialRead, Payment, PeerReview, Question, QuestionAnswer,
+    MaterialRead, Payment, PeerReview, Question, QuestionAnswer,LTIResult,
     Score, Section, Submission, UserActivityLog, CommentReaction, AttemptedQuestion,
 )
 from django.views.decorators.csrf import csrf_exempt
@@ -53,6 +53,9 @@ from oauthlib.oauth1 import Client
 
 
 logger = logging.getLogger(__name__)
+
+
+
 
 
 
@@ -106,6 +109,9 @@ def lti_consume_course(request, assessment_id):
     if not lti_tool:
         return HttpResponse("LTI tool belum dikonfigurasi.", status=400)
 
+
+    
+
     launch_url = lti_tool.launch_url
     consumer_key = lti_tool.consumer_key
     shared_secret = lti_tool.shared_secret
@@ -131,7 +137,12 @@ def lti_consume_course(request, assessment_id):
         "tool_consumer_info_version": "1.0",
         "launch_presentation_document_target": "iframe",
         
+        
+        
     }
+
+
+    
 
     # Tambahkan custom parameters jika ada
     if lti_tool.custom_parameters:
