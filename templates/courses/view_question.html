@@ -66,36 +66,41 @@
                   </tr>
                 {% endfor %}
 
-                 {% for lti in assessment.lti_tools.all %}
-                  <tr>
-                    <th scope="row">{{ forloop.counter }}</th>
-                    <td>
-                   
-                      <a href="{% url 'courses:edit_lti' idcourse=course.id idsection=section.id idlti=assessment.id id_lti_tool=lti.id %}">
-                        {{ lti.name | truncatechars:75 | safe }}  <i class="bi bi-pencil-square"></i>
-                      </a>
+                 {% if assessment.lti_tool %}
+                    <tr>
+                      <th scope="row">1</th>
+                      <td>
+                        <a href="{% url 'courses:edit_lti' idcourse=course.id idsection=section.id idlti=assessment.id id_lti_tool=assessment.lti_tool.id %}">
+                          {{ assessment.lti_tool.tool_name|truncatechars:75|safe }} <i class="bi bi-pencil-square"></i>
+                        </a>
 
-                       <!-- Tombol Launch LTI -->
-                      <a href="{% url 'courses:launch_lti' idcourse=course.id idsection=section.id idlti=assessment.id id_lti_tool=lti.id %}" 
-                        class="btn btn-outline-primary btn-sm mt-1">
-                        Launch
-                      </a>
+                      <!-- Tombol Launch LTI -->
+                      {% if assessment.lti_tool %}
+                        <a href="{% url 'courses:launch_lti' idcourse=course.id idsection=section.id idlti=assessment.id id_lti_tool=assessment.lti_tool.id %}" 
+                          class="btn btn-outline-primary btn-sm mt-1">
+                          Launch
+                        </a>
+                      {% else %}
+                        <span class="text-muted">No LTI tool configured</span>
+                      {% endif %}
 
-                    </td>
-                    <td>
-                      <form method="POST" action="{% url 'courses:delete_lti' idcourse=course.id idsection=section.id idlti=assessment.id id_lti_tool=lti.id %}"  style="display:inline;">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger btn-sm">
-                          <i class="bi bi-trash"></i>
-                        </button>
-                      </form>
-                    </td>
-                  </tr>
-                {% empty %}
-                  <tr>
-                    <td colspan="3">No lti consume available.</td>
-                  </tr>
-                {% endfor %}
+
+                      </td>
+                      <td>
+                        <form method="POST" action="{% url 'courses:delete_lti' idcourse=course.id idsection=section.id idlti=assessment.id id_lti_tool=assessment.lti_tool.id %}" style="display:inline;">
+                          {% csrf_token %}
+                          <button type="submit" class="btn btn-danger btn-sm">
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </form>
+                      </td>
+                    </tr>
+                  {% else %}
+                    <tr>
+                      <td colspan="3">No LTI tool available.</td>
+                    </tr>
+                  {% endif %}
+
 
               </tbody>
             </table>

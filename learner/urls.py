@@ -17,5 +17,7 @@ urlpatterns = [
     path('submit-answer-askora/<int:ask_ora_id>/new', views.submit_answer_askora_new, name='submit_answer_askora_new'),
     path('submit-peer-review/<int:submission_id>/ora', views.submit_peer_review_new, name='submit_peer_review_new'),
     path('analytics/users/', views.user_analytics_view, name='user_analytics'),
+    path('lti/launch/<int:assessment_id>/', views.lti_consume_course, name='lti_consume_course'),
+  
 ]
   

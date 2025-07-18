@@ -10,6 +10,24 @@ from decimal import Decimal
 register = template.Library()
 
 @register.filter
+def split_by_equal(value):
+    """Split string by '=' and return list."""
+    return value.split('=')
+
+@register.filter
+def split(value, key):
+    return value.split(key)
+
+@register.filter
+def split_lines(value):
+    return value.strip().splitlines()
+
+@register.filter
+def linepartition(value, separator="="):
+    """Split string into (before, sep, after) like Python's str.partition()"""
+    return value.partition(separator)
+
+@register.filter
 def make_iframes_responsive(value):
     # Tambahkan wrapper div responsive pada semua iframe
     pattern = r'(<iframe.*?</iframe>)'

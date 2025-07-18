@@ -1,3 +1,7 @@
+try:
+    from pylti.common import ToolConsumer  # Coba ToolConsumer sebagai alternatif
+except ImportError:
+    from pylti import common  # Impor modul utama jika LTI tidak ada
 import csv
 import logging
 import uuid
@@ -5,7 +9,7 @@ import base64
 import hmac
 import hashlib
 import urllib.parse
-from urllib.parse import urlparse, urlunparse,quote, urlencode
+from urllib.parse import urlparse, urlunparse,quote, urlencode,parse_qsl
 from datetime import datetime
 import time
 import pytz
@@ -23,7 +27,7 @@ from django.shortcuts import get_object_or_404, render,redirect
 from django.urls import reverse, NoReverseMatch
 from django.utils import timezone
 from django.template.defaultfilters import linebreaks
-
+from collections import OrderedDict
 from django.middleware.csrf import get_token
 from authentication.models import CustomUser, Universiti
 from django.template.loader import render_to_string
@@ -38,13 +42,113 @@ import json
 from courses.models import (
     Assessment, AssessmentRead, AssessmentScore, AssessmentSession,
     AskOra, Choice, Comment, Course, CourseProgress, CourseStatusHistory,
-    Enrollment, GradeRange, Instructor, LTIExternalTool, Material,
+    Enrollment, GradeRange, Instructor, LTIExternalTool1, Material,
     MaterialRead, Payment, PeerReview, Question, QuestionAnswer,
     Score, Section, Submission, UserActivityLog, CommentReaction, AttemptedQuestion,
-    LTIPlatform,
 )
+from django.views.decorators.csrf import csrf_exempt
+from django.template import loader
+from django.conf import settings
+from oauthlib.oauth1 import Client
+
 
 logger = logging.getLogger(__name__)
+
+logger = logging.getLogger(__name__)
+
+def percent_encode(s):
+    return quote(str(s), safe='~')
+
+def generate_oauth_signature(params, consumer_secret, launch_url):
+    # 1. Parse launch_url to get base_url and query params
+    parsed_url = urlparse(launch_url)
+    base_url = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}"
+    query_params = dict(parse_qsl(parsed_url.query))
+
+    # 2. Gabungkan query params dari URL ke dalam params
+    full_params = {**params, **query_params}
+
+    # 3. Sort & percent encode parameter (RFC 5849)
+    encoded_params = []
+    for k, v in sorted(full_params.items()):
+        encoded_k = percent_encode(k)
+        encoded_v = percent_encode(v)
+        encoded_params.append(f"{encoded_k}={encoded_v}")
+
+    param_string = '&'.join(encoded_params)
+
+    # 4. Bangun base string
+    base_string = '&'.join([
+        "POST",
+        percent_encode(base_url),
+        percent_encode(param_string)
+    ])
+
+    # 5. Generate signature
+    key = f"{percent_encode(consumer_secret)}&"  # token secret kosong
+    raw = base_string.encode('utf-8')
+    hashed = hmac.new(key.encode('utf-8'), raw, hashlib.sha1)
+    signature = base64.b64encode(hashed.digest()).decode()
+
+    # Debug log
+    logger.debug("Base URL: %s", base_url)
+    logger.debug("Base String: %s", base_string)
+    logger.debug("Signing Key: %s", key)
+    logger.debug("OAuth Signature: %s", signature)
+
+    return signature
+
+@login_required
+@csrf_exempt
+def lti_consume_course(request, assessment_id):
+    assessment = get_object_or_404(Assessment, id=assessment_id)
+    lti_tool = getattr(assessment, 'lti_tool', None)
+    if not lti_tool:
+        return HttpResponse("LTI tool belum dikonfigurasi.", status=400)
+
+    launch_url = lti_tool.launch_url
+    consumer_key = lti_tool.consumer_key
+    shared_secret = lti_tool.shared_secret
+
+    # Parameter dasar OAuth dan LTI
+    oauth_params = {
+        "oauth_consumer_key": consumer_key,
+        "oauth_signature_method": "HMAC-SHA1",
+        "oauth_version": "1.0",
+        "oauth_nonce": uuid.uuid4().hex,
+        "oauth_timestamp": str(int(time.time())),
+        "resource_link_id": f"res-{assessment.id}",
+        "user_id": str(request.user.id),
+        "roles": "Learner",
+        "lis_person_name_full": request.user.get_full_name(),
+        "lis_person_contact_email_primary": request.user.email,
+        "context_id": f"course-{assessment.id}",
+        "context_title": getattr(assessment, "title", "Course"),
+        "launch_presentation_locale": "en-US",
+        "lti_version": "LTI-1p0",
+        "lti_message_type": "basic-lti-launch-request"
+    }
+
+    # Tambahkan custom parameters jika ada
+    if lti_tool.custom_parameters:
+        try:
+            for line in lti_tool.custom_parameters.strip().splitlines():
+                if "=" in line:
+                    k, v = line.split("=", 1)
+                    oauth_params[k.strip()] = v.strip()
+        except Exception as e:
+            logger.warning("Gagal parsing custom_parameters: %s", e)
+
+    # Buat signature
+    signature = generate_oauth_signature(oauth_params, shared_secret, launch_url)
+    oauth_params["oauth_signature"] = signature
+
+    logger.debug("Mengirim LTI Launch ke %s dengan param: %s", launch_url, oauth_params)
+
+    return render(request, "learner/lti_launch_form.html", {
+        "launch_url": launch_url,
+        "params": oauth_params,
+    })
 
 
 @login_required
@@ -248,13 +352,16 @@ def _build_combined_content(sections):
 
 
 
+
 def _build_assessment_context(assessment, user):
     """
-    Build context for assessment-related data.
-    Includes AskOra, submissions, peer reviews, quiz flags.
+    Membangun context untuk tampilan assessment.
+    Termasuk dukungan untuk AskOra, kuis, peer review, dan LTI 1.1.
     """
-    # Periksa apakah asesmen memiliki alat LTI terkait
-    lti_tool = assessment.lti_tools.first()  # Ambil alat LTI pertama (jika ada)
+
+    # Periksa apakah assessment memiliki alat LTI 1.1 terkait
+    lti_tool = getattr(assessment, 'lti_tool', None)
+
     if lti_tool:
         return {
             'ask_oras': [],
@@ -267,10 +374,10 @@ def _build_assessment_context(assessment, user):
             'is_quiz': False,
             'peer_review_stats': None,
             'is_lti': True,
-            'lti_tool': lti_tool,  # Sertakan objek LTIExternalTool untuk digunakan di template
+            'lti_tool': lti_tool,  # digunakan untuk generate launch form/link
         }
 
-    # --- Lanjutan untuk assessment biasa (non-LTI) ---
+    # --- Lanjutan untuk assessment non-LTI (AskOra atau Quiz) ---
     ask_oras = AskOra.objects.filter(assessment=assessment)
     user_submissions = Submission.objects.filter(askora__assessment=assessment, user=user)
     submitted_askora_ids = set(user_submissions.values_list('askora_id', flat=True))
@@ -289,7 +396,9 @@ def _build_assessment_context(assessment, user):
     context = {
         'ask_oras': ask_oras,
         'user_submissions': user_submissions,
-        'askora_submit_status': {askora.id: (askora.id in submitted_askora_ids) for askora in ask_oras},
+        'askora_submit_status': {
+            askora.id: (askora.id in submitted_askora_ids) for askora in ask_oras
+        },
         'askora_can_submit': {
             askora.id: (
                 askora.id not in submitted_askora_ids and
@@ -328,6 +437,7 @@ def _build_assessment_context(assessment, user):
             context['peer_review_stats']['avg_score'] = round(avg_score, 2) if avg_score else None
 
     return context
+
 
 @login_required
 def toggle_reaction(request, comment_id, reaction_type):
@@ -502,11 +612,12 @@ def my_course(request, username, id, slug):
     if assessment_id:
         assessment = get_object_or_404(Assessment, id=assessment_id)
         context['assessment'] = assessment
-        context['current_content'] = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
+        section = next((s for s in sections if assessment in s.assessments.all()), None)
+        context['current_content'] = ('assessment', assessment, section)
         current_index = next((i for i, c in enumerate(combined_content) if c[0] == 'assessment' and c[1].id == assessment.id), 0)
 
-        # Tambahkan dukungan LTI Tool
-        lti_tool = assessment.lti_tools.first() if assessment.lti_tools.exists() else None
+        # Dukungan LTI 1.1
+        lti_tool = getattr(assessment, 'lti_tool', None)
         context['lti_tool'] = lti_tool
         context['is_lti'] = bool(lti_tool)
 
@@ -543,6 +654,7 @@ def my_course(request, username, id, slug):
                 context['is_started'] = True
 
         context.update(_build_assessment_context(assessment, request.user))
+
     else:
         context['current_content'] = combined_content[0] if combined_content else None
         if context['current_content']:
@@ -556,11 +668,15 @@ def my_course(request, username, id, slug):
             elif context['current_content'][0] == 'assessment':
                 context['assessment'] = context['current_content'][1]
                 assessment = context['assessment']
-                lti_tool = assessment.lti_tools.first() if assessment.lti_tools.exists() else None
+
+                # Perbaikan LTI
+                lti_tool = getattr(assessment, 'lti_tool', None)
                 context['lti_tool'] = lti_tool
                 context['is_lti'] = bool(lti_tool)
+
                 context.update(_build_assessment_context(assessment, request.user))
 
+    # Navigasi dan progress
     context['previous_url'], context['next_url'] = _get_navigation_urls(username, id, slug, combined_content, current_index)
     user_progress, _ = CourseProgress.objects.get_or_create(user=request.user, course=course)
     if context['current_content'] and (current_index + 1) > user_progress.progress_percentage / 100 * total_content:
@@ -573,8 +689,6 @@ def my_course(request, username, id, slug):
     response = render(request, 'learner/my_course.html', context)
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     return response
-
-
 
 @login_required
 def load_content(request, username, id, slug, content_type, content_id):
@@ -591,6 +705,9 @@ def load_content(request, username, id, slug, content_type, content_id):
         Prefetch('materials', queryset=Material.objects.all()),
         Prefetch('assessments', queryset=Assessment.objects.all())
     ).order_by('order')
+
+    combined_content = _build_combined_content(sections)
+    current_index = 0
 
     context = {
         'course': course,
@@ -625,9 +742,6 @@ def load_content(request, username, id, slug, content_type, content_id):
         'lti_tool': None,
     }
 
-    combined_content = _build_combined_content(sections)
-    current_index = 0
-
     if content_type == 'material':
         material = get_object_or_404(Material, id=content_id)
         context['material'] = material
@@ -642,11 +756,12 @@ def load_content(request, username, id, slug, content_type, content_id):
         context['current_content'] = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
         current_index = next((i for i, c in enumerate(combined_content) if c[0] == 'assessment' and c[1].id == assessment.id), 0)
 
-        # Tambahkan dukungan LTI Tool
-        lti_tool = assessment.lti_tools.first() if assessment.lti_tools.exists() else None
+        # ✅ LTI 1.1 support — aman
+        lti_tool = getattr(assessment, 'lti_tool', None)
         context['lti_tool'] = lti_tool
         context['is_lti'] = bool(lti_tool)
 
+        # 🔒 Cek model pembayaran jika diperlukan
         if course.payment_model == 'pay_for_exam':
             payment = Payment.objects.filter(
                 user=request.user, course=course, status='completed', payment_model='pay_for_exam'
@@ -663,6 +778,7 @@ def load_content(request, username, id, slug, content_type, content_id):
         else:
             AssessmentRead.objects.get_or_create(user=request.user, assessment=assessment)
 
+        # ⏱️ Session & countdown
         session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
         if session:
             context['is_started'] = True
@@ -675,9 +791,14 @@ def load_content(request, username, id, slug, content_type, content_id):
                     user=request.user, question__assessment=assessment
                 ).select_related('question', 'choice')
             }
+
+        # 🔧 Bangun context untuk assessment (AskOra, quiz, dsb)
         context.update(_build_assessment_context(assessment, request.user))
 
+    # 🔁 Navigasi
     context['previous_url'], context['next_url'] = _get_navigation_urls(username, id, slug, combined_content, current_index)
+
+    # 🧠 HTMX support
     template = 'learner/partials/content.html' if request.headers.get('HX-Request') == 'true' else 'learner/my_course.html'
 
     logger.info(f"load_content: Rendering {template} untuk pengguna {username}, {content_type} {content_id}")

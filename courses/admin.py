@@ -1,8 +1,26 @@
 from django.contrib import admin
 from . import models 
-from .models import  LTIPlatform,PlatformKey,MicroClaim,UserMicroProgress,MicroCredentialComment,Certificate,LTIExternalTool,Submission,CourseRating,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
+from .models import  LTIExternalTool1,MicroClaim,UserMicroProgress,MicroCredentialComment,Certificate,Submission,CourseRating,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
 from import_export.admin import ImportExportModelAdmin
 from django.utils.html import format_html
+
+
+@admin.register(LTIExternalTool1)
+class LTIExternalTool1Admin(admin.ModelAdmin):
+    list_display = ['tool_name', 'assessment', 'launch_url', 'tool_url', 'consumer_key', 'created_at']
+    search_fields = ['tool_name', 'consumer_key', 'launch_url']
+    list_filter = ['created_at']
+    readonly_fields = ['created_at']
+    fieldsets = (
+        (None, {
+            'fields': ('tool_name', 'assessment', 'launch_url', 'tool_url', 'consumer_key', 'shared_secret', 'custom_parameters')
+        }),
+        ('Info', {
+            'fields': ('created_at',),
+            'classes': ('collapse',),
+        }),
+    )
+
 # Kelas admin untuk model MicroClaim
 class MicroClaimAdmin(admin.ModelAdmin):
     list_display = ('user', 'microcredential', 'claim_date', 'certificate_id', 'verified')  # Menampilkan kolom yang ingin ditampilkan di daftar
@@ -59,40 +77,8 @@ class MicroCredentialCommentAdmin(admin.ModelAdmin):
 # Registrasi model dan admin
 admin.site.register(MicroCredentialComment, MicroCredentialCommentAdmin)
 
-@admin.register(LTIExternalTool)
-class LTIExternalToolAdmin(admin.ModelAdmin):
-    list_display = ('name', 'platform', 'assessment', 'created_at')
-    search_fields = ('name', 'platform__name', 'assessment__title')
-    list_filter = ('platform', 'assessment')
 
 
-@admin.register(LTIPlatform)
-class LTIPlatformAdmin(admin.ModelAdmin):
-    list_display = ("name", "issuer", "client_id", "created_at")
-    search_fields = ("name", "issuer", "client_id")
-
-@admin.register(PlatformKey)
-class PlatformKeyAdmin(admin.ModelAdmin):
-    list_display = ('name', 'created_by', 'created_at')
-    readonly_fields = ('created_at', 'private_key', 'public_jwk')
-    search_fields = ('name', 'created_by__username')
-    ordering = ('-created_at',)
-
-    fieldsets = (
-        (None, {
-            'fields': ('name', 'partner', 'created_by', 'created_at')
-        }),
-        ("Key Details", {
-            'fields': ('private_key', 'public_jwk'),
-        }),
-    )
-
-    def save_model(self, request, obj, form, change):
-        if not obj.created_by:
-            obj.created_by = request.user
-
-        # Tidak perlu generate key di sini karena sudah otomatis di model
-        super().save_model(request, obj, form, change)
 
 
 

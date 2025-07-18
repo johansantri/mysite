@@ -1321,103 +1321,6 @@ class Like(models.Model):
 
 
 
-def generate_rsa_key_pair():
-    # Generate private key
-    private_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
-
-    # Serialize private key to PEM
-    private_pem = private_key.private_bytes(
-        encoding=serialization.Encoding.PEM,
-        format=serialization.PrivateFormat.PKCS8,
-        encryption_algorithm=serialization.NoEncryption()
-    ).decode()
-
-    # Convert public key to JWK
-    public_key = private_key.public_key()
-    public_jwk = jwk.JWK.from_pyca(public_key)
-    public_jwk_json = json.loads(public_jwk.export_public())
-
-    # Tambahkan metadata penting untuk LTI 1.3
-    public_jwk_json["alg"] = "RS256"
-    public_jwk_json["use"] = "sig"
-    public_jwk_json["kid"] = "lms-key-" + datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-
-    return private_pem, public_jwk_json
-
-class PlatformKey(models.Model):
-    partner = models.ForeignKey(Partner, on_delete=models.CASCADE, null=True, blank=True)
-    name = models.CharField(max_length=255, default="Default LMS Key")
-    private_key = models.TextField(help_text="RSA private key in PEM format", blank=True)
-    public_jwk = models.JSONField(help_text="Public JWK for LTI 1.3", blank=True, null=True)
-    created_by = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True)
-    created_at = models.DateTimeField(default=timezone.now)
-
-    def save(self, *args, **kwargs):
-        if not self.private_key or not self.public_jwk:
-            self.private_key, self.public_jwk = generate_rsa_key_pair()
-        super().save(*args, **kwargs)
-
-
-    class Meta:
-        verbose_name = "Platform RSA Key"
-        verbose_name_plural = "Platform RSA Keys"
-        permissions = [
-            ("can_generate_rsa_key", "Can generate RSA Key Pair for LTI 1.3")
-        ]
-
-    def __str__(self):
-        if self.partner and self.partner.name:
-            return f"{self.name} ({self.partner.name.slug})"
-        return self.name
-
-
-class LTIPlatform(models.Model):
-    name = models.CharField(
-        max_length=255,
-        help_text="Nama identitas dari Tool Provider, misalnya: H5P, Labster, Moodle, dsb."
-    )
-    issuer = models.URLField(
-        help_text="URL unik dari Tool Provider sebagai 'iss' dalam id_token JWT. Contoh: https://asimarif.h5p.com"
-    )
-    client_id = models.CharField(
-        max_length=512,
-        help_text="Client ID yang diberikan oleh Tool Provider. Biasanya sama dengan issuer, tapi bisa berbeda."
-    )
-    login_url = models.URLField(
-        help_text="URL login initiation dari Tool. LMS akan redirect ke sini saat memulai login LTI."
-    )
-    launch_url = models.URLField(
-        help_text="URL tujuan LTI launch di sisi Tool. Biasanya ditentukan oleh Tool, bisa digunakan untuk referensi."
-    )
-    jwks_url = models.URLField(
-        help_text="URL public JWKS milik Tool Provider. LMS akan mengambil public key dari sini untuk verifikasi JWT."
-    )
-    audience = models.CharField(
-        max_length=512,
-        blank=True,
-        null=True,
-        help_text="(Opsional) Nilai 'aud' dalam id_token. Jika kosong, akan dianggap sama dengan client_id."
-    )
-    auth_login_url = models.URLField()      # ✅ Tambahkan ini
-    auth_token_url = models.URLField()      # ✅ Tambahkan ini jika perlu
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-        help_text="Waktu entri ini dibuat. Diisi otomatis oleh sistem."
-    )
-
-    def __str__(self):
-        return self.name
-    
-class LTIExternalTool(models.Model):
-    assessment = models.ForeignKey(Assessment, on_delete=models.CASCADE, related_name='lti_tools')
-    platform = models.ForeignKey(LTIPlatform, on_delete=models.CASCADE, related_name='tools')
-    name = models.CharField(max_length=255)
-    custom_params = models.JSONField(blank=True, null=True, default=dict)
-    deep_link_return_url = models.URLField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.name
 
 class Certificate(models.Model):
     certificate_id = models.UUIDField(unique=True, editable=False)
@@ -1453,3 +1356,15 @@ class LastAccessCourse(models.Model):
     class Meta:
         unique_together = ('user', 'course')
 
+class LTIExternalTool1(models.Model):
+    assessment = models.OneToOneField('Assessment', on_delete=models.CASCADE, related_name='lti_tool')
+    tool_name = models.CharField(max_length=255)
+    launch_url = models.URLField(help_text="LTI launch URL dari provider.")
+    tool_url = models.URLField(default="https://example.com")
+    consumer_key = models.CharField(max_length=255, help_text="Consumer key (diberikan oleh provider).")
+    shared_secret = models.CharField(max_length=255, help_text="Shared secret (diberikan oleh provider atau dibuat otomatis).")
+    custom_parameters = models.TextField(blank=True, null=True, help_text="Custom parameters (format: key=value, satu per baris).")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.tool_name} ({self.assessment})"

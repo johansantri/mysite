@@ -575,23 +575,12 @@
                           <!-- Bagian untuk lti lunch -->
                         {% if is_lti %}
                             {% if is_lti and lti_tool %}
-                            <div class="card my-4 border border-secondary">
-                                <div class="card-body">
-                                    <h5 class="card-title text-primary">External Tool (LTI)</h5>
-                                    <p class="card-text text-muted">Penilaian ini dilakukan melalui platform eksternal.</p>
-                                    <p class="card-text">
-                                        <strong>Nama Tool:</strong> {{ lti_tool.name }}<br>
-                                        <strong>Platform:</strong> {{ lti_tool.platform.name }}<br>
-                                        <strong>Launch URL:</strong> <code>{{ lti_tool.platform.launch_url }}</code>
-                                    </p>
-                                    <a href="{% url 'courses:lti_login_initiation' lti_tool.id %}" class="btn btn-primary">
-                                        Mulai Penilaian di LTI Tool
-                                    </a>
+                            <form action="{% url 'learner:lti_consume_course' assessment.id %}" method="get" target="_blank" style="display:inline;">
+                            <button type="submit" class="btn btn-primary">
+                                Launch LTI: {{ lti_tool.tool_name }}
+                            </button>
+                            </form>
 
-
-
-                                </div>
-                            </div>
                             {% endif %}
 
 

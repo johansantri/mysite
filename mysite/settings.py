@@ -471,7 +471,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': '{levelname} {asctime} {module} {message}',
+            'format': '[{levelname}] {asctime} [{name}] {message}',
             'style': '{',
         },
     },
@@ -479,7 +479,7 @@ LOGGING = {
         'file': {
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': 'debug.log',
-            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'maxBytes': 1024 * 1024 * 10,  # 10 MB
             'backupCount': 5,
             'formatter': 'verbose',
         },
@@ -487,43 +487,12 @@ LOGGING = {
     'loggers': {
         '': {
             'handlers': ['file'],
-            'level': 'INFO',
+            'level': 'DEBUG',  # Pastikan DEBUG aktif
             'propagate': True,
-        },
-        'lti': {  # <<== Tambahkan ini
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
-        'django.request': {
-            'handlers': ['file'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
-        'django.security': {
-            'handlers': ['file'],
-            'level': 'WARNING',
-            'propagate': False,
-        },
-        'middleware.log_disallowed_host': {
-            'handlers': ['file'],
-            'level': 'WARNING',
-            'propagate': False,
-        },
-        'loggers': {
-            'audit.middleware': {
-                'handlers': ['console'],
-                'level': 'ERROR',
-                'propagate': False,
-            },
-            'audit.signals': {
-                'handlers': ['console'],
-                'level': 'ERROR',
-                'propagate': False,
-            },
         },
     },
 }
+
 
 
 SITE_URL = 'https://ini.icei.ac.id'
@@ -554,6 +523,7 @@ CONTENT_SECURITY_POLICY = {
         'frame-ancestors': (
             "'self'",  # agar bisa embed sendiri (opsional)
             'https://moodle.icei.ac.id',  # izinkan Moodle sebagai LTI consumer
+            'https://asimarif.h5p.com',  # izinkan H5P sebagai LTI consumer
         ),
 
         # Form hanya bisa dikirim (POST) ke domain sendiri
@@ -567,7 +537,9 @@ CONTENT_SECURITY_POLICY = {
             "https://pakaimata.h5p.com",  # Izinkan YouTube iframe (tanpa cookie)
             "https://www.youtube.com",
             "https://www.youtube-nocookie.com",
-            'https://scholldecodewp.h5p.com',  # Tambahkan ini
+            'https://scholldecodewp.h5p.com', 
+            "https://moodle.icei.ac.id",  # Tambahkan ini
+            "https://asimarif.h5p.com",
         ),
 
         # Izinkan gambar dari domain sendiri dan dari inline base64 (data:)
@@ -611,6 +583,8 @@ CONTENT_SECURITY_POLICY = {
             "https://vclass.unila.ac.id",  # domain Moodle tujuan POST LTI
             "https://idols.ui.ac.id",
             "https://scholldecodewp.h5p.com",
+            "https://moodle.icei.ac.id",
+            "https://asimarif.h5p.com",  # domain H5P untuk LTI
           
         ),
     }

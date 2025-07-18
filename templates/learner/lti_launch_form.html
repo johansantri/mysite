@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Launching LTI...</title>
+</head>
+<body onload="document.forms[0].submit();">
+    <p>Meluncurkan LTI Tool...</p>
+    <form method="post" action="{{ launch_url }}">
+        {% for key, value in params.items %}
+            <input type="hidden" name="{{ key }}" value="{{ value|escape }}">
+        {% endfor %}
+        <noscript>
+            <button type="submit">Klik di sini jika tidak diarahkan otomatis</button>
+        </noscript>
+    </form>
+</body>
+</html>

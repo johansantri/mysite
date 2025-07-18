@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 from django import forms
 from django.forms import inlineformset_factory
 from django.core.cache import cache
-from .models import MicroCredentialComment,MicroCredentialReview,LTIExternalTool,Course,SosPost,CourseStatus,CourseRating,MicroCredential, AskOra,Partner,Category, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment,PricingType, CoursePrice
+from .models import MicroCredentialComment,LTIExternalTool1,MicroCredentialReview,Course,SosPost,CourseStatus,CourseRating,MicroCredential, AskOra,Partner,Category, Section,Instructor,TeamMember,GradeRange, Material,Question, Choice,Assessment,PricingType, CoursePrice
 from django_ckeditor_5.widgets import CKEditor5Widget
 import os
 from authentication.models import CustomUser, Universiti
@@ -45,32 +45,33 @@ class MicroCredentialReviewForm(forms.ModelForm):
         
 class LTIExternalToolForm(forms.ModelForm):
     class Meta:
-        model = LTIExternalTool
-        fields = ['name', 'platform', 'custom_params']  # gunakan platform, bukan consumer key
+        model = LTIExternalTool1
+        fields = ['tool_name', 'launch_url', 'consumer_key', 'custom_parameters']
         widgets = {
-            'name': forms.TextInput(attrs={
+            'tool_name': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'LTI Tool Name (e.g., H5P Integration)'
+                'placeholder': 'Masukkan nama tool, contoh: H5P, Moodle Quiz'
             }),
-            'platform': forms.Select(attrs={
-                'class': 'form-control'
-            }),
-            'custom_params': forms.Textarea(attrs={
+            'launch_url': forms.URLInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Contoh: {"context_id": "abc", "user_id": "xyz"}',
-                'rows': 3
+                'placeholder': 'https://provider.example.com/lti-launch'
+            }),
+            'consumer_key': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Consumer Key dari provider'
+            }),
+            'custom_parameters': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 4,
+                'placeholder': 'contoh:\ncustom_param1=value1\ncustom_param2=value2'
             }),
         }
-
-    def clean_custom_params(self):
-        import json
-        custom_params = self.cleaned_data.get('custom_params')
-        if custom_params:
-            try:
-                json.loads(custom_params)
-            except Exception:
-                raise forms.ValidationError("Format harus berupa JSON yang valid.")
-        return custom_params
+        labels = {
+            'tool_name': 'Nama Tool',
+            'launch_url': 'LTI Launch URL',
+            'consumer_key': 'Consumer Key',
+            'custom_parameters': 'Custom Parameters (opsional)',
+        }
 
 
 

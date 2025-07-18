@@ -111,12 +111,6 @@ urlpatterns = [
    #menuju home category
     path('category/<slug:slug>/', views.category_course_list, name='category_list'),
 
-    #jwks and lti 1.3
-    path("lti/login-initiation/<int:tool_id>/", views.lti_login_initiation, name="lti_login_initiation"),
-    path("lti/login/", views.lti_tool_login_handler, name="lti_login"),
-    path("lti/launch/", views.lti_launch, name="lti_launch"),
-    path("lti/token/", views.lti_token_endpoint, name="lti_token"),  # optional
-    path(".well-known/jwks.json", views.jwks_public, name="jwks-public"),
-    path(".well-known/openid-configuration/", views.openid_configuration, name="openid_config"),
+ 
     
 ]

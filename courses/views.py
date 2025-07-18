@@ -82,9 +82,9 @@ from .utils import user_has_passed_course, check_for_blacklisted_keywords, is_su
 
 # Internal imports - models
 from .models import (
-    LTIPlatform, PlatformKey, LastAccessCourse, UserActivityLog, MicroClaim, CourseViewIP,
+    LTIExternalTool1, LastAccessCourse, UserActivityLog, MicroClaim, CourseViewIP,
     CourseViewLog, UserMicroCredential, MicroCredentialComment, MicroCredentialReview,
-    UserMicroProgress, SearchHistory, Certificate, LTIExternalTool, Course, CourseRating,
+    UserMicroProgress, SearchHistory, Certificate,  Course, CourseRating,
     Like, SosPost, Hashtag, UserProfile, MicroCredentialEnrollment, MicroCredential,
     AskOra, PeerReview, AssessmentScore, Submission, CourseStatus, AssessmentSession,
     CourseComment, Comment, Choice, Score, CoursePrice, AssessmentRead, QuestionAnswer,
@@ -99,289 +99,7 @@ from licensing.models import License
 from payments.models import Payment
 
 
-logger = logging.getLogger(__name__)
-User = CustomUser
 
-# === NONCE ===
-def generate_nonce(request):
-    nonce = uuid.uuid4().hex
-    request.session['lti_nonce'] = nonce
-    request.session['lti_nonce_timestamp'] = datetime.now(timezone.utc).timestamp()
-    logger.debug("[NONCE] Generated nonce: %s, timestamp: %s", nonce, request.session['lti_nonce_timestamp'])
-    return nonce
-
-def validate_nonce(request, nonce):
-    stored = request.session.get('lti_nonce')
-    ts = request.session.get('lti_nonce_timestamp')
-    logger.debug("[NONCE] Validating nonce: %s, stored: %s, timestamp: %s", nonce, stored, ts)
-    if stored != nonce or not ts:
-        logger.error("[NONCE] Invalid nonce: stored=%s, received=%s, timestamp=%s", stored, nonce, ts)
-        return False
-    now = datetime.now(timezone.utc).timestamp()
-    valid = (now - ts) <= 300
-    logger.debug("[NONCE] Nonce validation result: %s", valid)
-    return valid
-
-
-# === 1. LMS → TOOL ===
-@login_required
-def lti_login_initiation(request, tool_id):
-    try:
-        tool = get_object_or_404(LTIExternalTool, id=tool_id)
-        platform = tool.platform
-        launch_url = request.build_absolute_uri(reverse("courses:lti_launch"))
-
-        params = {
-            "client_id": platform.client_id,
-            "login_hint": str(request.user.id),
-            "target_link_uri": launch_url,
-            "lti_message_hint": str(tool.id),
-        }
-
-        logger.debug("[LTI INIT] Tool ID: %s, Platform: %s, Login URL: %s", tool_id, platform.name, platform.login_url)
-        logger.debug("[LTI INIT] Parameters: %s", params)
-
-        # Encode manual querystring (URL safe)
-        encoded_params = "&".join(f"{quote(k)}={quote(str(v))}" for k, v in params.items())
-        final_url = f"{platform.login_url}?{encoded_params}"
-
-        logger.info("[LTI INIT] Redirecting to: %s", final_url)
-        return redirect(final_url)
-
-    except Exception as e:
-        logger.exception("[LTI INIT] Error in lti_login_initiation: %s", str(e))
-        return HttpResponseBadRequest(f"Error initiating LTI login: {str(e)}")
-
-
-# === 2. TOOL → LMS ===
-@csrf_exempt
-def lti_tool_login_handler(request):
-    try:
-        logger.debug("[LTI LOGIN HANDLER] Query Params: %s", request.GET.dict())
-
-        # Ambil semua parameter dari GET
-        client_id = request.GET.get("client_id")
-        iss = request.GET.get("iss")
-        login_hint = request.GET.get("login_hint")
-        lti_message_hint = request.GET.get("lti_message_hint")
-        target_link_uri = request.GET.get("target_link_uri")
-        received_redirect_uri = request.GET.get("redirect_uri")
-
-        # Validasi wajib
-        if not client_id or not iss:
-            logger.error("[LTI LOGIN HANDLER] Missing required 'client_id' or 'iss'")
-            return HttpResponseBadRequest("Missing required 'client_id' or 'iss'")
-
-        # Cari konfigurasi platform dari DB
-        platform = LTIPlatform.objects.filter(client_id=client_id, issuer=iss).first()
-        if not platform:
-            logger.error("[LTI LOGIN HANDLER] No platform found for client_id=%s and iss=%s", client_id, iss)
-            return HttpResponseBadRequest(f"No platform found for client_id={client_id} and iss={iss}")
-
-        # Fallback target_link_uri
-        if not target_link_uri:
-            target_link_uri = request.build_absolute_uri(reverse("courses:lti_launch"))
-
-        # Redirect URI (selalu ke endpoint lti_launch)
-        correct_redirect_uri = request.build_absolute_uri(reverse("courses:lti_launch"))
-
-        if received_redirect_uri and received_redirect_uri != correct_redirect_uri:
-            logger.warning("[LTI LOGIN HANDLER] Incorrect redirect_uri received: %s, using correct: %s",
-                           received_redirect_uri, correct_redirect_uri)
-
-        # Validasi minimal semua parameter kritis
-        if not all([login_hint, target_link_uri]):
-            logger.error("[LTI LOGIN HANDLER] Missing login_hint or target_link_uri")
-            return HttpResponseBadRequest("Missing login_hint or target_link_uri")
-
-        # Siapkan parameter redirect ke platform (OIDC Auth endpoint)
-        state = uuid.uuid4().hex
-        nonce = generate_nonce(request)
-
-        auth_params = {
-            "scope": "openid",
-            "response_type": "id_token",
-            "client_id": client_id,
-            "redirect_uri": correct_redirect_uri,
-            "login_hint": login_hint,
-            "state": state,
-            "response_mode": "form_post",
-            "nonce": nonce,
-            "prompt": "none",
-            "lti_message_hint": lti_message_hint,
-        }
-
-        # Encode manual querystring
-        encoded_auth_params = "&".join(f"{quote(k)}={quote(str(v))}" for k, v in auth_params.items())
-        authorize_url = f"{platform.auth_login_url}?{encoded_auth_params}"
-
-        logger.debug("[LTI LOGIN HANDLER] Redirecting to: %s", authorize_url)
-        return HttpResponseRedirect(authorize_url)
-
-    except Exception as e:
-        logger.exception("[LTI LOGIN HANDLER] Exception: %s", str(e))
-        return HttpResponseBadRequest("Internal error during login initiation")
-# === 3. Launch Endpoint ===
-@csrf_exempt
-def lti_launch(request):
-    try:
-        logger.debug("[LTI LAUNCH] Received request: method=%s, POST=%s", request.method, request.POST)
-
-        # === [Tambahan untuk validasi dari Moodle] ===
-        if request.method == "GET":
-            return HttpResponse("LTI launch endpoint is ready.", status=200)
-
-        # === Lanjut ke LTI launch (POST) ===
-        if request.method != "POST":
-            logger.error("[LTI LAUNCH] Invalid method: %s", request.method)
-            return HttpResponseBadRequest("Invalid method")
-
-        id_token = request.POST.get("id_token")
-        if not id_token:
-            logger.error("[LTI LAUNCH] Missing id_token")
-            return HttpResponseBadRequest("Missing id_token")
-
-        logger.debug("[LTI LAUNCH] Received id_token: %s", id_token)
-        header = jwt.get_unverified_header(id_token)
-        kid = header.get("kid")
-        logger.debug("[LTI LAUNCH] JWT header: %s, kid: %s", header, kid)
-
-        claims = jwt.decode(id_token, options={"verify_signature": False})
-        logger.debug("[LTI LAUNCH] Unverified claims: %s", claims)
-        iss = claims.get("iss")
-        aud = claims.get("aud")
-        nonce = claims.get("nonce")
-        sub = claims.get("sub")
-        name = claims.get("name")
-        email = claims.get("email") or f"lti-{sub}@tool.com"
-
-        if not validate_nonce(request, nonce):
-            logger.error("[LTI LAUNCH] Invalid or expired nonce: %s", nonce)
-            return HttpResponseBadRequest("Invalid or expired nonce")
-
-        jwks_url = f"{iss}/.well-known/jwks.json"
-        logger.debug("[LTI LAUNCH] Fetching JWKS from: %s", jwks_url)
-        res = requests.get(jwks_url)
-        if res.status_code != 200:
-            logger.error("[LTI LAUNCH] Failed to fetch JWKS: status=%s, response=%s", res.status_code, res.text)
-            return HttpResponseBadRequest("Failed to fetch JWKS")
-
-        jwks = res.json().get("keys", [])
-        public_key = None
-        for key in jwks:
-            if key.get("kid") == kid:
-                public_key = RSAAlgorithm.from_jwk(json.dumps(key))
-                logger.debug("[LTI LAUNCH] Found matching public key for kid: %s", kid)
-                break
-
-        if not public_key:
-            logger.error("[LTI LAUNCH] No matching key for kid: %s", kid)
-            return HttpResponseBadRequest("No matching key")
-
-        payload = jwt.decode(
-            id_token,
-            public_key,
-            algorithms=["RS256"],
-            audience=aud,
-            issuer=iss
-        )
-        logger.debug("[LTI LAUNCH] Verified payload: %s", payload)
-
-        user, created = User.objects.get_or_create(
-            username=email,
-            defaults={"email": email, "full_name": name or "LTI User", "is_active": True}
-        )
-        logger.debug("[LTI LAUNCH] User: %s, created: %s", user.username, created)
-        login(request, user)
-        logger.info("[LTI LAUNCH] Redirecting to learner dashboard")
-        return redirect("learner:dashboard")
-
-    except Exception as e:
-        logger.exception("[LTI LAUNCH] Error in lti_launch: %s", str(e))
-        return HttpResponseBadRequest(f"LTI launch failed: {str(e)}")
-
-# === 4. Token Endpoint (optional) ===
-@csrf_exempt
-def lti_token_endpoint(request):
-    try:
-        logger.debug("[LTI TOKEN] Received request: method=%s, POST=%s, headers=%s", 
-                     request.method, request.POST, request.headers)
-        if request.method != "POST":
-            logger.error("[LTI TOKEN] Invalid method: %s", request.method)
-            return HttpResponseBadRequest("Invalid method")
-
-        auth = request.headers.get("Authorization", "")
-        if not auth.startswith("Basic "):
-            logger.error("[LTI TOKEN] Missing or invalid Authorization header: %s", auth)
-            return HttpResponseForbidden("Missing Authorization header")
-
-        try:
-            decoded = base64.b64decode(auth.split(" ")[1]).decode()
-            client_id, _ = decoded.split(":")
-            logger.debug("[LTI TOKEN] Decoded client_id: %s", client_id)
-        except Exception as e:
-            logger.error("[LTI TOKEN] Invalid credentials: %s", str(e))
-            return HttpResponseForbidden("Invalid credentials")
-
-        platform = LTIPlatform.objects.filter(client_id=client_id).first()
-        key = PlatformKey.objects.filter(partner__name=platform.name).first()
-
-        if not key or not key.private_key:
-            logger.error("[LTI TOKEN] No private key for platform: %s", client_id)
-            return JsonResponse({"error": "No private key"}, status=500)
-
-        now = datetime.now(timezone.utc)
-        token = {
-            "iss": settings.LTI_ISSUER,
-            "sub": client_id,
-            "aud": client_id,
-            "iat": int(now.timestamp()),
-            "exp": int((now + timedelta(minutes=5)).timestamp()),
-            "scope": request.POST.get("scope", ""),
-        }
-        logger.debug("[LTI TOKEN] Generating token: %s", token)
-        jwt_token = jwt.encode(token, key.private_key, algorithm="RS256")
-        logger.debug("[LTI TOKEN] Generated JWT token: %s", jwt_token)
-        return JsonResponse({
-            "access_token": jwt_token,
-            "token_type": "bearer",
-            "expires_in": 300,
-            "scope": token["scope"],
-        })
-    except Exception as e:
-        logger.exception("[LTI TOKEN] Error in lti_token_endpoint: %s", str(e))
-        return JsonResponse({"error": f"Token endpoint failed: {str(e)}"}, status=500)
-
-# === 5. JWKS ===
-def jwks_public(request):
-    try:
-        key = PlatformKey.objects.first()
-        if not key:
-            logger.error("[JWKS] No platform key configured")
-            raise Http404("No platform key")
-        logger.debug("[JWKS] Returning public JWK: %s", key.public_jwk)
-        return JsonResponse({"keys": [key.public_jwk]})
-    except Exception as e:
-        logger.exception("[JWKS] Error in jwks_public: %s", str(e))
-        return JsonResponse({"error": f"JWKS endpoint failed: {str(e)}"}, status=500)
-
-def openid_configuration(request):
-    try:
-        base = request.build_absolute_uri("/")[:-1]
-        config = {
-            "issuer": base,
-            "authorization_endpoint": base + reverse("courses:lti_login"),
-            "token_endpoint": base + reverse("courses:lti_token"),
-            "jwks_uri": base + reverse("courses:jwks-public"),
-            "response_types_supported": ["id_token"],
-            "subject_types_supported": ["public"],
-            "id_token_signing_alg_values_supported": ["RS256"],
-        }
-        logger.debug("[OPENID CONFIG] Returning configuration: %s", config)
-        return JsonResponse(config)
-    except Exception as e:
-        logger.exception("[OPENID CONFIG] Error in openid_configuration: %s", str(e))
-        return JsonResponse({"error": f"OpenID configuration failed: {str(e)}"}, status=500)
 
 
 
@@ -843,93 +561,75 @@ logger = logging.getLogger(__name__)
 @login_required
 def launch_lti(request, idcourse, idsection, idlti, id_lti_tool):
     user = request.user
-    logger.info(f"User {user.get_full_name()} (ID: {user.id}) attempting to launch LTI.")
+    logger.info(f"LTI 1.1 Launch requested by user {user.username} (ID: {user.id})")
 
-    try:
-        course = get_object_or_404(Course, id=idcourse)
-        section = get_object_or_404(Section, id=idsection, courses=course)
-        assessment = get_object_or_404(Assessment, id=idlti, section=section)
-        lti_tool = get_object_or_404(LTIExternalTool, id=id_lti_tool, assessment=assessment)
+    course = get_object_or_404(Course, id=idcourse)
+    section = get_object_or_404(Section, id=idsection, courses=course)
+    assessment = get_object_or_404(Assessment, id=idlti, section=section)
+    tool = get_object_or_404(LTIExternalTool1, id=id_lti_tool, assessment=assessment)
 
-        is_instructor = user.is_superuser or user == course.instructor.user or user == course.org_partner.user
-        is_learner = course.enrollments.filter(user=user).exists()
-        if not (is_instructor or is_learner):
-            messages.error(request, "You do not have permission to access this LTI tool.")
-            logger.error(f"User {user.id} denied access to LTI tool {lti_tool.id}.")
-            return redirect('authentication:home')
-
-        if not lti_tool.launch_url or not lti_tool.consumer_key or not lti_tool.shared_secret:
-            messages.error(request, "Invalid LTI tool configuration.")
-            logger.error(f"LTI tool {lti_tool.id} has missing or invalid configuration: "
-                         f"launch_url={lti_tool.launch_url}, "
-                         f"consumer_key={lti_tool.consumer_key}, "
-                         f"shared_secret={'[REDACTED]' if lti_tool.shared_secret else 'None'}")
-            return redirect('authentication:home')
-
-        roles = "Instructor" if is_instructor else "Learner"
-        launch_url = lti_tool.launch_url.strip()
-
-        # Build LTI parameters (LTI 1.1 style)
-        lti_params = {
-            'lti_message_type': 'basic-lti-launch-request',
-            'lti_version': 'LTI-1p0',
-            'resource_link_id': f"{course.id}-{section.id}-{assessment.id}-{lti_tool.id}",
-            'resource_link_title': assessment.name,
-            'user_id': str(user.id),
-            'roles': roles,
-            'oauth_consumer_key': lti_tool.consumer_key,
-            'oauth_signature_method': 'HMAC-SHA1',
-            'oauth_timestamp': str(int(datetime.now(pytz.UTC).timestamp())),
-            'oauth_nonce': str(uuid.uuid4()),
-            'oauth_version': '1.0',
-            'lis_person_name_full': user.get_full_name(),
-            'lis_person_name_given': user.first_name,
-            'lis_person_name_family': user.last_name,
-            'lis_person_contact_email_primary': user.email,
-            'lis_person_sourcedid': str(user.id),
-            'context_id': str(course.id),
-            'context_title': course.course_name,
-            'context_label': course.course_name[:10],
-            'launch_presentation_locale': 'id-ID',
-            'launch_presentation_document_target': 'iframe',
-        }
-
-        # Tambahkan custom param jika ada
-        if lti_tool.custom_params:
-            lti_params.update({k: str(v) for k, v in lti_tool.custom_params.items()})
-            logger.debug(f"Added custom params: {lti_tool.custom_params}")
-
-        # Hitung signature
-        params_to_sign = lti_params.copy()
-        sorted_params = sorted(params_to_sign.items())
-        encoded_params = urllib.parse.urlencode(sorted_params, quote_via=urllib.parse.quote)
-
-        method = 'POST'
-        base_string = f"{method}&{urllib.parse.quote(launch_url, safe='')}&{urllib.parse.quote(encoded_params, safe='')}"
-        signing_key = f"{urllib.parse.quote(lti_tool.shared_secret, safe='')}&".encode('utf-8')
-
-        logger.debug(f"Base string: {base_string}")
-        logger.debug(f"Signing key: {signing_key.decode()}")
-
-        hashed = hmac.new(signing_key, base_string.encode('utf-8'), hashlib.sha1)
-        signature = base64.b64encode(hashed.digest()).decode('utf-8')
-        lti_params['oauth_signature'] = signature
-
-        logger.debug(f"Final signed LTI params: {lti_params}")
-
-        return render(
-            request,
-            'courses/lti_launch.html',
-            {
-                'launch_url': launch_url,
-                'lti_params': lti_params,
-            }
-        )
-
-    except Exception as e:
-        logger.exception(f"Error launching LTI tool {id_lti_tool}: {str(e)}")
-        messages.error(request, "An error occurred while launching the LTI tool.")
+    # Akses hanya untuk user yang terdaftar
+    if not course.enrollments.filter(user=user).exists():
+        logger.warning(f"Access denied for user {user.username} to LTI tool {tool.id}")
+        messages.error(request, "Anda tidak memiliki akses ke alat ini.")
         return redirect('authentication:home')
+
+    # Validasi konfigurasi
+    if not tool.launch_url or not tool.consumer_key or not tool.shared_secret:
+        messages.error(request, "Konfigurasi LTI tidak lengkap.")
+        logger.error(f"Invalid LTI config for tool {tool.id}")
+        return redirect('authentication:home')
+
+    # Persiapkan parameter LTI 1.1
+    launch_url = tool.launch_url.strip()
+    lti_params = {
+        'lti_message_type': 'basic-lti-launch-request',
+        'lti_version': 'LTI-1p0',
+        'resource_link_id': f"{course.id}-{section.id}-{assessment.id}-{tool.id}",
+        'resource_link_title': assessment.name,
+        'user_id': str(user.id),
+        'roles': 'Learner',
+        'oauth_consumer_key': tool.consumer_key,
+        'oauth_signature_method': 'HMAC-SHA1',
+        'oauth_timestamp': str(int(datetime.now(pytz.UTC).timestamp())),
+        'oauth_nonce': str(uuid.uuid4()),
+        'oauth_version': '1.0',
+        'lis_person_name_full': user.get_full_name(),
+        'lis_person_name_given': user.first_name,
+        'lis_person_name_family': user.last_name,
+        'lis_person_contact_email_primary': user.email,
+        'context_id': str(course.id),
+        'context_title': course.course_name,
+        'context_label': course.course_name[:10],
+        'launch_presentation_locale': 'id-ID',
+        'launch_presentation_document_target': 'iframe',
+    }
+
+    # Custom parameter sebagai string (opsional)
+    if tool.custom_parameters:
+        try:
+            for line in tool.custom_parameters.splitlines():
+                if '=' in line:
+                    key, value = line.split('=', 1)
+                    lti_params[key.strip()] = value.strip()
+        except Exception as e:
+            logger.warning(f"Invalid custom params on tool {tool.id}: {e}")
+
+    # Sign OAuth
+    sorted_params = sorted(lti_params.items())
+    encoded_params = urllib.parse.urlencode(sorted_params, quote_via=urllib.parse.quote)
+    base_string = f"POST&{urllib.parse.quote(launch_url, safe='')}&{urllib.parse.quote(encoded_params, safe='')}"
+    signing_key = f"{urllib.parse.quote(tool.shared_secret, safe='')}&".encode('utf-8')
+
+    signature = base64.b64encode(
+        hmac.new(signing_key, base_string.encode('utf-8'), hashlib.sha1).digest()
+    ).decode('utf-8')
+    lti_params['oauth_signature'] = signature
+
+    return render(request, 'courses/lti_launch.html', {
+        'launch_url': launch_url,
+        'lti_params': lti_params,
+    })
 
 
 
@@ -1000,7 +700,7 @@ def edit_lti(request, idcourse, idsection, idlti, id_lti_tool):
     assessment = get_object_or_404(Assessment, id=idlti, section=section)
 
     # Pastikan LTI tool milik assessment
-    lti_tool = get_object_or_404(LTIExternalTool, id=id_lti_tool, assessment=assessment)
+    lti_tool = get_object_or_404(LTIExternalTool1, id=id_lti_tool, assessment=assessment)
 
     # Menangani form
     if request.method == 'POST':
@@ -1063,7 +763,7 @@ def delete_lti(request, idcourse, idsection, idlti, id_lti_tool):
     assessment = get_object_or_404(Assessment, id=idlti, section=section)
 
     # Pastikan LTI tool milik assessment
-    lti_tool = get_object_or_404(LTIExternalTool, id=id_lti_tool, assessment=assessment)
+    lti_tool = get_object_or_404(LTIExternalTool1, id=id_lti_tool, assessment=assessment)
 
     if request.method == 'POST':
         try:
@@ -2960,7 +2660,7 @@ def course_learn(request, username, slug):
                 Prefetch('choices', queryset=Choice.objects.all())
             )),
             Prefetch('ask_oras', queryset=AskOra.objects.all()),
-            Prefetch('lti_tools', queryset=LTIExternalTool.objects.all())
+            Prefetch('lti_tools', queryset=LTIExternalTool1.objects.all())
         ))
     )
 
@@ -3221,7 +2921,7 @@ def course_learn(request, username, slug):
             'can_review': user_has_submitted
         })
 
-    lti_tools = LTIExternalTool.objects.filter(assessment__section__courses=course)
+    lti_tools = LTIExternalTool1.objects.filter(assessment__section__courses=course)
     context = {
         'course': course,
         'course_name': course_name,
@@ -4554,12 +4254,12 @@ def question_view(request, idcourse, idsection, idassessment):
     # Ensure the section belongs to the course
     section = get_object_or_404(Section, id=idsection, courses=course)
 
-    # Ensure the assessment belongs to the section
     assessment = get_object_or_404(
-        Assessment.objects.prefetch_related(
-            'questions__choices',  # prefetch related choices for multiple-choice questions
-            'ask_oras', #prefetch related ask_oras for open-response questions
-            'lti_tools'  # prefetch related lti for lti_tools
+        Assessment.objects.select_related(
+            'lti_tool'  # gunakan select_related karena OneToOneField
+        ).prefetch_related(
+            'questions__choices',  # untuk multiple-choice
+            'ask_oras'             # untuk open-response
         ),
         id=idassessment,
         section=section
@@ -4570,6 +4270,7 @@ def question_view(request, idcourse, idsection, idassessment):
         'section': section,
         'assessment': assessment,
     })
+
 
 
 
