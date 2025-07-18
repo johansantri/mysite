@@ -54,7 +54,7 @@ from oauthlib.oauth1 import Client
 
 logger = logging.getLogger(__name__)
 
-logger = logging.getLogger(__name__)
+
 
 def percent_encode(s):
     return quote(str(s), safe='~')
@@ -126,7 +126,11 @@ def lti_consume_course(request, assessment_id):
         "context_title": getattr(assessment, "title", "Course"),
         "launch_presentation_locale": "en-US",
         "lti_version": "LTI-1p0",
-        "lti_message_type": "basic-lti-launch-request"
+        "lti_message_type": "basic-lti-launch-request",
+        "tool_consumer_info_product_family_code": "django-lms",
+        "tool_consumer_info_version": "1.0",
+        "launch_presentation_document_target": "iframe",
+        
     }
 
     # Tambahkan custom parameters jika ada
