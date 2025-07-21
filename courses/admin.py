@@ -1,9 +1,36 @@
 from django.contrib import admin
 from . import models 
-from .models import  LTIExternalTool1,MicroClaim,UserMicroProgress,MicroCredentialComment,Certificate,Submission,CourseRating,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
+from .models import  LTIResult,LTIExternalTool1,MicroClaim,UserMicroProgress,MicroCredentialComment,Certificate,Submission,CourseRating,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
 from import_export.admin import ImportExportModelAdmin
 from django.utils.html import format_html
 
+
+@admin.register(LTIResult)
+class LTIResultAdmin(admin.ModelAdmin):
+    list_display = (
+        'user_full_name',
+        'assessment_title',
+        'score_display',
+        'consumer_key',
+        'created_at',
+        'last_sent_at',
+    )
+    list_filter = ('consumer_key', 'created_at', 'last_sent_at')
+    search_fields = ('user__username', 'user__email', 'assessment__title', 'result_sourcedid')
+    readonly_fields = ('created_at', 'last_sent_at')
+    ordering = ('-created_at',)
+
+    def user_full_name(self, obj):
+        return obj.user.get_full_name() or obj.user.username
+    user_full_name.short_description = "User"
+
+    def assessment_title(self, obj):
+        return obj.assessment.name
+    assessment_title.short_description = "Assessment"
+
+    def score_display(self, obj):
+        return f"{obj.score:.2f}" if obj.score is not None else "-"
+    score_display.short_description = "Score"
 
 @admin.register(LTIExternalTool1)
 class LTIExternalTool1Admin(admin.ModelAdmin):

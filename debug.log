@@ -10893,3 +10893,218 @@ django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'localhost'. Yo
 [WARNING] 2025-07-21 08:47:38,150 [django.request] Not Found: /partner/ping-session/
 [WARNING] 2025-07-21 08:48:32,554 [django.request] Not Found: /partner/ping-session/
 [WARNING] 2025-07-21 08:48:38,150 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 08:49:32,670 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 08:49:38,365 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 08:50:32,663 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 08:50:38,363 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 08:51:32,772 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 08:51:38,468 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 08:52:32,766 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 08:52:38,470 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 08:53:32,771 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 08:53:38,559 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 08:54:32,777 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 08:54:38,564 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-07-21 08:54:56,642 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-21 08:54:56,744 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-21 08:54:56,819 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-07-21 08:55:09,563 [django.request] Not Found: /favicon.ico
+[ERROR] 2025-07-21 08:55:14,944 [django.request] Internal Server Error: /kuruk/courses/ltiresult/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/options.py", line 683, in get_field
+    return self.fields_map[field_name]
+KeyError: 'assessment_title'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/utils.py", line 290, in lookup_field
+    f = _get_non_gfk_field(opts, name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/utils.py", line 330, in _get_non_gfk_field
+    field = opts.get_field(name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/options.py", line 685, in get_field
+    raise FieldDoesNotExist(
+django.core.exceptions.FieldDoesNotExist: LTIResult has no field named 'assessment_title'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 220, in _get_response
+    response = response.render()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/response.py", line 114, in render
+    self.content = self.rendered_content
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/templatetags/base.py", line 45, in render
+    return super().render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/library.py", line 359, in render
+    _dict = self.func(*resolved_args, **resolved_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/templatetags/admin_list.py", line 354, in result_list
+    "results": list(results(cl)),
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/templatetags/admin_list.py", line 330, in results
+    yield ResultList(None, items_for_result(cl, res, None))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/templatetags/admin_list.py", line 321, in __init__
+    super().__init__(*items)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/templatetags/admin_list.py", line 219, in items_for_result
+    f, attr, value = lookup_field(field_name, result, cl.model_admin)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/utils.py", line 299, in lookup_field
+    value = attr(obj)
+  File "/home/TIM/mysite/courses/admin.py", line 28, in assessment_title
+    return obj.assessment.title
+AttributeError: 'Assessment' object has no attribute 'title'
+[WARNING] 2025-07-21 08:55:32,770 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 08:55:38,774 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-07-21 08:56:04,839 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-21 08:56:04,863 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-21 08:56:04,871 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-07-21 08:56:32,871 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 08:56:38,773 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 08:57:32,872 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 08:57:38,769 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 08:58:32,869 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 08:58:38,780 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 08:59:32,944 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 08:59:38,773 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:00:32,941 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:00:38,797 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:01:33,021 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:01:39,020 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:02:33,139 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:02:39,139 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:02:48,415 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-07-21 09:02:50,423 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-07-21 09:03:33,195 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:03:39,135 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:04:33,263 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:04:39,268 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:05:33,364 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:05:39,360 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:06:33,362 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:06:39,367 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:07:33,365 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:07:39,371 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:08:14,614 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-07-21 09:08:33,516 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:08:39,363 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:09:33,510 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:09:39,364 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:10:33,778 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:10:39,467 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:11:33,857 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:11:39,941 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:12:33,949 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:12:39,652 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-07-21 09:13:16,287 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn, assessment 83
+[DEBUG] 2025-07-21 09:13:19,698 [learner.views] Base URL: https://moodle.icei.ac.id/enrol/lti/tool.php
+[DEBUG] 2025-07-21 09:13:19,698 [learner.views] Base String: POST&https%3A%2F%2Fmoodle.icei.ac.id%2Fenrol%2Flti%2Ftool.php&context_id%3Dcourse-83%26context_title%3DCourse%26id%3D4%26launch_presentation_document_target%3Diframe%26launch_presentation_locale%3Den-US%26lis_person_contact_email_primary%3Dlearn%2540learn.com%26lis_person_name_full%3DMr%2520Learners%26lti_message_type%3Dbasic-lti-launch-request%26lti_version%3DLTI-1p0%26oauth_consumer_key%3Dasimarif-b1bec%26oauth_nonce%3D9a1b0e3d5dd849db94cdc486cf73bbc3%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1753063999%26oauth_version%3D1.0%26resource_link_id%3Dres-83%26roles%3DLearner%26tool_consumer_info_product_family_code%3Ddjango-lms%26tool_consumer_info_version%3D1.0%26user_id%3D4
+[DEBUG] 2025-07-21 09:13:19,698 [learner.views] Signing Key: jgGse6aABpb6q0tQRq4W1z9c1jfVaAJI&
+[DEBUG] 2025-07-21 09:13:19,699 [learner.views] OAuth Signature: QLhVFWOY9bQiEnomL9q/MXyG/y8=
+[DEBUG] 2025-07-21 09:13:19,699 [learner.views] Mengirim LTI Launch ke https://moodle.icei.ac.id/enrol/lti/tool.php?id=4 dengan param: {'oauth_consumer_key': 'asimarif-b1bec', 'oauth_signature_method': 'HMAC-SHA1', 'oauth_version': '1.0', 'oauth_nonce': '9a1b0e3d5dd849db94cdc486cf73bbc3', 'oauth_timestamp': '1753063999', 'resource_link_id': 'res-83', 'user_id': '4', 'roles': 'Learner', 'lis_person_name_full': 'Mr Learners', 'lis_person_contact_email_primary': 'learn@learn.com', 'context_id': 'course-83', 'context_title': 'Course', 'launch_presentation_locale': 'en-US', 'lti_version': 'LTI-1p0', 'lti_message_type': 'basic-lti-launch-request', 'tool_consumer_info_product_family_code': 'django-lms', 'tool_consumer_info_version': '1.0', 'launch_presentation_document_target': 'iframe', 'oauth_signature': 'QLhVFWOY9bQiEnomL9q/MXyG/y8='}
+[WARNING] 2025-07-21 09:14:16,716 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-07-21 09:15:07,920 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn, assessment 83
+[INFO] 2025-07-21 09:15:15,824 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn, assessment 83
+[DEBUG] 2025-07-21 09:15:18,644 [learner.views] Base URL: https://moodle.icei.ac.id/enrol/lti/tool.php
+[DEBUG] 2025-07-21 09:15:18,644 [learner.views] Base String: POST&https%3A%2F%2Fmoodle.icei.ac.id%2Fenrol%2Flti%2Ftool.php&context_id%3Dcourse-83%26context_title%3DCourse%26id%3D4%26launch_presentation_document_target%3Diframe%26launch_presentation_locale%3Den-US%26lis_person_contact_email_primary%3Dlearn%2540learn.com%26lis_person_name_full%3DMr%2520Learners%26lti_message_type%3Dbasic-lti-launch-request%26lti_version%3DLTI-1p0%26oauth_consumer_key%3Dasimarif-b1bec%26oauth_nonce%3Db25a147c19f74bc6a82f95970bc1d4b2%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1753064118%26oauth_version%3D1.0%26resource_link_id%3Dres-83%26roles%3DLearner%26tool_consumer_info_product_family_code%3Ddjango-lms%26tool_consumer_info_version%3D1.0%26user_id%3D4
+[DEBUG] 2025-07-21 09:15:18,644 [learner.views] Signing Key: jgGse6aABpb6q0tQRq4W1z9c1jfVaAJI&
+[DEBUG] 2025-07-21 09:15:18,644 [learner.views] OAuth Signature: 7nhczAIEpQBsYEGscGBCcFZh2DM=
+[DEBUG] 2025-07-21 09:15:18,644 [learner.views] Mengirim LTI Launch ke https://moodle.icei.ac.id/enrol/lti/tool.php?id=4 dengan param: {'oauth_consumer_key': 'asimarif-b1bec', 'oauth_signature_method': 'HMAC-SHA1', 'oauth_version': '1.0', 'oauth_nonce': 'b25a147c19f74bc6a82f95970bc1d4b2', 'oauth_timestamp': '1753064118', 'resource_link_id': 'res-83', 'user_id': '4', 'roles': 'Learner', 'lis_person_name_full': 'Mr Learners', 'lis_person_contact_email_primary': 'learn@learn.com', 'context_id': 'course-83', 'context_title': 'Course', 'launch_presentation_locale': 'en-US', 'lti_version': 'LTI-1p0', 'lti_message_type': 'basic-lti-launch-request', 'tool_consumer_info_product_family_code': 'django-lms', 'tool_consumer_info_version': '1.0', 'launch_presentation_document_target': 'iframe', 'oauth_signature': '7nhczAIEpQBsYEGscGBCcFZh2DM='}
+[WARNING] 2025-07-21 09:16:16,127 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-07-21 09:16:40,693 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn, assessment 83
+[DEBUG] 2025-07-21 09:16:51,777 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-07-21 09:16:51,780 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-21 01:16:51.777602+00:00
+[INFO] 2025-07-21 09:16:51,780 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36", path_info: "/logout/"}.
+[DEBUG] 2025-07-21 09:17:08,280 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-07-21 09:17:08,282 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-21 01:17:08.280682+00:00
+[INFO] 2025-07-21 09:17:08,282 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0", path_info: "/logout/"}.
+[DEBUG] 2025-07-21 09:17:15,322 [urllib3.connectionpool] Starting new HTTPS connection (1): oauth2.googleapis.com:443
+[DEBUG] 2025-07-21 09:17:15,745 [urllib3.connectionpool] https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+[DEBUG] 2025-07-21 09:17:15,866 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-07-21 09:17:15,867 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0", path_info: "/accounts/google/login/callback/"}.
+[INFO] 2025-07-21 09:17:15,868 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-21 01:17:15.866621+00:00
+[INFO] 2025-07-21 09:17:20,515 [learner.views] my_course: Rendering untuk pengguna johan, kursus kursus-uiux-design-dari-nol-hingga-mahir, assessment_id=None
+[INFO] 2025-07-21 09:17:34,052 [learner.views] my_course: Rendering untuk pengguna johan, kursus build-powerful-web-applications-with-django-2026, assessment_id=None
+[INFO] 2025-07-21 09:17:39,626 [learner.views] my_course: Rendering untuk pengguna johan, kursus kursus-uiux-design-dari-nol-hingga-mahir, assessment_id=None
+[INFO] 2025-07-21 09:17:43,138 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna johan, assessment 83
+[DEBUG] 2025-07-21 09:17:45,431 [learner.views] Base URL: https://moodle.icei.ac.id/enrol/lti/tool.php
+[DEBUG] 2025-07-21 09:17:45,431 [learner.views] Base String: POST&https%3A%2F%2Fmoodle.icei.ac.id%2Fenrol%2Flti%2Ftool.php&context_id%3Dcourse-83%26context_title%3DCourse%26id%3D4%26launch_presentation_document_target%3Diframe%26launch_presentation_locale%3Den-US%26lis_person_contact_email_primary%3Djohansantri%2540gmail.com%26lis_person_name_full%3DJohan%2520Santri%26lti_message_type%3Dbasic-lti-launch-request%26lti_version%3DLTI-1p0%26oauth_consumer_key%3Dasimarif-b1bec%26oauth_nonce%3Dafe74d2ccfb74cc682e3026568b32eb1%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1753064265%26oauth_version%3D1.0%26resource_link_id%3Dres-83%26roles%3DLearner%26tool_consumer_info_product_family_code%3Ddjango-lms%26tool_consumer_info_version%3D1.0%26user_id%3D6
+[DEBUG] 2025-07-21 09:17:45,432 [learner.views] Signing Key: jgGse6aABpb6q0tQRq4W1z9c1jfVaAJI&
+[DEBUG] 2025-07-21 09:17:45,432 [learner.views] OAuth Signature: lhWi57ec+3WQ0A4tahH/Zfc3s1c=
+[DEBUG] 2025-07-21 09:17:45,432 [learner.views] Mengirim LTI Launch ke https://moodle.icei.ac.id/enrol/lti/tool.php?id=4 dengan param: {'oauth_consumer_key': 'asimarif-b1bec', 'oauth_signature_method': 'HMAC-SHA1', 'oauth_version': '1.0', 'oauth_nonce': 'afe74d2ccfb74cc682e3026568b32eb1', 'oauth_timestamp': '1753064265', 'resource_link_id': 'res-83', 'user_id': '6', 'roles': 'Learner', 'lis_person_name_full': 'Johan Santri', 'lis_person_contact_email_primary': 'johansantri@gmail.com', 'context_id': 'course-83', 'context_title': 'Course', 'launch_presentation_locale': 'en-US', 'lti_version': 'LTI-1p0', 'lti_message_type': 'basic-lti-launch-request', 'tool_consumer_info_product_family_code': 'django-lms', 'tool_consumer_info_version': '1.0', 'launch_presentation_document_target': 'iframe', 'oauth_signature': 'lhWi57ec+3WQ0A4tahH/Zfc3s1c='}
+[DEBUG] 2025-07-21 09:18:20,177 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-07-21 09:18:20,178 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-07-21 09:18:20,178 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-07-21 01:18:20.176958+00:00
+[INFO] 2025-07-21 09:18:21,105 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36", path_info: "/login/"}.
+[INFO] 2025-07-21 09:18:21,107 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-21 01:18:20.176958+00:00
+[WARNING] 2025-07-21 09:18:40,262 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:18:43,404 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-07-21 09:19:32,976 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-07-21 09:19:32,977 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-21 01:19:32.976370+00:00
+[INFO] 2025-07-21 09:19:32,977 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36", path_info: "/kuruk/logout/"}.
+[WARNING] 2025-07-21 09:19:40,527 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:19:43,415 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-07-21 09:20:37,922 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-07-21 09:20:37,922 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-07-21 09:20:37,923 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-07-21 01:20:37.922638+00:00
+[INFO] 2025-07-21 09:20:38,869 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36", path_info: "/login/"}.
+[INFO] 2025-07-21 09:20:38,870 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-21 01:20:37.922638+00:00
+[WARNING] 2025-07-21 09:20:40,610 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:20:43,410 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-07-21 09:20:53,881 [learner.views] my_course: Rendering untuk pengguna learn, kursus kursus-uiux-design-dari-nol-hingga-mahir, assessment_id=None
+[INFO] 2025-07-21 09:20:58,143 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn, assessment 83
+[DEBUG] 2025-07-21 09:20:59,693 [learner.views] Base URL: https://moodle.icei.ac.id/enrol/lti/tool.php
+[DEBUG] 2025-07-21 09:20:59,693 [learner.views] Base String: POST&https%3A%2F%2Fmoodle.icei.ac.id%2Fenrol%2Flti%2Ftool.php&context_id%3Dcourse-83%26context_title%3DCourse%26id%3D4%26launch_presentation_document_target%3Diframe%26launch_presentation_locale%3Den-US%26lis_person_contact_email_primary%3Dlearn%2540learn.com%26lis_person_name_full%3DMr%2520Learners%26lti_message_type%3Dbasic-lti-launch-request%26lti_version%3DLTI-1p0%26oauth_consumer_key%3Dasimarif-b1bec%26oauth_nonce%3Dd345c0dc071d48cabae8245494a1d14d%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1753064459%26oauth_version%3D1.0%26resource_link_id%3Dres-83%26roles%3DLearner%26tool_consumer_info_product_family_code%3Ddjango-lms%26tool_consumer_info_version%3D1.0%26user_id%3D4
+[DEBUG] 2025-07-21 09:20:59,693 [learner.views] Signing Key: jgGse6aABpb6q0tQRq4W1z9c1jfVaAJI&
+[DEBUG] 2025-07-21 09:20:59,693 [learner.views] OAuth Signature: iy0fjFH/XBzjlXX+RQ76vHWD+LY=
+[DEBUG] 2025-07-21 09:20:59,693 [learner.views] Mengirim LTI Launch ke https://moodle.icei.ac.id/enrol/lti/tool.php?id=4 dengan param: {'oauth_consumer_key': 'asimarif-b1bec', 'oauth_signature_method': 'HMAC-SHA1', 'oauth_version': '1.0', 'oauth_nonce': 'd345c0dc071d48cabae8245494a1d14d', 'oauth_timestamp': '1753064459', 'resource_link_id': 'res-83', 'user_id': '4', 'roles': 'Learner', 'lis_person_name_full': 'Mr Learners', 'lis_person_contact_email_primary': 'learn@learn.com', 'context_id': 'course-83', 'context_title': 'Course', 'launch_presentation_locale': 'en-US', 'lti_version': 'LTI-1p0', 'lti_message_type': 'basic-lti-launch-request', 'tool_consumer_info_product_family_code': 'django-lms', 'tool_consumer_info_version': '1.0', 'launch_presentation_document_target': 'iframe', 'oauth_signature': 'iy0fjFH/XBzjlXX+RQ76vHWD+LY='}
+[WARNING] 2025-07-21 09:21:40,607 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 09:21:43,412 [django.request] Not Found: /partner/ping-session/
