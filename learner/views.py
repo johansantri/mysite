@@ -50,7 +50,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.template import loader
 from django.conf import settings
 from oauthlib.oauth1 import Client
-
+from .lti_utils import verify_oauth_signature, parse_lti_grade_xml
 
 logger = logging.getLogger(__name__)
 
@@ -164,6 +164,36 @@ def lti_consume_course(request, assessment_id):
         "launch_url": launch_url,
         "params": oauth_params,
     })
+
+
+@csrf_exempt
+def lti_grade_callback(request):
+    if request.method != "POST":
+        return HttpResponse("Method Not Allowed", status=405)
+
+    # 1. Verifikasi OAuth
+    if not verify_oauth_signature(request):
+        logger.warning("Invalid OAuth signature on grade callback.")
+        return HttpResponse("Unauthorized", status=401)
+
+    # 2. Parse XML body untuk mengambil sourcedid dan score
+    try:
+        sourcedid, score = parse_lti_grade_xml(request.body)
+    except Exception as e:
+        logger.exception("Failed to parse LTI grade XML.")
+        return HttpResponse("Invalid XML", status=400)
+
+    # 3. Simpan score ke model
+    try:
+        result = LTIResult.objects.get(result_sourcedid=sourcedid)
+        result.score = score
+        result.last_sent_at = timezone.now()
+        result.save()
+        logger.info(f"Score updated for {result.user}: {score}")
+        return HttpResponse("Score received", status=200)
+    except LTIResult.DoesNotExist:
+        logger.warning(f"Unknown result_sourcedid: {sourcedid}")
+        return HttpResponse("Unknown sourcedid", status=404)
 
 
 @login_required
