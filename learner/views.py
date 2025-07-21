@@ -102,34 +102,35 @@ def generate_oauth_signature(params, consumer_secret, launch_url):
     return signature
 
 #@login_required
+
+logger = logging.getLogger(__name__)
+
 @csrf_exempt
 def lti_consume_course(request, assessment_id):
+    # Get assessment and LTI tool
     assessment = get_object_or_404(Assessment, id=assessment_id)
     lti_tool = getattr(assessment, 'lti_tool', None)
     if not lti_tool:
+        logger.error("LTI tool not configured for assessment %s", assessment_id)
         return HttpResponse("LTI tool belum dikonfigurasi.", status=400)
-
-
-    
 
     launch_url = lti_tool.launch_url
     consumer_key = lti_tool.consumer_key
     shared_secret = lti_tool.shared_secret
 
-      # Handle AnonymousUser
+    # Handle user
     user = request.user
     user_id = str(user.id) if user.is_authenticated else str(uuid.uuid4())
     user_full_name = user.get_full_name() if user.is_authenticated else "Anonymous User"
     user_email = user.email if user.is_authenticated else "anonymous@example.com"
 
-    # Parameter dasar OAuth dan LTI
+    # Basic OAuth and LTI parameters
     oauth_params = {
         "oauth_consumer_key": consumer_key,
         "oauth_signature_method": "HMAC-SHA1",
         "oauth_version": "1.0",
         "oauth_nonce": uuid.uuid4().hex,
         "oauth_timestamp": str(int(time.time())),
-        "resource_link_id": f"res-{assessment.id}",
         "resource_link_id": f"res-{assessment.id}",
         "user_id": user_id,
         "roles": "Learner",
@@ -143,22 +144,17 @@ def lti_consume_course(request, assessment_id):
         "tool_consumer_info_product_family_code": "django-lms",
         "tool_consumer_info_version": "1.0",
         "launch_presentation_document_target": "iframe",
-        
-        
-        
     }
-    # Tambahkan parameter outcome service agar Moodle bisa mengirim nilai balik
-    result_sourcedid = f"lti-{assessment.id}-{user_id}"
-    outcome_url = request.build_absolute_uri(reverse("learner:lti_grade_callback"))  # Pastikan URL pattern-nya ada
 
+    # Add outcome service parameters
+    result_sourcedid = f"lti-{assessment.id}-{user_id}"
+    outcome_url = request.build_absolute_uri(reverse("learner:lti_grade_callback")).rstrip('/')
     oauth_params.update({
         "lis_outcome_service_url": outcome_url,
         "lis_result_sourcedid": result_sourcedid,
     })
 
-    
-
-    # Tambahkan custom parameters jika ada
+    # Add custom parameters
     if lti_tool.custom_parameters:
         try:
             for line in lti_tool.custom_parameters.strip().splitlines():
@@ -166,45 +162,119 @@ def lti_consume_course(request, assessment_id):
                     k, v = line.split("=", 1)
                     oauth_params[k.strip()] = v.strip()
         except Exception as e:
-            logger.warning("Gagal parsing custom_parameters: %s", e)
+            logger.warning("Failed to parse custom_parameters: %s", e)
 
-    # Buat signature
+    # Generate OAuth signature
     signature = generate_oauth_signature(oauth_params, shared_secret, launch_url)
     oauth_params["oauth_signature"] = signature
 
-    logger.debug("Mengirim LTI Launch ke %s dengan param: %s", launch_url, oauth_params)
+    logger.debug("Sending LTI Launch to %s with params: %s", launch_url, oauth_params)
+
+    # Initialize LTIResult record
+    if user.is_authenticated:
+        try:
+            LTIResult.objects.update_or_create(
+                user=user,
+                assessment=assessment,
+                defaults={
+                    'result_sourcedid': result_sourcedid,
+                    'outcome_service_url': outcome_url,
+                    'consumer_key': consumer_key,
+                    'score': None,
+                    'last_sent_at': None,
+                    'created_at': timezone.now(),
+                }
+            )
+            logger.info("Initialized LTIResult for user %s, assessment %s", user_id, assessment_id)
+        except Exception as e:
+            logger.error("Failed to initialize LTIResult: %s", e)
 
     return render(request, "learner/lti_launch_form.html", {
         "launch_url": launch_url,
         "params": oauth_params,
     })
-
 logger = logging.getLogger(__name__)
 
 @csrf_exempt
 def lti_grade_callback(request):
-    logger.debug("LTI Grade Callback invoked")
+    logger.debug("LTI Grade Callback invoked at %s", request.build_absolute_uri())
+    logger.debug("Request headers: %s", dict(request.headers))
+    logger.debug("Request POST params: %s", request.POST)
+    logger.debug("Request body: %s", request.body.decode('utf-8', errors='ignore'))
 
     if request.method != 'POST':
-        logger.warning("LTI Grade Callback received non-POST request")
+        logger.warning("Non-POST request received")
         return HttpResponseBadRequest("Only POST allowed")
 
-    # Log raw body
-    logger.debug(f"Raw POST body: {request.body.decode('utf-8')}")
-
-    # Verifikasi signature
+    # Verify OAuth signature
     if not verify_oauth_signature(request):
         logger.warning("Invalid OAuth signature")
-        return HttpResponse(status=401)
+        return HttpResponse("Unauthorized", status=401)
 
+    # Parse XML body
     try:
         sourcedid, score = parse_lti_grade_xml(request.body)
-        logger.info(f"LTI Grade Callback - sourcedid: {sourcedid}, score: {score}")
-        # Lanjutkan menyimpan nilai...
-        return HttpResponse("Score received")
+        logger.info("Received grade - sourcedid: %s, score: %s", sourcedid, score)
     except Exception as e:
-        logger.error(f"Error parsing LTI grade XML: {str(e)}")
+        logger.error("Failed to parse LTI grade XML: %s", str(e))
         return HttpResponseBadRequest("Invalid XML payload")
+
+    # Extract assessment_id and user_id from sourcedid
+    try:
+        _, assessment_id, user_id = sourcedid.split('-')
+        assessment_id = int(assessment_id)
+        user_id = int(user_id)
+    except ValueError as e:
+        logger.error("Invalid lis_result_sourcedid format: %s", sourcedid)
+        return HttpResponseBadRequest("Invalid lis_result_sourcedid")
+
+    # Retrieve user and assessment
+    try:
+        user = CustomUser.objects.get(id=user_id)
+        assessment = Assessment.objects.get(id=assessment_id)
+    except CustomUser.DoesNotExist:
+        logger.error("User not found: %s", user_id)
+        return HttpResponseBadRequest("User not found")
+    except Assessment.DoesNotExist:
+        logger.error("Assessment not found: %s", assessment_id)
+        return HttpResponseBadRequest("Assessment not found")
+
+    # Get consumer_key from OAuth params
+    auth_header = request.META.get('HTTP_AUTHORIZATION', '')
+    params = {}
+    try:
+        if auth_header.startswith('OAuth '):
+            auth_params = auth_header[6:].split(',')
+            for param in auth_params:
+                key, value = param.split('=', 1)
+                params[key.strip()] = value.strip().strip('"')
+    except Exception as e:
+        logger.error("Failed to parse Authorization header for consumer_key: %s", e)
+        return HttpResponseBadRequest("Invalid Authorization header")
+
+    consumer_key = params.get('oauth_consumer_key', '')
+    if not consumer_key:
+        logger.error("No oauth_consumer_key provided")
+        return HttpResponseBadRequest("No oauth_consumer_key")
+
+    # Save or update LTIResult
+    try:
+        lti_result, created = LTIResult.objects.update_or_create(
+            user=user,
+            assessment=assessment,
+            defaults={
+                'result_sourcedid': sourcedid,
+                'outcome_service_url': request.build_absolute_uri().rstrip('/'),
+                'consumer_key': consumer_key,
+                'score': score,
+                'last_sent_at': timezone.now(),
+            }
+        )
+        logger.info("Saved LTIResult: %s, created: %s", lti_result, created)
+        return HttpResponse("Score received", status=200)
+    except Exception as e:
+        logger.error("Failed to save LTIResult: %s", str(e))
+        return HttpResponseBadRequest("Failed to save score")
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)

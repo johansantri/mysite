@@ -1,117 +1,110 @@
-[WARNING] 2025-07-21 10:54:10,150 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 10:55:10,160 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 10:56:10,207 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 10:56:22,705 [django.request] Not Found: /robots.txt
-[WARNING] 2025-07-21 10:57:10,264 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 10:58:10,416 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 10:59:10,506 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:00:10,593 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:01:10,727 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:02:10,814 [django.request] Not Found: /partner/ping-session/
-[INFO] 2025-07-21 11:02:28,699 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-07-21 11:02:28,820 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-07-21 11:02:28,842 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-07-21 11:02:39,609 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn, assessment 83
-[DEBUG] 2025-07-21 11:02:49,043 [learner.views] Base URL: https://moodle.icei.ac.id/enrol/lti/tool.php
-[DEBUG] 2025-07-21 11:02:49,043 [learner.views] Base String: POST&https%3A%2F%2Fmoodle.icei.ac.id%2Fenrol%2Flti%2Ftool.php&context_id%3Dcourse-83%26context_title%3DCourse%26id%3D4%26launch_presentation_document_target%3Diframe%26launch_presentation_locale%3Den-US%26lis_person_contact_email_primary%3Dlearn%2540learn.com%26lis_person_name_full%3DMr%2520Learners%26lti_message_type%3Dbasic-lti-launch-request%26lti_version%3DLTI-1p0%26oauth_consumer_key%3Dasimarif-b1bec%26oauth_nonce%3Dc4526e3cfdcf4a5b83c789f64669648a%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1753070569%26oauth_version%3D1.0%26resource_link_id%3Dres-83%26roles%3DLearner%26tool_consumer_info_product_family_code%3Ddjango-lms%26tool_consumer_info_version%3D1.0%26user_id%3D4
-[DEBUG] 2025-07-21 11:02:49,043 [learner.views] Signing Key: jgGse6aABpb6q0tQRq4W1z9c1jfVaAJI&
-[DEBUG] 2025-07-21 11:02:49,043 [learner.views] OAuth Signature: 19W0VVLljFqCbSOz763tO7VUJ8g=
-[DEBUG] 2025-07-21 11:02:49,043 [learner.views] Mengirim LTI Launch ke https://moodle.icei.ac.id/enrol/lti/tool.php?id=4 dengan param: {'oauth_consumer_key': 'asimarif-b1bec', 'oauth_signature_method': 'HMAC-SHA1', 'oauth_version': '1.0', 'oauth_nonce': 'c4526e3cfdcf4a5b83c789f64669648a', 'oauth_timestamp': '1753070569', 'resource_link_id': 'res-83', 'user_id': '4', 'roles': 'Learner', 'lis_person_name_full': 'Mr Learners', 'lis_person_contact_email_primary': 'learn@learn.com', 'context_id': 'course-83', 'context_title': 'Course', 'launch_presentation_locale': 'en-US', 'lti_version': 'LTI-1p0', 'lti_message_type': 'basic-lti-launch-request', 'tool_consumer_info_product_family_code': 'django-lms', 'tool_consumer_info_version': '1.0', 'launch_presentation_document_target': 'iframe', 'oauth_signature': '19W0VVLljFqCbSOz763tO7VUJ8g='}
-[WARNING] 2025-07-21 11:03:40,085 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:04:40,098 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:05:40,222 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:06:40,222 [django.request] Not Found: /partner/ping-session/
-[INFO] 2025-07-21 11:06:54,000 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-07-21 11:06:54,067 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-07-21 11:06:54,193 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[ERROR] 2025-07-21 11:07:02,665 [django.request] Internal Server Error: /lti/launch/83/
-Traceback (most recent call last):
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
-    response = get_response(request)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
-    return view_func(request, *args, **kwargs)
-  File "/home/TIM/mysite/learner/views.py", line 152, in lti_consume_course
-    outcome_url = request.build_absolute_uri(reverse("lti_grade_callback"))  # Pastikan URL pattern-nya ada
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/base.py", line 98, in reverse
-    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
-    raise NoReverseMatch(msg)
-django.urls.exceptions.NoReverseMatch: Reverse for 'lti_grade_callback' not found. 'lti_grade_callback' is not a valid view function or pattern name.
-[WARNING] 2025-07-21 11:07:41,332 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:08:41,489 [django.request] Not Found: /partner/ping-session/
-[INFO] 2025-07-21 11:08:52,526 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-07-21 11:08:52,548 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-07-21 11:08:52,568 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-07-21 11:08:57,677 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn, assessment 83
-[DEBUG] 2025-07-21 11:09:01,844 [learner.views] Base URL: https://moodle.icei.ac.id/enrol/lti/tool.php
-[DEBUG] 2025-07-21 11:09:01,844 [learner.views] Base String: POST&https%3A%2F%2Fmoodle.icei.ac.id%2Fenrol%2Flti%2Ftool.php&context_id%3Dcourse-83%26context_title%3DCourse%26id%3D4%26launch_presentation_document_target%3Diframe%26launch_presentation_locale%3Den-US%26lis_outcome_service_url%3Dhttps%253A%252F%252Fini.icei.ac.id%252Flti%252Fgrade-callback%252F%26lis_person_contact_email_primary%3Dlearn%2540learn.com%26lis_person_name_full%3DMr%2520Learners%26lis_result_sourcedid%3Dlti-83-4%26lti_message_type%3Dbasic-lti-launch-request%26lti_version%3DLTI-1p0%26oauth_consumer_key%3Dasimarif-b1bec%26oauth_nonce%3Ddc57fad5dc0c4afcad2089a9bc986681%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1753070941%26oauth_version%3D1.0%26resource_link_id%3Dres-83%26roles%3DLearner%26tool_consumer_info_product_family_code%3Ddjango-lms%26tool_consumer_info_version%3D1.0%26user_id%3D4
-[DEBUG] 2025-07-21 11:09:01,844 [learner.views] Signing Key: jgGse6aABpb6q0tQRq4W1z9c1jfVaAJI&
-[DEBUG] 2025-07-21 11:09:01,844 [learner.views] OAuth Signature: 6vU/Bon+r8SOdBmbybNMAB6Y5Ww=
-[DEBUG] 2025-07-21 11:09:01,845 [learner.views] Mengirim LTI Launch ke https://moodle.icei.ac.id/enrol/lti/tool.php?id=4 dengan param: {'oauth_consumer_key': 'asimarif-b1bec', 'oauth_signature_method': 'HMAC-SHA1', 'oauth_version': '1.0', 'oauth_nonce': 'dc57fad5dc0c4afcad2089a9bc986681', 'oauth_timestamp': '1753070941', 'resource_link_id': 'res-83', 'user_id': '4', 'roles': 'Learner', 'lis_person_name_full': 'Mr Learners', 'lis_person_contact_email_primary': 'learn@learn.com', 'context_id': 'course-83', 'context_title': 'Course', 'launch_presentation_locale': 'en-US', 'lti_version': 'LTI-1p0', 'lti_message_type': 'basic-lti-launch-request', 'tool_consumer_info_product_family_code': 'django-lms', 'tool_consumer_info_version': '1.0', 'launch_presentation_document_target': 'iframe', 'lis_outcome_service_url': 'https://ini.icei.ac.id/lti/grade-callback/', 'lis_result_sourcedid': 'lti-83-4', 'oauth_signature': '6vU/Bon+r8SOdBmbybNMAB6Y5Ww='}
-[WARNING] 2025-07-21 11:09:58,046 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:10:58,161 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:11:54,261 [learner.views] Invalid OAuth signature on grade callback.
-[WARNING] 2025-07-21 11:11:54,261 [django.request] Unauthorized: /lti/grade-callback/
-[WARNING] 2025-07-21 11:11:58,244 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:12:58,333 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:13:58,398 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:14:58,403 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:15:58,569 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:16:58,670 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:17:58,829 [django.request] Not Found: /partner/ping-session/
-[DEBUG] 2025-07-21 11:18:48,038 [learner.views] Base URL: https://moodle.icei.ac.id/enrol/lti/tool.php
-[DEBUG] 2025-07-21 11:18:48,038 [learner.views] Base String: POST&https%3A%2F%2Fmoodle.icei.ac.id%2Fenrol%2Flti%2Ftool.php&context_id%3Dcourse-83%26context_title%3DCourse%26id%3D4%26launch_presentation_document_target%3Diframe%26launch_presentation_locale%3Den-US%26lis_outcome_service_url%3Dhttps%253A%252F%252Fini.icei.ac.id%252Flti%252Fgrade-callback%252F%26lis_person_contact_email_primary%3Dlearn%2540learn.com%26lis_person_name_full%3DMr%2520Learners%26lis_result_sourcedid%3Dlti-83-4%26lti_message_type%3Dbasic-lti-launch-request%26lti_version%3DLTI-1p0%26oauth_consumer_key%3Dasimarif-b1bec%26oauth_nonce%3Da823db598b754213996f59de06463089%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1753071528%26oauth_version%3D1.0%26resource_link_id%3Dres-83%26roles%3DLearner%26tool_consumer_info_product_family_code%3Ddjango-lms%26tool_consumer_info_version%3D1.0%26user_id%3D4
-[DEBUG] 2025-07-21 11:18:48,039 [learner.views] Signing Key: jgGse6aABpb6q0tQRq4W1z9c1jfVaAJI&
-[DEBUG] 2025-07-21 11:18:48,039 [learner.views] OAuth Signature: LDkH5p4E/OP0FCZvsbmcHDG+MIk=
-[DEBUG] 2025-07-21 11:18:48,039 [learner.views] Mengirim LTI Launch ke https://moodle.icei.ac.id/enrol/lti/tool.php?id=4 dengan param: {'oauth_consumer_key': 'asimarif-b1bec', 'oauth_signature_method': 'HMAC-SHA1', 'oauth_version': '1.0', 'oauth_nonce': 'a823db598b754213996f59de06463089', 'oauth_timestamp': '1753071528', 'resource_link_id': 'res-83', 'user_id': '4', 'roles': 'Learner', 'lis_person_name_full': 'Mr Learners', 'lis_person_contact_email_primary': 'learn@learn.com', 'context_id': 'course-83', 'context_title': 'Course', 'launch_presentation_locale': 'en-US', 'lti_version': 'LTI-1p0', 'lti_message_type': 'basic-lti-launch-request', 'tool_consumer_info_product_family_code': 'django-lms', 'tool_consumer_info_version': '1.0', 'launch_presentation_document_target': 'iframe', 'lis_outcome_service_url': 'https://ini.icei.ac.id/lti/grade-callback/', 'lis_result_sourcedid': 'lti-83-4', 'oauth_signature': 'LDkH5p4E/OP0FCZvsbmcHDG+MIk='}
-[WARNING] 2025-07-21 11:18:58,868 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:19:58,884 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:20:58,891 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:21:07,428 [django.request] Not Found: /owa/auth/logon.aspx
-[WARNING] 2025-07-21 11:21:58,917 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:22:59,020 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:23:38,729 [django.request] Not Found: /.vscode/sftp.json
-[WARNING] 2025-07-21 11:23:59,046 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:24:40,763 [django.request] Not Found: /developmentserver/metadatauploader
-[WARNING] 2025-07-21 11:24:59,109 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:25:59,143 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:26:59,144 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:27:59,220 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:28:59,220 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:29:59,264 [django.request] Not Found: /partner/ping-session/
-[INFO] 2025-07-21 11:30:50,967 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn, assessment 83
-[DEBUG] 2025-07-21 11:30:54,331 [learner.views] Base URL: https://moodle.icei.ac.id/enrol/lti/tool.php
-[DEBUG] 2025-07-21 11:30:54,331 [learner.views] Base String: POST&https%3A%2F%2Fmoodle.icei.ac.id%2Fenrol%2Flti%2Ftool.php&context_id%3Dcourse-83%26context_title%3DCourse%26id%3D4%26launch_presentation_document_target%3Diframe%26launch_presentation_locale%3Den-US%26lis_outcome_service_url%3Dhttps%253A%252F%252Fini.icei.ac.id%252Flti%252Fgrade-callback%252F%26lis_person_contact_email_primary%3Dlearn%2540learn.com%26lis_person_name_full%3DMr%2520Learners%26lis_result_sourcedid%3Dlti-83-4%26lti_message_type%3Dbasic-lti-launch-request%26lti_version%3DLTI-1p0%26oauth_consumer_key%3Dasimarif-b1bec%26oauth_nonce%3D1183bc20892a40a2926f1884f48aeb3d%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1753072254%26oauth_version%3D1.0%26resource_link_id%3Dres-83%26roles%3DLearner%26tool_consumer_info_product_family_code%3Ddjango-lms%26tool_consumer_info_version%3D1.0%26user_id%3D4
-[DEBUG] 2025-07-21 11:30:54,331 [learner.views] Signing Key: jgGse6aABpb6q0tQRq4W1z9c1jfVaAJI&
-[DEBUG] 2025-07-21 11:30:54,331 [learner.views] OAuth Signature: cH+cYpse135hOgCHguFHqkZZ/b0=
-[DEBUG] 2025-07-21 11:30:54,331 [learner.views] Mengirim LTI Launch ke https://moodle.icei.ac.id/enrol/lti/tool.php?id=4 dengan param: {'oauth_consumer_key': 'asimarif-b1bec', 'oauth_signature_method': 'HMAC-SHA1', 'oauth_version': '1.0', 'oauth_nonce': '1183bc20892a40a2926f1884f48aeb3d', 'oauth_timestamp': '1753072254', 'resource_link_id': 'res-83', 'user_id': '4', 'roles': 'Learner', 'lis_person_name_full': 'Mr Learners', 'lis_person_contact_email_primary': 'learn@learn.com', 'context_id': 'course-83', 'context_title': 'Course', 'launch_presentation_locale': 'en-US', 'lti_version': 'LTI-1p0', 'lti_message_type': 'basic-lti-launch-request', 'tool_consumer_info_product_family_code': 'django-lms', 'tool_consumer_info_version': '1.0', 'launch_presentation_document_target': 'iframe', 'lis_outcome_service_url': 'https://ini.icei.ac.id/lti/grade-callback/', 'lis_result_sourcedid': 'lti-83-4', 'oauth_signature': 'cH+cYpse135hOgCHguFHqkZZ/b0='}
-[WARNING] 2025-07-21 11:31:51,376 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:32:51,373 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:33:51,372 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:34:51,372 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:35:51,449 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:36:51,451 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:37:51,627 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:38:51,624 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:39:51,631 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:40:51,622 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:41:12,292 [learner.views] Invalid OAuth signature on grade callback.
-[WARNING] 2025-07-21 11:41:12,293 [django.request] Unauthorized: /lti/grade-callback/
-[WARNING] 2025-07-21 11:41:51,630 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:42:51,633 [django.request] Not Found: /partner/ping-session/
-[INFO] 2025-07-21 11:43:26,348 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-07-21 11:43:26,575 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-07-21 11:43:26,608 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[WARNING] 2025-07-21 11:43:52,514 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:44:51,854 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:45:51,810 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:46:51,985 [django.request] Not Found: /partner/ping-session/
-[DEBUG] 2025-07-21 11:47:28,311 [learner.views] LTI Grade Callback invoked
-[DEBUG] 2025-07-21 11:47:28,311 [learner.views] Raw POST body: <?xml version="1.0" encoding="UTF-8"?><imsx_POXEnvelopeRequest xmlns="http://www.imsglobal.org/services/ltiv1p1/xsd/imsoms_v1p0">  <imsx_POXHeader>    <imsx_POXRequestHeaderInfo>      <imsx_version>V1.0</imsx_version>      <imsx_messageIdentifier>123456789</imsx_messageIdentifier>    </imsx_POXRequestHeaderInfo>  </imsx_POXHeader>  <imsx_POXBody>    <replaceResultRequest>      <resultRecord>        <sourcedGUID>          <sourcedId>my-sourced-id</sourcedId>        </sourcedGUID>        <result>          <resultScore>            <language>en</language>            <textString>0.95</textString>          </resultScore>        </result>      </resultRecord>    </replaceResultRequest>  </imsx_POXBody></imsx_POXEnvelopeRequest>
-[WARNING] 2025-07-21 11:47:28,311 [learner.views] Invalid OAuth signature
-[WARNING] 2025-07-21 11:47:28,312 [django.request] Unauthorized: /lti/grade-callback/
-[WARNING] 2025-07-21 11:47:51,995 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:48:52,155 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 11:49:52,266 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-07-21 14:38:30,749 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-21 14:38:30,806 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-21 14:38:30,842 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-07-21 14:38:34,200 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-07-21 14:38:34,491 [learner.views] LTI Grade Callback invoked at https://ini.icei.ac.id/lti/grade-callback/
+[DEBUG] 2025-07-21 14:38:34,492 [learner.views] Request headers: {'Host': 'ini.icei.ac.id', 'X-Real-Ip': '104.23.175.119', 'X-Forwarded-For': '203.217.140.215, 104.23.175.119', 'X-Forwarded-Proto': 'https', 'Connection': 'close', 'Content-Length': '708', 'Cf-Ray': '96290a1bea811e93-SIN', 'Cf-Connecting-Ip': '203.217.140.215', 'Accept-Encoding': 'gzip, br', 'Authorization': 'OAuth oauth_consumer_key="asimarif-b1bec",oauth_signature_method="HMAC-SHA1",oauth_timestamp="1753083514",oauth_nonce="5968e1e0f612a4f5cfdd683e2a5d70b2",oauth_version="1.0",oauth_signature="<calculated_signature>"', 'Content-Type': 'application/xml', 'Cf-Visitor': '{"scheme":"https"}', 'Accept': '*/*', 'User-Agent': 'curl/8.5.0', 'Cdn-Loop': 'cloudflare; loops=1', 'Cf-Ipcountry': 'ID'}
+[DEBUG] 2025-07-21 14:38:34,492 [learner.views] Request POST params: <QueryDict: {}>
+[DEBUG] 2025-07-21 14:38:34,492 [learner.views] Request body: <?xml version="1.0" encoding="UTF-8"?>
+<imsx_POXEnvelopeRequest xmlns="http://www.imsglobal.org/services/ltiv1p1/xsd/imsoms_v1p0">
+  <imsx_POXHeader>
+    <imsx_POXRequestHeaderInfo>
+      <imsx_version>V1.0</imsx_version>
+      <imsx_messageIdentifier>12345</imsx_messageIdentifier>
+    </imsx_POXRequestHeaderInfo>
+  </imsx_POXHeader>
+  <imsx_POXBody>
+    <replaceResultRequest>
+      <resultRecord>
+        <sourcedGUID>
+          <sourcedId>lti-83-4</sourcedId>
+        </sourcedGUID>
+        <result>
+          <resultScore>
+            <textString>0.85</textString>
+          </resultScore>
+        </result>
+      </resultRecord>
+    </replaceResultRequest>
+  </imsx_POXBody>
+</imsx_POXEnvelopeRequest>
+[DEBUG] 2025-07-21 14:38:34,492 [learner.lti_utils] Received OAuth signature: <calculated_signature>
+[DEBUG] 2025-07-21 14:38:34,493 [learner.lti_utils] Received OAuth params: {'oauth_consumer_key': 'asimarif-b1bec', 'oauth_signature_method': 'HMAC-SHA1', 'oauth_timestamp': '1753083514', 'oauth_nonce': '5968e1e0f612a4f5cfdd683e2a5d70b2', 'oauth_version': '1.0'}
+[DEBUG] 2025-07-21 14:38:34,498 [learner.lti_utils] Found tool with consumer_key: asimarif-b1bec
+[DEBUG] 2025-07-21 14:38:34,498 [learner.lti_utils] Base URL: https://ini.icei.ac.id/lti/grade-callback
+[DEBUG] 2025-07-21 14:38:34,498 [learner.lti_utils] Base string: POST&https%3A%2F%2Fini.icei.ac.id%2Flti%2Fgrade-callback&oauth_consumer_key%3Dasimarif-b1bec%26oauth_nonce%3D5968e1e0f612a4f5cfdd683e2a5d70b2%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1753083514%26oauth_version%3D1.0
+[DEBUG] 2025-07-21 14:38:34,498 [learner.lti_utils] Signing key: jgGse6aABpb6q0tQRq4W1z9c1jfVaAJI&
+[DEBUG] 2025-07-21 14:38:34,498 [learner.lti_utils] Computed signature: aqPJa8mshqSinMJotWZuQ6JoRq0=
+[DEBUG] 2025-07-21 14:38:34,499 [learner.lti_utils] OAuth signature match: False
+[WARNING] 2025-07-21 14:38:34,499 [learner.views] Invalid OAuth signature
+[WARNING] 2025-07-21 14:38:34,499 [django.request] Unauthorized: /lti/grade-callback/
+[WARNING] 2025-07-21 14:39:34,106 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 14:40:33,239 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 14:41:33,891 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-07-21 14:42:00,038 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-21 14:42:00,105 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-21 14:42:00,142 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[DEBUG] 2025-07-21 14:42:22,292 [learner.views] LTI Grade Callback invoked at https://ini.icei.ac.id/lti/grade-callback/
+[DEBUG] 2025-07-21 14:42:22,292 [learner.views] Request headers: {'Host': 'ini.icei.ac.id', 'X-Real-Ip': '172.70.208.171', 'X-Forwarded-For': '203.217.140.215, 172.70.208.171', 'X-Forwarded-Proto': 'https', 'Connection': 'close', 'Content-Length': '708', 'Cf-Ray': '96290fa5bf87fd79-SIN', 'Cf-Connecting-Ip': '203.217.140.215', 'Accept-Encoding': 'gzip, br', 'Authorization': 'OAuth oauth_consumer_key="asimarif-b1bec",oauth_signature_method="HMAC-SHA1",oauth_timestamp="1753083741",oauth_nonce="c54a6a0972536c6ec3a4cc35c8ed20a1",oauth_version="1.0",oauth_signature="<calculated_signature>"', 'Content-Type': 'application/xml', 'Cf-Visitor': '{"scheme":"https"}', 'Accept': '*/*', 'User-Agent': 'curl/8.5.0', 'Cdn-Loop': 'cloudflare; loops=1', 'Cf-Ipcountry': 'ID'}
+[DEBUG] 2025-07-21 14:42:22,292 [learner.views] Request POST params: <QueryDict: {}>
+[DEBUG] 2025-07-21 14:42:22,293 [learner.views] Request body: <?xml version="1.0" encoding="UTF-8"?>
+<imsx_POXEnvelopeRequest xmlns="http://www.imsglobal.org/services/ltiv1p1/xsd/imsoms_v1p0">
+  <imsx_POXHeader>
+    <imsx_POXRequestHeaderInfo>
+      <imsx_version>V1.0</imsx_version>
+      <imsx_messageIdentifier>12345</imsx_messageIdentifier>
+    </imsx_POXRequestHeaderInfo>
+  </imsx_POXHeader>
+  <imsx_POXBody>
+    <replaceResultRequest>
+      <resultRecord>
+        <sourcedGUID>
+          <sourcedId>lti-83-4</sourcedId>
+        </sourcedGUID>
+        <result>
+          <resultScore>
+            <textString>0.85</textString>
+          </resultScore>
+        </result>
+      </resultRecord>
+    </replaceResultRequest>
+  </imsx_POXBody>
+</imsx_POXEnvelopeRequest>
+[DEBUG] 2025-07-21 14:42:22,293 [learner.lti_utils] Received OAuth signature: <calculated_signature>
+[DEBUG] 2025-07-21 14:42:22,293 [learner.lti_utils] Received OAuth params: {'oauth_consumer_key': 'asimarif-b1bec', 'oauth_signature_method': 'HMAC-SHA1', 'oauth_timestamp': '1753083741', 'oauth_nonce': 'c54a6a0972536c6ec3a4cc35c8ed20a1', 'oauth_version': '1.0'}
+[DEBUG] 2025-07-21 14:42:22,298 [learner.lti_utils] Found tool with consumer_key: asimarif-b1bec
+[DEBUG] 2025-07-21 14:42:22,298 [learner.lti_utils] Base URL: https://ini.icei.ac.id/lti/grade-callback
+[DEBUG] 2025-07-21 14:42:22,299 [learner.lti_utils] Base string: POST&https%3A%2F%2Fini.icei.ac.id%2Flti%2Fgrade-callback&oauth_consumer_key%3Dasimarif-b1bec%26oauth_nonce%3Dc54a6a0972536c6ec3a4cc35c8ed20a1%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1753083741%26oauth_version%3D1.0
+[DEBUG] 2025-07-21 14:42:22,299 [learner.lti_utils] Signing key: jgGse6aABpb6q0tQRq4W1z9c1jfVaAJI&
+[DEBUG] 2025-07-21 14:42:22,299 [learner.lti_utils] Computed signature: pRTkbgOAhOq5D5R1//ZwRVUjdgw=
+[DEBUG] 2025-07-21 14:42:22,299 [learner.lti_utils] OAuth signature match: False
+[WARNING] 2025-07-21 14:42:22,300 [learner.views] Invalid OAuth signature
+[WARNING] 2025-07-21 14:42:22,301 [django.request] Unauthorized: /lti/grade-callback/
+[WARNING] 2025-07-21 14:42:34,767 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-07-21 14:43:11,049 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn, assessment 83
+[DEBUG] 2025-07-21 14:43:12,763 [learner.views] Base URL: https://moodle.icei.ac.id/enrol/lti/tool.php
+[DEBUG] 2025-07-21 14:43:12,764 [learner.views] Base String: POST&https%3A%2F%2Fmoodle.icei.ac.id%2Fenrol%2Flti%2Ftool.php&context_id%3Dcourse-83%26context_title%3DCourse%26id%3D4%26launch_presentation_document_target%3Diframe%26launch_presentation_locale%3Den-US%26lis_outcome_service_url%3Dhttps%253A%252F%252Fini.icei.ac.id%252Flti%252Fgrade-callback%26lis_person_contact_email_primary%3Dlearn%2540learn.com%26lis_person_name_full%3DMr%2520Learners%26lis_result_sourcedid%3Dlti-83-4%26lti_message_type%3Dbasic-lti-launch-request%26lti_version%3DLTI-1p0%26oauth_consumer_key%3Dasimarif-b1bec%26oauth_nonce%3Dc6aa3e7d187f4582bbe8562636e19ccc%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1753083792%26oauth_version%3D1.0%26resource_link_id%3Dres-83%26roles%3DLearner%26tool_consumer_info_product_family_code%3Ddjango-lms%26tool_consumer_info_version%3D1.0%26user_id%3D4
+[DEBUG] 2025-07-21 14:43:12,764 [learner.views] Signing Key: jgGse6aABpb6q0tQRq4W1z9c1jfVaAJI&
+[DEBUG] 2025-07-21 14:43:12,764 [learner.views] OAuth Signature: vwNnqo2JkS1KEnCUlx3LHOBxR0I=
+[DEBUG] 2025-07-21 14:43:12,764 [learner.views] Sending LTI Launch to https://moodle.icei.ac.id/enrol/lti/tool.php?id=4 with params: {'oauth_consumer_key': 'asimarif-b1bec', 'oauth_signature_method': 'HMAC-SHA1', 'oauth_version': '1.0', 'oauth_nonce': 'c6aa3e7d187f4582bbe8562636e19ccc', 'oauth_timestamp': '1753083792', 'resource_link_id': 'res-83', 'user_id': '4', 'roles': 'Learner', 'lis_person_name_full': 'Mr Learners', 'lis_person_contact_email_primary': 'learn@learn.com', 'context_id': 'course-83', 'context_title': 'Course', 'launch_presentation_locale': 'en-US', 'lti_version': 'LTI-1p0', 'lti_message_type': 'basic-lti-launch-request', 'tool_consumer_info_product_family_code': 'django-lms', 'tool_consumer_info_version': '1.0', 'launch_presentation_document_target': 'iframe', 'lis_outcome_service_url': 'https://ini.icei.ac.id/lti/grade-callback', 'lis_result_sourcedid': 'lti-83-4', 'oauth_signature': 'vwNnqo2JkS1KEnCUlx3LHOBxR0I='}
+[INFO] 2025-07-21 14:43:12,783 [learner.views] Initialized LTIResult for user 4, assessment 83
+[WARNING] 2025-07-21 14:44:11,478 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 14:45:11,373 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-07-21 14:45:38,802 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-07-21 14:45:38,805 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-21 06:45:38.802802+00:00
+[INFO] 2025-07-21 14:45:38,805 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0", path_info: "/logout/"}.
+[DEBUG] 2025-07-21 14:45:45,654 [urllib3.connectionpool] Starting new HTTPS connection (1): oauth2.googleapis.com:443
+[DEBUG] 2025-07-21 14:45:46,092 [urllib3.connectionpool] https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+[DEBUG] 2025-07-21 14:45:46,225 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-07-21 14:45:46,225 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0", path_info: "/accounts/google/login/callback/"}.
+[INFO] 2025-07-21 14:45:46,226 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-21 06:45:46.225112+00:00
+[INFO] 2025-07-21 14:45:50,333 [learner.views] my_course: Rendering untuk pengguna johan, kursus kursus-uiux-design-dari-nol-hingga-mahir, assessment_id=None
+[INFO] 2025-07-21 14:45:53,284 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna johan, assessment 83
+[DEBUG] 2025-07-21 14:45:54,769 [learner.views] Base URL: https://moodle.icei.ac.id/enrol/lti/tool.php
+[DEBUG] 2025-07-21 14:45:54,769 [learner.views] Base String: POST&https%3A%2F%2Fmoodle.icei.ac.id%2Fenrol%2Flti%2Ftool.php&context_id%3Dcourse-83%26context_title%3DCourse%26id%3D4%26launch_presentation_document_target%3Diframe%26launch_presentation_locale%3Den-US%26lis_outcome_service_url%3Dhttps%253A%252F%252Fini.icei.ac.id%252Flti%252Fgrade-callback%26lis_person_contact_email_primary%3Djohansantri%2540gmail.com%26lis_person_name_full%3DJohan%2520Santri%26lis_result_sourcedid%3Dlti-83-6%26lti_message_type%3Dbasic-lti-launch-request%26lti_version%3DLTI-1p0%26oauth_consumer_key%3Dasimarif-b1bec%26oauth_nonce%3Dc357d50186a445f798875e7aef5d3200%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1753083954%26oauth_version%3D1.0%26resource_link_id%3Dres-83%26roles%3DLearner%26tool_consumer_info_product_family_code%3Ddjango-lms%26tool_consumer_info_version%3D1.0%26user_id%3D6
+[DEBUG] 2025-07-21 14:45:54,769 [learner.views] Signing Key: jgGse6aABpb6q0tQRq4W1z9c1jfVaAJI&
+[DEBUG] 2025-07-21 14:45:54,769 [learner.views] OAuth Signature: 1cqW9Szptaz5M55Rae/vXRwcSao=
+[DEBUG] 2025-07-21 14:45:54,769 [learner.views] Sending LTI Launch to https://moodle.icei.ac.id/enrol/lti/tool.php?id=4 with params: {'oauth_consumer_key': 'asimarif-b1bec', 'oauth_signature_method': 'HMAC-SHA1', 'oauth_version': '1.0', 'oauth_nonce': 'c357d50186a445f798875e7aef5d3200', 'oauth_timestamp': '1753083954', 'resource_link_id': 'res-83', 'user_id': '6', 'roles': 'Learner', 'lis_person_name_full': 'Johan Santri', 'lis_person_contact_email_primary': 'johansantri@gmail.com', 'context_id': 'course-83', 'context_title': 'Course', 'launch_presentation_locale': 'en-US', 'lti_version': 'LTI-1p0', 'lti_message_type': 'basic-lti-launch-request', 'tool_consumer_info_product_family_code': 'django-lms', 'tool_consumer_info_version': '1.0', 'launch_presentation_document_target': 'iframe', 'lis_outcome_service_url': 'https://ini.icei.ac.id/lti/grade-callback', 'lis_result_sourcedid': 'lti-83-6', 'oauth_signature': '1cqW9Szptaz5M55Rae/vXRwcSao='}
+[INFO] 2025-07-21 14:45:54,786 [learner.views] Initialized LTIResult for user 6, assessment 83
+[WARNING] 2025-07-21 14:46:50,773 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 14:46:53,541 [django.request] Not Found: /partner/ping-session/
