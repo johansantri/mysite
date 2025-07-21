@@ -101,7 +101,7 @@ def generate_oauth_signature(params, consumer_secret, launch_url):
 
     return signature
 
-@login_required
+#@login_required
 @csrf_exempt
 def lti_consume_course(request, assessment_id):
     assessment = get_object_or_404(Assessment, id=assessment_id)
@@ -116,6 +116,12 @@ def lti_consume_course(request, assessment_id):
     consumer_key = lti_tool.consumer_key
     shared_secret = lti_tool.shared_secret
 
+      # Handle AnonymousUser
+    user = request.user
+    user_id = str(user.id) if user.is_authenticated else str(uuid.uuid4())
+    user_full_name = user.get_full_name() if user.is_authenticated else "Anonymous User"
+    user_email = user.email if user.is_authenticated else "anonymous@example.com"
+
     # Parameter dasar OAuth dan LTI
     oauth_params = {
         "oauth_consumer_key": consumer_key,
@@ -124,10 +130,11 @@ def lti_consume_course(request, assessment_id):
         "oauth_nonce": uuid.uuid4().hex,
         "oauth_timestamp": str(int(time.time())),
         "resource_link_id": f"res-{assessment.id}",
-        "user_id": str(request.user.id),
+        "resource_link_id": f"res-{assessment.id}",
+        "user_id": user_id,
         "roles": "Learner",
-        "lis_person_name_full": request.user.get_full_name(),
-        "lis_person_contact_email_primary": request.user.email,
+        "lis_person_name_full": user_full_name,
+        "lis_person_contact_email_primary": user_email,
         "context_id": f"course-{assessment.id}",
         "context_title": getattr(assessment, "title", "Course"),
         "launch_presentation_locale": "en-US",
@@ -140,7 +147,14 @@ def lti_consume_course(request, assessment_id):
         
         
     }
+    # Tambahkan parameter outcome service agar Moodle bisa mengirim nilai balik
+    result_sourcedid = f"lti-{assessment.id}-{user_id}"
+    outcome_url = request.build_absolute_uri(reverse("learner:lti_grade_callback"))  # Pastikan URL pattern-nya ada
 
+    oauth_params.update({
+        "lis_outcome_service_url": outcome_url,
+        "lis_result_sourcedid": result_sourcedid,
+    })
 
     
 
@@ -165,36 +179,32 @@ def lti_consume_course(request, assessment_id):
         "params": oauth_params,
     })
 
+logger = logging.getLogger(__name__)
 
 @csrf_exempt
 def lti_grade_callback(request):
-    if request.method != "POST":
-        return HttpResponse("Method Not Allowed", status=405)
+    logger.debug("LTI Grade Callback invoked")
 
-    # 1. Verifikasi OAuth
+    if request.method != 'POST':
+        logger.warning("LTI Grade Callback received non-POST request")
+        return HttpResponseBadRequest("Only POST allowed")
+
+    # Log raw body
+    logger.debug(f"Raw POST body: {request.body.decode('utf-8')}")
+
+    # Verifikasi signature
     if not verify_oauth_signature(request):
-        logger.warning("Invalid OAuth signature on grade callback.")
-        return HttpResponse("Unauthorized", status=401)
+        logger.warning("Invalid OAuth signature")
+        return HttpResponse(status=401)
 
-    # 2. Parse XML body untuk mengambil sourcedid dan score
     try:
         sourcedid, score = parse_lti_grade_xml(request.body)
+        logger.info(f"LTI Grade Callback - sourcedid: {sourcedid}, score: {score}")
+        # Lanjutkan menyimpan nilai...
+        return HttpResponse("Score received")
     except Exception as e:
-        logger.exception("Failed to parse LTI grade XML.")
-        return HttpResponse("Invalid XML", status=400)
-
-    # 3. Simpan score ke model
-    try:
-        result = LTIResult.objects.get(result_sourcedid=sourcedid)
-        result.score = score
-        result.last_sent_at = timezone.now()
-        result.save()
-        logger.info(f"Score updated for {result.user}: {score}")
-        return HttpResponse("Score received", status=200)
-    except LTIResult.DoesNotExist:
-        logger.warning(f"Unknown result_sourcedid: {sourcedid}")
-        return HttpResponse("Unknown sourcedid", status=404)
-
+        logger.error(f"Error parsing LTI grade XML: {str(e)}")
+        return HttpResponseBadRequest("Invalid XML payload")
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
