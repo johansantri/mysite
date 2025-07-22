@@ -1,11 +1,10 @@
-[INFO] 2025-07-21 14:38:30,749 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-07-21 14:38:30,806 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-07-21 14:38:30,842 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[WARNING] 2025-07-21 14:38:34,200 [django.request] Not Found: /partner/ping-session/
-[DEBUG] 2025-07-21 14:38:34,491 [learner.views] LTI Grade Callback invoked at https://ini.icei.ac.id/lti/grade-callback/
-[DEBUG] 2025-07-21 14:38:34,492 [learner.views] Request headers: {'Host': 'ini.icei.ac.id', 'X-Real-Ip': '104.23.175.119', 'X-Forwarded-For': '203.217.140.215, 104.23.175.119', 'X-Forwarded-Proto': 'https', 'Connection': 'close', 'Content-Length': '708', 'Cf-Ray': '96290a1bea811e93-SIN', 'Cf-Connecting-Ip': '203.217.140.215', 'Accept-Encoding': 'gzip, br', 'Authorization': 'OAuth oauth_consumer_key="asimarif-b1bec",oauth_signature_method="HMAC-SHA1",oauth_timestamp="1753083514",oauth_nonce="5968e1e0f612a4f5cfdd683e2a5d70b2",oauth_version="1.0",oauth_signature="<calculated_signature>"', 'Content-Type': 'application/xml', 'Cf-Visitor': '{"scheme":"https"}', 'Accept': '*/*', 'User-Agent': 'curl/8.5.0', 'Cdn-Loop': 'cloudflare; loops=1', 'Cf-Ipcountry': 'ID'}
-[DEBUG] 2025-07-21 14:38:34,492 [learner.views] Request POST params: <QueryDict: {}>
-[DEBUG] 2025-07-21 14:38:34,492 [learner.views] Request body: <?xml version="1.0" encoding="UTF-8"?>
+[INFO] 2025-07-21 16:01:50,647 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-21 16:01:50,887 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-21 16:01:50,960 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[DEBUG] 2025-07-21 16:01:54,399 [learner.views] LTI Grade Callback invoked at https://ini.icei.ac.id/lti/grade-callback/
+[DEBUG] 2025-07-21 16:01:54,400 [learner.views] Request headers: {'Host': 'ini.icei.ac.id', 'X-Real-Ip': '104.23.175.209', 'X-Forwarded-For': '203.217.140.215, 104.23.175.209', 'X-Forwarded-Proto': 'https', 'Connection': 'close', 'Content-Length': '708', 'Cf-Ray': '962984276be5fc2e-SIN', 'Cf-Connecting-Ip': '203.217.140.215', 'Accept-Encoding': 'gzip, br', 'Authorization': 'OAuth oauth_consumer_key="asimarif-b1bec",oauth_signature_method="HMAC-SHA1",oauth_timestamp="1753088766",oauth_nonce="1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p",oauth_version="1.0",oauth_signature="XyZ123AbCdEfGhIjKlMnOpQrStUv="', 'Content-Type': 'application/xml', 'Cf-Visitor': '{"scheme":"https"}', 'Accept': '*/*', 'User-Agent': 'curl/8.5.0', 'Cdn-Loop': 'cloudflare; loops=1', 'Cf-Ipcountry': 'ID'}
+[DEBUG] 2025-07-21 16:01:54,400 [learner.views] Request POST params: <QueryDict: {}>
+[DEBUG] 2025-07-21 16:01:54,400 [learner.views] Request body: <?xml version="1.0" encoding="UTF-8"?>
 <imsx_POXEnvelopeRequest xmlns="http://www.imsglobal.org/services/ltiv1p1/xsd/imsoms_v1p0">
   <imsx_POXHeader>
     <imsx_POXRequestHeaderInfo>
@@ -17,7 +16,7 @@
     <replaceResultRequest>
       <resultRecord>
         <sourcedGUID>
-          <sourcedId>lti-83-4</sourcedId>
+          <sourcedId>lti-83-6</sourcedId>
         </sourcedGUID>
         <result>
           <resultScore>
@@ -28,83 +27,1027 @@
     </replaceResultRequest>
   </imsx_POXBody>
 </imsx_POXEnvelopeRequest>
-[DEBUG] 2025-07-21 14:38:34,492 [learner.lti_utils] Received OAuth signature: <calculated_signature>
-[DEBUG] 2025-07-21 14:38:34,493 [learner.lti_utils] Received OAuth params: {'oauth_consumer_key': 'asimarif-b1bec', 'oauth_signature_method': 'HMAC-SHA1', 'oauth_timestamp': '1753083514', 'oauth_nonce': '5968e1e0f612a4f5cfdd683e2a5d70b2', 'oauth_version': '1.0'}
-[DEBUG] 2025-07-21 14:38:34,498 [learner.lti_utils] Found tool with consumer_key: asimarif-b1bec
-[DEBUG] 2025-07-21 14:38:34,498 [learner.lti_utils] Base URL: https://ini.icei.ac.id/lti/grade-callback
-[DEBUG] 2025-07-21 14:38:34,498 [learner.lti_utils] Base string: POST&https%3A%2F%2Fini.icei.ac.id%2Flti%2Fgrade-callback&oauth_consumer_key%3Dasimarif-b1bec%26oauth_nonce%3D5968e1e0f612a4f5cfdd683e2a5d70b2%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1753083514%26oauth_version%3D1.0
-[DEBUG] 2025-07-21 14:38:34,498 [learner.lti_utils] Signing key: jgGse6aABpb6q0tQRq4W1z9c1jfVaAJI&
-[DEBUG] 2025-07-21 14:38:34,498 [learner.lti_utils] Computed signature: aqPJa8mshqSinMJotWZuQ6JoRq0=
-[DEBUG] 2025-07-21 14:38:34,499 [learner.lti_utils] OAuth signature match: False
-[WARNING] 2025-07-21 14:38:34,499 [learner.views] Invalid OAuth signature
-[WARNING] 2025-07-21 14:38:34,499 [django.request] Unauthorized: /lti/grade-callback/
-[WARNING] 2025-07-21 14:39:34,106 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 14:40:33,239 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 14:41:33,891 [django.request] Not Found: /partner/ping-session/
-[INFO] 2025-07-21 14:42:00,038 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-07-21 14:42:00,105 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-07-21 14:42:00,142 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[DEBUG] 2025-07-21 14:42:22,292 [learner.views] LTI Grade Callback invoked at https://ini.icei.ac.id/lti/grade-callback/
-[DEBUG] 2025-07-21 14:42:22,292 [learner.views] Request headers: {'Host': 'ini.icei.ac.id', 'X-Real-Ip': '172.70.208.171', 'X-Forwarded-For': '203.217.140.215, 172.70.208.171', 'X-Forwarded-Proto': 'https', 'Connection': 'close', 'Content-Length': '708', 'Cf-Ray': '96290fa5bf87fd79-SIN', 'Cf-Connecting-Ip': '203.217.140.215', 'Accept-Encoding': 'gzip, br', 'Authorization': 'OAuth oauth_consumer_key="asimarif-b1bec",oauth_signature_method="HMAC-SHA1",oauth_timestamp="1753083741",oauth_nonce="c54a6a0972536c6ec3a4cc35c8ed20a1",oauth_version="1.0",oauth_signature="<calculated_signature>"', 'Content-Type': 'application/xml', 'Cf-Visitor': '{"scheme":"https"}', 'Accept': '*/*', 'User-Agent': 'curl/8.5.0', 'Cdn-Loop': 'cloudflare; loops=1', 'Cf-Ipcountry': 'ID'}
-[DEBUG] 2025-07-21 14:42:22,292 [learner.views] Request POST params: <QueryDict: {}>
-[DEBUG] 2025-07-21 14:42:22,293 [learner.views] Request body: <?xml version="1.0" encoding="UTF-8"?>
-<imsx_POXEnvelopeRequest xmlns="http://www.imsglobal.org/services/ltiv1p1/xsd/imsoms_v1p0">
-  <imsx_POXHeader>
-    <imsx_POXRequestHeaderInfo>
-      <imsx_version>V1.0</imsx_version>
-      <imsx_messageIdentifier>12345</imsx_messageIdentifier>
-    </imsx_POXRequestHeaderInfo>
-  </imsx_POXHeader>
-  <imsx_POXBody>
-    <replaceResultRequest>
-      <resultRecord>
-        <sourcedGUID>
-          <sourcedId>lti-83-4</sourcedId>
-        </sourcedGUID>
-        <result>
-          <resultScore>
-            <textString>0.85</textString>
-          </resultScore>
-        </result>
-      </resultRecord>
-    </replaceResultRequest>
-  </imsx_POXBody>
-</imsx_POXEnvelopeRequest>
-[DEBUG] 2025-07-21 14:42:22,293 [learner.lti_utils] Received OAuth signature: <calculated_signature>
-[DEBUG] 2025-07-21 14:42:22,293 [learner.lti_utils] Received OAuth params: {'oauth_consumer_key': 'asimarif-b1bec', 'oauth_signature_method': 'HMAC-SHA1', 'oauth_timestamp': '1753083741', 'oauth_nonce': 'c54a6a0972536c6ec3a4cc35c8ed20a1', 'oauth_version': '1.0'}
-[DEBUG] 2025-07-21 14:42:22,298 [learner.lti_utils] Found tool with consumer_key: asimarif-b1bec
-[DEBUG] 2025-07-21 14:42:22,298 [learner.lti_utils] Base URL: https://ini.icei.ac.id/lti/grade-callback
-[DEBUG] 2025-07-21 14:42:22,299 [learner.lti_utils] Base string: POST&https%3A%2F%2Fini.icei.ac.id%2Flti%2Fgrade-callback&oauth_consumer_key%3Dasimarif-b1bec%26oauth_nonce%3Dc54a6a0972536c6ec3a4cc35c8ed20a1%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1753083741%26oauth_version%3D1.0
-[DEBUG] 2025-07-21 14:42:22,299 [learner.lti_utils] Signing key: jgGse6aABpb6q0tQRq4W1z9c1jfVaAJI&
-[DEBUG] 2025-07-21 14:42:22,299 [learner.lti_utils] Computed signature: pRTkbgOAhOq5D5R1//ZwRVUjdgw=
-[DEBUG] 2025-07-21 14:42:22,299 [learner.lti_utils] OAuth signature match: False
-[WARNING] 2025-07-21 14:42:22,300 [learner.views] Invalid OAuth signature
-[WARNING] 2025-07-21 14:42:22,301 [django.request] Unauthorized: /lti/grade-callback/
-[WARNING] 2025-07-21 14:42:34,767 [django.request] Not Found: /partner/ping-session/
-[INFO] 2025-07-21 14:43:11,049 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn, assessment 83
-[DEBUG] 2025-07-21 14:43:12,763 [learner.views] Base URL: https://moodle.icei.ac.id/enrol/lti/tool.php
-[DEBUG] 2025-07-21 14:43:12,764 [learner.views] Base String: POST&https%3A%2F%2Fmoodle.icei.ac.id%2Fenrol%2Flti%2Ftool.php&context_id%3Dcourse-83%26context_title%3DCourse%26id%3D4%26launch_presentation_document_target%3Diframe%26launch_presentation_locale%3Den-US%26lis_outcome_service_url%3Dhttps%253A%252F%252Fini.icei.ac.id%252Flti%252Fgrade-callback%26lis_person_contact_email_primary%3Dlearn%2540learn.com%26lis_person_name_full%3DMr%2520Learners%26lis_result_sourcedid%3Dlti-83-4%26lti_message_type%3Dbasic-lti-launch-request%26lti_version%3DLTI-1p0%26oauth_consumer_key%3Dasimarif-b1bec%26oauth_nonce%3Dc6aa3e7d187f4582bbe8562636e19ccc%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1753083792%26oauth_version%3D1.0%26resource_link_id%3Dres-83%26roles%3DLearner%26tool_consumer_info_product_family_code%3Ddjango-lms%26tool_consumer_info_version%3D1.0%26user_id%3D4
-[DEBUG] 2025-07-21 14:43:12,764 [learner.views] Signing Key: jgGse6aABpb6q0tQRq4W1z9c1jfVaAJI&
-[DEBUG] 2025-07-21 14:43:12,764 [learner.views] OAuth Signature: vwNnqo2JkS1KEnCUlx3LHOBxR0I=
-[DEBUG] 2025-07-21 14:43:12,764 [learner.views] Sending LTI Launch to https://moodle.icei.ac.id/enrol/lti/tool.php?id=4 with params: {'oauth_consumer_key': 'asimarif-b1bec', 'oauth_signature_method': 'HMAC-SHA1', 'oauth_version': '1.0', 'oauth_nonce': 'c6aa3e7d187f4582bbe8562636e19ccc', 'oauth_timestamp': '1753083792', 'resource_link_id': 'res-83', 'user_id': '4', 'roles': 'Learner', 'lis_person_name_full': 'Mr Learners', 'lis_person_contact_email_primary': 'learn@learn.com', 'context_id': 'course-83', 'context_title': 'Course', 'launch_presentation_locale': 'en-US', 'lti_version': 'LTI-1p0', 'lti_message_type': 'basic-lti-launch-request', 'tool_consumer_info_product_family_code': 'django-lms', 'tool_consumer_info_version': '1.0', 'launch_presentation_document_target': 'iframe', 'lis_outcome_service_url': 'https://ini.icei.ac.id/lti/grade-callback', 'lis_result_sourcedid': 'lti-83-4', 'oauth_signature': 'vwNnqo2JkS1KEnCUlx3LHOBxR0I='}
-[INFO] 2025-07-21 14:43:12,783 [learner.views] Initialized LTIResult for user 4, assessment 83
-[WARNING] 2025-07-21 14:44:11,478 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 14:45:11,373 [django.request] Not Found: /partner/ping-session/
-[DEBUG] 2025-07-21 14:45:38,802 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
-[INFO] 2025-07-21 14:45:38,805 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-21 06:45:38.802802+00:00
-[INFO] 2025-07-21 14:45:38,805 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0", path_info: "/logout/"}.
-[DEBUG] 2025-07-21 14:45:45,654 [urllib3.connectionpool] Starting new HTTPS connection (1): oauth2.googleapis.com:443
-[DEBUG] 2025-07-21 14:45:46,092 [urllib3.connectionpool] https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
-[DEBUG] 2025-07-21 14:45:46,225 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
-[INFO] 2025-07-21 14:45:46,225 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0", path_info: "/accounts/google/login/callback/"}.
-[INFO] 2025-07-21 14:45:46,226 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-21 06:45:46.225112+00:00
-[INFO] 2025-07-21 14:45:50,333 [learner.views] my_course: Rendering untuk pengguna johan, kursus kursus-uiux-design-dari-nol-hingga-mahir, assessment_id=None
-[INFO] 2025-07-21 14:45:53,284 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna johan, assessment 83
-[DEBUG] 2025-07-21 14:45:54,769 [learner.views] Base URL: https://moodle.icei.ac.id/enrol/lti/tool.php
-[DEBUG] 2025-07-21 14:45:54,769 [learner.views] Base String: POST&https%3A%2F%2Fmoodle.icei.ac.id%2Fenrol%2Flti%2Ftool.php&context_id%3Dcourse-83%26context_title%3DCourse%26id%3D4%26launch_presentation_document_target%3Diframe%26launch_presentation_locale%3Den-US%26lis_outcome_service_url%3Dhttps%253A%252F%252Fini.icei.ac.id%252Flti%252Fgrade-callback%26lis_person_contact_email_primary%3Djohansantri%2540gmail.com%26lis_person_name_full%3DJohan%2520Santri%26lis_result_sourcedid%3Dlti-83-6%26lti_message_type%3Dbasic-lti-launch-request%26lti_version%3DLTI-1p0%26oauth_consumer_key%3Dasimarif-b1bec%26oauth_nonce%3Dc357d50186a445f798875e7aef5d3200%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1753083954%26oauth_version%3D1.0%26resource_link_id%3Dres-83%26roles%3DLearner%26tool_consumer_info_product_family_code%3Ddjango-lms%26tool_consumer_info_version%3D1.0%26user_id%3D6
-[DEBUG] 2025-07-21 14:45:54,769 [learner.views] Signing Key: jgGse6aABpb6q0tQRq4W1z9c1jfVaAJI&
-[DEBUG] 2025-07-21 14:45:54,769 [learner.views] OAuth Signature: 1cqW9Szptaz5M55Rae/vXRwcSao=
-[DEBUG] 2025-07-21 14:45:54,769 [learner.views] Sending LTI Launch to https://moodle.icei.ac.id/enrol/lti/tool.php?id=4 with params: {'oauth_consumer_key': 'asimarif-b1bec', 'oauth_signature_method': 'HMAC-SHA1', 'oauth_version': '1.0', 'oauth_nonce': 'c357d50186a445f798875e7aef5d3200', 'oauth_timestamp': '1753083954', 'resource_link_id': 'res-83', 'user_id': '6', 'roles': 'Learner', 'lis_person_name_full': 'Johan Santri', 'lis_person_contact_email_primary': 'johansantri@gmail.com', 'context_id': 'course-83', 'context_title': 'Course', 'launch_presentation_locale': 'en-US', 'lti_version': 'LTI-1p0', 'lti_message_type': 'basic-lti-launch-request', 'tool_consumer_info_product_family_code': 'django-lms', 'tool_consumer_info_version': '1.0', 'launch_presentation_document_target': 'iframe', 'lis_outcome_service_url': 'https://ini.icei.ac.id/lti/grade-callback', 'lis_result_sourcedid': 'lti-83-6', 'oauth_signature': '1cqW9Szptaz5M55Rae/vXRwcSao='}
-[INFO] 2025-07-21 14:45:54,786 [learner.views] Initialized LTIResult for user 6, assessment 83
-[WARNING] 2025-07-21 14:46:50,773 [django.request] Not Found: /partner/ping-session/
-[WARNING] 2025-07-21 14:46:53,541 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-07-21 16:01:54,401 [learner.lti_utils] Received OAuth signature: XyZ123AbCdEfGhIjKlMnOpQrStUv=
+[DEBUG] 2025-07-21 16:01:54,401 [learner.lti_utils] Received OAuth params: {'oauth_consumer_key': 'asimarif-b1bec', 'oauth_signature_method': 'HMAC-SHA1', 'oauth_timestamp': '1753088766', 'oauth_nonce': '1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p', 'oauth_version': '1.0'}
+[DEBUG] 2025-07-21 16:01:54,406 [learner.lti_utils] Found tool with consumer_key: asimarif-b1bec
+[DEBUG] 2025-07-21 16:01:54,407 [learner.lti_utils] Base URL: https://ini.icei.ac.id/lti/grade-callback
+[DEBUG] 2025-07-21 16:01:54,407 [learner.lti_utils] Base string: POST&https%3A%2F%2Fini.icei.ac.id%2Flti%2Fgrade-callback&oauth_consumer_key%3Dasimarif-b1bec%26oauth_nonce%3D1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1753088766%26oauth_version%3D1.0
+[DEBUG] 2025-07-21 16:01:54,407 [learner.lti_utils] Signing key: jgGse6aABpb6q0tQRq4W1z9c1jfVaAJI&
+[DEBUG] 2025-07-21 16:01:54,407 [learner.lti_utils] Computed signature: Sr22gbKwDDe7QzGyqrnE9nJERfs=
+[DEBUG] 2025-07-21 16:01:54,407 [learner.lti_utils] OAuth signature match: False
+[WARNING] 2025-07-21 16:01:54,407 [learner.views] Invalid OAuth signature
+[WARNING] 2025-07-21 16:01:54,408 [django.request] Unauthorized: /lti/grade-callback/
+[WARNING] 2025-07-21 16:02:13,282 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 16:03:12,288 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 16:04:12,293 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 16:05:12,317 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 16:06:12,583 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 16:07:12,591 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 16:08:12,606 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 16:09:12,602 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 16:10:16,718 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 16:11:17,232 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 16:12:23,557 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 16:13:23,560 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 16:14:23,562 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 16:15:23,560 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 16:16:23,555 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 16:17:23,627 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 16:18:23,635 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 16:19:23,642 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 16:20:23,637 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 16:21:23,631 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 16:22:23,688 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 16:23:23,688 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 16:24:23,688 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 16:25:23,687 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 16:26:23,688 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-07-21 16:26:35,913 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-21 16:26:36,025 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-21 16:26:36,090 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-07-21 16:27:24,621 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 16:28:24,457 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 16:29:23,686 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 16:30:24,602 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-21 16:53:01,434 [django.request] Not Found: /.git/config
+[WARNING] 2025-07-21 17:14:30,777 [django.request] Not Found: /tiki-login_scr.php
+[WARNING] 2025-07-21 17:15:24,688 [django.request] Not Found: /tiki-login_scr.php
+[WARNING] 2025-07-21 17:16:24,670 [django.request] Not Found: /tiki-index.php
+[WARNING] 2025-07-21 17:43:14,661 [django.request] Not Found: /.git/config
+[WARNING] 2025-07-21 17:54:41,343 [django.request] Not Found: /_profiler/phpinfo
+[WARNING] 2025-07-21 17:54:44,122 [django.request] Not Found: /app_dev.php/_profiler/phpinfo
+[WARNING] 2025-07-21 17:54:45,839 [django.request] Not Found: /index.php/_profiler/phpinfo
+[WARNING] 2025-07-21 17:54:47,963 [django.request] Not Found: /index_dev.php/_profiler/phpinfo
+[WARNING] 2025-07-21 17:54:50,060 [django.request] Not Found: /dev.php/_profiler/phpinfo
+[WARNING] 2025-07-21 17:54:52,597 [django.request] Not Found: /debug.php/_profiler/phpinfo
+[WARNING] 2025-07-21 17:54:55,334 [django.request] Not Found: /_debug/_profiler/phpinfo
+[WARNING] 2025-07-21 17:54:57,456 [django.request] Not Found: /web/_profiler/phpinfo
+[WARNING] 2025-07-21 17:55:00,170 [django.request] Not Found: /public/_profiler/phpinfo
+[WARNING] 2025-07-21 17:55:03,401 [django.request] Not Found: /frontend_dev.php/_profiler/phpinfo
+[WARNING] 2025-07-21 17:55:05,181 [django.request] Not Found: /backend_dev.php/_profiler/phpinfo
+[WARNING] 2025-07-21 17:55:07,927 [django.request] Not Found: /api_dev.php/_profiler/phpinfo
+[WARNING] 2025-07-21 17:55:10,697 [django.request] Not Found: /app.php/_profiler/phpinfo
+[WARNING] 2025-07-21 17:55:14,036 [django.request] Not Found: /app_test.php/_profiler/phpinfo
+[WARNING] 2025-07-21 17:55:15,903 [django.request] Not Found: /test.php/_profiler/phpinfo
+[WARNING] 2025-07-21 17:55:17,662 [django.request] Not Found: /symfony/_profiler/phpinfo
+[WARNING] 2025-07-21 17:55:21,363 [django.request] Not Found: /debug/_profiler/phpinfo
+[WARNING] 2025-07-21 17:55:34,185 [django.request] Not Found: /dev/_profiler/phpinfo
+[WARNING] 2025-07-21 17:55:39,328 [django.request] Not Found: /profiler/phpinfo
+[WARNING] 2025-07-21 18:14:33,946 [django.request] Not Found: /.env
+[WARNING] 2025-07-21 18:14:34,965 [django.security.csrf] Forbidden (Referer checking failed - no Referer.): /
+[WARNING] 2025-07-21 18:26:48,639 [django.request] Not Found: /webui/
+[WARNING] 2025-07-21 18:29:54,008 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-07-21 18:34:44,729 [django.request] Not Found: /robots.txt
+[WARNING] 2025-07-21 18:34:45,374 [django.request] Not Found: /org-partner/university-of-amsterdam/
+[WARNING] 2025-07-21 18:42:43,712 [django.request] Not Found: /geoserver/web/
+[WARNING] 2025-07-21 18:45:14,994 [django.request] Not Found: /.git/config
+[WARNING] 2025-07-21 19:15:26,822 [django.request] Not Found: /httpd.conf
+[WARNING] 2025-07-21 19:15:27,100 [django.request] Not Found: /php_info.php
+[WARNING] 2025-07-21 19:15:27,402 [django.request] Not Found: /.env.production
+[WARNING] 2025-07-21 19:15:27,761 [django.request] Not Found: /.env.development
+[WARNING] 2025-07-21 19:15:28,073 [django.request] Not Found: /package.json
+[WARNING] 2025-07-21 19:15:28,346 [django.request] Not Found: /application-dev.properties
+[WARNING] 2025-07-21 19:15:28,749 [django.request] Not Found: /.AWS_/credentials
+[WARNING] 2025-07-21 19:15:29,031 [django.request] Not Found: /karma.conf.json
+[WARNING] 2025-07-21 19:15:29,338 [django.request] Not Found: /config/php.ini
+[WARNING] 2025-07-21 19:15:29,615 [django.request] Not Found: /.env.save
+[WARNING] 2025-07-21 19:15:29,917 [django.request] Not Found: /db_config.php
+[WARNING] 2025-07-21 19:15:30,273 [django.request] Not Found: /_profiler/phpinfo
+[WARNING] 2025-07-21 19:15:30,561 [django.request] Not Found: /.env.json
+[WARNING] 2025-07-21 19:15:30,826 [django.request] Not Found: /api/env
+[WARNING] 2025-07-21 19:15:31,113 [django.request] Not Found: /info.php
+[WARNING] 2025-07-21 19:15:31,390 [django.request] Not Found: /dev.php
+[WARNING] 2025-07-21 19:15:31,691 [django.request] Not Found: /.json
+[WARNING] 2025-07-21 19:15:31,959 [django.request] Not Found: /.env.backup
+[WARNING] 2025-07-21 19:15:32,536 [django.request] Not Found: /php.ini
+[WARNING] 2025-07-21 19:15:32,804 [django.request] Not Found: /web/app_dev.php
+[WARNING] 2025-07-21 19:15:33,227 [django.request] Not Found: /test
+[WARNING] 2025-07-21 19:15:33,509 [django.request] Not Found: /settings.php
+[WARNING] 2025-07-21 19:15:33,779 [django.request] Not Found: /config/env.php
+[WARNING] 2025-07-21 19:15:34,044 [django.request] Not Found: /db.php
+[WARNING] 2025-07-21 19:15:34,318 [django.request] Not Found: /config.php.save
+[WARNING] 2025-07-21 19:15:34,600 [django.request] Not Found: /wp-admin/.env
+[WARNING] 2025-07-21 19:15:34,861 [django.request] Not Found: /.env.testing
+[WARNING] 2025-07-21 19:15:35,124 [django.request] Not Found: /info
+[WARNING] 2025-07-21 19:15:35,416 [django.request] Not Found: /app_dev.php
+[WARNING] 2025-07-21 19:15:35,681 [django.request] Not Found: /.aws/credentials
+[WARNING] 2025-07-21 19:15:35,946 [django.request] Not Found: /.env.local
+[WARNING] 2025-07-21 19:15:36,391 [django.request] Not Found: /admin/config
+[WARNING] 2025-07-21 19:15:36,693 [django.request] Not Found: /phpinfo
+[WARNING] 2025-07-21 19:15:36,970 [django.request] Not Found: /config.properties
+[WARNING] 2025-07-21 19:15:37,237 [django.request] Not Found: /config/settings.env
+[WARNING] 2025-07-21 19:15:37,502 [django.request] Not Found: /index.html
+[WARNING] 2025-07-21 19:15:37,923 [django.request] Not Found: /php_errors.log
+[WARNING] 2025-07-21 19:15:38,351 [django.request] Not Found: /database.php
+[WARNING] 2025-07-21 19:15:38,632 [django.request] Not Found: /adminer.php
+[ERROR] 2025-07-21 19:33:14,346 [django.security.DisallowedHost] Invalid HTTP_HOST header: 'dgxvmehumrcxi.perso.sn'. You may need to add 'dgxvmehumrcxi.perso.sn' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'dgxvmehumrcxi.perso.sn'. You may need to add 'dgxvmehumrcxi.perso.sn' to ALLOWED_HOSTS.
+[WARNING] 2025-07-21 19:33:14,348 [django.request] Bad Request: /4305-vida-grande
+[ERROR] 2025-07-21 19:33:14,625 [django.security.DisallowedHost] Invalid HTTP_HOST header: 'dgxvmehumrcxi.perso.sn'. You may need to add 'dgxvmehumrcxi.perso.sn' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'dgxvmehumrcxi.perso.sn'. You may need to add 'dgxvmehumrcxi.perso.sn' to ALLOWED_HOSTS.
+[WARNING] 2025-07-21 19:33:14,625 [django.request] Bad Request: /asuyi
+[ERROR] 2025-07-21 19:33:27,995 [django.security.DisallowedHost] Invalid HTTP_HOST header: 'dgxvmehumrcxi.perso.sn'. You may need to add 'dgxvmehumrcxi.perso.sn' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'dgxvmehumrcxi.perso.sn'. You may need to add 'dgxvmehumrcxi.perso.sn' to ALLOWED_HOSTS.
+[WARNING] 2025-07-21 19:33:27,996 [django.request] Bad Request: /djnika-shermatov
+[ERROR] 2025-07-21 19:33:39,417 [django.security.DisallowedHost] Invalid HTTP_HOST header: 'dgxvmehumrcxi.perso.sn'. You may need to add 'dgxvmehumrcxi.perso.sn' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'dgxvmehumrcxi.perso.sn'. You may need to add 'dgxvmehumrcxi.perso.sn' to ALLOWED_HOSTS.
+[WARNING] 2025-07-21 19:33:39,418 [django.request] Bad Request: /twonnie-mckinney
+[ERROR] 2025-07-21 19:33:57,693 [django.security.DisallowedHost] Invalid HTTP_HOST header: 'dgxvmehumrcxi.perso.sn'. You may need to add 'dgxvmehumrcxi.perso.sn' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'dgxvmehumrcxi.perso.sn'. You may need to add 'dgxvmehumrcxi.perso.sn' to ALLOWED_HOSTS.
+[WARNING] 2025-07-21 19:33:57,694 [django.request] Bad Request: /1915-fred-sugg-road
+[ERROR] 2025-07-21 19:34:02,992 [django.security.DisallowedHost] Invalid HTTP_HOST header: 'dgxvmehumrcxi.perso.sn'. You may need to add 'dgxvmehumrcxi.perso.sn' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'dgxvmehumrcxi.perso.sn'. You may need to add 'dgxvmehumrcxi.perso.sn' to ALLOWED_HOSTS.
+[WARNING] 2025-07-21 19:34:02,993 [django.request] Bad Request: /231-428-2573
+[ERROR] 2025-07-21 19:34:10,726 [django.security.DisallowedHost] Invalid HTTP_HOST header: 'dgxvmehumrcxi.perso.sn'. You may need to add 'dgxvmehumrcxi.perso.sn' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'dgxvmehumrcxi.perso.sn'. You may need to add 'dgxvmehumrcxi.perso.sn' to ALLOWED_HOSTS.
+[WARNING] 2025-07-21 19:34:10,728 [django.request] Bad Request: /daniel-talking-about-him
+[WARNING] 2025-07-21 20:42:27,822 [django.request] Not Found: /.env
+[WARNING] 2025-07-21 20:42:29,084 [django.security.csrf] Forbidden (Referer checking failed - no Referer.): /
+[WARNING] 2025-07-21 21:43:59,784 [django.request] Not Found: /include/makecvs.php
+[WARNING] 2025-07-21 21:44:26,700 [django.request] Not Found: /tos/index.php
+[WARNING] 2025-07-21 22:44:38,861 [django.request] Not Found: /_profiler/phpinfo
+[WARNING] 2025-07-21 22:44:42,768 [django.request] Not Found: /app_dev.php/_profiler/phpinfo
+[WARNING] 2025-07-21 22:44:44,056 [django.request] Not Found: /index.php/_profiler/phpinfo
+[WARNING] 2025-07-21 22:44:45,480 [django.request] Not Found: /index_dev.php/_profiler/phpinfo
+[WARNING] 2025-07-21 22:44:46,784 [django.request] Not Found: /dev.php/_profiler/phpinfo
+[WARNING] 2025-07-21 22:44:48,093 [django.request] Not Found: /debug.php/_profiler/phpinfo
+[WARNING] 2025-07-21 22:44:50,474 [django.request] Not Found: /_debug/_profiler/phpinfo
+[WARNING] 2025-07-21 22:44:51,794 [django.request] Not Found: /web/_profiler/phpinfo
+[WARNING] 2025-07-21 22:44:57,149 [django.request] Not Found: /public/_profiler/phpinfo
+[WARNING] 2025-07-21 22:44:58,864 [django.request] Not Found: /frontend_dev.php/_profiler/phpinfo
+[WARNING] 2025-07-21 22:45:00,150 [django.request] Not Found: /backend_dev.php/_profiler/phpinfo
+[WARNING] 2025-07-21 22:45:02,773 [django.request] Not Found: /api_dev.php/_profiler/phpinfo
+[WARNING] 2025-07-21 22:45:04,183 [django.request] Not Found: /app.php/_profiler/phpinfo
+[WARNING] 2025-07-21 22:45:06,557 [django.request] Not Found: /app_test.php/_profiler/phpinfo
+[WARNING] 2025-07-21 22:45:09,650 [django.request] Not Found: /test.php/_profiler/phpinfo
+[WARNING] 2025-07-21 22:45:10,968 [django.request] Not Found: /symfony/_profiler/phpinfo
+[WARNING] 2025-07-21 22:45:12,381 [django.request] Not Found: /debug/_profiler/phpinfo
+[WARNING] 2025-07-21 22:45:14,670 [django.request] Not Found: /dev/_profiler/phpinfo
+[WARNING] 2025-07-21 22:45:16,615 [django.request] Not Found: /profiler/phpinfo
+[WARNING] 2025-07-21 23:18:58,692 [django.request] Not Found: /file/iTFVCX.txt
+[WARNING] 2025-07-21 23:21:22,589 [django.request] Not Found: /.env
+[WARNING] 2025-07-21 23:21:25,065 [django.security.csrf] Forbidden (Referer checking failed - no Referer.): /
+[WARNING] 2025-07-21 23:30:46,348 [django.request] Method Not Allowed (HEAD): /
+[WARNING] 2025-07-21 23:56:27,374 [django.request] Not Found: /.git/config
+[WARNING] 2025-07-22 00:20:54,019 [django.request] Not Found: /robots.txt
+[WARNING] 2025-07-22 00:20:54,648 [django.request] Not Found: /robots.txt
+[WARNING] 2025-07-22 00:28:12,384 [django.request] Not Found: /.env
+[WARNING] 2025-07-22 00:33:57,253 [django.request] Not Found: /actuator/gateway/routes
+[WARNING] 2025-07-22 00:44:28,735 [django.request] Not Found: /ebook/bookPerPub.php
+[WARNING] 2025-07-22 00:53:05,709 [django.request] Not Found: /ext-js/index.html
+[WARNING] 2025-07-22 01:12:42,495 [django.request] Not Found: /.env
+[WARNING] 2025-07-22 01:12:43,983 [django.request] Not Found: /.git/config
+[WARNING] 2025-07-22 01:28:50,712 [django.request] Not Found: /incom/modules/uploader/showcase/script.php
+[WARNING] 2025-07-22 01:29:23,675 [django.request] Not Found: /upload/userfiles/image/2zeG8XfSaa7NK3HRfvULaX6DFSE.png
+[WARNING] 2025-07-22 01:32:44,677 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-07-22 01:32:50,164 [django.request] Not Found: /aaabbbccc
+[WARNING] 2025-07-22 01:32:50,411 [django.request] Not Found: /1
+[WARNING] 2025-07-22 01:32:50,658 [django.request] Not Found: /fb
+[WARNING] 2025-07-22 01:32:50,907 [django.request] Not Found: /fwc
+[WARNING] 2025-07-22 01:32:51,152 [django.request] Not Found: /fzh
+[WARNING] 2025-07-22 01:32:51,659 [django.request] Not Found: /res/favicon.ico
+[WARNING] 2025-07-22 01:32:52,172 [django.request] Not Found: /assets/favicon-aOK6_042.ico
+[WARNING] 2025-07-22 01:32:52,691 [django.request] Not Found: /images/01.jpg
+[WARNING] 2025-07-22 01:32:53,230 [django.request] Not Found: /wp-content/uploads/2020/10/official-logo-512x512.png
+[WARNING] 2025-07-22 01:32:53,752 [django.request] Not Found: /wp-content/uploads/2023/02/1677572030-814390417fe413b.png
+[WARNING] 2025-07-22 01:32:54,277 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-07-22 01:32:54,795 [django.request] Not Found: /icons/favicon.ico
+[WARNING] 2025-07-22 01:32:55,344 [django.request] Not Found: /wp-content/uploads/2023/08/logo-gold.png
+[WARNING] 2025-07-22 01:32:55,352 [django.request] Not Found: /favicon-32x32.png
+[WARNING] 2025-07-22 01:33:16,484 [django.request] Not Found: /aaabbbccc
+[WARNING] 2025-07-22 01:33:17,258 [django.request] Not Found: /1
+[WARNING] 2025-07-22 01:33:18,447 [django.request] Not Found: /fb
+[WARNING] 2025-07-22 01:33:19,196 [django.request] Not Found: /fwc
+[WARNING] 2025-07-22 01:33:21,281 [django.request] Not Found: /fzh
+[WARNING] 2025-07-22 01:33:22,458 [django.request] Not Found: /assets/favicon-aOK6_042.ico
+[WARNING] 2025-07-22 01:33:25,885 [django.request] Not Found: /res/favicon.ico
+[WARNING] 2025-07-22 01:33:30,373 [django.request] Not Found: /images/01.jpg
+[WARNING] 2025-07-22 01:33:36,186 [django.request] Not Found: /wp-content/uploads/2020/10/official-logo-512x512.png
+[WARNING] 2025-07-22 01:33:43,001 [django.request] Not Found: /wp-content/uploads/2023/02/1677572030-814390417fe413b.png
+[WARNING] 2025-07-22 01:33:50,857 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-07-22 01:33:52,019 [django.request] Not Found: /wp-content/uploads/2023/08/logo-gold.png
+[WARNING] 2025-07-22 01:33:53,186 [django.request] Not Found: /favicon-32x32.png
+[WARNING] 2025-07-22 01:34:02,084 [django.request] Not Found: /icons/favicon.ico
+[WARNING] 2025-07-22 01:36:29,602 [django.request] Not Found: /robots.txt
+[WARNING] 2025-07-22 01:43:43,674 [django.request] Not Found: /.env
+[WARNING] 2025-07-22 01:43:44,980 [django.security.csrf] Forbidden (Referer checking failed - no Referer.): /
+[WARNING] 2025-07-22 02:07:38,876 [django.request] Not Found: /api
+[WARNING] 2025-07-22 02:07:39,046 [django.request] Not Found: /.env
+[WARNING] 2025-07-22 02:07:39,215 [django.request] Not Found: /version
+[WARNING] 2025-07-22 02:07:39,385 [django.request] Not Found: /openapi/v2
+[WARNING] 2025-07-22 02:07:40,829 [django.request] Not Found: /.env.bak
+[WARNING] 2025-07-22 02:07:41,006 [django.request] Not Found: /stats
+[WARNING] 2025-07-22 02:07:41,174 [django.request] Not Found: /containers/json
+[WARNING] 2025-07-22 02:43:23,473 [django.request] Not Found: /favicon.ico
+[ERROR] 2025-07-22 02:47:25,586 [django.security.DisallowedHost] Invalid HTTP_HOST header: 'localhost'. You may need to add 'localhost' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'localhost'. You may need to add 'localhost' to ALLOWED_HOSTS.
+[WARNING] 2025-07-22 02:47:25,587 [django.request] Bad Request: /
+[WARNING] 2025-07-22 02:51:33,590 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-07-22 02:51:33,591 [django.request] Forbidden: /search/
+[WARNING] 2025-07-22 02:51:34,563 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-07-22 02:51:34,564 [django.request] Forbidden: /search/
+[WARNING] 2025-07-22 02:51:35,308 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-07-22 02:51:35,308 [django.request] Forbidden: /search/
+[WARNING] 2025-07-22 02:51:35,594 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-07-22 02:51:35,595 [django.request] Forbidden: /search/
+[WARNING] 2025-07-22 02:51:38,451 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-07-22 02:51:38,452 [django.request] Forbidden: /search/
+[WARNING] 2025-07-22 02:51:45,602 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-07-22 02:51:45,603 [django.request] Forbidden: /search/
+[WARNING] 2025-07-22 03:25:17,772 [django.request] Not Found: /auth/check
+[WARNING] 2025-07-22 03:25:38,515 [django.request] Not Found: /info.php
+[WARNING] 2025-07-22 03:25:40,150 [django.request] Not Found: /phpinfo
+[WARNING] 2025-07-22 03:25:41,820 [django.request] Not Found: /php_info.php
+[WARNING] 2025-07-22 03:25:43,272 [django.request] Not Found: /test.php
+[WARNING] 2025-07-22 03:25:44,958 [django.request] Not Found: /_profiler/phpinfo
+[WARNING] 2025-07-22 03:25:47,026 [django.request] Not Found: /index.php
+[WARNING] 2025-07-22 03:25:48,839 [django.request] Not Found: /debugger.php
+[WARNING] 2025-07-22 03:25:51,980 [django.request] Not Found: /phpversion
+[WARNING] 2025-07-22 03:25:53,503 [django.request] Not Found: /test_info.php
+[WARNING] 2025-07-22 03:25:54,816 [django.request] Not Found: /config.php
+[WARNING] 2025-07-22 03:25:58,413 [django.request] Not Found: /_profiler/phpinfo
+[WARNING] 2025-07-22 03:26:01,800 [django.request] Not Found: /.env.production
+[WARNING] 2025-07-22 03:26:03,114 [django.request] Not Found: /.env.local
+[WARNING] 2025-07-22 03:26:04,377 [django.request] Not Found: /api/shared/config/config.env
+[WARNING] 2025-07-22 03:26:08,806 [django.request] Not Found: /contact/
+[WARNING] 2025-07-22 03:26:10,079 [django.request] Not Found: /.AWS_/credentials
+[WARNING] 2025-07-22 03:26:12,087 [django.request] Not Found: /karma.conf.json
+[WARNING] 2025-07-22 03:26:13,371 [django.request] Not Found: /index.php
+[WARNING] 2025-07-22 03:26:14,627 [django.request] Not Found: /.aws/credentials/uploads/
+[WARNING] 2025-07-22 03:26:15,911 [django.request] Not Found: /config/
+[WARNING] 2025-07-22 04:18:35,880 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-07-22 04:26:44,482 [django.request] Not Found: /robots.txt
+[WARNING] 2025-07-22 04:30:52,434 [django.request] Not Found: /.env
+[WARNING] 2025-07-22 04:30:53,182 [django.security.csrf] Forbidden (Referer checking failed - no Referer.): /
+[WARNING] 2025-07-22 04:47:36,051 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-07-22 04:54:49,688 [django.request] Not Found: /wp-admin/admin-post.php
+[WARNING] 2025-07-22 05:25:31,642 [django.request] Not Found: /ecp/Current/exporttool/microsoft.exchange.ediscovery.exporttool.application
+[WARNING] 2025-07-22 05:40:05,342 [django.request] Not Found: /robots.txt
+[WARNING] 2025-07-22 05:59:13,699 [django.request] Not Found: /auth/requestreset
+[WARNING] 2025-07-22 06:38:06,230 [django.request] Not Found: /wp-content/plugins/excel-like-price-change-for-woocommerce-and-wp-e-commerce-light/readme.txt
+[WARNING] 2025-07-22 06:38:08,355 [django.request] Not Found: /wp-content/plugins/wp-event-solution/readme.txt
+[WARNING] 2025-07-22 06:38:09,692 [django.request] Not Found: /wp-content/plugins/wc-fields-factory/readme.txt
+[WARNING] 2025-07-22 06:38:11,968 [django.request] Not Found: /wp-content/plugins/user-registration-pro/readme.txt
+[WARNING] 2025-07-22 06:38:14,502 [django.request] Not Found: /wp-content/plugins/user-registration/readme.txt
+[WARNING] 2025-07-22 06:38:16,324 [django.request] Not Found: /wp-content/themes/motors/CHANGELOG.md
+[WARNING] 2025-07-22 06:38:19,169 [django.request] Not Found: /wp-content/plugins/file-away/readme.txt
+[WARNING] 2025-07-22 06:38:20,714 [django.request] Not Found: /wp-content/plugins/baiduseo/readme.txt
+[WARNING] 2025-07-22 06:38:23,961 [django.request] Not Found: /wp-content/themes/adforest/style.css
+[WARNING] 2025-07-22 06:38:25,961 [django.request] Not Found: /wp-content/themes/superio/style.css
+[WARNING] 2025-07-22 06:38:27,964 [django.request] Not Found: /wp-content/plugins/order-delivery-date/readme.txt
+[WARNING] 2025-07-22 06:38:30,033 [django.request] Not Found: /wp-content/plugins/suretriggers/readme.txt
+[WARNING] 2025-07-22 06:38:32,847 [django.request] Not Found: /wp-content/themes/foodbakery/style.css
+[WARNING] 2025-07-22 06:38:34,707 [django.request] Not Found: /wp-content/plugins/whmpress/history.txt
+[WARNING] 2025-07-22 06:38:42,891 [django.request] Not Found: /wp-content/themes/javo-directory/style.css
+[WARNING] 2025-07-22 06:38:44,571 [django.request] Not Found: /wp-content/plugins/iwjob/assets/css/style.css
+[WARNING] 2025-07-22 06:38:46,013 [django.request] Not Found: /wp-content/themes/golo/style.css
+[WARNING] 2025-07-22 06:38:49,244 [django.request] Not Found: /wp-content/plugins/suretriggers/readme.txt
+[WARNING] 2025-07-22 06:38:51,250 [django.request] Not Found: /wp-content/themes/civi/style.css
+[WARNING] 2025-07-22 06:38:57,004 [django.request] Not Found: /wp-content/themes/jobcareer/style.css
+[WARNING] 2025-07-22 06:39:04,433 [django.request] Not Found: /wp-content/plugins/chaty-pro/css/chaty-front.min.css
+[WARNING] 2025-07-22 06:39:07,690 [django.request] Not Found: /wp-content/themes/homevillas-real-estate/style.css
+[WARNING] 2025-07-22 06:39:09,333 [django.request] Not Found: /wp-content/themes/realhomes/style.css
+[WARNING] 2025-07-22 06:39:13,634 [django.request] Not Found: /wp-content/plugins/k-elements/readme.txt
+[WARNING] 2025-07-22 06:39:20,723 [django.request] Not Found: /wp-content/plugins/security-malware-firewall/readme.txt
+[WARNING] 2025-07-22 06:39:22,676 [django.request] Not Found: /wp-content/themes/directorybox/style.css
+[WARNING] 2025-07-22 06:39:29,852 [django.request] Not Found: /wp-content/plugins/indeed-wp-superbackup/admin/assets/css/style.css
+[WARNING] 2025-07-22 06:39:32,313 [django.request] Not Found: /wp-content/plugins/post-grid/readme.txt
+[WARNING] 2025-07-22 06:39:33,645 [django.request] Not Found: /wp-content/themes/homey/style.css
+[WARNING] 2025-07-22 06:39:34,901 [django.request] Not Found: /wp-content/themes/adifier/style.css
+[WARNING] 2025-07-22 06:39:36,453 [django.request] Not Found: /wp-content/plugins/fancy-product-designer/readme.txt
+[WARNING] 2025-07-22 06:39:37,574 [django.request] Not Found: /wp-content/plugins/jobboardwp/readme.txt
+[WARNING] 2025-07-22 06:39:38,741 [django.request] Not Found: /wp-content/plugins/woocommerce-photo-reviews/changelog.txt
+[WARNING] 2025-07-22 06:39:40,257 [django.request] Not Found: /wp-content/plugins/pie-register-premium/readme.txt
+[WARNING] 2025-07-22 06:39:41,159 [django.request] Not Found: /wp-content/plugins/indeed-wp-superbackup/languages/indeed-wp-superbackup.pot
+[WARNING] 2025-07-22 06:39:42,038 [django.request] Not Found: /wp-content/plugins/custom-registration-form-builder-with-submission-manager/readme.txt
+[WARNING] 2025-07-22 06:39:42,849 [django.request] Not Found: /wp-content/plugins/wp-time-capsule/readme.txt
+[WARNING] 2025-07-22 06:39:45,644 [django.request] Not Found: /wp-content/plugins/really-simple-ssl-pro-multisite/readme.txt
+[WARNING] 2025-07-22 06:39:48,362 [django.request] Not Found: /wp-content/plugins/really-simple-ssl-pro/readme.txt
+[WARNING] 2025-07-22 06:39:50,377 [django.request] Not Found: /wp-content/plugins/really-simple-ssl/readme.txt
+[WARNING] 2025-07-22 06:39:51,747 [django.request] Not Found: /wp-content/plugins/wp-membership/languages/wpmembership.pot
+[WARNING] 2025-07-22 06:39:53,907 [django.request] Not Found: /wp-content/themes/wplms/style.css
+[WARNING] 2025-07-22 06:39:55,458 [django.request] Not Found: /wp-content/plugins/wp-jobsearch/admin/css/admin.css
+[WARNING] 2025-07-22 06:40:06,517 [django.request] Not Found: /wp-content/plugins/wp-wc-affiliate-program/languages/rtwwwap-wp-wc-affiliate-program.pot
+[WARNING] 2025-07-22 06:40:12,010 [django.request] Not Found: /wp-content/plugins/Ultimate_AI/assets/css/style.css
+[WARNING] 2025-07-22 06:40:15,510 [django.request] Not Found: /wp-content/plugins/latepoint/readme.txt
+[WARNING] 2025-07-22 06:40:17,320 [django.request] Not Found: /wp-content/plugins/gutenkit-blocks-addon/readme.txt
+[WARNING] 2025-07-22 06:40:21,319 [django.request] Not Found: /wp-content/plugins/rss-feed-post-generator-echo/readme.txt
+[WARNING] 2025-07-22 06:40:23,818 [django.request] Not Found: /wp-content/plugins/json-api-user/readme.txt
+[WARNING] 2025-07-22 06:40:25,794 [django.request] Not Found: /wp-content/plugins/charitable/CHANGELOG.md
+[WARNING] 2025-07-22 06:40:27,671 [django.request] Not Found: /wp-content/plugins/wp-job-portal/readme.txt
+[WARNING] 2025-07-22 06:40:30,573 [django.request] Not Found: /wp-content/plugins/js-support-ticket/readme.txt
+[WARNING] 2025-07-22 06:40:32,075 [django.request] Not Found: /wp-content/plugins/give/readme.txt
+[WARNING] 2025-07-22 06:40:34,748 [django.request] Not Found: /wp-content/debug.log
+[WARNING] 2025-07-22 06:40:38,517 [django.request] Not Found: /wp-content/plugins/zm-ajax-login-register/readme.txt
+[WARNING] 2025-07-22 06:40:40,649 [django.request] Not Found: /wp-content/plugins/instawp-connect/readme.txt
+[WARNING] 2025-07-22 06:40:44,551 [django.request] Not Found: /wp-content/plugins/instawp-connect/readme.txt
+[WARNING] 2025-07-22 06:40:47,679 [django.request] Not Found: /wp-content/plugins/wp-seopress/readme.txt
+[WARNING] 2025-07-22 06:40:49,314 [django.request] Not Found: /wp-content/plugins/keydatas/readme.txt
+[WARNING] 2025-07-22 06:40:50,175 [django.request] Not Found: /wp-content/plugins/wp-time-capsule/readme.txt
+[WARNING] 2025-07-22 06:40:51,729 [django.request] Not Found: /wp-content/plugins/wp-mlm/readme.txt
+[WARNING] 2025-07-22 06:40:54,727 [django.request] Not Found: /wp-content/plugins/userpro/changelog.txt
+[WARNING] 2025-07-22 06:41:01,714 [django.request] Not Found: /wp-content/plugins/chatbot-chatgpt/readme.txt
+[WARNING] 2025-07-22 06:41:05,511 [django.request] Not Found: /wp-content/plugins/wp-automatic/css/wp-automatic.css
+[WARNING] 2025-07-22 06:41:07,475 [django.request] Not Found: /wp-content/plugins/wp-automatic/changelog
+[WARNING] 2025-07-22 06:41:08,343 [django.request] Not Found: /wp-content/plugins/wp-photo-album-plus/changelog.txt
+[WARNING] 2025-07-22 06:41:09,554 [django.request] Not Found: /wp-content/plugins/startklar-elmentor-forms-extwidgets/readme.txt
+[WARNING] 2025-07-22 06:41:11,110 [django.request] Not Found: /wp-content/plugins/edwiser-bridge/readme.txt
+[WARNING] 2025-07-22 06:41:14,064 [django.request] Not Found: /wp-content/plugins/learning-management-system/readme.txt
+[WARNING] 2025-07-22 06:41:21,448 [django.request] Not Found: /wp-content/plugins/woocommerce-simple-registration/readme.txt
+[WARNING] 2025-07-22 06:41:23,102 [django.request] Not Found: /wp-content/plugins/miniorange-2-factor-authentication/readme.txt
+[WARNING] 2025-07-22 06:41:23,937 [django.request] Not Found: /wp-content/plugins/miniorange-malware-protection/readme.txt
+[WARNING] 2025-07-22 06:41:25,661 [django.request] Not Found: /wp-content/plugins/instawp-connect/readme.txt
+[WARNING] 2025-07-22 06:41:29,317 [django.request] Not Found: /wp-content/plugins/masterstudy-lms-learning-management-system/readme.txt
+[WARNING] 2025-07-22 06:41:30,820 [django.request] Not Found: /wp-content/plugins/activedemand/readme.txt
+[WARNING] 2025-07-22 06:41:33,038 [django.request] Not Found: /wp-content/plugins/phppoet-checkout-fields/readme.txt
+[WARNING] 2025-07-22 06:41:36,767 [django.request] Not Found: /wp-content/plugins/bertha-ai-free/readme.txt
+[WARNING] 2025-07-22 06:41:37,806 [django.request] Not Found: /wp-content/plugins/rencontre/readme.txt
+[WARNING] 2025-07-22 06:41:38,874 [django.request] Not Found: /wp-content/plugins/login-as-customer-or-user/readme.txt
+[WARNING] 2025-07-22 06:41:40,730 [django.request] Not Found: /wp-content/plugins/post-smtp/readme.txt
+[WARNING] 2025-07-22 06:41:42,011 [django.request] Not Found: /wp-content/plugins/ai-engine/readme.txt
+[WARNING] 2025-07-22 06:41:43,134 [django.request] Not Found: /wp-content/plugins/userpro/changelog.txt
+[WARNING] 2025-07-22 06:41:44,253 [django.request] Not Found: /wp-content/plugins/backup-backup/readme.txt
+[WARNING] 2025-07-22 06:41:46,102 [django.request] Not Found: /wp-content/plugins/royal-elementor-addons/readme.txt
+[WARNING] 2025-07-22 06:41:47,133 [django.request] Not Found: /wp-content/plugins/import-xml-feed/readme.txt
+[WARNING] 2025-07-22 06:41:54,304 [django.request] Not Found: /wp-content/plugins/email-posts-to-subscribers/readme.txt
+[WARNING] 2025-07-22 06:41:55,881 [django.request] Not Found: /wp-content/plugins/kadence-blocks/readme.txt
+[WARNING] 2025-07-22 06:41:58,673 [django.request] Not Found: /wp-content/plugins/jupiterx-core/readme.txt
+[WARNING] 2025-07-22 06:42:00,267 [django.request] Not Found: /wp-content/plugins/forminator/readme.txt
+[WARNING] 2025-07-22 06:42:01,628 [django.request] Not Found: /wp-content/plugins/ht-mega-for-elementor/readme.txt
+[WARNING] 2025-07-22 06:42:03,081 [django.request] Not Found: /wp-content/plugins/wp-post-author/readme.txt
+[WARNING] 2025-07-22 06:42:04,143 [django.request] Not Found: /wp-content/plugins/mstore-api/readme.txt
+[WARNING] 2025-07-22 06:42:05,702 [django.request] Not Found: /wp-content/plugins/ultimate-member/readme.txt
+[WARNING] 2025-07-22 06:42:14,051 [django.request] Not Found: /wp-content/plugins/essential-addons-for-elementor-lite/readme.txt
+[WARNING] 2025-07-22 06:42:15,313 [django.request] Not Found: /wp-content/plugins/easy-digital-downloads/readme.txt
+[WARNING] 2025-07-22 06:42:16,154 [django.request] Not Found: /wp-content/plugins/woocommerce-payments/readme.txt
+[WARNING] 2025-07-22 06:42:17,146 [django.request] Not Found: /wp-content/plugins/wp-email-capture/readme.txt
+[WARNING] 2025-07-22 06:42:18,637 [django.request] Not Found: /wp-content/plugins/zendrop-dropshipping-and-fulfillment/readme.txt
+[WARNING] 2025-07-22 06:42:22,647 [django.request] Not Found: /complete-order/
+[WARNING] 2025-07-22 06:42:28,766 [django.request] Not Found: /wp-content/plugins/wp-sms/readme.txt
+[WARNING] 2025-07-22 06:42:32,789 [django.request] Not Found: /wp-content/plugins/n-media-woocommerce-checkout-fields/readme.txt
+[WARNING] 2025-07-22 06:42:33,823 [django.request] Not Found: /wp-content/plugins/videowhisper-live-streaming-integration/readme.txt
+[WARNING] 2025-07-22 06:42:35,718 [django.request] Not Found: /wp-content/plugins/learnpress/readme.txt
+[WARNING] 2025-07-22 06:42:37,162 [django.request] Not Found: /wp-content/plugins/extensive-vc-addon/readme.txt
+[WARNING] 2025-07-22 06:42:39,628 [django.request] Not Found: /wp-content/plugins/js-support-ticket/readme.txt
+[WARNING] 2025-07-22 06:42:41,672 [django.request] Not Found: /wp-content/themes/statfort-new/include/lang_upload.php
+[WARNING] 2025-07-22 06:42:42,762 [django.request] Not Found: /wp-content/themes/faith-theme/include/lang_upload.php
+[WARNING] 2025-07-22 06:42:43,575 [django.request] Not Found: /wp-content/themes/soccer-theme/include/lang_upload.php
+[WARNING] 2025-07-22 06:42:46,316 [django.request] Not Found: /wp-content/themes/churchlife/include/lang_upload.php
+[WARNING] 2025-07-22 06:42:47,219 [django.request] Not Found: /wp-content/themes/onelife/include/lang_upload.php
+[WARNING] 2025-07-22 06:42:48,758 [django.request] Not Found: /wp-content/themes/snapture/include/lang_upload.php
+[WARNING] 2025-07-22 06:43:04,462 [django.request] Not Found: /wp-content/themes/theme-deejay/include/lang_upload.php
+[WARNING] 2025-07-22 06:43:05,505 [django.request] Not Found: /wp-content/themes/bolster-theme/include/lang_upload.php
+[WARNING] 2025-07-22 06:43:06,458 [django.request] Not Found: /wp-content/themes/rocky-theme/include/lang_upload.php
+[WARNING] 2025-07-22 06:43:10,000 [django.request] Not Found: /wp-content/themes/bolster/include/lang_upload.php
+[WARNING] 2025-07-22 06:43:12,047 [django.request] Not Found: /wp-content/themes/soundblast/include/lang_upload.php
+[WARNING] 2025-07-22 06:43:14,231 [django.request] Not Found: /wp-content/themes/spikes-black/include/lang_upload.php
+[WARNING] 2025-07-22 06:43:15,111 [django.request] Not Found: /wp-content/themes/spikes/include/lang_upload.php
+[WARNING] 2025-07-22 06:43:16,084 [django.request] Not Found: /wp-content/themes/kingclub-theme/include/lang_upload.php
+[WARNING] 2025-07-22 06:43:17,567 [django.request] Not Found: /wp-content/themes/club-theme/include/lang_upload.php
+[WARNING] 2025-07-22 06:43:18,420 [django.request] Not Found: /wp-content/themes/statfort/include/lang_upload.php
+[WARNING] 2025-07-22 06:43:20,241 [django.request] Not Found: /wp-content/themes/aidreform/include/lang_upload.php
+[WARNING] 2025-07-22 06:43:24,438 [django.request] Not Found: /wp-content/themes/footysquare/include/lang_upload.php
+[WARNING] 2025-07-22 06:43:25,924 [django.request] Not Found: /wp-content/themes/westand/include/lang_upload.php
+[WARNING] 2025-07-22 06:43:29,790 [django.request] Not Found: /wp-content/plugins/dsp_dating/wpdating-gallery/lib/server/php/index.php
+[WARNING] 2025-07-22 06:43:31,381 [django.request] Not Found: /wp-content/plugins/yith-woocommerce-gift-cards-premium/readme.txt
+[WARNING] 2025-07-22 06:43:32,210 [django.request] Not Found: /wp-content/plugins/wholesale-market-for-woocommerce/readme.txt
+[WARNING] 2025-07-22 06:43:33,056 [django.request] Not Found: /wp-content/plugins/membership-for-woocommerce/readme.txt
+[WARNING] 2025-07-22 06:43:34,437 [django.request] Not Found: /wp-content/plugins/wp-upg/readme.txt
+[WARNING] 2025-07-22 06:43:35,208 [django.request] Not Found: /wp-content/plugins/user-verification/readme.txt
+[WARNING] 2025-07-22 06:43:36,151 [django.request] Not Found: /wp-content/plugins/booking-calendar/readme.txt
+[WARNING] 2025-07-22 06:43:38,176 [django.request] Not Found: /wp-content/plugins/woo-refund-and-exchange-lite/readme.txt
+[WARNING] 2025-07-22 06:43:41,094 [django.request] Not Found: /wp-content/plugins/armember/js/arm_widgets_js.js
+[WARNING] 2025-07-22 06:43:43,705 [django.request] Not Found: /wp-content/plugins/armember/documentation/index.html
+[WARNING] 2025-07-22 06:43:45,894 [django.request] Not Found: /wp-content/plugins/jobboardwp/readme.txt
+[WARNING] 2025-07-22 06:43:47,358 [django.request] Not Found: /wp-content/themes/listingo/readme.txt
+[WARNING] 2025-07-22 06:43:49,777 [django.request] Not Found: /wp-content/themes/listingo/js/listingo_callbacks.js
+[WARNING] 2025-07-22 06:43:55,955 [django.request] Not Found: /wp-content/themes/greyd_suite/style.css
+[WARNING] 2025-07-22 06:43:59,126 [django.request] Not Found: /wp-content/plugins/simply-schedule-appointments/readme.txt
+[WARNING] 2025-07-22 06:44:01,479 [django.request] Not Found: /wp-content/plugins/directorist/readme.txt
+[WARNING] 2025-07-22 06:44:20,250 [django.request] Not Found: /wp-content/plugins/all-in-one-video-gallery/readme.txt
+[WARNING] 2025-07-22 06:44:21,792 [django.request] Not Found: /wp-content/plugins/alphabetic-pagination/readme.txt
+[WARNING] 2025-07-22 06:44:23,501 [django.request] Not Found: /wp-content/plugins/scripts-organizer/plugins/meta-box/readme.txt
+[WARNING] 2025-07-22 06:44:24,875 [django.request] Not Found: /wp-content/themes/workreap/style.css
+[WARNING] 2025-07-22 06:44:26,329 [django.request] Not Found: /wp-content/plugins/wpgateway/css/style.css
+[WARNING] 2025-07-22 06:44:27,249 [django.request] Not Found: /wp-content/plugins/ultimate-member/readme.txt
+[WARNING] 2025-07-22 06:44:28,382 [django.request] Not Found: /wp-content/plugins/ninja-forms/readme.txt
+[WARNING] 2025-07-22 06:44:30,126 [django.request] Not Found: /wp-content/plugins/armember-membership/readme.txt
+[WARNING] 2025-07-22 06:44:31,569 [django.request] Not Found: /wp-content/plugins/wp-live-chat-support-pro/css/wplc_styles_pro.css
+[WARNING] 2025-07-22 06:44:32,782 [django.request] Not Found: /wp-content/plugins/quiz-master-next/readme.txt
+[WARNING] 2025-07-22 06:44:39,136 [django.request] Not Found: /wp-content/plugins/wp-user-avatar/changelog.txt
+[WARNING] 2025-07-22 06:44:40,396 [django.request] Not Found: /wp-content/plugins/sitemap-by-click5/readme.txt
+[WARNING] 2025-07-22 06:44:41,917 [django.request] Not Found: /wp-content/plugins/nd-restaurant-reservations/readme.txt
+[WARNING] 2025-07-22 06:44:44,581 [django.request] Not Found: /wp-content/plugins/nd-donations/readme.txt
+[WARNING] 2025-07-22 06:44:46,973 [django.request] Not Found: /wp-content/plugins/nd-booking/readme.txt
+[WARNING] 2025-07-22 06:44:48,938 [django.request] Not Found: /wp-content/plugins/nd-shortcodes/readme.txt
+[WARNING] 2025-07-22 06:44:50,786 [django.request] Not Found: /wp-content/plugins/nd-learning/readme.txt
+[WARNING] 2025-07-22 06:45:06,603 [django.request] Not Found: /wp-content/plugins/wpcargo/readme.txt
+[WARNING] 2025-07-22 06:45:09,020 [django.request] Not Found: /wp-content/plugins/woo-product-table/readme.txt
+[WARNING] 2025-07-22 06:45:10,431 [django.request] Not Found: /wp-content/plugins/udraw/readme.txt
+[WARNING] 2025-07-22 06:45:11,563 [django.request] Not Found: /wp-content/plugins/tatsu/changelog.md
+[WARNING] 2025-07-22 06:45:20,860 [django.request] Not Found: /wp-content/plugins/masterstudy-lms-learning-management-system/readme.txt
+[WARNING] 2025-07-22 06:45:22,443 [django.request] Not Found: /wp-content/plugins/wp-file-manager/readme.txt
+[WARNING] 2025-07-22 06:45:23,675 [django.request] Not Found: /wp-content/plugins/vc-tabs/readme.txt
+[WARNING] 2025-07-22 06:45:25,093 [django.request] Not Found: /wp-content/plugins/shortcode-addons/readme.txt
+[WARNING] 2025-07-22 06:45:27,100 [django.request] Not Found: /wp-content/plugins/dzs-zoomsounds/admin/admin.css
+[WARNING] 2025-07-22 06:45:28,891 [django.request] Not Found: /wp-content/plugins/mstore-api/readme.txt
+[WARNING] 2025-07-22 06:45:31,190 [django.request] Not Found: /wp-content/plugins/superlogoshowcase-wp/css/sls-wp-admin.css
+[WARNING] 2025-07-22 06:45:33,027 [django.request] Not Found: /wp-content/plugins/super-interactive-maps/css/sim-wp-admin.css
+[WARNING] 2025-07-22 06:45:34,460 [django.request] Not Found: /wp-content/plugins/superstorefinder-wp/css/ssf-wp-admin.css
+[WARNING] 2025-07-22 06:45:35,878 [django.request] Not Found: /wp-content/plugins/e-signature/page-template/default/style.css
+[WARNING] 2025-07-22 06:45:37,804 [django.request] Not Found: /wp-content/plugins/angwp/__ UPDATES.txt
+[WARNING] 2025-07-22 06:45:39,387 [django.request] Not Found: /wp-content/plugins/ait-csv-import-export/changelog.txt
+[WARNING] 2025-07-22 06:45:40,309 [django.request] Not Found: /wp-content/plugins/image-hover-effects-ultimate/readme.txt
+[WARNING] 2025-07-22 06:45:46,933 [django.request] Not Found: /wp-content/plugins/ulisting/readme.txt
+[WARNING] 2025-07-22 06:45:48,909 [django.request] Not Found: /wp-content/plugins/wp-pinterest-automatic/changelog
+[WARNING] 2025-07-22 06:45:51,448 [django.request] Not Found: /wp-content/plugins/capabilities-pro/readme.txt
+[WARNING] 2025-07-22 06:45:52,673 [django.request] Not Found: /wp-content/plugins/capability-manager-enhanced/readme.txt
+[WARNING] 2025-07-22 06:45:54,753 [django.request] Not Found: /wp-content/plugins/wp-automatic/css/wp-automatic.css
+[WARNING] 2025-07-22 06:45:56,428 [django.request] Not Found: /wp-content/plugins/wp-automatic/changelog
+[WARNING] 2025-07-22 06:45:58,649 [django.request] Not Found: /wp-content/plugins/wp-user-extra-fields/js/wpuef-configurator.js
+[WARNING] 2025-07-22 06:46:01,997 [django.request] Not Found: /wp-content/plugins/woocommerce-upload-files/js/wcuf-admin-menu.js
+[WARNING] 2025-07-22 06:46:04,522 [django.request] Not Found: /wp-content/plugins/emails-verification-for-woocommerce/readme.txt
+[WARNING] 2025-07-22 06:46:05,957 [django.request] Not Found: /wp-content/plugins/woocommerce-jetpack/readme.txt
+[WARNING] 2025-07-22 06:46:07,844 [django.request] Not Found: /wp-content/plugins/advanced-import/readme.txt
+[WARNING] 2025-07-22 06:46:09,569 [django.request] Not Found: /wp-content/plugins/themegrill-demo-importer/readme.txt
+[WARNING] 2025-07-22 06:46:11,283 [django.request] Not Found: /wp-content/plugins/wp-time-capsule/readme.txt
+[WARNING] 2025-07-22 06:46:13,078 [django.request] Not Found: /wp-content/plugins/iwp-client/readme.txt
+[WARNING] 2025-07-22 07:15:49,939 [django.request] Not Found: /robots.txt
+[ERROR] 2025-07-22 07:16:08,884 [django.security.DisallowedHost] Invalid HTTP_HOST header: 'bsldxvdtaa.or.vg'. You may need to add 'bsldxvdtaa.or.vg' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'bsldxvdtaa.or.vg'. You may need to add 'bsldxvdtaa.or.vg' to ALLOWED_HOSTS.
+[WARNING] 2025-07-22 07:16:08,885 [django.request] Bad Request: /robots.txt
+[ERROR] 2025-07-22 07:16:09,121 [django.security.DisallowedHost] Invalid HTTP_HOST header: 'bsldxvdtaa.or.vg'. You may need to add 'bsldxvdtaa.or.vg' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'bsldxvdtaa.or.vg'. You may need to add 'bsldxvdtaa.or.vg' to ALLOWED_HOSTS.
+[WARNING] 2025-07-22 07:16:09,122 [django.request] Bad Request: /favicon.ico
+[WARNING] 2025-07-22 08:07:37,202 [django.request] Not Found: /favicon.ico
+[DEBUG] 2025-07-22 08:08:54,896 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-07-22 08:08:54,898 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-22 00:08:54.896253+00:00
+[INFO] 2025-07-22 08:08:54,898 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36", path_info: "/logout/"}.
+[DEBUG] 2025-07-22 08:09:09,959 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-07-22 08:09:09,960 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-07-22 08:09:09,960 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-07-22 00:09:09.959157+00:00
+[INFO] 2025-07-22 08:09:10,860 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36", path_info: "/login/"}.
+[INFO] 2025-07-22 08:09:10,861 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-22 00:09:09.959157+00:00
+[WARNING] 2025-07-22 08:09:17,722 [django.request] Not Found: /.git/config
+[INFO] 2025-07-22 08:09:20,367 [learner.views] my_course: Rendering untuk pengguna learn, kursus kursus-uiux-design-dari-nol-hingga-mahir, assessment_id=None
+[INFO] 2025-07-22 08:09:23,622 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn, assessment 83
+[DEBUG] 2025-07-22 08:09:25,301 [learner.views] Base URL: https://moodle.icei.ac.id/enrol/lti/tool.php
+[DEBUG] 2025-07-22 08:09:25,301 [learner.views] Base String: POST&https%3A%2F%2Fmoodle.icei.ac.id%2Fenrol%2Flti%2Ftool.php&context_id%3Dcourse-83%26context_title%3DCourse%26id%3D4%26launch_presentation_document_target%3Diframe%26launch_presentation_locale%3Den-US%26lis_outcome_service_url%3Dhttps%253A%252F%252Fini.icei.ac.id%252Flti%252Fgrade-callback%26lis_person_contact_email_primary%3Dlearn%2540learn.com%26lis_person_name_full%3DMr%2520Learners%26lis_result_sourcedid%3Dlti-83-4%26lti_message_type%3Dbasic-lti-launch-request%26lti_version%3DLTI-1p0%26oauth_consumer_key%3Dasimarif-b1bec%26oauth_nonce%3Dbfbc6ca8a6834d66abb36955d0c0803b%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1753146565%26oauth_version%3D1.0%26resource_link_id%3Dres-83%26roles%3DLearner%26tool_consumer_info_product_family_code%3Ddjango-lms%26tool_consumer_info_version%3D1.0%26user_id%3D4
+[DEBUG] 2025-07-22 08:09:25,302 [learner.views] Signing Key: jgGse6aABpb6q0tQRq4W1z9c1jfVaAJI&
+[DEBUG] 2025-07-22 08:09:25,302 [learner.views] OAuth Signature: x5nZ4UIAsGW7JIOgLWEeYsx29Ys=
+[DEBUG] 2025-07-22 08:09:25,302 [learner.views] Sending LTI Launch to https://moodle.icei.ac.id/enrol/lti/tool.php?id=4 with params: {'oauth_consumer_key': 'asimarif-b1bec', 'oauth_signature_method': 'HMAC-SHA1', 'oauth_version': '1.0', 'oauth_nonce': 'bfbc6ca8a6834d66abb36955d0c0803b', 'oauth_timestamp': '1753146565', 'resource_link_id': 'res-83', 'user_id': '4', 'roles': 'Learner', 'lis_person_name_full': 'Mr Learners', 'lis_person_contact_email_primary': 'learn@learn.com', 'context_id': 'course-83', 'context_title': 'Course', 'launch_presentation_locale': 'en-US', 'lti_version': 'LTI-1p0', 'lti_message_type': 'basic-lti-launch-request', 'tool_consumer_info_product_family_code': 'django-lms', 'tool_consumer_info_version': '1.0', 'launch_presentation_document_target': 'iframe', 'lis_outcome_service_url': 'https://ini.icei.ac.id/lti/grade-callback', 'lis_result_sourcedid': 'lti-83-4', 'oauth_signature': 'x5nZ4UIAsGW7JIOgLWEeYsx29Ys='}
+[INFO] 2025-07-22 08:09:25,323 [learner.views] Initialized LTIResult for user 4, assessment 83
+[WARNING] 2025-07-22 08:10:21,770 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:10:24,759 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:11:21,776 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:11:24,758 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:12:21,766 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:12:24,756 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:13:21,773 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:13:24,758 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:14:21,766 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:14:24,820 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:15:18,307 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-07-22 08:15:21,763 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:15:24,757 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:16:21,764 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:16:35,756 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:17:35,768 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:17:35,959 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:18:35,764 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:18:35,765 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:19:35,770 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:19:35,770 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:20:35,763 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:20:35,764 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:21:35,763 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:21:35,764 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:22:35,761 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:22:35,768 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:23:35,768 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:23:35,770 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:24:35,762 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:24:35,764 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:25:35,763 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:25:35,763 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-07-22 08:26:11,690 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-07-22 08:26:11,690 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-07-22 08:26:11,690 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-07-22 00:26:11.690244+00:00
+[INFO] 2025-07-22 08:26:12,606 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36", path_info: "/kuruk/login/"}.
+[INFO] 2025-07-22 08:26:12,608 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-22 00:26:11.690244+00:00
+[WARNING] 2025-07-22 08:26:35,764 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:26:35,765 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-07-22 08:26:46,015 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-07-22 08:26:46,016 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-22 00:26:46.015365+00:00
+[INFO] 2025-07-22 08:26:46,016 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36", path_info: "/logout/"}.
+[DEBUG] 2025-07-22 08:26:58,693 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-07-22 08:26:58,693 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-07-22 08:26:58,694 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-07-22 00:26:58.693446+00:00
+[INFO] 2025-07-22 08:26:59,640 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36", path_info: "/login/"}.
+[INFO] 2025-07-22 08:26:59,641 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-22 00:26:58.693446+00:00
+[DEBUG] 2025-07-22 08:27:22,427 [urllib3.connectionpool] Starting new HTTP connection (1): ip-api.com:80
+[DEBUG] 2025-07-22 08:27:22,473 [urllib3.connectionpool] http://ip-api.com:80 "GET /json/203.217.140.215 HTTP/1.1" 200 284
+[WARNING] 2025-07-22 08:27:35,762 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:27:35,763 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-07-22 08:27:59,072 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-07-22 08:27:59,074 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-22 00:27:59.072222+00:00
+[INFO] 2025-07-22 08:27:59,074 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0", path_info: "/logout/"}.
+[DEBUG] 2025-07-22 08:28:11,635 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-07-22 08:28:11,635 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-07-22 08:28:11,636 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-07-22 00:28:11.635599+00:00
+[INFO] 2025-07-22 08:28:12,569 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0", path_info: "/kuruk/login/"}.
+[INFO] 2025-07-22 08:28:12,571 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-22 00:28:11.635599+00:00
+[WARNING] 2025-07-22 08:28:35,762 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:28:35,765 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:29:35,755 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:29:35,759 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:30:35,757 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:30:35,758 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:31:35,762 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:31:35,763 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:32:35,763 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:32:35,767 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:33:35,761 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:33:35,764 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:33:57,314 [django.request] Not Found: /.env
+[WARNING] 2025-07-22 08:33:58,754 [django.security.csrf] Forbidden (Referer checking failed - no Referer.): /
+[WARNING] 2025-07-22 08:34:35,763 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:34:35,763 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:35:35,758 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:35:35,759 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:36:35,772 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:36:35,773 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:37:35,763 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:37:35,764 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:38:35,768 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:38:35,770 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:39:12,844 [django.request] Not Found: /wp-content/plugins/excel-like-price-change-for-woocommerce-and-wp-e-commerce-light/readme.txt
+[WARNING] 2025-07-22 08:39:14,077 [django.request] Not Found: /wp-content/plugins/wp-event-solution/readme.txt
+[WARNING] 2025-07-22 08:39:15,311 [django.request] Not Found: /wp-content/plugins/wc-fields-factory/readme.txt
+[WARNING] 2025-07-22 08:39:16,562 [django.request] Not Found: /wp-content/plugins/user-registration-pro/readme.txt
+[WARNING] 2025-07-22 08:39:17,323 [django.request] Not Found: /wp-content/plugins/user-registration/readme.txt
+[WARNING] 2025-07-22 08:39:18,086 [django.request] Not Found: /wp-content/themes/motors/CHANGELOG.md
+[WARNING] 2025-07-22 08:39:18,884 [django.request] Not Found: /wp-content/plugins/file-away/readme.txt
+[WARNING] 2025-07-22 08:39:20,142 [django.request] Not Found: /wp-content/plugins/baiduseo/readme.txt
+[WARNING] 2025-07-22 08:39:21,396 [django.request] Not Found: /wp-content/themes/adforest/style.css
+[WARNING] 2025-07-22 08:39:22,669 [django.request] Not Found: /wp-content/themes/superio/style.css
+[WARNING] 2025-07-22 08:39:23,921 [django.request] Not Found: /wp-content/plugins/order-delivery-date/readme.txt
+[WARNING] 2025-07-22 08:39:25,186 [django.request] Not Found: /wp-content/plugins/suretriggers/readme.txt
+[WARNING] 2025-07-22 08:39:26,424 [django.request] Not Found: /wp-content/themes/foodbakery/style.css
+[WARNING] 2025-07-22 08:39:27,740 [django.request] Not Found: /wp-content/plugins/whmpress/history.txt
+[WARNING] 2025-07-22 08:39:28,992 [django.request] Not Found: /wp-content/themes/javo-directory/style.css
+[WARNING] 2025-07-22 08:39:30,277 [django.request] Not Found: /wp-content/plugins/iwjob/assets/css/style.css
+[WARNING] 2025-07-22 08:39:31,534 [django.request] Not Found: /wp-content/themes/golo/style.css
+[WARNING] 2025-07-22 08:39:32,784 [django.request] Not Found: /wp-content/plugins/suretriggers/readme.txt
+[WARNING] 2025-07-22 08:39:33,997 [django.request] Not Found: /wp-content/themes/civi/style.css
+[WARNING] 2025-07-22 08:39:35,234 [django.request] Not Found: /wp-content/themes/jobcareer/style.css
+[WARNING] 2025-07-22 08:39:35,767 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:39:35,770 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:39:36,492 [django.request] Not Found: /wp-content/plugins/chaty-pro/css/chaty-front.min.css
+[WARNING] 2025-07-22 08:39:37,704 [django.request] Not Found: /wp-content/themes/homevillas-real-estate/style.css
+[WARNING] 2025-07-22 08:39:38,936 [django.request] Not Found: /wp-content/themes/realhomes/style.css
+[WARNING] 2025-07-22 08:39:40,150 [django.request] Not Found: /wp-content/plugins/k-elements/readme.txt
+[WARNING] 2025-07-22 08:39:40,916 [django.request] Not Found: /wp-content/plugins/security-malware-firewall/readme.txt
+[WARNING] 2025-07-22 08:39:42,165 [django.request] Not Found: /wp-content/themes/directorybox/style.css
+[WARNING] 2025-07-22 08:39:43,386 [django.request] Not Found: /wp-content/plugins/indeed-wp-superbackup/admin/assets/css/style.css
+[WARNING] 2025-07-22 08:39:44,648 [django.request] Not Found: /wp-content/plugins/post-grid/readme.txt
+[WARNING] 2025-07-22 08:39:45,904 [django.request] Not Found: /wp-content/themes/homey/style.css
+[WARNING] 2025-07-22 08:39:47,159 [django.request] Not Found: /wp-content/themes/adifier/style.css
+[WARNING] 2025-07-22 08:39:47,964 [django.request] Not Found: /wp-content/plugins/fancy-product-designer/readme.txt
+[WARNING] 2025-07-22 08:39:48,724 [django.request] Not Found: /wp-content/plugins/jobboardwp/readme.txt
+[WARNING] 2025-07-22 08:39:50,129 [django.request] Not Found: /wp-content/plugins/woocommerce-photo-reviews/changelog.txt
+[WARNING] 2025-07-22 08:39:51,383 [django.request] Not Found: /wp-content/plugins/pie-register-premium/readme.txt
+[WARNING] 2025-07-22 08:39:52,654 [django.request] Not Found: /wp-content/plugins/indeed-wp-superbackup/languages/indeed-wp-superbackup.pot
+[WARNING] 2025-07-22 08:39:53,416 [django.request] Not Found: /wp-content/plugins/custom-registration-form-builder-with-submission-manager/readme.txt
+[WARNING] 2025-07-22 08:39:54,210 [django.request] Not Found: /wp-content/plugins/wp-time-capsule/readme.txt
+[WARNING] 2025-07-22 08:39:54,989 [django.request] Not Found: /wp-content/plugins/really-simple-ssl-pro-multisite/readme.txt
+[WARNING] 2025-07-22 08:39:55,755 [django.request] Not Found: /wp-content/plugins/really-simple-ssl-pro/readme.txt
+[WARNING] 2025-07-22 08:39:56,527 [django.request] Not Found: /wp-content/plugins/really-simple-ssl/readme.txt
+[WARNING] 2025-07-22 08:39:57,835 [django.request] Not Found: /wp-content/plugins/wp-membership/languages/wpmembership.pot
+[WARNING] 2025-07-22 08:39:59,099 [django.request] Not Found: /wp-content/themes/wplms/style.css
+[WARNING] 2025-07-22 08:40:00,319 [django.request] Not Found: /wp-content/plugins/wp-jobsearch/admin/css/admin.css
+[WARNING] 2025-07-22 08:40:01,539 [django.request] Not Found: /wp-content/plugins/wp-wc-affiliate-program/languages/rtwwwap-wp-wc-affiliate-program.pot
+[WARNING] 2025-07-22 08:40:02,825 [django.request] Not Found: /wp-content/plugins/Ultimate_AI/assets/css/style.css
+[WARNING] 2025-07-22 08:40:03,616 [django.request] Not Found: /wp-content/plugins/latepoint/readme.txt
+[WARNING] 2025-07-22 08:40:04,857 [django.request] Not Found: /wp-content/plugins/gutenkit-blocks-addon/readme.txt
+[WARNING] 2025-07-22 08:40:05,647 [django.request] Not Found: /wp-content/plugins/rss-feed-post-generator-echo/readme.txt
+[WARNING] 2025-07-22 08:40:06,920 [django.request] Not Found: /wp-content/plugins/json-api-user/readme.txt
+[WARNING] 2025-07-22 08:40:08,154 [django.request] Not Found: /wp-content/plugins/charitable/CHANGELOG.md
+[WARNING] 2025-07-22 08:40:09,404 [django.request] Not Found: /wp-content/plugins/wp-job-portal/readme.txt
+[WARNING] 2025-07-22 08:40:10,204 [django.request] Not Found: /wp-content/plugins/js-support-ticket/readme.txt
+[WARNING] 2025-07-22 08:40:11,476 [django.request] Not Found: /wp-content/plugins/give/readme.txt
+[WARNING] 2025-07-22 08:40:12,332 [django.request] Not Found: /wp-content/debug.log
+[WARNING] 2025-07-22 08:40:13,563 [django.request] Not Found: /wp-content/plugins/zm-ajax-login-register/readme.txt
+[WARNING] 2025-07-22 08:40:14,801 [django.request] Not Found: /wp-content/plugins/instawp-connect/readme.txt
+[WARNING] 2025-07-22 08:40:15,564 [django.request] Not Found: /wp-content/plugins/instawp-connect/readme.txt
+[WARNING] 2025-07-22 08:40:17,591 [django.request] Not Found: /wp-content/plugins/wp-seopress/readme.txt
+[WARNING] 2025-07-22 08:40:18,842 [django.request] Not Found: /wp-content/plugins/keydatas/readme.txt
+[WARNING] 2025-07-22 08:40:20,076 [django.request] Not Found: /wp-content/plugins/wp-time-capsule/readme.txt
+[WARNING] 2025-07-22 08:40:21,319 [django.request] Not Found: /wp-content/plugins/wp-mlm/readme.txt
+[WARNING] 2025-07-22 08:40:22,150 [django.request] Not Found: /wp-content/plugins/userpro/changelog.txt
+[WARNING] 2025-07-22 08:40:23,392 [django.request] Not Found: /wp-content/plugins/chatbot-chatgpt/readme.txt
+[WARNING] 2025-07-22 08:40:24,653 [django.request] Not Found: /wp-content/plugins/wp-automatic/css/wp-automatic.css
+[WARNING] 2025-07-22 08:40:25,952 [django.request] Not Found: /wp-content/plugins/wp-automatic/changelog
+[WARNING] 2025-07-22 08:40:27,236 [django.request] Not Found: /wp-content/plugins/wp-photo-album-plus/changelog.txt
+[WARNING] 2025-07-22 08:40:28,064 [django.request] Not Found: /wp-content/plugins/startklar-elmentor-forms-extwidgets/readme.txt
+[WARNING] 2025-07-22 08:40:28,865 [django.request] Not Found: /wp-content/plugins/edwiser-bridge/readme.txt
+[WARNING] 2025-07-22 08:40:29,660 [django.request] Not Found: /wp-content/plugins/learning-management-system/readme.txt
+[WARNING] 2025-07-22 08:40:30,931 [django.request] Not Found: /wp-content/plugins/woocommerce-simple-registration/readme.txt
+[WARNING] 2025-07-22 08:40:32,180 [django.request] Not Found: /wp-content/plugins/miniorange-2-factor-authentication/readme.txt
+[WARNING] 2025-07-22 08:40:32,995 [django.request] Not Found: /wp-content/plugins/miniorange-malware-protection/readme.txt
+[WARNING] 2025-07-22 08:40:34,317 [django.request] Not Found: /wp-content/plugins/instawp-connect/readme.txt
+[WARNING] 2025-07-22 08:40:35,563 [django.request] Not Found: /wp-content/plugins/masterstudy-lms-learning-management-system/readme.txt
+[WARNING] 2025-07-22 08:40:35,758 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:40:35,761 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:40:36,351 [django.request] Not Found: /wp-content/plugins/activedemand/readme.txt
+[WARNING] 2025-07-22 08:40:37,666 [django.request] Not Found: /wp-content/plugins/phppoet-checkout-fields/readme.txt
+[WARNING] 2025-07-22 08:40:40,252 [django.request] Not Found: /wp-content/plugins/bertha-ai-free/readme.txt
+[WARNING] 2025-07-22 08:40:41,571 [django.request] Not Found: /wp-content/plugins/rencontre/readme.txt
+[WARNING] 2025-07-22 08:40:42,584 [django.request] Not Found: /wp-content/plugins/login-as-customer-or-user/readme.txt
+[WARNING] 2025-07-22 08:40:43,850 [django.request] Not Found: /wp-content/plugins/post-smtp/readme.txt
+[WARNING] 2025-07-22 08:40:44,648 [django.request] Not Found: /wp-content/plugins/ai-engine/readme.txt
+[WARNING] 2025-07-22 08:40:45,910 [django.request] Not Found: /wp-content/plugins/userpro/changelog.txt
+[WARNING] 2025-07-22 08:40:47,173 [django.request] Not Found: /wp-content/plugins/backup-backup/readme.txt
+[WARNING] 2025-07-22 08:40:47,944 [django.request] Not Found: /wp-content/plugins/royal-elementor-addons/readme.txt
+[WARNING] 2025-07-22 08:40:48,710 [django.request] Not Found: /wp-content/plugins/import-xml-feed/readme.txt
+[WARNING] 2025-07-22 08:40:49,492 [django.request] Not Found: /wp-content/plugins/email-posts-to-subscribers/readme.txt
+[WARNING] 2025-07-22 08:40:50,748 [django.request] Not Found: /wp-content/plugins/kadence-blocks/readme.txt
+[WARNING] 2025-07-22 08:40:52,005 [django.request] Not Found: /wp-content/plugins/jupiterx-core/readme.txt
+[WARNING] 2025-07-22 08:40:53,429 [django.request] Not Found: /wp-content/plugins/forminator/readme.txt
+[WARNING] 2025-07-22 08:40:54,721 [django.request] Not Found: /wp-content/plugins/ht-mega-for-elementor/readme.txt
+[WARNING] 2025-07-22 08:40:56,030 [django.request] Not Found: /wp-content/plugins/wp-post-author/readme.txt
+[WARNING] 2025-07-22 08:40:57,285 [django.request] Not Found: /wp-content/plugins/mstore-api/readme.txt
+[WARNING] 2025-07-22 08:40:58,528 [django.request] Not Found: /wp-content/plugins/ultimate-member/readme.txt
+[WARNING] 2025-07-22 08:40:59,355 [django.request] Not Found: /wp-content/plugins/essential-addons-for-elementor-lite/readme.txt
+[WARNING] 2025-07-22 08:41:00,138 [django.request] Not Found: /wp-content/plugins/easy-digital-downloads/readme.txt
+[WARNING] 2025-07-22 08:41:01,414 [django.request] Not Found: /wp-content/plugins/woocommerce-payments/readme.txt
+[WARNING] 2025-07-22 08:41:02,203 [django.request] Not Found: /wp-content/plugins/wp-email-capture/readme.txt
+[WARNING] 2025-07-22 08:41:02,973 [django.request] Not Found: /wp-content/plugins/zendrop-dropshipping-and-fulfillment/readme.txt
+[WARNING] 2025-07-22 08:41:03,781 [django.request] Not Found: /complete-order/
+[WARNING] 2025-07-22 08:41:06,375 [django.request] Not Found: /wp-content/plugins/wp-sms/readme.txt
+[WARNING] 2025-07-22 08:41:07,635 [django.request] Not Found: /wp-content/plugins/n-media-woocommerce-checkout-fields/readme.txt
+[WARNING] 2025-07-22 08:41:08,871 [django.request] Not Found: /wp-content/plugins/videowhisper-live-streaming-integration/readme.txt
+[WARNING] 2025-07-22 08:41:10,090 [django.request] Not Found: /wp-content/plugins/learnpress/readme.txt
+[WARNING] 2025-07-22 08:41:11,340 [django.request] Not Found: /wp-content/plugins/extensive-vc-addon/readme.txt
+[WARNING] 2025-07-22 08:41:12,118 [django.request] Not Found: /wp-content/plugins/js-support-ticket/readme.txt
+[WARNING] 2025-07-22 08:41:12,899 [django.request] Not Found: /wp-content/themes/statfort-new/include/lang_upload.php
+[WARNING] 2025-07-22 08:41:13,661 [django.request] Not Found: /wp-content/themes/faith-theme/include/lang_upload.php
+[WARNING] 2025-07-22 08:41:14,422 [django.request] Not Found: /wp-content/themes/soccer-theme/include/lang_upload.php
+[WARNING] 2025-07-22 08:41:15,216 [django.request] Not Found: /wp-content/themes/churchlife/include/lang_upload.php
+[WARNING] 2025-07-22 08:41:15,973 [django.request] Not Found: /wp-content/themes/onelife/include/lang_upload.php
+[WARNING] 2025-07-22 08:41:16,732 [django.request] Not Found: /wp-content/themes/snapture/include/lang_upload.php
+[WARNING] 2025-07-22 08:41:17,495 [django.request] Not Found: /wp-content/themes/theme-deejay/include/lang_upload.php
+[WARNING] 2025-07-22 08:41:18,723 [django.request] Not Found: /wp-content/themes/bolster-theme/include/lang_upload.php
+[WARNING] 2025-07-22 08:41:19,506 [django.request] Not Found: /wp-content/themes/rocky-theme/include/lang_upload.php
+[WARNING] 2025-07-22 08:41:20,267 [django.request] Not Found: /wp-content/themes/bolster/include/lang_upload.php
+[WARNING] 2025-07-22 08:41:21,025 [django.request] Not Found: /wp-content/themes/soundblast/include/lang_upload.php
+[WARNING] 2025-07-22 08:41:21,810 [django.request] Not Found: /wp-content/themes/spikes-black/include/lang_upload.php
+[WARNING] 2025-07-22 08:41:23,058 [django.request] Not Found: /wp-content/themes/spikes/include/lang_upload.php
+[WARNING] 2025-07-22 08:41:23,876 [django.request] Not Found: /wp-content/themes/kingclub-theme/include/lang_upload.php
+[WARNING] 2025-07-22 08:41:25,156 [django.request] Not Found: /wp-content/themes/club-theme/include/lang_upload.php
+[WARNING] 2025-07-22 08:41:25,929 [django.request] Not Found: /wp-content/themes/statfort/include/lang_upload.php
+[WARNING] 2025-07-22 08:41:27,229 [django.request] Not Found: /wp-content/themes/aidreform/include/lang_upload.php
+[WARNING] 2025-07-22 08:41:28,484 [django.request] Not Found: /wp-content/themes/footysquare/include/lang_upload.php
+[WARNING] 2025-07-22 08:41:29,764 [django.request] Not Found: /wp-content/themes/westand/include/lang_upload.php
+[WARNING] 2025-07-22 08:41:30,569 [django.request] Not Found: /wp-content/plugins/dsp_dating/wpdating-gallery/lib/server/php/index.php
+[WARNING] 2025-07-22 08:41:31,334 [django.request] Not Found: /wp-content/plugins/yith-woocommerce-gift-cards-premium/readme.txt
+[WARNING] 2025-07-22 08:41:32,571 [django.request] Not Found: /wp-content/plugins/wholesale-market-for-woocommerce/readme.txt
+[WARNING] 2025-07-22 08:41:33,354 [django.request] Not Found: /wp-content/plugins/membership-for-woocommerce/readme.txt
+[WARNING] 2025-07-22 08:41:34,140 [django.request] Not Found: /wp-content/plugins/wp-upg/readme.txt
+[WARNING] 2025-07-22 08:41:34,899 [django.request] Not Found: /wp-content/plugins/user-verification/readme.txt
+[WARNING] 2025-07-22 08:41:35,684 [django.request] Not Found: /wp-content/plugins/booking-calendar/readme.txt
+[WARNING] 2025-07-22 08:41:35,767 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:41:35,769 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:41:37,044 [django.request] Not Found: /wp-content/plugins/woo-refund-and-exchange-lite/readme.txt
+[WARNING] 2025-07-22 08:41:38,257 [django.request] Not Found: /wp-content/plugins/armember/js/arm_widgets_js.js
+[WARNING] 2025-07-22 08:41:39,019 [django.request] Not Found: /wp-content/plugins/armember/documentation/index.html
+[WARNING] 2025-07-22 08:41:39,788 [django.request] Not Found: /wp-content/plugins/jobboardwp/readme.txt
+[WARNING] 2025-07-22 08:41:41,068 [django.request] Not Found: /wp-content/themes/listingo/readme.txt
+[WARNING] 2025-07-22 08:41:42,279 [django.request] Not Found: /wp-content/themes/listingo/js/listingo_callbacks.js
+[INFO] 2025-07-22 08:41:45,498 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-22 08:41:45,691 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-22 08:41:45,870 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-07-22 08:41:46,788 [django.request] Not Found: /wp-content/themes/greyd_suite/style.css
+[WARNING] 2025-07-22 08:41:48,905 [django.request] Not Found: /wp-content/plugins/simply-schedule-appointments/readme.txt
+[WARNING] 2025-07-22 08:41:50,188 [django.request] Not Found: /wp-content/plugins/directorist/readme.txt
+[WARNING] 2025-07-22 08:41:50,952 [django.request] Not Found: /wp-content/plugins/all-in-one-video-gallery/readme.txt
+[WARNING] 2025-07-22 08:41:52,192 [django.request] Not Found: /wp-content/plugins/alphabetic-pagination/readme.txt
+[WARNING] 2025-07-22 08:41:54,303 [django.request] Not Found: /wp-content/plugins/scripts-organizer/plugins/meta-box/readme.txt
+[WARNING] 2025-07-22 08:41:55,559 [django.request] Not Found: /wp-content/themes/workreap/style.css
+[WARNING] 2025-07-22 08:41:56,801 [django.request] Not Found: /wp-content/plugins/wpgateway/css/style.css
+[WARNING] 2025-07-22 08:41:58,037 [django.request] Not Found: /wp-content/plugins/ultimate-member/readme.txt
+[WARNING] 2025-07-22 08:41:58,848 [django.request] Not Found: /wp-content/plugins/ninja-forms/readme.txt
+[WARNING] 2025-07-22 08:41:59,633 [django.request] Not Found: /wp-content/plugins/armember-membership/readme.txt
+[WARNING] 2025-07-22 08:42:00,962 [django.request] Not Found: /wp-content/plugins/wp-live-chat-support-pro/css/wplc_styles_pro.css
+[WARNING] 2025-07-22 08:42:01,767 [django.request] Not Found: /wp-content/plugins/quiz-master-next/readme.txt
+[WARNING] 2025-07-22 08:42:03,379 [django.request] Not Found: /wp-content/plugins/wp-user-avatar/changelog.txt
+[WARNING] 2025-07-22 08:42:04,638 [django.request] Not Found: /wp-content/plugins/sitemap-by-click5/readme.txt
+[WARNING] 2025-07-22 08:42:05,410 [django.request] Not Found: /wp-content/plugins/nd-restaurant-reservations/readme.txt
+[WARNING] 2025-07-22 08:42:06,651 [django.request] Not Found: /wp-content/plugins/nd-donations/readme.txt
+[WARNING] 2025-07-22 08:42:07,427 [django.request] Not Found: /wp-content/plugins/nd-booking/readme.txt
+[WARNING] 2025-07-22 08:42:08,225 [django.request] Not Found: /wp-content/plugins/nd-shortcodes/readme.txt
+[WARNING] 2025-07-22 08:42:09,027 [django.request] Not Found: /wp-content/plugins/nd-learning/readme.txt
+[WARNING] 2025-07-22 08:42:10,292 [django.request] Not Found: /wp-content/plugins/wpcargo/readme.txt
+[WARNING] 2025-07-22 08:42:11,573 [django.request] Not Found: /wp-content/plugins/woo-product-table/readme.txt
+[WARNING] 2025-07-22 08:42:12,360 [django.request] Not Found: /wp-content/plugins/udraw/readme.txt
+[DEBUG] 2025-07-22 08:42:12,393 [urllib3.connectionpool] Starting new HTTP connection (1): ip-api.com:80
+[DEBUG] 2025-07-22 08:42:12,438 [urllib3.connectionpool] http://ip-api.com:80 "GET /json/203.217.140.215 HTTP/1.1" 200 284
+[WARNING] 2025-07-22 08:42:13,606 [django.request] Not Found: /wp-content/plugins/tatsu/changelog.md
+[WARNING] 2025-07-22 08:42:19,854 [django.request] Not Found: /wp-content/plugins/masterstudy-lms-learning-management-system/readme.txt
+[WARNING] 2025-07-22 08:42:21,105 [django.request] Not Found: /wp-content/plugins/wp-file-manager/readme.txt
+[WARNING] 2025-07-22 08:42:22,375 [django.request] Not Found: /wp-content/plugins/vc-tabs/readme.txt
+[WARNING] 2025-07-22 08:42:23,616 [django.request] Not Found: /wp-content/plugins/shortcode-addons/readme.txt
+[WARNING] 2025-07-22 08:42:24,872 [django.request] Not Found: /wp-content/plugins/dzs-zoomsounds/admin/admin.css
+[WARNING] 2025-07-22 08:42:26,152 [django.request] Not Found: /wp-content/plugins/mstore-api/readme.txt
+[WARNING] 2025-07-22 08:42:27,381 [django.request] Not Found: /wp-content/plugins/superlogoshowcase-wp/css/sls-wp-admin.css
+[WARNING] 2025-07-22 08:42:28,620 [django.request] Not Found: /wp-content/plugins/super-interactive-maps/css/sim-wp-admin.css
+[WARNING] 2025-07-22 08:42:29,434 [django.request] Not Found: /wp-content/plugins/superstorefinder-wp/css/ssf-wp-admin.css
+[WARNING] 2025-07-22 08:42:32,326 [django.request] Not Found: /wp-content/plugins/e-signature/page-template/default/style.css
+[WARNING] 2025-07-22 08:42:33,225 [django.request] Not Found: /wp-content/plugins/angwp/__ UPDATES.txt
+[WARNING] 2025-07-22 08:42:34,046 [django.request] Not Found: /wp-content/plugins/ait-csv-import-export/changelog.txt
+[WARNING] 2025-07-22 08:42:35,312 [django.request] Not Found: /wp-content/plugins/image-hover-effects-ultimate/readme.txt
+[WARNING] 2025-07-22 08:42:35,756 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:42:35,756 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:42:36,660 [django.request] Not Found: /wp-content/plugins/ulisting/readme.txt
+[WARNING] 2025-07-22 08:42:37,935 [django.request] Not Found: /wp-content/plugins/wp-pinterest-automatic/changelog
+[WARNING] 2025-07-22 08:42:38,805 [django.request] Not Found: /wp-content/plugins/capabilities-pro/readme.txt
+[WARNING] 2025-07-22 08:42:40,140 [django.request] Not Found: /wp-content/plugins/capability-manager-enhanced/readme.txt
+[WARNING] 2025-07-22 08:42:41,455 [django.request] Not Found: /wp-content/plugins/wp-automatic/changelog
+[WARNING] 2025-07-22 08:42:42,722 [django.request] Not Found: /wp-content/plugins/wp-user-extra-fields/js/wpuef-configurator.js
+[WARNING] 2025-07-22 08:42:44,009 [django.request] Not Found: /wp-content/plugins/woocommerce-upload-files/js/wcuf-admin-menu.js
+[WARNING] 2025-07-22 08:42:45,288 [django.request] Not Found: /wp-content/plugins/emails-verification-for-woocommerce/readme.txt
+[WARNING] 2025-07-22 08:42:46,183 [django.request] Not Found: /wp-content/plugins/woocommerce-jetpack/readme.txt
+[WARNING] 2025-07-22 08:42:47,485 [django.request] Not Found: /wp-content/plugins/advanced-import/readme.txt
+[WARNING] 2025-07-22 08:42:48,819 [django.request] Not Found: /wp-content/plugins/themegrill-demo-importer/readme.txt
+[WARNING] 2025-07-22 08:42:50,109 [django.request] Not Found: /wp-content/plugins/wp-time-capsule/readme.txt
+[WARNING] 2025-07-22 08:42:50,967 [django.request] Not Found: /wp-content/plugins/iwp-client/readme.txt
+[WARNING] 2025-07-22 08:43:35,763 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:43:35,764 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-07-22 08:44:20,097 [urllib3.connectionpool] Starting new HTTP connection (1): ip-api.com:80
+[DEBUG] 2025-07-22 08:44:20,136 [urllib3.connectionpool] http://ip-api.com:80 "GET /json/203.217.140.215 HTTP/1.1" 200 284
+[WARNING] 2025-07-22 08:44:35,756 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:44:35,756 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:45:35,764 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:45:35,768 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:46:35,767 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:46:35,768 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:47:35,765 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:47:35,765 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:48:35,770 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:48:35,774 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:49:35,760 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:49:35,761 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-07-22 08:51:01,981 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-22 08:51:02,086 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-22 08:51:02,086 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-07-22 08:51:35,758 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:51:35,762 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-07-22 08:52:07,640 [urllib3.connectionpool] Starting new HTTP connection (1): ip-api.com:80
+[DEBUG] 2025-07-22 08:52:08,182 [urllib3.connectionpool] http://ip-api.com:80 "GET /json/203.217.140.215 HTTP/1.1" 200 284
+[WARNING] 2025-07-22 08:52:35,760 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:52:35,952 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:53:35,751 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:53:35,757 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:54:35,753 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:54:35,755 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:55:35,763 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:55:35,765 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:56:35,767 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:56:35,768 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:57:35,759 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:57:35,760 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-07-22 08:58:07,274 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-22 08:58:07,357 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-22 08:58:07,431 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-07-22 08:58:35,770 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:58:36,609 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:58:45,503 [django.request] Not Found: //ku
+[DEBUG] 2025-07-22 08:59:34,096 [urllib3.connectionpool] Starting new HTTP connection (1): ip-api.com:80
+[DEBUG] 2025-07-22 08:59:34,137 [urllib3.connectionpool] http://ip-api.com:80 "GET /json/203.217.140.215 HTTP/1.1" 200 284
+[WARNING] 2025-07-22 08:59:35,753 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 08:59:35,755 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 09:00:35,759 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 09:00:35,760 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-07-22 09:00:43,694 [learner.views] my_course: Rendering untuk pengguna learn, kursus digital-marketing-2026, assessment_id=None
+[WARNING] 2025-07-22 09:01:04,913 [django.request] Not Found: /Portal0000.htm
+[INFO] 2025-07-22 09:01:04,925 [learner.views] my_course: Rendering untuk pengguna learn, kursus digital-marketing-2026, assessment_id=None
+[WARNING] 2025-07-22 09:01:05,084 [django.request] Not Found: /main.shtml
+[WARNING] 2025-07-22 09:01:05,090 [django.request] Not Found: /webui
+[WARNING] 2025-07-22 09:01:05,202 [django.request] Not Found: /Portal/Portal.mwsl
+[WARNING] 2025-07-22 09:01:05,208 [django.request] Not Found: /nmaplowercheck1753149664
+[WARNING] 2025-07-22 09:01:05,214 [django.request] Not Found: /+CSCOE+/logon.html
+[WARNING] 2025-07-22 09:01:05,231 [django.request] Not Found: /__Additional
+[WARNING] 2025-07-22 09:01:05,232 [django.request] Not Found: /dniapi/userInfos
+[WARNING] 2025-07-22 09:01:05,235 [django.request] Not Found: /api/v2/about
+[WARNING] 2025-07-22 09:01:05,240 [django.request] Not Found: /localstart.jhtml
+[WARNING] 2025-07-22 09:01:05,497 [django.request] Not Found: /pools/default/buckets
+[WARNING] 2025-07-22 09:01:05,498 [django.request] Not Found: /human.aspx
+[WARNING] 2025-07-22 09:01:05,500 [django.request] Not Found: /dana-cached/hc/HostCheckerInstaller.osx
+[WARNING] 2025-07-22 09:01:05,545 [django.request] Method Not Allowed (HEAD): /
+[WARNING] 2025-07-22 09:01:05,553 [django.request] Not Found: /base.html
+[WARNING] 2025-07-22 09:01:05,562 [django.request] Not Found: /docs/cplugError.html/
+[WARNING] 2025-07-22 09:01:05,686 [django.request] Not Found: /owa/
+[WARNING] 2025-07-22 09:01:05,689 [django.request] Not Found: /geoserver/index.html
+[WARNING] 2025-07-22 09:01:05,691 [django.request] Not Found: /geoserver/web/wicket/bookmarkable/org.geoserver.web.AboutGeoServerPage
+[WARNING] 2025-07-22 09:01:05,739 [django.request] Not Found: /dana-na/nc/nc_gina_ver.txt
+[WARNING] 2025-07-22 09:01:05,742 [django.request] Not Found: /sdk
+[WARNING] 2025-07-22 09:01:05,742 [django.request] Not Found: /pools
+[WARNING] 2025-07-22 09:01:05,744 [django.request] Not Found: /inicio.cgi
+[WARNING] 2025-07-22 09:01:05,808 [django.request] Not Found: /cgi-bin/info.cgi
+[WARNING] 2025-07-22 09:01:05,954 [django.request] Not Found: /.git/HEAD
+[WARNING] 2025-07-22 09:01:06,013 [django.request] Not Found: /xml/info.xml
+[WARNING] 2025-07-22 09:01:06,109 [django.request] Not Found: /main.pl
+[WARNING] 2025-07-22 09:01:06,366 [django.request] Not Found: /apps/zxtm/login.cgi
+[WARNING] 2025-07-22 09:01:06,370 [django.request] Not Found: /cluster/list.query
+[WARNING] 2025-07-22 09:01:06,414 [django.request] Not Found: /home.cgi
+[WARNING] 2025-07-22 09:01:06,464 [django.request] Not Found: /webui
+[WARNING] 2025-07-22 09:01:06,525 [django.request] Not Found: /administrator/manifests/files/joomla.xml
+[WARNING] 2025-07-22 09:01:06,683 [django.request] Not Found: /p/login/
+[WARNING] 2025-07-22 09:01:06,736 [django.request] Not Found: /menu.cfm
+[WARNING] 2025-07-22 09:01:06,892 [django.request] Not Found: /info.asp
+[WARNING] 2025-07-22 09:01:06,959 [django.request] Not Found: /login/login.html
+[WARNING] 2025-07-22 09:01:07,053 [django.request] Not Found: /versions
+[WARNING] 2025-07-22 09:01:07,127 [django.request] Not Found: /r-seenet/index.php
+[WARNING] 2025-07-22 09:01:07,225 [django.request] Not Found: /api/vip/i18n/api/v2/translation/products/vRNIUI/versions/1
+[WARNING] 2025-07-22 09:01:07,256 [django.request] Not Found: /owa/
+[WARNING] 2025-07-22 09:01:07,314 [django.request] Not Found: /officescan/console/html/localization.js
+[WARNING] 2025-07-22 09:01:07,441 [django.request] Not Found: /admin.shtml
+[WARNING] 2025-07-22 09:01:07,590 [django.request] Not Found: /api/v1.0/environment
+[WARNING] 2025-07-22 09:01:07,611 [django.request] Not Found: /base.cgi
+[WARNING] 2025-07-22 09:01:07,685 [django.request] Not Found: /owa/
+[WARNING] 2025-07-22 09:01:07,815 [django.request] Not Found: /default.jsa
+[WARNING] 2025-07-22 09:01:07,815 [django.request] Not Found: /pom.xml
+[WARNING] 2025-07-22 09:01:08,070 [django.request] Not Found: /build.gradle
+[WARNING] 2025-07-22 09:01:08,125 [django.request] Not Found: /centreon/api/latest/platform/versions
+[WARNING] 2025-07-22 09:01:08,125 [django.request] Not Found: /webportal.cgi
+[WARNING] 2025-07-22 09:01:08,231 [django.request] Not Found: /api/v3/meta
+[WARNING] 2025-07-22 09:01:08,341 [django.request] Not Found: /api/v1/version
+[WARNING] 2025-07-22 09:01:08,478 [django.request] Method Not Allowed (HEAD): /
+[WARNING] 2025-07-22 09:01:08,553 [django.request] Not Found: /plugin/webs_model_cfg.js
+[WARNING] 2025-07-22 09:01:08,604 [django.request] Not Found: /Main_Login.asp
+[WARNING] 2025-07-22 09:01:08,710 [django.request] Not Found: /cap.js
+[WARNING] 2025-07-22 09:01:08,814 [django.request] Not Found: /indice.pl
+[WARNING] 2025-07-22 09:01:08,973 [django.request] Not Found: /localstart.cgi
+[WARNING] 2025-07-22 09:01:09,131 [django.request] Not Found: /index.cfm
+[WARNING] 2025-07-22 09:01:09,286 [django.request] Not Found: /home.php
+[WARNING] 2025-07-22 09:01:09,446 [django.request] Not Found: /indice.shtml
+[WARNING] 2025-07-22 09:01:09,600 [django.request] Not Found: /main.cgi
+[WARNING] 2025-07-22 09:01:09,753 [django.request] Not Found: /indice.jhtml
+[WARNING] 2025-07-22 09:01:09,925 [django.request] Not Found: /index.jsa
+[WARNING] 2025-07-22 09:01:10,077 [django.request] Not Found: /admin.html
+[WARNING] 2025-07-22 09:01:10,220 [django.request] Not Found: /admin.cgi
+[WARNING] 2025-07-22 09:01:10,377 [django.request] Not Found: /home.cfm
+[WARNING] 2025-07-22 09:01:10,689 [django.request] Not Found: /start.jsp
+[WARNING] 2025-07-22 09:01:10,847 [django.request] Not Found: /localstart.asp
+[WARNING] 2025-07-22 09:01:11,027 [django.request] Not Found: /home.jhtml
+[WARNING] 2025-07-22 09:01:11,176 [django.request] Not Found: /main.jhtml
+[WARNING] 2025-07-22 09:01:11,329 [django.request] Not Found: /index.shtml
+[WARNING] 2025-07-22 09:01:11,524 [django.request] Not Found: /admin.aspx
+[WARNING] 2025-07-22 09:01:11,686 [django.request] Not Found: /admin.asp
+[WARNING] 2025-07-22 09:01:11,835 [django.request] Not Found: /default.shtml
+[WARNING] 2025-07-22 09:01:11,994 [django.request] Not Found: /menu.aspx
+[WARNING] 2025-07-22 09:01:12,146 [django.request] Not Found: /base.cfm
+[WARNING] 2025-07-22 09:01:12,305 [django.request] Not Found: /start.pl
+[WARNING] 2025-07-22 09:01:12,463 [django.request] Not Found: /base.php
+[WARNING] 2025-07-22 09:01:12,619 [django.request] Not Found: /base.jsp
+[WARNING] 2025-07-22 09:01:12,777 [django.request] Not Found: /base.jsa
+[WARNING] 2025-07-22 09:01:12,930 [django.request] Not Found: /base.jhtml
+[WARNING] 2025-07-22 09:01:13,087 [django.request] Not Found: /admin.pl
+[WARNING] 2025-07-22 09:01:13,246 [django.request] Not Found: /base.aspx
+[WARNING] 2025-07-22 09:01:13,401 [django.request] Not Found: /inicio.html
+[WARNING] 2025-07-22 09:01:13,570 [django.request] Not Found: /indice.jsa
+[WARNING] 2025-07-22 09:01:13,730 [django.request] Not Found: /base.asp
+[WARNING] 2025-07-22 09:01:13,869 [django.request] Not Found: /admin.jsa
+[WARNING] 2025-07-22 09:01:14,019 [django.request] Not Found: /home.asp
+[WARNING] 2025-07-22 09:01:14,178 [django.request] Not Found: /start.shtml
+[WARNING] 2025-07-22 09:01:14,334 [django.request] Not Found: /default.jhtml
+[WARNING] 2025-07-22 09:01:14,489 [django.request] Not Found: /inicio.pl
+[WARNING] 2025-07-22 09:01:14,642 [django.request] Not Found: /main.asp
+[WARNING] 2025-07-22 09:01:14,799 [django.request] Not Found: /indice.jsp
+[WARNING] 2025-07-22 09:01:14,951 [django.request] Not Found: /home.jsp
+[WARNING] 2025-07-22 09:01:15,107 [django.request] Not Found: /default.asp
+[WARNING] 2025-07-22 09:01:15,260 [django.request] Not Found: /inicio.asp
+[WARNING] 2025-07-22 09:01:15,417 [django.request] Not Found: /indice.cgi
+[WARNING] 2025-07-22 09:01:15,573 [django.request] Not Found: /menu.jhtml
+[WARNING] 2025-07-22 09:01:15,728 [django.request] Not Found: /home.html
+[WARNING] 2025-07-22 09:01:15,882 [django.request] Not Found: /main.jsa
+[WARNING] 2025-07-22 09:01:16,038 [django.request] Not Found: /start.jsa
+[WARNING] 2025-07-22 09:01:16,192 [django.request] Not Found: /menu.jsa
+[WARNING] 2025-07-22 09:01:16,355 [django.request] Not Found: /indice.html
+[WARNING] 2025-07-22 09:01:16,482 [django.request] Not Found: /menu.php
+[WARNING] 2025-07-22 09:01:16,563 [django.request] Not Found: /indice.cfm
+[WARNING] 2025-07-22 09:01:16,638 [django.request] Not Found: /readme.txt
+[WARNING] 2025-07-22 09:01:16,718 [django.request] Not Found: /start.aspx
+[WARNING] 2025-07-22 09:01:16,784 [django.request] Not Found: /default.cfm
+[WARNING] 2025-07-22 09:01:16,850 [django.request] Not Found: /localstart.html
+[WARNING] 2025-07-22 09:01:16,920 [django.request] Not Found: /index.html
+[WARNING] 2025-07-22 09:01:16,999 [django.request] Not Found: /index.aspx
+[WARNING] 2025-07-22 09:01:17,072 [django.request] Not Found: /index.asp
+[WARNING] 2025-07-22 09:01:17,156 [django.request] Not Found: /default.jsp
+[WARNING] 2025-07-22 09:01:17,220 [django.request] Not Found: /home.aspx
+[WARNING] 2025-07-22 09:01:17,286 [django.request] Not Found: /inicio.aspx
+[WARNING] 2025-07-22 09:01:17,369 [django.request] Not Found: /index.pl
+[WARNING] 2025-07-22 09:01:17,443 [django.request] Not Found: /inicio.jsp
+[WARNING] 2025-07-22 09:01:17,506 [django.request] Not Found: /inicio.jsa
+[WARNING] 2025-07-22 09:01:17,576 [django.request] Not Found: /main.aspx
+[WARNING] 2025-07-22 09:01:17,646 [django.request] Not Found: /inicio.jhtml
+[WARNING] 2025-07-22 09:01:17,720 [django.request] Not Found: /localstart.aspx
+[WARNING] 2025-07-22 09:01:17,787 [django.request] Not Found: /localstart.jsp
+[WARNING] 2025-07-22 09:01:17,860 [django.request] Not Found: /inicio.cfm
+[WARNING] 2025-07-22 09:01:17,942 [django.request] Not Found: /index.php
+[WARNING] 2025-07-22 09:01:18,021 [django.request] Not Found: /main.jsp
+[WARNING] 2025-07-22 09:01:18,099 [django.request] Not Found: /inicio.php
+[WARNING] 2025-07-22 09:01:18,205 [django.request] Not Found: /home.jsa
+[WARNING] 2025-07-22 09:01:35,777 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-22 09:01:35,971 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-07-22 09:01:36,271 [learner.views] my_course: Rendering untuk pengguna learn, kursus digital-marketing-2026, assessment_id=None

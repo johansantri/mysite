@@ -54,24 +54,24 @@ def generate_oauth_signature(params, consumer_secret, launch_url):
 
 def verify_oauth_signature(request):
     """Verify OAuth signature for incoming LTI callback."""
-    # Extract OAuth parameters from Authorization header
+    # Extract OAuth parameters from Authorization header or POST params
     auth_header = request.META.get('HTTP_AUTHORIZATION', '')
-    if not auth_header.startswith('OAuth '):
-        logger.warning("No OAuth header provided")
-        return False
-
-    # Parse OAuth parameters
     params = {}
-    try:
-        auth_params = auth_header[6:].split(',')
-        for param in auth_params:
-            key, value = param.split('=', 1)
-            key = key.strip()
-            value = value.strip().strip('"')
-            params[key] = value
-    except Exception as e:
-        logger.error("Failed to parse Authorization header: %s", e)
-        return False
+    if auth_header.startswith('OAuth '):
+        try:
+            auth_params = auth_header[6:].split(',')
+            for param in auth_params:
+                key, value = param.split('=', 1)
+                key = key.strip()
+                value = value.strip().strip('"')
+                params[key] = value
+        except Exception as e:
+            logger.error("Failed to parse Authorization header: %s", e)
+            return False
+    else:
+        # Fallback to POST params if header is not present
+        params = request.POST.dict()
+        logger.debug("No OAuth header, using POST params: %s", params)
 
     oauth_signature = params.pop('oauth_signature', '')
     logger.debug("Received OAuth signature: %s", oauth_signature)

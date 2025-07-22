@@ -72,11 +72,12 @@ INSTALLED_APPS = [
     'blog',
     'licensing',
     'audit',#audit user
-    'payments',#semua pembayaran
+    #'payments',#semua pembayaran
     'django.contrib.humanize',
     'axes',#LOGIN LIMIT
     "django_htmx",
     'django_select2',
+    'payments.apps.PaymentsConfig',  # bukan 'payments' langsung!
     
  
     

@@ -7,7 +7,7 @@ from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 import logging
-from courses.models import Course,CoursePrice,Partner
+from courses.models import Course,CoursePrice,Partner,Enrollment
 from payments.models import CartItem,Transaction,Payment  # pastikan model keranjang belanja kamu ini
 from django.utils.timezone import now
 from django.db import IntegrityError
@@ -353,6 +353,17 @@ def checkout(request):
         cart_items.delete()
 
         if transaction.status == 'paid':
+            for course in transaction.courses.all():
+                Enrollment.objects.get_or_create(
+                    user=request.user,
+                    course=course,
+                    defaults={
+                        'enrolled_at': timezone.now(),
+                        'certificate_issued': False,
+                    }
+                )
+            
+
             messages.success(request, "Checkout successful. You have been enrolled in your courses.")
         else:
             messages.success(request, "Checkout pending. Please complete the payment to access your courses.")

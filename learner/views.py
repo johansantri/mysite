@@ -193,6 +193,8 @@ def lti_consume_course(request, assessment_id):
         "launch_url": launch_url,
         "params": oauth_params,
     })
+
+
 logger = logging.getLogger(__name__)
 
 @csrf_exempt
@@ -241,16 +243,16 @@ def lti_grade_callback(request):
 
     # Get consumer_key from OAuth params
     auth_header = request.META.get('HTTP_AUTHORIZATION', '')
-    params = {}
-    try:
-        if auth_header.startswith('OAuth '):
+    params = request.POST.dict()
+    if auth_header.startswith('OAuth '):
+        try:
             auth_params = auth_header[6:].split(',')
             for param in auth_params:
                 key, value = param.split('=', 1)
                 params[key.strip()] = value.strip().strip('"')
-    except Exception as e:
-        logger.error("Failed to parse Authorization header for consumer_key: %s", e)
-        return HttpResponseBadRequest("Invalid Authorization header")
+        except Exception as e:
+            logger.error("Failed to parse Authorization header for consumer_key: %s", e)
+            return HttpResponseBadRequest("Invalid Authorization header")
 
     consumer_key = params.get('oauth_consumer_key', '')
     if not consumer_key:
@@ -275,7 +277,6 @@ def lti_grade_callback(request):
     except Exception as e:
         logger.error("Failed to save LTIResult: %s", str(e))
         return HttpResponseBadRequest("Failed to save score")
-
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 @cache_page(60 * 5)
