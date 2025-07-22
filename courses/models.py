@@ -1334,6 +1334,26 @@ class Certificate(models.Model):
     def __str__(self):
         return f"Certificate {self.certificate_id} for {self.user.username} - {self.course.course_name}"
 
+# models.py
+class InstructorCertificate(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    instructor = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        limit_choices_to={'is_instructor': True}
+    )
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    issued_at = models.DateTimeField(auto_now_add=True)
+    partner = models.ForeignKey(Partner, on_delete=models.CASCADE, null=True, blank=True)
+    certificate_file = models.FileField(upload_to='certificates/instructors/', blank=True, null=True)
+
+    class Meta:
+        unique_together = ('instructor', 'course')
+
+    def __str__(self):
+        return f"{self.instructor.get_full_name()} - {self.course.course_name}"
+
+
 class SearchHistory(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="search_history")
     keyword = models.CharField(max_length=200)

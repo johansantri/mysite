@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     'authentication',
     'captcha',
     'courses',
-    'instructor',
+    #'instructor',
     'learner',
     'partner',
     'import_export',
@@ -78,7 +78,7 @@ INSTALLED_APPS = [
     "django_htmx",
     'django_select2',
     'payments.apps.PaymentsConfig',  # bukan 'payments' langsung!
-    
+    'instructor.apps.InstructorConfig',
  
     
 ]

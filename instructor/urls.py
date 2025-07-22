@@ -18,6 +18,8 @@ urlpatterns = [
 
     # URL untuk Superuser
     path('superuser/course/<int:course_id>/publish/', views.superuser_publish_course, name='superuser_publish_course'),
-    path('studios/<str:id>/', views.studios, name='studios')
+    path('studios/<str:id>/', views.studios, name='studios'),
+
+    path('certificate/instructor/<int:course_id>/download/', views.download_instructor_certificate, name='download_instructor_certificate')
    
 ]

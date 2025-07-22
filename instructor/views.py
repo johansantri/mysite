@@ -9,9 +9,29 @@ import csv
 from django.core.mail import send_mail
 from decimal import Decimal
 from django.contrib import messages
-from courses.models import Course,CoursePrice, Enrollment,Section,GradeRange,CourseStatusHistory,QuestionAnswer, CourseProgress, PeerReview,MaterialRead, AssessmentRead, AssessmentScore,Material,Assessment, Submission, CustomUser, Instructor
+from courses.models import InstructorCertificate,Course,CoursePrice, Enrollment,Section,GradeRange,CourseStatusHistory,QuestionAnswer, CourseProgress, PeerReview,MaterialRead, AssessmentRead, AssessmentScore,Material,Assessment, Submission, CustomUser, Instructor
 from authentication.models import CustomUser, Universiti
 # Create your views here.
+from django.template.loader import render_to_string
+from weasyprint import HTML
+from django.core.files.base import ContentFile
+
+def download_instructor_certificate(request, course_id):
+    cert = get_object_or_404(InstructorCertificate, course_id=course_id)
+
+    # Render HTML dan generate PDF
+    html_string = render_to_string('instructor/instructor_template.html', {'cert': cert})
+    pdf_file = HTML(string=html_string, base_url=request.build_absolute_uri()).write_pdf()
+
+    # Simpan ke field `certificate_file`
+    filename = f"instructor_certificate_{cert.id}.pdf"
+    cert.certificate_file.save(filename, ContentFile(pdf_file), save=True)
+
+    # Kembalikan response PDF
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = f'filename="{filename}"'
+    return response
+
 
 # View untuk Instructor mengajukan kurasi
 @login_required

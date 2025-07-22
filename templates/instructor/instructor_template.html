@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: 'DejaVu Sans'; text-align: center; }
+        .certificate { margin-top: 100px; }
+    </style>
+</head>
+<body>
+    <div class="certificate">
+        <h1>Sertifikat Instruktur</h1>
+        <p>Diberikan kepada</p>
+        <h2>{{ cert.instructor.get_full_name }}</h2>
+        <p>Atas partisipasinya dalam kursus:</p>
+        <h3>{{ cert.course.title }}</h3>
+    </div>
+</body>
+</html>
