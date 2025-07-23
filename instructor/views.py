@@ -15,21 +15,127 @@ from authentication.models import CustomUser, Universiti
 from django.template.loader import render_to_string
 from weasyprint import HTML
 from django.core.files.base import ContentFile
+from django.utils.timezone import now
+from django.db.models import Count
+from decimal import Decimal
 
-def download_instructor_certificate(request, course_id):
-    cert = get_object_or_404(InstructorCertificate, course_id=course_id)
+@login_required
+def generate_instructor_certificate_pdf(request):
+    try:
+        instructor = Instructor.objects.get(user=request.user)
+    except Instructor.DoesNotExist:
+        return HttpResponse("Anda bukan instruktur.", status=403)
 
-    # Render HTML dan generate PDF
-    html_string = render_to_string('instructor/instructor_template.html', {'cert': cert})
-    pdf_file = HTML(string=html_string, base_url=request.build_absolute_uri()).write_pdf()
+    course_id = request.POST.get("course_id")
 
-    # Simpan ke field `certificate_file`
-    filename = f"instructor_certificate_{cert.id}.pdf"
-    cert.certificate_file.save(filename, ContentFile(pdf_file), save=True)
+    courses = Course.objects.filter(
+        instructor=instructor,
+        status_course__status='archived'
+    )
+    if course_id:
+        courses = courses.filter(id=course_id)
 
-    # Kembalikan response PDF
-    response = HttpResponse(pdf_file, content_type='application/pdf')
-    response['Content-Disposition'] = f'filename="{filename}"'
+    enriched_certificates = []
+
+    for course in courses:
+        enrollments = Enrollment.objects.filter(course=course)
+        total_enrolled = enrollments.count()
+
+        if total_enrolled == 0:
+            continue
+
+        total_passed = 0
+        total_score_accum = Decimal(0)
+        total_progress_accum = Decimal(0)
+
+        assessments = Assessment.objects.filter(section__courses=course).distinct()
+        total_max_score = sum(a.weight for a in assessments)
+
+        grade_range = GradeRange.objects.filter(course=course).first()
+        passing_threshold = grade_range.min_grade if grade_range else 0
+
+        for enrollment in enrollments:
+            user = enrollment.user
+            user_score = Decimal(0)
+            user_submitted_all_assessments = True
+
+            for assessment in assessments:
+                questions = assessment.questions.all()
+                total_questions = questions.count()
+                has_answered_assessment = True
+
+                for question in questions:
+                    user_answers = QuestionAnswer.objects.filter(question=question, user=user)
+                    if not user_answers.exists():
+                        has_answered_assessment = False
+                        continue
+
+                    correct_choices = set(
+                        question.choices.filter(is_correct=True).values_list("id", flat=True)
+                    )
+                    user_choices = set(
+                        user_answers.values_list("choice_id", flat=True)
+                    )
+
+                    if user_choices == correct_choices:
+                        user_score += Decimal(assessment.weight) / Decimal(total_questions)
+
+                if not has_answered_assessment:
+                    user_submitted_all_assessments = False
+
+            # Progress
+            course_progress = CourseProgress.objects.filter(user=user, course=course).first()
+            progress = course_progress.progress_percentage if course_progress else 0
+
+            # Nilai akhir
+            percentage = (user_score / total_max_score * 100) if total_max_score > 0 else 0
+
+            # Status lulus
+            is_passed = (
+                progress == 100 and
+                user_submitted_all_assessments and
+                percentage >= passing_threshold
+            )
+            if is_passed:
+                total_passed += 1
+
+            total_score_accum += user_score
+            total_progress_accum += Decimal(progress)
+
+        # Simpan ke InstructorCertificate
+        cert, _ = InstructorCertificate.objects.get_or_create(
+            instructor=request.user,
+            course=course,
+            partner=course.org_partner,
+        )
+        cert.total_enrolled = total_enrolled
+        cert.total_passed = total_passed
+        cert.average_score = (
+            (total_score_accum / total_enrolled).quantize(Decimal('0.00'))
+            if total_enrolled > 0 else Decimal('0.00')
+        )
+        cert.average_progress = (
+            (total_progress_accum / total_enrolled).quantize(Decimal('0.00'))
+            if total_enrolled > 0 else Decimal('0.00')
+        )
+        cert.save()
+
+        enriched_certificates.append(cert)
+
+    if not enriched_certificates:
+        return HttpResponse("Tidak ada kursus yang memenuhi syarat untuk sertifikat.", status=400)
+
+    html_string = render_to_string('instructor/instructor_certificates.html', {
+        'instructor': instructor,
+        'certificates': enriched_certificates,
+        'generated_at': now(),
+    })
+
+    html = HTML(string=html_string, base_url=request.build_absolute_uri('/'))
+    pdf = html.write_pdf()
+
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="instructor_certificates.pdf"'
     return response
 
 

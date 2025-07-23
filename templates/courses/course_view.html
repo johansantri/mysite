@@ -58,7 +58,20 @@
               <tbody>
                 {% for course in page_obj %}
                   <tr>
-                    <td>{{ course.course_number }}</td>
+                   <td>
+                      <div>{{ course.course_number }}</div>
+
+                      {% if course.status_course.status == 'archived' and course.enrolment_count > 0 %}
+                        <form action="{% url 'instructor:generate_instructor_certificates' %}" method="post" class="mt-2">
+                          {% csrf_token %}
+                          <input type="hidden" name="course_id" value="{{ course.id }}">
+                          <button type="submit" class="btn btn-sm btn-primary">
+                            Generate Sertifikat
+                          </button>
+                        </form>
+                      {% endif %}
+                    </td>
+
                     <td>
                       <a href="{% url 'courses:studio' id=course.id %}">{{ course.course_name }}</a>
                     </td>
