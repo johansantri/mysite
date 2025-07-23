@@ -1,0 +1,85 @@
+{% extends "home/base.html" %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12">
+    <div class="w-full max-w-5xl bg-white rounded-3xl shadow-xl p-10">
+        
+        <!-- Header -->
+        <div class="text-center mb-10">
+            <h1 class="text-3xl font-bold text-indigo-700">Verifikasi Sertifikat Instruktur</h1>
+            <p class="text-sm text-gray-500 mt-2">Lihat detail sertifikat dan informasi kursus yang telah diselesaikan</p>
+        </div>
+
+        {% if cert %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+            
+            <!-- Identitas Instruktur -->
+            <div class="bg-gray-50 p-6 rounded-xl border">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2 border-yellow-400">Identitas Instruktur</h2>
+                <div class="space-y-3 text-sm text-gray-700">
+                    <div class="flex items-start gap-3">
+                        <span class="font-medium">Nama:</span>
+                        <span>{{ cert.instructor.get_full_name }}</span>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="font-medium">Email:</span>
+                        <span>{{ cert.instructor.email }}</span>
+                    </div>
+                    <div class="text-gray-600 italic pt-3">
+                        {% if cert.instructor.bio %}
+                            "{{ cert.instructor.bio|truncatewords:30 }}"
+                        {% else %}
+                            Instruktur ini berdedikasi tinggi dalam bidang pengajaran.
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detail Kursus -->
+            <div class="bg-gray-50 p-6 rounded-xl border">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2 border-yellow-400">Detail Kursus</h2>
+                <div class="space-y-3 text-sm text-gray-700">
+                    <div class="flex items-start gap-3">
+                        <span class="font-medium">Nama Kursus:</span>
+                        <span>{{ cert.course.course_name }}</span>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="font-medium">Partner:</span>
+                        <span>{{ cert.partner.name|default:"-" }}</span>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <span class="font-medium">Tanggal Terbit:</span>
+                        <span>{{ cert.issued_at|date:"d M Y, H:i" }}</span>
+                    </div>
+                    <div class="pt-3">
+                        <p class="text-gray-600">
+                            <span class="font-medium">Deskripsi:</span><br>
+                            {% if cert.course.description %}
+                                {{ cert.course.description|truncatewords:30|safe }}
+                            {% else %}
+                                Kursus ini memberikan pengetahuan mendalam untuk pengembangan profesional.
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+      
+
+        {% else %}
+        <!-- Jika tidak ditemukan -->
+        <div class="text-center mt-10">
+            <svg class="w-16 h-16 mx-auto text-red-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p class="text-red-600 font-semibold text-lg">Sertifikat tidak ditemukan.</p>
+            <a href="{% url 'authentication:dashbord' %}" class="mt-6 inline-block px-5 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">
+                Kembali ke Dashboard
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

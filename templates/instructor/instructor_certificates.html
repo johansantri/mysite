@@ -191,7 +191,7 @@
   <div class="certificate-container">
     <div class="header">
       <!-- Tambahkan logo (ganti dengan path logo Anda) -->
-      <img src="path/to/logo.png" alt="Logo" class="logo">
+      <img src="https://ini.icei.ac.id/static/assets/img/icon/badge.svg" alt="Logo" class="logo">
       <h1>Sertifikat Instruktur</h1>
       <h3>{{ instructor.user.get_full_name }}</h3>
       <p>Email: {{ instructor.user.email }}</p>
@@ -240,7 +240,16 @@
     </div>
 
     <div class="footer">
-      Dicetak otomatis oleh sistem ICEI LMS – {{ generated_at|date:"d M Y H:i" }}
+        <p>Dicetak otomatis oleh sistem ICEI LMS – {{ generated_at|date:"d M Y H:i" }}</p>
+
+        <div class="qr-section" style="margin-top: 20px; display: flex; flex-direction: column; align-items: center;">
+            <img src="{{ certificates.0.qr_code_data_uri }}" alt="QR Code"   style="width: 80px; height: 80px; margin-bottom: 6px;" />
+            <p style="font-size: 12px;">
+            Verifikasi: <a href="{{ certificates.0.qr_url }}" target="_blank">{{ certificates.0.qr_url }}</a>
+            </p>
+        </div>
+        </div>
+
     </div>
   </div>
 </body>

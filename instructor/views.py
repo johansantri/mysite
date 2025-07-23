@@ -18,6 +18,25 @@ from django.core.files.base import ContentFile
 from django.utils.timezone import now
 from django.db.models import Count
 from decimal import Decimal
+import qrcode
+import base64
+from io import BytesIO
+from django.urls import reverse
+import os
+import uuid  # ✅ Tambahkan ini
+import logging
+from io import BytesIO
+from django.conf import settings
+import qrcode
+import base64
+from django.utils import timezone
+
+def verify_instructor_certificate(request, cert_id):
+    cert = get_object_or_404(InstructorCertificate, id=cert_id)
+    return render(request, 'instructor/verify_certificate.html', {
+        'cert': cert,
+    })
+
 
 @login_required
 def generate_instructor_certificate_pdf(request):
@@ -27,11 +46,7 @@ def generate_instructor_certificate_pdf(request):
         return HttpResponse("Anda bukan instruktur.", status=403)
 
     course_id = request.POST.get("course_id")
-
-    courses = Course.objects.filter(
-        instructor=instructor,
-        status_course__status='archived'
-    )
+    courses = Course.objects.filter(instructor=instructor, status_course__status='archived')
     if course_id:
         courses = courses.filter(id=course_id)
 
@@ -40,7 +55,6 @@ def generate_instructor_certificate_pdf(request):
     for course in courses:
         enrollments = Enrollment.objects.filter(course=course)
         total_enrolled = enrollments.count()
-
         if total_enrolled == 0:
             continue
 
@@ -50,7 +64,6 @@ def generate_instructor_certificate_pdf(request):
 
         assessments = Assessment.objects.filter(section__courses=course).distinct()
         total_max_score = sum(a.weight for a in assessments)
-
         grade_range = GradeRange.objects.filter(course=course).first()
         passing_threshold = grade_range.min_grade if grade_range else 0
 
@@ -83,14 +96,10 @@ def generate_instructor_certificate_pdf(request):
                 if not has_answered_assessment:
                     user_submitted_all_assessments = False
 
-            # Progress
             course_progress = CourseProgress.objects.filter(user=user, course=course).first()
             progress = course_progress.progress_percentage if course_progress else 0
-
-            # Nilai akhir
             percentage = (user_score / total_max_score * 100) if total_max_score > 0 else 0
 
-            # Status lulus
             is_passed = (
                 progress == 100 and
                 user_submitted_all_assessments and
@@ -102,29 +111,47 @@ def generate_instructor_certificate_pdf(request):
             total_score_accum += user_score
             total_progress_accum += Decimal(progress)
 
-        # Tambahkan logika pembatasan jika < 40% yang lulus
         passing_ratio = total_passed / total_enrolled
         if passing_ratio < 0.40:
-            continue  # Lewati pembuatan sertifikat instruktur
+            continue
 
-        # Simpan ke InstructorCertificate
         cert, _ = InstructorCertificate.objects.get_or_create(
             instructor=request.user,
             course=course,
             partner=course.org_partner,
         )
+
         cert.total_enrolled = total_enrolled
         cert.total_passed = total_passed
-        cert.average_score = (
-            (total_score_accum / total_enrolled).quantize(Decimal('0.00'))
-            if total_enrolled > 0 else Decimal('0.00')
-        )
-        cert.average_progress = (
-            (total_progress_accum / total_enrolled).quantize(Decimal('0.00'))
-            if total_enrolled > 0 else Decimal('0.00')
-        )
-        cert.save()
+        cert.average_score = (total_score_accum / total_enrolled).quantize(Decimal('0.00'))
+        cert.average_progress = (total_progress_accum / total_enrolled).quantize(Decimal('0.00'))
 
+        # QR Code
+        verify_url = request.build_absolute_uri(
+            reverse('instructor:verify_instructor_certificate', args=[cert.id])
+        )
+        qr = qrcode.QRCode(version=1, box_size=10, border=4)
+        qr.add_data(verify_url)
+        qr.make(fit=True)
+        qr_img = qr.make_image(fill_color="black", back_color="white")
+
+        qr_filename = f"certificate_{uuid.uuid4()}.png"
+        qr_folder = os.path.join(settings.MEDIA_ROOT, 'qrcodes')
+        os.makedirs(qr_folder, exist_ok=True)
+        qr_path = os.path.join(qr_folder, qr_filename)
+        qr_img.save(qr_path)
+
+        # URL file (untuk HTML jika perlu)
+        qr_url = request.build_absolute_uri(settings.MEDIA_URL + f'qrcodes/{qr_filename}')
+        cert.qr_url = qr_url
+
+        # Inline data URI
+        buffer = BytesIO()
+        qr_img.save(buffer, format='PNG')
+        qr_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+        cert.qr_code_data_uri = f"data:image/png;base64,{qr_base64}"
+
+        cert.save()
         enriched_certificates.append(cert)
 
     if not enriched_certificates:
@@ -133,7 +160,8 @@ def generate_instructor_certificate_pdf(request):
     html_string = render_to_string('instructor/instructor_certificates.html', {
         'instructor': instructor,
         'certificates': enriched_certificates,
-        'generated_at': now(),
+        'generated_at': timezone.now(),
+        'base_url': request.build_absolute_uri('/')
     })
 
     html = HTML(string=html_string, base_url=request.build_absolute_uri('/'))

@@ -21,5 +21,7 @@ urlpatterns = [
     path('studios/<str:id>/', views.studios, name='studios'),
 
     path('instructor/generate-certificates/', views.generate_instructor_certificate_pdf, name='generate_instructor_certificates'),
+    path('certificate/verify/<uuid:cert_id>/', views.verify_instructor_certificate, name='verify_instructor_certificate'),
+
 
 ]
