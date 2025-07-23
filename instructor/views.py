@@ -102,6 +102,11 @@ def generate_instructor_certificate_pdf(request):
             total_score_accum += user_score
             total_progress_accum += Decimal(progress)
 
+        # Tambahkan logika pembatasan jika < 40% yang lulus
+        passing_ratio = total_passed / total_enrolled
+        if passing_ratio < 0.40:
+            continue  # Lewati pembuatan sertifikat instruktur
+
         # Simpan ke InstructorCertificate
         cert, _ = InstructorCertificate.objects.get_or_create(
             instructor=request.user,

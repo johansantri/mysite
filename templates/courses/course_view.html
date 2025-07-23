@@ -1,4 +1,7 @@
 {% extends 'home/tes.html' %}
+
+{% load extra_custom_filters %}
+
 {% block content %}
 
       
@@ -58,23 +61,31 @@
               <tbody>
                 {% for course in page_obj %}
                   <tr>
-                   <td>
+                  <td>
                       <div>{{ course.course_number }}</div>
 
-                      {% if course.status_course.status == 'archived' and course.enrolment_count > 0 %}
-                        <form action="{% url 'instructor:generate_instructor_certificates' %}" method="post" class="mt-2">
-                          {% csrf_token %}
-                          <input type="hidden" name="course_id" value="{{ course.id }}">
-                          <button type="submit" class="btn btn-sm btn-primary">
-                            Generate Sertifikat
-                          </button>
-                        </form>
-                      {% endif %}
+                      
                     </td>
 
-                    <td>
-                      <a href="{% url 'courses:studio' id=course.id %}">{{ course.course_name }}</a>
+
+                 <td>
+                      <div class="d-flex align-items-center justify-content-between">
+                        <a href="{% url 'courses:studio' id=course.id %}">
+                          {{ course.course_name }}
+                        </a>
+
+                        {% if course.status_course.status == 'archived' and course|is_course_cert_eligible %}
+                          <form action="{% url 'instructor:generate_instructor_certificates' %}" method="post" class="ms-2 mb-0">
+                            {% csrf_token %}
+                            <input type="hidden" name="course_id" value="{{ course.id }}">
+                            <button type="submit" class="btn btn-sm btn-primary" title="Generate Sertifikat">
+                              <i class="fas fa-certificate"></i>
+                            </button>
+                          </form>
+                        {% endif %}
+                      </div>
                     </td>
+
                     <td><a href="{% url 'courses:course_list_enroll' id=course.id %}">{{ course.enrolment_count }}</a></td>
                     <td>{{ course.instructor_email }}</td>
                     <td>{{ course.org_partner_name }}</td>

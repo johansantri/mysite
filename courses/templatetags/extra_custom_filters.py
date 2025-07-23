@@ -2,11 +2,78 @@ from django import template
 import base64
 import random
 from datetime import datetime
-from courses.models import Course  # ✅ Tambahkan ini
+from courses.models import Course,CourseProgress,Assessment,Enrollment,GradeRange,QuestionAnswer  # ✅ Tambahkan ini
 from io import BytesIO
 from PIL import Image  # Pastikan ini ada
 import re
+from decimal import Decimal
+
 register = template.Library()
+
+
+@register.filter
+def mul(value, arg):
+    try:
+        return float(value) * float(arg)
+    except (ValueError, TypeError):
+        return ''
+
+@register.filter
+def is_course_cert_eligible(course):
+    enrollments = Enrollment.objects.filter(course=course)
+    total_enrolled = enrollments.count()
+
+    if total_enrolled == 0:
+        return False
+
+    total_passed = 0
+    assessments = Assessment.objects.filter(section__courses=course).distinct()
+    total_max_score = sum(a.weight for a in assessments)
+
+    grade_range = GradeRange.objects.filter(course=course).first()
+    passing_threshold = grade_range.min_grade if grade_range else 0
+
+    for enrollment in enrollments:
+        user = enrollment.user
+        user_score = Decimal(0)
+        user_submitted_all_assessments = True
+
+        for assessment in assessments:
+            questions = assessment.questions.all()
+            total_questions = questions.count()
+            has_answered_assessment = True
+
+            for question in questions:
+                user_answers = QuestionAnswer.objects.filter(question=question, user=user)
+                if not user_answers.exists():
+                    has_answered_assessment = False
+                    continue
+
+                correct_choices = set(question.choices.filter(is_correct=True).values_list("id", flat=True))
+                user_choices = set(user_answers.values_list("choice_id", flat=True))
+
+                if user_choices == correct_choices:
+                    user_score += Decimal(assessment.weight) / Decimal(total_questions)
+
+            if not has_answered_assessment:
+                user_submitted_all_assessments = False
+
+        progress_obj = CourseProgress.objects.filter(user=user, course=course).first()
+        progress = progress_obj.progress_percentage if progress_obj else 0
+        percentage = (user_score / total_max_score * 100) if total_max_score > 0 else 0
+
+        is_passed = (
+            progress == 100 and
+            user_submitted_all_assessments and
+            percentage >= passing_threshold
+        )
+
+        if is_passed:
+            total_passed += 1
+
+    passing_ratio = total_passed / total_enrolled
+    return passing_ratio >= 0.4
+
 
 @register.filter
 def make_iframes_responsive(value):
