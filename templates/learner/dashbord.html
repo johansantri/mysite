@@ -5,197 +5,228 @@
 {% block content %}
 <!-- Welcome Section -->
 <section class="py-5 bg-light">
-    <div class="row g-4">
-        <!-- Kolom Kiri: Teks Selamat Datang dalam Card -->
-        <div class="col-md-6">
-            <div class="card shadow-sm h-100 border-0">
-                <div class="card-body">
-                    <h1 class="display-4 fw-bold text-primary">Hi, {{ request.user.username }}!</h1>
-                    <p class="lead text-muted">Great to see you back. Let’s continue your learning journey or explore new courses to unlock your full potential!</p>
+    <div class="container">
+        <div class="row g-4">
+            <!-- Left Column: Welcome Text in Card -->
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100 border-0 animate__animated animate__fadeIn">
+                    <div class="card-body d-flex flex-column justify-content-center">
+                        <h1 class="display-5 fw-bold text-primary mb-3">Hi, {{ request.user.username }}!</h1>
+                        <p class="lead text-muted">Ready to dive back into your learning journey? Explore new courses or continue where you left off!</p>
+                        <a href="{% url 'authentication:course_list' %}" class="btn btn-primary mt-3">Explore Courses</a>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <div class="col-md-6">
-            {% if user_licenses %}
-                <div class="card shadow-sm h-100 border-0">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="card-title mb-0">Your Licenses</h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text text-muted">You are currently under the following license(s):</p>
-                        <ul class="list-group list-group-flush">
-                            {% for license in user_licenses %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <strong>{{ license.name }}</strong>
-                                        <div class="small text-muted">
-                                            Start: {{ license.start_date|date:"F j, Y" }}<br>
-                                            End: {{ license.expiry_date|date:"F j, Y" }}
+            <!-- Right Column: Licenses -->
+            <div class="col-md-6">
+                {% if user_licenses %}
+                    <div class="card shadow-sm h-100 border-0 animate__animated animate__fadeIn">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="card-title mb-0">Your Licenses</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted mb-3">Your current license(s):</p>
+                            <ul class="list-group list-group-flush">
+                                {% for license in user_licenses %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>{{ license.name }}</strong>
+                                            <div class="small text-muted">
+                                                Start: {{ license.start_date|date:"F j, Y" }}<br>
+                                                End: {{ license.expiry_date|date:"F j, Y" }}
+                                            </div>
                                         </div>
-                                    </div>
-                                    <span class="badge bg-{{ license.is_active|yesno:'success,danger' }} rounded-pill">
-                                        {{ license.is_active|yesno:'Active,Inactive' }}
-                                    </span>
-                                </li>
-                            {% endfor %}
-                        </ul>
+                                        <span class="badge bg-{{ license.is_active|yesno:'success,danger' }} rounded-pill">
+                                            {{ license.is_active|yesno:'Active,Inactive' }}
+                                        </span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
                     </div>
-                </div>
-            {% endif %}
+                {% else %}
+                    <div class="card shadow-sm h-100 border-0 text-center animate__animated animate__fadeIn">
+                        <div class="card-body d-flex flex-column justify-content-center">
+                            <i class="fas fa-info-circle fa-2x text-muted mb-3"></i>
+                            <p class="text-muted">No licenses found. Start exploring courses to unlock your potential!</p>
+                            <a href="{% url 'authentication:course_list' %}" class="btn btn-outline-primary">Browse Courses</a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 </section>
 
 <!-- Search Form -->
-<form method="GET" action="{% url 'authentication:dashbord' %}" class="mb-4">
-    <div class="input-group">
-        <input type="text" name="search" class="form-control" placeholder="Search by course name" value="{{ search_query }}" aria-label="Search courses">
-        <button type="submit" class="btn btn-primary">
-            <i class="fas fa-search me-2"></i>Cari
-        </button>
+<section class="py-4">
+    <div class="container">
+        <form method="GET" action="{% url 'authentication:dashbord' %}" class="mb-4">
+            <div class="input-group">
+                <label for="search-input" class="visually-hidden">Search courses</label>
+                <input type="text" id="search-input" name="search" class="form-control" placeholder="Search by course name" value="{{ search_query }}" aria-label="Search courses">
+                <button type="submit" class="btn btn-primary" aria-label="Search">
+                    <i class="fas fa-search me-2"></i>Search
+                </button>
+            </div>
+        </form>
     </div>
-</form>
+</section>
 
-<!-- Student Dashboard -->
 <!-- Dashboard Grid -->
-<div class="row justify-content-center g-4">
-    <div class="col-lg-4 col-md-6">
-        <div class="card text-center shadow-sm border-0">
-            <div class="card-body">
-                <h5 class="card-title text-muted">Enrolled</h5>
-                <h2 class="fw-bold text-primary">{{ total_enrollments }}</h2>
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="card text-center shadow-sm border-0 animate__animated animate__fadeInUp">
+                    <div class="card-body">
+                        <h5 class="card-title text-muted">Enrolled</h5>
+                        <h2 class="fw-bold text-primary">{{ total_enrollments }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="card text-center shadow-sm border-0 animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+                    <div class="card-body">
+                        <h5 class="card-title text-muted">Active Courses</h5>
+                        <h2 class="fw-bold text-primary">{{ active_courses.count }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="card text-center shadow-sm border-0 animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
+                    <div class="card-body">
+                        <h5 class="card-title text-muted">Completed Courses</h5>
+                        <h2 class="fw-bold text-primary">{{ completed_courses.count }}</h2>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-lg-4 col-md-6">
-        <div class="card text-center shadow-sm border-0">
-            <div class="card-body">
-                <h5 class="card-title text-muted">Active Courses</h5>
-                <h2 class="fw-bold text-primary">{{ active_courses.count }}</h2>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-4 col-md-6">
-        <div class="card text-center shadow-sm border-0">
-            <div class="card-body">
-                <h5 class="card-title text-muted">Completed Courses</h5>
-                <h2 class="fw-bold text-primary">{{ completed_courses.count }}</h2>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- /Dashboard Grid -->
+</section>
 
+<!-- Enrolled Courses -->
 {% if enrollments %}
-    <div class="mt-4">
-        <h4 class="fw-bold text-primary mb-4 border-bottom border-primary pb-2">Recently Enrolled Courses</h4>
-    </div>
-  <div class="table-responsive">
-    <table class="table table-hover table-bordered align-middle">
-        <thead class="table-light">
-            <tr>
-                <th scope="col">Course</th>
-                <th scope="col">Progress</th>
-                <th scope="col">Instructor</th>
-                <th scope="col">Status</th>
-                
-            </tr>
-        </thead>
-        <tbody>
-            {% for data in enrollments %}
-                <tr class="{% if data.certificate_issued or data.certificate_eligible %}border-start border-4 border-success{% else %}border-start border-4 border-secondary{% endif %}">
-                    <td>
-                            <div class="d-flex align-items-center gap-3">
-                                <a href="{% url 'learner:course_learn' data.enrollment.user.username data.enrollment.course.id data.enrollment.course.slug %}" 
-                                class="text-decoration-none fw-semibold {% if data.certificate_issued or data.certificate_eligible %}text-success{% else %}text-dark{% endif %}">
-                                    {{ data.enrollment.course.course_name }}
-                                </a>
-                                <a href="{% url 'learner:score_summary' data.enrollment.user.username data.enrollment.course.id %}" class="text-decoration-none text-muted">
-                                    <i class="fas fa-link"></i> Score Summary
-                                </a>
-                            </div>
-                    </td>
-                    <td>
-                        <div class="progress" style="width: 100px; height: 10px;">
-                            <div class="progress-bar {% if data.certificate_issued or data.certificate_eligible %}bg-success{% else %}bg-primary{% endif %}" 
-                                 role="progressbar" 
-                                 style="width: {{ data.progress }}%;" 
-                                 aria-valuenow="{{ data.progress }}" 
-                                 aria-valuemin="0" 
-                                 aria-valuemax="100">
-                            </div>
-                        </div>
-                        <small class="{% if data.certificate_issued or data.certificate_eligible %}text-success{% else %}text-primary{% endif %}">
-                            {{ data.progress|floatformat:0 }}%
-                        </small>
-                    </td>
-                    <td>
-                        <i class="fas fa-chalkboard-teacher me-2"></i>
-                        {{ data.enrollment.course.instructor.user.username }}
-                    </td>
-                    <td>
-                        {% if data.certificate_issued %}
-                            <span class="badge bg-success rounded-pill px-3 py-2">
-                                <i class="fas fa-certificate me-2"></i>Certificate Issued
-                            </span>
-                        {% elif data.certificate_eligible %}
-                            <a href="{% url 'courses:generate_certificate' data.enrollment.course.id %}" 
-                               class="badge bg-success text-white text-decoration-none rounded-pill px-3 py-2">
-                                <i class="fas fa-download me-2"></i>Claim Certificate
-                            </a>
-                            <a href="{% url 'courses:submit_rating' data.enrollment.course.id data.enrollment.course.slug %}" 
-                               class="badge bg-warning text-dark text-decoration-none rounded-pill px-3 py-2">
-                                <i class="fas fa-star me-2"></i>Add Review
-                            </a>
-                        {% else %}
-                            <span class="badge bg-secondary rounded-pill px-3 py-2">
-                                <i class="fas fa-hourglass-half me-2"></i>Not Completed
-                            </span>
+    <section class="py-5">
+        <div class="container">
+            <h4 class="fw-bold text-primary mb-4 border-bottom border-primary pb-2">Recently Enrolled Courses</h4>
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">Course</th>
+                            <th scope="col">Progress</th>
+                            <th scope="col">Instructor</th>
+                            <th scope="col">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for data in enrollments %}
+                            <tr class="{% if data.certificate_issued or data.certificate_eligible %}border-start border-4 border-success{% else %}border-start border-4 border-secondary{% endif %}">
+                                <td>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <a href="{% url 'learner:course_learn' data.enrollment.user.username data.enrollment.course.id data.enrollment.course.slug %}" 
+                                           class="text-decoration-none fw-semibold {% if data.certificate_issued or data.certificate_eligible %}text-success{% else %}text-dark{% endif %}" 
+                                           aria-label="View course {{ data.enrollment.course.course_name }}">
+                                            {{ data.enrollment.course.course_name }}
+                                        </a>
+                                        <a href="{% url 'learner:score_summary' data.enrollment.user.username data.enrollment.course.id %}" 
+                                           class="text-decoration-none text-muted small" 
+                                           aria-label="View score summary for {{ data.enrollment.course.course_name }}">
+                                            <i class="fas fa-link"></i> Score
+                                        </a>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar {% if data.certificate_issued or data.certificate_eligible %}bg-success{% else %}bg-primary{% endif %}" 
+                                             role="progressbar" 
+                                             style="width: {{ data.progress }}%;" 
+                                             aria-valuenow="{{ data.progress }}" 
+                                             aria-valuemin="0" 
+                                             aria-valuemax="100">
+                                        </div>
+                                    </div>
+                                    <small class="{% if data.certificate_issued or data.certificate_eligible %}text-success{% else %}text-primary{% endif %}">
+                                        {{ data.progress|floatformat:0 }}%
+                                    </small>
+                                </td>
+                                <td>
+                                    <i class="fas fa-chalkboard-teacher me-2"></i>
+                                    {{ data.enrollment.course.instructor.user.username }}
+                                </td>
+                                <td>
+                                    {% if data.certificate_issued %}
+                                        <span class="badge bg-success rounded-pill px-3 py-2">
+                                            <i class="fas fa-certificate me-2"></i>Completed
+                                        </span>
+                                        <a href="{% url 'courses:generate_certificate' data.enrollment.course.id %}" 
+                                           class="badge bg-success text-white text-decoration-none rounded-pill px-3 py-2 ms-2" 
+                                           aria-label="Download certificate for {{ data.enrollment.course.course_name }}">
+                                            <i class="fas fa-download me-2"></i>Certificate
+                                        </a>
+                                    {% elif data.certificate_eligible %}
+                                        <a href="{% url 'courses:generate_certificate' data.enrollment.course.id %}" 
+                                           class="badge bg-success text-white text-decoration-none rounded-pill px-3 py-2" 
+                                           aria-label="Download certificate for {{ data.enrollment.course.course_name }}">
+                                            <i class="fas fa-download me-2"></i>Certificate
+                                        </a>
+                                        <a href="{% url 'courses:submit_rating' data.enrollment.course.id data.enrollment.course.slug %}" 
+                                           class="badge bg-warning text-dark text-decoration-none rounded-pill px-3 py-2 ms-2" 
+                                           aria-label="Submit review for {{ data.enrollment.course.course_name }}">
+                                            <i class="fas fa-star me-2"></i>Review
+                                        </a>
+                                    {% else %}
+                                        <span class="badge bg-secondary rounded-pill px-3 py-2">
+                                            <i class="fas fa-hourglass-half me-2"></i>In Progress
+                                        </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center p-5">
+                                    <i class="fas fa-book-open fa-3x text-muted mb-3 d-block"></i>
+                                    <p class="text-muted mb-3">No enrolled courses available.</p>
+                                    <a href="{% url 'authentication:course_list' %}" class="btn btn-outline-primary">Explore Courses</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <!-- Pagination -->
+            {% if enrollments.has_other_pages %}
+                <nav aria-label="Enrollments pagination">
+                    <ul class="pagination justify-content-center mt-4">
+                        {% if enrollments.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?enrollments_page={{ enrollments.previous_page_number }}&search={{ search_query }}" aria-label="Previous page">Previous</a>
+                            </li>
                         {% endif %}
-                    </td>
-                   
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="5" class="text-center p-5">
-                        <i class="fas fa-book-open fa-3x text-muted mb-3 d-block"></i>
-                        <p class="text-muted mb-3">No enrolled courses available.</p>
-                        <a href="{% url 'authentication:course_list' %}" class="btn btn-outline-primary">Explore Courses</a>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-
-    <!-- Pagination -->
-    {% if enrollments.has_other_pages %}
-    <nav aria-label="Enrollments pagination">
-        <ul class="pagination justify-content-center mt-4">
-            {% if enrollments.has_previous %}
-                <li class="page-item">
-                    <a class="page-link" href="?enrollments_page={{ enrollments.previous_page_number }}&search={{ search_query }}">Previous</a>
-                </li>
+                        {% for num in enrollments.paginator.page_range %}
+                            <li class="page-item {% if enrollments.number == num %}active{% endif %}">
+                                <a class="page-link" href="?enrollments_page={{ num }}&search={{ search_query }}" aria-label="Page {{ num }}">{{ num }}</a>
+                            </li>
+                        {% endfor %}
+                        {% if enrollments.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?enrollments_page={{ enrollments.next_page_number }}&search={{ search_query }}" aria-label="Next page">Next</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
             {% endif %}
-            {% for num in enrollments.paginator.page_range %}
-                <li class="page-item {% if enrollments.number == num %}active{% endif %}">
-                    <a class="page-link" href="?enrollments_page={{ num }}&search={{ search_query }}">{{ num }}</a>
-                </li>
-            {% endfor %}
-            {% if enrollments.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?enrollments_page={{ enrollments.next_page_number }}&search={{ search_query }}">Next</a>
-                </li>
-            {% endif %}
-        </ul>
-    </nav>
-    {% endif %}
+        </div>
+    </section>
 {% else %}
-    <p class="text-center mt-3 text-muted">No enrollments found.</p>
+    <section class="py-5 text-center">
+        <div class="container">
+            <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
+            <p class="text-muted mb-3">No enrollments found. Start your learning journey today!</p>
+            <a href="{% url 'authentication:course_list' %}" class="btn btn-primary btn-lg">Explore Courses</a>
+        </div>
+    </section>
 {% endif %}
-<div class="d-flex justify-content-center align-items-center mt-4">
-    <a href="{% url 'authentication:course_list' %}" class="btn btn-info btn-lg">Explore Course</a>
-</div>
 
 {% endblock content %}
