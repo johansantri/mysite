@@ -1004,57 +1004,83 @@ class AssessmentScore(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def calculate_final_score(self):
-        """
-        Hitung skor final berdasarkan peer reviews untuk submisi ini.
-        """
-        course = self.submission.askora.assessment.section.courses  # Perbaikan: courses bukan course
-        total_participants = (
-            Enrollment.objects
-            .filter(course=course)
-            .aggregate(total=Count("user"))
-            .get("total", 0)
-        )
-
-        peer_reviews = self.submission.peer_reviews.all()
-        peer_review_count = peer_reviews.count()
-
-        # ⚙️ Tentukan minimal peer review berdasarkan jumlah peserta
-        if total_participants <= 1:
-            # ⛳ Kasus hanya satu peserta → langsung kasih nilai otomatis
-            avg_peer_score = Decimal('0')
-        elif total_participants == 2:
-            # 🤝 Cukup 1 peer review
-            if peer_review_count < 1:
-                self.final_score = None
-                self.save()
-                return
-        else:
-            # 👥 Untuk 3 peserta atau lebih, butuh minimal 3 review
-            if peer_review_count < 3:
-                self.final_score = None
-                self.save()
-                return
-
-        # ✅ Hitung rata-rata skor review jika ada
-        if peer_review_count > 0:
-            total_score = sum(
-                Decimal(review.score) * Decimal(review.weight or 1)
-                for review in peer_reviews
+            course = self.submission.askora.assessment.section.courses
+            total_participants = (
+                Enrollment.objects.filter(course=course)
+                .aggregate(total=Count("user"))
+                .get("total", 0)
             )
-            avg_peer_score = total_score / Decimal(peer_review_count)
-        else:
-            avg_peer_score = Decimal('0')
 
-        # ⚖️ Bobot skor: 50% jawaban peserta, 50%ied review teman
-        participant_score = Decimal('5')  # nilai otomatis, bisa dinamis
-        final_score = (participant_score * Decimal('0.5')) + (avg_peer_score * Decimal('0.5'))
+            peer_reviews = self.submission.peer_reviews.all()
+            peer_review_count = peer_reviews.count()
 
-        self.final_score = final_score
-        self.save()
+            # Ambil nilai max dari GradeRange secara dinamis
+            # Contoh asumsikan GradeRange untuk pilihan ganda dan open response
+            mc_grade_range = GradeRange.objects.filter(
+                course=course,
+                name__icontains='Multiple Choice'  # atau sesuaikan nama ini sesuai data kamu
+            ).first()
+
+            ora_grade_range = GradeRange.objects.filter(
+                course=course,
+                name__icontains='Open Response'  # atau sesuaikan nama ini sesuai data kamu
+            ).first()
+
+            # Default jika tidak ditemukan
+            max_mc_point = Decimal('60')
+            max_ora_point = Decimal('40')
+
+            if mc_grade_range:
+                max_mc_point = mc_grade_range.max_grade
+
+            if ora_grade_range:
+                max_ora_point = ora_grade_range.max_grade
+
+            # Validasi jumlah review minimal
+            if total_participants <= 1:
+                avg_peer_score_point = Decimal('0')
+            elif total_participants == 2:
+                if peer_review_count < 1:
+                    self.final_score = None
+                    self.save()
+                    return
+            else:
+                if peer_review_count < 3:
+                    self.final_score = None
+                    self.save()
+                    return
+
+            if peer_review_count > 0:
+                total_score = sum(
+                    Decimal(review.score) * Decimal(review.weight or 1)
+                    for review in peer_reviews
+                )
+                avg_peer_score_raw = total_score / Decimal(peer_review_count)
+            else:
+                avg_peer_score_raw = Decimal('0')
+
+            max_peer_score = Decimal('5')  # skala peer review 1-5
+
+            # Konversi rata-rata peer review ke poin open response
+            avg_peer_score_point = (avg_peer_score_raw / max_peer_score) * max_ora_point
+
+            participant_score = getattr(self.submission, 'multiple_choice_score', None)
+            if participant_score is None:
+                participant_score = Decimal('0')
+            else:
+                participant_score = Decimal(participant_score)
+
+            # Batasi nilai pilihan ganda supaya tidak melebihi max dari GradeRange
+            if participant_score > max_mc_point:
+                participant_score = max_mc_point
+
+            final_score = participant_score + avg_peer_score_point
+
+            self.final_score = final_score.quantize(Decimal('0.01'))
+            self.save()
 
     def __str__(self):
-        # Mengakses assessment melalui askora
-        return f"Score for {self.submission.user.username} in {self.submission.askora.assessment.name}"
+            return f"Score for {self.submission.user.username} in {self.submission.askora.assessment.name}"
 
     
 class Score(models.Model):
