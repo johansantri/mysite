@@ -91,77 +91,78 @@
     <div class="mt-4">
         <h4 class="fw-bold text-primary mb-4 border-bottom border-primary pb-2">Recently Enrolled Courses</h4>
     </div>
-    <div class="row g-4">
-        {% for data in enrollments %}
-            <div class="col-xl-4 col-md-6 col-sm-12 mb-4">
-                <div class="card h-100 shadow-sm border-0 {% if data.certificate_issued or data.certificate_eligible %}border-start border-4 border-success{% else %}border-start border-4 border-secondary{% endif %}">
-                    <div class="card-header bg-transparent border-0 p-4">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <h5 class="card-title mb-0">
-                                <a href="{% url 'learner:course_learn' data.enrollment.user.username data.enrollment.course.id data.enrollment.course.slug %}" 
-                                   class="text-decoration-none fw-semibold {% if data.certificate_issued or data.certificate_eligible %}text-success{% else %}text-dark{% endif %}">
-                                    {{ data.enrollment.course.course_name }}
-                                </a>
-                            </h5>
-                            <div>
-                                <div class="progress" style="width: 100px; height: 10px;">
-                                    <div class="progress-bar {% if data.certificate_issued or data.certificate_eligible %}bg-success{% else %}bg-primary{% endif %}" 
-                                         role="progressbar" 
-                                         style="width: {{ data.progress }}%;" 
-                                         aria-valuenow="{{ data.progress }}" 
-                                         aria-valuemin="0" 
-                                         aria-valuemax="100">
-                                    </div>
-                                </div>
-                                <small class="{% if data.certificate_issued or data.certificate_eligible %}text-success{% else %}text-primary{% endif %}">
-                                    {{ data.progress|floatformat:0 }}%
-                                </small>
+  <div class="table-responsive">
+    <table class="table table-hover table-bordered align-middle">
+        <thead class="table-light">
+            <tr>
+                <th scope="col">Course</th>
+                <th scope="col">Progress</th>
+                <th scope="col">Instructor</th>
+                <th scope="col">Status</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in enrollments %}
+                <tr class="{% if data.certificate_issued or data.certificate_eligible %}border-start border-4 border-success{% else %}border-start border-4 border-secondary{% endif %}">
+                    <td>
+                        <a href="{% url 'learner:course_learn' data.enrollment.user.username data.enrollment.course.id data.enrollment.course.slug %}" 
+                           class="text-decoration-none fw-semibold {% if data.certificate_issued or data.certificate_eligible %}text-success{% else %}text-dark{% endif %}">
+                            {{ data.enrollment.course.course_name }}
+                        </a>
+                    </td>
+                    <td>
+                        <div class="progress" style="width: 100px; height: 10px;">
+                            <div class="progress-bar {% if data.certificate_issued or data.certificate_eligible %}bg-success{% else %}bg-primary{% endif %}" 
+                                 role="progressbar" 
+                                 style="width: {{ data.progress }}%;" 
+                                 aria-valuenow="{{ data.progress }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
                             </div>
                         </div>
-                    </div>
-                    <div class="card-body p-4">
-                        <p class="text-muted mb-3 small">
-                            <i class="fas fa-chalkboard-teacher me-2"></i>
-                            Instructor: {{ data.enrollment.course.instructor.user.username }}
-                        </p>
-                        <div class="d-flex flex-wrap gap-2 align-items-center">
-                            {% if data.certificate_issued %}
-                                <span class="badge bg-success rounded-pill px-3 py-2">
-                                    <i class="fas fa-certificate me-2"></i>Certificate Issued
-                                </span>
-                            {% elif data.certificate_eligible %}
-                                <a href="{% url 'courses:generate_certificate' data.enrollment.course.id %}" 
-                                   class="badge bg-success text-white text-decoration-none rounded-pill px-3 py-2">
-                                    <i class="fas fa-download me-2"></i>Claim Certificate
-                                </a>
-                                <a href="{% url 'courses:submit_rating' data.enrollment.course.id data.enrollment.course.slug %}" 
-                                   class="badge bg-warning text-dark text-decoration-none rounded-pill px-3 py-2">
-                                    <i class="fas fa-star me-2"></i>Add Review
-                                </a>
-                            {% else %}
-                                <span class="badge bg-secondary rounded-pill px-3 py-2">
-                                    <i class="fas fa-hourglass-half me-2"></i>Not Completed
-                                </span>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="card-footer bg-transparent border-top p-4 d-flex justify-content-between align-items-center">
-                        <span class="fw-bold {% if data.certificate_issued or data.certificate_eligible %}text-success{% else %}text-danger{% endif %}">
-                            {{ data.enrollment.course.price }}
-                        </span>
-                    </div>
-                </div>
-            </div>
-        {% empty %}
-            <div class="col-12">
-                <div class="card text-center p-5 shadow-sm border-0">
-                    <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
-                    <p class="text-muted">No enrolled courses available.</p>
-                    <a href="{% url 'authentication:course_list' %}" class="btn btn-outline-primary">Explore Courses</a>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
+                        <small class="{% if data.certificate_issued or data.certificate_eligible %}text-success{% else %}text-primary{% endif %}">
+                            {{ data.progress|floatformat:0 }}%
+                        </small>
+                    </td>
+                    <td>
+                        <i class="fas fa-chalkboard-teacher me-2"></i>
+                        {{ data.enrollment.course.instructor.user.username }}
+                    </td>
+                    <td>
+                        {% if data.certificate_issued %}
+                            <span class="badge bg-success rounded-pill px-3 py-2">
+                                <i class="fas fa-certificate me-2"></i>Certificate Issued
+                            </span>
+                        {% elif data.certificate_eligible %}
+                            <a href="{% url 'courses:generate_certificate' data.enrollment.course.id %}" 
+                               class="badge bg-success text-white text-decoration-none rounded-pill px-3 py-2">
+                                <i class="fas fa-download me-2"></i>Claim Certificate
+                            </a>
+                            <a href="{% url 'courses:submit_rating' data.enrollment.course.id data.enrollment.course.slug %}" 
+                               class="badge bg-warning text-dark text-decoration-none rounded-pill px-3 py-2">
+                                <i class="fas fa-star me-2"></i>Add Review
+                            </a>
+                        {% else %}
+                            <span class="badge bg-secondary rounded-pill px-3 py-2">
+                                <i class="fas fa-hourglass-half me-2"></i>Not Completed
+                            </span>
+                        {% endif %}
+                    </td>
+                   
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center p-5">
+                        <i class="fas fa-book-open fa-3x text-muted mb-3 d-block"></i>
+                        <p class="text-muted mb-3">No enrolled courses available.</p>
+                        <a href="{% url 'authentication:course_list' %}" class="btn btn-outline-primary">Explore Courses</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
     <!-- Pagination -->
     {% if enrollments.has_other_pages %}

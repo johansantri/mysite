@@ -43,8 +43,8 @@ def generate_instructor_certificate_pdf(request):
     try:
         instructor = Instructor.objects.get(user=request.user)
     except Instructor.DoesNotExist:
-        return HttpResponse("Anda bukan instruktur.", status=403)
-
+        messages.warning(request, "You are not an instructor.")
+        return redirect('courses:course_view')
     course_id = request.POST.get("course_id")
     courses = Course.objects.filter(instructor=instructor, status_course__status='archived')
     if course_id:
