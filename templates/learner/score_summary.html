@@ -1,0 +1,30 @@
+{% extends 'home/tes.html' %}
+
+{% block content %}
+<h3>Score Summary - {{ course.course_name }}</h3>
+
+<div class="table-responsive">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Assessment</th>
+        <th class="text-center">Max Score</th>
+        <th class="text-center">Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for result in assessment_results %}
+      <tr>
+        <td>{{ result.name }}</td>
+        <td class="text-center">{{ result.max_score }}</td>
+        <td class="text-center">{{ result.score|floatformat:2 }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<p><strong>Overall Percentage:</strong> {{ overall_percentage }}%</p>
+<p><strong>Status:</strong> {{ status }}</p>
+
+{% endblock %}

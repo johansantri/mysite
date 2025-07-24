@@ -57,6 +57,85 @@ logger = logging.getLogger(__name__)
 
 
 
+@login_required
+def score_summary_view(request, username, course_id):
+    user = request.user
+
+    # Pastikan username di URL sama dengan user yang login
+    if username != user.username:
+        return HttpResponseForbidden("Access denied.")
+
+    # Cek role learner
+    if not getattr(user, 'is_learner', False):
+        return HttpResponseForbidden("Access denied: only learners allowed.")
+
+    course = get_object_or_404(Course, id=course_id)
+
+    # Query assessments sesuai model Section dengan FK 'courses'
+    assessments = Assessment.objects.filter(section__courses=course)
+
+    passing_threshold = 70  # contoh passing threshold
+
+    assessment_scores = []
+    total_max_score = Decimal(0)
+    total_score = Decimal(0)
+    all_assessments_submitted = True
+
+    for assessment in assessments:
+        score_value = Decimal(0)
+        total_correct_answers = 0
+        total_questions = assessment.questions.count()
+
+        if total_questions > 0:
+            answers_exist = False
+            for question in assessment.questions.all():
+                answers = QuestionAnswer.objects.filter(question=question, user=user)
+                if answers.exists():
+                    answers_exist = True
+                total_correct_answers += answers.filter(choice__is_correct=True).count()
+            if not answers_exist:
+                all_assessments_submitted = False
+
+            if total_questions > 0:
+                score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
+
+        else:
+            askora_submissions = Submission.objects.filter(askora__assessment=assessment, user=user)
+            if not askora_submissions.exists():
+                all_assessments_submitted = False
+            else:
+                latest_submission = askora_submissions.order_by('-submitted_at').first()
+                assessment_score = AssessmentScore.objects.filter(submission=latest_submission).first()
+                if assessment_score:
+                    score_value = Decimal(assessment_score.final_score)
+
+        score_value = min(score_value, Decimal(assessment.weight))
+        assessment_scores.append({
+            'assessment': assessment,
+            'score': score_value,
+            'weight': assessment.weight
+        })
+        total_max_score += Decimal(assessment.weight)
+        total_score += score_value
+
+    total_score = min(total_score, total_max_score)
+    overall_percentage = (total_score / total_max_score * 100) if total_max_score > 0 else 0
+    passing_criteria_met = overall_percentage >= passing_threshold
+    status = "Pass" if all_assessments_submitted and passing_criteria_met else "Fail"
+
+    assessment_results = [
+        {'name': score['assessment'].name, 'max_score': score['weight'], 'score': score['score']}
+        for score in assessment_scores
+    ]
+    assessment_results.append({'name': 'Total', 'max_score': total_max_score, 'score': total_score})
+
+    context = {
+        'course': course,
+        'assessment_results': assessment_results,
+        'overall_percentage': round(overall_percentage, 2),
+        'status': status,
+    }
+    return render(request, 'learner/score_summary.html', context)
 
 
 def percent_encode(s):
@@ -277,6 +356,7 @@ def lti_grade_callback(request):
     except Exception as e:
         logger.error("Failed to save LTIResult: %s", str(e))
         return HttpResponseBadRequest("Failed to save score")
+
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 @cache_page(60 * 5)

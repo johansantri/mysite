@@ -308,23 +308,7 @@
               </div>
             {% endif %}
 
-            <!-- LTI Tools -->
-            {% if not current_content.1.questions.exists %}
-              <div class="askora-item" style="padding: 20px; background-color: #f9f9f9;">
-                <ul style="list-style: none; padding-left: 0;">
-                  {% if current_content.1.lti_tools.exists %}
-                    {% for tool in current_content.1.lti_tools.all %}
-                      <li>
-                        {{ tool.name|default:"[Tool Name Not Available]" }} –
-                        <a href="{{ tool.launch_url|default:'#' }}" target="_blank">Launch</a>
-                      </li>
-                    {% endfor %}
-                  {% else %}
-                    <li style="font-size: 16px; color: #555;">No LTI tools available.</li>
-                  {% endif %}
-                </ul>
-              </div>
-            {% endif %}
+           
           {% endif %}
         </div>
       {% else %}

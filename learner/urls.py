@@ -19,6 +19,7 @@ urlpatterns = [
     path('analytics/users/', views.user_analytics_view, name='user_analytics'),
     path('lti/launch/<int:assessment_id>/', views.lti_consume_course, name='lti_consume_course'),
     path('lti/grade-callback/', views.lti_grade_callback, name='lti_grade_callback'),
+    path('learner/<str:username>/<int:course_id>/score-summary/', views.score_summary_view, name='score_summary'),
 
   
 ]
