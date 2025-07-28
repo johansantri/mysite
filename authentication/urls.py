@@ -40,5 +40,6 @@ urlpatterns = [
     path('microcredential/',views.microcredential_list, name='microcredential'),
     path('mycourse/',views.mycourse, name='mycourse'),
     path('reply-comment/<int:comment_id>/', views.reply_comment, name='reply_comment'),
+    path('comment/<int:comment_id>/delete/', views.delete_comment, name='delete_comment'),
     
 ]

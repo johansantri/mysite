@@ -818,6 +818,16 @@ def reply_comment(request, comment_id):
 
 
 @login_required
+def delete_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    if request.user.is_instructor or request.user.is_superuser:
+        if request.method == 'POST':
+            comment.delete()
+            messages.success(request, 'Komentar berhasil dihapus.')
+            return redirect('authentication:dasbord')  # Pastikan nama URL benar
+    return redirect('authentication:dasbord')  # Pastikan nama URL benar
+
+@login_required
 @ratelimit(key='ip', rate='100/h')
 def dashbord(request):
     user = request.user
