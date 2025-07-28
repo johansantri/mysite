@@ -231,6 +231,9 @@
           <td>{{ cert.average_score }}%</td>
           <td>{{ cert.average_progress }}%</td>
         </tr>
+
+       
+        {% empty %}
         {% endfor %}
       </tbody>
     </table>
@@ -238,18 +241,20 @@
     <div class="note">
       Hanya kursus dengan minimal 40% peserta lulus yang tercantum dalam sertifikat ini.
     </div>
-
-    <div class="footer">
-        <p>Dicetak otomatis oleh sistem ICEI LMS – {{ generated_at|date:"d M Y H:i" }}</p>
-
-        <div class="qr-section" style="margin-top: 20px; display: flex; flex-direction: column; align-items: center;">
-            <img src="{{ certificates.0.qr_code_data_uri }}" alt="QR Code"   style="width: 80px; height: 80px; margin-bottom: 6px;" />
-            <p style="font-size: 12px;">
-            Verifikasi: <a href="{{ certificates.0.qr_url }}" target="_blank">{{ certificates.0.qr_url }}</a>
-            </p>
+    <!-- Tambahkan bagian QR code per kursus -->
+      <div class="qr-list" style="margin-top: 40px;">
+        {% for cert in certificates %}
+        <div class="qr-item" style="margin-bottom: 30px; text-align: center;">
+          <p style="font-weight: 600; font-size: 14px; color: #1a2b4b;">
+            Verifikasi untuk: {{ cert.course.course_name }}
+          </p>
+          <img src="{{ cert.qr_code_data_uri }}" alt="QR Code {{ cert.course.course_name }}" style="width: 80px; height: 80px; margin: 10px auto;" />
+          <p style="font-size: 12px;">
+            <a href="{{ cert.qr_url }}" target="_blank">{{ cert.qr_url }}</a>
+          </p>
         </div>
-        </div>
-
+        {% endfor %}
+      </div>
     </div>
   </div>
 </body>

@@ -43,8 +43,8 @@ def generate_instructor_certificate_pdf(request):
     try:
         instructor = Instructor.objects.get(user=request.user)
     except Instructor.DoesNotExist:
-        messages.warning(request, "You are not an instructor.")
         return redirect('courses:course_view')
+
     course_id = request.POST.get("course_id")
     courses = Course.objects.filter(instructor=instructor, status_course__status='archived')
     if course_id:
@@ -126,32 +126,33 @@ def generate_instructor_certificate_pdf(request):
         cert.average_score = (total_score_accum / total_enrolled).quantize(Decimal('0.00'))
         cert.average_progress = (total_progress_accum / total_enrolled).quantize(Decimal('0.00'))
 
-        # QR Code
-        verify_url = request.build_absolute_uri(
-            reverse('instructor:verify_instructor_certificate', args=[cert.id])
-        )
-        qr = qrcode.QRCode(version=1, box_size=10, border=4)
-        qr.add_data(verify_url)
-        qr.make(fit=True)
-        qr_img = qr.make_image(fill_color="black", back_color="white")
+        # ---- Generate/check QR code file ----
 
-        qr_filename = f"certificate_{uuid.uuid4()}.png"
         qr_folder = os.path.join(settings.MEDIA_ROOT, 'qrcodes')
         os.makedirs(qr_folder, exist_ok=True)
+
+        qr_filename = f"certificate_{cert.id}.png"
         qr_path = os.path.join(qr_folder, qr_filename)
-        qr_img.save(qr_path)
 
-        # URL file (untuk HTML jika perlu)
+        if not os.path.exists(qr_path):
+            verify_url = request.build_absolute_uri(
+                reverse('instructor:verify_instructor_certificate', args=[cert.id])
+            )
+            qr = qrcode.QRCode(version=1, box_size=10, border=4)
+            qr.add_data(verify_url)
+            qr.make(fit=True)
+            qr_img = qr.make_image(fill_color="black", back_color="white")
+            qr_img.save(qr_path)
+
         qr_url = request.build_absolute_uri(settings.MEDIA_URL + f'qrcodes/{qr_filename}')
-        cert.qr_url = qr_url
+        cert.qr_url = qr_url  # Temp property untuk template
 
-        # Inline data URI
-        buffer = BytesIO()
-        qr_img.save(buffer, format='PNG')
-        qr_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+        # Untuk embed QR sebagai base64 (jika perlu)
+        with open(qr_path, "rb") as f:
+            qr_bytes = f.read()
+        qr_base64 = base64.b64encode(qr_bytes).decode('utf-8')
         cert.qr_code_data_uri = f"data:image/png;base64,{qr_base64}"
 
-        cert.save()
         enriched_certificates.append(cert)
 
     if not enriched_certificates:
@@ -170,7 +171,6 @@ def generate_instructor_certificate_pdf(request):
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="instructor_certificates.pdf"'
     return response
-
 
 # View untuk Instructor mengajukan kurasi
 @login_required
