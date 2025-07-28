@@ -3035,7 +3035,7 @@ def generate_certificate(request, course_id):
         messages.error(request, "You are not enrolled in this course.")
         return redirect('authentication:dashbord')
 
-    # Cek pembayaran untuk sertifikat jika diperlukan
+    # Cek pembayaran jika diperlukan
     if course.payment_model == 'pay_for_certificate':
         payment = Payment.objects.filter(
             user=request.user,
@@ -3045,32 +3045,37 @@ def generate_certificate(request, course_id):
         ).first()
         if not payment:
             logger.info(f"Payment required for certificate in course {course.id} for user {request.user.username}")
-            messages.info(request, "This certificate requires payment. Please complete the payment to claim your certificate.")
-            payment_url = reverse('payments:process_payment', kwargs={'course_id': course.id, 'payment_type': 'certificate'})
-            return redirect(payment_url)
+            messages.info(request, "This certificate requires payment.")
+            return redirect(reverse('payments:process_payment', kwargs={'course_id': course.id, 'payment_type': 'certificate'}))
 
-    # Ambil semua asesmen untuk kursus ini
+    # Ambil asesmen dan nilai
     assessments = Assessment.objects.filter(section__courses=course)
     assessment_scores = []
     total_max_score = 0
     total_score = 0
     all_assessments_submitted = True
 
-    # Ambil GradeRange yang terkait dengan kursus
-    grade_range = GradeRange.objects.filter(course=course).all()
-    if not grade_range:
+    grade_range = GradeRange.objects.filter(course=course)
+    if not grade_range.exists():
         logger.error(f"No grade range found for course {course.id}")
-        messages.error(request, "Passing grade not found for this course. Certificate cannot be issued.")
+        messages.error(request, "Passing grade not found for this course.")
         return redirect('authentication:dashbord')
 
-    passing_threshold = grade_range.filter(name='Pass').first().min_grade
-    max_grade = grade_range.filter(name='Pass').first().max_grade
+    passing_range = grade_range.filter(name='Pass').first()
+    if not passing_range:
+        logger.error(f"'Pass' grade range not found for course {course.id}")
+        messages.error(request, "No 'Pass' grade range defined for this course.")
+        return redirect('authentication:dashbord')
+
+    passing_threshold = passing_range.min_grade
+    max_grade = passing_range.max_grade
 
     for assessment in assessments:
         score_value = Decimal(0)
         total_correct_answers = 0
         total_questions = assessment.questions.count()
-        if total_questions > 0:  # Assessment adalah multiple choice
+
+        if total_questions > 0:  # Multiple choice
             answers_exist = False
             for question in assessment.questions.all():
                 answers = QuestionAnswer.objects.filter(question=question, user=request.user)
@@ -3079,13 +3084,9 @@ def generate_certificate(request, course_id):
                 total_correct_answers += answers.filter(choice__is_correct=True).count()
             if not answers_exist:
                 all_assessments_submitted = False
-            if total_questions > 0:
-                score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
-        else:  # Assessment adalah AskOra
-            askora_submissions = Submission.objects.filter(
-                askora__assessment=assessment,
-                user=request.user
-            )
+            score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight) if total_questions > 0 else 0
+        else:  # AskOra
+            askora_submissions = Submission.objects.filter(askora__assessment=assessment, user=request.user)
             if not askora_submissions.exists():
                 all_assessments_submitted = False
             else:
@@ -3095,11 +3096,7 @@ def generate_certificate(request, course_id):
                     score_value = Decimal(assessment_score.final_score)
 
         score_value = min(score_value, Decimal(assessment.weight))
-        assessment_scores.append({
-            'assessment': assessment,
-            'score': score_value,
-            'weight': assessment.weight
-        })
+        assessment_scores.append({'assessment': assessment, 'score': score_value, 'weight': assessment.weight})
         total_max_score += assessment.weight
         total_score += score_value
 
@@ -3109,20 +3106,19 @@ def generate_certificate(request, course_id):
     status = "Pass" if all_assessments_submitted and passing_criteria_met else "Fail"
 
     if status == "Fail":
-        logger.error(f"User {request.user.username} failed to meet passing criteria for course {course.id}")
+        logger.error(f"User {request.user.username} failed course {course.id}")
         messages.error(request, "You have not met the passing criteria for this course.")
         return redirect('authentication:dashbord')
 
-    # Format hasil assessment
     assessment_results = [
         {'name': score['assessment'].name, 'max_score': score['weight'], 'score': score['score']}
         for score in assessment_scores
     ]
     assessment_results.append({'name': 'Total', 'max_score': total_max_score, 'score': total_score})
 
-    # Ambil logo partner dari org_partner
+    base_url = request.build_absolute_uri('/')
+
     partner_logo_url = None
-    base_url = request.build_absolute_uri('/')  # Misalnya, http://localhost:8000/
     try:
         if course.org_partner and course.org_partner.logo:
             partner_logo_url = base_url.rstrip('/') + course.org_partner.logo.url
@@ -3132,14 +3128,25 @@ def generate_certificate(request, course_id):
     except Exception as e:
         logger.error(f"Error fetching partner logo: {str(e)}")
 
-    # Cek apakah sertifikat sudah pernah diterbitkan
+    # CEK JIKA SERTIFIKAT SUDAH ADA
     existing_certificate = Certificate.objects.filter(user=request.user, course=course).first()
     if existing_certificate:
         logger.info(f"Certificate {existing_certificate.certificate_id} already exists for user {request.user.username}")
-        messages.info(request, "You have already claimed a certificate for this course.")
-        # Generate ulang QR code URL untuk sertifikat yang sudah ada
+
+        # CEK APAKAH FILE QR-NYA MASIH ADA
+        existing_qr_path = os.path.join(settings.MEDIA_ROOT, 'qrcodes', f'certificate_{existing_certificate.certificate_id}.png')
+        if not os.path.exists(existing_qr_path):
+            verification_url = f"{base_url.rstrip('/')}/verify/{existing_certificate.certificate_id}/"
+            qr = qrcode.QRCode(version=1, box_size=10, border=4)
+            qr.add_data(verification_url)
+            qr.make(fit=True)
+            qr_img = qr.make_image(fill_color="black", back_color="white")
+            os.makedirs(os.path.dirname(existing_qr_path), exist_ok=True)
+            qr_img.save(existing_qr_path)
+            logger.info(f"QR code regenerated for existing certificate: {existing_qr_path}")
+
         qr_url = request.build_absolute_uri(settings.MEDIA_URL + f'qrcodes/certificate_{existing_certificate.certificate_id}.png')
-        # Render template untuk sertifikat yang sudah ada
+
         html_content = render_to_string('learner/certificate_template.html', {
             'passing_threshold': passing_threshold,
             'status': status,
@@ -3152,18 +3159,18 @@ def generate_certificate(request, course_id):
             'qr_code_url': qr_url,
             'base_url': base_url,
         })
+
         try:
             pdf = HTML(string=html_content, base_url=base_url).write_pdf()
-            filename = f"certificate_{course.slug}.pdf"
             response = HttpResponse(pdf, content_type='application/pdf')
-            response['Content-Disposition'] = f'attachment; filename="{filename}"'
+            response['Content-Disposition'] = f'attachment; filename="certificate_{course.slug}.pdf"'
             return response
         except Exception as e:
-            logger.error(f"Error re-generating PDF for existing certificate: {str(e)}")
-            messages.error(request, "Error retrieving certificate. Please contact support.")
+            logger.error(f"Error re-generating PDF: {str(e)}")
+            messages.error(request, "Error retrieving certificate.")
             return redirect('authentication:dashbord')
 
-    # Generate QR code dan simpan sertifikat baru
+    # SERTIFIKAT BELUM ADA — BUAT BARU
     certificate_id = uuid.uuid4()
     verification_url = f"{base_url.rstrip('/')}/verify/{certificate_id}/"
     qr = qrcode.QRCode(version=1, box_size=10, border=4)
@@ -3173,10 +3180,9 @@ def generate_certificate(request, course_id):
     qr_path = os.path.join(settings.MEDIA_ROOT, 'qrcodes', f'certificate_{certificate_id}.png')
     os.makedirs(os.path.dirname(qr_path), exist_ok=True)
     qr_img.save(qr_path)
-    qr_url = base_url.rstrip('/') + settings.MEDIA_URL + f'qrcodes/certificate_{certificate_id}.png'
+    qr_url = request.build_absolute_uri(settings.MEDIA_URL + f'qrcodes/certificate_{certificate_id}.png')
     logger.info(f"QR code generated: {qr_url}")
 
-    # Simpan sertifikat ke database
     try:
         Certificate.objects.create(
             certificate_id=certificate_id,
@@ -3189,10 +3195,9 @@ def generate_certificate(request, course_id):
         logger.info(f"Certificate {certificate_id} saved for user {request.user.username}")
     except Exception as e:
         logger.error(f"Error saving certificate: {str(e)}")
-        messages.error(request, "Error generating certificate. Please try again.")
+        messages.error(request, "Error generating certificate.")
         return redirect('authentication:dashbord')
 
-    # Render HTML untuk sertifikat
     html_content = render_to_string('learner/certificate_template.html', {
         'passing_threshold': passing_threshold,
         'status': status,
@@ -3206,17 +3211,15 @@ def generate_certificate(request, course_id):
         'base_url': base_url,
     })
 
-    # Menghasilkan PDF dari HTML yang dirender
     try:
         pdf = HTML(string=html_content, base_url=base_url).write_pdf()
     except Exception as e:
         logger.error(f"Error generating PDF: {str(e)}")
-        messages.error(request, "Error generating certificate. Please try again.")
+        messages.error(request, "Error generating certificate.")
         return redirect('authentication:dashbord')
 
-    filename = f"certificate_{course.slug}.pdf"
     response = HttpResponse(pdf, content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    response['Content-Disposition'] = f'attachment; filename="certificate_{course.slug}.pdf"'
     return response
 
 
