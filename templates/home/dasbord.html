@@ -1,6 +1,7 @@
 {% extends 'home/tes.html' %}
 {% load static %}
-
+{% load extra_filters %}
+{% load humanize %}
 {% block content %}
 <div class="container-fluid py-4">
     <!-- Dashboard Header -->
@@ -86,6 +87,168 @@
             </div>
         </div>
         {% endif %}
+    </div>
+
+    <!-- Comments Section -->
+    <div class="card shadow-sm border-0 mb-5">
+        <div class="card-body">
+            <h4 class="fw-semibold mb-4">Comments</h4>
+            <ul class="list-unstyled">
+                {% for comment in comments_to_review %}
+                    <li class="border-0 p-3 mb-2 rounded-3 bg-light transition-all hover-bg-light">
+                        <div class="d-flex">
+                            <!-- Avatar untuk komentar utama -->
+                            <img src="{{ comment.user.photo.url|default:'/static/images/default-avatar.png' }}" 
+                                 alt="Profile" 
+                                 class="rounded-circle me-3 border" 
+                                 style="width: 40px; height: 40px; object-fit: cover;">
+
+                            <div class="flex-grow-1">
+                                <!-- Nama dan waktu -->
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong class="fs-6">
+                                            {{ comment.user.get_full_name|default:comment.user.email }}
+                                        </strong>
+                                        <span class="text-muted fs-6">
+                                            &bull; {{ comment.created_at|naturaltime }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Isi komentar -->
+                                <p class="mt-1 fs-6 text-muted">
+                                    di materi "<em>{{ comment.material.title }}</em>":
+                                </p>
+                                <p class="mt-1 text-dark">{{ comment.content }}</p>
+
+                                <!-- Tombol Balas -->
+                                <div class="mt-2">
+                                    <button class="btn btn-link text-decoration-none p-0 text-primary me-3" 
+                                            onclick="toggleReplyForm('reply-form-{{ comment.id }}')"
+                                            aria-expanded="false"
+                                            aria-controls="reply-form-{{ comment.id }}">
+                                        <i class="bi bi-reply me-1"></i> Balas
+                                    </button>
+                                    {% if comment.children.exists %}
+                                        <button class="btn btn-link text-decoration-none p-0 text-primary" 
+                                                onclick="toggleReplies('replies-{{ comment.id }}')"
+                                                aria-expanded="false"
+                                                aria-controls="replies-{{ comment.id }}">
+                                            <i class="bi bi-chat-dots me-1"></i> {{ comment.children.count }} Balasan
+                                        </button>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Form balas untuk komentar utama -->
+                                <form method="post" 
+                                      action="{% url 'authentication:reply_comment' comment.id %}" 
+                                      class="mt-3 d-none reply-form" 
+                                      id="reply-form-{{ comment.id }}">
+                                    {% csrf_token %}
+                                    <div class="input-group">
+                                        {{ form.content|add_class:"form-control form-control-sm rounded-3" }}
+                                        <button type="submit" 
+                                                class="btn btn-primary btn-sm rounded-3">
+                                            Kirim
+                                        </button>
+                                    </div>
+                                </form>
+
+                                <!-- Tampilkan replies -->
+                                {% if comment.children.exists %}
+                                    <ul class="list-unstyled ms-4 mt-3 border-start ps-3 replies d-none" 
+                                        id="replies-{{ comment.id }}">
+                                        {% for reply in comment.children.all %}
+                                            <li class="mb-3">
+                                                <div class="d-flex">
+                                                    <!-- Avatar untuk reply -->
+                                                    <img src="{{ reply.user.photo.url|default:'/static/images/default-avatar.png' }}" 
+                                                         alt="Profile" 
+                                                         class="rounded-circle me-3 border" 
+                                                         style="width: 32px; height: 32px; object-fit: cover;">
+                                                    
+                                                    <div class="flex-grow-1">
+                                                        <strong class="fs-6">
+                                                            {{ reply.user.get_full_name|default:reply.user.email }}
+                                                        </strong>
+                                                        <span class="text-muted fs-6">
+                                                            &bull; {{ reply.created_at|naturaltime }}
+                                                        </span>
+                                                        <p class="mt-1 fs-6 text-dark">{{ reply.content }}</p>
+
+                                                        <!-- Tombol Balas untuk sub-komentar -->
+                                                        <div class="mt-2">
+                                                            <button class="btn btn-link text-decoration-none p-0 text-primary me-3" 
+                                                                    onclick="toggleReplyForm('reply-form-{{ reply.id }}')"
+                                                                    aria-expanded="false"
+                                                                    aria-controls="reply-form-{{ reply.id }}">
+                                                                <i class="bi bi-reply me-1"></i> Balas
+                                                            </button>
+                                                            {% if reply.children.exists %}
+                                                                <button class="btn btn-link text-decoration-none p-0 text-primary" 
+                                                                        onclick="toggleReplies('replies-{{ reply.id }}')"
+                                                                        aria-expanded="false"
+                                                                        aria-controls="replies-{{ reply.id }}">
+                                                                    <i class="bi bi-chat-dots me-1"></i> {{ reply.children.count }} Balasan
+                                                                </button>
+                                                            {% endif %}
+                                                        </div>
+
+                                                        <!-- Form balas untuk sub-komentar -->
+                                                        <form method="post" 
+                                                              action="{% url 'authentication:reply_comment' reply.id %}" 
+                                                              class="mt-3 d-none reply-form" 
+                                                              id="reply-form-{{ reply.id }}">
+                                                            {% csrf_token %}
+                                                            <div class="input-group">
+                                                                {{ form.content|add_class:"form-control form-control-sm rounded-3" }}
+                                                                <button type="submit" 
+                                                                        class="btn btn-primary btn-sm rounded-3">
+                                                                    Kirim
+                                                                </button>
+                                                            </div>
+                                                        </form>
+
+                                                        <!-- Tampilkan sub-replies -->
+                                                        {% if reply.children.exists %}
+                                                            <ul class="list-unstyled ms-4 mt-3 border-start ps-3 replies d-none" 
+                                                                id="replies-{{ reply.id }}">
+                                                                {% for subreply in reply.children.all %}
+                                                                    <li class="mb-3">
+                                                                        <div class="d-flex">
+                                                                            <!-- Avatar untuk sub-reply -->
+                                                                            <img src="{{ subreply.user.photo.url|default:'/static/images/default-avatar.png' }}" 
+                                                                                 alt="Profile" 
+                                                                                 class="rounded-circle me-3 border" 
+                                                                                 style="width: 32px; height: 32px; object-fit: cover;">
+                                                                            
+                                                                            <div class="flex-grow-1">
+                                                                                <strong class="fs-6">
+                                                                                    {{ subreply.user.get_full_name|default:subreply.user.email }}
+                                                                                </strong>
+                                                                                <span class="text-muted fs-6">
+                                                                                    &bull; {{ subreply.created_at|naturaltime }}
+                                                                                </span>
+                                                                                <p class="mt-1 fs-6 text-dark">{{ subreply.content }}</p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </li>
+                                                                {% endfor %}
+                                                            </ul>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
 
     <!-- Partner-Specific Reports -->
@@ -174,4 +337,51 @@
     </nav>
     {% endif %}
 </div>
+
+<!-- Custom CSS untuk meningkatkan UI/UX -->
+<style>
+    .transition-all {
+        transition: all 0.3s ease;
+    }
+    .hover-bg-light:hover {
+        background-color: #f8f9fa;
+    }
+    .reply-form {
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .reply-form.d-none {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    .replies {
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .replies.d-none {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    }
+    .btn-primary:hover {
+        transform: translateY(-1px);
+    }
+</style>
+
+<!-- JavaScript untuk toggle form balas dan replies -->
+<script>
+    function toggleReplyForm(formId) {
+        const form = document.getElementById(formId);
+        form.classList.toggle('d-none');
+        if (!form.classList.contains('d-none')) {
+            form.querySelector('textarea').focus();
+        }
+    }
+
+    function toggleReplies(repliesId) {
+        const replies = document.getElementById(repliesId);
+        replies.classList.toggle('d-none');
+    }
+</script>
 {% endblock content %}

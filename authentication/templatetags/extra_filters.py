@@ -52,3 +52,7 @@ def index(lst, i):
         return lst[int(i)]
     except (IndexError, ValueError, TypeError):
         return ''
+
+@register.filter
+def add_class(field, css_class):
+    return field.as_widget(attrs={"class": css_class})

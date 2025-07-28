@@ -22,7 +22,8 @@ from django.urls import reverse
 from django.core.mail import send_mail
 from authentication.forms import  UserProfileForm, UserPhoto,PasswordResetForms
 from .models import Profile
-from courses.models import LastAccessCourse,UserActivityLog,SearchHistory,Instructor,CourseRating,Partner,Assessment,GradeRange,AssessmentRead,Material, MaterialRead, Submission,AssessmentScore,QuestionAnswer,CourseStatus,Enrollment,MicroCredential, MicroCredentialEnrollment,Course, Enrollment, Category,CourseProgress
+from courses.models import Comment,LastAccessCourse,UserActivityLog,SearchHistory,Instructor,CourseRating,Partner,Assessment,GradeRange,AssessmentRead,Material, MaterialRead, Submission,AssessmentScore,QuestionAnswer,CourseStatus,Enrollment,MicroCredential, MicroCredentialEnrollment,Course, Enrollment, Category,CourseProgress
+from .forms import CommentForm
 from django.http import HttpResponse,JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseForbidden
@@ -735,6 +736,15 @@ def dasbord(request):
             ).distinct().count()
             # Total published courses by the instructor
             total_published_courses = partner_courses.filter(status_course=publish_status).count() if publish_status else 0
+            comments_to_review = Comment.objects.filter(
+                material__section__courses__instructor__user=request.user,
+                parent=None
+            ).select_related(
+                'user', 'material', 'material__section', 'material__section__courses'
+            ).order_by('-created_at')[:20]
+            form = CommentForm()
+
+
         else:
             # If instructor not found, set defaults
             partner_courses = Course.objects.none()
@@ -776,8 +786,34 @@ def dasbord(request):
         'total_partners': total_partners,
         'total_published_courses': total_published_courses,
         'courses_created_today': courses_created_today,
+        'comments_to_review': comments_to_review,  # optional, bisa ditampilkan di template
+        'form': form,
     }
 
+    return render(request, 'home/dasbord.html', context)
+
+
+@login_required
+def reply_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            reply = form.save(commit=False)
+            reply.user = request.user
+            reply.material = comment.material
+            reply.parent = comment
+            reply.save()
+            # Ganti 'dashboard' dengan nama URL yang sesuai di urls.py
+            return redirect('authentication:dasbord')  
+    else:
+        form = CommentForm()
+
+    context = {
+        'form': form,
+        'comment': comment,
+    }
     return render(request, 'home/dasbord.html', context)
 
 

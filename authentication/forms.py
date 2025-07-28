@@ -19,6 +19,22 @@ from django.utils.http import urlsafe_base64_encode
 logger = logging.getLogger("django.contrib.auth")
 
 
+from courses.models import Comment
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']  # Hanya isi content saja
+        widgets = {
+            'content': forms.Textarea(attrs={
+                'rows': 3,
+                'placeholder': 'Write your reply here...',
+                'class': 'form-control',  # Bootstrap styling misalnya
+                'style': 'resize:none;',   # Non-resizable textarea
+                'maxlength': '500',        # Maksimal karakter (optional)
+            }),
+        }
+
 def _unicode_ci_compare(s1, s2):
     """
     Perform case-insensitive comparison of two identifiers, using the

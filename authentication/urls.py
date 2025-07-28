@@ -39,5 +39,6 @@ urlpatterns = [
     path('course_list/', views.course_list, name='course_list'),
     path('microcredential/',views.microcredential_list, name='microcredential'),
     path('mycourse/',views.mycourse, name='mycourse'),
+    path('reply-comment/<int:comment_id>/', views.reply_comment, name='reply_comment'),
     
 ]
