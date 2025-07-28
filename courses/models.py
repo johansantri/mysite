@@ -275,15 +275,35 @@ class Course(models.Model):
         licenses = user.licenses.all()
         if licenses.exists():
             today = timezone.now().date()
-            active_license = user.licenses.filter(
+            active_licenses = licenses.filter(
                 start_date__lte=today,
                 expiry_date__gte=today,
                 status=True
             )
-            logger.info(f"License check for user {user.email} in course {self.course_name}: {active_license.values('name', 'start_date', 'expiry_date', 'status')}")
-            if not active_license.exists():
-                logger.error(f"No active license found for user {user.email} in course {self.course_name}")
-                return {"status": "error", "message": "Lisensi Anda sudah tidak aktif atau tidak valid. Silakan hubungi admin untuk perpanjangan."}
+
+            logger.info(f"License check for user {user.email} in course {self.course_name}: {active_licenses.values('name', 'start_date', 'expiry_date', 'status')}")
+
+            if not active_licenses.exists():
+                expired_license = licenses.order_by('-expiry_date').first()
+
+                license_name = expired_license.name if expired_license else "Lisensi Tidak Diketahui"
+                admin_contact = expired_license.owner.get_full_name() if expired_license and expired_license.owner else "admin"
+                expired_since = expired_license.expiry_date.strftime('%d %B %Y') if expired_license and expired_license.expiry_date else "tanggal tidak diketahui"
+
+                logger.error(
+                    f"User {user.email} tidak memiliki lisensi aktif untuk {self.course_name}. "
+                    f"Lisensi terakhir: {license_name}, Admin: {admin_contact}, Expired sejak: {expired_since}"
+                )
+
+                return {
+                    "status": "error",
+                    "message": (
+                        f"Lisensi Anda \"{license_name}\" sudah tidak aktif sejak {expired_since}. "
+                        f"Silakan hubungi admin {admin_contact} untuk perpanjangan."
+                    )
+                }
+
+
 
         # Logika untuk kursus gratis
         if self.payment_model == 'free':

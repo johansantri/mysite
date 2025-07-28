@@ -3530,21 +3530,30 @@ def enroll_course(request, course_id):
     user = request.user
     today = timezone.now().date()
 
-    # Cek apakah pengguna memiliki lisensi terkait
-    licenses = user.licenses.all()  # Ambil semua lisensi pengguna
-    logger.info(f"Checking licenses for user {user.email} in course {course.course_name} (ID: {course.id}): {licenses.values('name', 'start_date', 'expiry_date', 'status')}")
-    if licenses.exists():  # Jika pengguna terkait lisensi
-        active_license = user.licenses.filter(
-            start_date__lte=today,
-            expiry_date__gte=today,
-            status=True
-        ).exists()
-        if not active_license:
-            logger.error(f"No active license found for user {user.email} in course {course.course_name}")
-            messages.error(request, "Lisensi Anda sudah tidak aktif atau tidak valid. Silakan hubungi admin untuk perpanjangan.")
-            return redirect('learner:course_learn', username=user.username,id=course.id, slug=course.slug)
+    # Cek apakah kursus gratis (atau via subscription)
+    is_course_free = course.payment_model in ['free', 'subscription']
 
-    # Pilih price type sesuai skema pembayaran
+    # Cek apakah user punya lisensi aktif
+    has_active_license = user.licenses.filter(
+        start_date__lte=today,
+        expiry_date__gte=today,
+        status=True
+    ).exists()
+
+    logger.info(f"[Enroll] User: {user.email}, Course: {course.course_name}, Free: {is_course_free}, Has License: {has_active_license}")
+
+    # Jika kursus berbayar dan user tidak punya lisensi aktif
+    if not is_course_free and not has_active_license:
+        logger.warning(f"[Enroll Blocked] {user.email} tidak punya lisensi aktif untuk course {course.course_name} yang berbayar")
+        
+        if course.payment_model == 'buy_first':
+            messages.info(request, "Anda perlu membayar untuk mengikuti kursus ini.")
+            return redirect('payments:process_payment', course_id=course.id)
+
+        # pay_for_exam atau pay_for_certificate: boleh lanjut, bayar nanti
+        messages.info(request, "Anda bisa mendaftar sekarang, tetapi pembayaran akan diperlukan nanti.")
+
+    # Tentukan tipe harga sesuai payment model
     price_type_map = {
         'buy_first': 'buy_first',
         'pay_for_exam': 'pay_for_exam',
@@ -3553,28 +3562,25 @@ def enroll_course(request, course_id):
         'subscription': 'free',
     }
 
-    logger.info(f"Attempting to enroll user {user.username} in course {course_id}, payment_model: {course.payment_model}")
+    logger.info(f"[Enroll] Payment model: {course.payment_model}")
     try:
         price_type = PricingType.objects.get(name=price_type_map.get(course.payment_model, 'buy_first'))
-        logger.info(f"Price type found: {price_type.name}")
+        logger.info(f"[Enroll] Price type found: {price_type.name}")
     except PricingType.DoesNotExist:
-        logger.error(f"Price type for {course.payment_model} not found.")
+        logger.error(f"[Enroll Error] Price type not found for {course.payment_model}")
         messages.error(request, f"Tipe harga untuk model {course.payment_model} tidak ditemukan.")
         return redirect('courses:course_lms_detail', id=course_id, slug=course.slug)
 
-    # Lanjutkan enrollment
+    # Lanjutkan proses pendaftaran
     response = course.enroll_user(user, partner=partner, price_type=price_type)
-    logger.info(f"Enroll response: {response}")
+    logger.info(f"[Enroll Result] {response}")
 
     if response["status"] == "success":
         messages.success(request, response["message"])
         return redirect('learner:course_learn', username=user.username, id=course.id, slug=course.slug)
 
-
-
     elif response["status"] == "error":
         if course.payment_model == 'buy_first' and "Payment required" in response["message"]:
-            logger.info("Redirecting to payment for buy_first")
             return redirect('payments:process_payment', course_id=course.id)
         messages.error(request, response["message"])
     else:
