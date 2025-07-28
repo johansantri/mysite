@@ -71,7 +71,12 @@
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="w-5 h-5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6" />
                     </svg>
-                    Dashboard
+                     {% if request.user.get_full_name %}
+                          {{ request.user.get_full_name }}
+                      {% else %}
+                          {{ request.user.email }}
+                      {% endif %}
+
                     </a>
 
                     {% else %}
