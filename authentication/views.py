@@ -1281,8 +1281,7 @@ def logout_view(request):
     logout(request)
     return redirect('authentication:home')  # Redirect to home page after logout
 
-
-# Login view
+#login view
 @ratelimit(key='ip', rate='5/m', block=False)
 def login_view(request):
     was_limited = getattr(request, 'limited', False)
@@ -1302,9 +1301,17 @@ def login_view(request):
             user = authenticate(request, username=email, password=password)
 
             if user is not None:
+                # Tambahkan cek user aktif, misalnya pakai is_active
+                if not user.is_active:
+                    # Jika user belum aktif, tampilkan pesan error dan jangan login
+                    return render(request, 'authentication/login.html', {
+                        'form': form,
+                        'error': 'Akun Anda belum diaktivasi. Silakan cek email Anda untuk aktivasi.'
+                    })
+
                 login(request, user)
 
-                # ✅ Simpan aktivitas login
+                # Simpan aktivitas login
                 UserActivityLog.objects.create(
                     user=user,
                     activity_type='login_view'
