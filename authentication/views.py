@@ -1290,10 +1290,8 @@ def login_view(request):
         form = LoginForm(request.POST)
 
         if was_limited:
-            return render(request, 'authentication/login.html', {
-                'form': form,
-                'error': 'Terlalu banyak percobaan login. Coba lagi nanti.'
-            })
+            messages.error(request, 'Terlalu banyak percobaan login. Coba lagi nanti.')
+            return render(request, 'authentication/login.html', {'form': form})
 
         if form.is_valid():
             email = form.cleaned_data['email']
@@ -1301,17 +1299,12 @@ def login_view(request):
             user = authenticate(request, username=email, password=password)
 
             if user is not None:
-                # Tambahkan cek user aktif, misalnya pakai is_active
                 if not user.is_active:
-                    # Jika user belum aktif, tampilkan pesan error dan jangan login
-                    return render(request, 'authentication/login.html', {
-                        'form': form,
-                        'error': 'Akun Anda belum diaktivasi. Silakan cek email Anda untuk aktivasi.'
-                    })
+                    messages.error(request, 'Akun Anda belum diaktivasi. Silakan cek email Anda untuk aktivasi.')
+                    return render(request, 'authentication/login.html', {'form': form})
 
                 login(request, user)
 
-                # Simpan aktivitas login
                 UserActivityLog.objects.create(
                     user=user,
                     activity_type='login_view'
@@ -1320,15 +1313,12 @@ def login_view(request):
                 next_url = request.POST.get('next') or request.GET.get('next')
                 return redirect(next_url or 'authentication:home')
             else:
-                return render(request, 'authentication/login.html', {
-                    'form': form,
-                    'error': 'Email atau kata sandi salah.'
-                })
+                messages.error(request, 'Email atau kata sandi salah.')
+                return render(request, 'authentication/login.html', {'form': form})
     else:
         form = LoginForm()
 
     return render(request, 'authentication/login.html', {'form': form})
-
 
 
 # Register view
