@@ -1084,3 +1084,43 @@ django.template.exceptions.TemplateSyntaxError: Invalid filter: 'add_class'
 [DEBUG] 2025-07-28 15:32:24,605 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
 [INFO] 2025-07-28 15:32:24,607 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-28 07:32:24.605825+00:00
 [INFO] 2025-07-28 15:32:24,608 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:141.0) Gecko/20100101 Firefox/141.0", path_info: "/logout/"}.
+[DEBUG] 2025-07-28 15:32:55,334 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-07-28 15:32:55,334 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-07-28 15:32:55,335 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-07-28 07:32:55.334424+00:00
+[INFO] 2025-07-28 15:32:56,286 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:141.0) Gecko/20100101 Firefox/141.0", path_info: "/login/"}.
+[INFO] 2025-07-28 15:32:56,288 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-28 07:32:55.334424+00:00
+[ERROR] 2025-07-28 15:33:00,150 [django.request] Internal Server Error: /dasbord/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django_ratelimit/decorators.py", line 27, in _wrapped
+    return fn(request, *args, **kw)
+  File "/home/TIM/mysite/authentication/views.py", line 789, in dasbord
+    'comments_to_review': comments_to_review,  # optional, bisa ditampilkan di template
+UnboundLocalError: local variable 'comments_to_review' referenced before assignment
+[INFO] 2025-07-28 15:35:43,944 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-28 15:35:44,154 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-28 15:35:44,226 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[DEBUG] 2025-07-28 15:35:56,886 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-07-28 15:35:56,889 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-28 07:35:56.886822+00:00
+[INFO] 2025-07-28 15:35:56,889 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:141.0) Gecko/20100101 Firefox/141.0", path_info: "/logout/"}.
+[DEBUG] 2025-07-28 15:36:11,373 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-07-28 15:36:11,374 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-07-28 15:36:11,375 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-07-28 07:36:11.373248+00:00
+[INFO] 2025-07-28 15:36:12,377 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:141.0) Gecko/20100101 Firefox/141.0", path_info: "/login/"}.
+[INFO] 2025-07-28 15:36:12,379 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-28 07:36:11.373248+00:00
+[DEBUG] 2025-07-28 15:36:31,029 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-07-28 15:36:31,030 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-28 07:36:31.029765+00:00
+[INFO] 2025-07-28 15:36:31,030 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:141.0) Gecko/20100101 Firefox/141.0", path_info: "/logout/"}.
+[DEBUG] 2025-07-28 15:36:45,268 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-07-28 15:36:45,268 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-07-28 15:36:45,269 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-07-28 07:36:45.268095+00:00
+[INFO] 2025-07-28 15:36:46,230 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:141.0) Gecko/20100101 Firefox/141.0", path_info: "/login/"}.
+[INFO] 2025-07-28 15:36:46,231 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-28 07:36:45.268095+00:00
+[DEBUG] 2025-07-28 15:36:51,665 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-07-28 15:36:51,667 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-28 07:36:51.665381+00:00
+[INFO] 2025-07-28 15:36:51,668 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:141.0) Gecko/20100101 Firefox/141.0", path_info: "/logout/"}.

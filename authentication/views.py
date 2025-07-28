@@ -633,7 +633,6 @@ def dasbord(request):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
 
-
     user = request.user
     required_fields = {
         'first_name': 'First Name',
@@ -642,7 +641,6 @@ def dasbord(request):
         'phone': 'Phone Number',
         'gender': 'Gender',
         'birth': 'Date of Birth',
-
     }
     missing_fields = [label for field, label in required_fields.items() if not getattr(user, field)]
 
@@ -662,6 +660,8 @@ def dasbord(request):
     total_learners = 0
     total_partners = 0
     total_published_courses = 0
+    comments_to_review = []  # Default empty list for non-instructors
+    form = CommentForm()  # Default form for all users
 
     try:
         publish_status = CourseStatus.objects.get(status='published')
@@ -678,33 +678,36 @@ def dasbord(request):
         total_partners = Partner.objects.count()
         total_published_courses = Course.objects.filter(status_course=publish_status).count() if publish_status else 0
         partner_courses = Course.objects.all()  # Superuser sees all courses
+        # Optionally, show all comments for superusers
+        comments_to_review = Comment.objects.filter(parent=None).select_related(
+            'user', 'material', 'material__section', 'material__section__courses'
+        ).order_by('-created_at')[:20]
     elif request.user.is_partner:
         # Partner: Access to data related to their organization
         try:
-            partner = Partner.objects.get(user=request.user)  # Assuming Partner has a ForeignKey to CustomUser
+            partner = Partner.objects.get(user=request.user)
         except Partner.DoesNotExist:
             partner = None
 
         if partner:
-            # Courses associated with the partner's organization
             partner_courses = Course.objects.filter(org_partner=partner)
-            # Enrollments in the partner's courses
             partner_enrollments = Enrollment.objects.filter(course__org_partner=partner)
-            # Total enrollments for the partner
             total_enrollments = partner_enrollments.count()
-            # Total courses for the partner
             total_courses = partner_courses.count()
-            # Total instructors associated with the partner's courses
             total_instructors = Instructor.objects.filter(courses__org_partner=partner).distinct().count()
-            # Total learners enrolled in the partner's courses
             total_learners = CustomUser.objects.filter(
                 enrollments__course__org_partner=partner,
                 is_learner=True
             ).distinct().count()
-            # Total published courses for the partner
             total_published_courses = partner_courses.filter(status_course=publish_status).count() if publish_status else 0
+            # Optionally, show comments for partner's courses
+            comments_to_review = Comment.objects.filter(
+                material__section__courses__org_partner=partner,
+                parent=None
+            ).select_related(
+                'user', 'material', 'material__section', 'material__section__courses'
+            ).order_by('-created_at')[:20]
         else:
-            # If partner not found, set defaults
             partner_courses = Course.objects.none()
             total_enrollments = 0
             total_courses = 0
@@ -714,39 +717,28 @@ def dasbord(request):
     elif request.user.is_instructor:
         # Instructor: Access to data related to themselves only
         try:
-            instructor = Instructor.objects.get(user=request.user)  # Assuming Instructor has a ForeignKey to CustomUser
+            instructor = Instructor.objects.get(user=request.user)
         except Instructor.DoesNotExist:
             instructor = None
 
         if instructor:
-            # Courses taught by this instructor
             partner_courses = Course.objects.filter(instructor=instructor)
-            # Enrollments in the instructor's courses
             partner_enrollments = Enrollment.objects.filter(course__instructor=instructor)
-            # Total enrollments in the instructor's courses
             total_enrollments = partner_enrollments.count()
-            # Total courses taught by the instructor
             total_courses = partner_courses.count()
-            # Total instructors (just the instructor themselves)
             total_instructors = 1
-            # Total learners enrolled in the instructor's courses
             total_learners = CustomUser.objects.filter(
                 enrollments__course__instructor=instructor,
                 is_learner=True
             ).distinct().count()
-            # Total published courses by the instructor
             total_published_courses = partner_courses.filter(status_course=publish_status).count() if publish_status else 0
             comments_to_review = Comment.objects.filter(
-                material__section__courses__instructor__user=request.user,
+                material__section__courses__instructor=instructor,
                 parent=None
             ).select_related(
                 'user', 'material', 'material__section', 'material__section__courses'
             ).order_by('-created_at')[:20]
-            form = CommentForm()
-
-
         else:
-            # If instructor not found, set defaults
             partner_courses = Course.objects.none()
             total_enrollments = 0
             total_courses = 0
@@ -754,13 +746,20 @@ def dasbord(request):
             total_learners = 0
             total_published_courses = 0
     else:
-        # Default case for users who are neither superuser, partner, nor instructor
+        # Default case for regular users (e.g., learners)
         partner_courses = Course.objects.none()
         total_enrollments = 0
         total_courses = 0
         total_instructors = 0
         total_learners = 0
         total_published_courses = 0
+        # Optionally, show comments for courses the user is enrolled in
+        comments_to_review = Comment.objects.filter(
+            material__section__courses__enrollments__user=request.user,
+            parent=None
+        ).select_related(
+            'user', 'material', 'material__section', 'material__section__courses'
+        ).order_by('-created_at')[:20]
 
     # Get the current date
     today = timezone.now().date()
@@ -786,7 +785,7 @@ def dasbord(request):
         'total_partners': total_partners,
         'total_published_courses': total_published_courses,
         'courses_created_today': courses_created_today,
-        'comments_to_review': comments_to_review,  # optional, bisa ditampilkan di template
+        'comments_to_review': comments_to_review,
         'form': form,
     }
 
