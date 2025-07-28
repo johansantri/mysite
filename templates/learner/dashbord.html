@@ -1,232 +1,474 @@
 {% extends 'home/tes.html' %}
 {% load static %}
-{% load mathfilters %}
-
+{% load extra_filters %}
+{% load humanize %}
 {% block content %}
-<!-- Welcome Section -->
-<section class="py-5 bg-light">
-    
-        <div class="row g-4">
-            <!-- Left Column: Welcome Text in Card -->
-            <div class="col-md-6">
-                <div class="card shadow-sm h-100 border-0 animate__animated animate__fadeIn">
-                    <div class="card-body d-flex flex-column justify-content-center">
-                        <h1 class="display-5 fw-bold text-primary mb-3">Hi, {{ request.user.username }}!</h1>
-                        <p class="lead text-muted">Ready to dive back into your learning journey? Explore new courses or continue where you left off!</p>
-                        <a href="{% url 'authentication:course_list' %}" class="btn btn-primary mt-3">Explore Courses</a>
-                    </div>
+<div class="container-fluid py-4">
+    <!-- Tampilkan Pesan Sukses atau Error -->
+    {% if messages %}
+        <div class="mb-4">
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'success' %}success{% elif message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Dashboard Header -->
+    <div class="mb-4">
+        <h2 class="fw-bold">Dashboard Overview</h2>
+        <p class="text-muted">Monitor your key metrics and recent activities</p>
+    </div>
+
+    <!-- Dashboard Grid -->
+    <div class="row g-4 mb-5">
+        <!-- Enrolled Section -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-check text-primary fs-2 mb-3"></i>
+                    <h5 class="card-title fw-semibold">Enrolled</h5>
+                    <h2 class="card-text text-primary fw-bold">{{ total_enrollments }}</h2>
                 </div>
             </div>
-            <!-- Right Column: Licenses -->
-            <div class="col-md-6">
-                {% if user_licenses %}
-                    <div class="card shadow-sm h-100 border-0 animate__animated animate__fadeIn">
-                        <div class="card-header bg-primary text-white">
-                            <h5 class="card-title mb-0">Your Licenses</h5>
-                        </div>
-                        <div class="card-body">
-                            <p class="text-muted mb-3">Your current license(s):</p>
-                            <ul class="list-group list-group-flush">
-                                {% for license in user_licenses %}
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong>{{ license.name }}</strong>
-                                            <div class="small text-muted">
-                                                Start: {{ license.start_date|date:"F j, Y" }}<br>
-                                                End: {{ license.expiry_date|date:"F j, Y" }}
+        </div>
+
+        <!-- Active Courses Section -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
+                <div class="card-body text-center">
+                    <i class="bi bi-book text-success fs-2 mb-3"></i>
+                    <h5 class="card-title fw-semibold">Active Courses</h5>
+                    <h2 class="card-text text-success fw-bold">{{ total_published_courses }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Partner Section -->
+        {% if not user.is_instructor and not user.is_partner %}
+        <div class="col-lg-4 col-md-6">
+            <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
+                <div class="card-body text-center">
+                    <i class="bi bi-people text-warning fs-2 mb-3"></i>
+                    <h5 class="card-title fw-semibold">Partner</h5>
+                    <h2 class="card-text text-warning fw-bold">
+                        {% if user.is_superuser %}
+                            {{ total_partners }}
+                        {% else %}
+                            0
+                        {% endif %}
+                    </h2>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Students Section -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
+                <div class="card-body text-center">
+                    <i class="bi bi-mortarboard text-info fs-2 mb-3"></i>
+                    <h5 class="card-title fw-semibold">Students</h5>
+                    <h2 class="card-text text-info fw-bold">{{ total_learners }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Courses Section -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
+                <div class="card-body text-center">
+                    <i class="bi bi-collection-play text-danger fs-2 mb-3"></i>
+                    <h5 class="card-title fw-semibold">Courses</h5>
+                    <h2 class="card-text text-danger fw-bold">{{ total_courses }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instructors Section -->
+        {% if not user.is_instructor %}
+        <div class="col-lg-4 col-md-6">
+            <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-workspace text-secondary fs-2 mb-3"></i>
+                    <h5 class="card-title fw-semibold">Instructors</h5>
+                    <h2 class="card-text text-secondary fw-bold">{{ total_instructors }}</h2>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Comments Section -->
+    {% if show_comments_section %}
+        <div class="card shadow-sm border-0 mb-5">
+            <div class="card-body">
+                <h4 class="fw-semibold mb-4">Comments</h4>
+                {% if comments_to_review %}
+                    <ul class="list-unstyled">
+                        {% for comment in comments_to_review %}
+                            <li class="border-0 p-3 mb-2 rounded-3 bg-light transition-all hover-bg-light">
+                                <div class="d-flex">
+                                    <!-- Avatar untuk komentar utama -->
+                                    <img src="{{ comment.user.photo.url|default:'/static/images/default-avatar.png' }}" 
+                                         alt="Profile" 
+                                         class="rounded-circle me-3 border" 
+                                         style="width: 40px; height: 40px; object-fit: cover;">
+
+                                    <div class="flex-grow-1">
+                                        <!-- Nama dan waktu -->
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong class="fs-6">
+                                                    {{ comment.user.get_full_name|default:comment.user.email }}
+                                                </strong>
+                                                <span class="text-muted fs-6">
+                                                    &bull; {{ comment.created_at|naturaltime }}
+                                                </span>
                                             </div>
+                                            <!-- Tombol Hapus untuk Instruktur, Partner, atau Superuser -->
+                                            {% if user.is_instructor or user.is_superuser or user.is_partner %}
+                                                <button class="btn btn-link text-decoration-none p-0 text-danger" 
+                                                        onclick="openDeleteModal('{% url 'authentication:delete_comment' comment.id %}', '{{ comment.content|truncatechars:30|escapejs }}')"
+                                                        aria-label="Delete comment">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            {% endif %}
                                         </div>
-                                        <span class="badge bg-{{ license.is_active|yesno:'success,danger' }} rounded-pill">
-                                            {{ license.is_active|yesno:'Active,Inactive' }}
-                                        </span>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
+
+                                        <!-- Isi komentar -->
+                                        <p class="mt-1 fs-6 text-muted">
+                                            di materi "<em>{{ comment.material.title }}</em>":
+                                        </p>
+                                        <p class="mt-1 text-dark">{{ comment.content }}</p>
+
+                                        <!-- Tombol Balas -->
+                                        <div class="mt-2">
+                                            <button class="btn btn-link text-decoration-none p-0 text-primary me-3" 
+                                                    onclick="toggleReplyForm('reply-form-{{ comment.id }}')"
+                                                    aria-expanded="false"
+                                                    aria-controls="reply-form-{{ comment.id }}">
+                                                <i class="bi bi-reply me-1"></i> Balas
+                                            </button>
+                                            {% if comment.children.exists %}
+                                                <button class="btn btn-link text-decoration-none p-0 text-primary" 
+                                                        onclick="toggleReplies('replies-{{ comment.id }}')"
+                                                        aria-expanded="false"
+                                                        aria-controls="replies-{{ comment.id }}">
+                                                    <i class="bi bi-chat-dots me-1"></i> {{ comment.children.count }} Balasan
+                                                </button>
+                                            {% endif %}
+                                        </div>
+
+                                        <!-- Form balas untuk komentar utama -->
+                                        <form method="post" 
+                                              action="{% url 'authentication:reply_comment' comment.id %}" 
+                                              class="mt-3 d-none reply-form" 
+                                              id="reply-form-{{ comment.id }}">
+                                            {% csrf_token %}
+                                            <div class="input-group">
+                                                {{ form.content|add_class:"form-control form-control-sm rounded-3" }}
+                                                <button type="submit" 
+                                                        class="btn btn-primary btn-sm rounded-3">
+                                                    Kirim
+                                                </button>
+                                            </div>
+                                        </form>
+
+                                        <!-- Tampilkan replies -->
+                                        {% if comment.children.exists %}
+                                            <ul class="list-unstyled ms-4 mt-3 border-start ps-3 replies d-none" 
+                                                id="replies-{{ comment.id }}">
+                                                {% for reply in comment.children.all %}
+                                                    <li class="mb-3">
+                                                        <div class="d-flex">
+                                                            <!-- Avatar untuk reply -->
+                                                            <img src="{{ reply.user.photo.url|default:'/static/images/default-avatar.png' }}" 
+                                                                 alt="Profile" 
+                                                                 class="rounded-circle me-3 border" 
+                                                                 style="width: 32px; height: 32px; object-fit: cover;">
+                                                            
+                                                            <div class="flex-grow-1">
+                                                                <div class="d-flex justify-content-between align-items-center">
+                                                                    <div>
+                                                                        <strong class="fs-6">
+                                                                            {{ reply.user.get_full_name|default:reply.user.email }}
+                                                                        </strong>
+                                                                        <span class="text-muted fs-6">
+                                                                            &bull; {{ reply.created_at|naturaltime }}
+                                                                        </span>
+                                                                    </div>
+                                                                    <!-- Tombol Hapus untuk Instruktur, Partner, atau Superuser -->
+                                                                    {% if user.is_instructor or user.is_superuser or user.is_partner %}
+                                                                        <button class="btn btn-link text-decoration-none p-0 text-danger" 
+                                                                                onclick="openDeleteModal('{% url 'authentication:delete_comment' reply.id %}', '{{ reply.content|truncatechars:30|escapejs }}')"
+                                                                                aria-label="Delete reply">
+                                                                            <i class="bi bi-trash"></i>
+                                                                        </button>
+                                                                    {% endif %}
+                                                                </div>
+                                                                <p class="mt-1 fs-6 text-dark">{{ reply.content }}</p>
+
+                                                                <!-- Tombol Balas untuk sub-komentar -->
+                                                                <div class="mt-2">
+                                                                    <button class="btn btn-link text-decoration-none p-0 text-primary me-3" 
+                                                                            onclick="toggleReplyForm('reply-form-{{ reply.id }}')"
+                                                                            aria-expanded="false"
+                                                                            aria-controls="reply-form-{{ reply.id }}">
+                                                                        <i class="bi bi-reply me-1"></i> Balas
+                                                                    </button>
+                                                                    {% if reply.children.exists %}
+                                                                        <button class="btn btn-link text-decoration-none p-0 text-primary" 
+                                                                                onclick="toggleReplies('replies-{{ reply.id }}')"
+                                                                                aria-expanded="false"
+                                                                                aria-controls="replies-{{ reply.id }}">
+                                                                            <i class="bi bi-chat-dots me-1"></i> {{ reply.children.count }} Balasan
+                                                                        </button>
+                                                                    {% endif %}
+                                                                </div>
+
+                                                                <!-- Form balas untuk sub-komentar -->
+                                                                <form method="post" 
+                                                                      action="{% url 'authentication:reply_comment' reply.id %}" 
+                                                                      class="mt-3 d-none reply-form" 
+                                                                      id="reply-form-{{ reply.id }}">
+                                                                    {% csrf_token %}
+                                                                    <div class="input-group">
+                                                                        {{ form.content|add_class:"form-control form-control-sm rounded-3" }}
+                                                                        <button type="submit" 
+                                                                                class="btn btn-primary btn-sm rounded-3">
+                                                                            Kirim
+                                                                        </button>
+                                                                    </div>
+                                                                </form>
+
+                                                                <!-- Tampilkan sub-replies -->
+                                                                {% if reply.children.exists %}
+                                                                    <ul class="list-unstyled ms-4 mt-3 border-start ps-3 replies d-none" 
+                                                                        id="replies-{{ reply.id }}">
+                                                                        {% for subreply in reply.children.all %}
+                                                                            <li class="mb-3">
+                                                                                <div class="d-flex">
+                                                                                    <!-- Avatar untuk sub-reply -->
+                                                                                    <img src="{{ subreply.user.photo.url|default:'/static/images/default-avatar.png' }}" 
+                                                                                         alt="Profile" 
+                                                                                         class="rounded-circle me-3 border" 
+                                                                                         style="width: 32px; height: 32px; object-fit: cover;">
+                                                                                    
+                                                                                    <div class="flex-grow-1">
+                                                                                        <div class="d-flex justify-content-between align-items-center">
+                                                                                            <div>
+                                                                                                <strong class="fs-6">
+                                                                                                    {{ subreply.user.get_full_name|default:subreply.user.email }}
+                                                                                                </strong>
+                                                                                                <span class="text-muted fs-6">
+                                                                                                    &bull; {{ subreply.created_at|naturaltime }}
+                                                                                                </span>
+                                                                                            </div>
+                                                                                            <!-- Tombol Hapus untuk Instruktur, Partner, atau Superuser -->
+                                                                                            {% if user.is_instructor or user.is_superuser or user.is_partner %}
+                                                                                                <button class="btn btn-link text-decoration-none p-0 text-danger" 
+                                                                                                        onclick="openDeleteModal('{% url 'authentication:delete_comment' subreply.id %}', '{{ subreply.content|truncatechars:30|escapejs }}')"
+                                                                                                        aria-label="Delete sub-reply">
+                                                                                                    <i class="bi bi-trash"></i>
+                                                                                                </button>
+                                                                                            {% endif %}
+                                                                                        </div>
+                                                                                        <p class="mt-1 fs-6 text-dark">{{ subreply.content }}</p>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </li>
+                                                                        {% endfor %}
+                                                                    </ul>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
                 {% else %}
-                    <div class="card shadow-sm h-100 border-0 text-center animate__animated animate__fadeIn">
-                        <div class="card-body d-flex flex-column justify-content-center">
-                            <i class="fas fa-info-circle fa-2x text-muted mb-3"></i>
-                            <p class="text-muted">No licenses found. Start exploring courses to unlock your potential!</p>
-                            <a href="{% url 'authentication:course_list' %}" class="btn btn-outline-primary">Browse Courses</a>
-                        </div>
-                    </div>
+                    <p class="text-muted">No comments to review.</p>
                 {% endif %}
             </div>
         </div>
-   
-</section>
 
-<!-- Search Form -->
-<section class="py-4">
-   
-        <form method="GET" action="{% url 'authentication:dashbord' %}" class="mb-4">
-            <div class="input-group">
-                <label for="search-input" class="visually-hidden">Search courses</label>
-                <input type="text" id="search-input" name="search" class="form-control" placeholder="Search by course name" value="{{ search_query }}" aria-label="Search courses">
-                <button type="submit" class="btn btn-primary" aria-label="Search">
-                    <i class="fas fa-search me-2"></i>Search
-                </button>
-            </div>
-        </form>
-    
-</section>
-
-<!-- Dashboard Grid -->
-<section class="py-5">
-    
-        <div class="row justify-content-center g-4">
-            <div class="col-lg-4 col-md-6">
-                <div class="card text-center shadow-sm border-0 animate__animated animate__fadeInUp">
-                    <div class="card-body">
-                        <h5 class="card-title text-muted">Enrolled</h5>
-                        <h2 class="fw-bold text-primary">{{ total_enrollments }}</h2>
+        <!-- Single Modal Konfirmasi Hapus -->
+        <div class="modal fade" id="deleteCommentModal" tabindex="-1" aria-labelledby="deleteCommentModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteCommentModalLabel">Konfirmasi Penghapusan</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="card text-center shadow-sm border-0 animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
-                    <div class="card-body">
-                        <h5 class="card-title text-muted">Active Courses</h5>
-                        <h2 class="fw-bold text-primary">{{ active_courses.count }}</h2>
+                    <div class="modal-body">
+                        Apakah Anda yakin ingin menghapus komentar ini: "<span id="comment-content-preview"></span>"? Tindakan ini tidak dapat dibatalkan.
                     </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="card text-center shadow-sm border-0 animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
-                    <div class="card-body">
-                        <h5 class="card-title text-muted">Completed Courses</h5>
-                        <h2 class="fw-bold text-primary">{{ completed_courses.count }}</h2>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <form id="delete-comment-form" method="post" action="">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Hapus</button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-   
-</section>
+    {% endif %}
 
-<!-- Enrolled Courses -->
-{% if enrollments %}
-    <section class="py-5">
-       
-            <h4 class="fw-bold text-primary mb-4 border-bottom border-primary pb-2">Recently Enrolled Courses</h4>
+    <!-- Partner-Specific Reports -->
+    {% if request.user.is_partner %}
+    <div class="mb-5">
+        <h4 class="fw-semibold mb-3">Partner Reports</h4>
+        <div class="d-flex flex-wrap gap-3">
+            <a href="{% url 'partner:partner_course_ratings' %}" class="btn btn-outline-info shadow-sm rounded-pill px-4 py-2 transition-all hover-scale">
+                <i class="bi bi-star-half me-2"></i> Rating Report
+            </a>
+            <a href="{% url 'partner:partner_enrollments' %}" class="btn btn-outline-primary shadow-sm rounded-pill px-4 py-2 transition-all hover-scale">
+                <i class="bi bi-person-plus me-2"></i> Enrolled Users
+            </a>
+            <a href="{% url 'partner:partner_course_comments' %}" class="btn btn-outline-warning shadow-sm rounded-pill px-4 py-2 transition-all hover-scale">
+                <i class="bi bi-chat-left-dots me-2"></i> Comments Reports
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Recently Created Courses Table -->
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <h4 class="fw-semibold mb-4">Recently Created Courses</h4>
             <div class="table-responsive">
+                {% if courses_created_today %}
                 <table class="table table-hover table-bordered align-middle">
-                    <thead class="table-light">
+                    <thead>
                         <tr>
-                            <th scope="col">Course</th>
-                            <th scope="col">Progress</th>
-                            <th scope="col">Instructor</th>
-                            <th scope="col">Status</th>
+                            <th>Courses</th>
+                            <th>Date</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for data in enrollments %}
-                            <tr class="{% if data.certificate_issued or data.certificate_eligible %}border-start border-4 border-success{% else %}border-start border-4 border-secondary{% endif %}">
-                                <td>
-                                    <div class="d-flex align-items-center gap-3">
-                                        <a href="{% url 'learner:course_learn' data.enrollment.user.username data.enrollment.course.id data.enrollment.course.slug %}" 
-                                           class="text-decoration-none fw-semibold {% if data.certificate_issued or data.certificate_eligible %}text-success{% else %}text-dark{% endif %}" 
-                                           aria-label="View course {{ data.enrollment.course.course_name }}">
-                                            {{ data.enrollment.course.course_name }}
-                                        </a>
-                                        <a href="{% url 'learner:score_summary' data.enrollment.user.username data.enrollment.course.id %}" 
-                                           class="text-decoration-none text-muted small" 
-                                           aria-label="View score summary for {{ data.enrollment.course.course_name }}">
-                                            <i class="fas fa-link"></i> Score
-                                        </a>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="progress" style="height: 8px;">
-                                        <div class="progress-bar {% if data.certificate_issued or data.certificate_eligible %}bg-success{% else %}bg-primary{% endif %}" 
-                                             role="progressbar" 
-                                             style="width: {{ data.progress }}%;" 
-                                             aria-valuenow="{{ data.progress }}" 
-                                             aria-valuemin="0" 
-                                             aria-valuemax="100">
-                                        </div>
-                                    </div>
-                                    <small class="{% if data.certificate_issued or data.certificate_eligible %}text-success{% else %}text-primary{% endif %}">
-                                        {{ data.progress|floatformat:0 }}%
-                                    </small>
-                                </td>
-                                <td>
-                                    <i class="fas fa-chalkboard-teacher me-2"></i>
-                                    {{ data.enrollment.course.instructor.user.username }}
-                                </td>
-                                <td>
-                                    {% if data.certificate_issued %}
-                                        <span class="badge bg-success rounded-pill px-3 py-2">
-                                            <i class="fas fa-certificate me-2"></i>Completed
-                                        </span>
-                                        <a href="{% url 'courses:generate_certificate' data.enrollment.course.id %}" 
-                                           class="badge bg-success text-white text-decoration-none rounded-pill px-3 py-2 ms-2" 
-                                           aria-label="Download certificate for {{ data.enrollment.course.course_name }}">
-                                            <i class="fas fa-download me-2"></i>Certificate
-                                        </a>
-                                    {% elif data.certificate_eligible %}
-                                        <a href="{% url 'courses:generate_certificate' data.enrollment.course.id %}" 
-                                           class="badge bg-success text-white text-decoration-none rounded-pill px-3 py-2" 
-                                           aria-label="Download certificate for {{ data.enrollment.course.course_name }}">
-                                            <i class="fas fa-download me-2"></i>Certificate
-                                        </a>
-                                        <a href="{% url 'courses:submit_rating' data.enrollment.course.id data.enrollment.course.slug %}" 
-                                           class="badge bg-warning text-dark text-decoration-none rounded-pill px-3 py-2 ms-2" 
-                                           aria-label="Submit review for {{ data.enrollment.course.course_name }}">
-                                            <i class="fas fa-star me-2"></i>Review
-                                        </a>
-                                    {% else %}
-                                        <span class="badge bg-secondary rounded-pill px-3 py-2">
-                                            <i class="fas fa-hourglass-half me-2"></i>In Progress
-                                        </span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="4" class="text-center p-5">
-                                    <i class="fas fa-book-open fa-3x text-muted mb-3 d-block"></i>
-                                    <p class="text-muted mb-3">No enrolled courses available.</p>
-                                    <a href="{% url 'authentication:course_list' %}" class="btn btn-outline-primary">Explore Courses</a>
-                                </td>
-                            </tr>
+                        {% for course in courses_created_today %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'courses:course_lms_detail' course.id course.slug %}" class="text-primary text-decoration-none">
+                                    {{ course.course_name }}
+                                </a>
+                            </td>
+                            <td>{{ course.created_at|date:"F j, Y" }}</td>
+                            <td>
+                                <span class="badge bg-{% if course.status_course == 'Published' %}success{% elif course.status_course == 'Draft' %}warning{% else %}danger{% endif %}">
+                                    {{ course.status_course }}
+                                </span>
+                            </td>
+                        </tr>
                         {% endfor %}
                     </tbody>
                 </table>
+                {% else %}
+                <p class="text-muted">No courses created today.</p>
+                {% endif %}
             </div>
-            <!-- Pagination -->
-            {% if enrollments.has_other_pages %}
-                <nav aria-label="Enrollments pagination">
-                    <ul class="pagination justify-content-center mt-4">
-                        {% if enrollments.has_previous %}
-                            <li class="page-item">
-                                <a class="page-link" href="?enrollments_page={{ enrollments.previous_page_number }}&search={{ search_query }}" aria-label="Previous page">Previous</a>
-                            </li>
-                        {% endif %}
-                        {% for num in enrollments.paginator.page_range %}
-                            <li class="page-item {% if enrollments.number == num %}active{% endif %}">
-                                <a class="page-link" href="?enrollments_page={{ num }}&search={{ search_query }}" aria-label="Page {{ num }}">{{ num }}</a>
-                            </li>
-                        {% endfor %}
-                        {% if enrollments.has_next %}
-                            <li class="page-item">
-                                <a class="page-link" href="?enrollments_page={{ enrollments.next_page_number }}&search={{ search_query }}" aria-label="Next page">Next</a>
-                            </li>
-                        {% endif %}
-                    </ul>
-                </nav>
-            {% endif %}
-       
-    </section>
-{% else %}
-    <section class="py-5 text-center">
-       
-            <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
-            <p class="text-muted mb-3">No enrollments found. Start your learning journey today!</p>
-            <a href="{% url 'authentication:course_list' %}" class="btn btn-primary btn-lg">Explore Courses</a>
-     
-    </section>
-{% endif %}
+        </div>
+    </div>
 
+    <!-- Pagination Links -->
+    {% if courses_created_today.has_other_pages %}
+    <nav aria-label="Pagination" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if courses_created_today.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?courses_page=1">First</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?courses_page={{ courses_created_today.previous_page_number }}">Previous</a>
+            </li>
+            {% endif %}
+
+            <li class="page-item disabled">
+                <span class="page-link">Page {{ courses_created_today.number }} of {{ courses_created_today.paginator.num_pages }}</span>
+            </li>
+
+            {% if courses_created_today.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?courses_page={{ courses_created_today.next_page_number }}">Next</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?courses_page={{ courses_created_today.paginator.num_pages }}">Last</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+
+<!-- Custom CSS untuk meningkatkan UI/UX -->
+<style>
+    .transition-all {
+        transition: all 0.3s ease;
+    }
+    .hover-bg-light:hover {
+        background-color: #f8f9fa;
+    }
+    .reply-form {
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .reply-form.d-none {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    .replies {
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .replies.d-none {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    }
+    .btn-primary:hover {
+        transform: translateY(-1px);
+    }
+</style>
+
+<!-- JavaScript untuk toggle form balas, replies, dan modal hapus -->
+<script>
+    function toggleReplyForm(formId) {
+        const form = document.getElementById(formId);
+        form.classList.toggle('d-none');
+        if (!form.classList.contains('d-none')) {
+            form.querySelector('textarea').focus();
+        }
+    }
+
+    function toggleReplies(repliesId) {
+        const replies = document.getElementById(repliesId);
+        replies.classList.toggle('d-none');
+    }
+
+    function openDeleteModal(deleteUrl, commentContent) {
+        const modal = document.getElementById('deleteCommentModal');
+        const form = document.getElementById('delete-comment-form');
+        const contentPreview = document.getElementById('comment-content-preview');
+        
+        // Update form action dynamically
+        form.action = deleteUrl;
+        // Update content preview in modal
+        contentPreview.textContent = commentContent;
+        
+        // Show modal
+        const bootstrapModal = new bootstrap.Modal(modal);
+        bootstrapModal.show();
+    }
+</script>
 {% endblock content %}

@@ -660,8 +660,9 @@ def dasbord(request):
     total_learners = 0
     total_partners = 0
     total_published_courses = 0
-    comments_to_review = []  # Default empty list for non-instructors
-    form = CommentForm()  # Default form for all users
+    comments_to_review = []  # Default empty list
+    form = CommentForm()  # Default form for reply functionality
+    show_comments_section = False  # Control comments section visibility
 
     try:
         publish_status = CourseStatus.objects.get(status='published')
@@ -677,13 +678,12 @@ def dasbord(request):
         total_learners = CustomUser.objects.filter(is_learner=True).count()
         total_partners = Partner.objects.count()
         total_published_courses = Course.objects.filter(status_course=publish_status).count() if publish_status else 0
-        partner_courses = Course.objects.all()  # Superuser sees all courses
-        # Optionally, show all comments for superusers
+        partner_courses = Course.objects.all()
         comments_to_review = Comment.objects.filter(parent=None).select_related(
             'user', 'material', 'material__section', 'material__section__courses'
         ).order_by('-created_at')[:20]
+        show_comments_section = True  # Superusers can see comments
     elif request.user.is_partner:
-        # Partner: Access to data related to their organization
         try:
             partner = Partner.objects.get(user=request.user)
         except Partner.DoesNotExist:
@@ -700,13 +700,13 @@ def dasbord(request):
                 is_learner=True
             ).distinct().count()
             total_published_courses = partner_courses.filter(status_course=publish_status).count() if publish_status else 0
-            # Optionally, show comments for partner's courses
             comments_to_review = Comment.objects.filter(
                 material__section__courses__org_partner=partner,
                 parent=None
             ).select_related(
                 'user', 'material', 'material__section', 'material__section__courses'
             ).order_by('-created_at')[:20]
+            show_comments_section = True  # Partners can see comments for their courses
         else:
             partner_courses = Course.objects.none()
             total_enrollments = 0
@@ -715,7 +715,6 @@ def dasbord(request):
             total_learners = 0
             total_published_courses = 0
     elif request.user.is_instructor:
-        # Instructor: Access to data related to themselves only
         try:
             instructor = Instructor.objects.get(user=request.user)
         except Instructor.DoesNotExist:
@@ -738,6 +737,7 @@ def dasbord(request):
             ).select_related(
                 'user', 'material', 'material__section', 'material__section__courses'
             ).order_by('-created_at')[:20]
+            show_comments_section = True  # Instructors can see comments for their courses
         else:
             partner_courses = Course.objects.none()
             total_enrollments = 0
@@ -746,20 +746,15 @@ def dasbord(request):
             total_learners = 0
             total_published_courses = 0
     else:
-        # Default case for regular users (e.g., learners)
+        # Regular users (e.g., learners): No comments section
         partner_courses = Course.objects.none()
         total_enrollments = 0
         total_courses = 0
         total_instructors = 0
         total_learners = 0
         total_published_courses = 0
-        # Optionally, show comments for courses the user is enrolled in
-        comments_to_review = Comment.objects.filter(
-            material__section__courses__enrollments__user=request.user,
-            parent=None
-        ).select_related(
-            'user', 'material', 'material__section', 'material__section__courses'
-        ).order_by('-created_at')[:20]
+        comments_to_review = []  # No comments for regular users
+        show_comments_section = False  # Hide comments section
 
     # Get the current date
     today = timezone.now().date()
@@ -769,8 +764,7 @@ def dasbord(request):
         courses_created_today = partner_courses.filter(
             created_at__date=today,
         ).order_by('created_at')
-        # Pagination for courses created today
-        courses_paginator = Paginator(courses_created_today, 5)  # 5 courses per page
+        courses_paginator = Paginator(courses_created_today, 5)
         courses_created_today = courses_paginator.get_page(courses_page)
     else:
         courses_created_today = []
@@ -787,6 +781,7 @@ def dasbord(request):
         'courses_created_today': courses_created_today,
         'comments_to_review': comments_to_review,
         'form': form,
+        'show_comments_section': show_comments_section,  # Control comments section visibility
     }
 
     return render(request, 'home/dasbord.html', context)
