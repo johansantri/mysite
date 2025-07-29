@@ -335,15 +335,19 @@
                                 <p class="text-gray-600 mb-0">{{ course.instructor.user.hobby }}</p>
                             </div>
                         </div>
-                        <div class="ml-auto flex items-center">
+                       <div class="ml-auto flex items-center">
                             <div class="flex">
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="fas fa-star text-yellow-400"></i>
-                                <i class="fas fa-star text-gray-400"></i>
+                                {% for i in full_star_range %}
+                                    <i class="fas fa-star text-yellow-400"></i>
+                                {% endfor %}
+                                {% if half_star %}
+                                    <i class="fas fa-star-half-alt text-yellow-400"></i>
+                                {% endif %}
+                                {% for i in empty_star_range %}
+                                    <i class="far fa-star text-gray-400"></i>
+                                {% endfor %}
                             </div>
-                            <span class="font-bold ml-1">4.5</span>
+                            <span class="font-bold ml-1">{{ average_rating|floatformat:1 }} ({{ total_reviews }} Reviews)</span>
                         </div>
                     </div>
                     <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm mb-4 flex flex-wrap gap-4">

@@ -3691,21 +3691,23 @@ def course_lms_detail(request, id, slug):
     if getattr(request, 'limited', False):
         return HttpResponse("Terlalu banyak permintaan. Coba lagi nanti.", status=429)
     
-    course = get_object_or_404(Course, id=id, slug=slug)
+    # Get the course with related data
+    course = get_object_or_404(Course.objects.select_related('category', 'instructor__user', 'status_course')
+        .prefetch_related('enrollments', 'ratings'), id=id, slug=slug)
 
     try:
         published_status = CourseStatus.objects.get(status='published')
     except CourseStatus.DoesNotExist:
         return redirect('/')
 
-    today = now().date()  # ✅ hanya panggil sekali
+    today = timezone.now().date()
 
     is_enrolled = request.user.is_authenticated and course.enrollments.filter(user=request.user).exists()
 
     if not is_enrolled and (course.status_course != published_status or course.end_enrol < today):
         return redirect('/')
 
-    # ✅ Hitung view unik per IP (bukan bot)
+    # Handle view count
     user_agent = request.META.get('HTTP_USER_AGENT', '').lower()
     if 'bot' not in user_agent:
         ip = get_client_ip(request)
@@ -3748,7 +3750,9 @@ def course_lms_detail(request, id, slug):
     instructor_total_sections = instructor_sections.count()
     instructor_total_materials = sum(s.materials.count() for s in instructor_sections)
 
+    # Fetch reviews and calculate total_reviews
     reviews = CourseRating.objects.filter(course=course).order_by('-created_at')
+    total_reviews = reviews.count()  # Use count() to get total reviews
     paginator = Paginator(reviews, 5)
     page_obj = paginator.get_page(request.GET.get('page'))
 
@@ -3785,9 +3789,8 @@ def course_lms_detail(request, id, slug):
         'empty_star_range': range(empty_stars),
         'average_rating': average_rating,
         'course_price': course_price,
+        'total_reviews': total_reviews,
     })
-
-
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
