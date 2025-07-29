@@ -1,23 +1,8 @@
 {% extends 'home/base.html' %}
+{% load humanize %}
 {% load static %}
 
 {% block content %}
-
-<!-- 
-  Catatan untuk SEO:
-  - Tambahkan meta tags di base.html:
-    <meta name="description" content="Explore {{ category.name }} courses with expert instructors and top universities.">
-    <meta name="keywords" content="{{ category.name }}, online courses, e-learning">
-  - Tambahkan canonical URL:
-    <link rel="canonical" href="{{ request.build_absolute_uri }}">
-  - Tambahkan rel="next"/"prev" untuk pagination:
-    {% if courses.has_previous %}
-      <link rel="prev" href="?page={{ courses.previous_page_number }}">
-    {% endif %}
-    {% if courses.has_next %}
-      <link rel="next" href="?page={{ courses.next_page_number }}">
-    {% endif %}
--->
 
 <section class="py-8 bg-gray-100">
     <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -39,7 +24,21 @@
                              class="w-full h-full object-cover rounded-lg hover:scale-105 transition-transform duration-300" 
                              alt="{{ course.course_name }}" 
                              loading="lazy">
-                        <span class="absolute top-2 left-2 bg-green-600 text-white text-xs font-semibold px-2 py-1 rounded">FREE</span>
+                        {% if course.is_free %}
+                            <span class="absolute top-2 left-2 bg-green-600 text-white text-xs font-semibold px-2 py-1 rounded">FREE</span>
+                        {% else %}
+                             <div class="absolute top-2 left-2 bg-green-600 text-white text-xs font-semibold px-3 py-1 rounded shadow-lg">
+                                <div>
+                                    IDR{{ course.price|intcomma }}
+                                    {% if course.discount_amount > 0 %}
+                                        <span class="line-through text-gray-200 text-[11px] ml-2 font-normal">
+                                            IDR{{ course.normal_price|intcomma }}
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                        {% endif %}
                     </div>
 
                     <!-- Course Details -->
@@ -64,7 +63,7 @@
                                 <!-- Partner -->
                                 <div class="flex items-center mb-2 text-gray-500 text-sm">
                                     <i class="fas fa-building mr-2"></i>
-                                    <span>University of Oxford</span>
+                                    <span>{{ course.partner }}</span>
                                 </div>
                                 <!-- Partner Code -->
                                 <div class="flex items-center mb-2 text-gray-500 text-sm">
@@ -173,8 +172,13 @@
     },
     "aggregateRating": {
         "@type": "AggregateRating",
-        "ratingValue": "{{ course.rating }}",
+        "ratingValue": "{{ course.average_rating }}",
         "reviewCount": "{{ course.review_count }}"
+    },
+    "offers": {
+        "@type": "Offer",
+        "price": "{{ course.price }}",
+        "priceCurrency": "USD"
     }
 }
 </script>

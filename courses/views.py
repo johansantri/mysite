@@ -1109,7 +1109,7 @@ def category_course_list(request, slug):
         end_enrol__gte=timezone.now()
     ).select_related(
         'category', 'instructor__user', 'org_partner'
-    ).prefetch_related('enrollments')
+    ).prefetch_related('enrollments', 'prices')
 
     # Paginasi: menampilkan 10 kursus per halaman
     paginator = Paginator(courses, 10)
@@ -1118,10 +1118,8 @@ def category_course_list(request, slug):
     try:
         courses_paginated = paginator.page(page)
     except PageNotAnInteger:
-        # Jika halaman yang diminta bukan angka, tampilkan halaman pertama
         courses_paginated = paginator.page(1)
     except EmptyPage:
-        # Jika halaman lebih besar dari jumlah halaman, tampilkan halaman terakhir
         courses_paginated = paginator.page(paginator.num_pages)
 
     # Mengambil kategori yang terkait dengan kursus
@@ -1144,6 +1142,13 @@ def category_course_list(request, slug):
         num_enrollments = course.enrollments.count()
         total_enrollments += num_enrollments
 
+        # Get pricing information
+        course_price = course.prices.first()  # Get the first CoursePrice (adjust if specific price_type needed)
+        price = course_price.user_payment if course_price else Decimal('0.00')
+        is_free = price == Decimal('0.00')
+        discount_amount = course_price.discount_amount if course_price else Decimal('0.00')
+        normal_price = course_price.normal_price if course_price else Decimal('0.00')
+
         courses_data.append({
             'course_name': course.course_name,
             'course_id': course.id,
@@ -1154,16 +1159,20 @@ def category_course_list(request, slug):
             'instructor_username': course.instructor.user.username if course.instructor else None,
             'photo': course.instructor.user.photo.url if course.instructor and course.instructor.user.photo else None,
             'partner': course.org_partner.name if course.org_partner else None,
-            'partner_kode': course.org_partner.name.kode if course.org_partner else None,
+            'partner_kode': course.org_partner.name if course.org_partner else None,  # Changed from kode to name
             'partner_photo': course.org_partner.logo.url if course.org_partner and course.org_partner.logo else None,
             'category': course.category.name if course.category else None,
-            'language': course.get_language_display(),  # ← ini
+            'language': course.get_language_display(),
             'average_rating': average_rating,
             'review_count': review_qs.count(),
             'full_star_range': range(full_stars),
             'half_star': half_star,
             'empty_star_range': range(empty_stars),
-            'duration': course.hour,  # Assuming `duration` is in your model
+            'duration': course.hour,
+            'price': float(price),
+            'is_free': is_free,
+            'discount_amount': float(discount_amount),
+            'normal_price': float(normal_price),  # Added for discount display
         })
 
     context = {
@@ -1178,6 +1187,8 @@ def category_course_list(request, slug):
         'end_index': courses_paginated.end_index(),
         'categories': list(categories.values('id', 'name', 'course_count')),
     }
+
+    
 
     return render(request, 'courses/course_list.html', context)
 
