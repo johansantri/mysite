@@ -110,10 +110,18 @@
                     <li class="border-0 p-3 mb-2 rounded-3 bg-light transition-all hover-bg-light">
                         <div class="d-flex">
                             <!-- Avatar untuk komentar utama -->
-                            <img src="{{ comment.user.photo.url|default:'/static/images/default-avatar.png' }}" 
-                                 alt="Profile" 
-                                 class="rounded-circle me-3 border" 
-                                 style="width: 40px; height: 40px; object-fit: cover;">
+                            {% if comment.user.photo %}
+                                <img src="{{ comment.user.photo.url }}" 
+                                    alt="Profile" 
+                                    class="rounded-circle me-3 border" 
+                                    style="width: 40px; height: 40px; object-fit: cover;">
+                            {% else %}
+                                <img src="{% static 'images/default-avatar.png' %}" 
+                                    alt="Profile" 
+                                    class="rounded-circle me-3 border" 
+                                    style="width: 40px; height: 40px; object-fit: cover;">
+                            {% endif %}
+
 
                             <div class="flex-grow-1">
                                 <!-- Nama dan waktu -->
@@ -251,10 +259,18 @@
                                                                     <li class="mb-3">
                                                                         <div class="d-flex">
                                                                             <!-- Avatar untuk sub-reply -->
-                                                                            <img src="{{ subreply.user.photo.url|default:'/static/images/default-avatar.png' }}" 
-                                                                                 alt="Profile" 
-                                                                                 class="rounded-circle me-3 border" 
-                                                                                 style="width: 32px; height: 32px; object-fit: cover;">
+                                                                           {% if subreply.user.photo %}
+                                                                            <img src="{{ subreply.user.photo.url }}" 
+                                                                                alt="Profile" 
+                                                                                class="rounded-circle me-3 border" 
+                                                                                style="width: 32px; height: 32px; object-fit: cover;">
+                                                                            {% else %}
+                                                                            <img src="{% static 'images/default-avatar.png' %}" 
+                                                                                alt="Default Profile" 
+                                                                                class="rounded-circle me-3 border" 
+                                                                                style="width: 32px; height: 32px; object-fit: cover;">
+                                                                            {% endif %}
+
                                                                             
                                                                             <div class="flex-grow-1">
                                                                                 <div class="d-flex justify-content-between align-items-center">
