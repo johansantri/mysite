@@ -836,7 +836,7 @@ def dashbord(request):
     missing_fields = [label for field, label in required_fields.items() if not getattr(user, field)]
 
     if missing_fields:
-        messages.warning(request, f"Please fill in the following required information.: {', '.join(missing_fields)}")
+        messages.warning(request, f"Please fill in the following required information: {', '.join(missing_fields)}")
         return redirect('authentication:edit-profile', pk=user.pk)
 
     search_query = request.GET.get('search', '')
@@ -913,6 +913,9 @@ def dashbord(request):
         certificate_eligible = progress == Decimal('100') and overall_percentage >= passing_threshold
         certificate_issued = getattr(enrollment, 'certificate_issued', False)
 
+        # Check if the user has reviewed the course
+        has_reviewed = CourseRating.objects.filter(user=user, course=course).exists()
+
         enrollments_data.append({
             'enrollment': enrollment,
             'progress': float(progress),
@@ -920,6 +923,7 @@ def dashbord(request):
             'certificate_issued': certificate_issued,
             'overall_percentage': float(overall_percentage),
             'passing_threshold': float(passing_threshold),
+            'has_reviewed': has_reviewed,  # Add has_reviewed flag
         })
 
     enrollments_paginator = Paginator(enrollments_data, 5)
@@ -938,7 +942,8 @@ def dashbord(request):
         'total_enrollments': total_enrollments,
         'active_courses': active_courses,
         'completed_courses': completed_courses,
-        'user_licenses': user_licenses,  # Dikirim ke template
+        'user_licenses': user_licenses,
+        'user': user,  # Ensure user is passed to template
     })
 
 @login_required
