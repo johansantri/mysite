@@ -102,10 +102,20 @@
                 {% for data in enrollments %}
                     <tr class="{% if data.certificate_issued or data.certificate_eligible %}table-success{% else %}table-light{% endif %}">
                         <td>
+                       
                             <a href="{% url 'learner:course_learn' data.enrollment.user.username data.enrollment.course.id data.enrollment.course.slug %}" 
-                               class="text-decoration-none fw-semibold {% if data.certificate_issued or data.certificate_eligible %}text-success{% else %}text-dark{% endif %}">
-                                {{ data.enrollment.course.course_name }}
+                            class="text-decoration-none fw-semibold inline-flex items-center gap-1 {% if data.certificate_issued or data.certificate_eligible %}text-success{% else %}text-dark{% endif %}">
+                                <i class="fas fa-plug text-primary" title="Go to Course"></i> {{ data.enrollment.course.course_name }}
+                                <!-- Ikon konek -->
+                                
                             </a>
+
+                                <!-- Link ke score summary -->
+                                <a href="{% url 'learner:score_summary' data.enrollment.user.username data.enrollment.course.id %}" 
+                                class="text-xs ml-2 inline-flex items-center text-blue-600 hover:underline" title="View Score Summary">
+                                    <i class="fas fa-chart-line mr-1"></i> Score
+                                </a>
+
                         </td>
                         <td>{{ data.enrollment.course.instructor.user.username }}</td>
                         <td>
