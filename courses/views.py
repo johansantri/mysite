@@ -58,7 +58,7 @@ from django.utils.timezone import now
 from django.utils.text import slugify
 from django.http import (
     JsonResponse, Http404, HttpResponse, HttpResponseForbidden,
-    HttpResponseNotFound, HttpResponseBadRequest, HttpResponseRedirect
+    HttpResponseNotFound, HttpResponseBadRequest, HttpResponseRedirect,HttpResponseServerError
 )
 from django.contrib import messages
 from django.contrib.auth import login
@@ -3477,59 +3477,116 @@ def add_course_price(request, id):
 
 #instrcutor profile
 
-@cache_page(60 * 5)  # Cache selama 5 menit (300 detik)
-@ratelimit(key='ip', rate='30/h', block=True)  # Rate limit 30 kali per jam per IP
+@cache_page(60 * 5)  # Cache for 5 minutes
+@ratelimit(key='ip', rate='30/h', block=True)  # Rate limit 30 requests per hour per IP
 def instructor_profile(request, username):
-    # Ambil objek instructor berdasarkan username
-    instructor = get_object_or_404(Instructor, user__username=username)
-
-    # Cek apakah instructor punya partner (universitas) dan slug-nya
-    partner_slug = getattr(getattr(instructor.provider, 'name', None), 'slug', None)
-
-    # Ambil parameter pencarian (jika ada)
-    search_term = request.GET.get('search', '')
-
-    # Ambil status "published"
-    published_status = CourseStatus.objects.get(status='published')
-
-    # Filter kursus berdasarkan pencarian, status publish, dan tanggal selesai
-    courses = instructor.courses.filter(
-        Q(course_name__icontains=search_term),
-        Q(status_course=published_status),
-        Q(end_date__gte=now())
-    ).annotate(total_enrollments=Count('enrollments')).order_by('start_date')
-
-    # Hitung jumlah kursus dan total peserta unik
-    courses_count = courses.count()
-    total_participants = courses.aggregate(
-        total_participants=Count('enrollments__user', distinct=True)
-    )['total_participants']
-
-    # Pagination (6 kursus per halaman)
-    paginator = Paginator(courses, 6)
-    page_number = request.GET.get('page', 1)
     try:
-        page_number = int(page_number)
-        if page_number < 1:
+        # Get instructor by username
+        instructor = get_object_or_404(Instructor, user__username=username)
+
+        # Ensure that the instructor has a provider (Partner) with a slug in the related Universiti
+        if not instructor.provider or not hasattr(instructor.provider.name, 'slug'):
+            partner_slug = None
+        else:
+            partner_slug = instructor.provider.name.slug  # Access slug from Universiti model
+
+        # Get published status
+        published_status = CourseStatus.objects.get(status='published')
+
+        # Cache key for courses
+        cache_key_courses = f'instructor_courses_{username}'
+        courses = cache.get(cache_key_courses)
+        if not courses:
+            # Query courses with price and rating data
+            courses = instructor.courses.filter(
+                status_course=published_status,
+                end_date__gte=timezone.now()
+            ).select_related('category', 'instructor__user', 'org_partner').prefetch_related('enrollments', 'prices', 'ratings').annotate(
+                total_enrollments=Count('enrollments', distinct=True),
+                avg_rating=Avg('ratings__rating', default=0),
+                review_count=Count('ratings', distinct=True)
+            ).values(
+                'id', 'slug', 'course_name', 'image', 'end_date', 'total_enrollments',
+                'avg_rating', 'review_count'
+            )
+            courses = list(courses)
+            cache.set(cache_key_courses, courses, 60 * 5)
+
+        # Calculate total courses and participants
+        courses_count = len(courses)
+        total_participants = sum(course['total_enrollments'] for course in courses)
+
+        # Calculate total reviews across all courses
+        total_reviews = sum(course['review_count'] for course in courses)
+
+        # Pagination (6 courses per page)
+        paginator = Paginator(courses, 6)
+        page_number = request.GET.get('page', 1)
+        try:
+            page_number = int(page_number)
+            if page_number < 1:
+                page_number = 1
+        except ValueError:
             page_number = 1
-    except ValueError:
-        page_number = 1
 
-    try:
-        page_obj = paginator.get_page(page_number)
-    except EmptyPage:
-        page_obj = paginator.get_page(1)
+        try:
+            page_obj = paginator.get_page(page_number)
+        except EmptyPage:
+            page_obj = paginator.get_page(1)
 
-    # Render template
-    return render(request, 'home/instructor_profile.html', {
-        'instructor': instructor,
-        'page_obj': page_obj,
-        'courses_count': courses_count,
-        'search_term': search_term,
-        'partner_slug': partner_slug,
-        'total_participants': total_participants,
-    })
-#ernroll
+        # Process courses with price and review data
+        courses_data = []
+        for course in page_obj.object_list:
+            try:
+                # Fetch CoursePrice
+                course_obj = Course.objects.filter(id=course['id']).prefetch_related('prices').first()
+                course_price = course_obj.prices.first() if course_obj else None
+                price = course_price.user_payment if course_price else Decimal('0.00')
+                is_free = price == Decimal('0.00')
+                discount_amount = course_price.discount_amount if course_price else Decimal('0.00')
+                normal_price = course_price.normal_price if course_price else Decimal('0.00')
+                discount_percent = course_price.discount_percent if course_price else Decimal('0.00')
+
+                course_data = {
+                    'id': course['id'],
+                    'slug': course['slug'],
+                    'course_name': course['course_name'],
+                    'image': f"{settings.MEDIA_URL}{course['image']}" if course.get('image') else 'https://via.placeholder.com/400x180',
+                    'end_date': course['end_date'],
+                    'total_enrollments': course['total_enrollments'],
+                    'avg_rating': round(course.get('avg_rating', 0) or 0, 1),
+                    'review_count': course['review_count'],
+                    'full_star_range': range(int(course.get('avg_rating', 0) or 0)),
+                    'half_star': (course.get('avg_rating', 0) % 1) >= 0.5 if course.get('avg_rating') else False,
+                    'empty_star_range': range(5 - int(course.get('avg_rating', 0) or 0) - (1 if (course.get('avg_rating', 0) % 1) >= 0.5 else 0)),
+                    'price': float(price),
+                    'is_free': is_free,
+                    'discount_amount': float(discount_amount),
+                    'normal_price': float(normal_price),
+                    'discount_percent': float(discount_percent),
+                }
+                courses_data.append(course_data)
+            except Exception as e:
+                logger.error(f"Error processing course {course.get('id', 'unknown')}: {str(e)}")
+                continue
+
+        # Render template
+        return render(request, 'home/instructor_profile.html', {
+            'instructor': instructor,
+            'page_obj': page_obj,
+            'courses': courses_data,
+            'courses_count': courses_count,
+            'total_participants': total_participants,
+            'total_reviews': total_reviews,
+            'partner_slug': partner_slug,
+        })
+
+    except CourseStatus.DoesNotExist:
+        logger.error("Published status not found")
+        return HttpResponseNotFound("Status 'published' tidak ditemukan")
+    except Exception as e:
+        logger.exception(f"Unexpected error in instructor_profile: {str(e)}")
+        return HttpResponseServerError("Terjadi kesalahan yang tidak terduga.")
 
 logger = logging.getLogger(__name__)
 

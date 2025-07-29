@@ -183,47 +183,38 @@ def custom_ratelimit(view_func):
         return view_func(request, *args, **kwargs)
     return wrapper
 
-def validate_category_ids(category_ids):
-    """Validate category IDs and return a list of valid integers."""
-    try:
-        valid_ids = [int(cid) for cid in category_ids if cid.isdigit()]
-        existing_ids = set(Category.objects.filter(id__in=valid_ids).values_list('id', flat=True))
-        return [cid for cid in valid_ids if cid in existing_ids]
-    except (ValueError, TypeError) as e:
-        logger.warning(f"Invalid category IDs: {category_ids}, error: {str(e)}")
-        return []
+# Placeholder validation functions (adjust based on your implementation)
+def validate_category_ids(raw_categories):
+    return [int(c) for c in raw_categories if c.isdigit()]
 
-def validate_language(language_code):
-    """Validate language code against Course.choice_language."""
-    if not language_code:
-        return None
-    valid_languages = dict(Course.choice_language)
-    if language_code in valid_languages:
-        return language_code
-    raise ValidationError(f"Invalid language code: {language_code}")
+def validate_language(language):
+    if language in dict(Course.choice_language):
+        return language
+    raise ValidationError("Invalid language")
 
 def validate_level(level):
-    """Validate level against allowed values."""
-    if not level:
-        return None
-    valid_levels = ['basic', 'middle', 'advanced']
-    if level in valid_levels:
+    if level in ['basic', 'middle', 'advanced']:
         return level
-    raise ValidationError(f"Invalid level: {level}")
+    raise ValidationError("Invalid level")
+
+def validate_price_filter(price_filter):
+    if price_filter in ['free', 'paid', '']:
+        return price_filter
+    raise ValidationError("Invalid price filter")
 
 @custom_ratelimit
-@cache_page(60 * 5)  # Reduced cache to 5 minutes for faster updates
+@cache_page(60 * 5)
 @vary_on_headers('Accept-Language')
 def course_list(request):
     try:
         if request.method != 'GET':
             return HttpResponseNotAllowed(['GET'])
 
-        # Get filter parameters
+        # Get filter parameters (removed search_query)
         raw_category_filter = request.GET.getlist('category')[:10]
         language_filter = request.GET.get('language', '').strip()
         level_filter = request.GET.get('level', '').strip()
-        search_query = request.GET.get('search', '').strip()
+        price_filter = request.GET.get('price', '').strip()
 
         # Validate filters
         category_filter = validate_category_ids(raw_category_filter)
@@ -249,6 +240,15 @@ def course_list(request):
         else:
             level_filter = None
 
+        if price_filter:
+            try:
+                price_filter = validate_price_filter(price_filter)
+            except ValidationError as e:
+                logger.warning(f"Invalid price filter: {price_filter}")
+                return HttpResponseBadRequest(str(e))
+        else:
+            price_filter = None
+
         # Validate page number
         try:
             page_number = int(request.GET.get('page', 1))
@@ -258,14 +258,14 @@ def course_list(request):
             logger.warning(f"Invalid page number: {request.GET.get('page')}")
             return HttpResponseBadRequest("Invalid page number")
 
-        # Log access (5% sampling)
+        # Log access (5% sampling, removed search_query)
         if random.random() < 0.05:
             logger.info("Access course_list", extra={
                 'ip': request.META.get('REMOTE_ADDR'),
                 'category': category_filter[:3],
                 'language': language_filter,
                 'level': level_filter,
-                'search': search_query[:50],
+                'price': price_filter,
             })
 
         # Get published status
@@ -277,8 +277,8 @@ def course_list(request):
             logger.error("Published status not found")
             return HttpResponseNotFound("Status 'published' tidak ditemukan")
 
-        # Query courses with caching
-        cache_key_query = f'course_query_{category_filter}_{language_filter}_{level_filter}_{search_query}'
+        # Query courses with caching (removed search_query from cache key)
+        cache_key_query = f'course_query_{category_filter}_{language_filter}_{level_filter}_{price_filter}'
         courses = cache.get(cache_key_query)
         if not courses:
             courses = Course.objects.filter(
@@ -286,22 +286,24 @@ def course_list(request):
                 end_enrol__gte=timezone.now()
             ).select_related(
                 'category', 'instructor__user', 'org_partner'
-            ).prefetch_related('enrollments')
+            ).prefetch_related('enrollments', 'prices')
 
-            # Apply filters
+            # Apply filters (removed search_query filter)
             if category_filter:
                 courses = courses.filter(category__id__in=category_filter)
             if language_filter:
                 courses = courses.filter(language=language_filter)
             if level_filter:
                 courses = courses.filter(level=level_filter)
-            if search_query:
-                courses = courses.filter(course_name__icontains=search_query)
+            if price_filter == 'free':
+                courses = courses.filter(prices__user_payment=0)
+            elif price_filter == 'paid':
+                courses = courses.filter(prices__user_payment__gt=0)
 
             courses = courses.annotate(
                 avg_rating=Avg('ratings__rating', default=0),
                 enrollment_count=Count('enrollments', distinct=True),
-                review_count=Count('ratings', distinct=True),  # Added distinct=True to avoid duplicates
+                review_count=Count('ratings', distinct=True),
                 language_display=Case(
                     *[When(language=k, then=Value(v)) for k, v in Course.choice_language],
                     output_field=CharField(),
@@ -310,14 +312,14 @@ def course_list(request):
             ).values(
                 'course_name', 'hour', 'id', 'slug', 'image',
                 'instructor__user__first_name', 'instructor__user__last_name', 'instructor__user__username',
-                'instructor__user__photo', 'org_partner__name__name', 'org_partner__name__kode', 'org_partner__name__slug',
-                'category__name', 'language', 'level', 'avg_rating', 'enrollment_count', 'review_count', 'language_display'
+                'instructor__user__photo', 'org_partner__name', 'category__name', 'language', 'level',
+                'avg_rating', 'enrollment_count', 'review_count', 'language_display'
             )
             courses = list(courses)
-            cache.set(cache_key_query, courses, 60 * 5)  # Reduced to 5 minutes
+            cache.set(cache_key_query, courses, 60 * 5)
 
         # Cache total courses
-        cache_key_total = f'course_count_{category_filter}_{language_filter}_{level_filter}_{search_query}'
+        cache_key_total = f'course_count_{category_filter}_{language_filter}_{level_filter}_{price_filter}'
         total_courses = cache.get(cache_key_total)
         if total_courses is None:
             total_courses = len(courses)
@@ -325,7 +327,7 @@ def course_list(request):
 
         # Pagination
         paginator = Paginator(courses, 9)
-        cache_key_page = f'course_page_{category_filter}_{language_filter}_{level_filter}_{search_query}_{page_number}'
+        cache_key_page = f'course_page_{category_filter}_{language_filter}_{level_filter}_{price_filter}_{page_number}'
         page_data = cache.get(cache_key_page)
         if page_data:
             page_obj = paginator.get_page(page_number)
@@ -357,10 +359,19 @@ def course_list(request):
             language_options = [{'code': code, 'name': all_languages.get(code, code)} for code in language_codes]
             cache.set(cache_key_languages, language_options, 60 * 60)
 
-        # Process courses_data with error handling
+        # Process courses_data with price information
         courses_data = []
         for course in page_obj.object_list:
             try:
+                # Fetch CoursePrice for the course
+                course_obj = Course.objects.filter(id=course['id']).prefetch_related('prices').first()
+                course_price = course_obj.prices.first() if course_obj else None
+                price = course_price.user_payment if course_price else Decimal('0.00')
+                is_free = price == Decimal('0.00')
+                discount_amount = course_price.discount_amount if course_price else Decimal('0.00')
+                normal_price = course_price.normal_price if course_price else Decimal('0.00')
+                discount_percent = course_price.discount_percent if course_price else Decimal('0.00')
+
                 course_data = {
                     'course_name': course.get('course_name', 'Unknown'),
                     'hour': course.get('hour', 0),
@@ -371,9 +382,9 @@ def course_list(request):
                     'instructor': f"{course.get('instructor__user__first_name', '')} {course.get('instructor__user__last_name', '')}".strip() or 'Unknown',
                     'instructor_username': course.get('instructor__user__username', ''),
                     'photo': f"{settings.MEDIA_URL}{course['instructor__user__photo']}" if course.get('instructor__user__photo') else '/media/default.jpg',
-                    'partner': course.get('org_partner__name__name'),
-                    'partner_kode': course.get('org_partner__name__kode'),
-                    'partner_slug': course.get('org_partner__name__slug'),
+                    'partner': course.get('org_partner__name'),
+                    'partner_kode': course.get('org_partner__name'),
+                    'partner_slug': course.get('org_partner__name'),  # Adjust if slug exists
                     'category': course.get('category__name', 'Uncategorized'),
                     'language': course.get('language_display', 'Unknown'),
                     'level': course.get('level', 'Unknown'),
@@ -382,6 +393,11 @@ def course_list(request):
                     'full_star_range': range(int(course.get('avg_rating', 0) or 0)),
                     'half_star': (course.get('avg_rating', 0) % 1) >= 0.5 if course.get('avg_rating') else False,
                     'empty_star_range': range(5 - int(course.get('avg_rating', 0) or 0) - (1 if (course.get('avg_rating', 0) % 1) >= 0.5 else 0)),
+                    'price': float(price),
+                    'is_free': is_free,
+                    'discount_amount': float(discount_amount),
+                    'normal_price': float(normal_price),
+                    'discount_percent': float(discount_percent),
                 }
                 if not course_data['partner_slug']:
                     logger.debug(f"Course {course_data['course_id']} has no partner_slug or partner_kode")
@@ -404,18 +420,18 @@ def course_list(request):
             'category_filter': category_filter,
             'language_filter': language_filter,
             'level_filter': level_filter,
-            'search_query': search_query,
+            'price_filter': price_filter,
             'categories': list(categories),
             'language_options': language_options,
         }
 
-        cache_key_response = f'course_list_{category_filter}_{language_filter}_{level_filter}_{search_query}_{page_number}'
+        cache_key_response = f'course_list_{category_filter}_{language_filter}_{level_filter}_{price_filter}_{page_number}'
         cached_response = cache.get(cache_key_response)
         if cached_response:
             return HttpResponse(cached_response)
 
         response = render(request, 'home/course_list.html', context)
-        cache.set(cache_key_response, response.content, 60 * 5)  # Reduced to 5 minutes
+        cache.set(cache_key_response, response.content, 60 * 5)
         return response
 
     except CourseStatus.DoesNotExist:
@@ -430,10 +446,6 @@ def course_list(request):
     except Exception as e:
         logger.exception(f"Unexpected error in course_list: {str(e)}")
         return HttpResponseServerError("Terjadi kesalahan yang tidak terduga.")
-
-
-#detailuser
-from django.http import HttpResponseForbidden
 
 @login_required
 @ratelimit(key='ip', rate='100/h')

@@ -454,3 +454,97 @@ AttributeError: 'Partner' object has no attribute 'kode'
 [INFO] 2025-07-29 10:03:12,519 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [WARNING] 2025-07-29 10:03:28,220 [authentication.views] Invalid referer:  from IP 
 [WARNING] 2025-07-29 10:03:28,221 [django.request] Forbidden: /search/
+[INFO] 2025-07-29 10:11:28,165 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-29 10:11:28,263 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-29 10:11:28,321 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-07-29 10:12:55,066 [django.request] Not Found: /robots.txt
+[INFO] 2025-07-29 10:13:51,918 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-29 10:13:52,055 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-29 10:13:52,076 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-29 10:17:39,431 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-29 10:17:39,829 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-29 10:17:39,841 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[DEBUG] 2025-07-29 10:22:34,660 [urllib3.connectionpool] Starting new HTTPS connection (1): oauth2.googleapis.com:443
+[DEBUG] 2025-07-29 10:22:35,017 [urllib3.connectionpool] https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+[DEBUG] 2025-07-29 10:22:35,215 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-07-29 10:22:35,217 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36", path_info: "/accounts/google/login/callback/"}.
+[INFO] 2025-07-29 10:22:35,219 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-29 02:22:35.215448+00:00
+[INFO] 2025-07-29 10:22:54,104 [authentication.views] Access course_list
+[WARNING] 2025-07-29 10:23:08,187 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-07-29 10:23:08,187 [django.request] Forbidden: /search/
+[INFO] 2025-07-29 10:23:15,685 [courses.views] [Enroll] User: , Course: Build Powerful Web Applications with Django, Free: False, Has License: False
+[WARNING] 2025-07-29 10:23:15,685 [courses.views] [Enroll Blocked]  tidak punya lisensi aktif untuk course Build Powerful Web Applications with Django yang berbayar
+[INFO] 2025-07-29 10:23:15,685 [courses.views] [Enroll] Payment model: pay_for_certificate
+[INFO] 2025-07-29 10:23:15,686 [courses.views] [Enroll] Price type found: pay_for_certificate
+[DEBUG] 2025-07-29 10:23:15,686 [courses.models] Enrolling user  (ID: 55) for course Build Powerful Web Applications with Django (ID: 12) with payment_model pay_for_certificate
+[INFO] 2025-07-29 10:23:15,707 [courses.models] User  enrolled in course Build Powerful Web Applications with Django with model pay_for_certificate
+[INFO] 2025-07-29 10:23:15,707 [courses.views] [Enroll Result] {'status': 'success', 'message': 'Berhasil mendaftar ke kursus ini.'}
+[INFO] 2025-07-29 10:23:15,923 [learner.views] my_course: Rendering untuk pengguna eka, kursus build-powerful-web-applications-with-django-2026, assessment_id=None
+[INFO] 2025-07-29 10:23:27,720 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna eka, material 50
+[DEBUG] 2025-07-29 10:23:34,246 [learner.views] Comment added by eka for material 50, parent_id=
+[INFO] 2025-07-29 10:23:38,036 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna eka, assessment 50
+[DEBUG] 2025-07-29 10:23:42,169 [learner.views] New session for user eka, assessment 50
+[INFO] 2025-07-29 10:23:42,267 [learner.views] start_assessment: Rendering HTMX for user eka, assessment 50, time_left=299
+[INFO] 2025-07-29 10:23:59,826 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna eka, material 51
+[INFO] 2025-07-29 10:24:03,181 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna eka, assessment 51
+[DEBUG] 2025-07-29 10:24:05,103 [learner.views] New session for user eka, assessment 51
+[INFO] 2025-07-29 10:24:05,120 [learner.views] start_assessment: Rendering HTMX for user eka, assessment 51, time_left=299
+[INFO] 2025-07-29 10:24:09,429 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna eka, material 52
+[WARNING] 2025-07-29 10:24:10,737 [django.request] Not Found: /robots.txt
+[WARNING] 2025-07-29 10:24:13,300 [django.request] Not Found: /robots.txt
+[INFO] 2025-07-29 10:24:14,006 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna eka, assessment 52
+[INFO] 2025-07-29 10:24:15,528 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna eka, material 53
+[WARNING] 2025-07-29 10:24:16,595 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-07-29 10:24:24,022 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna eka, assessment 53
+[DEBUG] 2025-07-29 10:24:25,411 [learner.views] New session for user eka, assessment 53
+[INFO] 2025-07-29 10:24:25,427 [learner.views] start_assessment: Rendering HTMX for user eka, assessment 53, time_left=299
+[WARNING] 2025-07-29 10:24:27,968 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-07-29 10:25:33,881 [django.request] Not Found: /robots.txt
+[INFO] 2025-07-29 10:31:05,147 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-29 10:31:05,326 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-29 10:31:05,449 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-29 10:32:09,453 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-29 10:32:09,805 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-29 10:32:09,935 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-07-29 10:32:54,807 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-07-29 10:35:03,000 [django.request] Not Found: /.env
+[WARNING] 2025-07-29 10:35:04,219 [django.request] Not Found: /api/.env
+[WARNING] 2025-07-29 10:35:05,427 [django.request] Not Found: /backend/.env
+[WARNING] 2025-07-29 10:35:06,665 [django.request] Not Found: /admin/.env
+[WARNING] 2025-07-29 10:35:07,964 [django.request] Not Found: /.env.example
+[WARNING] 2025-07-29 10:35:09,214 [django.request] Not Found: /app_dev.php/_profiler/phpinfo
+[WARNING] 2025-07-29 10:35:12,902 [django.request] Not Found: /client_secrets.json
+[WARNING] 2025-07-29 10:35:14,733 [django.request] Not Found: /pinfo.php
+[WARNING] 2025-07-29 10:35:16,226 [django.request] Not Found: /misc/.env
+[WARNING] 2025-07-29 10:35:18,115 [django.request] Not Found: /content/.env
+[WARNING] 2025-07-29 10:35:19,698 [django.request] Not Found: /docker/.env
+[WARNING] 2025-07-29 10:35:21,225 [django.request] Not Found: /web/debug/default/view
+[WARNING] 2025-07-29 10:35:22,579 [django.request] Not Found: /etc/.env
+[WARNING] 2025-07-29 10:35:24,820 [django.request] Not Found: /env/.env
+[WARNING] 2025-07-29 10:35:26,086 [django.request] Not Found: /.env.backup
+[WARNING] 2025-07-29 10:35:28,341 [django.request] Not Found: /Dev/.env
+[WARNING] 2025-07-29 10:35:30,022 [django.request] Not Found: /appsettings.json
+[WARNING] 2025-07-29 10:35:32,468 [django.request] Not Found: /api/test
+[WARNING] 2025-07-29 10:35:34,212 [django.request] Not Found: /cron/.env
+[WARNING] 2025-07-29 10:35:35,541 [django.request] Not Found: /localhost/.env
+[WARNING] 2025-07-29 10:35:37,000 [django.request] Not Found: /.gitlab-ci/.env
+[WARNING] 2025-07-29 10:35:38,441 [django.request] Not Found: /laravel/.env.production
+[WARNING] 2025-07-29 10:35:39,903 [django.request] Not Found: /local/.env.prod
+[WARNING] 2025-07-29 10:35:41,517 [django.request] Not Found: /public/.env
+[WARNING] 2025-07-29 10:35:42,819 [django.request] Not Found: /frontend/.env
+[WARNING] 2025-07-29 10:35:44,640 [django.request] Not Found: /locally/.env
+[WARNING] 2025-07-29 10:35:46,068 [django.request] Not Found: /v2/.env
+[WARNING] 2025-07-29 10:35:47,822 [django.request] Not Found: /lab/.env
+[WARNING] 2025-07-29 10:35:49,083 [django.request] Not Found: /.vscode/.env
+[INFO] 2025-07-29 10:40:17,223 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-29 10:40:17,225 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-29 10:40:17,303 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-29 10:41:18,122 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-29 10:41:18,263 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-29 10:41:18,298 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-29 10:41:49,746 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-29 10:41:49,958 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-29 10:41:50,082 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-29 10:42:20,707 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-29 10:42:20,819 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-29 10:42:20,852 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address

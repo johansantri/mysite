@@ -1,5 +1,6 @@
 {% extends 'home/base.html' %}
 {% load static %}
+{% load humanize %}
 
 {% block meta %}
     <!-- Standard Meta Tags -->
@@ -12,7 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="canonical" href="{{ request.build_absolute_uri }}">
 
-    <!-- Open Graph (OG) Tags for Social Media (Facebook, LinkedIn, etc.) -->
+    <!-- Open Graph (OG) Tags for Social Media -->
     <meta property="og:title" content="{{ instructor.user.first_name }} {{ instructor.user.last_name }} - Instructor Profile | LMSKu">
     <meta property="og:description" content="{{ instructor.bio|striptags|truncatewords:50|default:'Learn more about '}}{{ instructor.user.first_name }} {{ instructor.user.last_name }}, an expert instructor at LMSKu with {{ courses_count }} courses.">
     <meta property="og:type" content="profile">
@@ -76,7 +77,7 @@
         <div class="text-center mt-4">
           {% if partner_slug %}
             <a href="{% url 'courses:org_partner' partner_slug %}" class="text-xs text-white bg-gray-800 px-3 py-1 rounded shadow hover:bg-gray-700">
-              {{ instructor.user.university }}
+              {{ instructor.user.university }} <i class="fas fa-check-circle text-blue-400 text-[13px]" title="Verified"></i>
             </a>
           {% else %}
             <span class="text-xs text-white bg-gray-400 px-3 py-1 rounded shadow">No University</span>
@@ -134,19 +135,48 @@
       <div class="lg:col-span-8">
         <h2 class="text-2xl font-bold text-gray-800 mb-4">Courses by {{ instructor.user.first_name }}</h2>
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {% for course in page_obj %}
+          {% for course in courses %}
           <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow hover:shadow-md transition-transform duration-200 hover:scale-105">
-            <img loading="lazy"
-                 width="400"
-                 height="180"
-                 src="{{ course.image.url|default:'https://via.placeholder.com/400x180' }}"
-                 alt="{{ course.course_name }}"
-                 class="w-full h-40 object-cover">
+            <div class="relative">
+              <img loading="lazy"
+                   width="400"
+                   height="180"
+                   src="{{ course.image|default:'https://via.placeholder.com/400x180' }}"
+                   alt="{{ course.course_name }}"
+                   class="w-full h-40 object-cover">
+              {% if course.is_free %}
+                <span class="absolute top-2 left-2 sm:top-3 sm:left-3 bg-green-600 text-white text-sm font-semibold px-3 py-1.5 rounded-md shadow-sm">
+                  FREE
+                </span>
+              {% else %}
+                <span class="absolute top-2 left-2 sm:top-3 sm:left-3 bg-green-600 text-white text-sm font-semibold px-3 py-1.5 rounded-md shadow-sm hover:bg-green-700 transition-colors duration-200 truncate max-w-[90%]">
+                  IDR {{ course.price|intcomma }}
+                  {% if course.discount_amount > 0 %}
+                    <span class="line-through text-gray-200 text-xs ml-2">IDR {{ course.normal_price|intcomma }}</span>
+                    <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded-full">
+                      Save {{ course.discount_percent }}%
+                    </span>
+                  {% endif %}
+                </span>
+              {% endif %}
+            </div>
             <div class="p-4">
               <h3 class="font-semibold text-gray-800 text-base truncate">{{ course.course_name }}</h3>
               <p class="text-sm text-gray-500">Ends: {{ course.end_date|default:"N/A" }}</p>
               <p class="text-sm text-gray-500">Enrolled: {{ course.total_enrollments|default:"0" }}</p>
-              <a href="{% url 'courses:course_lms_detail' course.id course.slug %}" class="text-sm text-blue-500 hover:underline">View Course</a>
+              <div class="flex items-center mt-2">
+                {% for _ in course.full_star_range %}
+                  <i class="fas fa-star text-yellow-400" aria-hidden="true"></i>
+                {% endfor %}
+                {% if course.half_star %}
+                  <i class="fas fa-star-half-alt text-yellow-400" aria-hidden="true"></i>
+                {% endif %}
+                {% for _ in course.empty_star_range %}
+                  <i class="far fa-star text-gray-400" aria-hidden="true"></i>
+                {% endfor %}
+                <span class="text-sm text-gray-500 ml-1">({{ course.review_count }})</span>
+              </div>
+              <a href="{% url 'courses:course_lms_detail' course.id course.slug %}" class="text-sm text-blue-500 hover:underline mt-2 inline-block">View Course</a>
             </div>
           </div>
           {% empty %}
@@ -179,7 +209,6 @@
   </div>
 </section>
 
-
 <!-- Schema Markup -->
 <script type="application/ld+json">
 {
@@ -202,21 +231,31 @@
   ]
 }
 </script>
-{% for course in page_obj %}
+{% for course in courses %}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Course",
   "@id": "{% url 'courses:course_lms_detail' course.id course.slug %}#course",
-  "name": "{{ course.course_name|default:'Untitled Course' }}",
-  "description": "{{ course.course_name|truncatechars:100|default:'No description available' }}",
+  "name": "{{ course.course_name|default:'Untitled Course'|escapejs }}",
+  "description": "{{ course.course_name|truncatechars:100|default:'No description available'|escapejs }}",
   "provider": {
     "@type": "Organization",
-    "name": "{{ instructor.user.university|default:'N/A' }}"
+    "name": "{{ instructor.user.university|default:'N/A'|escapejs }}"
   },
   "instructor": {
     "@type": "Person",
     "name": "{{ instructor.user.first_name }} {{ instructor.user.last_name }}"
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "{{ course.avg_rating|floatformat:1 }}",
+    "reviewCount": "{{ course.review_count }}"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "{{ course.price }}",
+    "priceCurrency": "IDR"
   },
   "url": "{% url 'courses:course_lms_detail' course.id course.slug %}"
 }

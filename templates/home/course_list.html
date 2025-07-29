@@ -1,5 +1,6 @@
 {% extends 'home/base.html' %}
 {% load static %}
+{% load humanize %}
 {% load extra_filters %}
 
 {% block content %}
@@ -38,18 +39,35 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {% for course in courses %}
                     <article class="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow">
-                        <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}" 
-                           aria-label="View details for {{ course.course_name }}">
-                            <img 
-                                class="w-full h-48 object-cover rounded-t-xl hover:opacity-95 transition-opacity" 
-                                alt="{{ course.course_name }} - {{ course.instructor }} Course" 
-                                src="{{ course.course_image|default:'/media/default.jpg' }}" 
-                                srcset="{{ course.course_image_small|default:course.course_image|default:'/media/default.jpg' }} 480w, 
-                                        {{ course.course_image_medium|default:course.course_image|default:'/media/default.jpg' }} 768w, 
-                                        {{ course.course_image|default:'/media/default.jpg' }} 1200w"
-                                sizes="(max-width: 576px) 480px, (max-width: 768px) 768px, 1200px"
-                                loading="lazy">
-                        </a>
+                        <div class="relative">
+                            <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}" 
+                               aria-label="View details for {{ course.course_name }}">
+                                <img 
+                                    class="w-full h-48 object-cover rounded-t-xl hover:opacity-95 transition-opacity" 
+                                    alt="{{ course.course_name }} - {{ course.instructor }} Course" 
+                                    src="{{ course.course_image|default:'/media/default.jpg' }}" 
+                                    srcset="{{ course.course_image_small|default:course.course_image|default:'/media/default.jpg' }} 480w, 
+                                            {{ course.course_image_medium|default:course.course_image|default:'/media/default.jpg' }} 768w, 
+                                            {{ course.course_image|default:'/media/default.jpg' }} 1200w"
+                                    sizes="(max-width: 576px) 480px, (max-width: 768px) 768px, 1200px"
+                                    loading="lazy">
+                            </a>
+                            {% if course.is_free %}
+                                <span class="absolute top-2 left-2 sm:top-3 sm:left-3 bg-green-600 text-white text-sm font-semibold px-3 py-1.5 rounded-md shadow-sm">
+                                    FREE
+                                </span>
+                            {% else %}
+                                <span class="absolute top-2 left-2 sm:top-3 sm:left-3 bg-green-600 text-white text-sm font-semibold px-3 py-1.5 rounded-md shadow-sm hover:bg-green-700 transition-colors duration-200 truncate max-w-[90%]">
+                                    IDR {{ course.price|intcomma }}
+                                    {% if course.discount_amount > 0 %}
+                                        <span class="line-through text-gray-200 text-xs ml-2">IDR {{ course.normal_price|intcomma }}</span>
+                                        <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded-full">
+                                            Save {{ course.discount_percent }}%
+                                        </span>
+                                    {% endif %}
+                                </span>
+                            {% endif %}
+                        </div>
                         <div class="p-4 flex flex-col">
                             <div class="flex items-center mb-3">
                                 <a href="{% url 'courses:instructor_profile' course.instructor_username %}" 
@@ -110,10 +128,9 @@
                                 </small>
                             </div>
                             <div class="text-sm text-gray-600">
-                                
                                 <p class="mb-0">
-                                <i class="fas fa-language text-gray-600 mr-2"></i>
-                                <strong>{{ course.language }}</strong> 
+                                    <i class="fas fa-language text-gray-600 mr-2"></i>
+                                    <strong>{{ course.language }}</strong> 
                                 </p>
                             </div>
                         </div>
@@ -133,7 +150,7 @@
                         <li class="{% if not page_obj.has_previous %}opacity-50 pointer-events-none{% endif %}">
                             {% if page_obj.has_previous %}
                                 <a class="inline-flex px-3 py-1 rounded-lg text-red-600 border border-gray-200 hover:bg-red-600 hover:text-white transition-colors"
-                                   href="?page={{ page_obj.previous_page_number }}{% for cat in category_filter %}&category={{ cat }}{% endfor %}{% if search_query %}&search={{ search_query }}{% endif %}{% if language_filter %}&language={{ language_filter }}{% endif %}{% if level_filter %}&level={{ level_filter }}{% endif %}" 
+                                   href="?page={{ page_obj.previous_page_number }}{% for cat in category_filter %}&category={{ cat }}{% endfor %}{% if language_filter %}&language={{ language_filter }}{% endif %}{% if level_filter %}&level={{ level_filter }}{% endif %}{% if price_filter %}&price={{ price_filter }}{% endif %}" 
                                    aria-label="Previous page">
                                     <i class="fas fa-angle-left"></i>
                                 </a>
@@ -146,7 +163,7 @@
                         {% for page_num in page_obj.paginator.page_range %}
                             <li>
                                 <a class="inline-flex px-3 py-1 rounded-lg border border-gray-200 transition-colors {% if page_obj.number == page_num %}bg-red-600 text-white{% else %}text-red-600 hover:bg-red-600 hover:text-white{% endif %}"
-                                   href="?page={{ page_num }}{% for cat in category_filter %}&category={{ cat }}{% endfor %}{% if search_query %}&search={{ search_query }}{% endif %}{% if language_filter %}&language={{ language_filter }}{% endif %}{% if level_filter %}&level={{ level_filter }}{% endif %}" 
+                                   href="?page={{ page_num }}{% for cat in category_filter %}&category={{ cat }}{% endfor %}{% if language_filter %}&language={{ language_filter }}{% endif %}{% if level_filter %}&level={{ level_filter }}{% endif %}{% if price_filter %}&price={{ price_filter }}{% endif %}" 
                                    {% if page_obj.number == page_num %}aria-current="page"{% endif %}>
                                     {{ page_num }}
                                 </a>
@@ -155,7 +172,7 @@
                         <li class="{% if not page_obj.has_next %}opacity-50 pointer-events-none{% endif %}">
                             {% if page_obj.has_next %}
                                 <a class="inline-flex px-3 py-1 rounded-lg text-red-600 border border-gray-200 hover:bg-red-600 hover:text-white transition-colors"
-                                   href="?page={{ page_obj.next_page_number }}{% for cat in category_filter %}&category={{ cat }}{% endfor %}{% if search_query %}&search={{ search_query }}{% endif %}{% if language_filter %}&language={{ language_filter }}{% endif %}{% if level_filter %}&level={{ level_filter }}{% endif %}" 
+                                   href="?page={{ page_obj.next_page_number }}{% for cat in category_filter %}&category={{ cat }}{% endfor %}{% if language_filter %}&language={{ language_filter }}{% endif %}{% if level_filter %}&level={{ level_filter }}{% endif %}{% if price_filter %}&price={{ price_filter }}{% endif %}" 
                                    aria-label="Next page">
                                     <i class="fas fa-angle-right"></i>
                                 </a>
@@ -174,18 +191,8 @@
                 class="hidden peer-checked:block lg:block lg:col-span-3 mt-6 lg:mt-0" 
                 id="filterSidebar">
                 <div class="bg-white rounded-xl shadow-md p-6">
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">Search</h3>
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Filters</h3>
                     <form method="GET" action="{% url 'authentication:course_list' %}" aria-label="Course filter form">
-                        <div class="mb-4">
-                            <input 
-                                type="text" 
-                                name="search" 
-                                class="w-full border border-gray-200 rounded-lg shadow-sm p-3 focus:border-red-600 focus:ring-2 focus:ring-red-100 transition-colors" 
-                                placeholder="Search courses..." 
-                                value="{{ search_query|default:'' }}" 
-                                aria-label="Search courses">
-                        </div>
-
                         <h3 class="text-xl font-bold text-gray-900 mb-4">Categories</h3>
                         <div class="mb-4">
                             {% for category in categories %}
@@ -236,6 +243,20 @@
                             </select>
                         </div>
 
+                        <hr class="border-gray-300 my-4">
+
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Price</h3>
+                        <div class="mb-4">
+                            <select 
+                                name="price" 
+                                class="w-full border border-gray-200 rounded-lg shadow-sm p-3 focus:border-red-600 focus:ring-2 focus:ring-red-100 transition-colors" 
+                                aria-label="Select course price">
+                                <option value="" {% if not price_filter %}selected{% endif %}>All Prices</option>
+                                <option value="free" {% if price_filter == 'free' %}selected{% endif %}>Free</option>
+                                <option value="paid" {% if price_filter == 'paid' %}selected{% endif %}>Paid</option>
+                            </select>
+                        </div>
+
                         <button 
                             type="submit" 
                             class="w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
@@ -272,6 +293,11 @@
                 "@type": "AggregateRating",
                 "ratingValue": "{{ course.average_rating }}",
                 "reviewCount": "{{ course.review_count }}"
+            },
+            "offers": {
+                "@type": "Offer",
+                "price": "{{ course.price }}",
+                "priceCurrency": "IDR"
             },
             "url": "{{ request.build_absolute_uri|escapejs }}{% url 'courses:course_lms_detail' course.course_id course.course_slug %}"
         }{% if not forloop.last %},{% endif %}
