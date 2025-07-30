@@ -399,8 +399,7 @@ def course_list(request):
                     'normal_price': float(normal_price),
                     'discount_percent': float(discount_percent),
                 }
-                logger.debug(f"[Course] ID={course_data['course_id']}, Partner={course_data['partner']}, "
-                f"Kode={course_data['partner_kode']}, Slug={course_data['partner_slug']}")
+               
 
                 if not course_data['partner_slug']:
                     logger.debug(f"Course {course_data['course_id']} has no partner_slug or partner_kode")
