@@ -52,21 +52,7 @@
                                     sizes="(max-width: 576px) 480px, (max-width: 768px) 768px, 1200px"
                                     loading="lazy">
                             </a>
-                            {% if course.is_free %}
-                                <span class="absolute top-2 left-2 sm:top-3 sm:left-3 bg-green-600 text-white text-sm font-semibold px-3 py-1.5 rounded-md shadow-sm">
-                                    FREE
-                                </span>
-                            {% else %}
-                                <span class="absolute top-2 left-2 sm:top-3 sm:left-3 bg-green-600 text-white text-sm font-semibold px-3 py-1.5 rounded-md shadow-sm hover:bg-green-700 transition-colors duration-200 truncate max-w-[90%]">
-                                    IDR {{ course.price|intcomma }}
-                                    {% if course.discount_amount > 0 %}
-                                        <span class="line-through text-gray-200 text-xs ml-2">IDR {{ course.normal_price|intcomma }}</span>
-                                        <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded-full">
-                                            Save {{ course.discount_percent }}%
-                                        </span>
-                                    {% endif %}
-                                </span>
-                            {% endif %}
+                           
                         </div>
                         <div class="p-4 flex flex-col">
                             <div class="flex items-center mb-3">
@@ -89,10 +75,10 @@
                                         {% if course.partner and course.partner_slug %}
                                             <a href="{% url 'courses:org_partner' course.partner_slug %}" 
                                                class="text-gray-500 hover:text-red-600 transition-colors">
-                                                {{ course.partner_kode|default:"N/A" }}
+                                                {{ course.partner|default:"N/A" }}
                                             </a>
                                         {% else %}
-                                            {{ course.partner_kode|default:"N/A" }}
+                                            {{ course.partner|default:"N/A" }}
                                         {% endif %}
                                     </small>
                                 </div>
@@ -127,12 +113,31 @@
                                     ({{ course.average_rating|floatformat:1 }}) ({{ course.review_count }})
                                 </small>
                             </div>
-                            <div class="text-sm text-gray-600">
-                                <p class="mb-0">
+                            <div class="flex justify-between items-center text-sm text-gray-600 relative">
+                                <!-- Language -->
+                                <div class="flex items-center">
                                     <i class="fas fa-language text-gray-600 mr-2"></i>
-                                    <strong>{{ course.language }}</strong> 
-                                </p>
+                                    <strong>{{ course.language }}</strong>
+                                </div>
+
+                                <!-- Harga atau FREE -->
+                                {% if course.is_free %}
+                                    <span class="bg-green-600 text-white text-sm font-semibold px-3 py-1.5 rounded-md shadow-sm">
+                                        FREE
+                                    </span>
+                                {% else %}
+                                    <span class="bg-green-600 text-white text-sm font-semibold px-3 py-1.5 rounded-md shadow-sm hover:bg-green-700 transition-colors duration-200 truncate max-w-[90%]">
+                                        IDR {{ course.price|intcomma }}
+                                        {% if course.discount_amount > 0 %}
+                                            <span class="line-through text-gray-200 text-xs ml-2">IDR {{ course.normal_price|intcomma }}</span>
+                                            <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded-full">
+                                                Save {{ course.discount_percent }}%
+                                            </span>
+                                        {% endif %}
+                                    </span>
+                                {% endif %}
                             </div>
+
                         </div>
                     </article>
                     {% empty %}

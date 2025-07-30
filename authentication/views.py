@@ -312,7 +312,7 @@ def course_list(request):
             ).values(
                 'course_name', 'hour', 'id', 'slug', 'image',
                 'instructor__user__first_name', 'instructor__user__last_name', 'instructor__user__username',
-                'instructor__user__photo', 'org_partner__name', 'category__name', 'language', 'level',
+                'instructor__user__photo', 'org_partner__name__name','org_partner__name__slug', 'category__name', 'language', 'level',
                 'avg_rating', 'enrollment_count', 'review_count', 'language_display'
             )
             courses = list(courses)
@@ -382,9 +382,9 @@ def course_list(request):
                     'instructor': f"{course.get('instructor__user__first_name', '')} {course.get('instructor__user__last_name', '')}".strip() or 'Unknown',
                     'instructor_username': course.get('instructor__user__username', ''),
                     'photo': f"{settings.MEDIA_URL}{course['instructor__user__photo']}" if course.get('instructor__user__photo') else '/media/default.jpg',
-                    'partner': course.get('org_partner__name'),
-                    'partner_kode': course.get('org_partner__name'),
-                    'partner_slug': course.get('org_partner__name'),  # Adjust if slug exists
+                    'partner': course.get('org_partner__name__name'),
+                    'partner_kode': course.get('org_partner__name__kode'),
+                    'partner_slug': course.get('org_partner__name__slug'),  # Adjust if slug exists
                     'category': course.get('category__name', 'Uncategorized'),
                     'language': course.get('language_display', 'Unknown'),
                     'level': course.get('level', 'Unknown'),
@@ -399,6 +399,9 @@ def course_list(request):
                     'normal_price': float(normal_price),
                     'discount_percent': float(discount_percent),
                 }
+                logger.debug(f"[Course] ID={course_data['course_id']}, Partner={course_data['partner']}, "
+                f"Kode={course_data['partner_kode']}, Slug={course_data['partner_slug']}")
+
                 if not course_data['partner_slug']:
                     logger.debug(f"Course {course_data['course_id']} has no partner_slug or partner_kode")
                 courses_data.append(course_data)
