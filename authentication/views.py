@@ -1122,6 +1122,13 @@ def popular_courses(request):
         half_star = (avg_rating % 1) >= 0.5
         empty_stars = 5 - full_stars - (1 if half_star else 0)
 
+        # Ambil label bahasa dari choices
+        language_label = dict(Course.choice_language).get(course.language, course.language)
+
+        # Ambil harga user (jika ada)
+        course_price = course.get_course_price()
+        user_payment = float(course_price.user_payment) if course_price else 0.0
+
         courses_list.append({
             'id': course.id,
             'course_name': course.course_name,
@@ -1138,7 +1145,9 @@ def popular_courses(request):
             'num_ratings': course.unique_raters,
             'full_stars': full_stars,
             'half_star': half_star,
-            'empty_stars': empty_stars
+            'empty_stars': empty_stars,
+            'language': language_label,
+            'user_payment': user_payment,
         })
 
     return JsonResponse({'courses': courses_list})

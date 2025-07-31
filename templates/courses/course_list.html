@@ -84,28 +84,33 @@
                                     {% endif %}
                                     <span>{{ course.instructor }}</span>
                                 </div>
-                                <!-- Language -->
-                                <div class="flex items-center mb-2 text-gray-500 text-sm">
-                                    <i class="fas fa-language mr-2"></i>
-                                    <span>{{ course.language }}</span>
+                               <div class="text-sm text-gray-600 relative space-y-1">
+                                <!-- Bahasa -->
+                                <div class="flex items-center">
+                                    <i class="fas fa-language text-gray-600 mr-2"></i>
+                                    <strong>{{ course.language }}</strong>
                                 </div>
-                                <!-- Enrollments and Rating -->
-                                <div class="flex items-center mb-2 text-gray-500 text-sm">
-                                    <i class="fas fa-user-check mr-2"></i>
-                                    <span>{{ course.num_enrollments }} enrolled</span>
-                                    <span class="ml-2 flex items-center">
-                                        {% for i in course.full_star_range %}
-                                            <i class="fas fa-star text-yellow-400 text-xs mr-1"></i>
-                                        {% endfor %}
-                                        {% if course.half_star %}
-                                            <i class="fas fa-star-half-alt text-yellow-400 text-xs mr-1"></i>
-                                        {% endif %}
-                                        {% for i in course.empty_star_range %}
-                                            <i class="far fa-star text-gray-400 text-xs mr-1"></i>
-                                        {% endfor %}
-                                        ({{ course.review_count }} reviews)
-                                    </span>
+
+                                <!-- Harga -->
+                                <div>
+                                    {% if course.is_free %}
+                                        <span class="bg-green-600 text-white text-sm font-semibold px-3 py-1.5 rounded-md shadow-sm inline-block">
+                                            FREE
+                                        </span>
+                                    {% else %}
+                                        <div class="inline-block bg-green-600 text-white text-sm font-semibold px-3 py-1.5 rounded-md shadow-sm hover:bg-green-700 transition-colors duration-200 max-w-full truncate relative">
+                                            IDR {{ course.price|intcomma }}
+                                            {% if course.discount_amount > 0 %}
+                                                <span class="line-through text-gray-200 text-xs ml-2">IDR {{ course.normal_price|intcomma }}</span>
+                                                <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded-full">
+                                                    Save {{ course.discount_percent }}%
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
                                 </div>
+                            </div>
+
                             </div>
                         </div>
                     </div>
