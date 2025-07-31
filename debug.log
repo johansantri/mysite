@@ -830,3 +830,39 @@ django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'localhost'. Yo
 [INFO] 2025-07-31 15:15:31,328 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [INFO] 2025-07-31 15:15:31,443 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [WARNING] 2025-07-31 15:16:59,150 [django.request] Not Found: /favicon.ico
+[DEBUG] 2025-07-31 15:21:22,003 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-07-31 15:21:22,005 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-07-31 15:21:22,005 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-07-31 07:21:22.003941+00:00
+[INFO] 2025-07-31 15:21:22,967 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:141.0) Gecko/20100101 Firefox/141.0", path_info: "/login/"}.
+[INFO] 2025-07-31 15:21:22,968 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-31 07:21:22.003941+00:00
+[WARNING] 2025-07-31 15:21:33,596 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-07-31 15:21:38,192 [django.request] Not Found: /favicon.ico
+[INFO] 2025-07-31 15:21:41,983 [learner.views] my_course: Rendering untuk pengguna learn, kursus personal-branding-mastery, assessment_id=None
+[WARNING] 2025-07-31 15:21:55,060 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-07-31 15:25:06,543 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-07-31 15:25:06,543 [django.request] Forbidden: /search/
+[WARNING] 2025-07-31 15:26:36,888 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-07-31 15:26:36,888 [django.request] Forbidden: /search/
+[WARNING] 2025-07-31 15:27:26,770 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-07-31 15:27:26,770 [django.request] Forbidden: /search/
+[INFO] 2025-07-31 15:28:04,066 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-31 15:28:04,144 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-07-31 15:28:04,155 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[DEBUG] 2025-07-31 15:28:24,160 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-07-31 15:28:24,163 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-31 07:28:24.160904+00:00
+[INFO] 2025-07-31 15:28:24,163 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:141.0) Gecko/20100101 Firefox/141.0", path_info: "/logout/"}.
+[WARNING] 2025-07-31 15:28:32,406 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-07-31 15:28:34,331 [django.request] Not Found: /favicon.ico
+[DEBUG] 2025-07-31 15:28:49,948 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-07-31 15:28:49,948 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-07-31 15:28:49,949 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-07-31 07:28:49.948392+00:00
+[INFO] 2025-07-31 15:28:50,822 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:141.0) Gecko/20100101 Firefox/141.0", path_info: "/login/"}.
+[INFO] 2025-07-31 15:28:50,823 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-31 07:28:49.948392+00:00
+[DEBUG] 2025-07-31 15:29:16,051 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-07-31 15:29:16,053 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-31 07:29:16.051077+00:00
+[INFO] 2025-07-31 15:29:16,053 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:141.0) Gecko/20100101 Firefox/141.0", path_info: "/logout/"}.
+[DEBUG] 2025-07-31 15:29:22,312 [urllib3.connectionpool] Starting new HTTPS connection (1): oauth2.googleapis.com:443
+[DEBUG] 2025-07-31 15:29:22,667 [urllib3.connectionpool] https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+[DEBUG] 2025-07-31 15:29:22,814 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-07-31 15:29:22,815 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:141.0) Gecko/20100101 Firefox/141.0", path_info: "/accounts/google/login/callback/"}.
+[INFO] 2025-07-31 15:29:22,817 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-07-31 07:29:22.814922+00:00
