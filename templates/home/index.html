@@ -1,55 +1,66 @@
 {% extends 'home/base.html' %}
 {% load extra_filters %}
 {% load static %}
-
 {% block meta %}
-    <!-- Basic Meta Tags -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Learn new skills with LMSKu! Choose from over {{ total_courses }} online courses taught by {{ total_instructors }} expert instructors. Join {{ total_users }}+ learners today.">
-    <meta name="keywords" content="online learning, online courses, LMSKu, e-learning, digital education, certifications, {{ popular_categories|join:', ' }}, expert instructors">
-    <meta name="author" content="LMSKu Team">
-    <meta name="robots" content="index, follow">
+  <title>LMSKu - Learn New Skills with Expert-Led Online Courses</title>
+  <meta name="description" content="Join {{ total_users|default:"thousands of" }} learners in exploring {{ total_courses|default:"hundreds of" }} online courses with certifications from {{ total_instructors|default:"expert" }} instructors. Start learning today!">
+  <meta name="keywords" content="online learning, e-learning, LMSKu, education, certifications{% if popular_categories %}, {{ popular_categories|join:', ' }}{% endif %}, expert instructors">
+  <meta name="robots" content="index, follow">
+  <meta name="googlebot" content="index, follow">
+  <meta name="googlebot-news" content="index, follow">
 
-    <!-- Open Graph (Facebook, LinkedIn, etc.) -->
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="LMSKu">
-    <meta property="og:title" content="LMSKu - The Ultimate Online Learning Platform">
-    <meta property="og:description" content="Explore {{ total_courses }}+ courses and earn certifications with guidance from {{ total_instructors }} top instructors. Accessible anytime, anywhere.">
-    <meta property="og:image" content="{{ request.build_absolute_uri }}{% static 'assets/img/lmsku-banner.jpg' %}">
-    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  {# Canonical URL #}
+  <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
 
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@LMSKu">
-    <meta name="twitter:creator" content="@LMSKu">
-    <meta name="twitter:title" content="LMSKu - Learn Anytime, Anywhere">
-    <meta name="twitter:description" content="Access {{ total_courses }}+ online courses and certifications. Learn from {{ total_instructors }} experts. Study at your own pace from any device.">
-    <meta name="twitter:image" content="{{ request.build_absolute_uri }}{% static 'assets/img/lmsku-banner.jpg' %}">
+  {# Base absolute URL to reuse in image and structured data #}
+  {% with base_url=request.scheme|add:"://"|add:request.get_host %}
+  
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="LMSKu">
+  <meta property="og:title" content="LMSKu - Your Path to Mastery">
+  <meta property="og:description" content="Explore {{ total_courses|default:"hundreds of" }}+ expert-led courses and earn certifications anytime, anywhere.">
+  <meta property="og:image" content="{{ base_url }}{% static 'assets/img/logo/logo-five.png' %}">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url" content="{{ base_url }}{{ request.path }}">
 
-    <!-- Structured Data (JSON-LD for SEO) -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
+  <!-- Twitter/X -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@LMSKu">
+  <meta name="twitter:creator" content="@LMSKu">
+  <meta name="twitter:title" content="LMSKu - Learn Anytime, Anywhere">
+  <meta name="twitter:description" content="Join {{ total_users|default:"thousands of" }} learners taking {{ total_courses|default:"hundreds of" }} online courses with LMSKu.">
+  <meta name="twitter:image" content="{{ base_url }}{% static 'assets/img/logo/logo-five.png' %}">
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "LMSKu",
+    "url": "{{ base_url }}",
+    "description": "LMSKu offers {{ total_courses|default:"hundreds of" }}+ online courses and certifications to support your learning journey.",
+    "publisher": {
+      "@type": "Organization",
       "name": "LMSKu",
-      "url": "{{ request.build_absolute_uri }}",
-      "description": "LMSKu offers {{ total_courses }}+ online courses and certifications to support your learning journey, anytime and anywhere.",
-      "publisher": {
-        "@type": "Organization",
-        "name": "LMSKu",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "{{ request.build_absolute_uri }}{% static 'assets/img/logo.png' %}"
-        }
-      },
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "{{ request.build_absolute_uri }}search?q={search_term_string}",
-        "query-input": "required name=search_term_string"
+      "logo": {
+        "@type": "ImageObject",
+        "url": "{{ base_url }}{% static 'assets/img/logo/logo-five.png' %}",
+        "width": 1200,
+        "height": 630
       }
+    },
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "{{ base_url }}/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
     }
-    </script>
+  }
+  </script>
+  {% endwith %}
+
 {% endblock %}
 
 {% block content %}
