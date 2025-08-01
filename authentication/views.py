@@ -312,7 +312,7 @@ def course_list(request):
             ).values(
                 'course_name', 'hour', 'id', 'slug', 'image',
                 'instructor__user__first_name', 'instructor__user__last_name', 'instructor__user__username',
-                'instructor__user__photo', 'org_partner__name__name','org_partner__name__slug', 'category__name', 'language', 'level',
+                'instructor__user__photo', 'org_partner__name__name','org_partner__name__slug','org_partner__logo', 'category__name', 'language', 'level',
                 'avg_rating', 'enrollment_count', 'review_count', 'language_display'
             )
             courses = list(courses)
@@ -385,6 +385,7 @@ def course_list(request):
                     'partner': course.get('org_partner__name__name'),
                     'partner_kode': course.get('org_partner__name__kode'),
                     'partner_slug': course.get('org_partner__name__slug'),  # Adjust if slug exists
+                    'org_logo': f"{settings.MEDIA_URL}{course['org_partner__logo']}" if course.get('org_partner__logo') else '/media/default.jpg',
                     'category': course.get('category__name', 'Uncategorized'),
                     'language': course.get('language_display', 'Unknown'),
                     'level': course.get('level', 'Unknown'),

@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
       data.courses.forEach(course => {
         const courseUrl = `/course-detail/${course.id}/${encodeURIComponent(course.slug)}/`;
         const instructorPhoto = course.instructor_photo || '/static/images/user-default.webp';
+        const org_logo = course.org_logo || '/static/images/user-default.webp';
 
         const isFree = (course.user_payment === 0);
 
@@ -114,15 +115,15 @@ document.addEventListener('DOMContentLoaded', function () {
                   <line x1="2" y1="12" x2="22" y2="12" />
                   <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
                 </svg>
-                <span> ${course.language ? course.language.charAt(0).toUpperCase() + course.language.slice(1) : 'N/A'}</span>
+                <span>&nbsp; ${course.language ? course.language.charAt(0).toUpperCase() + course.language.slice(1) : 'N/A'}</span>
               </p>
 
               <!-- Footer: Instructor -->
               <div class="flex items-center mt-auto pt-3 border-t border-gray-200">
-                <img src="${instructorPhoto}" alt="${course.instructor_name || 'Instructor'}" class="w-6 h-6 rounded-full mr-3 object-cover border border-gray-200">
+                <img src="${org_logo}" alt="${course.org_name || 'Partner'}" class="w-6 h-6 rounded-full mr-3 object-cover border border-gray-200">
                 <div class="flex flex-col">
-                  <p class="text-xs text-gray-700 font-semibold leading-tight truncate">${course.instructor_name || 'Unknown Instructor'}</p>
-                  <p class="text-xs text-gray-400 truncate">${course.org_name || 'N/A'}</p>
+                  <p class="text-xs text-gray-700 font-semibold leading-tight truncate">${course.org_name || 'Unknown Partner'}</p>
+                  <p class="text-xs text-gray-400 truncate">${course.instructor_name || 'N/A'}</p>
                 </div>
               </div>
 

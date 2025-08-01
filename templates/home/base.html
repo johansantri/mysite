@@ -38,15 +38,15 @@
                 <ul class="flex space-x-4">
                  <li>
             <a class="hover:text-red-500 no-underline text-base" href="{% url 'authentication:home' %}">
-                 <i class="fas fa-home"></i>
+                 <i class="fas fa-home"></i> Home
             </a>
             </li>
-                    <li><a class="hover:text-red-500 no-underline text-base" href="{% url 'authentication:course_list' %}">Courses</a></li>
-                    <li><a class="hover:text-red-500 no-underline text-base" href="{% url 'blog:blog-list' %}">Blog's</a></li>
-                    <li><a class="hover:text-red-500 no-underline text-base" href="{% url 'authentication:about' %}">About</a></li>
+                    <li><a class="hover:text-red-500 no-underline text-base" href="{% url 'authentication:course_list' %}"><i class="fas fa-book"></i> &nbsp;Courses</a></li>
+                    <li><a class="hover:text-red-500 no-underline text-base" href="{% url 'blog:blog-list' %}"><i class="fas fa-blog"></i> &nbsp;Blog's</a></li>
+                    <li><a class="hover:text-red-500 no-underline text-base" href="{% url 'authentication:about' %}"><i class="fas fa-info-circle"></i> &nbsp;About</a></li>
                     <li>
                     <a class="hover:text-red-500 no-underline text-base" href="{% url 'partner:partner_list' %}">
-                        Partners
+                      <i class="fas fa-handshake"></i> &nbsp;Partners
                     </a>
                     </li>
 
@@ -107,27 +107,27 @@
         <ul class="flex flex-col space-y-4">
              <li>
             <a class="hover:text-red-500 no-underline text-base min-h-[44px] flex items-center" href="{% url 'authentication:home' %}">
-                 <i class="fas fa-home"></i>
+                 <i class="fas fa-home"></i> &nbsp;Home
             </a>
             </li>
             <li>
             <a class="hover:text-red-500 no-underline text-base min-h-[44px] flex items-center" href="{% url 'authentication:course_list' %}">
-                Courses
+               <i class="fas fa-book"></i> &nbsp;Courses
             </a>
             </li>
             <li>
             <a class="hover:text-red-500 no-underline text-base min-h-[44px] flex items-center" href="{% url 'blog:blog-list' %}">
-                Blog's
+                <i class="fas fa-blog"></i> &nbsp;Blog's
             </a>
             </li>
             <li>
             <a class="hover:text-red-500 no-underline text-base min-h-[44px] flex items-center" href="{% url 'authentication:about' %}">
-                About
+                <i class="fas fa-info-circle"></i> &nbsp;About
             </a>
             </li>
             <li>
             <a class="hover:text-red-500 no-underline text-base min-h-[44px] flex items-center" href="{% url 'partner:partner_list' %}">
-                Partners
+            <i class="fas fa-handshake"></i> &nbsp;Partners
             </a>
             </li>
         </ul>
