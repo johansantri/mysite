@@ -5,7 +5,7 @@ from courses.forms import PartnerFormUpdate
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator,EmptyPage, PageNotAnInteger
 from django.http import HttpResponseForbidden
-from courses.models import Course, Material,GradeRange,MaterialRead,Question,AssessmentRead,Submission,QuestionAnswer,AssessmentScore,Section,Assessment, Enrollment,CourseRating,CourseComment,CourseViewLog,UserActivityLog,CourseSessionLog,Certificate
+from courses.models import Course, Material,CourseStatus,GradeRange,MaterialRead,Question,AssessmentRead,Submission,QuestionAnswer,AssessmentScore,Section,Assessment, Enrollment,CourseRating,CourseComment,CourseViewLog,UserActivityLog,CourseSessionLog,Certificate
 from payments.models import Payment
 from authentication.models import CustomUser
 from collections import defaultdict
@@ -207,10 +207,14 @@ def partner_analytics_admin(request):
     }
 
     return render(request, 'partner/partner_analytics.html', context)
+
 @ratelimit(key='ip', rate='60/m', block=True)
 @require_GET
 def partner_list_view(request):
-    partners = Partner.objects.all().order_by('id')
+    published_status = CourseStatus.objects.get(status='published')
+    partners = Partner.objects.annotate(
+        published_course_count=Count('courses', filter=Q(courses__status_course=published_status))
+    ).filter(published_course_count__gt=0).order_by('id')
 
     page_number = request.GET.get('page', '1')
     if not page_number.isdigit():

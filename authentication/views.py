@@ -1161,7 +1161,7 @@ def home(request):
         return HttpResponseNotAllowed(['GET'])
 
     published_status = CourseStatus.objects.filter(status='published').first()
-
+    now_time = timezone.now()
     # Inisialisasi variabel default
     popular_categories = []
     popular_microcredentials = []
@@ -1191,8 +1191,16 @@ def home(request):
             status='active'
         ).order_by('-created_at')[:6]
 
-        # Mitra dengan urutan
-        partners = Partner.objects.all().order_by('id')
+        # ✅ Hanya partner yang punya course publish & open enrollment
+        partners = Partner.objects.annotate(
+            active_courses=Count(
+                'courses',
+                filter=Q(
+                    courses__status_course=published_status,
+                    courses__end_enrol__gte=now_time
+                )
+            )
+        ).filter(active_courses__gt=0).order_by('id')
 
         # Instruktur disetujui dengan urutan
         instructors = Instructor.objects.filter(status='Approved').order_by('id')

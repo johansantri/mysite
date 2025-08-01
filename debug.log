@@ -1567,3 +1567,75 @@ django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'lavene-nanthav
 [INFO] 2025-08-01 10:25:57,379 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [INFO] 2025-08-01 10:25:57,432 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [INFO] 2025-08-01 10:25:57,451 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-08-01 10:27:16,706 [django.request] Not Found: /robots.txt
+[WARNING] 2025-08-01 10:27:16,863 [django.request] Not Found: /robots.txt
+[WARNING] 2025-08-01 10:51:58,028 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-08-01 10:51:58,029 [django.request] Forbidden: /search/
+[WARNING] 2025-08-01 10:52:57,189 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-08-01 10:52:57,190 [django.request] Forbidden: /search/
+[INFO] 2025-08-01 11:01:09,783 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-08-01 11:01:10,100 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-08-01 11:01:10,316 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-08-01 11:01:10,856 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-08-01 11:01:10,857 [django.request] Forbidden: /search/
+[WARNING] 2025-08-01 11:01:15,852 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-08-01 11:01:15,853 [django.request] Forbidden: /search/
+[WARNING] 2025-08-01 11:03:28,700 [django.request] Not Found: /_ignition/execute-solution
+[WARNING] 2025-08-01 11:04:09,347 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-08-01 11:04:09,348 [django.request] Forbidden: /search/
+[WARNING] 2025-08-01 11:05:26,069 [django.request] Not Found: /favicon.ico
+[ERROR] 2025-08-01 11:05:27,687 [django.request] Internal Server Error: /org-partner/mit/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 5508, in org_partner
+    published_course_count=Count('courses', filter=Q(courses__status_course=published_status))
+UnboundLocalError: local variable 'published_status' referenced before assignment
+[ERROR] 2025-08-01 11:05:30,272 [django.request] Internal Server Error: /org-partner/university-of-tokyo/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 5508, in org_partner
+    published_course_count=Count('courses', filter=Q(courses__status_course=published_status))
+UnboundLocalError: local variable 'published_status' referenced before assignment
+[ERROR] 2025-08-01 11:05:33,881 [django.request] Internal Server Error: /org-partner/mit/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 5508, in org_partner
+    published_course_count=Count('courses', filter=Q(courses__status_course=published_status))
+UnboundLocalError: local variable 'published_status' referenced before assignment
+[ERROR] 2025-08-01 11:05:36,461 [django.request] Internal Server Error: /org-partner/university-of-cambridge/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 5508, in org_partner
+    published_course_count=Count('courses', filter=Q(courses__status_course=published_status))
+UnboundLocalError: local variable 'published_status' referenced before assignment
+[ERROR] 2025-08-01 11:05:38,519 [django.request] Internal Server Error: /org-partner/university-of-oxford/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 5508, in org_partner
+    published_course_count=Count('courses', filter=Q(courses__status_course=published_status))
+UnboundLocalError: local variable 'published_status' referenced before assignment
+[INFO] 2025-08-01 11:05:56,109 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-08-01 11:05:56,117 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-08-01 11:05:56,189 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-08-01 11:05:57,687 [django.request] Not Found: /favicon.ico
+[INFO] 2025-08-01 11:09:32,713 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-08-01 11:09:32,854 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-08-01 11:09:32,894 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-08-01 11:14:09,774 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-08-01 11:14:09,780 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-08-01 11:14:09,933 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
