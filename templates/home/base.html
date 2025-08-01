@@ -36,6 +36,11 @@
             </button>
             <div class="hidden lg:flex items-center space-x-4">
                 <ul class="flex space-x-4">
+                 <li>
+            <a class="hover:text-red-500 no-underline text-base" href="{% url 'authentication:home' %}">
+                 <i class="fas fa-home"></i>
+            </a>
+            </li>
                     <li><a class="hover:text-red-500 no-underline text-base" href="{% url 'authentication:course_list' %}">Courses</a></li>
                     <li><a class="hover:text-red-500 no-underline text-base" href="{% url 'blog:blog-list' %}">Blog's</a></li>
                     <li><a class="hover:text-red-500 no-underline text-base" href="{% url 'authentication:about' %}">About</a></li>
@@ -100,6 +105,11 @@
         </button>
 
         <ul class="flex flex-col space-y-4">
+             <li>
+            <a class="hover:text-red-500 no-underline text-base min-h-[44px] flex items-center" href="{% url 'authentication:home' %}">
+                 <i class="fas fa-home"></i>
+            </a>
+            </li>
             <li>
             <a class="hover:text-red-500 no-underline text-base min-h-[44px] flex items-center" href="{% url 'authentication:course_list' %}">
                 Courses
@@ -152,7 +162,11 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6" />
             </svg>
-            Dashboard
+            {% if request.user.get_full_name %}
+                          {{ request.user.get_full_name }}
+                      {% else %}
+                          {{ request.user.email }}
+                      {% endif %}
         </a>
         {% else %}
         <!-- Tombol login -->

@@ -24,21 +24,7 @@
                              class="w-full h-full object-cover rounded-lg hover:scale-105 transition-transform duration-300" 
                              alt="{{ course.course_name }}" 
                              loading="lazy">
-                        {% if course.is_free %}
-                            <span class="absolute top-2 left-2 bg-green-600 text-white text-xs font-semibold px-2 py-1 rounded">FREE</span>
-                        {% else %}
-                             <div class="absolute top-2 left-2 bg-green-600 text-white text-xs font-semibold px-3 py-1 rounded shadow-lg">
-                                <div>
-                                    IDR{{ course.price|intcomma }}
-                                    {% if course.discount_amount > 0 %}
-                                        <span class="line-through text-gray-200 text-[11px] ml-2 font-normal">
-                                            IDR{{ course.normal_price|intcomma }}
-                                        </span>
-                                    {% endif %}
-                                </div>
-                            </div>
-
-                        {% endif %}
+                        
                     </div>
 
                     <!-- Course Details -->
@@ -53,24 +39,20 @@
 
                         <!-- Two Columns for Course Info -->
                         <div class="flex flex-col md:flex-row gap-4 md:gap-8">
-                            <!-- Left Column -->
-                            <div class="flex-1">
-                                <!-- Duration -->
-                                <div class="flex items-center mb-2 text-gray-500 text-sm">
-                                    <i class="fas fa-clock mr-2"></i>
-                                    <span>{{ course.duration }} hours</span>
+                                <!-- Left Column -->
+                                <div class="flex-1">
+                                    <!-- Duration -->
+                                    <div class="flex items-center mb-2 text-gray-500 text-sm">
+                                        <i class="fas fa-clock mr-2"></i>
+                                        <span>{{ course.duration }} hours</span>
+                                    </div>
+                                    <!-- Partner -->
+                                    <div class="flex items-center mb-2 text-gray-500 text-sm">
+                                        <i class="fas fa-building mr-2"></i>
+                                        <span>{{ course.partner }}</span>
+                                    </div>
+                                    
                                 </div>
-                                <!-- Partner -->
-                                <div class="flex items-center mb-2 text-gray-500 text-sm">
-                                    <i class="fas fa-building mr-2"></i>
-                                    <span>{{ course.partner }}</span>
-                                </div>
-                                <!-- Partner Code -->
-                                <div class="flex items-center mb-2 text-gray-500 text-sm">
-                                    <i class="fas fa-bookmark mr-2"></i>
-                                    <span>{{ course.partner_kode }}</span>
-                                </div>
-                            </div>
 
                             <!-- Right Column -->
                             <div class="flex-1">
@@ -78,40 +60,52 @@
                                 <div class="flex items-center mb-2 text-gray-500 text-sm">
                                     {% if course.partner_photo %}
                                         <img src="{{ course.partner_photo }}" 
-                                             alt="{{ course.partner }}" 
-                                             class="w-6 h-6 rounded-full mr-2 object-cover" 
-                                             loading="lazy">
+                                            alt="{{ course.partner }}" 
+                                            class="w-6 h-6 rounded-full mr-2 object-cover" 
+                                            loading="lazy">
                                     {% endif %}
                                     <span>{{ course.instructor }}</span>
                                 </div>
-                               <div class="text-sm text-gray-600 relative space-y-1">
-                                <!-- Bahasa -->
-                                <div class="flex items-center">
-                                    <i class="fas fa-language text-gray-600 mr-2"></i>
-                                    <strong>{{ course.language }}</strong>
+
+                                <!-- Rating & Language in Row -->
+                                <div class="flex flex-wrap justify-between sm:items-center items-start gap-x-4 gap-y-2 text-sm text-gray-600 mb-2">
+                                    <!-- Rating -->
+                                    <div class="flex items-center min-w-[100px]">
+                                        <i class="fas fa-star text-yellow-500 mr-1"></i>
+                                        <span class="font-medium">{{ course.review_count }}</span>
+                                    </div>
+
+                                    <!-- Language -->
+                                    <div class="flex items-center min-w-[120px]">
+                                        <i class="fas fa-language text-gray-600 mr-2"></i>
+                                        <strong class="truncate max-w-[100px] sm:max-w-[160px]">{{ course.language }}</strong>
+                                    </div>
                                 </div>
 
                                 <!-- Harga -->
-                                <div>
+                                <div class="mt-1">
                                     {% if course.is_free %}
-                                        <span class="bg-green-600 text-white text-sm font-semibold px-3 py-1.5 rounded-md shadow-sm inline-block">
+                                        <span class="bg-green-600 text-white text-sm font-semibold px-3 py-1.5 rounded-md shadow-sm whitespace-nowrap">
                                             FREE
                                         </span>
                                     {% else %}
-                                        <div class="inline-block bg-green-600 text-white text-sm font-semibold px-3 py-1.5 rounded-md shadow-sm hover:bg-green-700 transition-colors duration-200 max-w-full truncate relative">
-                                            IDR {{ course.price|intcomma }}
-                                            {% if course.discount_amount > 0 %}
-                                                <span class="line-through text-gray-200 text-xs ml-2">IDR {{ course.normal_price|intcomma }}</span>
-                                                <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded-full">
-                                                    Save {{ course.discount_percent }}%
-                                                </span>
-                                            {% endif %}
+                                        <div class="relative w-full max-w-full sm:max-w-[250px]">
+                                            <span class="block bg-green-600 text-white text-sm font-semibold px-3 py-1.5 rounded-md shadow-sm hover:bg-green-700 transition-colors duration-200 truncate">
+                                                IDR {{ course.price|intcomma }}
+                                                {% if course.discount_amount > 0 %}
+                                                    <span class="line-through text-gray-200 text-xs ml-2">
+                                                        IDR {{ course.normal_price|intcomma }}
+                                                    </span>
+                                                {% endif %}
+                                            </span>
+
+                                            
                                         </div>
                                     {% endif %}
                                 </div>
                             </div>
 
-                            </div>
+
                         </div>
                     </div>
 

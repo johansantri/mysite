@@ -36,70 +36,64 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {% for course in courses %}
-                    <article class="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow">
-                        <div class="relative">
-                            <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}" 
-                               aria-label="View details for {{ course.course_name }}">
+             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for course in courses %}
+                <article class="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                    <div class="relative">
+                        <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}" 
+                        aria-label="View details for {{ course.course_name }}">
+                            <img 
+                                class="w-full h-48 object-cover rounded-t-xl hover:opacity-95 transition-opacity" 
+                                alt="{{ course.course_name }} - {{ course.instructor }} Course" 
+                                src="{{ course.course_image|default:'/media/default.jpg' }}" 
+                                srcset="{{ course.course_image_small|default:course.course_image|default:'/media/default.jpg' }} 480w, 
+                                        {{ course.course_image_medium|default:course.course_image|default:'/media/default.jpg' }} 768w, 
+                                        {{ course.course_image|default:'/media/default.jpg' }} 1200w"
+                                sizes="(max-width: 576px) 480px, (max-width: 768px) 768px, 1200px"
+                                loading="lazy">
+                        </a>
+                    </div>
+                    <div class="p-4 flex flex-col">
+                        <div class="flex items-center mb-3">
+                            <a href="{% url 'courses:instructor_profile' course.instructor_username %}" 
+                            aria-label="View profile of {{ course.instructor }}">
                                 <img 
-                                    class="w-full h-48 object-cover rounded-t-xl hover:opacity-95 transition-opacity" 
-                                    alt="{{ course.course_name }} - {{ course.instructor }} Course" 
-                                    src="{{ course.course_image|default:'/media/default.jpg' }}" 
-                                    srcset="{{ course.course_image_small|default:course.course_image|default:'/media/default.jpg' }} 480w, 
-                                            {{ course.course_image_medium|default:course.course_image|default:'/media/default.jpg' }} 768w, 
-                                            {{ course.course_image|default:'/media/default.jpg' }} 1200w"
-                                    sizes="(max-width: 576px) 480px, (max-width: 768px) 768px, 1200px"
+                                    src="{{ course.photo|default:'/media/default.jpg' }}" 
+                                    alt="Instructor {{ course.instructor }} profile picture" 
+                                    class="w-10 h-10 object-cover rounded-full"
                                     loading="lazy">
                             </a>
-                           
-                        </div>
-                        <div class="p-4 flex flex-col">
-                            <div class="flex items-center mb-3">
-                                <a href="{% url 'courses:instructor_profile' course.instructor_username %}" 
-                                   aria-label="View profile of {{ course.instructor }}">
-                                    <img 
-                                        src="{{ course.photo|default:'/media/default.jpg' }}" 
-                                        alt="Instructor {{ course.instructor }} profile picture" 
-                                        class="w-10 h-10 object-cover rounded-full"
-                                        loading="lazy">
-                                </a>
-                                <div class="ml-2">
-                                    <h2 class="text-base font-semibold text-gray-900">
-                                        <a href="{% url 'courses:instructor_profile' course.instructor_username %}" 
-                                           class="text-gray-900 hover:text-red-600 transition-colors">
-                                            {{ course.instructor|default:"Unknown" }}
-                                        </a>
-                                    </h2>
-                                    <small class="text-gray-500 text-sm">
-                                        {% if course.partner and course.partner_slug %}
-                                            <a href="{% url 'courses:org_partner' course.partner_slug %}" 
-                                               class="text-gray-500 hover:text-red-600 transition-colors">
-                                                {{ course.partner|default:"N/A" }}
-                                            </a>
-                                        {% else %}
+                            <div class="ml-2">
+                                <h2 class="text-base font-semibold text-gray-900">
+                                    <a href="{% url 'courses:instructor_profile' course.instructor_username %}" 
+                                    class="text-gray-900 hover:text-red-600 transition-colors">
+                                        {{ course.instructor|default:"Unknown" }}
+                                    </a>
+                                </h2>
+                                <small class="text-gray-500 text-sm">
+                                    {% if course.partner and course.partner_slug %}
+                                        <a href="{% url 'courses:org_partner' course.partner_slug %}" 
+                                        class="text-gray-500 hover:text-red-600 transition-colors">
                                             {{ course.partner|default:"N/A" }}
-                                        {% endif %}
-                                    </small>
-                                </div>
+                                        </a>
+                                    {% else %}
+                                        {{ course.partner|default:"N/A" }}
+                                    {% endif %}
+                                </small>
                             </div>
-                            <h3 class="text-lg font-bold text-gray-900 mb-3">
-                                <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}" 
-                                   class="text-gray-900 hover:text-red-600 transition-colors">
-                                    {{ course.course_name }}
-                                </a>
-                            </h3>
-                            <div class="flex justify-between items-center mb-3 text-gray-500 text-sm">
-                                <div class="flex items-center">
-                                    <i class="fas fa-users mr-1 text-red-600"></i>
-                                    <span>{{ course.num_enrollments }} Learners</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <i class="fas fa-clock mr-1 text-red-600"></i>
-                                    <span>{{ course.hour }} hour</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center mb-3">
+                        </div>
+
+                        <h3 class="text-lg font-bold text-gray-900 mb-3">
+                            <a href="{% url 'courses:course_lms_detail' course.course_id course.course_slug %}" 
+                            class="text-gray-900 hover:text-red-600 transition-colors">
+                                {{ course.course_name }}
+                            </a>
+                        </h3>
+
+                        <!-- Rating & Language -->
+                        <div class="flex justify-between items-center mb-3 text-sm text-gray-600">
+                            <!-- Rating -->
+                            <div class="flex items-center">
                                 {% for _ in course.full_star_range %}
                                     <i class="fas fa-star text-yellow-400" aria-hidden="true"></i>
                                 {% endfor %}
@@ -113,41 +107,55 @@
                                     ({{ course.average_rating|floatformat:1 }}) ({{ course.review_count }})
                                 </small>
                             </div>
-                            <div class="flex justify-between items-center text-sm text-gray-600 relative">
-                                <!-- Language -->
-                                <div class="flex items-center">
-                                    <i class="fas fa-language text-gray-600 mr-2"></i>
-                                    <strong>{{ course.language }}</strong>
-                                </div>
 
-                                <!-- Harga atau FREE -->
-                                {% if course.is_free %}
-                                    <span class="bg-green-600 text-white text-sm font-semibold px-3 py-1.5 rounded-md shadow-sm">
-                                        FREE
-                                    </span>
-                                {% else %}
-                                    <span class="bg-green-600 text-white text-sm font-semibold px-3 py-1.5 rounded-md shadow-sm hover:bg-green-700 transition-colors duration-200 truncate max-w-[90%]">
+                            <!-- Language -->
+                            <div class="flex items-center whitespace-nowrap">
+                                <i class="fas fa-language text-gray-600 mr-2"></i>
+                                <strong>{{ course.language }}</strong>
+                            </div>
+                        </div>
+
+                        <!-- Learners & Duration -->
+                        <div class="flex justify-between items-center mb-3 text-gray-500 text-sm">
+                            <div class="flex items-center">
+                                <i class="fas fa-users mr-1 text-red-600"></i>
+                                <span>{{ course.num_enrollments }} Learners</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-clock mr-1 text-red-600"></i>
+                                <span>{{ course.hour }} hour</span>
+                            </div>
+                        </div>
+
+                        <!-- Harga -->
+                        <div class="text-sm text-gray-600">
+                            {% if course.is_free %}
+                                <span class="bg-green-600 text-white text-sm font-semibold px-3 py-1.5 rounded-md shadow-sm whitespace-nowrap">
+                                    FREE
+                                </span>
+                            {% else %}
+                                <div class="relative text-left">
+                                    <span class="bg-green-600 text-white text-sm font-semibold px-3 py-1.5 rounded-md shadow-sm hover:bg-green-700 transition-colors duration-200 block w-fit">
                                         IDR {{ course.price|intcomma }}
                                         {% if course.discount_amount > 0 %}
                                             <span class="line-through text-gray-200 text-xs ml-2">IDR {{ course.normal_price|intcomma }}</span>
-                                            <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded-full">
-                                                Save {{ course.discount_percent }}%
-                                            </span>
                                         {% endif %}
                                     </span>
-                                {% endif %}
-                            </div>
+                                </div>
+                            {% endif %}
+                        </div>
 
-                        </div>
-                    </article>
-                    {% empty %}
-                    <div class="col-span-full">
-                        <div class="bg-blue-100 text-blue-800 p-4 rounded-xl text-center">
-                            No courses found.
-                        </div>
                     </div>
-                    {% endfor %}
+                </article>
+                {% empty %}
+                <div class="col-span-full">
+                    <div class="bg-blue-100 text-blue-800 p-4 rounded-xl text-center">
+                        No courses found.
+                    </div>
                 </div>
+                {% endfor %}
+            </div>
+
 
                 <!-- Pagination -->
                 <nav aria-label="Course pagination" role="navigation" class="mt-6">
