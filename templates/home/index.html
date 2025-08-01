@@ -3,34 +3,51 @@
 {% load static %}
 
 {% block meta %}
+    <!-- Basic Meta Tags -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Master new skills with LMSKu’s {{ total_courses }}+ online courses, guided by {{ total_instructors }} expert instructors. Start your journey today!">
-    <meta name="keywords" content="online learning, LMSKu, e-learning, courses, education, {{ popular_categories|join:', ' }}, certifications">
+    <meta name="description" content="Learn new skills with LMSKu! Choose from over {{ total_courses }} online courses taught by {{ total_instructors }} expert instructors. Join {{ total_users }}+ learners today.">
+    <meta name="keywords" content="online learning, online courses, LMSKu, e-learning, digital education, certifications, {{ popular_categories|join:', ' }}, expert instructors">
     <meta name="author" content="LMSKu Team">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="LMSKu - Master Skills, Unleash Potential">
-    <meta name="twitter:description" content="Explore {{ total_courses }}+ courses and earn certifications with LMSKu. Learn from {{ total_instructors }} experts, anytime, anywhere!">
-    <meta name="twitter:image" content="{% static 'assets/img/lmsku-banner.jpg' %}">
-    <meta name="twitter:site" content="@LMSKu">
-    <meta property="og:title" content="LMSKu - Your Path to Mastery">
-    <meta property="og:description" content="Join {{ total_users }}+ learners on LMSKu to explore {{ total_courses }}+ courses and unlock your potential with expert-led education.">
-    <meta property="og:image" content="{% static 'assets/img/lmsku-banner.jpg' %}">
-    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph (Facebook, LinkedIn, etc.) -->
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="LMSKu">
+    <meta property="og:title" content="LMSKu - The Ultimate Online Learning Platform">
+    <meta property="og:description" content="Explore {{ total_courses }}+ courses and earn certifications with guidance from {{ total_instructors }} top instructors. Accessible anytime, anywhere.">
+    <meta property="og:image" content="{{ request.build_absolute_uri }}{% static 'assets/img/lmsku-banner.jpg' %}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@LMSKu">
+    <meta name="twitter:creator" content="@LMSKu">
+    <meta name="twitter:title" content="LMSKu - Learn Anytime, Anywhere">
+    <meta name="twitter:description" content="Access {{ total_courses }}+ online courses and certifications. Learn from {{ total_instructors }} experts. Study at your own pace from any device.">
+    <meta name="twitter:image" content="{{ request.build_absolute_uri }}{% static 'assets/img/lmsku-banner.jpg' %}">
+
+    <!-- Structured Data (JSON-LD for SEO) -->
     <script type="application/ld+json">
     {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "LMSKu",
+      "url": "{{ request.build_absolute_uri }}",
+      "description": "LMSKu offers {{ total_courses }}+ online courses and certifications to support your learning journey, anytime and anywhere.",
+      "publisher": {
+        "@type": "Organization",
         "name": "LMSKu",
-        "url": "{{ request.build_absolute_uri }}",
-        "description": "LMSKu offers {{ total_courses }}+ courses and certifications to empower your learning journey.",
-        "potentialAction": {
-            "@type": "SearchAction",
-            "target": "{{ request.build_absolute_uri }}search?q={search_term_string}",
-            "query-input": "required name=search_term_string"
+        "logo": {
+          "@type": "ImageObject",
+          "url": "{{ request.build_absolute_uri }}{% static 'assets/img/logo.png' %}"
         }
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "{{ request.build_absolute_uri }}search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
     }
     </script>
 {% endblock %}
@@ -142,6 +159,7 @@
 
     <!-- Course Grid (populated via JS) -->
     <div id="courses-list" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+    
       <!-- JS Injected Courses -->
     </div>
 
