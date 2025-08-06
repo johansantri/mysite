@@ -40,8 +40,14 @@
                 <input name="titleupsection" id="titleupsection-{{i.id}}" autocomplete="off" value="{{i.title}}" type="text" class="form-control modern-input me-2" />
                 <input name="idupsection" id="idupsection-{{i.id}}" value="{{i.id}}" type="hidden" class="form-control" />
                 <input name="courses_id" id="courses_id-{{i.id}}" value="{{i.courses_id}}" type="hidden" class="form-control" />
-                <a href="javascript:void(0);" class="btn btn-danger delete-btn-section me-2" data-id="{{ i.id }}"><i class="bi bi-trash"></i></a>
-                <a href="javascript:void(0);" class="btn btn-success" data-id="{{i.id}}" data-bs-toggle="modal" data-bs-target="#exampleModal-{{i.id}}"><i class="bi bi-plus"></i></a>
+                <a href="javascript:void(0);" class="delete-btn-section me-2 text-danger" data-id="{{ i.id }}">
+                  <i class="bi bi-trash"></i>
+              </a>
+
+                <a href="javascript:void(0);" class="text-success" data-id="{{i.id}}" data-bs-toggle="modal" data-bs-target="#exampleModal-{{i.id}}">
+                    <i class="bi bi-plus"></i>
+                </a>
+
               </div>
               <div id="error-section-{{i.id}}" class="error-message mt-2"></div>
               <div class="curriculum-info p-3">
@@ -105,8 +111,14 @@
                 <input name="titleupsection" value="{{i.title}}" id="titleupsection-{{i.id}}" type="text" class="form-control modern-input me-2" />
                 <input name="idupsection" id="idupsection-{{i.id}}" value="{{i.id}}" type="hidden" class="form-control ada" />
                 <input name="courses_id" id="courses_id-{{i.id}}" value="{{i.courses_id}}" type="hidden" class="form-control ada" />
-                <a href="javascript:void(0);" class="btn btn-danger delete-btn-section me-2 btn-sm" data-id="{{ i.id }}"><i class="bi bi-trash"></i></a>
-                <a href="javascript:void(0);" class="btn btn-success btn-sm" data-id="{{i.id}}" data-bs-toggle="modal" data-bs-target="#newModal-{{i.id}}"><i class="bi bi-plus"></i></a>
+                <a href="javascript:void(0);" class="text-danger me-2 delete-btn-section" data-id="{{ i.id }}">
+                    <i class="bi bi-trash"></i>
+                </a>
+                <a href="javascript:void(0);" class="text-success" data-id="{{i.id}}" data-bs-toggle="modal" data-bs-target="#newModal-{{i.id}}">
+                    <i class="bi bi-plus"></i>
+                </a>
+
+
               </div>
               <div id="error-section-{{i.id}}" class="error-message mt-2"></div>
               <div class="curriculum-info p-3">
@@ -126,7 +138,10 @@
                               <input name="courses_id" id="courses_id-{{obj.id}}" value="{{obj.courses_id}}" type="hidden" class="form-control" />
                             </a>
                             <div class="faq-right d-flex">
-                              <a href="javascript:void(0);" class="btn btn-danger delete-btn-section btn-sm" data-id="{{ obj.id }}"><i class="bi bi-trash"></i></a>
+                             <a href="javascript:void(0);" class="text-danger delete-btn-section" data-id="{{ obj.id }}">
+                                <i class="bi bi-trash"></i>
+                            </a>
+
                             </div>
                           </div>
                           <div id="collapse-{{obj.id}}" class="collapse" data-bs-parent="#accordion-one">
@@ -134,7 +149,10 @@
                               {% for material in obj.materials.all %}
                                 <div class="border rounded p-3 mb-2 d-flex justify-content-between align-items-center bg-white shadow-sm">
                                   <a href="{% url 'courses:edit_matrial' course.id material.id %}">{{ material.title }}</a>
-                                  <a href="javascript:void(0);" class="btn btn-danger delete-btn-matrial btn-sm" data-id="{{ material.id }}"><i class="bi bi-trash"></i></a>
+                                  <a href="javascript:void(0);" class="text-danger delete-btn-matrial" data-id="{{ material.id }}">
+                                      <i class="bi bi-trash"></i>
+                                  </a>
+
                                 </div>
                               {% empty %}
                                 <p class="text-muted">No materials available for this section.</p>
@@ -142,7 +160,10 @@
                               {% for assesment in obj.assessments.all %}
                                 <div class="border rounded p-3 mb-2 d-flex justify-content-between align-items-center bg-white shadow-sm">
                                   <a href="{% url 'courses:view-question' course.id obj.id assesment.id %}">{{ assesment.name | safe }}</a>
-                                  <a href="{% url 'courses:delete_assessment' course.id obj.id assesment.id %}" class="btn btn-danger delete-btn-matrial btn-sm"><i class="bi bi-trash"></i></a>
+                                  <a href="{% url 'courses:delete_assessment' course.id obj.id assesment.id %}" class="text-danger delete-btn-matrial">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+
                                 </div>
                               {% empty %}
                                 <p class="text-muted">No assessments available for this section.</p>
@@ -168,8 +189,13 @@
                               <input name="courses_id" id="courses_id-{{obj.id}}" value="{{obj.courses_id}}" type="hidden" class="form-control" />
                             </a>
                             <div class="faq-right d-flex">
-                              <a href="javascript:void(0);" class="btn btn-success me-2 btn-sm" onclick="document.getElementById('titlepusection-{{obj.id}}').focus();"><i class="bi bi-plus"></i></a>
-                              <a href="javascript:void(0);" class="btn btn-danger delete-btn-section btn-sm" data-id="{{ obj.id }}"><i class="bi bi-trash"></i></a>
+                             <a href="javascript:void(0);" class="text-success me-2" onclick="document.getElementById('titlepusection-{{obj.id}}').focus();">
+                                <i class="bi bi-plus"></i>
+                            </a>
+                            <a href="javascript:void(0);" class="text-danger delete-btn-section" data-id="{{ obj.id }}">
+                                <i class="bi bi-trash"></i>
+                            </a>
+
                             </div>
                           </div>
                           <div id="collapse-{{obj.id}}" class="collapse" data-bs-parent="#accordion-one">
