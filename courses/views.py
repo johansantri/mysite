@@ -1801,7 +1801,6 @@ def generate_microcredential_certificate(request, id):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
 
-    # Ambil MicroCredential yang dipilih
     microcredential = get_object_or_404(MicroCredential, id=id)
     required_courses = microcredential.required_courses.all()
 
@@ -1810,14 +1809,13 @@ def generate_microcredential_certificate(request, id):
     all_courses_completed = True
     course_grades = []
 
-    # Loop untuk menghitung nilai per course
+    # Hitung nilai per course
     for course in required_courses:
         assessments = Assessment.objects.filter(section__courses=course)
         course_score = Decimal(0)
         course_max_score = Decimal(0)
         course_completed = True
 
-        # Periksa setiap assessment di course
         for assessment in assessments:
             score_value = Decimal(0)
             total_questions = assessment.questions.count()
@@ -1862,27 +1860,38 @@ def generate_microcredential_certificate(request, id):
     if not (all_courses_completed and total_user_score >= Decimal(microcredential.min_total_score)):
         return render(request, 'error_template.html', {'message': 'You have not yet completed this MicroCredential.'})
 
-    # Buat certificate_id dan UUID untuk QR code
+    # Periksa klaim di database
+    existing_claim = MicroClaim.objects.filter(user=request.user, microcredential=microcredential).first()
+
+    if existing_claim:
+        certificate_uuid = existing_claim.certificate_uuid
+        certificate_id = existing_claim.certificate_id
+    else:
+        certificate_uuid = str(uuid.uuid4())
+        certificate_id = f"CERT-{microcredential.id}-{request.user.id}"
+        MicroClaim.objects.create(
+            user=request.user,
+            microcredential=microcredential,
+            certificate_id=certificate_id,
+            certificate_uuid=certificate_uuid
+        )
+
     base_url = request.build_absolute_uri('/')
-    certificate_id = f"CERT-{microcredential.id}-{request.user.id}"
-    certificate_uuid = str(uuid.uuid4())
-
-    # Buat QR Code
-    verification_url = f"{base_url.rstrip('/')}/verify-micro/{certificate_uuid}/"
-    qr = qrcode.QRCode(version=1, box_size=10, border=4)
-    qr.add_data(verification_url)
-    qr.make(fit=True)
-    qr_img = qr.make_image(fill_color="black", back_color="white")
-
-    # Simpan QR Code di server
     qr_dir = os.path.join(settings.MEDIA_ROOT, 'qrcodes')
     os.makedirs(qr_dir, exist_ok=True)
     qr_path = os.path.join(qr_dir, f'certificate_{certificate_uuid}.png')
-    qr_img.save(qr_path)
-
     qr_code_url = f"{base_url.rstrip('/')}{settings.MEDIA_URL}qrcodes/certificate_{certificate_uuid}.png"
 
-    # Ambil gambar microcredential dan foto author jika ada
+    # Generate QR Code hanya jika file belum ada
+    if not os.path.exists(qr_path):
+        verification_url = f"{base_url.rstrip('/')}/verify-micro/{certificate_uuid}/"
+        qr = qrcode.QRCode(version=1, box_size=10, border=4)
+        qr.add_data(verification_url)
+        qr.make(fit=True)
+        qr_img = qr.make_image(fill_color="black", back_color="white")
+        qr_img.save(qr_path)
+
+    # Ambil gambar microcredential dan foto author
     microcredential_image_absolute_url = (
         f"{base_url.rstrip('/')}{microcredential.image.url}" if microcredential.image else None
     )
@@ -1892,7 +1901,6 @@ def generate_microcredential_certificate(request, id):
         else None
     )
 
-    # Siapkan konteks untuk render HTML sertifikat
     context = {
         'microcredential': microcredential,
         'user': request.user,
@@ -1908,7 +1916,6 @@ def generate_microcredential_certificate(request, id):
 
     html_content = render_to_string('learner/microcredential_certificate.html', context)
 
-    # Coba buat PDF dengan WeasyPrint
     try:
         pdf = HTML(string=html_content, base_url=base_url).write_pdf()
     except Exception as e:
@@ -1916,18 +1923,6 @@ def generate_microcredential_certificate(request, id):
         return render(request, 'error_template.html', {'message': f'Error generating PDF: {str(e)}'})
 
     filename = f"certificate_{microcredential.slug}.pdf"
-
-    # Periksa jika klaim sudah ada di database
-    existing_claim = MicroClaim.objects.filter(user=request.user, microcredential=microcredential).first()
-    if not existing_claim:
-        MicroClaim.objects.create(
-            user=request.user,
-            microcredential=microcredential,
-            certificate_id=certificate_id,
-            certificate_uuid=certificate_uuid  # simpan UUID yang sama dengan di QR
-        )
-
-    # Kembalikan response PDF
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
     return response
