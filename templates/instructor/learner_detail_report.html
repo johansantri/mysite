@@ -96,7 +96,12 @@
                             <h6>{{ askora.assessment_name }}</h6>
                         </div>
                         <div class="card-body">
-                            <p><strong>Submission Content:</strong> {{ askora.submission }}</p>
+                            <p><strong>Submission Content:</strong> {{ askora.submission.answer_text|safe }}</p>
+
+                            {% if askora.submission.answer_file %}
+                            <p><strong>Submitted File:</strong> <a href="{{ askora.submission.answer_file.url }}" target="_blank">Download</a></p>
+                            {% endif %}
+
                             <p><strong>Submitted At:</strong> {{ askora.submitted_at|date:"Y-m-d H:i:s" }}</p>
                             <p><strong>Final Score:</strong> {% if askora.final_score %}{{ askora.final_score|floatformat:2 }}{% else %}Not scored yet{% endif %}</p>
         

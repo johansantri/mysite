@@ -772,36 +772,28 @@ def instructor_learner_detail_report(request):
     if not learner_id:
         return redirect('instructor_learning_report')
 
-    # Ambil data peserta dengan informasi universitas menggunakan select_related
     learner = get_object_or_404(CustomUser.objects.select_related('university'), id=learner_id)
     courses = Course.objects.filter(instructor=instructor, enrollments__user=learner).select_related('instructor')
 
     report_data = []
 
-    grade_ranges = GradeRange.objects.filter(course__in=courses).all()
-    grade_range_dict = {gr.course_id: gr for gr in grade_ranges if gr.name == 'Pass'}
+    # Ambil grade range untuk Pass
+    grade_ranges = GradeRange.objects.filter(course__in=courses, name='Pass')
+    grade_range_dict = {gr.course_id: gr.min_grade for gr in grade_ranges}
 
     for course in courses:
+        # Ambil sections
         sections = Section.objects.filter(courses=course).prefetch_related(
             Prefetch('materials', queryset=Material.objects.all()),
             Prefetch('assessments', queryset=Assessment.objects.all())
         )
 
-        combined_content = []
-        for section in sections:
-            for material in section.materials.all():
-                combined_content.append(('material', material, section))
-            for assessment in section.assessments.all():
-                combined_content.append(('assessment', assessment, section))
-        total_content = len(combined_content)
-
-        passing_threshold = grade_range_dict.get(course.id, None)
-        passing_threshold = passing_threshold.min_grade if passing_threshold else Decimal('52.00')
-
+        # Ambil aktivitas learner
         material_reads = MaterialRead.objects.filter(user=learner, material__section__courses=course).select_related('material').order_by('read_at')
         assessment_reads = AssessmentRead.objects.filter(user=learner, assessment__section__courses=course).select_related('assessment').order_by('completed_at')
         question_answers = QuestionAnswer.objects.filter(user=learner, question__assessment__section__courses=course).select_related('question').order_by('answered_at')
 
+        # Gabungkan aktivitas untuk durasi akses
         learner_activities = []
         for mr in material_reads:
             learner_activities.append(('material', mr.material.title, mr.read_at))
@@ -811,109 +803,102 @@ def instructor_learner_detail_report(request):
             learner_activities.append(('question', qa.question.text, qa.answered_at))
         learner_activities.sort(key=lambda x: x[2])
 
-        user_progress, created = CourseProgress.objects.get_or_create(user=learner, course=course)
+        # Progress
+        user_progress, _ = CourseProgress.objects.get_or_create(user=learner, course=course)
         progress_percentage = user_progress.progress_percentage
 
+        # Material stats
         materials = Material.objects.filter(section__courses=course)
         total_materials = materials.count()
-        materials_read_percentage = (len(material_reads) / total_materials * 100) if total_materials > 0 else 0
+        materials_read_percentage = (len(material_reads) / total_materials * 100) if total_materials else 0
 
         material_access_details = []
         for i, activity in enumerate(learner_activities):
             if activity[0] == 'material':
-                material_name = activity[1]
                 access_time = activity[2]
+                duration = None
                 if i + 1 < len(learner_activities):
-                    next_activity_time = learner_activities[i + 1][2]
-                    duration = (next_activity_time - access_time).total_seconds() / 60
-                else:
-                    duration = None
+                    next_time = learner_activities[i + 1][2]
+                    duration = (next_time - access_time).total_seconds() / 60
                 material_access_details.append({
-                    'material_name': material_name,
+                    'material_name': activity[1],
                     'access_time': access_time,
-                    'duration': duration,
+                    'duration': duration
                 })
 
+        # Assessment stats
         assessments = Assessment.objects.filter(section__courses=course)
         total_assessments = assessments.count()
         assessments_completed = len(assessment_reads)
-        assessments_completed_percentage = (assessments_completed / total_assessments * 100) if total_assessments > 0 else 0
+        assessments_completed_percentage = (assessments_completed / total_assessments * 100) if total_assessments else 0
 
         assessment_scores = []
-        askora_submissions_details = []
+        askora_details = []
         total_max_score = Decimal('0')
         total_score = Decimal('0')
-        all_assessments_submitted = True
+        all_submitted = True
 
         for assessment in assessments:
             score_value = Decimal('0')
             total_questions = assessment.questions.count()
 
             if total_questions > 0:
+                # Quiz / regular assessment
+                total_correct = 0
                 answers_exist = False
-                total_correct_answers = 0
                 for question in assessment.questions.all():
                     answers = [qa for qa in question_answers if qa.question_id == question.id]
                     if answers:
                         answers_exist = True
-                    total_correct_answers += sum(1 for qa in answers if qa.choice.is_correct)
+                    total_correct += sum(1 for qa in answers if qa.choice.is_correct)
                 if not answers_exist:
-                    all_assessments_submitted = False
-                if total_questions > 0:
-                    score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
+                    all_submitted = False
+                if total_questions:
+                    score_value = (Decimal(total_correct) / Decimal(total_questions)) * Decimal(assessment.weight)
             else:
-                askora_submissions = Submission.objects.filter(
+                # AskOra submissions
+                submissions = Submission.objects.filter(
                     askora__assessment=assessment,
                     user=learner
                 ).select_related('askora').prefetch_related(
                     Prefetch('peer_reviews', queryset=PeerReview.objects.select_related('reviewer'))
                 )
-                if not askora_submissions.exists():
-                    all_assessments_submitted = False
+                if not submissions.exists():
+                    all_submitted = False
                 else:
-                    latest_submission = askora_submissions.order_by('-submitted_at').first()
-                    assessment_score = AssessmentScore.objects.filter(submission=latest_submission).first()
+                    latest = submissions.order_by('-submitted_at').first()
+                    assessment_score = AssessmentScore.objects.filter(submission=latest).first()
                     if assessment_score:
                         score_value = Decimal(assessment_score.final_score)
 
-                    peer_reviews = latest_submission.peer_reviews.all()
                     peer_reviews_data = [
                         {
                             'reviewer': pr.reviewer.username,
                             'score': pr.score,
                             'weight': pr.weight,
                             'comment': pr.comment,
-                            'reviewed_at': pr.reviewed_at
-                        }
-                        for pr in peer_reviews
+                            'reviewed_at': pr.created_at
+                        } for pr in latest.peer_reviews.all()
                     ]
-                    askora_submissions_details.append({
+                    askora_details.append({
                         'assessment_name': assessment.name,
-                        'submission': latest_submission.content,
-                        'submitted_at': latest_submission.submitted_at,
+                        'submission': latest,
+                        'submitted_at': latest.submitted_at,
                         'final_score': assessment_score.final_score if assessment_score else None,
-                        'peer_reviews': peer_reviews_data,
+                        'peer_reviews': peer_reviews_data
                     })
 
             score_value = min(score_value, Decimal(assessment.weight))
-            assessment_scores.append({
-                'name': assessment.name,
-                'weight': assessment.weight,
-                'score': score_value,
-            })
+            assessment_scores.append({'name': assessment.name, 'weight': assessment.weight, 'score': score_value})
             total_max_score += Decimal(assessment.weight)
             total_score += score_value
 
         total_score = min(total_score, total_max_score)
-        overall_percentage = (total_score / total_max_score * 100) if total_max_score > 0 else 0
-        passing_criteria_met = overall_percentage >= passing_threshold
-        status = "Pass" if all_assessments_submitted and passing_criteria_met else "Fail"
+        overall_percentage = (total_score / total_max_score * 100) if total_max_score else 0
+        threshold = grade_range_dict.get(course.id, Decimal('52.00'))
+        status = "Pass" if all_submitted and overall_percentage >= threshold else "Fail"
 
-        assessment_scores.append({
-            'name': 'Total',
-            'weight': total_max_score,
-            'score': total_score,
-        })
+        assessment_scores.append({'name': 'Total', 'weight': total_max_score, 'score': total_score})
 
         report_data.append({
             'course': course,
@@ -926,83 +911,63 @@ def instructor_learner_detail_report(request):
             'total_assessments': total_assessments,
             'assessments_completed_percentage': assessments_completed_percentage,
             'total_score': total_score,
-            'threshold': passing_threshold,
+            'threshold': threshold,
             'assessment_details': assessment_scores,
-            'askora_submissions_details': askora_submissions_details,
-            'status': status,
+            'askora_submissions_details': askora_details,
+            'status': status
         })
 
+    # CSV export
     if 'export' in request.GET:
+        import csv
+        from django.http import HttpResponse
+
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = f'attachment; filename="learner_detail_report_{learner.username}.csv"'
-
         writer = csv.writer(response)
+
         writer.writerow([
-            'Learner Name', 'Email', 'University', 'Gender',
-            'Course', 'Progress (%)', 'Materials Read', 'Materials Read (%)',
+            'Learner', 'Email', 'University', 'Gender', 'Course',
+            'Progress (%)', 'Materials Read', 'Materials Read (%)',
             'Assessments Completed', 'Assessments Completed (%)', 'Total Score', 'Threshold', 'Status',
-            'Material Name', 'Access Time', 'Duration (Minutes)', 'Assessment Name', 'Weight', 'Score',
-            'AskOra Assessment', 'Submission Content', 'Submitted At', 'Final Score', 'Peer Reviewer', 'Peer Score', 'Peer Comment'
+            'Material', 'Access Time', 'Duration', 'Assessment', 'Weight', 'Score',
+            'AskOra Assessment', 'Submission', 'Submitted At', 'Final Score', 'Peer Reviewer', 'Peer Score', 'Peer Comment'
         ])
 
         for data in report_data:
-            for material in data['material_access_details']:
+            # Materials
+            for m in data['material_access_details']:
                 writer.writerow([
                     learner.username, learner.email, learner.university.name if learner.university else 'N/A', learner.gender or 'N/A',
                     data['course'].course_name,
-                    data['progress_percentage'],
-                    f"{data['materials_read']}/{data['total_materials']}",
-                    data['materials_read_percentage'],
-                    f"{data['assessments_completed']}/{data['total_assessments']}",
-                    data['assessments_completed_percentage'],
-                    data['total_score'],
-                    data['threshold'],
-                    data['status'],
-                    material['material_name'],
-                    material['access_time'],
-                    material['duration'] if material['duration'] is not None else 'N/A',
-                    '', '', '', '', '', '', ''
+                    data['progress_percentage'], f"{data['materials_read']}/{data['total_materials']}", data['materials_read_percentage'],
+                    f"{data['assessments_completed']}/{data['total_assessments']}", data['assessments_completed_percentage'],
+                    data['total_score'], data['threshold'], data['status'],
+                    m['material_name'], m['access_time'], m['duration'],
+                    '', '', '', '', '', '', '', ''
                 ])
-            for assessment in data['assessment_details']:
+            # Assessments
+            for a in data['assessment_details']:
                 writer.writerow([
                     learner.username, learner.email, learner.university.name if learner.university else 'N/A', learner.gender or 'N/A',
                     data['course'].course_name,
-                    data['progress_percentage'],
-                    f"{data['materials_read']}/{data['total_materials']}",
-                    data['materials_read_percentage'],
-                    f"{data['assessments_completed']}/{data['total_assessments']}",
-                    data['assessments_completed_percentage'],
-                    data['total_score'],
-                    data['threshold'],
-                    data['status'],
-                    '', '', '',
-                    assessment['name'],
-                    assessment['weight'],
-                    assessment['score'],
-                    '', '', '', ''
+                    data['progress_percentage'], f"{data['materials_read']}/{data['total_materials']}", data['materials_read_percentage'],
+                    f"{data['assessments_completed']}/{data['total_assessments']}", data['assessments_completed_percentage'],
+                    data['total_score'], data['threshold'], data['status'],
+                    '', '', '', a['name'], a['weight'], a['score'], '', '', '', '', '', '', ''
                 ])
-            for askora in data['askora_submissions_details']:
-                for peer_review in askora['peer_reviews']:
+            # AskOra
+            for ask in data['askora_submissions_details']:
+                for pr in ask['peer_reviews']:
                     writer.writerow([
                         learner.username, learner.email, learner.university.name if learner.university else 'N/A', learner.gender or 'N/A',
                         data['course'].course_name,
-                        data['progress_percentage'],
-                        f"{data['materials_read']}/{data['total_materials']}",
-                        data['materials_read_percentage'],
-                        f"{data['assessments_completed']}/{data['total_assessments']}",
-                        data['assessments_completed_percentage'],
-                        data['total_score'],
-                        data['threshold'],
-                        data['status'],
-                        '', '', '',
-                        '', '', '',
-                        askora['assessment_name'],
-                        askora['submission'],
-                        askora['submitted_at'],
-                        askora['final_score'],
-                        peer_review['reviewer'],
-                        peer_review['score'],
-                        peer_review['comment']
+                        data['progress_percentage'], f"{data['materials_read']}/{data['total_materials']}", data['materials_read_percentage'],
+                        f"{data['assessments_completed']}/{data['total_assessments']}", data['assessments_completed_percentage'],
+                        data['total_score'], data['threshold'], data['status'],
+                        '', '', '', ask['assessment_name'], '', '',
+                        ask['submission'], ask['submitted_at'], ask['final_score'],
+                        pr['reviewer'], pr['score'], pr['comment']
                     ])
 
         return response
@@ -1010,12 +975,5 @@ def instructor_learner_detail_report(request):
     context = {
         'learner': learner,
         'report_data': report_data,
-        'instructor': instructor,
-        'last_login': learner.last_login,
-        'learner_full_name': learner.username,  # Gunakan username sebagai nama
-        'learner_email': learner.email,
-        'learner_university': learner.university.name if learner.university else 'N/A',
-        'learner_gender': learner.gender or 'N/A',  # Tidak menggunakan get_gender_display karena gen menggunakan nilai yang sama
     }
-
     return render(request, 'instructor/learner_detail_report.html', context)
