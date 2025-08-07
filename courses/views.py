@@ -18,7 +18,7 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 from decimal import Decimal, ROUND_DOWN
 from urllib.parse import quote, urlparse, parse_qs, urlencode
-
+from django.template.loader import get_template
 
 # Third-party packages
 import pytz
@@ -241,6 +241,125 @@ def microcredential_report_view(request, microcredential_id):
     }
 
     return render(request, 'micro/microcredential_report.html', context)
+
+
+@login_required
+def microcredential_report_pdf_view(request, microcredential_id):
+    if not request.user.is_staff:
+        raise PermissionDenied("You do not have permission to generate this PDF.")
+
+    # Ambil data dari view utama
+    micro = get_object_or_404(MicroCredential, id=microcredential_id)
+    enrollments = MicroCredentialEnrollment.objects.filter(microcredential=micro)
+    total_participants = enrollments.count()
+    required_courses = micro.required_courses.all()
+
+    participants_data = []
+    for enrollment in enrollments:
+        user = enrollment.user
+        user_micro = UserMicroCredential.objects.filter(user=user, microcredential=micro).first()
+        micro_claim = MicroClaim.objects.filter(user=user, microcredential=micro).first()
+        completed = user_micro.completed if user_micro else False
+        certificate_id = user_micro.certificate_id if user_micro else "N/A"
+        issued_at = micro_claim.issued_at if micro_claim else None
+
+        country = user.country or "N/A"
+        gender = user.gender or "N/A"
+        university = user.university.name if user.university else "N/A"
+        full_name = f"{user.first_name} {user.last_name}".strip() or user.username
+
+        course_progress = []
+        total_user_score = Decimal(0)
+        total_max_score = Decimal(0)
+        all_courses_completed = True
+
+        for course in required_courses:
+            assessments = Assessment.objects.filter(section__courses=course)
+            course_score = Decimal(0)
+            course_max_score = Decimal(0)
+            course_completed = True
+
+            for assessment in assessments:
+                score_value = Decimal(0)
+                total_questions = assessment.questions.count()
+                if total_questions > 0:
+                    total_correct_answers = 0
+                    answers_exist = False
+                    for question in assessment.questions.all():
+                        answers = QuestionAnswer.objects.filter(question=question, user=user)
+                        if answers.exists():
+                            answers_exist = True
+                        total_correct_answers += answers.filter(choice__is_correct=True).count()
+                    if not answers_exist:
+                        course_completed = False
+                    if total_questions > 0:
+                        score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
+                else:
+                    askora_submissions = Submission.objects.filter(askora__assessment=assessment, user=user)
+                    if not askora_submissions.exists():
+                        course_completed = False
+                    else:
+                        latest_submission = askora_submissions.order_by('-submitted_at').first()
+                        assessment_score = AssessmentScore.objects.filter(submission=latest_submission).first()
+                        if assessment_score:
+                            score_value = Decimal(assessment_score.final_score)
+
+                score_value = min(score_value, Decimal(assessment.weight))
+                course_score += score_value
+                course_max_score += assessment.weight
+
+            course_score = course_score.quantize(Decimal('1'), rounding=ROUND_DOWN)
+            course_max_score = course_max_score.quantize(Decimal('1'), rounding=ROUND_DOWN)
+            min_score = Decimal(micro.get_min_score(course) or 0).quantize(Decimal('1'), rounding=ROUND_DOWN)
+            course_passed = course_completed and course_score >= min_score
+
+            course_progress.append({
+                'course_name': course.course_name,
+                'user_score': course_score,
+                'max_score': course_max_score,
+                'min_score': min_score,
+                'completed': course_completed,
+                'passed': course_passed,
+            })
+
+            total_user_score += course_score
+            total_max_score += course_max_score
+            if not course_passed:
+                all_courses_completed = False
+
+        total_user_score = total_user_score.quantize(Decimal('1'), rounding=ROUND_DOWN)
+        total_max_score = total_max_score.quantize(Decimal('1'), rounding=ROUND_DOWN)
+        microcredential_passed = all_courses_completed and total_user_score >= Decimal(micro.min_total_score)
+
+        participants_data.append({
+            'full_name': full_name,
+            'email': user.email,
+            'country': country,
+            'gender': gender,
+            'university': university,
+            'total_user_score': total_user_score,
+            'total_max_score': total_max_score,
+            'min_total_score': micro.min_total_score,
+            'microcredential_passed': microcredential_passed,
+            'completed': completed,
+            'certificate_id': certificate_id,
+            'issued_at': issued_at,
+            'course_progress': course_progress,
+        })
+
+    context = {
+        'micro': micro,
+        'participants': participants_data,
+        'current_date': now().date(),
+    }
+
+    template = get_template('micro/microcredential_report_pdf.html')
+    html_content = template.render(context)
+    pdf_file = HTML(string=html_content).write_pdf()
+
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = f'filename="Microcredential_Report_{micro.id}_{now().strftime("%Y%m%d")}.pdf"'
+    return response
 
 
 @login_required

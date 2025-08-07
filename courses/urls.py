@@ -97,6 +97,7 @@ urlpatterns = [
     path('microcredential/<int:microcredential_id>/add-review/', views.add_microcredential_review, name='add_microcredential_review'),
     path('microcredential/<int:microcredential_id>/<slug:slug>/add_comment/', views.add_comment_microcredential, name='add_comment_microcredential'),
     path('microcredential/<int:microcredential_id>/report/', views.microcredential_report_view, name='microcredential_report'),
+    path('microcredential/report/pdf/<int:microcredential_id>/', views.microcredential_report_pdf_view, name='microcredential_report_pdf'),
 
     path('comment/<int:comment_id>/reply/', views.reply_comment, name='reply_comment'),
     path('sosial/', views.create_and_list_sos_posts, name='create_and_list_sos_posts'),
