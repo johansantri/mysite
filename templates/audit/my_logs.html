@@ -1,0 +1,125 @@
+{% extends "home/tes.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4 fw-bold text-center text-dark">My Activity</h1>
+
+    {% if logs %}
+        <div class="row gy-4">
+            {% for log in logs %}
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card shadow-sm border-0 h-100 rounded-3">
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-center mb-3 text-muted small">
+                                <div><strong>{{ log.timestamp|date:"d M Y, H:i" }}</strong></div>
+                                <div>
+                                    <span class="badge bg-primary rounded-pill">{{ log.device_type|default:"Unknown Device" }}</span>
+                                </div>
+                            </div>
+
+                            <p class="mb-2 text-dark">
+                                <strong>Action:</strong> {{ log.action|capfirst }}
+                            </p>
+                            <p class="mb-3 text-dark">
+                                <strong>Object:</strong> {{ log.content_type }} <span class="text-muted">#{{ log.object_id }}</span>
+                            </p>
+
+                            {% if log.change %}
+                                <div class="mt-2">
+                                    <h6 class="fw-semibold mb-2 text-dark">
+                                        <button class="btn btn-link text-decoration-none p-0" type="button" data-bs-toggle="collapse" data-bs-target="#changes-{{ forloop.counter }}" aria-expanded="false" aria-controls="changes-{{ forloop.counter }}">
+                                            Changes <i class="bi bi-chevron-down ms-1"></i>
+                                        </button>
+                                    </h6>
+                                    <div class="collapse" id="changes-{{ forloop.counter }}">
+                                        <ul class="list-group list-group-flush">
+                                            {% for key, value in log.change.items %}
+                                                <li class="list-group-item border-0 px-0 py-1">
+                                                    <strong class="text-dark">{{ key|capfirst }}:</strong>
+                                                    {% if value.from or value.to %}
+                                                        <div class="ms-3 mt-1 small">
+                                                            <div class="mb-1">
+                                                                <span class="badge bg-danger-subtle text-danger rounded-pill me-2">From:</span>
+                                                                <span>{{ value.from|default:"—" }}</span>
+                                                            </div>
+                                                            <div>
+                                                                <span class="badge bg-success-subtle text-success rounded-pill me-2">To:</span>
+                                                                <span>{{ value.to|default:"—" }}</span>
+                                                            </div>
+                                                        </div>
+                                                    {% else %}
+                                                        <span class="ms-2 text-muted">{{ value }}</span>
+                                                    {% endif %}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <p class="text-muted fst-italic mb-0">No changes recorded.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        <nav class="mt-5" aria-label="Pagination">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1">&laquo; First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">&laquo; First</span>
+                    </li>
+                    <li class="page-item disabled">
+                        <span class="page-link">Previous</span>
+                    </li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <li class="page-item active" aria-current="page">
+                            <span class="page-link">{{ num }}</span>
+                        </li>
+                    {% elif num > page_obj.number|add:-3 and num < page_obj.number|add:3 %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Next</span>
+                    </li>
+                    <li class="page-item disabled">
+                        <span class="page-link">Last &raquo;</span>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% else %}
+        <div class="text-center mt-5">
+            <p class="text-muted fs-5">No activity recorded yet.</p>
+            <i class="bi bi-file-earmark-text display-4 text-secondary"></i>
+        </div>
+    {% endif %}
+</div>
+
+
+{% endblock %}
