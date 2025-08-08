@@ -18,7 +18,7 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="LMSKu">
-  <meta property="og:title" content="LMSKu - Your Path to Mastery">
+  <meta property="og:title" content="LMSKu - Learn New Skills with Expert-Led Online Courses">
   <meta property="og:description" content="Explore {{ total_courses|default:"hundreds of" }}+ expert-led courses and earn certifications anytime, anywhere.">
   <meta property="og:image" content="{{ base_url }}{% static 'assets/img/logo/logo-five.png' %}">
   <meta property="og:image:type" content="image/png">
@@ -64,18 +64,47 @@
 {% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="bg-gray-900 text-white py-12 sm:py-16 md:py-20 relative overflow-hidden" aria-labelledby="hero-heading">
-  <div class="absolute inset-0 bg-gradient-to-br from-black to-gray-700 opacity-50"></div>
+<!-- Hero Section: Merah Putih dengan Gradient Garis -->
+<section class="bg-white text-gray-900 py-12 sm:py-16 md:py-20 lg:py-24 relative overflow-hidden" role="banner" aria-labelledby="hero-heading">
+  <!-- Background Guardian: Gradient Merah-Putih Diagonal -->
+  <div class="absolute inset-0 bg-gradient-to-tl from-red-600 to-white opacity-20 transition-opacity duration-1000 ease-in-out"></div>
+  <!-- Pola Garis Melengkung -->
+  <div class="absolute inset-0 bg-[url('{% static 'assets/img/patterns/hero-pattern.svg' %}')] bg-cover bg-center opacity-10 pointer-events-none"></div>
+
   <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-    <h1 id="hero-heading" class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold mb-6 text-center hover:text-red-500 transition-colors duration-300">Master New Skills Today!</h1>
-    <p class="text-sm sm:text-base md:text-lg lg:text-xl mb-8 text-center text-gray-200 hover:text-red-500 transition-colors duration-300 max-w-3xl mx-auto">Join {{ total_users }}+ learners exploring {{ total_courses }}+ expert-led courses, anytime, anywhere.</p>
-    <div class="text-center">
+    <!-- Heading -->
+    <h1 id="hero-heading" class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold mb-4 text-center text-gray-900 tracking-tight animate-fade-in">
+      Master New Skills with LMSKu Online Courses
+    </h1>
+    <!-- Subheading -->
+    <p class="text-base sm:text-lg md:text-xl lg:text-2xl mb-8 text-center text-gray-700 max-w-3xl mx-auto leading-relaxed animate-fade-in animation-delay-200">
+      Join <span class="font-semibold">{{ total_users|default:"thousands of" }}</span> learners exploring <span class="font-semibold">{{ total_courses|default:"hundreds of" }}</span> expert-led courses, anytime, anywhere.
+    </p>
+    <!-- CTA -->
+    <div class="text-center animate-fade-in animation-delay-400">
       {% if request.user.is_authenticated %}
-        <a href="{% url 'authentication:course_list' %}" class="inline-block bg-white text-black font-semibold px-4 py-2 sm:px-6 sm:py-3 rounded-lg hover:bg-gray-200 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base">Discover Courses</a>
+        <a href="{% url 'authentication:course_list' %}"
+           class="inline-block bg-red-600 text-white font-semibold px-6 py-3 sm:px-8 sm:py-4 rounded-lg hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 text-base sm:text-lg shadow-md hover:shadow-lg"
+           aria-label="Discover available courses on LMSKu">
+          Discover Courses
+        </a>
       {% else %}
-        <a href="{% url 'authentication:register' %}" class="inline-block bg-white text-black font-semibold px-4 py-2 sm:px-6 sm:py-3 rounded-lg hover:bg-gray-200 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base">Start Learning Now</a>
+        <a href="{% url 'authentication:register' %}"
+           class="inline-block bg-red-600 text-white font-semibold px-6 py-3 sm:px-8 sm:py-4 rounded-lg hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 text-base sm:text-lg shadow-md hover:shadow-lg"
+           aria-label="Start learning with LMSKu by registering now">
+          Start Learning Now
+        </a>
       {% endif %}
+    </div>
+ 
+    <div class="mt-10 hidden lg:block animate-fade-in animation-delay-600 text-center">
+      <!-- Icon -->
+      <i class="fas fa-book-reader text-red-600 mx-auto text-[6rem]"></i>
+
+      <!-- Tulisan -->
+      <p class="mt-4 text-lg font-semibold text-gray-900">
+        Online learning illustration with LMSKu
+      </p>
     </div>
   </div>
 </section>
@@ -189,60 +218,67 @@
 
 <!-- Global Trust Section -->
 <!-- Global Trust Section -->
-<section class="py-12 bg-gray-50">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="text-center mb-20">
-      <h2 class="text-3xl font-semibold text-gray-800 mb-6">
+<section class="py-12 bg-gray-50 relative overflow-hidden" aria-labelledby="global-trust-heading">
+  <!-- Background Guardian: Gradient Merah-Putih Diagonal -->
+  <div class="absolute inset-0 bg-gradient-to-tl from-red-600 via-red-200 to-white opacity-8 transition-opacity duration-1000 ease-in-out"></div>
+  <!-- Pola Garis Melengkung -->
+  <div class="absolute inset-0 bg-[url('{% static 'assets/img/patterns/trust-wave-pattern.svg' %}')] bg-cover bg-center opacity-10 pointer-events-none animate-pulse"></div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="text-center mb-12">
+      <h2 id="global-trust-heading" class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 mb-4 tracking-tight animate-fade-in">
         Trusted by Learners & Institutions Across the Globe
       </h2>
-      <p class="text-gray-600 max-w-xl mx-auto mb-6">
+      <p class="text-gray-600 text-sm sm:text-base md:text-lg max-w-xl mx-auto leading-relaxed animate-fade-in animation-delay-200">
         Join thousands of users from over 40 countries who trust LMSKu for personal and professional growth.
       </p>
+    </div>
 
-      <!-- Partner Logos Grid -->
-      <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-6 justify-items-center text-gray-400 text-3xl sm:text-4xl">
-        {% for partner in partners|slice:":14" %}
-          {% if partner.name and partner.name.slug %}
-            <a href="{% url 'courses:org_partner' partner.name.slug %}"
-               class="flex flex-col items-center group transition"
-               aria-label="View {{ partner.name }}">
-               
-              {% if partner.icon_class %}
-                <!-- Font Awesome Icon -->
-                <i class="{{ partner.icon_class }} group-hover:text-red-500 transition duration-300"
-                   title="{{ partner.name }}"></i>
-              {% else %}
-                <!-- Image Logo Fallback -->
-                <img src="{% if partner.logo %}{{ partner.logo.url }}{% else %}/static/images/partner-100.webp{% endif %}"
-                     alt="{{ partner.name.kode }}"
-                     class="w-16 h-16 sm:w-20 sm:h-20 object-contain grayscale group-hover:grayscale-0 transition duration-300"
-                     loading="lazy">
-              {% endif %}
-
-              <!-- Partner Name on hover -->
-              <span class="text-xs text-gray-500 mt-2 opacity-0 group-hover:opacity-100 transition duration-300">
-                {{ partner.name }}
-              </span>
-            </a>
-          {% endif %}
-        {% endfor %}
-      </div>
+    <!-- Partner Logos Grid -->
+    <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-6 justify-items-center text-gray-400 text-3xl sm:text-4xl">
+      {% for partner in partners|slice:":14" %}
+        {% if partner.name and partner.name.slug %}
+          <a href="{% url 'courses:org_partner' partner.name.slug %}"
+             class="flex flex-col items-center group transition animate-fade-in animation-delay-{% cycle '200' '400' '600' '800' '1000' '1200' '1400' %}"
+             aria-label="View {{ partner.name }} partnership with LMSKu">
+            {% if partner.icon_class %}
+              <!-- Font Awesome Icon -->
+              <i class="{{ partner.icon_class }} group-hover:text-red-600 transition-colors duration-300"
+                 title="{{ partner.name }}"></i>
+            {% else %}
+              <!-- Image Logo Fallback -->
+              <img src="{% if partner.logo %}{{ partner.logo.url }}{% else %}/static/images/partner-100.webp{% endif %}"
+                   alt="{{ partner.name }} - LMSKu Partner"
+                   class="w-16 h-16 sm:w-20 sm:h-20 object-contain grayscale group-hover:grayscale-0 group-hover:ring-1 group-hover:ring-red-400 transition-all duration-300 rounded"
+                   loading="lazy">
+            {% endif %}
+            <!-- Partner Name on hover -->
+            <span class="text-xs text-gray-500 mt-2 opacity-0 group-hover:opacity-100 transition duration-300">
+              {{ partner.name }}
+            </span>
+          </a>
+        {% endif %}
+      {% endfor %}
     </div>
   </div>
 </section>
 
 
-
 <!-- Micro Courses Section -->
-<section class="py-14 bg-white" aria-labelledby="micro-courses-heading">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<!-- Micro Courses Section -->
+<section class="py-14 bg-white relative overflow-hidden" aria-labelledby="micro-courses-heading">
+  <!-- Background Guardian: Gradient Merah-Putih Radial -->
+  <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_#dc2626_0%,_#f9fafb_70%)] opacity-10 transition-opacity duration-1000 ease-in-out"></div>
+  <!-- Pola Garis Melengkung -->
+  <div class="absolute inset-0 bg-[url('{% static 'assets/img/patterns/micro-wave-pattern.svg' %}')] bg-cover bg-center opacity-10 pointer-events-none animate-pulse"></div>
 
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
     <!-- Title & Narasi -->
     <div class="text-center mb-10">
-      <h2 id="micro-courses-heading" class="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-3">
+      <h2 id="micro-courses-heading" class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 mb-3 tracking-tight animate-fade-in">
         Build Skills Fast with Microcredentials
       </h2>
-      <p class="text-gray-600 text-sm sm:text-base max-w-2xl mx-auto">
+      <p class="text-gray-600 text-sm sm:text-base md:text-lg max-w-2xl mx-auto leading-relaxed animate-fade-in animation-delay-200">
         Gain job-ready expertise in record time. Our microcredential courses are designed for professionals who want practical skills without the long-term commitment — all in 2 hours or less.
       </p>
     </div>
@@ -251,19 +287,18 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {% for microcredential in popular_microcredentials|slice:":3" %}
         <a href="{% url 'courses:micro_detail' microcredential.id microcredential.slug %}"
-           class="group block bg-gray-50 hover:bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
-          
+           class="group block bg-gray-50 hover:bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 animate-fade-in animation-delay-{% cycle '200' '400' '600' %}"
+           aria-label="Explore microcredential: {{ microcredential.title }} on LMSKu">
           <div class="flex items-center gap-4">
             <!-- Icon or Thumbnail -->
             <img 
               src="{{ microcredential.image.url|default:'/static/images/micro-48.webp' }}" 
               srcset="{{ microcredential.image.url|default:'/static/images/micro-24.webp' }} 24w, {{ microcredential.image.url|default:'/static/images/micro-48.webp' }} 48w" 
               sizes="(max-width: 600px) 24px, 48px" 
-              alt="{{ microcredential.title }}" 
-              class="h-12 w-12 sm:h-14 sm:w-14 rounded-full object-cover shadow"
+              alt="{{ microcredential.title }} - LMSKu Microcredential" 
+              class="h-12 w-12 sm:h-14 sm:w-14 rounded-full object-cover shadow ring-1 ring-red-200 group-hover:ring-red-400 transition-all duration-300"
               loading="lazy"
               width="48" height="48">
-            
             <div class="flex-grow">
               <h3 class="text-sm sm:text-base font-semibold text-gray-900 group-hover:text-red-600 transition-colors line-clamp-2">
                 {{ microcredential.title }}
@@ -273,7 +308,6 @@
               </p>
             </div>
           </div>
-
         </a>
       {% empty %}
         <p class="text-center text-gray-500 text-sm sm:text-base col-span-full">
@@ -284,28 +318,33 @@
 
     <!-- CTA -->
     {% if popular_microcredentials|length > 3 %}
-    <div class="text-center mt-10">
-      <a href="{% url 'courses:micro_list' %}" class="inline-block bg-black text-white font-semibold px-6 py-2 rounded-md hover:bg-gray-800 hover:text-red-400 focus:ring-2 focus:ring-red-500 transition-colors">
+    <div class="text-center mt-10 animate-fade-in animation-delay-800">
+      <a href="{% url 'courses:micro_list' %}"
+         class="inline-block bg-red-600 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-lg font-semibold hover:bg-red-700 hover:shadow-lg focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 text-base sm:text-lg shadow-md"
+         aria-label="Explore all microcredentials on LMSKu">
         Explore All Microcredentials
       </a>
     </div>
     {% endif %}
-
   </div>
 </section>
 
 
-
 <!-- Blog Section -->
-<section class="py-14 bg-white" aria-labelledby="blog-heading">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<!-- Blog Section -->
+<section class="py-14 bg-white relative overflow-hidden" aria-labelledby="blog-heading">
+  <!-- Background Guardian: Gradient Merah-Putih Diagonal -->
+  <div class="absolute inset-0 bg-gradient-to-tl from-red-600 to-white opacity-10 transition-opacity duration-1000 ease-in-out"></div>
+  <!-- Pola Garis Melengkung -->
+  <div class="absolute inset-0 bg-[url('{% static 'assets/img/patterns/blog-pattern.svg' %}')] bg-cover bg-center opacity-8 pointer-events-none"></div>
 
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
     <!-- Heading & Narasi -->
     <div class="text-center mb-10">
-      <h2 id="blog-heading" class="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-3">
+      <h2 id="blog-heading" class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 mb-3 tracking-tight animate-fade-in">
         Stay Inspired with Our Blog
       </h2>
-      <p class="text-gray-600 text-sm sm:text-base max-w-2xl mx-auto">
+      <p class="text-gray-600 text-sm sm:text-base md:text-lg max-w-2xl mx-auto leading-relaxed animate-fade-in animation-delay-200">
         Get tips, insights, and inspiring stories from the world of online education and professional development.
       </p>
     </div>
@@ -313,19 +352,16 @@
     <!-- Blog Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {% for article in latest_articles|slice:":3" %}
-        <article class="bg-gray-50 hover:bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
-          
-          <a href="{% url 'blog:blog-detail' slug=article.slug %}" class="block p-5">
-            <!-- Optional Image -->
+        <article class="bg-gray-50 hover:bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 animate-fade-in animation-delay-{% cycle '200' '400' '600' %}">
+          <a href="{% url 'blog:blog-detail' slug=article.slug %}" class="block p-5" aria-label="Read article: {{ article.title }}">
+            <!-- Image -->
             {% if article.image %}
-              <img src="{{ article.image.url }}" alt="" class="rounded mb-4 w-full h-45 object-cover" loading="lazy">
+              <img src="{{ article.image.url }}" alt="{{ article.title }} - LMSKu Blog" class="rounded mb-4 w-full h-48 object-cover" loading="lazy">
             {% endif %}
-
             <!-- Title -->
-            <h3 class="text-base sm:text-lg font-semibold text-gray-900 group-hover:text-red-600 line-clamp-2 mb-2">
+            <h3 class="text-base sm:text-lg font-semibold text-gray-900 hover:text-red-600 line-clamp-2 mb-2 transition-colors duration-300">
               {{ article.title }}
             </h3>
-
             <!-- Excerpt -->
             <p class="text-sm text-gray-600 line-clamp-3">
               {{ article.excerpt|truncatewords:20 }}
@@ -339,18 +375,18 @@
       {% endfor %}
     </div>
 
-    <!-- CTA (optional) -->
+    <!-- CTA -->
     {% if latest_articles|length > 3 %}
-    <div class="text-center mt-10">
-      <a href="{% url 'blog:blog-list' %}" class="inline-block bg-black text-white px-6 py-2 rounded-md font-semibold hover:bg-gray-800 hover:text-red-400 focus:ring-2 focus:ring-red-500 transition">
+    <div class="text-center mt-10 animate-fade-in animation-delay-800">
+      <a href="{% url 'blog:blog-list' %}"
+         class="inline-block bg-red-600 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-lg font-semibold hover:bg-red-700 hover:shadow-lg focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 text-base sm:text-lg shadow-md"
+         aria-label="Read all blog articles on LMSKu">
         Read All Articles
       </a>
     </div>
     {% endif %}
-
   </div>
 </section>
-
 
 <!-- Instructors Section -->
 <section class="py-14 bg-gray-50 relative overflow-hidden" aria-labelledby="instructors-heading">
