@@ -2,6 +2,39 @@
 {% load static %}
 {% load humanize %}
 {% load extra_filters %}
+{% block meta %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="description" content="Explore a wide range of online courses on LMSKu, designed to enhance your skills and knowledge with expert instructors.">
+    <meta name="keywords" content="Online Courses, E-learning, LMSKu, Digital Education, Skill Development">
+    <meta name="author" content="LMSKu Team">
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+    <title>Course List - LMSKu</title>
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Course List - LMSKu">
+    <meta property="og:description" content="Explore a wide range of online courses on LMSKu, designed to enhance your skills and knowledge.">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image" content="{% static 'assets/img/course-cover.jpg' %}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Course List - LMSKu">
+    <meta name="twitter:description" content="Explore a wide range of online courses on LMSKu, designed to enhance your skills and knowledge.">
+    <meta name="twitter:image" content="{% static 'assets/img/course-cover.jpg' %}">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Course List - LMSKu",
+      "description": "Explore a wide range of online courses on LMSKu, designed to enhance your skills and knowledge with expert instructors.",
+      "url": "{{ request.build_absolute_uri }}"
+    }
+    </script>
+{% endblock meta %}
 
 {% block content %}
 <section class="py-8 bg-white font-sans">
