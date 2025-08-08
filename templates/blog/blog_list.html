@@ -1,11 +1,57 @@
 {% extends 'home/base.html' %}
 {% load static blog_filters %}
 
-{% block extra_head %}
+{% block meta %}
+  {# === META SEO DASAR === #}
+  <title>
+    {% if current_category %}
+      {{ current_category.name }} - Blog - LMSKu
+    {% elif current_tag %}
+      Tag: {{ current_tag.name }} - Blog - LMSKu
+    {% else %}
+      Blog - LMSKu
+    {% endif %}
+  </title>
   <meta name="description" content="{% if current_category %}Read blog posts about {{ current_category.name }}{% elif current_tag %}Explore posts tagged {{ current_tag.name }}{% else %}Discover the latest insights, stories, and updates from our education and tech community{% endif %}">
-  <meta name="keywords" content="blog, {{ current_category.name|default:'articles' }}, {{ current_tag.name|default:'insights' }}, education, technology, learning, tips">
+  <meta name="keywords" content="blog, {% if current_category %}{{ current_category.name }}{% else %}articles{% endif %}, {% if current_tag %}{{ current_tag.name }}{% else %}insights{% endif %}, education, technology, learning, tips">
   <meta name="robots" content="index, follow">
+
+  {# === CANONICAL URL === #}
+  <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+  {# === OPEN GRAPH (FB, LinkedIn) === #}
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{% if current_category %}{{ current_category.name }} - Blog - LMSKu{% elif current_tag %}Tag: {{ current_tag.name }} - Blog - LMSKu{% else %}Blog - LMSKu{% endif %}">
+  <meta property="og:description" content="{% if current_category %}Read blog posts about {{ current_category.name }}{% elif current_tag %}Explore posts tagged {{ current_tag.name }}{% else %}Discover the latest insights, stories, and updates from our education and tech community{% endif %}">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta property="og:image" content="{% static 'assets/img/blog-default-og.jpg' %}">  {# Ganti dengan path gambarmu #}
+
+  {# === TWITTER CARD === #}
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{% if current_category %}{{ current_category.name }} - Blog - LMSKu{% elif current_tag %}Tag: {{ current_tag.name }} - Blog - LMSKu{% else %}Blog - LMSKu{% endif %}">
+  <meta name="twitter:description" content="{% if current_category %}Read blog posts about {{ current_category.name }}{% elif current_tag %}Explore posts tagged {{ current_tag.name }}{% else %}Discover the latest insights, stories, and updates from our education and tech community{% endif %}">
+  <meta name="twitter:image" content="{% static 'assets/img/blog-default-og.jpg' %}">  {# Sama dengan og:image #}
+
+  {# === STRUCTURED DATA (JSON-LD) === #}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "LMSKu Blog",
+    "url": "{{ request.build_absolute_uri }}",
+    "description": "{% if current_category %}Read blog posts about {{ current_category.name }}{% elif current_tag %}Explore posts tagged {{ current_tag.name }}{% else %}Discover the latest insights, stories, and updates from our education and tech community{% endif %}",
+    "publisher": {
+      "@type": "Organization",
+      "name": "LMSKu",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "{% static 'assets/img/logo.png' %}"
+      }
+    }
+  }
+  </script>
 {% endblock %}
+
 
 {% block content %}
 <section class="py-8 sm:py-12 bg-gray-50">

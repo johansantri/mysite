@@ -1,6 +1,37 @@
 {% extends 'home/base.html' %}
 {% load humanize %}
 {% load static %}
+{% block meta %}
+  <title>Courses in {{ category.name }} - LMSKu</title>
+  <meta name="description" content="Explore top-tier courses in {{ category.name }} curated for your learning needs.">
+  <meta name="keywords" content="courses, {{ category.name }}, learning, education, online course">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Courses in {{ category.name }} - LMSKu">
+  <meta property="og:description" content="Explore top-tier courses in {{ category.name }} curated for your learning needs.">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta property="og:image" content="{% static 'assets/img/category-default.jpg' %}">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Courses in {{ category.name }} - LMSKu">
+  <meta name="twitter:description" content="Explore top-tier courses in {{ category.name }} curated for your learning needs.">
+  <meta name="twitter:image" content="{% static 'assets/img/category-default.jpg' %}">
+
+  <!-- JSON-LD for Category Page -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Courses in {{ category.name }}",
+    "description": "Explore top-tier courses in {{ category.name }} curated for your learning needs.",
+    "url": "{{ request.build_absolute_uri }}"
+  }
+  </script>
+{% endblock %}
 
 {% block content %}
 
