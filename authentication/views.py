@@ -67,66 +67,104 @@ def about(request):
     return render(request, 'home/about.html')
 
 
+@login_required
 def mycourse(request):
-    if request.user.is_authenticated:
-        courses = Enrollment.objects.filter(user=request.user)
+    user = request.user
+    required_fields = {
+        'first_name': 'First Name',
+        'last_name': 'Last Name',
+        'email': 'Email',
+        'phone': 'Phone Number',
+        'gender': 'Gender',
+        'birth': 'Date of Birth',
+    }
 
-        if request.method != 'GET':
-            return HttpResponseNotAllowed(['GET'])
-        
-        search_query = request.GET.get('search', '')
-        if search_query:
-            courses = courses.filter(Q(course__course_name__icontains=search_query))
+    missing_fields = [
+        label for field, label in required_fields.items()
+        if not getattr(user, field, None)
+        or (isinstance(getattr(user, field), str) and not getattr(user, field).strip())
+    ]
 
-        courses = courses.order_by('-enrolled_at')
-        paginator = Paginator(courses, 10)
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
+    if missing_fields:
+        messages.warning(
+            request,
+            f"Please fill in the following required information: {', '.join(missing_fields)}"
+        )
+        return redirect('authentication:edit-profile', pk=user.pk)
 
-        # Ambil semua LastAccess untuk user ini
-        last_access_list = LastAccessCourse.objects.filter(user=request.user)
-        last_access_map = { la.course_id: la for la in last_access_list }
+    if request.method != 'GET':
+        return HttpResponseNotAllowed(['GET'])
 
-        return render(request, 'learner/mycourse_list.html', {
-            'page_obj': page_obj,
-            'search_query': search_query,
-            'last_access_map': last_access_map,
-        })
+    courses = Enrollment.objects.filter(user=request.user)
 
-    return redirect("/login/?next=%s" % request.path)
+    search_query = request.GET.get('search', '')
+    if search_query:
+        courses = courses.filter(Q(course__course_name__icontains=search_query))
 
+    courses = courses.order_by('-enrolled_at')
+    paginator = Paginator(courses, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    last_access_list = LastAccessCourse.objects.filter(user=request.user)
+    last_access_map = {la.course_id: la for la in last_access_list}
+
+    return render(request, 'learner/mycourse_list.html', {
+        'page_obj': page_obj,
+        'search_query': search_query,
+        'last_access_map': last_access_map,
+    })
+@login_required
 def microcredential_list(request):
-    if request.user.is_authenticated:
-        # Mengambil semua MicroCredential yang diambil oleh user yang sedang login
-        microcredentials = MicroCredentialEnrollment.objects.filter(user=request.user)
-        # Jika metode bukan GET, batalkan
-        if request.method != 'GET':
-            return HttpResponseNotAllowed(['GET'])
-        
-        # Pencarian (Search)
-        search_query = request.GET.get('search', '')
-        if search_query:
-            # Menambahkan filter pencarian berdasarkan judul atau nama microcredential
-            microcredentials = microcredentials.filter(Q(microcredential__title__icontains=search_query))
+    if request.method != 'GET':
+        return HttpResponseNotAllowed(['GET'])
 
-        # Add order_by to ensure consistent pagination
-        microcredentials = microcredentials.order_by('microcredential__title')  # Change 'title' to your preferred field
+    user = request.user
 
-        # Pagination
-        paginator = Paginator(microcredentials, 10)  # 10 item per halaman
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
+    # Validasi data diri wajib
+    required_fields = {
+        'first_name': 'First Name',
+        'last_name': 'Last Name',
+        'email': 'Email',
+        'phone': 'Phone Number',
+        'gender': 'Gender',
+        'birth': 'Date of Birth',
+    }
 
-        # Render template dengan data microcredentials dan pagination
-        return render(request, 'learner/microcredential_list.html', {
-            'page_obj': page_obj,
-            'search_query': search_query
-        })
+    missing_fields = [
+        label for field, label in required_fields.items()
+        if not getattr(user, field, None)
+        or (isinstance(getattr(user, field), str) and not getattr(user, field).strip())
+    ]
 
-    # Jika user belum login, redirect ke halaman login
-    return redirect("/login/?next=%s" % request.path)
+    if missing_fields:
+        messages.warning(
+            request,
+            f"Please complete your profile before accessing microcredentials: {', '.join(missing_fields)}"
+        )
+        return redirect('authentication:edit-profile', pk=user.pk)
 
+    # Ambil data microcredential user
+    microcredentials = MicroCredentialEnrollment.objects.filter(user=user)
 
+    # Pencarian
+    search_query = request.GET.get('search', '')
+    if search_query:
+        microcredentials = microcredentials.filter(
+            Q(microcredential__title__icontains=search_query)
+        )
+
+    microcredentials = microcredentials.order_by('microcredential__title')
+
+    # Pagination
+    paginator = Paginator(microcredentials, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'learner/microcredential_list.html', {
+        'page_obj': page_obj,
+        'search_query': search_query
+    })
 
 logger = logging.getLogger(__name__)
 

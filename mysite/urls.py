@@ -28,7 +28,7 @@ urlpatterns = [
     path('', include('blog.urls', namespace='blog')),
     path('', include('licensing.urls', namespace='licensing')),
     path('', include('payments.urls', namespace='payments')),
-    path('', include('audit.urls', namespace='audit')),
+    
     path('kuruk/', admin.site.urls),
     path('captcha/', include('captcha.urls')),
     path('accounts/',include("allauth.urls")),
