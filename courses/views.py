@@ -98,8 +98,9 @@ from blog.models import BlogPost
 from licensing.models import License
 from payments.models import Payment
 
-
-
+from django.db.models import Count, Avg, Sum, Q, Value as V
+from django.db.models.functions import Coalesce
+from django.db.models import DecimalField
 
 
 
@@ -5512,17 +5513,17 @@ def update_partner(request, partner_id):
 
 
 #partner view
-#@cache_page(60 * 5)
+#@cache_page(60 * 5)  # Aktifkan cache kalau sudah siap
 def partnerView(request):
     if not request.user.is_authenticated:
-        return redirect("/login/?next=%s" % request.path)
+        return redirect(f"/login/?next={request.path}")
 
     query = request.GET.get('q', '')
 
-    # Ambil semua partner (jika superuser) atau hanya milik user saat ini
+    # Filter partners by user role
     partners = Partner.objects.all() if request.user.is_superuser else Partner.objects.filter(user_id=request.user.id)
 
-    # Filter berdasarkan pencarian
+    # Filter berdasarkan query pencarian
     if query:
         partners = partners.filter(
             Q(name__icontains=query) |
@@ -5530,13 +5531,31 @@ def partnerView(request):
             Q(phone__icontains=query)
         )
 
-    # Annotasi jumlah kursus, peserta unik, dan rating rata-rata
+    # Subquery untuk hitung total saldo partner dari payment yang completed
+    payments_subquery = Payment.objects.filter(
+        course__org_partner=OuterRef('pk'),  # Pastikan field relasi ini benar sesuai model kamu
+        status='completed'
+    ).values('course__org_partner').annotate(
+        total_earning=Sum('snapshot_partner_earning')
+    ).values('total_earning')
+
+    # Annotate partner dengan data statistik dan saldo
     partners = partners.annotate(
         total_courses=Count('courses', distinct=True),
         total_learners=Count('courses__enrollments__user', distinct=True),
-        average_rating=Avg('courses__ratings__rating')
+        average_rating=Avg('courses__ratings__rating'),
+        total_instructors=Count('instructors', distinct=True),
+        balance_computed=Coalesce(
+            Subquery(payments_subquery, output_field=DecimalField()),
+            V(0),
+            output_field=DecimalField()
+        )
     )
 
+    # Optimasi query relasi yang mungkin akan digunakan di template
+    partners = partners.select_related('user').prefetch_related('courses', 'instructors')
+
+    # Pagination
     paginator = Paginator(partners, 10)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
@@ -5548,6 +5567,7 @@ def partnerView(request):
     }
 
     return render(request, 'partner/partner_view.html', context)
+
 
 
 #detail_partner
