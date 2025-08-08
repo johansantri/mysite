@@ -1350,7 +1350,7 @@ def export_enrollments_csv(request):
 
     return response
 
-# Create your views here.
+# update your views here.
 @login_required
 def partner_update_view(request, partner_id, universiti_slug):
     # Mendapatkan partner yang sesuai dengan ID yang diberikan

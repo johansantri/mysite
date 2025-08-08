@@ -1,6 +1,9 @@
 # forms.py
 import requests
 import xml.etree.ElementTree as ET
+import re
+from django.core.validators import URLValidator
+from django.core.exceptions import ValidationError
 from django import forms
 from django.forms import inlineformset_factory
 from django.core.cache import cache
@@ -699,69 +702,177 @@ class PartnerForm(forms.ModelForm):
     
 
 #selfupdatepartner
+def validate_optional_url(field_name, value):
+    if value:
+        validator = URLValidator()
+        try:
+            validator(value)
+        except ValidationError:
+            raise forms.ValidationError(f"URL untuk {field_name} tidak valid.")
+    return value
+
+
+# Styles reusable untuk input biasa
+base_input_style = (
+    'padding: 10px; '
+    'border-radius: 8px; '
+    'border: 1.5px solid #ccc; '
+    'box-shadow: 1px 1px 5px rgba(0,0,0,0.05); '
+    'transition: border-color 0.3s ease;'
+)
+base_onfocus = "this.style.borderColor='#007bff'; this.style.boxShadow='0 0 5px #007bff';"
+base_onblur = "this.style.borderColor='#ccc'; this.style.boxShadow='1px 1px 5px rgba(0,0,0,0.05)';"
+
+personal_data_widgets = {
+    'phone': forms.TextInput(attrs={
+        'placeholder': 'Phone Number',
+        'class': 'form-control',
+        'style': f'width: 300px; {base_input_style}',
+        'maxlength': '15',
+        'onfocus': base_onfocus,
+        'onblur': base_onblur,
+    }),
+    'address': forms.Textarea(attrs={
+        'placeholder': 'Address',
+        'class': 'form-control',
+        'rows': 3,
+        'style': (
+            'border-radius: 8px; padding: 10px; border: 1.5px solid #ccc; '
+            'box-shadow: 1px 1px 5px rgba(0,0,0,0.05); transition: border-color 0.3s ease; resize:none;'
+        ),
+        'onfocus': base_onfocus,
+        'onblur': base_onblur,
+    }),
+    'description': CKEditor5Widget(attrs={
+        'class': 'form-control',
+        'placeholder': 'Description',
+        'style': f'border-radius: 8px; border: 1.5px solid #ccc; box-shadow: 1px 1px 5px rgba(0,0,0,0.05);',
+    }),
+}
+
+bank_info_widgets = {
+    'account_number': forms.TextInput(attrs={
+        'placeholder': 'Account Number',
+        'class': 'form-control',
+        'style': f'width: 250px; {base_input_style}',
+        'onfocus': base_onfocus,
+        'onblur': base_onblur,
+    }),
+    'account_holder_name': forms.TextInput(attrs={
+        'placeholder': 'Account Holder Name',
+        'class': 'form-control',
+        'style': f'width: 400px; {base_input_style}',
+        'onfocus': base_onfocus,
+        'onblur': base_onblur,
+    }),
+    'bank_name': forms.TextInput(attrs={
+        'placeholder': 'Bank Name',
+        'class': 'form-control',
+        'style': f'width: 300px; {base_input_style}',
+        'onfocus': base_onfocus,
+        'onblur': base_onblur,
+    }),
+    'payment_method': forms.Select(attrs={
+        'class': 'form-control',
+        'style': f'width: 300px; {base_input_style}',
+        'onfocus': base_onfocus,
+        'onblur': base_onblur,
+    }),
+    'logo': forms.ClearableFileInput(attrs={
+        'class': 'form-control-file',
+        'accept': 'image/*',
+        'style': 'margin-top: 8px;'
+    }),
+}
+
+tax_info_widgets = {
+    'is_pkp': forms.CheckboxInput(attrs={
+        'class': 'form-check-input',
+        'style': 'transform: scale(1.3); margin-left: 5px;',
+    }),
+    'npwp': forms.TextInput(attrs={
+        'placeholder': 'NPWP',
+        'class': 'form-control',
+        'style': f'width: 300px; {base_input_style}',
+        'onfocus': base_onfocus,
+        'onblur': base_onblur,
+    }),
+    'npwp_file': forms.ClearableFileInput(attrs={
+        'class': 'form-control-file',
+        'accept': 'image/*',
+        'style': 'margin-top: 8px;'
+    }),
+}
+
+social_media_widgets = {}
+for network in ['tiktok', 'youtube', 'twitter', 'facebook']:
+    social_media_widgets[network] = forms.URLInput(attrs={
+        'placeholder': f'{network.capitalize()} URL',
+        'class': 'form-control',
+        'style': base_input_style,
+        'onfocus': base_onfocus,
+        'onblur': base_onblur,
+    })
+
+# Gabungkan semua
+widgets = {}
+widgets.update(personal_data_widgets)
+widgets.update(bank_info_widgets)
+widgets.update(tax_info_widgets)
+widgets.update(social_media_widgets)
+
+
 class PartnerFormUpdate(forms.ModelForm):
     description = forms.CharField(widget=CKEditor5Widget())
     class Meta:
         model = Partner
         fields = [
-            'account_number', 'account_holder_name','bank_name','phone', 'tax','logo', 'address', 'description', 
+            'account_number', 'account_holder_name','bank_name','phone','is_pkp','npwp','npwp_file','payment_method','logo', 'address', 'description', 
               
             'tiktok', 'youtube', 'twitter', 'facebook'
         ]
 
-        widgets = {
-            'phone': forms.TextInput(attrs={
-                'placeholder': 'Phone Number',
-                'class': 'form-control'
-            }),
-            'address': forms.Textarea(attrs={
-                'placeholder': 'Address',
-                'class': 'form-control',
-                'rows': 3
-            }),
-            'description': CKEditor5Widget(attrs={
-                'class': 'form-control', 
-                'placeholder': 'Description'
-            }),
-            'tax': forms.NumberInput(attrs={
-                'placeholder': 'Tax Number',
-                'class': 'form-control'
-            }),
-            
-            'logo': forms.ClearableFileInput(attrs={
-                'class': 'form-control-file',
-                'accept': 'image/*',
-            }),
-            'account_number': forms.TextInput(attrs={
-                'placeholder': 'Account Number',
-                'class': 'form-control'
-            }),
-            'account_holder_name': forms.TextInput(attrs={
-                'placeholder': 'Account Holder Name',
-                'class': 'form-control'
-            }),
-             'bank_name': forms.TextInput(attrs={
-                'placeholder': 'bank_name',
-                'class': 'form-control'
-            }),
-            'tiktok': forms.URLInput(attrs={
-                'placeholder': 'TikTok URL',
-                'class': 'form-control'
-            }),
-            'youtube': forms.URLInput(attrs={
-                'placeholder': 'YouTube URL',
-                'class': 'form-control'
-            }),
-            'twitter': forms.URLInput(attrs={
-                'placeholder': 'Twitter URL',
-                'class': 'form-control'
-            }),
-            'facebook': forms.URLInput(attrs={
-                'placeholder': 'Facebook URL',
-                'class': 'form-control'
-            }),
-        }
+        widgets = widgets
+    def clean_account_number(self):
+        value = self.cleaned_data.get('account_number')
+        if value and not value.isdigit():
+            raise forms.ValidationError("Nomor rekening hanya boleh berupa angka.")
+        return value
 
+    def clean_npwp(self):
+        value = self.cleaned_data.get('npwp')
+        if value:
+            npwp_cleaned = value.replace('.', '').replace('-', '').replace(' ', '')
+            if not re.fullmatch(r'\d{15}', npwp_cleaned):
+                raise forms.ValidationError("NPWP harus terdiri dari 15 digit angka.")
+        return value
+
+    def clean_npwp_file(self):
+        file = self.cleaned_data.get('npwp_file')
+        if file:
+            if file.size > 2 * 1024 * 1024:
+                raise forms.ValidationError("Ukuran file maksimal 2MB.")
+            if not file.content_type in ['application/pdf', 'image/jpeg', 'image/png']:
+                raise forms.ValidationError("Format file harus PDF, JPG, atau PNG.")
+        return file
+
+    def clean_phone(self):
+        value = self.cleaned_data.get('phone')
+        if value and not re.match(r'^\+?\d{8,15}$', value):
+            raise forms.ValidationError("Format nomor telepon tidak valid. Gunakan format internasional seperti +628123456789.")
+        return value
+
+    def clean_tiktok(self):
+        return validate_optional_url("TikTok", self.cleaned_data.get('tiktok'))
+
+    def clean_youtube(self):
+        return validate_optional_url("YouTube", self.cleaned_data.get('youtube'))
+
+    def clean_twitter(self):
+        return validate_optional_url("Twitter", self.cleaned_data.get('twitter'))
+
+    def clean_facebook(self):
+        return validate_optional_url("Facebook", self.cleaned_data.get('facebook'))
 
 class InstructorForm(forms.ModelForm):
     expertise = forms.CharField(

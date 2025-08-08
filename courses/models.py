@@ -46,39 +46,85 @@ class BlacklistedKeyword(models.Model):
         return self.keyword
     
 class Partner(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE,related_name="partner_user")  # Add this line to associate partners with users
-    name = models.ForeignKey(Universiti, on_delete=models.CASCADE,related_name="partner_univ")
-   
-    phone = models.CharField(max_length=50,null=True, blank=True)
-    address = models.TextField(max_length=200,null=True, blank=True)
+    # === Original Field Kamu (TIDAK DIUBAH) ===
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="partner_user")
+    name = models.ForeignKey(Universiti, on_delete=models.CASCADE, related_name="partner_univ")
+
+    phone = models.CharField(max_length=50, null=True, blank=True)
+    address = models.TextField(max_length=200, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     tax = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Tax (%)", default=0.00)
     iceiprice = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="share icei (%)", default=0.00)
-    account_number = models.CharField(max_length=20, null=True, blank=True)  # Account number as a string
-    account_holder_name = models.CharField(max_length=250,null=True, blank=True)
-    bank_name = models.CharField(max_length=250,null=True, blank=True)
-    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    logo = models.ImageField(upload_to='logos/',null=True, blank=True)
-    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="partner_author") 
-    created_ad = models.DateTimeField(auto_now_add=True)  # Automatically set when the ad is created
-    updated_ad = models.DateTimeField(auto_now=True) 
-    tiktok = models.CharField(_("tiktok"), max_length=200, blank=True,null=True)
-    youtube = models.CharField(_("youtube"), max_length=200, blank=True,null=True)
-    facebook = models.CharField(_("facebook"), max_length=200, blank=True,null=True)
-    instagram = models.CharField(_("instagram"), max_length=200, blank=True,null=True)
-    linkedin = models.CharField(_("linkedin"), max_length=200, blank=True,null=True)
-    twitter = models.CharField(_("twitter"), max_length=200, blank=True,null=True)
 
-    def __str__(self):
-        return f"{self.name}"
+    account_number = models.CharField(max_length=20, null=True, blank=True)
+    account_holder_name = models.CharField(max_length=250, null=True, blank=True)
+    bank_name = models.CharField(max_length=250, null=True, blank=True)
+
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    logo = models.ImageField(upload_to='logos/', null=True, blank=True)
+
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="partner_author")
+    created_ad = models.DateTimeField(auto_now_add=True)
+    updated_ad = models.DateTimeField(auto_now=True)
+
+    tiktok = models.CharField(_("tiktok"), max_length=200, blank=True, null=True)
+    youtube = models.CharField(_("youtube"), max_length=200, blank=True, null=True)
+    facebook = models.CharField(_("facebook"), max_length=200, blank=True, null=True)
+    instagram = models.CharField(_("instagram"), max_length=200, blank=True, null=True)
+    linkedin = models.CharField(_("linkedin"), max_length=200, blank=True, null=True)
+    twitter = models.CharField(_("twitter"), max_length=200, blank=True, null=True)
+
+    # === TAMBAHAN UNTUK KEBUTUHAN AKUNTANSI & LEGAL ===
+
+    # NPWP dan dokumen pajak
+    npwp = models.CharField(max_length=25, null=True, blank=True)
+    npwp_file = models.FileField(upload_to='documents/npwp/', null=True, blank=True)
+    is_pkp = models.BooleanField(default=False, verbose_name="PKP (Pengusaha Kena Pajak)")
+
+    # Jenis usaha
+    BUSINESS_TYPE_CHOICES = [
+        ('perorangan', 'Perorangan'),
+        ('cv', 'CV'),
+        ('pt', 'PT'),
+        ('institusi', 'Institusi Pendidikan'),
+    ]
+    business_type = models.CharField(max_length=20, choices=BUSINESS_TYPE_CHOICES, null=True, blank=True)
+
+    # Metode pembayaran
+    PAYMENT_METHOD_CHOICES = [
+        ('bank_transfer', 'Bank Transfer'),
+        ('ewallet', 'E-Wallet'),
+    ]
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHOD_CHOICES, default='bank_transfer')
+
+    # Mata uang
+    currency = models.CharField(max_length=10, default='IDR')
+
+    # Status aktif & verifikasi
+    is_active = models.BooleanField(default=True)
+    is_verified = models.BooleanField(default=False)
+    verified_at = models.DateTimeField(null=True, blank=True)
+
+    # Kode mitra unik
+    partner_code = models.CharField(max_length=50, unique=True, null=True, blank=True)
+
+    # Catatan internal keuangan
+    finance_note = models.TextField(null=True, blank=True)
+
+    # Audit siapa terakhir edit
+    updated_by = models.ForeignKey(CustomUser, null=True, blank=True, on_delete=models.SET_NULL, related_name="partner_updated_by")
+
+    # === INDEX dan Fungsi Custom ===
     class Meta:
         indexes = [
             models.Index(fields=['user'])
-    ]
-        
+        ]
+
+    def __str__(self):
+        return f"{self.name}"
 
     def delete_old_logo(self):
-        if self.pk:  # Hanya jika instance sudah ada di database
+        if self.pk:
             old_logo = Partner.objects.filter(pk=self.pk).values_list('logo', flat=True).first()
             if old_logo and old_logo != self.logo.name:
                 old_logo_path = os.path.join(settings.MEDIA_ROOT, old_logo)
@@ -86,7 +132,7 @@ class Partner(models.Model):
                     os.remove(old_logo_path)
 
     def save(self, *args, **kwargs):
-        self.delete_old_logo()  # Hapus logo lama sebelum menyimpan
+        self.delete_old_logo()
         super().save(*args, **kwargs)
 
 
