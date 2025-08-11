@@ -61,20 +61,27 @@ logger = logging.getLogger(__name__)
 def score_summary_view(request, username, course_id):
     user = request.user
 
-    # Pastikan username di URL sama dengan user yang login
+    # Validasi akses
     if username != user.username:
         return HttpResponseForbidden("Access denied.")
-
-    # Cek role learner
     if not getattr(user, 'is_learner', False):
         return HttpResponseForbidden("Access denied: only learners allowed.")
 
     course = get_object_or_404(Course, id=course_id)
-
-    # Query assessments sesuai model Section dengan FK 'courses'
     assessments = Assessment.objects.filter(section__courses=course)
 
-    passing_threshold = 70  # contoh passing threshold
+    # Ambil GradeRange untuk hitung passing threshold
+    grade_ranges = GradeRange.objects.filter(course=course)
+
+    if grade_ranges.exists():
+        # Cari range "Fail" (nilai terendah)
+        grade_fail = grade_ranges.order_by('max_grade').first()
+        if grade_fail:
+            passing_threshold = grade_fail.max_grade + 1
+        else:
+            passing_threshold = 60
+    else:
+        passing_threshold = 60  # fallback default
 
     assessment_scores = []
     total_max_score = Decimal(0)
@@ -95,10 +102,10 @@ def score_summary_view(request, username, course_id):
                 total_correct_answers += answers.filter(choice__is_correct=True).count()
             if not answers_exist:
                 all_assessments_submitted = False
-
-            if total_questions > 0:
-                score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
-
+            score_value = (
+                (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
+                if total_questions > 0 else 0
+            )
         else:
             askora_submissions = Submission.objects.filter(askora__assessment=assessment, user=user)
             if not askora_submissions.exists():
@@ -123,6 +130,13 @@ def score_summary_view(request, username, course_id):
     passing_criteria_met = overall_percentage >= passing_threshold
     status = "Pass" if all_assessments_submitted and passing_criteria_met else "Fail"
 
+    # Cari grade huruf dari GradeRange
+    grade_range = GradeRange.objects.filter(
+        course=course,
+        min_grade__lte=overall_percentage,
+        max_grade__gte=overall_percentage
+    ).first()
+
     assessment_results = [
         {'name': score['assessment'].name, 'max_score': score['weight'], 'score': score['score']}
         for score in assessment_scores
@@ -134,6 +148,8 @@ def score_summary_view(request, username, course_id):
         'assessment_results': assessment_results,
         'overall_percentage': round(overall_percentage, 2),
         'status': status,
+        'grade': grade_range.name if grade_range else "N/A",
+        'passing_threshold': passing_threshold
     }
     return render(request, 'learner/score_summary.html', context)
 

@@ -519,13 +519,22 @@
     <!-- Sidebar -->
     <nav class="sidebar collapse" id="sidebarMenu" aria-label="Main navigation">
         <!-- Sidebar Header -->
-        <div class="sidebar-header">
-            <span class="text-white fs-4 fw-bold">LMSKu</span>
-            <button class="navbar-toggler border-0 d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Close sidebar">
-                <i class="bi bi-list"></i>
-                <i class="bi bi-x-lg"></i>
-            </button>
+      <div class="sidebar-header d-flex justify-content-between align-items-center p-3 bg-primary">
+        <span class="text-white fs-4 fw-bold">LMSKu</span>
+
+        <button class="btn btn-outline-light d-lg-none d-flex align-items-center gap-1" 
+                type="button" 
+                data-bs-toggle="collapse" 
+                data-bs-target="#sidebarMenu" 
+                aria-controls="sidebarMenu" 
+                aria-expanded="false" 
+                aria-label="Toggle sidebar"
+                onclick="this.querySelector('i').classList.toggle('bi-list'); this.querySelector('i').classList.toggle('bi-x-lg');">
+            <i class="bi bi-list fs-4"></i>
+            <span class="fw-semibold">Menu</span>
+        </button>
         </div>
+
 
         <!-- Sidebar Content -->
         <div class="sidebar-content">
@@ -793,9 +802,25 @@
 
     <!-- Main Content -->
     <div class="main-content">
-        <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle sidebar">
-            <i class="bi bi-three-dots-vertical"></i>
+       <div class="d-flex align-items-center">
+        <span class="text-white fs-4 fw-bold">LMSKu</span>
+        
+        <button 
+            class="btn btn-outline-light d-lg-none d-flex align-items-center gap-2 ms-auto px-3 py-2"
+            type="button" 
+            data-bs-toggle="collapse" 
+            data-bs-target="#sidebarMenu" 
+            aria-controls="sidebarMenu" 
+            aria-expanded="false" 
+            aria-label="Toggle sidebar"
+            onclick="this.querySelector('i').classList.toggle('bi-list'); this.querySelector('i').classList.toggle('bi-x-lg');">
+
+            <i class="bi bi-list fs-5"></i>
+            <span class="fw-semibold">Menu</span>
         </button>
+        </div>
+
+
         {% block content %}
         {% endblock %}
     </div>

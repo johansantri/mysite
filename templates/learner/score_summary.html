@@ -1,5 +1,4 @@
 {% extends 'home/tes.html' %}
-
 {% block content %}
 <h3>Score Summary - {{ course.course_name }}</h3>
 
@@ -7,9 +6,9 @@
   ← Back
 </button>
 
-<div class="table-responsive">
+<div class="table-responsive mb-4">
   <table class="table table-bordered">
-    <thead>
+    <thead class="table-light">
       <tr>
         <th>Assessment</th>
         <th class="text-center">Max Score</th>
@@ -28,7 +27,87 @@
   </table>
 </div>
 
-<p><strong>Overall Percentage:</strong> {{ overall_percentage }}%</p>
-<p><strong>Status:</strong> {{ status }}</p>
+<!-- Info Kelulusan -->
+<div class="mb-4">
+  <div class="row text-center">
+    <div class="col-md-4">
+      <div class="card border-primary">
+        <div class="card-body">
+          <h5 class="card-title">Overall Percentage</h5>
+          <p class="display-6">{{ overall_percentage }}%</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-info">
+        <div class="card-body">
+          <h5 class="card-title">Status</h5>
+          <p class="fs-4 {% if status == 'Pass' %}text-success{% else %}text-danger{% endif %}">
+            {{ status }}
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-warning">
+        <div class="card-body">
+          <h5 class="card-title">Grade</h5>
+          <p class="fs-4">{{ grade }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Progress Bar dengan threshold jelas -->
+<div class="card p-3">
+  <h5 class="mb-3">Your Grade Progress</h5>
+  <div style="position: relative; height: 60px;">
+
+    <!-- Track penuh -->
+    <div class="progress" style="height: 12px; background-color: #f8d7da; position: absolute; top: 25px; width: 100%;">
+      
+      {% if overall_percentage >= passing_threshold %}
+        <!-- Area sebelum threshold -->
+        <div class="progress-bar bg-danger" style="width: {{ passing_threshold }}%;"></div>
+        <!-- Area setelah threshold -->
+        <div class="progress-bar bg-success" 
+             style="width: calc({{ overall_percentage }}% - {{ passing_threshold }}%); 
+                    margin-left: {{ passing_threshold }}%;">
+        </div>
+      {% else %}
+        <!-- User belum melewati threshold -->
+        <div class="progress-bar bg-danger" style="width: {{ overall_percentage }}%;"></div>
+      {% endif %}
+    </div>
+
+    <!-- Garis threshold -->
+    <div style="position: absolute; left: {{ passing_threshold }}%; top: 18px; width: 2px; height: 25px; background-color: black;"></div>
+
+    <!-- Label threshold -->
+    <div style="position: absolute; left: {{ passing_threshold }}%; top: 0; transform: translateX(-50%); text-align: center;">
+      <span class="badge bg-dark">{{ passing_threshold }}%</span>
+      <small class="d-block">Passing grade</small>
+    </div>
+
+    <!-- Marker user -->
+    <div style="position: absolute; left: {{ overall_percentage }}%; top: -10px; transform: translateX(-50%); text-align: center;">
+      <span class="badge {% if overall_percentage >= passing_threshold %}bg-success{% else %}bg-danger{% endif %}">
+        {{ overall_percentage }}%
+      </span>
+      <small class="d-block">Your grade</small>
+    </div>
+  </div>
+
+  <!-- Status message -->
+  <div class="mt-3 p-2 {% if status == 'Pass' %}bg-success-subtle text-success{% else %}bg-danger-subtle text-danger{% endif %} rounded">
+    {% if status == 'Pass' %}
+      ✅ You’re currently passing this course
+    {% else %}
+      ❌ You’re currently not passing this course
+    {% endif %}
+  </div>
+</div>
+
 
 {% endblock %}
