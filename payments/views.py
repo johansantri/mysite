@@ -83,7 +83,19 @@ def payment_report_view(request):
         count=Count('id')
     ).order_by('payment_model', 'status')
 
-    total_paid = payments.filter(status='completed').aggregate(total=Sum('amount'))['total'] or 0
+    # Pendapatan kotor (total yang dibayar user)
+    total_paid = payments.filter(status='completed').aggregate(
+        total=Sum('amount')
+    )['total'] or 0
+
+    # Pendapatan bersih untuk Partner & ICE Admin
+    net_income_partner = payments.filter(status='completed').aggregate(
+        total=Sum('snapshot_partner_earning')
+    )['total'] or 0
+
+    net_income_admin = payments.filter(status='completed').aggregate(
+        total=Sum('snapshot_ice_earning')
+    )['total'] or 0
 
     partner_courses = None
     if request.user.is_superuser:
@@ -111,6 +123,8 @@ def payment_report_view(request):
     context = {
         'summary': summary,
         'total_paid': total_paid,
+        'net_income_partner': net_income_partner,
+        'net_income_admin': net_income_admin,
         'page_obj': page_obj,
         'partners': Partner.objects.all() if request.user.is_superuser else None,
         'partner_courses': partner_courses,

@@ -40,11 +40,43 @@
 </form>
 
 <!-- Summary -->
-<div class="mb-4">
-  <h5>Total Successful Payments:
-    <span class="text-success">Rp {{ total_paid|floatformat:0|intcomma }}</span>
-  </h5>
+<div class="card-group">
+
+  <!-- Gross Revenue -->
+  <div class="card text-center">
+    <div class="card-body">
+      <h5 class="card-title text-muted">Gross Revenue</h5>
+      <p class="card-text fs-4 fw-bold">{{ total_paid|floatformat:2|intcomma }}</p>
+    </div>
+  </div>
+
+  <!-- Net Revenue (ICE Partner) -->
+  <div class="card text-center">
+    <div class="card-body">
+      <h5 class="card-title text-muted">Net Revenue</h5>
+      <p class="card-text fs-4 fw-bold text-success">{{ net_income_partner|floatformat:2|intcomma }}</p>
+    </div>
+  </div>
+
+  {% if user.is_superuser %}
+  <!-- ICE Admin Revenue -->
+  <div class="card text-center">
+    <div class="card-body">
+      <h5 class="card-title text-muted">ICE Revenue</h5>
+      <p class="card-text fs-4 fw-bold text-primary">{{ net_income_admin|floatformat:2|intcomma }}</p>
+    </div>
+  </div>
+  {% endif %}
+
 </div>
+
+
+
+
+
+
+
+
 
 <!-- Payment Model Summary Table -->
 <table class="table table-bordered table-striped">
