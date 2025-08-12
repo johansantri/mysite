@@ -25,7 +25,7 @@ urlpatterns = [
     #data
     path('popular_courses/', views.popular_courses, name='popular_courses'),
     #path('profile/(?P<username>\w+)/$', views.pro, name='profile'),
-    path('profile/<slug:username>/',views.pro, name='profile'), 
+    path('profile/<str:username>/',views.pro, name='profile'), 
     path('edit-profile/<int:pk>/',views.edit_profile, name='edit-profile'), 
     path('edit-photo/<int:pk>/',views.edit_photo, name='edit-photo'), 
     
