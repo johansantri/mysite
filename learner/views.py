@@ -784,6 +784,21 @@ def my_course(request, username, id, slug):
         logger.warning(f"Upaya akses tidak sah oleh {request.user.username} untuk {username}")
         return HttpResponse(status=403)
 
+    user = request.user
+    required_fields = {
+        'first_name': 'First Name',
+        'last_name': 'Last Name',
+        'email': 'Email',
+        'phone': 'Phone Number',
+        'gender': 'Gender',
+        'birth': 'Date of Birth',
+    }
+    missing_fields = [label for field, label in required_fields.items() if not getattr(user, field)]
+
+    if missing_fields:
+        messages.warning(request, f"Please complete the following information: {', '.join(missing_fields)}")
+        return redirect('authentication:edit-profile', pk=user.pk)
+
     course = get_object_or_404(Course, id=id, slug=slug)
     if not Enrollment.objects.filter(user=request.user, course=course).exists():
         logger.warning(f"Pengguna {request.user.username} tidak terdaftar di kursus {slug}")

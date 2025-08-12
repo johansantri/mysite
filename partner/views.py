@@ -79,10 +79,8 @@ def partner_analytics_admin(request):
             return {k: floatify(v) for k, v in obj.items()}
         return obj
 
-    # === 1. Growth Over Time ===
-    monthly = partners.annotate(month=TruncMonth('created_ad')) \
-                      .values('month') \
-                      .annotate(total=Count('id')).order_by('month')
+     # === 1. Growth Over Time ===
+    monthly = partners.annotate(month=TruncMonth('created_ad')).values('month').annotate(total=Count('id')).order_by('month')
     growth_data = {
         'labels': [m['month'].strftime('%b %Y') for m in monthly],
         'datasets': [{'label': 'New Partners', 'data': [m['total'] for m in monthly], 'borderColor': '#3B82F6', 'fill': False}]
@@ -96,7 +94,9 @@ def partner_analytics_admin(request):
     }
 
     # === 3. Balance Stats ===
-    balance_stats = floatify(partners.aggregate(avg=Avg('balance'), max=Max('balance'), min=Min('balance')))
+    balance_stats = floatify(partners.exclude(balance=None).aggregate(
+        avg=Avg('balance'), max=Max('balance'), min=Min('balance')
+    ))
 
     # === 4. Tax Distribution ===
     tax_qs = partners.values('tax').annotate(total=Count('id')).order_by('tax')

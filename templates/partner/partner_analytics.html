@@ -47,9 +47,10 @@
       <div class="card text-bg-light shadow-sm">
         <div class="card-body">
           <h6 class="card-title">Balance Summary</h6>
-          <p>Average: <strong>Rp{{ balance_avg|default:0 }}</strong></p>
-          <p>Min: <strong>Rp{{ balance_min|default:0 }}</strong></p>
-          <p>Max: <strong>Rp{{ balance_max|default:0 }}</strong></p>
+          <p>Average: <strong>Rp{{ balance_avg|default_if_none:0 }}</strong></p>
+          <p>Min: <strong>Rp{{ balance_min|default_if_none:0 }}</strong></p>
+          <p>Max: <strong>Rp{{ balance_max|default_if_none:0 }}</strong></p>
+
         </div>
       </div>
     </div>
