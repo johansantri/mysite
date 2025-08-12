@@ -71,12 +71,12 @@
         <!-- Tombol Selanjutnya -->
         {% if next_url %}
             <a href="{{ next_url }}"
-               hx-get="{{ next_url }}"
-               hx-target="#content-area"
-               hx-swap="innerHTML"
-               hx-push-url="true"
-               class="btn btn-primary"
-               hx-on::after-request="document.body.dispatchEvent(new Event('contentLoaded'))">
+            hx-get="{{ next_url }}"
+            hx-target="#content-area"
+            hx-swap="innerHTML"
+            hx-push-url="true"
+            class="btn btn-primary"
+            hx-on::after-request="htmx.trigger('#progress-bar', 'load')">
                 Next<i class="bi bi-chevron-right ms-2"></i>
             </a>
         {% else %}
@@ -147,4 +147,11 @@
             }, 1000);
         });
     {% endif %}
+</script>
+
+
+<script>
+    document.body.addEventListener('contentLoaded', () => {
+        console.log('Peristiwa contentLoaded dipicu dari tombol Next');
+    });
 </script>

@@ -809,7 +809,6 @@ def my_course(request, username, id, slug):
         Prefetch('assessments', queryset=Assessment.objects.all())
     ).order_by('order')
     combined_content = _build_combined_content(sections)
-    total_content = len(combined_content)
 
     context = {
         'course': course,
@@ -844,6 +843,8 @@ def my_course(request, username, id, slug):
         'lti_tool': None,
     }
 
+    user_progress, _ = CourseProgress.objects.get_or_create(user=request.user, course=course)
+
     assessment_id = request.GET.get('assessment_id')
     current_index = 0
     if assessment_id:
@@ -853,7 +854,6 @@ def my_course(request, username, id, slug):
         context['current_content'] = ('assessment', assessment, section)
         current_index = next((i for i, c in enumerate(combined_content) if c[0] == 'assessment' and c[1].id == assessment.id), 0)
 
-        # Dukungan LTI 1.1
         lti_tool = getattr(assessment, 'lti_tool', None)
         context['lti_tool'] = lti_tool
         context['is_lti'] = bool(lti_tool)
@@ -871,8 +871,12 @@ def my_course(request, username, id, slug):
                 logger.info(f"Pembayaran diperlukan untuk penilaian {assessment_id} di kursus {course.id} untuk pengguna {request.user.username}")
             else:
                 AssessmentRead.objects.get_or_create(user=request.user, assessment=assessment)
+                user_progress.progress_percentage = calculate_course_progress(request.user, course)
+                user_progress.save()
         else:
             AssessmentRead.objects.get_or_create(user=request.user, assessment=assessment)
+            user_progress.progress_percentage = calculate_course_progress(request.user, course)
+            user_progress.save()
 
         session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
         if session:
@@ -902,23 +906,22 @@ def my_course(request, username, id, slug):
                     material=context['material'], parent=None
                 ).order_by('-created_at')
                 MaterialRead.objects.get_or_create(user=request.user, material=context['material'])
+                user_progress.progress_percentage = calculate_course_progress(request.user, course)
+                user_progress.save()
             elif context['current_content'][0] == 'assessment':
                 context['assessment'] = context['current_content'][1]
                 assessment = context['assessment']
 
-                # Perbaikan LTI
                 lti_tool = getattr(assessment, 'lti_tool', None)
                 context['lti_tool'] = lti_tool
                 context['is_lti'] = bool(lti_tool)
 
                 context.update(_build_assessment_context(assessment, request.user))
+                AssessmentRead.objects.get_or_create(user=request.user, assessment=assessment)
+                user_progress.progress_percentage = calculate_course_progress(request.user, course)
+                user_progress.save()
 
-    # Navigasi dan progress
     context['previous_url'], context['next_url'] = _get_navigation_urls(username, id, slug, combined_content, current_index)
-    user_progress, _ = CourseProgress.objects.get_or_create(user=request.user, course=course)
-    if context['current_content'] and (current_index + 1) > user_progress.progress_percentage / 100 * total_content:
-        user_progress.progress_percentage = (current_index + 1) / total_content * 100
-        user_progress.save()
     context['course_progress'] = user_progress.progress_percentage
     context['can_review'] = bool(context['submissions'])
 
@@ -926,6 +929,7 @@ def my_course(request, username, id, slug):
     response = render(request, 'learner/my_course.html', context)
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     return response
+
 
 @login_required
 def load_content(request, username, id, slug, content_type, content_id):
@@ -946,6 +950,8 @@ def load_content(request, username, id, slug, content_type, content_id):
     combined_content = _build_combined_content(sections)
     current_index = 0
 
+    user_progress, _ = CourseProgress.objects.get_or_create(user=request.user, course=course)
+
     context = {
         'course': course,
         'course_name': course.course_name,
@@ -962,7 +968,7 @@ def load_content(request, username, id, slug, content_type, content_id):
         'is_expired': False,
         'remaining_time': 0,
         'answered_questions': {},
-        'course_progress': CourseProgress.objects.get_or_create(user=request.user, course=course)[0].progress_percentage,
+        'course_progress': user_progress.progress_percentage,
         'previous_url': None,
         'next_url': None,
         'ask_oras': [],
@@ -986,6 +992,9 @@ def load_content(request, username, id, slug, content_type, content_id):
         context['comments'] = Comment.objects.filter(material=material, parent=None).select_related('user', 'parent').prefetch_related('children').order_by('-created_at')
         MaterialRead.objects.get_or_create(user=request.user, material=material)
         current_index = next((i for i, c in enumerate(combined_content) if c[0] == 'material' and c[1].id == material.id), 0)
+        # Perbarui progress_percentage
+        user_progress.progress_percentage = calculate_course_progress(request.user, course)
+        user_progress.save()
 
     elif content_type == 'assessment':
         assessment = get_object_or_404(Assessment.objects.select_related('section__courses'), id=content_id)
@@ -993,12 +1002,10 @@ def load_content(request, username, id, slug, content_type, content_id):
         context['current_content'] = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
         current_index = next((i for i, c in enumerate(combined_content) if c[0] == 'assessment' and c[1].id == assessment.id), 0)
 
-        # ✅ LTI 1.1 support — aman
         lti_tool = getattr(assessment, 'lti_tool', None)
         context['lti_tool'] = lti_tool
         context['is_lti'] = bool(lti_tool)
 
-        # 🔒 Cek model pembayaran jika diperlukan
         if course.payment_model == 'pay_for_exam':
             payment = Payment.objects.filter(
                 user=request.user, course=course, status='completed', payment_model='pay_for_exam'
@@ -1012,10 +1019,15 @@ def load_content(request, username, id, slug, content_type, content_id):
                 logger.info(f"Pembayaran diperlukan untuk penilaian {content_id} di kursus {course.id} untuk pengguna {request.user.username}")
             else:
                 AssessmentRead.objects.get_or_create(user=request.user, assessment=assessment)
+                # Perbarui progress_percentage
+                user_progress.progress_percentage = calculate_course_progress(request.user, course)
+                user_progress.save()
         else:
             AssessmentRead.objects.get_or_create(user=request.user, assessment=assessment)
+            # Perbarui progress_percentage
+            user_progress.progress_percentage = calculate_course_progress(request.user, course)
+            user_progress.save()
 
-        # ⏱️ Session & countdown
         session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
         if session:
             context['is_started'] = True
@@ -1029,13 +1041,11 @@ def load_content(request, username, id, slug, content_type, content_id):
                 ).select_related('question', 'choice')
             }
 
-        # 🔧 Bangun context untuk assessment (AskOra, quiz, dsb)
         context.update(_build_assessment_context(assessment, request.user))
 
-    # 🔁 Navigasi
     context['previous_url'], context['next_url'] = _get_navigation_urls(username, id, slug, combined_content, current_index)
+    context['course_progress'] = user_progress.progress_percentage
 
-    # 🧠 HTMX support
     template = 'learner/partials/content.html' if request.headers.get('HX-Request') == 'true' else 'learner/my_course.html'
 
     logger.info(f"load_content: Rendering {template} untuk pengguna {username}, {content_type} {content_id}")
@@ -1043,27 +1053,15 @@ def load_content(request, username, id, slug, content_type, content_id):
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     return response
 
-
-
 @login_required
 def start_assessment_courses(request, assessment_id):
-    """
-    Start an assessment session for the user.
-    
-    Args:
-        request: HTTP request object.
-        assessment_id: ID of the assessment.
-    
-    Returns:
-        HttpResponse: Rendered assessment partial or redirect.
-    """
     if request.method != 'POST':
         logger.error(f"Invalid request method: {request.method} for start_assessment")
         return render(request, 'learner/partials/error.html', {
             'error_message': 'Permintaan tidak valid.'
         }, status=400) if request.headers.get('HX-Request') == 'true' else HttpResponse(status=400)
 
-    assessment = get_object_or_404(Assessment.objects.select_related('section__courses'), id=assessment_id)  # Changed 'section__course' to 'section__courses'
+    assessment = get_object_or_404(Assessment.objects.select_related('section__courses'), id=assessment_id)
     course = assessment.section.courses
     if not Enrollment.objects.filter(user=request.user, course=course).exists():
         logger.warning(f"User {request.user.username} not enrolled in course {course.slug}")
@@ -1086,6 +1084,8 @@ def start_assessment_courses(request, assessment_id):
         session.save()
         logger.debug(f"{'New' if created else 'Reset'} session for user {request.user.username}, assessment {assessment_id}")
 
+    user_progress, _ = CourseProgress.objects.get_or_create(user=request.user, course=course)
+
     context = {
         'course': course,
         'course_name': course.course_name,
@@ -1106,7 +1106,7 @@ def start_assessment_courses(request, assessment_id):
                 user=request.user, question__assessment=assessment
             ).select_related('question', 'choice')
         },
-        'course_progress': CourseProgress.objects.get_or_create(user=request.user, course=course)[0].progress_percentage,
+        'course_progress': user_progress.progress_percentage,
         'previous_url': None,
         'next_url': None,
     }
@@ -1118,7 +1118,7 @@ def start_assessment_courses(request, assessment_id):
 
     combined_content = _build_combined_content(context['sections'])
     current_index = next((i for i, c in enumerate(combined_content) if c[0] == 'assessment' and c[1].id == assessment_id), 0)
-    context['previous_url'], context['next_url'] = _get_navigation_urls(request.user.username, course.id,course.slug, combined_content, current_index)
+    context['previous_url'], context['next_url'] = _get_navigation_urls(request.user.username, course.id, course.slug, combined_content, current_index)
 
     if course.payment_model == 'pay_for_exam':
         has_paid = Payment.objects.filter(
@@ -1127,17 +1127,24 @@ def start_assessment_courses(request, assessment_id):
         if not has_paid:
             context['assessment_locked'] = True
             context['payment_required_url'] = reverse('payments:process_payment', kwargs={
-                'course_id': course.id, 'payment_type': 'exam'
+                'course_id': course.id,
+                'payment_type': 'exam'
             })
         else:
             AssessmentRead.objects.get_or_create(user=request.user, assessment=assessment)
+            user_progress.progress_percentage = calculate_course_progress(request.user, course)
+            user_progress.save()
     else:
         AssessmentRead.objects.get_or_create(user=request.user, assessment=assessment)
+        user_progress.progress_percentage = calculate_course_progress(request.user, course)
+        user_progress.save()
+
+    context['course_progress'] = user_progress.progress_percentage
 
     is_htmx = request.headers.get('HX-Request') == 'true'
     if not is_htmx:
         redirect_url = reverse('learner:load_content', kwargs={
-            'username': request.user.username, 'slug': course.slug,
+            'username': request.user.username, 'id': course.id, 'slug': course.slug,
             'content_type': 'assessment', 'content_id': assessment.id
         })
         logger.info(f"Redirecting non-HTMX request to: {redirect_url}")
@@ -1147,6 +1154,8 @@ def start_assessment_courses(request, assessment_id):
     response = render(request, 'learner/partials/content.html', context)
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     return response
+
+
 @login_required
 def submit_assessment_new(request, assessment_id):
     """
@@ -1498,6 +1507,18 @@ def get_progress(request, username, slug):
     user_progress, _ = CourseProgress.objects.get_or_create(user=request.user, course=course)
     return render(request, 'learner/partials/progress.html', {'course_progress': user_progress.progress_percentage})
 
+
+def calculate_course_progress(user, course):
+    materials = Material.objects.filter(section__courses=course).distinct()
+    assessments = Assessment.objects.filter(section__courses=course).distinct()
+    total_materials = materials.count()
+    total_assessments = assessments.count()
+    materials_read = MaterialRead.objects.filter(user=user, material__in=materials).count()
+    assessments_read = AssessmentRead.objects.filter(user=user, assessment__in=assessments).count()
+    materials_progress = (materials_read / total_materials * 100) if total_materials > 0 else 0
+    assessments_progress = (assessments_read / total_assessments * 100) if total_assessments > 0 else 0
+    total_content = total_materials + total_assessments
+    return (materials_progress + assessments_progress) / 2 if total_content > 0 else 0
 
 @login_required
 def submit_answer_askora_new(request, ask_ora_id):
