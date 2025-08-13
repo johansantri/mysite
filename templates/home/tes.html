@@ -531,7 +531,7 @@
                 aria-label="Toggle sidebar"
                 onclick="this.querySelector('i').classList.toggle('bi-list'); this.querySelector('i').classList.toggle('bi-x-lg');">
             <i class="bi bi-list fs-4"></i>
-            <span class="fw-semibold">Menu</span>
+            <span class="fw-semibold"></span>
         </button>
         </div>
 
@@ -816,7 +816,7 @@
             onclick="this.querySelector('i').classList.toggle('bi-list'); this.querySelector('i').classList.toggle('bi-x-lg');">
 
             <i class="bi bi-list fs-5"></i>
-            <span class="fw-semibold">Menu</span>
+            <span class="fw-semibold">xx</span>
         </button>
         </div>
 
@@ -840,121 +840,153 @@
     {% endblock %}
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Sidebar toggle
-            const sidebarToggler = document.querySelector('.navbar-toggler');
-            const sidebar = document.querySelector('#sidebarMenu');
+document.addEventListener('DOMContentLoaded', function() {
+    // Sidebar toggle
+    const sidebarTogglers = document.querySelectorAll('.navbar-toggler');
+    const sidebar = document.querySelector('#sidebarMenu');
 
-            // Hide sidebar by default on mobile
-            if (window.innerWidth < 992) {
-                sidebar.classList.remove('show');
-                sidebarToggler.classList.remove('show');
+    if (!sidebar) {
+        console.error('Sidebar (#sidebarMenu) not found in DOM');
+        return;
+    }
+
+    // Debugging: Log jumlah toggler yang ditemukan
+    console.log(`Found ${sidebarTogglers.length} navbar-toggler elements`);
+
+    // Inisialisasi sidebar berdasarkan ukuran layar
+    if (window.innerWidth < 992) {
+        sidebar.classList.remove('show');
+        sidebarTogglers.forEach(toggler => toggler.classList.remove('show'));
+    } else {
+        sidebar.classList.add('show');
+    }
+
+    // Tambahkan event listener untuk setiap toggler
+    sidebarTogglers.forEach((toggler, index) => {
+        console.log(`Adding event listener to toggler ${index}`);
+        toggler.addEventListener('click', function() {
+            // Toggle kelas 'show' untuk sidebar dan toggler
+            this.classList.toggle('show');
+            sidebar.classList.toggle('show');
+
+            // Toggle ikon antara bi-list dan bi-x-lg
+            const icon = this.querySelector('i');
+            if (icon) {
+                icon.classList.toggle('bi-list');
+                icon.classList.toggle('bi-x-lg');
             } else {
-                sidebar.classList.add('show');
+                console.warn(`Icon not found in toggler ${index}`);
             }
-
-            sidebarToggler.addEventListener('click', function() {
-                this.classList.toggle('show');
-                sidebar.classList.toggle('show');
-            });
-
-            // Close sidebar when clicking outside on mobile
-            document.addEventListener('click', function(event) {
-                if (window.innerWidth < 992 && sidebar.classList.contains('show') && !sidebar.contains(event.target) && !sidebarToggler.contains(event.target)) {
-                    sidebar.classList.remove('show');
-                    sidebarToggler.classList.remove('show');
-                }
-            });
-
-            // Dark mode toggle
-            const darkModeToggles = document.querySelectorAll('.dark-mode-toggle');
-            const body = document.body;
-            const isDarkMode = localStorage.getItem('darkMode') === 'true';
-
-            if (isDarkMode) {
-                body.classList.add('dark-mode');
-                darkModeToggles.forEach(toggle => {
-                    const icon = toggle.querySelector('i');
-                    icon.classList.replace('bi-moon', 'bi-sun');
-                    toggle.innerHTML = '<i class="bi bi-sun me-2"></i> Light Mode';
-                });
-            }
-
-            darkModeToggles.forEach(toggle => {
-                toggle.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    body.classList.toggle('dark-mode');
-                    const isDark = body.classList.contains('dark-mode');
-                    localStorage.setItem('darkMode', isDark);
-                    darkModeToggles.forEach(t => {
-                        const icon = t.querySelector('i');
-                        if (isDark) {
-                            icon.classList.replace('bi-moon', 'bi-sun');
-                            t.innerHTML = '<i class="bi bi-sun me-2"></i> Light Mode';
-                        } else {
-                            icon.classList.replace('bi-sun', 'bi-moon');
-                            t.innerHTML = '<i class="bi bi-moon me-2"></i> Dark Mode';
-                        }
-                    });
-                });
-            });
-
-            // Confetti effect
-            {% if status == 'Pass' %}
-                const status = "{{ status }}";
-                if (status === 'Pass') {
-                    const Confettiful = function(el) {
-                        this.el = el;
-                        this.containerEl = null;
-                        this.confettiFrequency = 10;
-                        this.confettiColors = ['#3b82f6', '#f97316', '#22c55e', '#ec4899', '#facc15'];
-                        this.confettiAnimations = ['slow', 'medium', 'fast'];
-                        this._setupElements();
-                        this._renderConfetti();
-                    };
-
-                    Confettiful.prototype._setupElements = function() {
-                        const containerEl = document.createElement('div');
-                        containerEl.classList.add('js-container__confetti');
-                        this.el.appendChild(containerEl);
-                        this.containerEl = containerEl;
-                    };
-
-                    Confettiful.prototype._renderConfetti = function() {
-                        this.confettiInterval = setInterval(() => {
-                            const confettiEl = document.createElement('div');
-                            const confettiSize = (Math.floor(Math.random() * 8) + 5) + 'px';
-                            const confettiBackground = this.confettiColors[Math.floor(Math.random() * this.confettiColors.length)];
-                            const confettiLeft = (Math.floor(Math.random() * this.el.offsetWidth)) + 'px';
-                            const confettiAnimation = this.confettiAnimations[Math.floor(Math.random() * this.confettiAnimations.length)];
-                            confettiEl.classList.add('js-container__confetti-item', 'js-container__confetti-item--animation-' + confettiAnimation);
-                            confettiEl.style.left = confettiLeft;
-                            confettiEl.style.width = confettiSize;
-                            confettiEl.style.height = confettiSize;
-                            confettiEl.style.backgroundColor = confettiBackground;
-                            this.containerEl.appendChild(confettiEl);
-                            setTimeout(() => {
-                                confettiEl.remove();
-                            }, 4000);
-                        }, 50);
-
-                        setTimeout(() => {
-                            clearInterval(this.confettiInterval);
-                        }, 5000);
-                    };
-
-                    const jsContainer = document.querySelector('.js-container');
-                    if (jsContainer) {
-                        window.confettiful = new Confettiful(jsContainer);
-                    }
-                }
-            {% endif %}
         });
+    });
 
-        
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener('click', function(event) {
+        if (window.innerWidth < 992 && sidebar.classList.contains('show')) {
+            const isClickInsideSidebar = sidebar.contains(event.target);
+            const isClickInsideToggler = Array.from(sidebarTogglers).some(toggler => toggler.contains(event.target));
+            if (!isClickInsideSidebar && !isClickInsideToggler) {
+                sidebar.classList.remove('show');
+                sidebarTogglers.forEach(toggler => toggler.classList.remove('show'));
+                sidebarTogglers.forEach(toggler => {
+                    const icon = toggler.querySelector('i');
+                    if (icon) {
+                        icon.classList.add('bi-list');
+                        icon.classList.remove('bi-x-lg');
+                    }
+                });
+            }
+        }
+    });
 
-        
-    </script>
+    // Dark mode toggle
+    const darkModeToggles = document.querySelectorAll('.dark-mode-toggle');
+    const body = document.body;
+    const isDarkMode = localStorage.getItem('darkMode') === 'true';
+
+    if (isDarkMode) {
+        body.classList.add('dark-mode');
+        darkModeToggles.forEach(toggle => {
+            const icon = toggle.querySelector('i');
+            if (icon) {
+                icon.classList.replace('bi-moon', 'bi-sun');
+                toggle.innerHTML = '<i class="bi bi-sun me-2"></i> Light Mode';
+            }
+        });
+    }
+
+    darkModeToggles.forEach(toggle => {
+        toggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            body.classList.toggle('dark-mode');
+            const isDark = body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+            darkModeToggles.forEach(t => {
+                const icon = t.querySelector('i');
+                if (icon) {
+                    icon.classList.replace(isDark ? 'bi-moon' : 'bi-sun', isDark ? 'bi-sun' : 'bi-moon');
+                    t.innerHTML = isDark
+                        ? '<i class="bi bi-sun me-2"></i> Light Mode'
+                        : '<i class="bi bi-moon me-2"></i> Dark Mode';
+                }
+            });
+        });
+    });
+
+    // Confetti effect
+    {% if status == 'Pass' %}
+    const status = "{{ status }}";
+    if (status === 'Pass') {
+        const Confettiful = function(el) {
+            this.el = el;
+            this.containerEl = null;
+            this.confettiFrequency = 10;
+            this.confettiColors = ['#3b82f6', '#f97316', '#22c55e', '#ec4899', '#facc15'];
+            this.confettiAnimations = ['slow', 'medium', 'fast'];
+            this._setupElements();
+            this._renderConfetti();
+        };
+
+        Confettiful.prototype._setupElements = function() {
+            const containerEl = document.createElement('div');
+            containerEl.classList.add('js-container__confetti');
+            this.el.appendChild(containerEl);
+            this.containerEl = containerEl;
+        };
+
+        Confettiful.prototype._renderConfetti = function() {
+            this.confettiInterval = setInterval(() => {
+                const confettiEl = document.createElement('div');
+                const confettiSize = (Math.floor(Math.random() * 8) + 5) + 'px';
+                const confettiBackground = this.confettiColors[Math.floor(Math.random() * this.confettiColors.length)];
+                const confettiLeft = (Math.floor(Math.random() * this.el.offsetWidth)) + 'px';
+                const confettiAnimation = this.confettiAnimations[Math.floor(Math.random() * this.confettiAnimations.length)];
+                confettiEl.classList.add('js-container__confetti-item', 'js-container__confetti-item--animation-' + confettiAnimation);
+                confettiEl.style.left = confettiLeft;
+                confettiEl.style.width = confettiSize;
+                confettiEl.style.height = confettiSize;
+                confettiEl.style.backgroundColor = confettiBackground;
+                this.containerEl.appendChild(confettiEl);
+                setTimeout(() => {
+                    confettiEl.remove();
+                }, 4000);
+            }, 50);
+
+            setTimeout(() => {
+                clearInterval(this.confettiInterval);
+            }, 5000);
+        };
+
+        const jsContainer = document.querySelector('.js-container');
+        if (jsContainer) {
+            window.confettiful = new Confettiful(jsContainer);
+        } else {
+            console.warn('Confetti container (.js-container) not found');
+        }
+    }
+    {% endif %}
+});
+</script>
     <!-- script CSRF berikutnya -->
     <script>
     document.body.addEventListener('htmx:configRequest', function(evt) {
