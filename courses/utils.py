@@ -7,6 +7,10 @@ from django.utils.timezone import now
 from datetime import timedelta
 import uuid
 from datetime import datetime, timezone
+import urllib.parse
+import hashlib
+import hmac
+import base64
 
 def generate_nonce(request):
     nonce = uuid.uuid4().hex
@@ -117,4 +121,50 @@ def get_client_ip(request):
 
 
 
+def oauth_encode(value: str) -> str:
+    """Percent-encode sesuai OAuth 1.0a (RFC 5849)."""
+    return urllib.parse.quote(str(value), safe='~-._')
 
+
+def generate_oauth_signature(params, consumer_secret, launch_url, http_method="POST"):
+    """
+    Generate OAuth 1.0 HMAC-SHA1 signature for LTI 1.1.
+    """
+
+    # Pisahkan URL dari query string
+    parsed = urllib.parse.urlparse(launch_url)
+    base_url = f"{parsed.scheme}://{parsed.netloc}{parsed.path}"
+
+    # Tambahkan query string ke params (kalau ada)
+    query_params = urllib.parse.parse_qsl(parsed.query, keep_blank_values=True)
+    for k, v in query_params:
+        params[k] = v
+
+    # Step 1: Encode semua params, exclude oauth_signature
+    encoded_params = [(oauth_encode(k), oauth_encode(v))
+                      for k, v in params.items() if k != "oauth_signature"]
+
+    # Step 2: Sort alfabetis by key, lalu value
+    encoded_params.sort()
+
+    # Step 3: Param string
+    param_str = "&".join([f"{k}={v}" for k, v in encoded_params])
+
+    # Step 4: Base string (HTTP_METHOD&base_url&params)
+    base_elems = [
+        http_method.upper(),
+        oauth_encode(base_url),
+        oauth_encode(param_str),
+    ]
+    base_string = "&".join(base_elems)
+
+    # Step 5: Signing key
+    signing_key = f"{oauth_encode(consumer_secret)}&"
+
+    # Step 6: HMAC-SHA1 + Base64
+    hashed = hmac.new(signing_key.encode("utf-8"),
+                      base_string.encode("utf-8"),
+                      hashlib.sha1)
+    signature = base64.b64encode(hashed.digest()).decode()
+
+    return signature

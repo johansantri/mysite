@@ -19,7 +19,7 @@ from django.utils import timezone
 from decimal import Decimal, ROUND_DOWN
 from urllib.parse import quote, urlparse, parse_qs, urlencode
 from django.template.loader import get_template
-
+from .utils import generate_oauth_signature  # pastikan ada util ini
 # Third-party packages
 import pytz
 import qrcode
@@ -89,7 +89,7 @@ from .models import (
     AskOra, PeerReview, AssessmentScore, Submission, CourseStatus, AssessmentSession,
     CourseComment, Comment, Choice, Score, CoursePrice, AssessmentRead, QuestionAnswer,
     Enrollment, PricingType, Partner, CourseProgress, MaterialRead, GradeRange, Category,
-    Section, Instructor, TeamMember, Material, Question, Assessment
+    Section, Instructor, TeamMember, Material, Question, Assessment,LTIResult
 )
 
 # Project-level apps
@@ -678,81 +678,100 @@ def self_course(request, username, id, slug):
 
 logger = logging.getLogger(__name__)
 
+
 @login_required
 def launch_lti(request, idcourse, idsection, idlti, id_lti_tool):
     user = request.user
     logger.info(f"LTI 1.1 Launch requested by user {user.username} (ID: {user.id})")
 
+    # Get course, section, assessment, and tool
     course = get_object_or_404(Course, id=idcourse)
     section = get_object_or_404(Section, id=idsection, courses=course)
     assessment = get_object_or_404(Assessment, id=idlti, section=section)
-    tool = get_object_or_404(LTIExternalTool1, id=id_lti_tool, assessment=assessment)
+    lti_tool = get_object_or_404(LTIExternalTool1, id=id_lti_tool, assessment=assessment)
 
-    # Akses hanya untuk user yang terdaftar
-    if not course.enrollments.filter(user=user).exists():
-        logger.warning(f"Access denied for user {user.username} to LTI tool {tool.id}")
-        messages.error(request, "Anda tidak memiliki akses ke alat ini.")
-        return redirect('authentication:home')
+    if not lti_tool:
+        logger.error("LTI tool not configured for assessment %s", assessment.id)
+        return HttpResponse("LTI tool belum dikonfigurasi.", status=400)
 
-    # Validasi konfigurasi
-    if not tool.launch_url or not tool.consumer_key or not tool.shared_secret:
-        messages.error(request, "Konfigurasi LTI tidak lengkap.")
-        logger.error(f"Invalid LTI config for tool {tool.id}")
-        return redirect('authentication:home')
+    launch_url = lti_tool.launch_url
+    consumer_key = lti_tool.consumer_key
+    shared_secret = lti_tool.shared_secret
 
-    # Persiapkan parameter LTI 1.1
-    launch_url = tool.launch_url.strip()
-    lti_params = {
-        'lti_message_type': 'basic-lti-launch-request',
-        'lti_version': 'LTI-1p0',
-        'resource_link_id': f"{course.id}-{section.id}-{assessment.id}-{tool.id}",
-        'resource_link_title': assessment.name,
-        'user_id': str(user.id),
-        'roles': 'Learner',
-        'oauth_consumer_key': tool.consumer_key,
-        'oauth_signature_method': 'HMAC-SHA1',
-        'oauth_timestamp': str(int(datetime.now(pytz.UTC).timestamp())),
-        'oauth_nonce': str(uuid.uuid4()),
-        'oauth_version': '1.0',
-        'lis_person_name_full': user.get_full_name(),
-        'lis_person_name_given': user.first_name,
-        'lis_person_name_family': user.last_name,
-        'lis_person_contact_email_primary': user.email,
-        'context_id': str(course.id),
-        'context_title': course.course_name,
-        'context_label': course.course_name[:10],
-        'launch_presentation_locale': 'id-ID',
-        'launch_presentation_document_target': 'iframe',
+    # Handle user
+    user_id = str(user.id) if user.is_authenticated else str(uuid.uuid4())
+    user_full_name = user.get_full_name() if user.is_authenticated else "Anonymous User"
+    user_email = user.email if user.is_authenticated else "anonymous@example.com"
+
+    # Basic OAuth and LTI parameters
+    oauth_params = {
+        "oauth_consumer_key": consumer_key,
+        "oauth_signature_method": "HMAC-SHA1",
+        "oauth_version": "1.0",
+        "oauth_nonce": uuid.uuid4().hex,
+        "oauth_timestamp": str(int(time.time())),
+        "resource_link_id": f"res-{assessment.id}",
+        "user_id": user_id,
+        "roles": "Learner",
+        "lis_person_name_full": user_full_name,
+        "lis_person_contact_email_primary": user_email,
+        "context_id": f"course-{course.id}",
+        "context_title": getattr(assessment, "title", "Course"),
+        "launch_presentation_locale": "en-US",
+        "lti_version": "LTI-1p0",
+        "lti_message_type": "basic-lti-launch-request",
+        "tool_consumer_info_product_family_code": "django-lms",
+        "tool_consumer_info_version": "1.0",
+        "launch_presentation_document_target": "iframe",
     }
 
-    # Custom parameter sebagai string (opsional)
-    if tool.custom_parameters:
-        try:
-            for line in tool.custom_parameters.splitlines():
-                if '=' in line:
-                    key, value = line.split('=', 1)
-                    lti_params[key.strip()] = value.strip()
-        except Exception as e:
-            logger.warning(f"Invalid custom params on tool {tool.id}: {e}")
-
-    # Sign OAuth
-    sorted_params = sorted(lti_params.items())
-    encoded_params = urllib.parse.urlencode(sorted_params, quote_via=urllib.parse.quote)
-    base_string = f"POST&{urllib.parse.quote(launch_url, safe='')}&{urllib.parse.quote(encoded_params, safe='')}"
-    signing_key = f"{urllib.parse.quote(tool.shared_secret, safe='')}&".encode('utf-8')
-
-    signature = base64.b64encode(
-        hmac.new(signing_key, base_string.encode('utf-8'), hashlib.sha1).digest()
-    ).decode('utf-8')
-    lti_params['oauth_signature'] = signature
-
-    return render(request, 'courses/lti_launch.html', {
-        'launch_url': launch_url,
-        'lti_params': lti_params,
+    # Add outcome service parameters
+    result_sourcedid = f"lti-{assessment.id}-{user_id}"
+    outcome_url = request.build_absolute_uri(reverse("learner:lti_grade_callback")).rstrip('/')
+    oauth_params.update({
+        "lis_outcome_service_url": outcome_url,
+        "lis_result_sourcedid": result_sourcedid,
     })
 
+    # Add custom parameters
+    if lti_tool.custom_parameters:
+        try:
+            for line in lti_tool.custom_parameters.strip().splitlines():
+                if "=" in line:
+                    k, v = line.split("=", 1)
+                    oauth_params[k.strip()] = v.strip()
+        except Exception as e:
+            logger.warning("Failed to parse custom_parameters: %s", e)
 
+    # Generate OAuth signature
+    signature = generate_oauth_signature(oauth_params, shared_secret, launch_url)
+    oauth_params["oauth_signature"] = signature
 
+    logger.debug("Sending LTI Launch to %s with params: %s", launch_url, oauth_params)
+
+    # Initialize LTIResult record
+    if user.is_authenticated:
+        try:
+            LTIResult.objects.update_or_create(
+                user=user,
+                assessment=assessment,
+                defaults={
+                    'result_sourcedid': result_sourcedid,
+                    'outcome_service_url': outcome_url,
+                    'consumer_key': consumer_key,
+                    'score': None,
+                    'last_sent_at': None,
+                    'created_at': timezone.now(),
+                }
+            )
+            logger.info("Initialized LTIResult for user %s, assessment %s", user_id, assessment.id)
+        except Exception as e:
+            logger.error("Failed to initialize LTIResult: %s", e)
+
+    return render(request, "learner/lti_launch_form.html", {
+        "launch_url": launch_url,
+        "params": oauth_params,
+    })
 
 
 
