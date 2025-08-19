@@ -67,6 +67,8 @@ def about(request):
     return render(request, 'home/about.html')
 
 
+logger = logging.getLogger(__name__)
+
 @login_required
 def mycourse(request):
     user = request.user
@@ -78,42 +80,124 @@ def mycourse(request):
         'gender': 'Gender',
         'birth': 'Date of Birth',
     }
-
-    missing_fields = [
-        label for field, label in required_fields.items()
-        if not getattr(user, field, None)
-        or (isinstance(getattr(user, field), str) and not getattr(user, field).strip())
-    ]
+    missing_fields = [label for field, label in required_fields.items() if not getattr(user, field)]
 
     if missing_fields:
-        messages.warning(
-            request,
-            f"Please fill in the following required information: {', '.join(missing_fields)}"
-        )
+        messages.warning(request, f"Please fill in the following required information: {', '.join(missing_fields)}")
         return redirect('authentication:edit-profile', pk=user.pk)
 
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
 
-    courses = Enrollment.objects.filter(user=request.user)
-
     search_query = request.GET.get('search', '')
+    enrollments_page = request.GET.get('enrollments_page', 1)
+
+    enrollments = Enrollment.objects.filter(user=user).order_by('-enrolled_at')
+
     if search_query:
-        courses = courses.filter(Q(course__course_name__icontains=search_query))
+        enrollments = enrollments.filter(
+            Q(user__username__icontains=search_query) |
+            Q(course__course_name__icontains=search_query)
+        )
 
-    courses = courses.order_by('-enrolled_at')
-    paginator = Paginator(courses, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    total_enrollments = enrollments.count()
 
-    last_access_list = LastAccessCourse.objects.filter(user=request.user)
+    active_courses = Course.objects.filter(
+        id__in=enrollments.values('course'),
+        status_course__status='published',
+        start_enrol__lte=timezone.now(),
+        end_enrol__gte=timezone.now()
+    )
+
+    completed_courses = CourseProgress.objects.filter(user=user, progress_percentage=100)
+
+    enrollments_data = []
+    for enrollment in enrollments:
+        course = enrollment.course
+
+        materials = Material.objects.filter(section__courses=course)
+        total_materials = materials.count()
+        materials_read = MaterialRead.objects.filter(user=user, material__in=materials).count()
+        materials_read_percentage = (Decimal(materials_read) / Decimal(total_materials) * Decimal('100')) if total_materials > 0 else Decimal('0')
+
+        assessments = Assessment.objects.filter(section__courses=course)
+        total_assessments = assessments.count()
+        assessments_completed = AssessmentRead.objects.filter(user=user, assessment__in=assessments).count()
+        assessments_completed_percentage = (Decimal(assessments_completed) / Decimal(total_assessments) * Decimal('100')) if total_assessments > 0 else Decimal('0')
+
+        progress = ((materials_read_percentage + assessments_completed_percentage) / Decimal('2')) if (total_materials + total_assessments) > 0 else Decimal('0')
+
+        course_progress, created = CourseProgress.objects.get_or_create(user=user, course=course)
+        course_progress.progress_percentage = progress
+        course_progress.save()
+
+        grade_range = GradeRange.objects.filter(course=course, name='Pass').first()
+        passing_threshold = grade_range.min_grade if grade_range else Decimal('52.00')
+        max_grade = grade_range.max_grade if grade_range else Decimal('100.00')
+
+        total_score = Decimal('0')
+        total_max_score = Decimal('0')
+        for assessment in assessments:
+            score_value = Decimal('0')
+            total_questions = assessment.questions.count()
+
+            if total_questions > 0:
+                total_correct_answers = 0
+                for question in assessment.questions.all():
+                    correct = QuestionAnswer.objects.filter(
+                        question=question, user=user, choice__is_correct=True
+                    ).count()
+                    total_correct_answers += correct
+                score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
+            else:
+                submissions = Submission.objects.filter(askora__assessment=assessment, user=user)
+                if submissions.exists():
+                    latest = submissions.order_by('-submitted_at').first()
+                    score_obj = AssessmentScore.objects.filter(submission=latest).first()
+                    if score_obj:
+                        score_value = Decimal(score_obj.final_score)
+            total_score += score_value
+            total_max_score += Decimal(assessment.weight)
+
+        overall_percentage = (total_score / total_max_score * Decimal('100')) if total_max_score > 0 else Decimal('0')
+        certificate_eligible = progress == Decimal('100') and overall_percentage >= passing_threshold
+        certificate_issued = getattr(enrollment, 'certificate_issued', False)
+
+        has_reviewed = CourseRating.objects.filter(user=user, course=course).exists()
+
+        enrollments_data.append({
+            'enrollment': enrollment,
+            'progress': float(progress),
+            'certificate_eligible': certificate_eligible,
+            'certificate_issued': certificate_issued,
+            'overall_percentage': float(overall_percentage),
+            'passing_threshold': float(passing_threshold),
+            'has_reviewed': has_reviewed,
+        })
+
+    enrollments_paginator = Paginator(enrollments_data, 5)
+    enrollments_page_obj = enrollments_paginator.get_page(enrollments_page)
+
+    # Tambahkan LastAccessCourse untuk tombol Resume
+    last_access_list = LastAccessCourse.objects.filter(user=user)
     last_access_map = {la.course_id: la for la in last_access_list}
 
+    logger.debug(f"User {user.id} ({user.username}) accessed mycourse: {total_enrollments} enrollments, {len(last_access_list)} last accesses, last_access_map={[(k, v.material_id if v.material else None, v.assessment_id if v.assessment else None) for k, v in last_access_map.items()]}")
+
+    today = timezone.now().date()
+    user_licenses = user.licenses.all()
+    for lic in user_licenses:
+        lic.is_active = lic.start_date <= today <= lic.expiry_date
+
     return render(request, 'learner/mycourse_list.html', {
-        'page_obj': page_obj,
+        'page_obj': enrollments_page_obj,
         'search_query': search_query,
+        'total_enrollments': total_enrollments,
+        'active_courses': active_courses,
+        'completed_courses': completed_courses,
         'last_access_map': last_access_map,
     })
+
 @login_required
 def microcredential_list(request):
     if request.method != 'GET':

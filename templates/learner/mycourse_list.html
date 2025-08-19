@@ -3,74 +3,198 @@
 {% load extra_custom_filters %}
 {% block content %}
 
- 
-     
-        
-        
-            <h1>List of Courses Taken</h1>
+    <!-- Header -->
+    <div class="text-center mb-4">
+        <h1 class="display-5 fw-bold">My Courses</h1>
+        <p class="text-muted">Track your learning progress and achievements</p>
+    </div>
 
-            <!-- Search Form -->
+    <!-- Search Form -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-6">
             <form method="get" action="{% url 'authentication:mycourse' %}">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" name="search" value="{{ search_query }}" placeholder="Search for courses">
-                    <button class="btn btn-primary" type="submit">Search</button>
+                <div class="input-group">
+                    <input type="text" class="form-control form-control-lg rounded-start" name="search" value="{{ search_query }}" placeholder="Search for courses..." aria-label="Search for courses">
+                    <button class="btn btn-primary btn-lg rounded-end" type="submit">
+                        <i class="fas fa-search"></i> Search
+                    </button>
                 </div>
             </form>
+        </div>
+    </div>
 
-            {% if page_obj %}
-                <!-- Table for Courses -->
+    <!-- Course Stats -->
+    <div class="row g-3 mb-5">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 text-center">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Total Enrollments</h5>
+                    <h3 class="card-text fw-bold">{{ total_enrollments }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 text-center">
+                <div class="card-body">
+                    <h5 class="card-title text-success">Active Courses</h5>
+                    <h3 class="card-text fw-bold">{{ active_courses.count }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 text-center">
+                <div class="card-body">
+                    <h5 class="card-title text-info">Completed Courses</h5>
+                    <h3 class="card-text fw-bold">{{ completed_courses.count }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if page_obj %}
+        <!-- Courses Table -->
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
+                    <table class="table table-hover mb-0">
+                        <thead class="bg-light">
                             <tr>
-                                <th>Course Name</th>
-                                <th> Enrollment Date</th>
-                                <th>Action</th>
+                                <th scope="col" class="ps-4">Course Name</th>
+                                <th scope="col">Enrollment Date</th>
+                                <th scope="col">Progress</th>
+                                <th scope="col">Score</th>
+                                <th scope="col">Certificate</th>
+                                <th scope="col" class="text-end pe-4">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for enrollment in page_obj %}
+                            {% for data in page_obj %}
+                            {% with enrollment=data.enrollment %}
                             <tr>
-                                <td><a href="{% url 'courses:course_lms_detail' enrollment.course.id enrollment.course.slug %}">{{ enrollment.course.course_name }}</a></td>
+                                <td class="ps-4">
+                                    <a href="{% url 'courses:course_lms_detail' enrollment.course.id enrollment.course.slug %}" class="text-decoration-none text-primary fw-medium">
+                                        {{ enrollment.course.course_name }}
+                                    </a>
+                                </td>
                                 <td>{{ enrollment.enrolled_at|date:"d M Y" }}</td>
                                 <td>
-                                    {% with last_access=last_access_map|get_item:enrollment.course.id %}
-                                        {% if last_access %}
-                                            <a href="{% url 'learner:course_learn' enrollment.user.username enrollment.course.id enrollment.course.slug %}{% if last_access.material %}?material_id={{ last_access.material.id }}{% elif last_access.assessment %}?assessment_id={{ last_access.assessment.id }}{% endif %}" class="btn btn-warning btn-sm">
-                                                <i class="fas fa-play-circle"></i> Resume
-                                            </a>
-                                        {% else %}
-                                            <a href="{% url 'learner:course_learn' enrollment.user.username  enrollment.course.id enrollment.course.slug %}" class="btn btn-primary btn-sm">
-                                                <i class="fas fa-rocket"></i> Get Started
-                                            </a>
-                                        {% endif %}
-                                    {% endwith %}
+                                    <div class="progress mt-1" style="height: 8px;">
+                                        <div class="progress-bar bg-primary" role="progressbar" style="width: {{ data.progress }}%;" aria-valuenow="{{ data.progress }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <small class="text-muted">{{ data.progress|floatformat:2 }}%</small>
                                 </td>
-
-
+                                <td>
+                                    {{ data.overall_percentage|floatformat:2 }}%
+                                    <small class="text-muted">(Pass: {{ data.passing_threshold|floatformat:2 }}%)</small>
+                                </td>
+                                <td>
+                                    {% if data.certificate_issued %}
+                                        <span class="badge bg-success">Issued</span>
+                                    {% elif data.certificate_eligible %}
+                                        <span class="badge bg-warning text-dark">Eligible</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Not Eligible</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end pe-4">
+                                    <div class="btn-group" role="group">
+                                        {% with last_access=last_access_map|get_item:enrollment.course.id %}
+                                            {% if data.progress < 100 or data.overall_percentage < data.passing_threshold or not data.certificate_issued %}
+                                                {% if last_access %}
+                                                    {% if last_access.material %}
+                                                        <a href="{% url 'learner:course_learn' enrollment.user.username enrollment.course.id enrollment.course.slug %}?material_id={{ last_access.material.id }}" class="btn btn-warning btn-sm">
+                                                            <i class="fas fa-play-circle me-1"></i> Resume
+                                                        </a>
+                                                    {% elif last_access.assessment %}
+                                                        <a href="{% url 'learner:course_learn' enrollment.user.username enrollment.course.id enrollment.course.slug %}?assessment_id={{ last_access.assessment.id }}" class="btn btn-warning btn-sm">
+                                                            <i class="fas fa-play-circle me-1"></i> Resume
+                                                        </a>
+                                                    {% else %}
+                                                        <a href="{% url 'learner:course_learn' enrollment.user.username enrollment.course.id enrollment.course.slug %}" class="btn btn-primary btn-sm">
+                                                            <i class="fas fa-rocket me-1"></i> Get Started
+                                                        </a>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <a href="{% url 'learner:course_learn' enrollment.user.username enrollment.course.id enrollment.course.slug %}" class="btn btn-primary btn-sm">
+                                                        <i class="fas fa-rocket me-1"></i> Get Started
+                                                    </a>
+                                                {% endif %}
+                                            {% endif %}
+                                            {% if data.certificate_eligible %}
+                                                <a href="{% url 'courses:generate_certificate' enrollment.course.id %}" class="btn btn-success btn-sm">
+                                                    <i class="fas fa-download me-1"></i> Claim Certificate
+                                                </a>
+                                                {% if data.has_reviewed %}
+                                                    <a href="{% url 'courses:course_lms_detail' enrollment.course.id enrollment.course.slug %}" class="btn btn-info btn-sm">
+                                                        <i class="fas fa-eye me-1"></i> Review
+                                                    </a>
+                                                {% else %}
+                                                    <a href="{% url 'courses:submit_rating' enrollment.course.id enrollment.course.slug %}" class="btn btn-warning btn-sm">
+                                                        <i class="fas fa-star me-1"></i> Review
+                                                    </a>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endwith %}
+                                    </div>
+                                </td>
                             </tr>
+                            {% endwith %}
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
+            </div>
+        </div>
 
-                <!-- Pagination Controls -->
-                <div class="pagination">
-                    {% if page_obj.has_previous %}
-                        <a href="?page=1&search={{ search_query }}" class="btn btn-link">First</a>
-                        <a href="?page={{ page_obj.previous_page_number }}&search={{ search_query }}" class="btn btn-link">Previous</a>
-                    {% endif %}
+        <!-- Pagination -->
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?enrollments_page=1&search={{ search_query }}">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?enrollments_page={{ page_obj.previous_page_number }}&search={{ search_query }}">&laquo; Previous</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">First</span>
+                    </li>
+                    <li class="page-item disabled">
+                        <span class="page-link">&laquo; Previous</span>
+                    </li>
+                {% endif %}
 
-                    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                <li class="page-item disabled">
+                    <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                </li>
 
-                    {% if page_obj.has_next %}
-                        <a href="?page={{ page_obj.next_page_number }}&search={{ search_query }}" class="btn btn-link">Next</a>
-                        <a href="?page={{ page_obj.paginator.num_pages }}&search={{ search_query }}" class="btn btn-link">Last</a>
-                    {% endif %}
-                </div>
-            {% else %}
-                <p>You haven't enrolled in any courses yet.</p>
-            {% endif %}
-       
-  
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?enrollments_page={{ page_obj.next_page_number }}&search={{ search_query }}">Next &raquo;</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?enrollments_page={{ page_obj.paginator.num_pages }}&search={{ search_query }}">Last</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Next &raquo;</span>
+                    </li>
+                    <li class="page-item disabled">
+                        <span class="page-link">Last</span>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% else %}
+        <div class="card shadow-sm border-0 text-center py-5">
+            <div class="card-body">
+                <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
+                <h4 class="card-title">No Courses Enrolled</h4>
+                <p class="card-text text-muted">You haven't enrolled in any courses yet. Start exploring now!</p>
+                <a href="{% url 'courses:course_list' %}" class="btn btn-primary">Browse Courses</a>
+            </div>
+        </div>
+    {% endif %}
+
 {% endblock %}

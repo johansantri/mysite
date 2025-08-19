@@ -1467,6 +1467,11 @@ class LastAccessCourse(models.Model):
 
     class Meta:
         unique_together = ('user', 'course')
+        verbose_name = 'Last Access Course'
+        verbose_name_plural = 'Last Access Courses'
+
+    def __str__(self):
+        return f"{self.user.username} - {self.course.course_name} - {self.last_viewed_at}"
 
 class LTIExternalTool1(models.Model):
     assessment = models.OneToOneField('Assessment', on_delete=models.CASCADE, related_name='lti_tool')
