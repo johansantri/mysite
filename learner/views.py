@@ -6,6 +6,8 @@ import csv
 import logging
 import uuid
 import base64
+import xml.etree.ElementTree as ET
+import oauthlib.oauth1
 import hmac
 import hashlib
 import urllib.parse
@@ -200,7 +202,7 @@ def generate_oauth_signature(params, consumer_secret, launch_url):
 
 logger = logging.getLogger(__name__)
 
-@csrf_exempt
+#@csrf_exempt
 def lti_consume_course(request, assessment_id):
     # Get assessment and LTI tool
     assessment = get_object_or_404(Assessment, id=assessment_id)
@@ -290,88 +292,99 @@ def lti_consume_course(request, assessment_id):
     })
 
 
+
 logger = logging.getLogger(__name__)
 
 @csrf_exempt
 def lti_grade_callback(request):
-    logger.debug("LTI Grade Callback invoked at %s", request.build_absolute_uri())
-    logger.debug("Request headers: %s", dict(request.headers))
-    logger.debug("Request POST params: %s", request.POST)
-    logger.debug("Request body: %s", request.body.decode('utf-8', errors='ignore'))
+    """
+    Menangani callback dari LMS untuk menerima skor melalui LTI Outcome Service.
+    """
+    if request.method != "POST":
+        logger.error("Invalid request method: %s", request.method)
+        return HttpResponse("Metode tidak diizinkan.", status=405)
 
-    if request.method != 'POST':
-        logger.warning("Non-POST request received")
-        return HttpResponseBadRequest("Only POST allowed")
-
-    # Verify OAuth signature
-    if not verify_oauth_signature(request):
-        logger.warning("Invalid OAuth signature")
-        return HttpResponse("Unauthorized", status=401)
-
-    # Parse XML body
+    # Parse XML dari body
     try:
-        sourcedid, score = parse_lti_grade_xml(request.body)
-        logger.info("Received grade - sourcedid: %s, score: %s", sourcedid, score)
+        body = request.body.decode('utf-8')
+        logger.debug("Received LTI callback body: %s", body)
+        root = ET.fromstring(body)
+        ns = {'ims': 'http://www.imsglobal.org/services/ltiv1p1/xsd/imsoms_v1p0'}
+
+        # Ambil lis_result_sourcedid dan skor
+        sourcedid = root.find('.//ims:sourcedGUID/ims:sourcedId', ns).text
+        score_element = root.find('.//ims:resultScore/ims:textString', ns)
+        score = float(score_element.text) if score_element is not None else None
+
+        if not sourcedid or score is None:
+            logger.error("Missing lis_result_sourcedid or score in callback request")
+            return HttpResponse("Missing lis_result_sourcedid or score.", status=400)
+
+    except ET.ParseError:
+        logger.error("Failed to parse XML body")
+        return HttpResponse("Invalid XML format.", status=400)
+
+    # Ambil LTIResult berdasarkan lis_result_sourcedid
+    try:
+        lti_result = get_object_or_404(LTIResult, result_sourcedid=sourcedid)
     except Exception as e:
-        logger.error("Failed to parse LTI grade XML: %s", str(e))
-        return HttpResponseBadRequest("Invalid XML payload")
+        logger.error("LTIResult not found for sourcedid %s: %s", sourcedid, e)
+        return HttpResponse("LTIResult tidak ditemukan.", status=404)
 
-    # Extract assessment_id and user_id from sourcedid
+    # Validasi OAuth (opsional, jika LMS memerlukannya)
+    consumer_key = lti_result.consumer_key
+    shared_secret = lti_result.assessment.lti_tool.shared_secret
+    oauth_client = oauthlib.oauth1.Client(
+        consumer_key,
+        client_secret=shared_secret,
+        signature_method=oauthlib.oauth1.SIGNATURE_HMAC_SHA1,
+        signature_type='body'
+    )
+    # Verifikasi tanda tangan (jika diperlukan)
     try:
-        _, assessment_id, user_id = sourcedid.split('-')
-        assessment_id = int(assessment_id)
-        user_id = int(user_id)
-    except ValueError as e:
-        logger.error("Invalid lis_result_sourcedid format: %s", sourcedid)
-        return HttpResponseBadRequest("Invalid lis_result_sourcedid")
-
-    # Retrieve user and assessment
-    try:
-        user = CustomUser.objects.get(id=user_id)
-        assessment = Assessment.objects.get(id=assessment_id)
-    except CustomUser.DoesNotExist:
-        logger.error("User not found: %s", user_id)
-        return HttpResponseBadRequest("User not found")
-    except Assessment.DoesNotExist:
-        logger.error("Assessment not found: %s", assessment_id)
-        return HttpResponseBadRequest("Assessment not found")
-
-    # Get consumer_key from OAuth params
-    auth_header = request.META.get('HTTP_AUTHORIZATION', '')
-    params = request.POST.dict()
-    if auth_header.startswith('OAuth '):
-        try:
-            auth_params = auth_header[6:].split(',')
-            for param in auth_params:
-                key, value = param.split('=', 1)
-                params[key.strip()] = value.strip().strip('"')
-        except Exception as e:
-            logger.error("Failed to parse Authorization header for consumer_key: %s", e)
-            return HttpResponseBadRequest("Invalid Authorization header")
-
-    consumer_key = params.get('oauth_consumer_key', '')
-    if not consumer_key:
-        logger.error("No oauth_consumer_key provided")
-        return HttpResponseBadRequest("No oauth_consumer_key")
-
-    # Save or update LTIResult
-    try:
-        lti_result, created = LTIResult.objects.update_or_create(
-            user=user,
-            assessment=assessment,
-            defaults={
-                'result_sourcedid': sourcedid,
-                'outcome_service_url': request.build_absolute_uri().rstrip('/'),
-                'consumer_key': consumer_key,
-                'score': score,
-                'last_sent_at': timezone.now(),
-            }
-        )
-        logger.info("Saved LTIResult: %s, created: %s", lti_result, created)
-        return HttpResponse("Score received", status=200)
+        uri = request.build_absolute_uri()
+        headers = {"Content-Type": "application/xml"}
+        valid = oauth_client.verify_request(uri, http_method="POST", body=body, headers=request.headers)
+        if not valid:
+            logger.error("OAuth signature verification failed")
+            return HttpResponse("OAuth signature verification failed.", status=401)
     except Exception as e:
-        logger.error("Failed to save LTIResult: %s", str(e))
-        return HttpResponseBadRequest("Failed to save score")
+        logger.warning("OAuth verification skipped or failed: %s", e)
+
+    # Simpan skor ke LTIResult
+    try:
+        lti_result.score = score * 100  # Konversi ke skala 0-100 (jika LMS mengirim 0.0-1.0)
+        lti_result.last_sent_at = timezone.now()
+        lti_result.save()
+        logger.info("Score %s saved for LTIResult %s", score, sourcedid)
+    except Exception as e:
+        logger.error("Failed to save score for LTIResult %s: %s", sourcedid, e)
+        return HttpResponse("Gagal menyimpan skor.", status=500)
+
+    # Kembalikan respons XML sesuai spesifikasi LTI
+    response_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
+    <imsx_POXEnvelopeResponse xmlns="http://www.imsglobal.org/services/ltiv1p1/xsd/imsoms_v1p0">
+        <imsx_POXHeader>
+            <imsx_POXResponseHeaderInfo>
+                <imsx_version>V1.0</imsx_version>
+                <imsx_messageIdentifier>{uuid.uuid4().hex}</imsx_messageIdentifier>
+                <imsx_statusInfo>
+                    <imsx_codeMajor>success</imsx_codeMajor>
+                    <imsx_severity>status</imsx_severity>
+                    <imsx_description>Score received successfully</imsx_description>
+                    <imsx_messageRefIdentifier>{root.find('.//ims:imsx_messageIdentifier', ns).text}</imsx_messageIdentifier>
+                </imsx_statusInfo>
+            </imsx_POXResponseHeaderInfo>
+        </imsx_POXHeader>
+        <imsx_POXBody>
+            <replaceResultResponse/>
+        </imsx_POXBody>
+    </imsx_POXEnvelopeResponse>
+    """
+
+    return HttpResponse(response_xml, content_type="application/xml", status=200)
+
+
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)

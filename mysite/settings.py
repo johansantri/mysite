@@ -78,10 +78,13 @@ INSTALLED_APPS = [
     "django_htmx",
     'django_select2',
     'payments.apps.PaymentsConfig',  # bukan 'payments' langsung!
+    'lti_consumer',  # Aplikasi LTI Consumer
     
  
     
 ]
+
+LTI_PLATFORM_ISS = "https://ini.icei.ac.id"
 
 MIDDLEWARE = [
     #'django.middleware.security.SecurityMiddleware',
@@ -607,5 +610,10 @@ AXES_LOCKOUT_PARAMETERS = ['username', 'ip_address']  # ganti yang deprecated
 
 LTI_ISSUER = "https://ini.icei.ac.id"  # domain lms to lti
 LTI_CLIENT_ID = "https://scholldecodewp.h5p.com"  # Sesuaikan dengan data dari H5P
+
+
+CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
+CAPTCHA_MATH_CHALLENGE_QUESTION = 'What is {num1} plus {num2}?'
+
 
 
