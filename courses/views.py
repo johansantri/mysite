@@ -1059,26 +1059,47 @@ def course_list_enroll(request, id):
 
         for assessment in assessments:
             score_value = Decimal(0)
-            total_correct_answers = 0
-            total_questions = assessment.questions.count()
-
-            if total_questions > 0:  # Multiple choice
-                answers_exist = False
-                for question in assessment.questions.all():
-                    answers = QuestionAnswer.objects.filter(question=question, user=user)
-                    if answers.exists():
-                        answers_exist = True
-                    total_correct_answers += answers.filter(choice__is_correct=True).count()
-                if not answers_exist:
-                    all_assessments_submitted = False
-                if total_questions > 0:
-                    score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
-            
             total_max_score += assessment.weight
+
+            # Cek apakah assessment ini memiliki nilai LTI
+            lti_result = LTIResult.objects.filter(user=user, assessment=assessment).first()
+            if lti_result and lti_result.score is not None:
+                # Normalisasi skor LTI ke rentang 0.0 - 1.0
+                lti_score = Decimal(lti_result.score)
+                if lti_score > 1.0:
+                    logger.warning(f'LTI score {lti_score} melebihi 1.0 untuk user {user.id}, menormalkan ke {lti_score / 100}')
+                    lti_score = lti_score / 100
+                score_value = lti_score * Decimal(assessment.weight)
+            else:
+                # Hitung berdasarkan jawaban multiple choice
+                total_correct_answers = 0
+                total_questions = assessment.questions.count()
+
+                if total_questions > 0:
+                    answers_exist = False
+                    for question in assessment.questions.all():
+                        answers = QuestionAnswer.objects.filter(question=question, user=user)
+                        if answers.exists():
+                            answers_exist = True
+                        total_correct_answers += answers.filter(choice__is_correct=True).count()
+
+                    if not answers_exist:
+                        all_assessments_submitted = False
+
+                    score_value = (
+                        (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
+                        if total_questions > 0 else Decimal(0)
+                    )
+                else:
+                    all_assessments_submitted = False
+
             total_score += score_value
 
         # Hitung persentase skor
         overall_percentage = (total_score / total_max_score) * 100 if total_max_score > 0 else 0
+        if overall_percentage > 100:
+            logger.warning(f'Persentase skor {overall_percentage}% melebihi 100 untuk user {user.id}, course {course.id}')
+            overall_percentage = min(overall_percentage, 100)
 
         # Ambil progress dari CourseProgress
         course_progress = CourseProgress.objects.filter(user=user, course=course).first()

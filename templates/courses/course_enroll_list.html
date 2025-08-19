@@ -25,6 +25,9 @@
         <a href="?download=csv{% if search_query %}&search={{ search_query }}{% endif %}" class="btn btn-success shadow-sm">
             <i class="bi bi-download me-2"></i>Unduh CSV
         </a>
+        <a href="{% url 'learner:score_summary_detail' course_id=course.id %}" class="btn btn-primary">
+                <i class="bi bi-table me-2"></i>View Score Summary detail
+              </a>
     </div>
 
     <!-- Tabel Pendaftaran -->
