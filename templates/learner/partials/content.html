@@ -575,11 +575,23 @@
                           <!-- Bagian untuk lti lunch -->
                         {% if is_lti %}
                             {% if is_lti and lti_tool %}
-                            <form action="{% url 'learner:lti_consume_course' assessment.id %}" method="get" target="_blank" style="display:inline;">
-                            <button type="submit" class="btn btn-primary">
-                                Launch LTI: {{ lti_tool.tool_name }}
-                            </button>
-                            </form>
+                           <div class="card text-center shadow-lg border-0 my-4">
+                            <div class="card-body">
+                                <h4 class="card-title mb-3">LTI Tool: {{ lti_tool.tool_name }}</h4>
+                                <p class="card-text text-muted">
+                                Klik tombol di bawah untuk membuka tool eksternal ini di tab baru.
+                                </p>
+                                <form action="{% url 'learner:lti_consume_course' assessment.id %}" 
+                                    method="get" 
+                                    target="_blank" 
+                                    style="display:inline;">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    🚀 Launch LTI
+                                </button>
+                                </form>
+                            </div>
+                            </div>
+
 
                             {% endif %}
 
