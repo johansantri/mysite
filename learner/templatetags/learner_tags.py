@@ -1,10 +1,11 @@
 from django import template
 from django.db.models import Count
 from django.urls import reverse
-from courses.models import PeerReview, Submission,Course, Section, Material, Assessment,MaterialRead, AssessmentRead, QuestionAnswer, Submission, AssessmentScore, GradeRange, CourseProgress
+from courses.models import PeerReview, LTIResult,Submission,Course, Section, Material, Assessment,MaterialRead, AssessmentRead, QuestionAnswer, Submission, AssessmentScore, GradeRange, CourseProgress
 import random
 import re
 from decimal import Decimal
+import logging
 
 
 register = template.Library()
@@ -99,6 +100,8 @@ def mul(value, arg):
     except (ValueError, TypeError):
         return ''
     
+logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 @register.simple_tag(takes_context=True)
 def get_course_completion_status(context):
@@ -107,6 +110,7 @@ def get_course_completion_status(context):
     course = context.get('course')
 
     if not course:
+        logger.warning("No course provided in get_course_completion_status")
         return {
             'is_completed': False,
             'certificate_url': None,
@@ -137,13 +141,24 @@ def get_course_completion_status(context):
         score_value = Decimal(0)
         weight = Decimal(assessment.weight or 1)
 
-        if assessment.questions.exists():  # Pilihan ganda
+        # Cek apakah assessment adalah LTI
+        lti_result = LTIResult.objects.filter(user=user, assessment=assessment, score__isnull=False).first()
+        if lti_result:
+            # Asumsi skor LTI dalam skala 0.0-1.0; jika dalam skala 0-100, normalisasi
+            lti_score = Decimal(lti_result.score)
+            if lti_score > 1:  # Jika skor dalam skala 0-100
+                lti_score = lti_score / Decimal(100)
+            score_value = min(lti_score * weight, weight)  # Batasi skor maksimum ke bobot
+            assessments_completed += 1
+            logger.debug(f"LTIResult for user {user.id}, assessment {assessment.id}: raw_score={lti_result.score}, normalized_score={lti_score}, weight={weight}, score_value={score_value}")
+        elif assessment.questions.exists():  # Pilihan ganda
             has_answers = QuestionAnswer.objects.filter(
                 user=user, question__assessment=assessment
             ).exists()
 
             if not has_answers:
                 all_assessments_submitted = False
+                logger.debug(f"No answers for quiz assessment {assessment.id} by user {user.id}")
                 continue
 
             total_questions = assessment.questions.count()
@@ -155,7 +170,7 @@ def get_course_completion_status(context):
 
             assessments_completed += 1
             score_value = (Decimal(correct_answers) / Decimal(total_questions)) * weight if total_questions > 0 else Decimal(0)
-
+            logger.debug(f"Quiz assessment {assessment.id}: correct={correct_answers}, total={total_questions}, weight={weight}, score_value={score_value}")
         else:  # ORA / manual
             submission = Submission.objects.filter(
                 user=user, askora__assessment=assessment
@@ -163,15 +178,18 @@ def get_course_completion_status(context):
 
             if not submission:
                 all_assessments_submitted = False
+                logger.debug(f"No submission for ORA assessment {assessment.id} by user {user.id}")
                 continue
 
             score_obj = AssessmentScore.objects.filter(submission=submission).first()
             if not score_obj:
                 all_assessments_submitted = False
+                logger.debug(f"No score for ORA submission in assessment {assessment.id} by user {user.id}")
                 continue
 
             assessments_completed += 1
             score_value = Decimal(score_obj.final_score)
+            logger.debug(f"ORA assessment {assessment.id}: score={score_value}, weight={weight}")
 
         total_score += score_value
         total_max_score += weight
@@ -180,8 +198,9 @@ def get_course_completion_status(context):
         (assessments_completed / total_assessments) * 100 if total_assessments > 0 else 0
     )
 
+    # Hitung persentase keseluruhan dan batasi ke 100%
     overall_percentage = (
-        float((total_score / total_max_score) * 100) if total_max_score > 0 else 0
+        min(float((total_score / total_max_score) * 100), 100.0) if total_max_score > 0 else 0
     )
 
     is_completed = all_assessments_submitted and overall_percentage >= passing_threshold
@@ -190,6 +209,11 @@ def get_course_completion_status(context):
         reverse('courses:generate_certificate', kwargs={'course_id': course.id})
         if is_completed else None
     )
+
+    logger.info(f"Course completion status for user {user.id}, course {course.id}: "
+                f"is_completed={is_completed}, assessments_completed={assessments_completed}/{total_assessments}, "
+                f"total_score={total_score}, total_max_score={total_max_score}, "
+                f"overall_percentage={overall_percentage}, passing_threshold={passing_threshold}")
 
     return {
         'is_completed': is_completed,
@@ -201,10 +225,11 @@ def get_course_completion_status(context):
     }
 
 
+    
 @register.simple_tag(takes_context=True)
 def is_content_read(context, content_type, content_id):
     """
-    Check if a material or assessment has been read/opened by the user.
+    Check if a material or assessment has been read/opened or completed by the user.
     
     Args:
         context: Template context (includes request).
@@ -212,7 +237,7 @@ def is_content_read(context, content_type, content_id):
         content_id: ID of the material or assessment.
     
     Returns:
-        bool: True if content is read/opened, False otherwise.
+        bool: True if content is read/opened or completed, False otherwise.
     """
     user = context['request'].user
     if not user.is_authenticated:
@@ -220,5 +245,20 @@ def is_content_read(context, content_type, content_id):
     if content_type == 'material':
         return MaterialRead.objects.filter(user=user, material_id=content_id).exists()
     elif content_type == 'assessment':
-        return AssessmentRead.objects.filter(user=user, assessment_id=content_id).exists()
+        # Cek LTIResult untuk assessment LTI
+        if LTIResult.objects.filter(user=user, assessment_id=content_id, score__isnull=False).exists():
+            logger.debug(f"LTIResult found for user {user.id}, assessment {content_id}")
+            return True
+        # Cek QuestionAnswer untuk kuis
+        if QuestionAnswer.objects.filter(user=user, question__assessment_id=content_id).exists():
+            logger.debug(f"QuestionAnswer found for user {user.id}, assessment {content_id}")
+            return True
+        # Cek Submission untuk ORA
+        if Submission.objects.filter(user=user, askora__assessment_id=content_id).exists():
+            logger.debug(f"Submission found for user {user.id}, assessment {content_id}")
+            return True
+        # Fallback ke AssessmentRead untuk menandai bahwa assessment telah dibuka
+        assessment_read = AssessmentRead.objects.filter(user=user, assessment_id=content_id).exists()
+        logger.debug(f"AssessmentRead for user {user.id}, assessment {content_id}: {assessment_read}")
+        return assessment_read
     return False
