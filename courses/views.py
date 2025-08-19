@@ -703,6 +703,15 @@ def launch_lti(request, idcourse, idsection, idlti, id_lti_tool):
     user_full_name = user.get_full_name() if user.is_authenticated else "Anonymous User"
     user_email = user.email if user.is_authenticated else "anonymous@example.com"
 
+
+    # Tentukan role LTI berdasarkan role user di sistem LMS kita
+    if user.is_superuser or user.is_staff:
+        lti_role = "Instructor"
+    elif getattr(user, "is_instructor", False):
+        lti_role = "Instructor"
+    else:
+        lti_role = "Learner"
+
     # Basic OAuth and LTI parameters
     oauth_params = {
         "oauth_consumer_key": consumer_key,
@@ -712,7 +721,7 @@ def launch_lti(request, idcourse, idsection, idlti, id_lti_tool):
         "oauth_timestamp": str(int(time.time())),
         "resource_link_id": f"res-{assessment.id}",
         "user_id": user_id,
-        "roles": "Learner",
+        "roles": lti_role,
         "lis_person_name_full": user_full_name,
         "lis_person_contact_email_primary": user_email,
         "context_id": f"course-{course.id}",
