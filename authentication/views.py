@@ -58,17 +58,83 @@ from django.utils.text import slugify
 
 from django.core.paginator import Paginator
 from django.shortcuts import render
+import time
 
 
 
 
+def custom_ratelimit(view_func):
+    def wrapper(request, *args, **kwargs):
+        key = request.user.username if request.user.is_authenticated else request.META.get('REMOTE_ADDR', 'anonymous')
+        cache_key = f'ratelimit_{key}'
+        timestamp_key = f'{cache_key}_timestamp'
+        limit = 500
+        window = 3600  # 1 hour in seconds
 
+        request_count = cache.get(cache_key, 0)
+        first_request_time = cache.get(timestamp_key)
+
+        if request_count >= limit:
+            if first_request_time:
+                time_passed = int(time.time()) - first_request_time
+                time_remaining = window - time_passed
+            else:
+                time_remaining = window
+
+            logger.warning(f"Rate limit exceeded for {cache_key}: {request_count} requests")
+
+            if request.user.is_authenticated:
+                user_info = f" ⚠️ You have exceeded the limit of {limit} requests per hour."
+            else:
+                user_info = f" ⚠️ Too many requests from your IP address. The limit is {limit} requests per hour."
+
+            response_content = (
+                f"{user_info}\n"
+                f"You have made {request_count} requests.\n"
+                f"Please try again in {time_remaining} seconds."
+            )
+            return HttpResponse(response_content, status=429)
+
+        if request_count == 0:
+            cache.set(cache_key, 1, window)
+            cache.set(timestamp_key, int(time.time()), window)
+        else:
+            try:
+                cache.incr(cache_key)
+            except ValueError as e:
+                logger.error(f"Cache increment failed for {cache_key}: {str(e)}")
+                cache.set(cache_key, request_count + 1, window)
+
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+# Placeholder validation functions (adjust based on your implementation)
+def validate_category_ids(raw_categories):
+    return [int(c) for c in raw_categories if c.isdigit()]
+
+def validate_language(language):
+    if language in dict(Course.choice_language):
+        return language
+    raise ValidationError("Invalid language")
+
+def validate_level(level):
+    if level in ['basic', 'middle', 'advanced']:
+        return level
+    raise ValidationError("Invalid level")
+
+def validate_price_filter(price_filter):
+    if price_filter in ['free', 'paid', '']:
+        return price_filter
+    raise ValidationError("Invalid price filter")
+
+
+@custom_ratelimit
 def about(request):
     return render(request, 'home/about.html')
 
 
 logger = logging.getLogger(__name__)
-
+@custom_ratelimit
 @login_required
 def mycourse(request):
     user = request.user
@@ -198,6 +264,7 @@ def mycourse(request):
         'last_access_map': last_access_map,
     })
 
+@custom_ratelimit
 @login_required
 def microcredential_list(request):
     if request.method != 'GET':
@@ -286,43 +353,6 @@ def validate_category_ids(category_ids):
 
 logger = logging.getLogger(__name__)
 
-def custom_ratelimit(view_func):
-    def wrapper(request, *args, **kwargs):
-        key = request.user.username if request.user.is_authenticated else request.META.get('REMOTE_ADDR', 'anonymous')
-        cache_key = f'ratelimit_{key}'
-        request_count = cache.get(cache_key, 0)
-        if request_count >= 500:
-            logger.warning(f"Rate limit exceeded for {cache_key}: {request_count} requests")
-            return HttpResponse("Terlalu banyak permintaan. Silakan coba lagi nanti.", status=429)
-        if request_count == 0:
-            cache.set(cache_key, 1, 3600)
-        else:
-            try:
-                cache.incr(cache_key)
-            except ValueError as e:
-                logger.error(f"Cache increment failed for {cache_key}: {str(e)}")
-                cache.set(cache_key, request_count + 1, 3600)
-        return view_func(request, *args, **kwargs)
-    return wrapper
-
-# Placeholder validation functions (adjust based on your implementation)
-def validate_category_ids(raw_categories):
-    return [int(c) for c in raw_categories if c.isdigit()]
-
-def validate_language(language):
-    if language in dict(Course.choice_language):
-        return language
-    raise ValidationError("Invalid language")
-
-def validate_level(level):
-    if level in ['basic', 'middle', 'advanced']:
-        return level
-    raise ValidationError("Invalid level")
-
-def validate_price_filter(price_filter):
-    if price_filter in ['free', 'paid', '']:
-        return price_filter
-    raise ValidationError("Invalid price filter")
 
 @custom_ratelimit
 @cache_page(60 * 5)
@@ -572,6 +602,7 @@ def course_list(request):
         logger.exception(f"Unexpected error in course_list: {str(e)}")
         return HttpResponseServerError("Terjadi kesalahan yang tidak terduga.")
 
+@custom_ratelimit
 @login_required
 @ratelimit(key='ip', rate='100/h')
 def user_detail(request, user_id):
@@ -662,7 +693,7 @@ def user_detail(request, user_id):
 
     return render(request, 'authentication/user_detail.html', context)
 
-
+@custom_ratelimit
 @login_required
 @ratelimit(key='ip', rate='100/h')
 def all_user(request):
@@ -763,7 +794,7 @@ def all_user(request):
 
 
 
-
+@custom_ratelimit
 @login_required
 @ratelimit(key='ip', rate='100/h')
 def dasbord(request):
@@ -924,6 +955,8 @@ def dasbord(request):
     return render(request, 'home/dasbord.html', context)
 
 
+
+@custom_ratelimit
 @login_required
 def reply_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
@@ -947,7 +980,7 @@ def reply_comment(request, comment_id):
     }
     return render(request, 'home/dasbord.html', context)
 
-
+@custom_ratelimit
 @login_required
 def delete_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
@@ -958,6 +991,8 @@ def delete_comment(request, comment_id):
             return redirect('authentication:dasbord')  # Pastikan nama URL benar
     return redirect('authentication:dasbord')  # Pastikan nama URL benar
 
+
+@custom_ratelimit
 @login_required
 @ratelimit(key='ip', rate='100/h')
 def dashbord(request):
@@ -1083,6 +1118,9 @@ def dashbord(request):
         'user': user,  # Ensure user is passed to template
     })
 
+
+
+@custom_ratelimit
 @login_required
 @ratelimit(key='ip', rate='100/h')
 def pro(request,username):
@@ -1099,6 +1137,9 @@ def pro(request,username):
         })
     return redirect("/login/?next=%s" % request.path)
 
+
+
+@custom_ratelimit
 @login_required
 @ratelimit(key='ip', rate='100/h')
 def edit_profile(request, pk):
@@ -1138,6 +1179,7 @@ def process_image_to_webp(uploaded_photo):
 
 
 #update image
+@custom_ratelimit
 @login_required
 @ratelimit(key='ip', rate='100/h')
 def edit_photo(request, pk):
@@ -1182,7 +1224,7 @@ def edit_photo(request, pk):
             # Jika form tidak valid, tampilkan kembali form dengan status 400
             return render(request, 'home/edit_photo.html', {'form': form}, status=400)
 
-
+@custom_ratelimit
 @login_required
 @ratelimit(key='ip', rate='100/h')
 def edit_profile(request, pk):
@@ -1206,7 +1248,7 @@ def edit_profile(request, pk):
 
     return render(request, 'home/edit_profile_form.html', {'form': form, 'user': profile})
 
-
+@custom_ratelimit
 #populercourse
 @ratelimit(key='ip', rate='100/h')
 @require_GET
@@ -1275,7 +1317,7 @@ def popular_courses(request):
 
     return JsonResponse({'courses': courses_list})
 
-
+@custom_ratelimit
 @ratelimit(key='ip', rate='1000/h', block=True)
 @require_GET
 def home(request):
@@ -1370,6 +1412,7 @@ def home(request):
     })
 
 logger = logging.getLogger(__name__)
+@custom_ratelimit
 @csrf_protect
 @ratelimit(key='ip', rate='100/h')  # Bisa diperbarui ke 'user:ip' jika memungkinkan
 @require_http_methods(["GET", "POST"])  # Gantikan pengecekan manual metode
@@ -1519,7 +1562,7 @@ def login_view(request):
 
     return render(request, 'authentication/login.html', {'form': form})
 
-
+@custom_ratelimit
 # Register view
 @ratelimit(key='ip', rate='100/h')
 def register_view(request):
@@ -1560,6 +1603,8 @@ def register_view(request):
         form = RegistrationForm()
     return render(request, 'authentication/register.html', {'form': form})
 
+
+@custom_ratelimit
 @ratelimit(key='ip', rate='100/h')
 # Account activation view
 def activate_account(request, uidb64, token):
@@ -1579,7 +1624,7 @@ def activate_account(request, uidb64, token):
     else:
         return HttpResponse('Activation link is invalid or expired.')
 
-
+@custom_ratelimit
 @ratelimit(key='ip', rate='100/h')
 # Custom Password Reset View
 def custom_password_reset(request):
@@ -1640,7 +1685,7 @@ def custom_password_reset(request):
 def custom_password_reset_done(request):
     return render(request, 'x/password_reset_done.html')
 
-
+@custom_ratelimit
 @ratelimit(key='ip', rate='100/h')
 # Custom Password Reset Confirm View
 def custom_password_reset_confirm(request, uidb64, token):
@@ -1665,7 +1710,7 @@ def custom_password_reset_confirm(request, uidb64, token):
     else:
         return render(request, 'authentication/password_reset_invalid.html')
 
-
+@custom_ratelimit
 @ratelimit(key='ip', rate='100/h')
 # Custom Password Reset Complete View
 def custom_password_reset_complete(request):
