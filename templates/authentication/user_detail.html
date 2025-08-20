@@ -10,7 +10,8 @@
         </div>
         {% if user.photo %}
             <div class="text-center mb-4">
-                <img src="{{ user.photo.url }}" class="rounded-circle img-thumbnail" alt="User Photo" style="width: 150px; height: 150px; object-fit: cover;">
+                <img src="{{ user.photo.url }}" class="rounded-circle img-thumbnail img-fluid mx-auto d-block" alt="User Photo" style="width: 150px; height: 150px; object-fit: cover;">
+
             </div>
         {% else %}
             <div class="text-center mb-4">
@@ -62,23 +63,27 @@
 
     <!-- Search Form -->
     <div class="mt-4">
-        <form method="GET" class="search-form">
-            <div class="input-group shadow-sm w-100">
-                <input type="text" class="form-control modern-input" name="search" value="{{ search_query }}" placeholder="Search Courses">
-                <button class="btn modern-btn btn-primary" type="submit"><i class="fas fa-search me-2"></i>Search</button>
+        <form method="GET" class="my-3">
+            <div class="input-group">
+                <input type="text" class="form-control" name="search" placeholder="Search Courses" value="{{ search_query }}">
+                <button class="btn btn-outline-primary" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
             </div>
         </form>
+
     </div>
 
     <!-- Enrolled Courses -->
     <div class="card shadow-lg border-0 mt-4 course-card animate__animated animate__fadeIn">
         <div class="card-header bg-gradient-primary text-white">
-            <h3 class="mb-0">Enrolled Courses</h3>
+            <h5 class="mt-5 mb-3 border-bottom pb-2 text-primary">Enrolled Courses</h5>
+
         </div>
         <div class="card-body p-3 p-md-4">
             <!-- Desktop Table -->
             <div class="table-responsive d-none d-md-block">
-                <table class="styled-table">
+                <table class="table table-hover table-bordered align-middle">
                     <thead>
                         <tr>
                             <th>Course Title</th>
@@ -100,7 +105,7 @@
                                 </td>
                             </tr>
                         {% empty %}
-                            <tr><td colspan="3" class="text-center text-muted">No courses found.</td></tr>
+                            <tr><td colspan="4" class="text-center text-muted">No courses found.</td></tr>
                         {% endfor %}
                     </tbody>
                 </table>
