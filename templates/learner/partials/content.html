@@ -49,19 +49,43 @@
                         </div>
                     </div>
                 </div>
-            <h4 class="mb-3"><a href="{% url 'authentication:dashbord' %}">
+          <h5 class="mb-3">
+            <a href="{% url 'authentication:dashbord' %}" class="btn btn-outline-primary d-inline-block p-2">
                 {{ course_name|default:"Kursus" }}
-            </a></h4>
+            </a>
+        </h5>
+
+
+        <!-- Lihat Overview Button (span with link functionality) -->
+        <span class="btn btn-sm btn-outline-success mt-2 mb-3 d-inline-flex align-items-center gap-1" 
+            role="button" tabindex="0" 
+            onclick="window.open('{% url 'courses:course_lms_detail' course.id course.slug %}', '_blank')"
+            onkeypress="if(event.key === 'Enter'){ window.open('{% url 'courses:course_lms_detail' course.id course.slug %}', '_blank'); }">
+            <i class="bi bi-info-circle me-1"></i> Overview
+        </span>
+
+        <!-- Score Detail Button (span with link functionality) -->
+        <span class="btn btn-sm btn-outline-info mt-2 mb-3 d-inline-flex align-items-center gap-1 flex-fill" 
+            role="button" tabindex="0" 
+            onclick="window.open('{% url 'learner:score_summary' username=username course_id=course.id %}', '_blank')"
+            onkeypress="if(event.key === 'Enter'){ window.open('{% url 'learner:score_summary' username=username course_id=course.id %}', '_blank'); }">
+            <i class="bi bi-bar-chart-line me-1"></i> Score Detail
+        </span>
+
+
+            <!-- Course Progress Bar -->
             <div id="course-data" data-course-id="{{ id }}" data-csrf-token="{{ csrf_token }}"></div>
+
             <div class="progress mb-3" id="progress-bar"
-                 hx-get="{% url 'learner:get_progress' username=username slug=slug %}"
-                 hx-trigger="load, contentLoaded from:body"
-                 hx-swap="innerHTML">
+                hx-get="{% url 'learner:get_progress' username=username slug=slug %}"
+                hx-trigger="load, contentLoaded from:body"
+                hx-swap="innerHTML">
                 <div class="progress-bar bg-success" role="progressbar" style="width: {{ course_progress|default:0 }}%;" 
-                     aria-valuenow="{{ course_progress|default:0 }}" aria-valuemin="0" aria-valuemax="100">
+                    aria-valuenow="{{ course_progress|default:0 }}" aria-valuemin="0" aria-valuemax="100">
                     {{ course_progress|default:0|floatformat:0 }}%
                 </div>
             </div>
+
             <ul class="list-group list-group-flush bg-white rounded-3 shadow-lg">
                 {% for section in sections %}
                     {% if section.materials.all or section.assessments.all %}
