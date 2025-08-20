@@ -60,7 +60,9 @@ def log_create_or_update(sender, instance, created, **kwargs):
         return
 
     user = get_current_user()
-    user_instance = user if isinstance(user, CustomUser) else None
+    if not user or not user.is_authenticated:
+        return  # Jangan buat log jika tidak ada user yang login atau user tidak terautentikasi
+
     content_type = ContentType.objects.get_for_model(sender)
     ip_address, user_agent, device_type, request_path = get_request_info()
 
@@ -68,7 +70,7 @@ def log_create_or_update(sender, instance, created, **kwargs):
         if created:
             changes = {'from': None, 'to': get_instance_data(instance)}
             AuditLog.objects.create(
-                user=user_instance,
+                user=user,
                 action='create',
                 content_type=content_type,
                 object_id=str(instance.pk),
@@ -84,7 +86,7 @@ def log_create_or_update(sender, instance, created, **kwargs):
             changes = convert_to_json_serializable(changes) if changes else None
             if changes:
                 AuditLog.objects.create(
-                    user=user_instance,
+                    user=user,
                     action='update',
                     content_type=content_type,
                     object_id=str(instance.pk),
@@ -106,14 +108,16 @@ def log_delete(sender, instance, **kwargs):
         return
 
     user = get_current_user()
-    user_instance = user if isinstance(user, CustomUser) else None
+    if not user or not user.is_authenticated:
+        return  # Jangan buat log jika tidak ada user yang login atau user tidak terautentikasi
+
     content_type = ContentType.objects.get_for_model(sender)
     ip_address, user_agent, device_type, request_path = get_request_info()
 
     try:
         changes = {'from': get_instance_data(instance), 'to': None}
         AuditLog.objects.create(
-            user=user_instance,
+            user=user,
             action='delete',
             content_type=content_type,
             object_id=str(instance.pk),

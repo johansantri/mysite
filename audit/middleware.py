@@ -15,11 +15,17 @@ def get_current_request():
     """Get the current request from thread-local storage. Returns None if no request is set."""
     return getattr(_thread_locals, 'request', None)
 
+
 class CurrentUserMiddleware(MiddlewareMixin):
-    """Middleware to store the current user and request in thread-local storage."""
+    """Middleware to store the current authenticated user and request in thread-local storage."""
     def process_request(self, request):
-        """Store the user and request in thread-local storage."""
-        _thread_locals.user = getattr(request, 'user', None)
+        """Store the user and request in thread-local storage if user is authenticated."""
+        user = getattr(request, 'user', None)
+        # Hanya simpan user jika terautentikasi
+        if user and user.is_authenticated:
+            _thread_locals.user = user
+        else:
+            _thread_locals.user = None
         _thread_locals.request = request
 
     def process_response(self, request, response):
