@@ -59,7 +59,7 @@ from django.utils.text import slugify
 from django.core.paginator import Paginator
 from django.shortcuts import render
 import time
-
+from authentication.utils import calculate_course_status 
 
 
 
@@ -609,7 +609,7 @@ def user_detail(request, user_id):
     target_user = get_object_or_404(CustomUser, id=user_id)
     current_user = request.user
 
-    # Akses dibolehkan jika:
+    # Validasi akses
     allowed = (
         current_user == target_user or
         current_user.is_superuser or
@@ -626,8 +626,6 @@ def user_detail(request, user_id):
         messages.warning(request, "Access denied: You are not authorized to view this page.")
         return redirect('authentication:dashbord')
 
-
-    # ... lanjutkan proses seperti biasa
     enrollments = Enrollment.objects.filter(user=target_user).select_related('course')
 
     search_query = request.GET.get('search', '')
@@ -637,49 +635,8 @@ def user_detail(request, user_id):
     course_details = []
     for enrollment in enrollments:
         course = enrollment.course
-        total_max_score = 0
-        total_score = 0
-        all_assessments_submitted = True
-
-        grade_range = GradeRange.objects.filter(course=course).first()
-        passing_threshold = grade_range.min_grade if grade_range else 0
-
-        assessments = Assessment.objects.filter(section__courses=course)
-        for assessment in assessments:
-            score_value = Decimal(0)
-            total_correct_answers = 0
-            total_questions = assessment.questions.count()
-
-            if total_questions > 0:
-                answers_exist = False
-                for question in assessment.questions.all():
-                    answers = QuestionAnswer.objects.filter(question=question, user=target_user)
-                    if answers.exists():
-                        answers_exist = True
-                    total_correct_answers += answers.filter(choice__is_correct=True).count()
-                if not answers_exist:
-                    all_assessments_submitted = False
-                score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
-
-            total_max_score += assessment.weight
-            total_score += score_value
-
-        overall_percentage = (total_score / total_max_score) * 100 if total_max_score > 0 else 0
-        course_progress = CourseProgress.objects.filter(user=target_user, course=course).first()
-        progress_percentage = course_progress.progress_percentage if course_progress else 0
-
-        status = "Fail"
-        if progress_percentage == 100 and all_assessments_submitted and overall_percentage >= passing_threshold:
-            status = "Pass"
-
-        course_details.append({
-            'course_name': course.course_name,
-            'total_score': total_score,
-            'total_max_score': total_max_score,
-            'status': status,
-            'progress_percentage': progress_percentage,
-            'overall_percentage': overall_percentage,
-        })
+        detail = calculate_course_status(target_user, course)
+        course_details.append(detail)
 
     paginator = Paginator(course_details, 5)
     page_number = request.GET.get('page')
@@ -692,6 +649,7 @@ def user_detail(request, user_id):
     }
 
     return render(request, 'authentication/user_detail.html', context)
+
 
 @custom_ratelimit
 @login_required
