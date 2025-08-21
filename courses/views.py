@@ -5623,32 +5623,33 @@ def partnerView(request):
 
 #detail_partner
 def partner_detail(request, partner_id):
+    # Redirect ke login kalau belum authenticated
     if not request.user.is_authenticated:
-        return redirect("/login/?next=%s" % request.path)
+        return redirect(f"/login/?next={request.path}")
 
-    # Retrieve the partner using the provided partner_id
+    # Ambil objek Partner, atau 404 kalau tidak ada
     partner = get_object_or_404(Partner, id=partner_id)
 
-    # Get the search query and category filter from the request
+    # Ambil parameter GET untuk filter, sort, search
     search_query = request.GET.get('search', '')
     selected_category = request.GET.get('category', '')
     sort_by = request.GET.get('sort_by', 'name')
-
-    # Filter courses related to the partner
+    
+    # Filter course yang punya org_partner sesuai partner.id
     related_courses = Course.objects.filter(org_partner_id=partner.id)
 
-    # Apply search filter if provided
+    # Filter berdasarkan search query (course_name)
     if search_query:
         related_courses = related_courses.filter(course_name__icontains=search_query)
 
-    # Apply category filter if provided
+    # Filter berdasarkan kategori (relasi category__name)
     if selected_category:
         related_courses = related_courses.filter(category__name=selected_category)
 
-    # Annotate each course with the number of enrollments (learners)
+    # Tambah annotation jumlah learner (enrollments)
     related_courses = related_courses.annotate(learner_count=Count('enrollments'))
 
-    # Sort the courses based on the sort_by value
+    # Sort berdasarkan param sort_by
     if sort_by == 'name':
         related_courses = related_courses.order_by('course_name')
     elif sort_by == 'date':
@@ -5658,36 +5659,78 @@ def partner_detail(request, partner_id):
     elif sort_by == 'status':
         related_courses = related_courses.order_by('status_course')
 
-    # Count the total number of related courses
     total_courses = related_courses.count()
 
-    # Group courses by category (if category field exists)
+    # Group courses by category
     grouped_courses = {}
     for course in related_courses:
         category_name = course.category.name if course.category else 'Uncategorized'
-        if category_name not in grouped_courses:
-            grouped_courses[category_name] = []
-        grouped_courses[category_name].append(course)
+        grouped_courses.setdefault(category_name, []).append(course)
 
-    # Fetch categories that have courses linked to this partner
+    # Ambil kategori yang punya course dari partner
     categories_with_courses = Category.objects.filter(category_courses__org_partner_id=partner.id).distinct()
 
-    # --- Calculate unique learners across all courses ---
+    # Hitung unique learners yang enroll di courses partner
     unique_learners = Enrollment.objects.filter(course__in=related_courses).values('user').distinct().count()
 
-    # --- Calculate total reviews and average rating across all courses ---
+    # Total review & rata-rata rating semua course partner
     course_ids = related_courses.values_list('id', flat=True)
-    total_reviews = CourseRating.objects.filter(course_id__in=course_ids).count()  # Total reviews
-    average_rating = CourseRating.objects.filter(course_id__in=course_ids).aggregate(
-        avg_rating=Avg('rating')
-    )['avg_rating'] or 0  # Average rating, default to 0 if no ratings exist
+    total_reviews = CourseRating.objects.filter(course_id__in=course_ids).count()
+    average_rating = CourseRating.objects.filter(course_id__in=course_ids).aggregate(avg_rating=Avg('rating'))['avg_rating'] or 0
 
-    # Pagination setup
+    # Ambil 5 review terbaru
+    recent_reviews = CourseRating.objects.filter(course_id__in=course_ids).select_related('user', 'course').order_by('-created_at')[:5]
+
+    # Ambil instructors dari partner (FK di Instructor adalah provider)
+    instructors = Instructor.objects.filter(provider_id=partner.id)
+    total_instructors = instructors.count()
+
+    # Ambil learners detail terakhir 10 (distinct user)
+    unique_user_ids = Enrollment.objects.filter(course__in=related_courses).order_by('-enrolled_at').values_list('user_id', flat=True).distinct()[:10]
+    learners_detail = CustomUser.objects.filter(id__in=unique_user_ids)
+
+
+    # Ambil payments yang terkait course partner
+    payments = Payment.objects.filter(course__in=related_courses)
+    total_payments = payments.count()
+    total_payment_amount = payments.aggregate(total_amount=Sum('amount'))['total_amount'] or 0
+    recent_payments = payments.order_by('-created_at')[:5]
+
+    # Pagination courses, 10 per page
     page_number = request.GET.get('page')
     paginator = Paginator(related_courses, 10)
     page_obj = paginator.get_page(page_number)
 
-    # Context data
+
+
+    # Ambil semua enrollment yang terkait dengan partner ini
+    enrollments = Enrollment.objects.filter(course__in=related_courses).select_related('user', 'course', 'user__university')
+
+    inbound_learners = set()
+    outbound_learners = set()
+    internal_learners = set()
+
+    partner_univ_id = partner.name_id  # Universitas mitra (FK ke Universiti)
+
+    for enrollment in enrollments:
+        user = enrollment.user
+        course = enrollment.course
+
+        user_univ_id = user.university_id
+        course_univ_id = course.org_partner.name_id if course.org_partner else None
+
+        if user_univ_id == partner_univ_id and course_univ_id == partner_univ_id:
+            internal_learners.add(user.id)
+        elif user_univ_id == partner_univ_id and course_univ_id != partner_univ_id:
+            outbound_learners.add(user.id)
+        elif user_univ_id != partner_univ_id and course_univ_id == partner_univ_id:
+            inbound_learners.add(user.id)
+
+    # Ambil data pengguna masing-masing
+    inbound_users = CustomUser.objects.filter(id__in=inbound_learners)[:10]
+    outbound_users = CustomUser.objects.filter(id__in=outbound_learners)[:10]
+    internal_users = CustomUser.objects.filter(id__in=internal_learners)[:10]
+
     context = {
         'partner': partner,
         'page_obj': page_obj,
@@ -5695,15 +5738,28 @@ def partner_detail(request, partner_id):
         'search_query': search_query,
         'grouped_courses': grouped_courses,
         'selected_category': selected_category,
-        'categories': categories_with_courses,  # Only categories with courses
+        'categories': categories_with_courses,
         'sort_by': sort_by,
-        'unique_learners': unique_learners,  # Add unique learners to the context
-        'total_reviews': total_reviews,  # Add total reviews to the context
-        'average_rating': round(average_rating, 1),  # Add average rating to the context
+        'unique_learners': unique_learners,
+        'total_reviews': total_reviews,
+        'average_rating': round(average_rating, 1),
+        'recent_reviews': recent_reviews,
+        'instructors': instructors,
+        'total_instructors': total_instructors,
+        'learners_detail': learners_detail,
+        'payments': payments,
+        'total_payments': total_payments,
+        'total_payment_amount': total_payment_amount,
+        'recent_payments': recent_payments,
+        'inbound_users': inbound_users,
+        'outbound_users': outbound_users,
+        'internal_users': internal_users,
+        'inbound_count': len(inbound_learners),
+        'outbound_count': len(outbound_learners),
+        'internal_count': len(internal_learners),
     }
 
     return render(request, 'partner/partner_detail.html', context)
-
 
 #org partner from lms
 logger = logging.getLogger(__name__)
