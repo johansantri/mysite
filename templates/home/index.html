@@ -444,15 +444,7 @@
       {% endfor %}
     </div>
 
-    <!-- CTA: Show More -->
-    {% if instructors|length > 4 %}
-    <div class="text-center mt-10">
-      <a href="{% url 'courses:instructor_list' %}" 
-         class="inline-block bg-black text-white font-semibold px-6 py-3 rounded-lg hover:bg-gray-800 hover:text-red-400 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors text-sm sm:text-base">
-        Meet More Experts
-      </a>
-    </div>
-    {% endif %}
+   
 
     <!-- Empty Case -->
     {% if instructors|length == 0 %}

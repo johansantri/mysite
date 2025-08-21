@@ -20,8 +20,8 @@
     <style>
         :root {
             --sidebar-width: 280px;
-            --sidebar-bg: #1e293b;
-            --sidebar-text: #f1f5f9;
+            --sidebar-bg: #fefefe;
+            --sidebar-text: #000203;
             --primary-color: #3b82f6;
             --secondary-color: #f97316;
             --transition: all 0.3s ease;
@@ -79,7 +79,7 @@
 
         .sidebar-header {
             padding: 1rem;
-            background: linear-gradient(180deg, #1e293b, #172135);
+            background: linear-gradient(180deg, #fc0000, #ffffff);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
@@ -112,7 +112,7 @@
         }
 
         .nav-link:hover, .nav-link.active {
-            background: rgba(59, 130, 246, 0.1);
+            background: rgba(254, 0, 0, 0.1);
             color: var(--primary-color);
         }
 
@@ -149,7 +149,7 @@
         }
 
         .footer-link:hover {
-            background: rgba(59, 130, 246, 0.1);
+            background: rgba(253, 0, 0, 0.1);
             color: var(--primary-color);
         }
 
@@ -550,11 +550,11 @@
                             {% endif %}
                         </a>
                         <div>
-                            <p class="mb-0 text-white fw-bold">
-                                <a href="{% url 'authentication:profile' request.user.username %}" class="text-white text-decoration-none transition-all hover-scale">{{ request.user.first_name }} {{ request.user.last_name }}</a>
+                            <p class="mb-0 text-black fw-bold">
+                                <a href="{% url 'authentication:profile' request.user.username %}" class="text-black text-decoration-none transition-all hover-scale">{{ request.user.first_name }} {{ request.user.last_name }}</a>
                             </p>
                             <small class="text-muted">{{ request.user.hobby|default:"No hobby set" }}</small>
-                            <span class="badge bg-secondary text-white mt-2 d-inline-block">
+                            <span class="badge bg-danger text-white mt-2 d-inline-block">
                                 {% if request.user.is_superuser %}
                                     Superuser
                                 {% elif request.user.is_partner %}
