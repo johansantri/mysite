@@ -5689,8 +5689,26 @@ def partner_detail(request, partner_id):
     recent_reviews = CourseRating.objects.filter(course_id__in=course_ids).select_related('user', 'course').order_by('-created_at')[:5]
 
     # Ambil instructors dari partner (FK di Instructor adalah provider)
-    instructors = Instructor.objects.filter(provider_id=partner.id)
-    total_instructors = instructors.count()
+    instructors_qs = Instructor.objects.filter(provider_id=partner.id).select_related('user')
+    instructors_data = []
+
+    for instructor in instructors_qs:
+        user = instructor.user
+        # Ambil course yang dimiliki oleh instructor dan milik partner ini
+        instructor_courses = Course.objects.filter(instructor=instructor, org_partner=partner)
+
+
+        
+        instructors_data.append({
+            'full_name': user.get_full_name() or user.username,
+            'email': user.email,
+            'last_login': user.last_login,
+            'course_count': instructor_courses.count(),
+            'course_names': list(instructor_courses.values_list('course_name', flat=True)),
+        })
+
+    total_instructors = len(instructors_data)
+
 
     # Ambil learners detail terakhir 10 (distinct user)
     unique_user_ids = Enrollment.objects.filter(course__in=related_courses).order_by('-enrolled_at').values_list('user_id', flat=True).distinct()[:10]
@@ -5751,7 +5769,7 @@ def partner_detail(request, partner_id):
         'total_reviews': total_reviews,
         'average_rating': round(average_rating, 1),
         'recent_reviews': recent_reviews,
-        'instructors': instructors,
+        'instructors_data': instructors_data,
         'total_instructors': total_instructors,
         'learners_detail': learners_detail,
         'payments': payments,
