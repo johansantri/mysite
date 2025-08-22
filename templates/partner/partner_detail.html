@@ -295,10 +295,10 @@
                                 {% endif %}
                             </td>
                             <td class="text-success fw-bold">
-                                {% if course.price == 0 %}
+                                {% if course.price_value == 0 %}
                                     Free
                                 {% else %}
-                                    ${{ course.price |intcomma}}
+                                    IDR {{ course.price_value |intcomma}}
                                 {% endif %}
                             </td>
                             <td class="text-muted">{{ course.learner_count }}</td>

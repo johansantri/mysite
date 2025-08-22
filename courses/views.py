@@ -5636,7 +5636,14 @@ def partner_detail(request, partner_id):
     sort_by = request.GET.get('sort_by', 'name')
     
     # Filter course yang punya org_partner sesuai partner.id
-    related_courses = Course.objects.filter(org_partner_id=partner.id)
+    related_courses = Course.objects.filter(org_partner_id=partner.id).annotate(
+        price_value=Subquery(
+            CoursePrice.objects.filter(course=OuterRef('pk'), partner=partner)
+            .order_by('-created_at')  # ambil yang terbaru
+            .values('user_payment')[:1]
+        )
+    )
+
 
     # Filter berdasarkan search query (course_name)
     if search_query:
