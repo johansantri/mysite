@@ -1,5 +1,6 @@
 {% extends 'home/tes.html' %}
-
+{% load humanize %}
+{% load static %}
 {% block content %}
 
 <!-- Logo and Description Section -->
@@ -297,7 +298,7 @@
                                 {% if course.price == 0 %}
                                     Free
                                 {% else %}
-                                    ${{ course.price }}
+                                    ${{ course.price |intcomma}}
                                 {% endif %}
                             </td>
                             <td class="text-muted">{{ course.learner_count }}</td>
@@ -404,7 +405,7 @@
         <div class="text-center mb-3">
             <p class="text-muted mb-1">Total Payments</p>
             <p class="h4 fw-bold">{{ total_payments }}</p>
-            <p class="text-success fw-bold">Total Amount: ${{ total_payment_amount }}</p>
+            <p class="text-success fw-bold">Total Amount: IDR{{ total_payment_amount|intcomma }}</p>
         </div>
         <hr>
         <h5>Recent Payments</h5>
@@ -425,7 +426,7 @@
                         <td>{{ payment.id }}</td>
                         <td>{{ payment.user.get_full_name|default:payment.user.username }}</td>
                         <td>{{ payment.course.course_name }}</td>
-                        <td>${{ payment.amount }}</td>
+                        <td>IDR{{ payment.amount|intcomma }}</td>
                         <td>{{ payment.created_at|date:"M d, Y" }}</td>
                         <td>{{ payment.status|default:"-" }}</td>
                     </tr>
