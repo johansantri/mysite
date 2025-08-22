@@ -5700,6 +5700,7 @@ def partner_detail(request, partner_id):
         ).select_related('status_course')
 
         instructors_data.append({
+            'id': instructor.id,
             'full_name': user.get_full_name() or user.username,
             'email': user.email,
             'last_login': user.last_login,

@@ -389,7 +389,9 @@
                 <div class="col">
                     <div class="card h-100 shadow-sm">
                         <div class="card-body">
-                            <h5 class="card-title">{{ instructor.full_name }}</h5>
+                            <h5 class="card-title"><a href="{% url 'courses:instructor_detail' id=instructor.id %}">
+                                {{ instructor.full_name }}
+                            </a></h5>
 
                             {% if instructor.email %}
                                 <p class="text-muted small mb-2">{{ instructor.email }}</p>
