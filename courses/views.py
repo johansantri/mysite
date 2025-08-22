@@ -5695,17 +5695,18 @@ def partner_detail(request, partner_id):
     for instructor in instructors_qs:
         user = instructor.user
         # Ambil course yang dimiliki oleh instructor dan milik partner ini
-        instructor_courses = Course.objects.filter(instructor=instructor, org_partner=partner)
+        instructor_courses = Course.objects.filter(
+            instructor=instructor, org_partner=partner
+        ).select_related('status_course')
 
-
-        
         instructors_data.append({
             'full_name': user.get_full_name() or user.username,
             'email': user.email,
             'last_login': user.last_login,
             'course_count': instructor_courses.count(),
-            'course_names': list(instructor_courses.values_list('course_name', flat=True)),
+            'courses': instructor_courses,  # <== simpan queryset lengkap
         })
+
 
     total_instructors = len(instructors_data)
 

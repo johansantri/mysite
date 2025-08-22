@@ -378,7 +378,7 @@
     </div>
 
     <!-- Instructors Tab -->
-    <div class="tab-pane fade" id="instructors" role="tabpanel" aria-labelledby="instructors-tab">
+        <div class="tab-pane fade" id="instructors" role="tabpanel" aria-labelledby="instructors-tab">
         <div class="text-center mb-4">
             <p class="text-muted mb-1">Total Instructors</p>
             <p class="h4 fw-bold">{{ instructors_data|length }}</p>
@@ -389,7 +389,8 @@
                 <div class="col">
                     <div class="card h-100 shadow-sm">
                         <div class="card-body">
-                            <h5 class="card-title mb-1">{{ instructor.full_name }}</h5>
+                            <h5 class="card-title">{{ instructor.full_name }}</h5>
+
                             {% if instructor.email %}
                                 <p class="text-muted small mb-2">{{ instructor.email }}</p>
                             {% endif %}
@@ -397,7 +398,7 @@
                             <p class="mb-1">
                                 <i class="bi bi-clock-history me-1"></i>
                                 <small class="text-muted">
-                                    Last Active: 
+                                    Last Active:
                                     {% if instructor.last_login %}
                                         {{ instructor.last_login|date:"M d, Y H:i" }}
                                     {% else %}
@@ -406,16 +407,51 @@
                                 </small>
                             </p>
 
-                            <p class="mb-1">
+                            <p class="mb-3">
                                 <i class="bi bi-journal-bookmark-fill me-1"></i>
                                 <small class="text-muted">Total Courses: {{ instructor.course_count }}</small>
                             </p>
 
-                            {% if instructor.course_names %}
-                                <p class="mb-0">
-                                    <i class="bi bi-list-ul me-1"></i>
-                                    <small><strong>Courses:</strong> {{ instructor.course_names|join:", " }}</small>
-                                </p>
+                            {% if instructor.courses %}
+                                <!-- Toggle Button -->
+                                <button class="btn btn-sm btn-outline-primary mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#courses-{{ forloop.counter }}" aria-expanded="false" aria-controls="courses-{{ forloop.counter }}">
+                                    Show Courses
+                                </button>
+
+                                <div class="collapse" id="courses-{{ forloop.counter }}">
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-bordered align-middle">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Name</th>
+                                                    <th>Run</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for course in instructor.courses %}
+                                                    <tr>
+                                                        <td>{{ forloop.counter }}</td>
+                                                        <td>{{ course.course_name }}</td>
+                                                        <td>{{ course.course_run|default:"-" }}</td>
+                                                        <td>
+                                                            {% if course.status_course.status == 'published' %}
+                                                                <span class="badge bg-success">{{ course.status_course.status|capfirst }}</span>
+                                                            {% elif course.status_course.status == 'draft' %}
+                                                                <span class="badge bg-secondary">{{ course.status_course.status|capfirst }}</span>
+                                                            {% elif course.status_course.status == 'archived' %}
+                                                                <span class="badge bg-danger">{{ course.status_course.status|capfirst }}</span>
+                                                            {% else %}
+                                                                <span class="badge bg-info">{{ course.status_course.status|capfirst }}</span>
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             {% endif %}
                         </div>
                     </div>
