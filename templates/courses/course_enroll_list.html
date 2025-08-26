@@ -2,32 +2,31 @@
 {% load static %}
 
 {% block content %}
-<!-- Kontainer Utama -->
 
     <!-- Judul Kursus -->
-    <h1 class="display-5 fw-bold text-primary mb-4 text-center">
+    <h1 class="display-6 fw-bold text-center text-primary mb-4">
         {{ course.course_name }}
     </h1>
 
     <!-- Formulir Pencarian -->
-    <form method="GET" class="mb-4">
+    <form method="GET" class="mb-3">
         <div class="input-group shadow-sm">
-            <input type="text" class="form-control" name="search" placeholder="Cari berdasarkan nama..." value="{{ search_query }}"
-                aria-label="Search by Name">
+            <input type="text" name="search" class="form-control" placeholder="Cari berdasarkan nama..."
+                   value="{{ search_query }}" aria-label="Search by Name">
             <button class="btn btn-primary" type="submit">
-                <i class="bi bi-search me-2"></i>Cari
+                <i class="bi bi-search me-1"></i> Cari
             </button>
         </div>
     </form>
 
-    <!-- Tombol Unduh CSV -->
-    <div class="mb-4 text-end">
-        <a href="?download=csv{% if search_query %}&search={{ search_query }}{% endif %}" class="btn btn-success shadow-sm">
-            <i class="bi bi-download me-2"></i>Unduh CSV
+    <!-- Tombol Ekspor & Navigasi -->
+    <div class="d-flex justify-content-between flex-wrap mb-3">
+        <a href="?download=csv{% if search_query %}&search={{ search_query }}{% endif %}" class="btn btn-success shadow-sm mb-2">
+            <i class="bi bi-download me-1"></i> Unduh CSV
         </a>
-        <a href="{% url 'learner:score_summary_detail' course_id=course.id %}" class="btn btn-primary">
-                <i class="bi bi-table me-2"></i>View Score Summary detail
-              </a>
+        <a href="{% url 'learner:score_summary_detail' course_id=course.id %}" class="btn btn-outline-primary shadow-sm mb-2">
+            <i class="bi bi-table me-1"></i> View Score Summary Detail
+        </a>
     </div>
 
     <!-- Tabel Pendaftaran -->
@@ -36,23 +35,23 @@
             <div class="table-responsive">
                 <table class="table table-bordered table-hover align-middle mb-0">
                     <thead class="table-dark text-center">
-                        <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Gender</th>
-                            <th scope="col">Date of Birth</th>
-                            <th scope="col">Address</th>
-                            <th scope="col">Country</th>
-                            <th scope="col">Phone</th>
-                            <th scope="col">Education</th>
-                            <th scope="col">University</th>
-                            <th scope="col">Score</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Progress</th>
-                            <th scope="col">Percentage</th>
-                            <th scope="col">Last Accessed Material</th>
-                            <th scope="col">Last Assessment Completed</th>
-                            <th scope="col">Last Login</th>
+                        <tr class="small">
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Gender</th>
+                            <th>Birth</th>
+                            <th>Address</th>
+                            <th>Country</th>
+                            <th>Phone</th>
+                            <th>Education</th>
+                            <th>University</th>
+                            <th>Score</th>
+                            <th>Status</th>
+                            <th>Progress</th>
+                            <th>Percentage</th>
+                            <th>Material</th>
+                            <th> Completed</th>
+                            <th>Last Login</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -81,8 +80,8 @@
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="16" class="text-center text-muted py-3">
-                                <i class="bi bi-info-circle me-2"></i>Tidak ada peserta yang terdaftar.
+                            <td colspan="16" class="text-center text-muted py-4">
+                                <i class="bi bi-info-circle me-2"></i> Tidak ada peserta yang terdaftar.
                             </td>
                         </tr>
                         {% endfor %}
@@ -93,57 +92,56 @@
     </div>
 
     <!-- Navigasi Halaman -->
+    {% if enrollments.has_other_pages %}
     <nav aria-label="Page navigation" class="mt-4">
-        <ul class="pagination justify-content-center">
+        <ul class="pagination justify-content-center flex-wrap">
+            <!-- First & Previous -->
             {% if enrollments.has_previous %}
-            <li class="page-item">
-                <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}" aria-label="First">
-                    <i class="bi bi-chevron-double-left"></i>
-                </a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="?page={{ enrollments.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}" aria-label="Previous">
-                    <i class="bi bi-chevron-left"></i>
-                </a>
-            </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}" aria-label="First">
+                        <i class="bi bi-chevron-double-left"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ enrollments.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}" aria-label="Previous">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
             {% else %}
-            <li class="page-item disabled">
-                <span class="page-link"><i class="bi bi-chevron-double-left"></i></span>
-            </li>
-            <li class="page-item disabled">
-                <span class="page-link"><i class="bi bi-chevron-left"></i></span>
-            </li>
+                <li class="page-item disabled"><span class="page-link"><i class="bi bi-chevron-double-left"></i></span></li>
+                <li class="page-item disabled"><span class="page-link"><i class="bi bi-chevron-left"></i></span></li>
             {% endif %}
 
+            <!-- Page Numbers -->
             {% for num in enrollments.paginator.page_range %}
-            <li class="page-item {% if enrollments.number == num %}active{% endif %}">
-                <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}">{{ num }}</a>
-            </li>
+                {% if num >= enrollments.number|add:'-2' and num <= enrollments.number|add:'2' %}
+                    <li class="page-item {% if enrollments.number == num %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}">{{ num }}</a>
+                    </li>
+                {% endif %}
             {% endfor %}
 
+            <!-- Next & Last -->
             {% if enrollments.has_next %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ enrollments.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}" aria-label="Next">
-                    <i class="bi bi-chevron-right"></i>
-                </a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="?page={{ enrollments.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}" aria-label="Last">
-                    <i class="bi bi-chevron-double-right"></i>
-                </a>
-            </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ enrollments.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}" aria-label="Next">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ enrollments.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}" aria-label="Last">
+                        <i class="bi bi-chevron-double-right"></i>
+                    </a>
+                </li>
             {% else %}
-            <li class="page-item disabled">
-                <span class="page-link"><i class="bi bi-chevron-right"></i></span>
-            </li>
-            <li class="page-item disabled">
-                <span class="page-link"><i class="bi bi-chevron-double-right"></i></span>
-            </li>
+                <li class="page-item disabled"><span class="page-link"><i class="bi bi-chevron-right"></i></span></li>
+                <li class="page-item disabled"><span class="page-link"><i class="bi bi-chevron-double-right"></i></span></li>
             {% endif %}
         </ul>
         <div class="text-center mt-2">
             <small class="text-muted">Halaman {{ enrollments.number }} dari {{ enrollments.paginator.num_pages }}</small>
         </div>
     </nav>
+    {% endif %}
 
 {% endblock %}
