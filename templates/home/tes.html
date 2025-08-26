@@ -517,7 +517,19 @@
         }
 
 
-        
+        @media (max-width: 991.98px) { /* untuk ukuran mobile sampai tablet (Bootstrap lg breakpoint) */
+            .fixed-mobile {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1030; /* supaya di atas elemen lain */
+                background-color: white; /* agar background tetap solid */
+                padding: 0.5rem 1rem; /* sesuaikan padding */
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* optional biar terlihat jelas */
+            }
+            }
+
 
     </style>
 </head>
@@ -809,11 +821,11 @@
 
     <!-- Main Content -->
     <div class="main-content">
-       <div class="d-flex align-items-center">
+       <div class="d-flex align-items-center fixed-mobile">
         <span class="text-black fs-4 fw-bold">LMSKu</span>
         
-       <button 
-            class="btn btn-outline-danger d-lg-none d-flex align-items-center gap-2 ms-auto px-3 py-2 shadow-sm"
+        <button 
+            class="btn btn-outline-danger btn-sm d-lg-none d-flex align-items-center gap-1 ms-auto shadow-sm"
             type="button" 
             data-bs-toggle="collapse" 
             data-bs-target="#sidebarMenu" 
@@ -821,12 +833,12 @@
             aria-expanded="false" 
             aria-label="Toggle sidebar"
             onclick="this.querySelector('i').classList.toggle('bi-list'); this.querySelector('i').classList.toggle('bi-x-lg');">
-
-            <i class="bi bi-list fs-5"></i>
-            <span class="fw-semibold"></span>
+            
+            <i class="bi bi-list fs-6"></i>
         </button>
 
         </div>
+
 
 
         {% block content %}
