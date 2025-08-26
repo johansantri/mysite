@@ -547,12 +547,12 @@ def user_analytics_view(request):
     end_date = request.GET.get('end_date')
     download = request.GET.get('download')
 
+    # Base queryset with filter
     users = CustomUser.objects.only(
         'id', 'first_name', 'last_name', 'email', 'gender', 'education',
         'country', 'birth', 'date_joined', 'last_login', 'photo', 'address',
-        'is_learner', 'is_instructor', 'is_partner', 'is_subscription',
-        'is_audit', 'is_member', 'tiktok', 'youtube', 'facebook',
-        'instagram', 'linkedin', 'twitter'
+        'is_learner', 'is_instructor', 'is_partner', 'is_subscription', 'is_audit', 'is_member',
+        'tiktok', 'youtube', 'facebook', 'instagram', 'linkedin', 'twitter'
     )
 
     filters = Q()
@@ -564,6 +564,7 @@ def user_analytics_view(request):
         filters &= Q(date_joined__lte=end_date)
     users = users.filter(filters)
 
+    # Download CSV (langsung iterate tanpa optimasi, karena hanya export)
     if download == "csv":
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="user_analytics.csv"'
@@ -573,55 +574,144 @@ def user_analytics_view(request):
             writer.writerow([u.get_full_name(), u.email, u.gender, u.education, u.country, u.birth, u.last_login])
         return response
 
+    # Warna chart
     genders = ['male', 'female']
     colors = ['#60A5FA', '#F472B6']
 
+    # ----- Agregasi data -----
+
+    # 1. Gender counts
     gender_counts = users.values('gender').annotate(total=Count('id'))
+    gender_count_map = {g['gender']: g['total'] for g in gender_counts}
+
+    # 2. Education counts
     education_counts = users.values('education').annotate(total=Count('id'))
+    edu_labels = sorted(set(e['education'] for e in education_counts if e['education']))
+    # Masukkan juga empty / Unspecified jika ada
+    if any(e['education'] == '' or e['education'] is None for e in education_counts):
+        edu_labels.append('Unspecified')
 
-    edu_labels = sorted(set(users.exclude(education='').values_list('education', flat=True)))
-    edu_gender_data = [{
-        'label': gender.capitalize(),
-        'data': [users.filter(gender=gender, education=edu).count() for edu in edu_labels],
-        'backgroundColor': colors[i]
-    } for i, gender in enumerate(genders)]
+    # 3. Education by Gender (menggunakan satu query)
+    edu_gender_counts = users.values('gender', 'education').annotate(total=Count('id'))
+    edu_gender_dict = {}
+    for item in edu_gender_counts:
+        key_edu = item['education'] if item['education'] else 'Unspecified'
+        edu_gender_dict[(item['gender'], key_edu)] = item['total']
 
+    edu_gender_data = []
+    for i, gender in enumerate(genders):
+        data = [edu_gender_dict.get((gender, edu), 0) for edu in edu_labels]
+        edu_gender_data.append({
+            'label': gender.capitalize(),
+            'data': data,
+            'backgroundColor': colors[i]
+        })
+
+    # 4. Top countries
     country_counts = users.values('country').annotate(total=Count('id')).order_by('-total')[:10]
+    country_labels = [c['country'].upper() if c['country'] else 'UN' for c in country_counts]
+    country_data = [c['total'] for c in country_counts]
+
+    # 5. Role counts by gender - satu query aggregate
     role_fields = ['is_learner', 'is_instructor', 'is_partner', 'is_subscription', 'is_audit', 'is_member']
     role_labels = ['Learner', 'Instructor', 'Partner', 'Subscription', 'Audit', 'Member']
-    role_data_count = [users.filter(**{role: True}).count() for role in role_fields]
-    role_gender_data_sets = [{
-        'label': gender.capitalize(),
-        'data': [users.filter(gender=gender, **{r: True}).count() for r in role_fields],
-        'backgroundColor': colors[i]
-    } for i, gender in enumerate(genders)]
 
+    role_agg = users.values('gender').annotate(
+        learner_count=Count('id', filter=Q(is_learner=True)),
+        instructor_count=Count('id', filter=Q(is_instructor=True)),
+        partner_count=Count('id', filter=Q(is_partner=True)),
+        subscription_count=Count('id', filter=Q(is_subscription=True)),
+        audit_count=Count('id', filter=Q(is_audit=True)),
+        member_count=Count('id', filter=Q(is_member=True)),
+    )
+
+    # Buat dict untuk lookup
+    role_gender_dict = {}
+    for item in role_agg:
+        g = item['gender']
+        role_gender_dict[g] = {
+            'Learner': item['learner_count'],
+            'Instructor': item['instructor_count'],
+            'Partner': item['partner_count'],
+            'Subscription': item['subscription_count'],
+            'Audit': item['audit_count'],
+            'Member': item['member_count'],
+        }
+
+    # Total role count tanpa gender filter (aggregate langsung)
+    role_total_counts = users.aggregate(
+        learner_total=Count('id', filter=Q(is_learner=True)),
+        instructor_total=Count('id', filter=Q(is_instructor=True)),
+        partner_total=Count('id', filter=Q(is_partner=True)),
+        subscription_total=Count('id', filter=Q(is_subscription=True)),
+        audit_total=Count('id', filter=Q(is_audit=True)),
+        member_total=Count('id', filter=Q(is_member=True)),
+    )
+    role_data_count = [
+        role_total_counts.get(f'{r}_total') or 0 for r in ['learner', 'instructor', 'partner', 'subscription', 'audit', 'member']
+    ]
+
+    role_gender_data_sets = []
+    for i, gender in enumerate(genders):
+        data = [role_gender_dict.get(gender, {}).get(label, 0) for label in role_labels]
+        role_gender_data_sets.append({
+            'label': gender.capitalize(),
+            'data': data,
+            'backgroundColor': colors[i]
+        })
+
+    # 6. Social media usage (exclude empty and None)
     social_fields = ['tiktok', 'youtube', 'facebook', 'instagram', 'linkedin', 'twitter']
-    social_data_count = [users.exclude(**{f: ""}).exclude(**{f: None}).count() for f in social_fields]
+    social_data_count = []
+    for f in social_fields:
+        count = users.exclude(**{f: ""}).exclude(**{f: None}).count()
+        social_data_count.append(count)
 
+    # 7. Growth (per bulan) dengan TruncMonth dan aggregate
     growth = users.annotate(month=TruncMonth('date_joined')).values('month').annotate(total=Count('id')).order_by('month')
     months = [g['month'] for g in growth]
-    growth_gender_data_sets = [{
-        'label': gender.capitalize(),
-        'data': [users.filter(gender=gender, date_joined__year=m.year, date_joined__month=m.month).count() for m in months],
-        'fill': False,
-        'borderColor': colors[i]
-    } for i, gender in enumerate(genders)]
 
+    growth_gender_agg = users.annotate(month=TruncMonth('date_joined')).values('month', 'gender').annotate(total=Count('id')).order_by('month')
+
+    # Buat dict lookup growth per gender per month
+    growth_gender_dict = {}
+    for item in growth_gender_agg:
+        growth_gender_dict[(item['month'], item['gender'])] = item['total']
+
+    growth_gender_data_sets = []
+    for i, gender in enumerate(genders):
+        data = [growth_gender_dict.get((m, gender), 0) for m in months]
+        growth_gender_data_sets.append({
+            'label': gender.capitalize(),
+            'data': data,
+            'fill': False,
+            'borderColor': colors[i]
+        })
+
+    # 8. Age group counts (hitung sekali dengan range filter)
     today = datetime.date.today()
     age_bins = [(0, 17), (18, 24), (25, 34), (35, 44), (45, 54), (55, 64), (65, 120)]
-    age_bin_counts = [users.filter(birth__isnull=False, birth__lte=today - datetime.timedelta(days=s * 365), birth__gt=today - datetime.timedelta(days=e * 365)).count() for s, e in age_bins]
+    age_bin_counts = []
+    for s, e in age_bins:
+        # Hitung jumlah birthdate dengan rentang umur (konversi tahun ke timedelta)
+        lower_date = today - datetime.timedelta(days=e * 365)
+        upper_date = today - datetime.timedelta(days=s * 365)
+        count = users.filter(birth__isnull=False, birth__lte=upper_date, birth__gt=lower_date).count()
+        age_bin_counts.append(count)
 
+    # 9. Profile completion counts
     profile_completion_count = [
         users.exclude(photo="").exclude(photo=None).count(),
         users.exclude(birth=None).count(),
         users.exclude(address="").exclude(address=None).count()
     ]
 
+    # 10. Active vs inactive users
     threshold = now() - datetime.timedelta(days=30)
     active_count = users.filter(last_login__gte=threshold).count()
     inactive_count = users.exclude(last_login__gte=threshold).count()
 
+    # ----- Buat chart list -----
     chart_list = [
         {
             'id': 'genderChart',
@@ -654,8 +744,8 @@ def user_analytics_view(request):
             'type': 'bar',
             'index_axis': 'y',
             'data': json.dumps({
-                'labels': [c['country'].upper() if c['country'] else 'UN' for c in country_counts],
-                'datasets': [{'label': 'Users', 'data': [c['total'] for c in country_counts], 'backgroundColor': '#FBBF24'}]
+                'labels': country_labels,
+                'datasets': [{'label': 'Users', 'data': country_data, 'backgroundColor': '#FBBF24'}]
             })
         },
         {
@@ -717,7 +807,6 @@ def user_analytics_view(request):
         'end_date': end_date,
     }
     return render(request, 'learner/analytics.html', context)
-
 
 def _build_combined_content(sections):
     """

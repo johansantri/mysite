@@ -1,6 +1,8 @@
 # authentication/views.py
 from django.shortcuts import render, redirect,get_object_or_404
 import os
+from django.utils.http import urlencode
+import hashlib
 from PIL import Image
 from io import BytesIO
 from django.core.files.base import ContentFile
@@ -656,101 +658,114 @@ def user_detail(request, user_id):
 @ratelimit(key='ip', rate='100/h')
 def all_user(request):
     if not request.user.is_authenticated:
-        return redirect("/login/?next=%s" % request.path)
-    partners = None  # <--- inisialisasi aman di awal
-    # Role-based filtering
-    if request.user.is_superuser:
-        # Superuser can access all users
-        users = CustomUser.objects.all().order_by('-date_joined')
-        partners = Partner.objects.all() if request.user.is_superuser else None
-    elif request.user.is_partner:
-        # Partner can only access users related to their university, excluding superusers
-        if request.user.university:
-            users = CustomUser.objects.filter(
-                university=request.user.university, 
+        return redirect(f"/login/?next={request.path}")
+
+    page_number = int(request.GET.get('page', 1))
+    query_params = request.GET.copy()
+    query_string = urlencode(sorted(query_params.items()))
+    query_hash = hashlib.md5(query_string.encode()).hexdigest()
+    user_id = request.user.id
+
+    cache_key_ids = f"user_ids_{user_id}_{query_hash}"
+    cache_key_count = f"user_count_{user_id}_{query_hash}"
+    cache_key_partners = f"user_partners_{user_id}_{query_hash}"
+
+    cached_user_ids = cache.get(cache_key_ids)
+    total_user_count = cache.get(cache_key_count)
+    partners = cache.get(cache_key_partners)
+
+    if cached_user_ids is None:
+        # Role-based filtering
+        if request.user.is_superuser:
+            users_qs = CustomUser.objects.all()
+            partners = Partner.objects.all()
+        elif request.user.is_partner and request.user.university:
+            users_qs = CustomUser.objects.filter(
+                university=request.user.university,
                 is_superuser=False,
-                 is_learner=True
-            ).order_by('-date_joined')
+                is_learner=True
+            )
+            partners = None
         else:
-            # If the partner has no associated university, deny access
-            return HttpResponseForbidden("You are not associated with any university.")
-    else:
-        # If not superuser or partner, show only self data
-        users = CustomUser.objects.filter(id=request.user.id).order_by('-date_joined')
+            users_qs = CustomUser.objects.filter(id=request.user.id)
+            partners = None
 
-    # Get filters from GET request
-    search_query = request.GET.get('search', '').strip()
-    status_filter = request.GET.get('status', '').strip()
-    date_from = request.GET.get('date_from', '').strip()
-    date_to = request.GET.get('date_to', '').strip()
-    page_number = request.GET.get('page', 1)
+        # Filters
+        search_query = request.GET.get('search', '').strip()
+        if search_query:
+            users_qs = users_qs.filter(
+                Q(username__icontains=search_query) |
+                Q(email__icontains=search_query) |
+                Q(first_name__icontains=search_query)
+            )
 
-    # Search functionality
-    if search_query:
-        users = users.filter(
-            Q(username__icontains=search_query) | 
-            Q(email__icontains=search_query) |
-            Q(first_name__icontains=search_query)
-        )
-
-    # Status filter
-    if status_filter:
+        status_filter = request.GET.get('status', '').strip()
         if status_filter == 'active':
-            users = users.filter(is_active=True)
+            users_qs = users_qs.filter(is_active=True)
         elif status_filter == 'inactive':
-            users = users.filter(is_active=False)
+            users_qs = users_qs.filter(is_active=False)
 
-    # Date filters
-    if date_from:
-        users = users.filter(date_joined__gte=date_from)
-    if date_to:
-        users = users.filter(date_joined__lte=date_to)
+        date_from = request.GET.get('date_from', '').strip()
+        date_to = request.GET.get('date_to', '').strip()
+        if date_from:
+            users_qs = users_qs.filter(date_joined__gte=date_from)
+        if date_to:
+            users_qs = users_qs.filter(date_joined__lte=date_to)
 
-    gender_filter = request.GET.get('gender')  # atau request.POST.get() jika pakai POST
-    if gender_filter:
-        users = users.filter(gender=gender_filter)
+        gender_filter = request.GET.get('gender')
+        if gender_filter:
+            users_qs = users_qs.filter(gender=gender_filter)
 
+        partner_filter = request.GET.get('partner')
+        if request.user.is_superuser and partner_filter:
+            partner = Partner.objects.filter(id=partner_filter).first()
+            if partner:
+                users_qs = users_qs.filter(university=partner.name)
 
-    sort_courses = request.GET.get('sort_courses')
-    users = users.annotate(total_courses=Count('enrollments'))
+        # Annotate
+        users_qs = users_qs.annotate(total_courses=Count('enrollments'))
 
-    if sort_courses == 'most':
-        users = users.order_by('-total_courses')
-    elif sort_courses == 'least':
-        users = users.order_by('total_courses')
+        sort_courses = request.GET.get('sort_courses')
+        if sort_courses == 'most':
+            users_qs = users_qs.order_by('-total_courses')
+        elif sort_courses == 'least':
+            users_qs = users_qs.order_by('total_courses')
+        else:
+            users_qs = users_qs.order_by('-date_joined')
 
-    partner_filter = request.GET.get('partner')
-    if request.user.is_superuser and partner_filter:
-        partner = Partner.objects.filter(id=partner_filter).first()
-        if partner:
-            users = users.filter(university=partner.name)
+        # Ambil hanya ID-nya untuk cache
+        user_ids = list(users_qs.values_list('id', flat=True))
+        total_user_count = len(user_ids)
 
+        # Simpan ke cache
+        cache.set(cache_key_ids, user_ids, timeout=300)
+        cache.set(cache_key_count, total_user_count, timeout=300)
+        cache.set(cache_key_partners, partners, timeout=300)
+    else:
+        user_ids = cached_user_ids
 
-    # Annotate the total courses enrolled by each user
-    users = users.annotate(total_courses=Count('enrollments'))
-
-    # Get the total count of users (before pagination and filtering)
-    total_user_count = users.count()
-
-    # Paginate the results
-    paginator = Paginator(users, 10)  # Show 10 users per page
+    # Pagination manual dari ID
+    paginator = Paginator(user_ids, 50)
     page_obj = paginator.get_page(page_number)
+    users = CustomUser.objects.filter(id__in=page_obj.object_list).annotate(
+        total_courses=Count('enrollments')
+    )
 
-    # Render the template with user data and the total count
+    # Agar urutan sesuai ID list
+    users = sorted(users, key=lambda u: page_obj.object_list.index(u.id))
+
     context = {
-        'users': page_obj,
-        'search_query': search_query,
+        'users': users,
+        'page_obj': page_obj,
         'total_user_count': total_user_count,
-        'status_filter': status_filter,
-        'date_from': date_from,
-        'date_to': date_to,
+        'search_query': request.GET.get('search', '').strip(),
+        'status_filter': request.GET.get('status', '').strip(),
+        'date_from': request.GET.get('date_from', '').strip(),
+        'date_to': request.GET.get('date_to', '').strip(),
         'partners': partners,
     }
 
     return render(request, 'authentication/all_user.html', context)
-
-
-
 
 @custom_ratelimit
 @login_required

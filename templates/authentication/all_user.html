@@ -171,55 +171,46 @@
         </div>
     </div>
 
-    <nav aria-label="Page navigation">
-    <p class="mb-0 text-muted"> Total: {{ total_user_count }} | Halaman {{ users.number }} dari {{ users.paginator.num_pages }} </p>
-        <ul class="pagination justify-content-center">
-            <!-- Sebelumnya -->
-            {% if users.has_previous %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ users.previous_page_number }}&{{ qp }}" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            {% else %}
-            <li class="page-item disabled">
-                <span class="page-link">&laquo;</span>
-            </li>
-            {% endif %}
+   <nav aria-label="Page navigation" class="mt-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
+        <p class="mb-2 mb-md-0 text-muted">
+        Total: <strong>{{ total_user_count }}</strong> |
+        Halaman <strong>{{ users.number }}</strong> dari <strong>{{ users.paginator.num_pages }}</strong>
+        </p>
+    </div>
 
-            <!-- Nomor Halaman -->
-            {% with current=users.number %}
-            {% for num in users.paginator.page_range %}
-                {% if num == 1 or num == users.paginator.num_pages %}
-                <li class="page-item {% if users.number == num %}active{% endif %}">
-                    <a class="page-link" href="?page={{ num }}&{{ qp }}">{{ num }}</a>
-                </li>
-                {% elif num == current|add:'-2' or num == current|add:'-1' or num == current or num == current|add:'1' or num == current|add:'2' %}
-                <li class="page-item {% if users.number == num %}active{% endif %}">
-                    <a class="page-link" href="?page={{ num }}&{{ qp }}">{{ num }}</a>
-                </li>
-                {% elif num == current|add:'-3' or num == current|add:'3' %}
-                <li class="page-item disabled">
-                    <span class="page-link">…</span>
-                </li>
-                {% endif %}
-            {% endfor %}
-            {% endwith %}
+    <ul class="pagination justify-content-center flex-wrap">
+        <!-- Previous button -->
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?{% if request.GET %}{{ request.GET.urlencode|safe }}&{% endif %}page={{ page_obj.previous_page_number }}">« Previous</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled"><span class="page-link">« Previous</span></li>
+        {% endif %}
 
-            <!-- Selanjutnya -->
-            {% if users.has_next %}
+        <!-- Page numbers -->
+        {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+        {% elif num >= page_obj.number|add:'-2' and num <= page_obj.number|add:'2' %}
             <li class="page-item">
-                <a class="page-link" href="?page={{ users.next_page_number }}&{{ qp }}" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-                </a>
+            <a class="page-link" href="?{% if request.GET %}{{ request.GET.urlencode|safe }}&{% endif %}page={{ num }}">{{ num }}</a>
             </li>
-            {% else %}
-            <li class="page-item disabled">
-                <span class="page-link">&raquo;</span>
-            </li>
-            {% endif %}
-        </ul>
-        </nav>
+        {% endif %}
+        {% endfor %}
+
+        <!-- Next button -->
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?{% if request.GET %}{{ request.GET.urlencode|safe }}&{% endif %}page={{ page_obj.next_page_number }}">Next »</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled"><span class="page-link">Next »</span></li>
+        {% endif %}
+    </ul>
+    </nav>
+
 
     {% endif %}
 </div>
