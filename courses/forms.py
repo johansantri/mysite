@@ -311,8 +311,8 @@ class CoursePriceForm(forms.ModelForm):
 class CourseInstructorForm(forms.ModelForm):
     instructor = forms.ModelChoiceField(
         queryset=Instructor.objects.none(),
+        widget=autocomplete.ModelSelect2(url='courses:instructor-autocomplete'),  # Ganti widget jadi ModelSelect2 dengan URL autocomplete
         required=True,
-        widget=forms.Select(attrs={'class': 'form-control select2'})
     )
 
     class Meta:
@@ -322,12 +322,14 @@ class CourseInstructorForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request', None)
         super().__init__(*args, **kwargs)
+
         if self.request and self.request.user.is_authenticated:
-            if self.request.user.is_superuser:
+            user = self.request.user
+            if user.is_superuser:
                 self.fields['instructor'].queryset = Instructor.objects.all()
-            elif self.request.user.is_partner:
-                self.fields['instructor'].queryset = Instructor.objects.filter(provider__user=self.request.user)
-            elif self.request.user.is_instructor:
+            elif hasattr(user, 'is_partner') and user.is_partner:
+                self.fields['instructor'].queryset = Instructor.objects.filter(provider__user=user)
+            elif hasattr(user, 'is_instructor') and user.is_instructor:
                 self.fields['instructor'].queryset = Instructor.objects.none()
 
     def clean_instructor(self):

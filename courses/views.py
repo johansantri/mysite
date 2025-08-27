@@ -3991,10 +3991,8 @@ def course_lms_detail(request, id, slug):
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
+@login_required
 def course_instructor(request, id):
-    if not request.user.is_authenticated:
-        return redirect(f"/login/?next={request.path}")
-    
     user = request.user
     course = None
 
@@ -4007,18 +4005,15 @@ def course_instructor(request, id):
         return redirect('/courses')
 
     if not course:
+        messages.error(request, "Course not found or you do not have access.")
         return redirect('/courses')
 
     if request.method == 'POST':
-        logger.debug(f"Raw POST data: {request.POST}")
         form = CourseInstructorForm(request.POST, instance=course, request=request)
         if form.is_valid():
-            logger.debug(f"Cleaned data: {form.cleaned_data}")
             form.save()
             messages.success(request, "Instructor has been successfully added to the course.")
             return redirect('courses:course_instructor', id=course.id)
-        else:
-            logger.debug(f"Form errors: {form.errors}")
     else:
         form = CourseInstructorForm(instance=course, request=request)
 
@@ -4027,20 +4022,27 @@ def course_instructor(request, id):
 # Fungsi untuk pencarian instruktur menggunakan Select2 (AJAX)
 
 
-def search_instructors(request):
-    q = request.GET.get('q', '')
-    if request.user.is_authenticated:
-        if request.user.is_superuser:
-            instructors = Instructor.objects.filter(user__username__icontains=q)
-        elif request.user.is_partner:
-            instructors = Instructor.objects.filter(user__username__icontains=q, provider__user=request.user)
-        else:
-            instructors = Instructor.objects.none()
+class InstructorAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        user = self.request.user
+        if not user.is_authenticated:
+            return Instructor.objects.none()
 
-        results = [{'id': i.id, 'text': str(i.user.username)} for i in instructors[:10]]
-        logger.debug(f"Search results: {results}")
-        return JsonResponse({'results': results})
-    return JsonResponse({'results': []})
+        if user.is_superuser:
+            qs = Instructor.objects.all()
+        elif hasattr(user, 'is_partner') and user.is_partner:
+            qs = Instructor.objects.filter(provider__user=user)
+        else:
+            qs = Instructor.objects.none()
+
+        if self.q:
+            q = self.q.strip()
+            qs = qs.filter(
+                Q(user__first_name__icontains=q) | Q(user__last_name__icontains=q)
+            )
+
+        return qs.order_by('user__first_name', 'user__last_name')[:20]
+
 
 #create grade
 #@login_required
