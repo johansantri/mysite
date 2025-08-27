@@ -134,20 +134,21 @@ class SosPostForm(forms.ModelForm):
 
 class MicroCredentialForm(forms.ModelForm):
     description = forms.CharField(widget=CKEditor5Widget())
+
     class Meta:
         model = MicroCredential
         fields = ['title', 'slug', 'description', 'required_courses', 'status', 'start_date', 'end_date', 'image', 'category', 'min_total_score']
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 100%; font-size: 18px;',"oninput": "listingslug(value)"}),
-             "slug": forms.HiddenInput(attrs={
-                "class": "form-control",
-                "maxlength": "200"
-            }),
+            'title': forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 100%; font-size: 18px;', "oninput": "listingslug(value)"}),
+            'slug': forms.HiddenInput(attrs={"class": "form-control", "maxlength": "200"}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
             'start_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'end_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'status': forms.Select(attrs={'class': 'form-control'}),
-            'required_courses': forms.SelectMultiple(attrs={'class': 'form-control select2'}),
+            'required_courses': autocomplete.ModelSelect2Multiple(
+                url='courses:course-autocomplete',
+                attrs={'class': 'form-control'}
+            ),
             'category': forms.Select(attrs={'class': 'form-control'}),
             'min_total_score': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.1'}),
             'image': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),

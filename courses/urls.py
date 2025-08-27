@@ -1,7 +1,7 @@
 from django.urls import path
 
 from . import views
-
+from .views import CourseAutocomplete
 app_name = 'courses'
 
 urlpatterns = [
@@ -86,7 +86,8 @@ urlpatterns = [
 
     path('microcredentials/', views.listmic, name='microcredential-list'),
     path('microcredentials/create/', views.addmic, name='microcredential-create'),
-    path('autocomplete/', views.course_autocomplete, name='course_autocomplete'),
+    path('course-autocomplete/', CourseAutocomplete.as_view(), name='course-autocomplete'),
+
     path('microcredentials/<int:pk>/edit/', views.editmic, name='microcredential-update'),
     path('microcredentials/<int:pk>/delete/', views.deletemic, name='microcredential-delete'),
     path('microcredentials/<int:pk>/', views.detailmic, name='microcredential-detail'),  # Detail view

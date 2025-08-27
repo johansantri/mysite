@@ -3,73 +3,15 @@
 
 {% block content %}
 
-<h1>Add New MicroCredential</h1>
 
-<!-- Letakkan di atas form -->
-<div id="course-autocomplete-config" data-url="{% url 'courses:course_autocomplete' %}"></div>
+    <h1>Tambah Microcredential</h1>
 
-<form method="POST" enctype="multipart/form-data">
-  {% csrf_token %}
-  {{ form.as_p }}
- 
-  <button type="submit" class="btn btn-success btn-sm">Save</button>
-  <a href="{% url 'courses:microcredential-list' %}" class="btn btn-info btn-sm">Cancel</a>
-</form>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
 
+        {{ form.as_p }}
 
-<script>
-function slugify(text) {
-  return text.toString()
-    .toLowerCase()
-    .normalize('NFD')
-    .trim()
-    .replace(/\s+/g, '-')
-    .replace(/[^\w\-]+/g, '')
-    .replace(/\-\-+/g, '-');
-}
+        <button type="submit" class="btn btn-primary">Simpan</button>
+    </form>
 
-function listingslug(text) {
-  const slugField = document.getElementById("id_slug");
-  if (slugField) {
-    slugField.value = slugify(text);
-  }
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-  // Slugify event
-  const titleInput = document.querySelector("#id_title");
-  if (titleInput) {
-    titleInput.addEventListener("input", function () {
-      listingslug(titleInput.value);
-    });
-  }
-
-  // Select2 init
-  if (typeof $ !== 'undefined' && $('.select2').length > 0) {
-    const configDiv = document.getElementById("course-autocomplete-config");
-    const autocompleteUrl = configDiv?.dataset?.url;
-    console.log("Detected autocompleteUrl:", autocompleteUrl);
-
-    if (autocompleteUrl) {
-      $('.select2').select2({
-        placeholder: 'Search for a course',
-        ajax: {
-          url: autocompleteUrl,
-          dataType: 'json',
-          delay: 250,
-          data: function (params) {
-            return { q: params.term };
-          },
-          processResults: function (data) {
-            return { results: data.results };
-          },
-          cache: true
-        },
-        minimumInputLength: 1
-      });
-    }
-  }
-});
-
-</script>
 {% endblock %}

@@ -2192,21 +2192,27 @@ def editmic(request, pk):
 
     return render(request, 'micro/edit_micro.html', {'form': form, 'microcredential': microcredential})
 
-@login_required  # Cara yang lebih bersih daripada manual redirect
-def course_autocomplete(request):
-    query = request.GET.get('q', '').strip()
-    results = []
 
-    if query:
-        courses = Course.objects.filter(
-            Q(course_name__icontains=query),
-            status_course__status='published',
-            end_enrol__gte=timezone.now()
-        ).order_by('course_name')[:20]  # Limit hasil pencarian
+class CourseAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Course.objects.none()
 
-        results = [{'id': c.id, 'text': c.course_name} for c in courses]
+        if not self.q:
+            return Course.objects.none()
 
-    return JsonResponse({'results': results})
+        q = self.q.strip()
+        # Filter course yang status_course.status = 'published'
+        qs = Course.objects.filter(
+            Q(course_name__icontains=q) | Q(course_run__icontains=q),
+            status_course__status='published'
+        ).order_by('course_name', 'course_run')[:20]
+
+        return qs
+
+    def get_result_label(self, item):
+        # Gabungkan course_name dan course_run agar jelas
+        return f"{item.course_name} | {item.course_run}"
 
 def addmic(request):
     if not request.user.is_authenticated:

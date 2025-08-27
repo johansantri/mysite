@@ -2,69 +2,17 @@
 {% block content %}
 
 
-<h1>Edit MicroCredential: {{ microcredential.title }}</h1>
-<!-- Letakkan di atas form -->
-<div id="course-autocomplete-config" data-url="{% url 'courses:course_autocomplete' %}"></div>
-  <form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}  <!-- Render form fields -->
-     
-    <button type="submit" class="btn btn-warning btn-sm">Update</button>
-  </form>
 
-  
-  <a href="{% url 'courses:microcredential-list' %}" class="btn btn-info btn-sm">Cancel</a>  <!-- Link to go back to the list -->
+    <h1>Edit Microcredential: {{ microcredential.title }}</h1>
 
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const configDiv = document.getElementById("course-autocomplete-config");
-    const autocompleteUrl = configDiv?.dataset?.url;
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
 
-    if (typeof $ !== 'undefined' && $('.select2').length > 0 && autocompleteUrl) {
-      $('.select2').select2({
-        placeholder: 'Search for a course',
-        ajax: {
-          url: autocompleteUrl,
-          dataType: 'json',
-          delay: 250,
-          data: function (params) {
-            return { q: params.term };
-          },
-          processResults: function (data) {
-            return { results: data.results };
-          },
-          cache: true
-        },
-        minimumInputLength: 1
-      });
+        {{ form.as_p }}
 
-      // ✅ Pre-populate selected options for edit
-      $('.select2 option:selected').each(function () {
-        var $option = $(this);
-        if (!$option.attr('data-select2-id')) {
-          var newOption = new Option($option.text(), $option.val(), true, true);
-          $('.select2').append(newOption).trigger('change');
-        }
-      });
-    }
-  });
-</script>
-<script>
-  function slugify(text) {
-    return text
-      .toString() // Cast to string
-      .toLowerCase() // Convert the string to lowercase letters
-      .normalize('NFD') // The normalize() method returns the Unicode Normalization Form of a given string.
-      .trim() // Remove whitespace from both sides of a string
-      .replace(/\s+/g, '-') // Replace spaces with -
-      .replace(/[^\w\-]+/g, '') // Remove all non-word chars
-      .replace(/\-\-+/g, '-'); // Replace multiple - with single -
-  }
-  
-  function listingslug(text) {
-    document.getElementById("id_slug").value = slugify(text);
-  }
-</script>
+        <button type="submit" class="btn btn-success">Simpan Perubahan</button>
+        <a href="{% url 'courses:microcredential-list' %}" class="btn btn-secondary">Batal</a>
+    </form>
 
 
 {% endblock %}
