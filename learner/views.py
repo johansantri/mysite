@@ -918,11 +918,11 @@ def _build_assessment_context(assessment, user):
 @login_required
 def toggle_reaction(request, comment_id, reaction_type):
     if request.method != 'POST':
-        logger.warning(f"Invalid request method: {request.method} for toggle_reaction")
+       # logger.warning(f"Invalid request method: {request.method} for toggle_reaction")
         return HttpResponse(status=400)
 
     if reaction_type not in ['like', 'dislike']:
-        logger.warning(f"Invalid reaction_type: {reaction_type}")
+        #logger.warning(f"Invalid reaction_type: {reaction_type}")
         return HttpResponse(status=400)
 
     comment = get_object_or_404(Comment, id=comment_id)
@@ -982,7 +982,7 @@ def toggle_reaction(request, comment_id, reaction_type):
         return HttpResponseRedirect(redirect_url)
 
     except Exception as e:
-        logger.error(f"Error toggling reaction for comment {comment_id}: {str(e)}", exc_info=True)
+        #logger.error(f"Error toggling reaction for comment {comment_id}: {str(e)}", exc_info=True)
         if request.headers.get('HX-Request') == 'true':
             return HttpResponse("Terjadi kesalahan saat memproses reaksi.", status=500)
         return HttpResponse(status=500)
@@ -1027,7 +1027,7 @@ def _get_navigation_urls(username, id, slug, combined_content, current_index):
                 'content_id': next_content[1].id
             })
     except NoReverseMatch as e:
-        logger.error(f"NoReverseMatch di _get_navigation_urls: {str(e)}")
+        #logger.error(f"NoReverseMatch di _get_navigation_urls: {str(e)}")
         previous_url = None
         next_url = None
     return previous_url, next_url
@@ -1035,7 +1035,7 @@ def _get_navigation_urls(username, id, slug, combined_content, current_index):
 @login_required
 def my_course(request, username, id, slug):
     if request.user.username != username:
-        logger.warning(f"Upaya akses tidak sah oleh {request.user.username} untuk {username}")
+        #logger.warning(f"Upaya akses tidak sah oleh {request.user.username} untuk {username}")
         return HttpResponse(status=403)
 
     user = request.user
@@ -1055,7 +1055,7 @@ def my_course(request, username, id, slug):
 
     course = get_object_or_404(Course, id=id, slug=slug)
     if not Enrollment.objects.filter(user=request.user, course=course).exists():
-        logger.warning(f"Pengguna {request.user.username} tidak terdaftar di kursus {slug}")
+        #logger.warning(f"Pengguna {request.user.username} tidak terdaftar di kursus {slug}")
         return HttpResponse(status=403)
 
     sections = Section.objects.filter(courses=course).prefetch_related(
@@ -1122,7 +1122,7 @@ def my_course(request, username, id, slug):
                     'course_id': course.id,
                     'payment_type': 'exam'
                 })
-                logger.info(f"Pembayaran diperlukan untuk penilaian {assessment_id} di kursus {course.id} untuk pengguna {request.user.username}")
+                #logger.info(f"Pembayaran diperlukan untuk penilaian {assessment_id} di kursus {course.id} untuk pengguna {request.user.username}")
             else:
                 AssessmentRead.objects.get_or_create(user=request.user, assessment=assessment)
                 user_progress.progress_percentage = calculate_course_progress(request.user, course)
@@ -1179,7 +1179,7 @@ def my_course(request, username, id, slug):
     context['course_progress'] = user_progress.progress_percentage
     context['can_review'] = bool(context['submissions'])
 
-    logger.info(f"my_course: Rendering untuk pengguna {username}, kursus {slug}, assessment_id={assessment_id}")
+    #logger.info(f"my_course: Rendering untuk pengguna {username}, kursus {slug}, assessment_id={assessment_id}")
     response = render(request, 'learner/my_course.html', context)
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     return response
@@ -1188,12 +1188,12 @@ def my_course(request, username, id, slug):
 @login_required
 def load_content(request, username, id, slug, content_type, content_id):
     if request.user.username != username:
-        logger.warning(f"Upaya akses tidak sah oleh {request.user.username} untuk {username}")
+        #logger.warning(f"Upaya akses tidak sah oleh {request.user.username} untuk {username}")
         return HttpResponse(status=403)
 
     course = get_object_or_404(Course, id=id, slug=slug)
     if not Enrollment.objects.filter(user=request.user, course=course).exists():
-        logger.warning(f"Pengguna {request.user.username} tidak terdaftar di kursus {slug}")
+        #logger.warning(f"Pengguna {request.user.username} tidak terdaftar di kursus {slug}")
         return HttpResponse(status=403)
 
     sections = Section.objects.filter(courses=course).prefetch_related(
@@ -1270,7 +1270,7 @@ def load_content(request, username, id, slug, content_type, content_id):
                     'course_id': course.id,
                     'payment_type': 'exam'
                 })
-                logger.info(f"Pembayaran diperlukan untuk penilaian {content_id} di kursus {course.id} untuk pengguna {request.user.username}")
+                #logger.info(f"Pembayaran diperlukan untuk penilaian {content_id} di kursus {course.id} untuk pengguna {request.user.username}")
             else:
                 AssessmentRead.objects.get_or_create(user=request.user, assessment=assessment)
                 # Perbarui progress_percentage
@@ -1302,7 +1302,7 @@ def load_content(request, username, id, slug, content_type, content_id):
 
     template = 'learner/partials/content.html' if request.headers.get('HX-Request') == 'true' else 'learner/my_course.html'
 
-    logger.info(f"load_content: Rendering {template} untuk pengguna {username}, {content_type} {content_id}")
+    #logger.info(f"load_content: Rendering {template} untuk pengguna {username}, {content_type} {content_id}")
     response = render(request, template, context)
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     return response
@@ -1310,7 +1310,7 @@ def load_content(request, username, id, slug, content_type, content_id):
 @login_required
 def start_assessment_courses(request, assessment_id):
     if request.method != 'POST':
-        logger.error(f"Invalid request method: {request.method} for start_assessment")
+        #logger.error(f"Invalid request method: {request.method} for start_assessment")
         return render(request, 'learner/partials/error.html', {
             'error_message': 'Permintaan tidak valid.'
         }, status=400) if request.headers.get('HX-Request') == 'true' else HttpResponse(status=400)
@@ -1318,7 +1318,7 @@ def start_assessment_courses(request, assessment_id):
     assessment = get_object_or_404(Assessment.objects.select_related('section__courses'), id=assessment_id)
     course = assessment.section.courses
     if not Enrollment.objects.filter(user=request.user, course=course).exists():
-        logger.warning(f"User {request.user.username} not enrolled in course {course.slug}")
+        #logger.warning(f"User {request.user.username} not enrolled in course {course.slug}")
         return render(request, 'learner/partials/error.html', {
             'error_message': 'Anda tidak terdaftar di kursus ini.'
         }, status=403) if request.headers.get('HX-Request') == 'true' else HttpResponse(status=403)
@@ -1331,12 +1331,13 @@ def start_assessment_courses(request, assessment_id):
         }
     )
     if not created and session.end_time and session.end_time > timezone.now():
-        logger.debug(f"Using existing session for user {request.user.username}, assessment {assessment_id}")
+       # logger.debug(f"Using existing session for user {request.user.username}, assessment {assessment_id}")
+       pass
     else:
         session.start_time = timezone.now()
         session.end_time = timezone.now() + timedelta(minutes=assessment.duration_in_minutes) if assessment.duration_in_minutes > 0 else None
         session.save()
-        logger.debug(f"{'New' if created else 'Reset'} session for user {request.user.username}, assessment {assessment_id}")
+       # logger.debug(f"{'New' if created else 'Reset'} session for user {request.user.username}, assessment {assessment_id}")
 
     user_progress, _ = CourseProgress.objects.get_or_create(user=request.user, course=course)
 
@@ -1401,10 +1402,10 @@ def start_assessment_courses(request, assessment_id):
             'username': request.user.username, 'id': course.id, 'slug': course.slug,
             'content_type': 'assessment', 'content_id': assessment.id
         })
-        logger.info(f"Redirecting non-HTMX request to: {redirect_url}")
+        #logger.info(f"Redirecting non-HTMX request to: {redirect_url}")
         return HttpResponseRedirect(redirect_url)
 
-    logger.info(f"start_assessment: Rendering HTMX for user {request.user.username}, assessment {assessment_id}, time_left={context['remaining_time']}")
+    #logger.info(f"start_assessment: Rendering HTMX for user {request.user.username}, assessment {assessment_id}, time_left={context['remaining_time']}")
     response = render(request, 'learner/partials/content.html', context)
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     return response

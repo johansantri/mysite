@@ -101,7 +101,7 @@ def mul(value, arg):
         return ''
     
 logger = logging.getLogger(__name__)
-logger = logging.getLogger(__name__)
+
 
 @register.simple_tag(takes_context=True)
 def get_course_completion_status(context):
@@ -110,7 +110,7 @@ def get_course_completion_status(context):
     course = context.get('course')
 
     if not course:
-        logger.warning("No course provided in get_course_completion_status")
+        #logger.warning("No course provided in get_course_completion_status")
         return {
             'is_completed': False,
             'certificate_url': None,
@@ -150,7 +150,7 @@ def get_course_completion_status(context):
                 lti_score = lti_score / Decimal(100)
             score_value = min(lti_score * weight, weight)  # Batasi skor maksimum ke bobot
             assessments_completed += 1
-            logger.debug(f"LTIResult for user {user.id}, assessment {assessment.id}: raw_score={lti_result.score}, normalized_score={lti_score}, weight={weight}, score_value={score_value}")
+            #logger.debug(f"LTIResult for user {user.id}, assessment {assessment.id}: raw_score={lti_result.score}, normalized_score={lti_score}, weight={weight}, score_value={score_value}")
         elif assessment.questions.exists():  # Pilihan ganda
             has_answers = QuestionAnswer.objects.filter(
                 user=user, question__assessment=assessment
@@ -158,7 +158,7 @@ def get_course_completion_status(context):
 
             if not has_answers:
                 all_assessments_submitted = False
-                logger.debug(f"No answers for quiz assessment {assessment.id} by user {user.id}")
+                #logger.debug(f"No answers for quiz assessment {assessment.id} by user {user.id}")
                 continue
 
             total_questions = assessment.questions.count()
@@ -170,7 +170,7 @@ def get_course_completion_status(context):
 
             assessments_completed += 1
             score_value = (Decimal(correct_answers) / Decimal(total_questions)) * weight if total_questions > 0 else Decimal(0)
-            logger.debug(f"Quiz assessment {assessment.id}: correct={correct_answers}, total={total_questions}, weight={weight}, score_value={score_value}")
+            #logger.debug(f"Quiz assessment {assessment.id}: correct={correct_answers}, total={total_questions}, weight={weight}, score_value={score_value}")
         else:  # ORA / manual
             submission = Submission.objects.filter(
                 user=user, askora__assessment=assessment
@@ -178,18 +178,18 @@ def get_course_completion_status(context):
 
             if not submission:
                 all_assessments_submitted = False
-                logger.debug(f"No submission for ORA assessment {assessment.id} by user {user.id}")
+                #logger.debug(f"No submission for ORA assessment {assessment.id} by user {user.id}")
                 continue
 
             score_obj = AssessmentScore.objects.filter(submission=submission).first()
             if not score_obj:
                 all_assessments_submitted = False
-                logger.debug(f"No score for ORA submission in assessment {assessment.id} by user {user.id}")
+               #logger.debug(f"No score for ORA submission in assessment {assessment.id} by user {user.id}")
                 continue
 
             assessments_completed += 1
             score_value = Decimal(score_obj.final_score)
-            logger.debug(f"ORA assessment {assessment.id}: score={score_value}, weight={weight}")
+            #logger.debug(f"ORA assessment {assessment.id}: score={score_value}, weight={weight}")
 
         total_score += score_value
         total_max_score += weight
@@ -210,10 +210,10 @@ def get_course_completion_status(context):
         if is_completed else None
     )
 
-    logger.info(f"Course completion status for user {user.id}, course {course.id}: "
-                f"is_completed={is_completed}, assessments_completed={assessments_completed}/{total_assessments}, "
-                f"total_score={total_score}, total_max_score={total_max_score}, "
-                f"overall_percentage={overall_percentage}, passing_threshold={passing_threshold}")
+    #logger.info(f"Course completion status for user {user.id}, course {course.id}: "
+                #f"is_completed={is_completed}, assessments_completed={assessments_completed}/{total_assessments}, "
+                #f"total_score={total_score}, total_max_score={total_max_score}, "
+               #f"overall_percentage={overall_percentage}, passing_threshold={passing_threshold}")
 
     return {
         'is_completed': is_completed,
@@ -247,18 +247,18 @@ def is_content_read(context, content_type, content_id):
     elif content_type == 'assessment':
         # Cek LTIResult untuk assessment LTI
         if LTIResult.objects.filter(user=user, assessment_id=content_id, score__isnull=False).exists():
-            logger.debug(f"LTIResult found for user {user.id}, assessment {content_id}")
+            #logger.debug(f"LTIResult found for user {user.id}, assessment {content_id}")
             return True
         # Cek QuestionAnswer untuk kuis
         if QuestionAnswer.objects.filter(user=user, question__assessment_id=content_id).exists():
-            logger.debug(f"QuestionAnswer found for user {user.id}, assessment {content_id}")
+            #logger.debug(f"QuestionAnswer found for user {user.id}, assessment {content_id}")
             return True
         # Cek Submission untuk ORA
         if Submission.objects.filter(user=user, askora__assessment_id=content_id).exists():
-            logger.debug(f"Submission found for user {user.id}, assessment {content_id}")
+            #logger.debug(f"Submission found for user {user.id}, assessment {content_id}")
             return True
         # Fallback ke AssessmentRead untuk menandai bahwa assessment telah dibuka
         assessment_read = AssessmentRead.objects.filter(user=user, assessment_id=content_id).exists()
-        logger.debug(f"AssessmentRead for user {user.id}, assessment {content_id}: {assessment_read}")
+        #logger.debug(f"AssessmentRead for user {user.id}, assessment {content_id}: {assessment_read}")
         return assessment_read
     return False
