@@ -15,7 +15,37 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.16.1/sweetalert2.css" integrity="sha512-fjO3Vy3QodX9c6G9AUmr6WuIaEPdGRxBjD7gjatG5gGylzYyrEq3U0q+smkG6CwIY0L8XALRFHh4KPHig0Q1ug==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
+   
+        <!-- Scripts -->
+  <!-- 1. jQuery harus paling pertama -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+    integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+     {{ form.media|safe }}
+    <!-- media --> 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"
+    integrity="sha512-uURl+ZXMBrF4AwGaWmEetzrd+J5/8NRkWAvJx5sbPSSuOb0bZLqf+tOzniObO00BjHa/dD7gub9oCGMLPQHtQA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- 3. Plugin lain bebas urutan -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.min.js"
+    integrity="sha512-ykZ1QQr0Jy/4ZkvKuqWn4iF3lqPZyij9iRv6sGqLRdTPkY69YX6+7wvVGmsdBbiIfN/8OdsI7HABjvEok6ZopQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.6/Sortable.min.js"
+    integrity="sha512-csIng5zcB+XpulRUa+ev1zKo7zRNGpEaVfNB9On1no9KYTEY/rLGAEEpvgdw6nim1WdTuihZY1eqZ31K7/fZjw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.16.1/sweetalert2.min.js"
+    integrity="sha512-LGHBR+kJ5jZSIzhhdfytPoEHzgaYuTRifq9g5l6ja6/k9NAOsAi5dQh4zQF6JIRB8cAYxTRedERUF+97/KuivQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/2.0.4/htmx.min.js"
+    integrity="sha512-2kIcAizYXhIn8TzUvqzEDZNuDZ+aW7yE/+f1HJHXFjQcGNfv1kqzJSTBRBSlOgp6B/KZsz1K0a3ZTqP9dnxioQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- Custom CSS -->
     <style>
         :root {
@@ -845,196 +875,168 @@
         {% endblock %}
     </div>
 
-    <!-- Scripts -->
-  <!-- 1. jQuery harus paling pertama -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-  integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
-  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"
-  integrity="sha512-uURl+ZXMBrF4AwGaWmEetzrd+J5/8NRkWAvJx5sbPSSuOb0bZLqf+tOzniObO00BjHa/dD7gub9oCGMLPQHtQA=="
-  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-<!-- 3. Plugin lain bebas urutan -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.min.js"
-  integrity="sha512-ykZ1QQr0Jy/4ZkvKuqWn4iF3lqPZyij9iRv6sGqLRdTPkY69YX6+7wvVGmsdBbiIfN/8OdsI7HABjvEok6ZopQ=="
-  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.6/Sortable.min.js"
-  integrity="sha512-csIng5zcB+XpulRUa+ev1zKo7zRNGpEaVfNB9On1no9KYTEY/rLGAEEpvgdw6nim1WdTuihZY1eqZ31K7/fZjw=="
-  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.16.1/sweetalert2.min.js"
-  integrity="sha512-LGHBR+kJ5jZSIzhhdfytPoEHzgaYuTRifq9g5l6ja6/k9NAOsAi5dQh4zQF6JIRB8cAYxTRedERUF+97/KuivQ=="
-  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/2.0.4/htmx.min.js"
-  integrity="sha512-2kIcAizYXhIn8TzUvqzEDZNuDZ+aW7yE/+f1HJHXFjQcGNfv1kqzJSTBRBSlOgp6B/KZsz1K0a3ZTqP9dnxioQ=="
-  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-{{ form.media|safe }}
     {% block scripts %}
     
     {% endblock %}
 
     <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Sidebar toggle
-    const sidebarTogglers = document.querySelectorAll('.navbar-toggler');
-    const sidebar = document.querySelector('#sidebarMenu');
+        document.addEventListener('DOMContentLoaded', function() {
+        // Sidebar toggle
+        const sidebarTogglers = document.querySelectorAll('.navbar-toggler');
+        const sidebar = document.querySelector('#sidebarMenu');
 
-    if (!sidebar) {
-        console.error('Sidebar (#sidebarMenu) not found in DOM');
-        return;
-    }
-
-    // Debugging: Log jumlah toggler yang ditemukan
-    console.log(`Found ${sidebarTogglers.length} navbar-toggler elements`);
-
-    // Inisialisasi sidebar berdasarkan ukuran layar
-    if (window.innerWidth < 992) {
-        sidebar.classList.remove('show');
-        sidebarTogglers.forEach(toggler => toggler.classList.remove('show'));
-    } else {
-        sidebar.classList.add('show');
-    }
-
-    // Tambahkan event listener untuk setiap toggler
-    sidebarTogglers.forEach((toggler, index) => {
-        console.log(`Adding event listener to toggler ${index}`);
-        toggler.addEventListener('click', function() {
-            // Toggle kelas 'show' untuk sidebar dan toggler
-            this.classList.toggle('show');
-            sidebar.classList.toggle('show');
-
-            // Toggle ikon antara bi-list dan bi-x-lg
-            const icon = this.querySelector('i');
-            if (icon) {
-                icon.classList.toggle('bi-list');
-                icon.classList.toggle('bi-x-lg');
-            } else {
-                console.warn(`Icon not found in toggler ${index}`);
-            }
-        });
-    });
-
-    // Close sidebar when clicking outside on mobile
-    document.addEventListener('click', function(event) {
-        if (window.innerWidth < 992 && sidebar.classList.contains('show')) {
-            const isClickInsideSidebar = sidebar.contains(event.target);
-            const isClickInsideToggler = Array.from(sidebarTogglers).some(toggler => toggler.contains(event.target));
-            if (!isClickInsideSidebar && !isClickInsideToggler) {
-                sidebar.classList.remove('show');
-                sidebarTogglers.forEach(toggler => toggler.classList.remove('show'));
-                sidebarTogglers.forEach(toggler => {
-                    const icon = toggler.querySelector('i');
-                    if (icon) {
-                        icon.classList.add('bi-list');
-                        icon.classList.remove('bi-x-lg');
-                    }
-                });
-            }
+        if (!sidebar) {
+            console.error('Sidebar (#sidebarMenu) not found in DOM');
+            return;
         }
-    });
 
-    // Dark mode toggle
-    const darkModeToggles = document.querySelectorAll('.dark-mode-toggle');
-    const body = document.body;
-    const isDarkMode = localStorage.getItem('darkMode') === 'true';
+        // Debugging: Log jumlah toggler yang ditemukan
+        console.log(`Found ${sidebarTogglers.length} navbar-toggler elements`);
 
-    if (isDarkMode) {
-        body.classList.add('dark-mode');
-        darkModeToggles.forEach(toggle => {
-            const icon = toggle.querySelector('i');
-            if (icon) {
-                icon.classList.replace('bi-moon', 'bi-sun');
-                toggle.innerHTML = '<i class="bi bi-sun me-2"></i> Light Mode';
-            }
-        });
-    }
+        // Inisialisasi sidebar berdasarkan ukuran layar
+        if (window.innerWidth < 992) {
+            sidebar.classList.remove('show');
+            sidebarTogglers.forEach(toggler => toggler.classList.remove('show'));
+        } else {
+            sidebar.classList.add('show');
+        }
 
-    darkModeToggles.forEach(toggle => {
-        toggle.addEventListener('click', function(e) {
-            e.preventDefault();
-            body.classList.toggle('dark-mode');
-            const isDark = body.classList.contains('dark-mode');
-            localStorage.setItem('darkMode', isDark);
-            darkModeToggles.forEach(t => {
-                const icon = t.querySelector('i');
+        // Tambahkan event listener untuk setiap toggler
+        sidebarTogglers.forEach((toggler, index) => {
+            console.log(`Adding event listener to toggler ${index}`);
+            toggler.addEventListener('click', function() {
+                // Toggle kelas 'show' untuk sidebar dan toggler
+                this.classList.toggle('show');
+                sidebar.classList.toggle('show');
+
+                // Toggle ikon antara bi-list dan bi-x-lg
+                const icon = this.querySelector('i');
                 if (icon) {
-                    icon.classList.replace(isDark ? 'bi-moon' : 'bi-sun', isDark ? 'bi-sun' : 'bi-moon');
-                    t.innerHTML = isDark
-                        ? '<i class="bi bi-sun me-2"></i> Light Mode'
-                        : '<i class="bi bi-moon me-2"></i> Dark Mode';
+                    icon.classList.toggle('bi-list');
+                    icon.classList.toggle('bi-x-lg');
+                } else {
+                    console.warn(`Icon not found in toggler ${index}`);
                 }
             });
         });
-    });
 
-    // Confetti effect
-    {% if status == 'Pass' %}
-    const status = "{{ status }}";
-    if (status === 'Pass') {
-        const Confettiful = function(el) {
-            this.el = el;
-            this.containerEl = null;
-            this.confettiFrequency = 10;
-            this.confettiColors = ['#3b82f6', '#f97316', '#22c55e', '#ec4899', '#facc15'];
-            this.confettiAnimations = ['slow', 'medium', 'fast'];
-            this._setupElements();
-            this._renderConfetti();
-        };
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', function(event) {
+            if (window.innerWidth < 992 && sidebar.classList.contains('show')) {
+                const isClickInsideSidebar = sidebar.contains(event.target);
+                const isClickInsideToggler = Array.from(sidebarTogglers).some(toggler => toggler.contains(event.target));
+                if (!isClickInsideSidebar && !isClickInsideToggler) {
+                    sidebar.classList.remove('show');
+                    sidebarTogglers.forEach(toggler => toggler.classList.remove('show'));
+                    sidebarTogglers.forEach(toggler => {
+                        const icon = toggler.querySelector('i');
+                        if (icon) {
+                            icon.classList.add('bi-list');
+                            icon.classList.remove('bi-x-lg');
+                        }
+                    });
+                }
+            }
+        });
 
-        Confettiful.prototype._setupElements = function() {
-            const containerEl = document.createElement('div');
-            containerEl.classList.add('js-container__confetti');
-            this.el.appendChild(containerEl);
-            this.containerEl = containerEl;
-        };
+        // Dark mode toggle
+        const darkModeToggles = document.querySelectorAll('.dark-mode-toggle');
+        const body = document.body;
+        const isDarkMode = localStorage.getItem('darkMode') === 'true';
 
-        Confettiful.prototype._renderConfetti = function() {
-            this.confettiInterval = setInterval(() => {
-                const confettiEl = document.createElement('div');
-                const confettiSize = (Math.floor(Math.random() * 8) + 5) + 'px';
-                const confettiBackground = this.confettiColors[Math.floor(Math.random() * this.confettiColors.length)];
-                const confettiLeft = (Math.floor(Math.random() * this.el.offsetWidth)) + 'px';
-                const confettiAnimation = this.confettiAnimations[Math.floor(Math.random() * this.confettiAnimations.length)];
-                confettiEl.classList.add('js-container__confetti-item', 'js-container__confetti-item--animation-' + confettiAnimation);
-                confettiEl.style.left = confettiLeft;
-                confettiEl.style.width = confettiSize;
-                confettiEl.style.height = confettiSize;
-                confettiEl.style.backgroundColor = confettiBackground;
-                this.containerEl.appendChild(confettiEl);
+        if (isDarkMode) {
+            body.classList.add('dark-mode');
+            darkModeToggles.forEach(toggle => {
+                const icon = toggle.querySelector('i');
+                if (icon) {
+                    icon.classList.replace('bi-moon', 'bi-sun');
+                    toggle.innerHTML = '<i class="bi bi-sun me-2"></i> Light Mode';
+                }
+            });
+        }
+
+        darkModeToggles.forEach(toggle => {
+            toggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                body.classList.toggle('dark-mode');
+                const isDark = body.classList.contains('dark-mode');
+                localStorage.setItem('darkMode', isDark);
+                darkModeToggles.forEach(t => {
+                    const icon = t.querySelector('i');
+                    if (icon) {
+                        icon.classList.replace(isDark ? 'bi-moon' : 'bi-sun', isDark ? 'bi-sun' : 'bi-moon');
+                        t.innerHTML = isDark
+                            ? '<i class="bi bi-sun me-2"></i> Light Mode'
+                            : '<i class="bi bi-moon me-2"></i> Dark Mode';
+                    }
+                });
+            });
+        });
+
+        // Confetti effect
+        {% if status == 'Pass' %}
+        const status = "{{ status }}";
+        if (status === 'Pass') {
+            const Confettiful = function(el) {
+                this.el = el;
+                this.containerEl = null;
+                this.confettiFrequency = 10;
+                this.confettiColors = ['#3b82f6', '#f97316', '#22c55e', '#ec4899', '#facc15'];
+                this.confettiAnimations = ['slow', 'medium', 'fast'];
+                this._setupElements();
+                this._renderConfetti();
+            };
+
+            Confettiful.prototype._setupElements = function() {
+                const containerEl = document.createElement('div');
+                containerEl.classList.add('js-container__confetti');
+                this.el.appendChild(containerEl);
+                this.containerEl = containerEl;
+            };
+
+            Confettiful.prototype._renderConfetti = function() {
+                this.confettiInterval = setInterval(() => {
+                    const confettiEl = document.createElement('div');
+                    const confettiSize = (Math.floor(Math.random() * 8) + 5) + 'px';
+                    const confettiBackground = this.confettiColors[Math.floor(Math.random() * this.confettiColors.length)];
+                    const confettiLeft = (Math.floor(Math.random() * this.el.offsetWidth)) + 'px';
+                    const confettiAnimation = this.confettiAnimations[Math.floor(Math.random() * this.confettiAnimations.length)];
+                    confettiEl.classList.add('js-container__confetti-item', 'js-container__confetti-item--animation-' + confettiAnimation);
+                    confettiEl.style.left = confettiLeft;
+                    confettiEl.style.width = confettiSize;
+                    confettiEl.style.height = confettiSize;
+                    confettiEl.style.backgroundColor = confettiBackground;
+                    this.containerEl.appendChild(confettiEl);
+                    setTimeout(() => {
+                        confettiEl.remove();
+                    }, 4000);
+                }, 50);
+
                 setTimeout(() => {
-                    confettiEl.remove();
-                }, 4000);
-            }, 50);
+                    clearInterval(this.confettiInterval);
+                }, 5000);
+            };
 
-            setTimeout(() => {
-                clearInterval(this.confettiInterval);
-            }, 5000);
-        };
-
-        const jsContainer = document.querySelector('.js-container');
-        if (jsContainer) {
-            window.confettiful = new Confettiful(jsContainer);
-        } else {
-            console.warn('Confetti container (.js-container) not found');
+            const jsContainer = document.querySelector('.js-container');
+            if (jsContainer) {
+                window.confettiful = new Confettiful(jsContainer);
+            } else {
+                console.warn('Confetti container (.js-container) not found');
+            }
         }
-    }
-    {% endif %}
-});
-</script>
-    <!-- script CSRF berikutnya -->
-    <script>
-    document.body.addEventListener('htmx:configRequest', function(evt) {
-        const token = document.querySelector('meta[name="csrf-token"]')?.content;
-        if (token) {
-            evt.detail.headers['X-CSRFToken'] = token;
-        }
-    });
+        {% endif %}
+        });
+    </script>
+        <!-- script CSRF berikutnya -->
+        <script>
+        document.body.addEventListener('htmx:configRequest', function(evt) {
+            const token = document.querySelector('meta[name="csrf-token"]')?.content;
+            if (token) {
+                evt.detail.headers['X-CSRFToken'] = token;
+            }
+        });
     </script>
  <!-- add partner -->
    

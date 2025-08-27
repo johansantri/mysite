@@ -54,7 +54,7 @@
           <h2 class="mb-4 text-center fw-bold">Apply to Become an Instructor</h2>
           <form method="POST" enctype="multipart/form-data" novalidate>
             {% csrf_token %}
-            {{ form.media }}
+           
             {{ form.as_p }}
             <div class="text-center mt-4">
               <button type="submit" class="btn btn-primary btn-lg w-50">Submit Application</button>

@@ -632,7 +632,7 @@ class CourseForm(forms.ModelForm):
 
 
 class PartnerForm(forms.ModelForm):
-    description = forms.CharField(widget=CKEditor5Widget())
+    #description = forms.CharField(widget=CKEditor5Widget())
     user = forms.ModelChoiceField(
         queryset=CustomUser.objects.none(),
         widget=autocomplete.ModelSelect2(
@@ -656,7 +656,11 @@ class PartnerForm(forms.ModelForm):
             
             "phone": forms.TextInput(attrs={"placeholder": "Phone Number", "class": "form-control"}),
             "address": forms.Textarea(attrs={"placeholder": "Address", "class": "form-control"}),
-            "description": forms.Textarea(attrs={"placeholder": "Description", "class": "form-control"}),
+            "description": CKEditor5Widget(
+                attrs={"class": "django_ckeditor_5"},
+                config_name="extends",
+            ),
+            #"description": forms.Textarea(attrs={"placeholder": "Description", "class": "form-control"}),
             "tax": forms.NumberInput(attrs={"placeholder": "Tax Number", "class": "form-control"}),
             "iceiprice": forms.NumberInput(attrs={"placeholder": "Ice Price %", "class": "form-control"}),
             "logo": forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
@@ -752,11 +756,7 @@ personal_data_widgets = {
         'onfocus': base_onfocus,
         'onblur': base_onblur,
     }),
-    'description': CKEditor5Widget(attrs={
-        'class': 'form-control',
-        'placeholder': 'Description',
-        'style': f'border-radius: 8px; border: 1.5px solid #ccc; box-shadow: 1px 1px 5px rgba(0,0,0,0.05);',
-    }),
+    
 }
 
 bank_info_widgets = {

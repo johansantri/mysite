@@ -1,43 +1,27 @@
 {% extends 'home/tes.html' %}
 {% block content %}
 
-        <div class="support-wrap">
-          <div class="tile">
-            <h3 class="tile-title">update data</h3>
-            
-            <div class="tile-body">
-              <form method="POST" action="" enctype="multipart/form-data">
-                {% csrf_token %}
-                  
-                {% for field in form %}
-                  <div class="mb-3">
-                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.help_text %}
-                      <div class="form-text">{{ field.help_text }}</div>
-                    {% endif %}
-                    {% for error in field.errors %}
-                      <div class="text-danger">{{ error }}</div>
-                    {% endfor %}
-                  </div>
-                {% endfor %}
-                {{ form.non_field_errors }}
-                <div class="tile-footer">
-                  <button class="btn btn-primary" type="submit">
-                    <i class="bi bi-check-circle-fill me-2"></i>Update Now
-                  </button>
-                  <a class="btn btn-secondary" href="{% url 'courses:partner_view' %}">
-                    <i class="bi bi-x-circle-fill me-2"></i>Cancel
-                  </a>
-                </div>
-              </form>
+<div class="support-wrap">
+  <div class="tile">
+    <h3 class="tile-title">Update Partner</h3>
 
-                
+    <div class="tile-body">
+      <form method="POST" action="" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form }}
 
-            </div>
-          </div>
+        &nbsp;
+        <div class="tile-footer">
+          <button class="btn btn-primary" type="submit">
+            <i class="bi bi-check-circle-fill me-2"></i>Update Now
+          </button>
+          <a class="btn btn-secondary" href="{% url 'courses:partner_view' %}">
+            <i class="bi bi-x-circle-fill me-2"></i>Cancel
+          </a>
         </div>
- 
+      </form>
+    </div>
+  </div>
+</div>
 
-     
 {% endblock %}

@@ -8,7 +8,7 @@
   <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}  <!-- Render form fields -->
-     {{ form.media }}
+     
     <button type="submit" class="btn btn-warning btn-sm">Update</button>
   </form>
 
