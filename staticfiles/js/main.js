@@ -18,68 +18,146 @@ const toggleBtn = document.getElementById('navbarToggle');
             mobileMenu.classList.remove('active');
             overlay.classList.remove('active');
         });
+//popular courses
+document.addEventListener('DOMContentLoaded', function () {
+  const coursesList = document.getElementById('courses-list');
+  if (!coursesList) return;
 
-//popular course
-document.addEventListener('DOMContentLoaded', function() {
-    const coursesList = document.getElementById('courses-list');
-    if (!coursesList) return;
+  fetch('/popular_courses/')
+    .then(response => response.json())
+    .then(data => {
+      coursesList.innerHTML = ''; // clear existing content
 
-    fetch('/popular_courses/')
-        .then(response => response.json())
-        .then(data => {
-            coursesList.innerHTML = '';  // kosongkan dulu
+      data.courses.forEach(course => {
+        const courseUrl = `/course-detail/${course.id}/${encodeURIComponent(course.slug)}/`;
+        const instructorPhoto = course.instructor_photo || '/static/images/user-default.webp';
+        const org_logo = course.org_logo || '/static/images/user-default.webp';
 
-            data.courses.forEach(course => {
-                let stars = '';
-                for (let i = 0; i < course.full_stars; i++) {
-                    stars += '<i class="fas fa-star text-yellow-500 text-xs"></i>';
-                }
-                if (course.half_star) {
-                    stars += '<i class="fas fa-star-half-alt text-yellow-500 text-xs"></i>';
-                }
-                for (let i = 0; i < course.empty_stars; i++) {
-                    stars += '<i class="far fa-star text-yellow-500 text-xs"></i>';
-                }
+        const isFree = (course.user_payment === 0);
 
-                const courseUrl = `/course-detail/${course.id}/${course.slug}/`;
-                const universityUrl = `/org-partner/${course.org_slug}/`;
-                const instructorPhoto = course.instructor_photo || '/static/images/default-avatar.png';
+        // Use rating stars from backend directly
+        const ratingStars = [
+          ...Array(course.full_stars).fill(`<svg class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 15l-5.878 3.09L5.49 12.18 1 7.91l6.061-.545L10 2.5l2.939 4.865 6.061.545-4.49 4.27 1.368 5.91z"/>
+          </svg>`),
+          course.half_star ? `<svg class="h-4 w-4 text-yellow-400" viewBox="0 0 20 20">
+            <defs>
+              <linearGradient id="half-${course.id}">
+                <stop offset="50%" stop-color="currentColor"/>
+                <stop offset="50%" stop-color="transparent"/>
+              </linearGradient>
+            </defs>
+            <path fill="url(#half-${course.id})" d="M10 15l-5.878 3.09L5.49 12.18 1 7.91l6.061-.545L10 2.5l2.939 4.865 6.061.545-4.49 4.27 1.368 5.91z"/>
+          </svg>` : '',
+          ...Array(course.empty_stars).fill(`<svg class="h-4 w-4 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 15l-5.878 3.09L5.49 12.18 1 7.91l6.061-.545L10 2.5l2.939 4.865 6.061.545-4.49 4.27 1.368 5.91z"/>
+          </svg>`)
+        ].join('');
 
-                const courseHtml = `
-                    <article>
-                        <div class="bg-white border border-red-500 rounded-xl shadow-md hover:shadow-lg hover:-translate-y-1 transition-all h-full">
-                            <img src="${course.image}" alt="${course.course_name}" class="card-img-top rounded-t-xl" loading="lazy" />
-                            <div class="p-4">
-                                <h5 class="font-bold text-base mb-2">${course.course_name}</h5>
-                                <div class="flex items-center mb-2">
-                                    <img src="${course.org_logo}" alt="Logo ${course.org_kode}" class="rounded-full w-8 h-8" />
-                                    <div class="ml-2">
-                                        <p class="text-xs mb-0">
-                                            <a href="${universityUrl}" class="text-gray-900 font-semibold no-underline">${course.org_kode}</a>
-                                        </p>
-                                        <p class="text-gray-500 text-xs">${course.instructor_name}</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-center mb-3">
-                                    ${stars}
-                                    <small class="text-gray-500 ml-1 text-xs">(${course.avg_rating.toFixed(1)}) (${course.num_ratings} reviews)</small>
-                                </div>
-                                <div class="mb-3">
-                                    <small class="text-gray-500 text-xs">Enrolled: ${course.num_enrollments}</small>
-                                </div>
-                                <a href="${courseUrl}" class="block w-full text-center bg-white border border-red-500 text-red-500 px-4 py-2 rounded hover:bg-red-500 hover:text-white no-underline text-xs min-h-[44px] flex items-center justify-center">Detail</a>
+        const courseHtml = `
+                <article 
+                        class="course-fade bg-white rounded-xl shadow-md hover:shadow-lg transition p-4 sm:p-5 flex flex-col h-full"
+                        itemscope 
+                        itemtype="https://schema.org/Course"
+                      >
+                        <a 
+                          href="${courseUrl}" 
+                          title="View course: ${course.course_name}" 
+                          class="block no-underline flex-grow flex flex-col"
+                          itemprop="url"
+                        >
+
+                          <!-- Thumbnail -->
+                          <div class="relative rounded-md overflow-hidden mb-4">
+                            <img 
+                              src="${course.image || '/static/images/placeholder-300.webp'}"
+                              srcset="
+                                ${course.image || '/static/images/placeholder-150.webp'} 150w,
+                                ${course.image || '/static/images/placeholder-300.webp'} 300w,
+                                ${course.image || '/static/images/placeholder-600.webp'} 600w"
+                              sizes="(max-width: 640px) 100vw, 300px"
+                              alt="${course.course_name || 'Course Image'}"
+                              class="w-full aspect-[4/3] object-cover transition-transform duration-300 hover:scale-105 rounded-md"
+                              loading="lazy"
+                              decoding="async"
+                              itemprop="image"
+                            >
+                            ${isFree ? `<span class="absolute top-2 left-2 bg-green-600 text-white text-xs font-semibold px-2 py-1 rounded shadow">FREE</span>` : ''}
+                          </div>
+
+                          <!-- Title -->
+                          <h2 
+                            class="text-base font-semibold text-gray-900 line-clamp-2 mb-2 hover:text-green-700 transition-colors duration-200"
+                            itemprop="name"
+                          >
+                            ${course.course_name || 'Untitled Course'}
+                          </h2>
+
+                          <!-- Pricing -->
+                          ${!isFree ? `
+                            <div class="flex flex-wrap items-center gap-2 mb-3">
+                              <span class="text-green-700 font-semibold text-base whitespace-nowrap">
+                                IDR ${typeof course.user_payment === 'number' ? course.user_payment.toLocaleString() : 'N/A'}
+                              </span>
                             </div>
-                        </div>
-                    </article>
-                `;
+                          ` : ''}
 
-                coursesList.insertAdjacentHTML('beforeend', courseHtml);
-            });
-        })
-        .catch(err => {
-            coursesList.innerHTML = '<p class="text-red-600">Failed to load courses. Please try again later.</p>';
-            console.error(err);
-        });
+                          <!-- Rating & Enrollments -->
+                          <div class="flex flex-wrap items-center justify-between text-sm mb-4 gap-2">
+                            <!-- Rating -->
+                            <div class="flex items-center ${course.num_ratings === 0 ? 'text-gray-300' : 'text-yellow-400'}">
+                              ${ratingStars}
+                              <span class="ml-2 text-gray-600 text-xs">(${course.num_ratings || 0})</span>
+                            </div>
+
+                            <!-- Enrollments -->
+                            <div class="flex items-center text-gray-500 text-xs space-x-1">
+                              <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M20 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M4 21v-2a4 4 0 0 1 3-3.87" />
+                                <circle cx="12" cy="7" r="4" />
+                              </svg>
+                              <span>${course.num_enrollments || 0}</span>
+                            </div>
+                          </div>
+
+                          <!-- Language -->
+                          <p class="flex items-center text-xs text-gray-500 mb-4 space-x-1 truncate">
+                            <svg class="h-4 w-4 flex-shrink-0 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                              <circle cx="12" cy="12" r="10" />
+                              <line x1="2" y1="12" x2="22" y2="12" />
+                              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                            </svg>
+                            <span>&nbsp; ${course.language ? course.language.charAt(0).toUpperCase() + course.language.slice(1) : 'N/A'}</span>
+                          </p>
+
+                          <!-- Footer: Instructor & Partner -->
+                          <div class="flex items-center mt-auto pt-3 border-t border-gray-200">
+                            <img 
+                              src="${org_logo}" 
+                              alt="${course.org_name || 'Partner'}" 
+                              class="w-6 h-6 rounded-full mr-3 object-cover border border-gray-200"
+                              itemprop="provider logo"
+                            >
+                            <div class="flex flex-col text-xs leading-tight truncate">
+                              <p class="text-gray-700 font-semibold truncate" itemprop="provider" itemscope itemtype="https://schema.org/Organization">
+                                <span itemprop="name">${course.org_name || 'Unknown Partner'}</span>
+                              </p>
+                              <p class="text-gray-600 truncate">${course.instructor_name || 'N/A'}</p>
+                            </div>
+                          </div>
+
+                        </a>
+                      </article>
+              `;
+
+        coursesList.insertAdjacentHTML('beforeend', courseHtml);
+      });
+    })
+    .catch(err => {
+      coursesList.innerHTML = '<p class="text-red-600">Failed to load courses. Please try again later.</p>';
+      console.error(err);
+    });
 });
 
 

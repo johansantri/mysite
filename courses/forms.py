@@ -23,6 +23,7 @@ from captcha.fields import CaptchaField
 import xml.etree.ElementTree as ET
 import hashlib
 from django_select2.forms import ModelSelect2MultipleWidget
+from dal import autocomplete
 logger = logging.getLogger(__name__)
 
 
@@ -632,17 +633,27 @@ class CourseForm(forms.ModelForm):
 
 class PartnerForm(forms.ModelForm):
     description = forms.CharField(widget=CKEditor5Widget())
+    user = forms.ModelChoiceField(
+        queryset=CustomUser.objects.none(),
+        widget=autocomplete.ModelSelect2(
+            url='courses:user-autocomplete',
+            attrs={'class': 'form-control'}
+        )
+    )
+
+    name = forms.ModelChoiceField(
+        queryset=Universiti.objects.none(),
+        widget=autocomplete.ModelSelect2(
+            url='courses:universiti-autocomplete',
+            attrs={'class': 'form-control'}
+        )
+    )
 
     class Meta:
         model = Partner
         fields = ['name', 'user', 'phone', 'tax', 'iceiprice', 'logo', 'address', 'description']
         widgets = {
-            "name": forms.Select(
-                attrs={"class": "form-control pilihA", "data-placeholder": "Pilih Universitas"}
-            ),
-            "user": forms.Select(
-                attrs={"class": "form-control pilihB", "data-placeholder": "Pilih Pengguna"}
-            ),
+            
             "phone": forms.TextInput(attrs={"placeholder": "Phone Number", "class": "form-control"}),
             "address": forms.Textarea(attrs={"placeholder": "Address", "class": "form-control"}),
             "description": forms.Textarea(attrs={"placeholder": "Description", "class": "form-control"}),
@@ -654,15 +665,13 @@ class PartnerForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Set nilai awal untuk Select2 dari instance
-        if self.instance.pk:  # Jika ada instance (update)
-            if self.instance.name:
-                self.fields['name'].initial = self.instance.name.id
+        if self.instance.pk:
             if self.instance.user:
-                self.fields['user'].initial = self.instance.user.id
+                self.fields['user'].queryset = CustomUser.objects.filter(pk=self.instance.user.pk)
+            if self.instance.name:
+                self.fields['name'].queryset = Universiti.objects.filter(pk=self.instance.name.pk)
 
-        # Set queryset untuk 'name' dan 'user'
-        self.fields['name'].queryset = Universiti.objects.all()
-        self.fields['user'].queryset = CustomUser.objects.filter(is_active=True)
+       
 
     def clean_user(self):
         user_value = self.cleaned_data.get('user')

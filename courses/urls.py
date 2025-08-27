@@ -20,10 +20,11 @@ urlpatterns = [
     path('partner/<int:partner_id>/', views.partner_detail, name='partner_detail'),
     path('partner/<int:partner_id>/update/', views.update_partner, name='update_partner'),
     path('org-partner/<slug:slug>/',views.org_partner, name='org_partner'),
-    path('search_users/', views.search_users, name='search_users'),
-    path('search_partner/', views.search_partner, name='search_partner'),
+   
     path("course-add/", views.course_create_view, name= "course_create_view"),
     path("partner-add/", views.partner_create_view, name= "partner_create_view"),
+    path('user-autocomplete/', views.UserAutocomplete.as_view(), name='user-autocomplete'),
+    path('universiti-autocomplete/', views.UniversitiAutocomplete.as_view(), name='universiti-autocomplete'),
     path('create-section/<int:idcourse>/', views.create_section, name='create_section'),
     path('add-matrial/<int:idcourse>/<int:idsection>/',views.add_matrial,name="add-matrial"),
     path('create-assessment/<int:idcourse>/<int:idsection>/', views.create_assessment, name='create-assessment'),

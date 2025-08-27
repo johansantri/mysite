@@ -102,7 +102,7 @@ from payments.models import Payment
 from django.db.models import Count, Avg, Sum, Q, Value as V
 from django.db.models.functions import Coalesce
 from django.db.models import DecimalField
-
+from dal import autocomplete
 
 
 
@@ -5916,21 +5916,33 @@ def org_partner(request, slug):
 
 
 
-def search_users(request):
-    term = request.GET.get('q', '')
-    users = CustomUser.objects.filter(username__icontains=term, is_active=True)[:20]  # Batasi hasil
-    results = [{"id": user.id, "text": user.username} for user in users]
-    return JsonResponse({"users": results})
-
-def search_partner(request):  # Dalam kasus ini, saya asumsikan mencari Universiti
-    term = request.GET.get('q', '')
-    universities = Universiti.objects.filter(name__icontains=term)[:20]  # Batasi hasil
-    results = [{"id": uni.id, "text": uni.name} for uni in universities]
-    return JsonResponse({"partners": results})
 
 
 
 
+class UserAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return CustomUser.objects.none()
+
+        qs = CustomUser.objects.filter(is_active=True)
+
+        if self.q:
+            qs = qs.filter(username__icontains=self.q)
+
+        return qs.only('id', 'username')[:50]
+
+class UniversitiAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Universiti.objects.none()
+
+        qs = Universiti.objects.all()
+
+        if self.q:
+            qs = qs.filter(name__icontains=self.q)
+
+        return qs.only('id', 'name')[:50]
 
 @login_required
 def partner_create_view(request):

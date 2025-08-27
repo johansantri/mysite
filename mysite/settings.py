@@ -79,7 +79,8 @@ INSTALLED_APPS = [
     'django_select2',
     'payments.apps.PaymentsConfig',  # bukan 'payments' langsung!
     'lti_consumer',  # Aplikasi LTI Consumer
-    
+    'dal',
+    'dal_select2',#selct2 server
  
     
 ]
