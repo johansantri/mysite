@@ -5494,36 +5494,31 @@ def studio(request, id):
 
 
 
+
 def convert_image_to_webp(uploaded_image):
-    """
-    Konversi gambar yang diunggah ke format WebP dan kembalikan ContentFile
-    """
     img = Image.open(uploaded_image)
-
-    # Pastikan gambar berada dalam mode RGB
-    img = img.convert('RGB')
-
-    # Simpan gambar ke buffer dalam format WebP
+    img = img.convert('RGB')  # Ensure RGB
     buffer = BytesIO()
-    img.save(buffer, format='WEBP', quality=85)  # Adjust kualitas sesuai kebutuhan
+    img.save(buffer, format='WEBP', quality=85)
     buffer.seek(0)
-
-    # Kembalikan file dalam format ContentFile
     return ContentFile(buffer.read(), name='logo.webp')
 
 @login_required
 def update_partner(request, partner_id):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+
     if not request.user.is_superuser and not request.user.is_staff:
         return redirect('/')
 
     partner = get_object_or_404(Partner, pk=partner_id)
 
-    if not request.user.is_authenticated or (request.user != partner.user and not request.user.is_superuser):
-        return redirect("/login/?next=%s" % request.path)
+    if not request.user.is_superuser and request.user != partner.user:
+        return redirect('/')
 
     try:
         old_logo = partner.logo.path
-    except ValueError:
+    except (ValueError, AttributeError):
         old_logo = None
 
     old_user = partner.user
@@ -5533,35 +5528,38 @@ def update_partner(request, partner_id):
         if form.is_valid():
             partner_instance = form.save(commit=False)
 
+            # Handle logo conversion to WebP
             if 'logo' in request.FILES:
                 uploaded_logo = request.FILES['logo']
-                converted_logo = convert_image_to_webp(uploaded_logo)
-                partner_instance.logo = converted_logo
+                partner_instance.logo = convert_image_to_webp(uploaded_logo)
 
             partner_instance.save()
 
-            if old_user != partner_instance.user:
+            # Update user relation if changed
+            if old_user and old_user.id != partner_instance.user.id:
                 old_user.is_partner = False
                 old_user.save()
 
                 partner_instance.user.is_partner = True
                 partner_instance.user.save()
 
+            # Delete old logo if updated
             try:
                 if old_logo and old_logo != partner_instance.logo.path and os.path.exists(old_logo):
                     os.remove(old_logo)
-            except ValueError:
+            except (ValueError, AttributeError):
                 pass
 
             return redirect('courses:partner_detail', partner_id=partner.id)
         else:
-            print("Form errors:", form.errors)
+            logger.warning("Form errors: %s", form.errors)
     else:
         form = PartnerForm(instance=partner)
 
-    return render(request, 'partner/update_partner.html', {'form': form, 'partner': partner})
-
-
+    return render(request, 'partner/update_partner.html', {
+        'form': form,
+        'partner': partner
+    })
 
 #partner view
 #@cache_page(60 * 5)  # Aktifkan cache kalau sudah siap
