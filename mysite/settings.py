@@ -141,14 +141,28 @@ DATABASES = {
     }
 }
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
-        'LOCATION': '127.0.0.1:11211',
 
-  # Pastikan Memcached berjalan pada IP dan port ini
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
     }
 }
+
+
+
+
+#CACHES = {
+#    'default': {
+#        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
+#        'LOCATION': '127.0.0.1:11211',
+
+  # Pastikan Memcached berjalan pada IP dan port ini
+#    }
+#}
 
 
 
@@ -614,7 +628,9 @@ LTI_CLIENT_ID = "https://scholldecodewp.h5p.com"  # Sesuaikan dengan data dari H
 
 
 CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
-CAPTCHA_MATH_CHALLENGE_QUESTION = 'What is {num1} plus {num2}?'
+#CAPTCHA_MATH_CHALLENGE_QUESTION = 'What is {num1} plus {num2}?'
 
 
-
+CAPTCHA_BACKGROUND_COLOR = '#ffffff'  # putih
+CAPTCHA_NOISE_FUNCTIONS = []          # hilangkan noise (tidak ada titik/garis)
+CAPTCHA_FOREGROUND_COLOR = '#000000'  # teks hitam

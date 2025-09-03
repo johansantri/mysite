@@ -1,6 +1,9 @@
 # authentication/views.py
 from django.shortcuts import render, redirect,get_object_or_404
 import os
+from math import ceil
+import sys
+import pickle
 from django.utils.http import urlencode
 import hashlib
 from PIL import Image
@@ -30,6 +33,7 @@ from django.http import HttpResponse,JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseForbidden
 from django.core.cache import cache
+
 from django.db.models import Avg, Count,Q,FloatField,Case, When, CharField, Value
 from django.core import serializers
 import random
@@ -39,7 +43,7 @@ from decimal import Decimal
 from django.urls import reverse
 from django_ratelimit.decorators import ratelimit
 from django.http import HttpResponseNotAllowed, HttpResponseNotFound
-from django.core.cache import cache
+
 from django.views.decorators.cache import cache_page
 from django.db.models import Prefetch
 from django.core.mail import EmailMultiAlternatives,EmailMessage
@@ -652,79 +656,110 @@ def user_detail(request, user_id):
 
     return render(request, 'authentication/user_detail.html', context)
 
+# Fungsi safe_cache_set
+def safe_cache_set(key, value, timeout=300):
+    try:
+        cache.set(key, value, timeout)
+    except Exception:
+        pass
 
-@custom_ratelimit
+@ratelimit(key='user', rate='500/h')
 @login_required
-@ratelimit(key='ip', rate='100/h')
 def all_user(request):
     if not request.user.is_authenticated:
         return redirect(f"/login/?next={request.path}")
 
     page_number = int(request.GET.get('page', 1))
+    PAGE_SIZE = 50
+
     query_params = request.GET.copy()
+    query_params.pop('page', None)
     query_string = urlencode(sorted(query_params.items()))
     query_hash = hashlib.md5(query_string.encode()).hexdigest()
     user_id = request.user.id
 
-    cache_key_ids = f"user_ids_{user_id}_{query_hash}"
-    cache_key_count = f"user_count_{user_id}_{query_hash}"
-    cache_key_partners = f"user_partners_{user_id}_{query_hash}"
+    # Cache keys
+    cache_key_count = f"user_count:{user_id}:{query_hash}"
+    cache_key_page = f"user_page:{user_id}:{query_hash}:{page_number}"
+    cache_key_partners = f"user_partners:{user_id}"
 
-    cached_user_ids = cache.get(cache_key_ids)
+    # Ambil dari cache
     total_user_count = cache.get(cache_key_count)
+    users = cache.get(cache_key_page)
     partners = cache.get(cache_key_partners)
 
-    if cached_user_ids is None:
-        # Role-based filtering
+    if users is None:
+        # 1. Ambil queryset dasar sesuai role
         if request.user.is_superuser:
-            users_qs = CustomUser.objects.all()
-            partners = Partner.objects.all()
+            users_qs = CustomUser.objects.select_related('university').only(
+                'id', 'username', 'email', 'first_name', 'gender', 'date_joined',
+                'last_login', 'is_active', 'is_staff', 'is_superuser',
+                'is_partner', 'is_instructor', 'is_subscription',
+                'university__name'
+            )
+
+            if partners is None:
+                partners = list(Partner.objects.values('id', 'name'))
+                safe_cache_set(cache_key_partners, partners, timeout=300)
+
         elif request.user.is_partner and request.user.university:
-            users_qs = CustomUser.objects.filter(
+            users_qs = CustomUser.objects.select_related('university').filter(
                 university=request.user.university,
                 is_superuser=False,
                 is_learner=True
+            ).only(
+                'id', 'username', 'email', 'first_name', 'gender', 'date_joined',
+                'last_login', 'is_active', 'university__name'
             )
             partners = None
         else:
-            users_qs = CustomUser.objects.filter(id=request.user.id)
+            users_qs = CustomUser.objects.select_related('university').filter(
+                id=request.user.id
+            ).only(
+                'id', 'username', 'email', 'first_name', 'gender', 'date_joined',
+                'last_login', 'is_active', 'university__name'
+            )
             partners = None
 
-        # Filters
+        # 2. Filter dinamis
+        q = Q()
         search_query = request.GET.get('search', '').strip()
         if search_query:
-            users_qs = users_qs.filter(
+            q &= (
                 Q(username__icontains=search_query) |
                 Q(email__icontains=search_query) |
                 Q(first_name__icontains=search_query)
             )
 
-        status_filter = request.GET.get('status', '').strip()
+        status_filter = request.GET.get('status')
         if status_filter == 'active':
-            users_qs = users_qs.filter(is_active=True)
+            q &= Q(is_active=True)
         elif status_filter == 'inactive':
-            users_qs = users_qs.filter(is_active=False)
+            q &= Q(is_active=False)
 
         date_from = request.GET.get('date_from', '').strip()
         date_to = request.GET.get('date_to', '').strip()
         if date_from:
-            users_qs = users_qs.filter(date_joined__gte=date_from)
+            q &= Q(date_joined__gte=date_from)
         if date_to:
-            users_qs = users_qs.filter(date_joined__lte=date_to)
+            q &= Q(date_joined__lte=date_to)
 
         gender_filter = request.GET.get('gender')
         if gender_filter:
-            users_qs = users_qs.filter(gender=gender_filter)
+            q &= Q(gender=gender_filter)
 
         partner_filter = request.GET.get('partner')
         if request.user.is_superuser and partner_filter:
             partner = Partner.objects.filter(id=partner_filter).first()
             if partner:
-                users_qs = users_qs.filter(university=partner.name)
+                q &= Q(university__name=partner.name)
 
-        # Annotate
+        users_qs = users_qs.filter(q)
+
+        # ✅ 3. Selalu annotate total_courses
         users_qs = users_qs.annotate(total_courses=Count('enrollments'))
 
+        # 4. Sorting berdasarkan permintaan
         sort_courses = request.GET.get('sort_courses')
         if sort_courses == 'most':
             users_qs = users_qs.order_by('-total_courses')
@@ -733,39 +768,44 @@ def all_user(request):
         else:
             users_qs = users_qs.order_by('-date_joined')
 
-        # Ambil hanya ID-nya untuk cache
-        user_ids = list(users_qs.values_list('id', flat=True))
-        total_user_count = len(user_ids)
+        # 5. Total count
+        if total_user_count is None:
+            total_user_count = users_qs.count()
+            safe_cache_set(cache_key_count, total_user_count, timeout=300)
 
-        # Simpan ke cache
-        cache.set(cache_key_ids, user_ids, timeout=300)
-        cache.set(cache_key_count, total_user_count, timeout=300)
-        cache.set(cache_key_partners, partners, timeout=300)
+        # 6. Paginate dan ambil data
+        paginator = Paginator(users_qs, PAGE_SIZE)
+        page_obj = paginator.get_page(page_number)
+
+        users = list(page_obj.object_list.values(
+            'id', 'username', 'email', 'first_name', 'gender',
+            'date_joined', 'last_login', 'is_active',
+            'university__name', 'total_courses'  # ✅ pastikan ini ada
+        ))
+
+        safe_cache_set(cache_key_page, users, timeout=300)
+
     else:
-        user_ids = cached_user_ids
+        paginator = Paginator(range(total_user_count), PAGE_SIZE)
+        page_obj = paginator.get_page(page_number)
 
-    # Pagination manual dari ID
-    paginator = Paginator(user_ids, 50)
-    page_obj = paginator.get_page(page_number)
-    users = CustomUser.objects.filter(id__in=page_obj.object_list).annotate(
-        total_courses=Count('enrollments')
-    )
-
-    # Agar urutan sesuai ID list
-    users = sorted(users, key=lambda u: page_obj.object_list.index(u.id))
-
+    # 7. Render
     context = {
         'users': users,
         'page_obj': page_obj,
         'total_user_count': total_user_count,
-        'search_query': request.GET.get('search', '').strip(),
-        'status_filter': request.GET.get('status', '').strip(),
-        'date_from': request.GET.get('date_from', '').strip(),
-        'date_to': request.GET.get('date_to', '').strip(),
+        'search_query': request.GET.get('search', ''),
+        'status_filter': request.GET.get('status', ''),
+        'date_from': request.GET.get('date_from', ''),
+        'date_to': request.GET.get('date_to', ''),
+        'gender_filter': request.GET.get('gender', ''),
+        'partner_filter': request.GET.get('partner', ''),
+        'sort_courses': request.GET.get('sort_courses', ''),
         'partners': partners,
     }
 
     return render(request, 'authentication/all_user.html', context)
+
 
 @custom_ratelimit
 @login_required

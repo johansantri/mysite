@@ -117,7 +117,8 @@
                             </td>
                             <td>{{ user.email|default:"-" }}</td>
                             <td>{{ user.gender|default:"-" }}</td>
-                            <td>{{ user.university|default:"-" }}</td>
+                            <td>{{ user.university__name|default:"-" }}</td>
+
                             <td>{{ user.total_courses|default:0 }}</td>
                             <td>
                                 {{ user.date_joined|date:"Y-m-d H:i:s" }}

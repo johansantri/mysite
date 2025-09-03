@@ -139,7 +139,7 @@
                                         </a>
                                     </li>
                                 {% empty %}
-                                    <li class="list-group-item border-0 py-2 text-muted">No evaluations available.</li>
+                                    
                                 {% endfor %}
                             </ul>
                         </li>
@@ -487,11 +487,14 @@
                                                         <div class="form-check mb-2">
                                                             {% with answer=answered_questions|get_question_answer:question.id %}
                                                                 <input type="radio"
-                                                                       name="answers_{{ question.id }}"
-                                                                       value="{{ choice.id }}"
-                                                                       class="form-check-input"
-                                                                       {% if answer and answer.choice.id == choice.id %}checked{% endif %}>
-                                                                <label class="form-check-label">{{ choice.text }}</label>
+                                                                    name="answers_{{ question.id }}"
+                                                                    value="{{ choice.id }}"
+                                                                    id="choice_{{ question.id }}_{{ choice.id }}"
+                                                                    class="form-check-input"
+                                                                    {% if answer and answer.choice.id == choice.id %}checked{% endif %}>
+                                                                <label class="form-check-label" for="choice_{{ question.id }}_{{ choice.id }}">
+                                                                    {{ choice.text }}
+                                                                </label>
                                                             {% endwith %}
                                                         </div>
                                                     {% endfor %}
@@ -499,7 +502,7 @@
                                             </div>
                                         {% endfor %}
                                         <div class="text-end mt-4">
-                                            <button type="submit" class="btn btn-primary">
+                                            <button type="submit" class="btn btn-outline-danger">
                                                 <i class="bi bi-send"></i> Submit All Responses
 
                                             </button>
@@ -574,7 +577,7 @@
                                     <div class="card shadow-lg border-0" style="max-width: 480px; width: 100%;">
                                         <div class="card-body text-center p-5">
                                             <div class="mb-4">
-                                                <i class="bi bi-journal-check text-primary display-4"></i>
+                                                <i class="bi bi-journal-check text-danger display-4"></i>
                                             </div>
                                             <h4 class="mb-3 fw-semibold">Are You Ready to Begin the Test?</h4>
 
@@ -586,7 +589,7 @@
                                                   hx-target="#content-area"
                                                   hx-swap="innerHTML"
                                                   hx-push-url="{% url 'learner:load_content' username=username id=course.id slug=slug content_type='assessment' content_id=assessment.id %}">
-                                                <button type="submit" class="btn btn-lg btn-primary w-100">
+                                                <button type="submit" class="btn btn-lg btn-outline-danger w-100">
                                                     <i class="bi bi-play-circle me-2"></i> Get Started
                                                 </button>
                                             </form>

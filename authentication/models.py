@@ -271,6 +271,19 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+    
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["email"]),
+            models.Index(fields=["is_learner"]),
+            models.Index(fields=["is_partner"]),
+            models.Index(fields=["university"]),
+            models.Index(fields=["gender"]),
+            models.Index(fields=["date_joined"]),
+            models.Index(fields=["is_active"]),
+        ]
+
 class Profile(models.Model):
     user = models.OneToOneField(CustomUser,on_delete=models.CASCADE)
     follows = models.ManyToManyField("self", related_name="followed_by",symmetrical=False,blank=True)

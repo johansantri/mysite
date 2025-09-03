@@ -86,7 +86,11 @@ class RegistrationForm(forms.ModelForm):
             raise ValidationError("Passwords don't match.")
         return password2
 
-
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['captcha'].widget.attrs.update({
+            'placeholder': 'Solve the math problem'
+        })
 
 class LoginForm(forms.Form):
     email = forms.EmailField(
@@ -103,7 +107,11 @@ class LoginForm(forms.Form):
     )
     captcha = CaptchaField()  # Add the captcha field here
 
-
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['captcha'].widget.attrs.update({
+            'placeholder': 'Solve the math problem'
+        })
 
 
 class PasswordResetForms(forms.Form):
