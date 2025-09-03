@@ -1,0 +1,241 @@
+{% load humanize %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Invoice #{{ transaction.id }}</title>
+  <style>
+    @page {
+      margin: 40px;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 13px;
+      color: #2c3e50;
+      line-height: 1.5;
+      margin: 0;
+      padding: 0;
+    }
+    h1, h2, h3, h4 {
+      margin: 0 0 12px 0;
+      font-weight: 700;
+      color: #34495e;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px 30px;
+      border: 1px solid #dfe6e9;
+      border-radius: 8px;
+      background-color: #ffffff;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+    .header, .footer {
+      text-align: center;
+      color: #636e72;
+      font-size: 12px;
+      margin-bottom: 20px;
+    }
+    .header h2 {
+      color: #0984e3;
+      font-weight: 900;
+      letter-spacing: 1.2px;
+    }
+    .status {
+      display: inline-block;
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-top: -10px;
+      background-color: #74b9ff;
+      color: white;
+      letter-spacing: 0.05em;
+      box-shadow: 0 2px 6px rgba(116, 185, 255, 0.5);
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin-bottom: 25px;
+    }
+    .box {
+      flex: 1 1 48%;
+      background: #f7f9fc;
+      border: 1px solid #dcdde1;
+      border-radius: 6px;
+      padding: 15px 20px;
+      box-sizing: border-box;
+      margin-bottom: 15px;
+    }
+    .box h4 {
+      border-bottom: 2px solid #0984e3;
+      padding-bottom: 6px;
+      margin-bottom: 12px;
+      color: #0984e3;
+    }
+    p {
+      margin: 6px 0;
+      font-size: 13px;
+      color: #2d3436;
+    }
+    a {
+      color: #0984e3;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 13px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.05);
+    }
+    thead tr {
+      background: #0984e3;
+      color: white;
+      text-align: left;
+    }
+    th, td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #dfe6e9;
+    }
+    tbody tr:nth-child(even) {
+      background: #f0f4f8;
+    }
+    .total {
+      text-align: right;
+      font-size: 18px;
+      font-weight: 700;
+      margin-top: 20px;
+      color: #0984e3;
+    }
+    .note {
+      margin-top: 40px;
+      font-size: 12px;
+      color: #636e72;
+      text-align: center;
+      line-height: 1.4;
+    }
+    @media print {
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        box-shadow: none;
+        border: none;
+        padding: 0;
+        max-width: 100%;
+      }
+      .row {
+        flex-wrap: nowrap;
+      }
+      .box {
+        flex: 1 1 48%;
+        margin-bottom: 0;
+        border: 1px solid #dcdde1;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h2>Invoice <span>#INV{{ transaction.created_at|date:"Ymd" }}{{ transaction.id }}</span></h2>
+      <div class="status">{{ transaction.status }}</div>
+    </div>
+
+    <div class="row">
+      <div class="box">
+        <h4>Issued By</h4>
+        {% if partner %}
+          {% if partner.logo %}
+            <img src="{{ partner.logo.url }}" alt="{{ partner.name }} Logo" style="max-height: 60px; margin-bottom: 12px;" />
+          {% endif %}
+          <p><strong>{{ partner.name }}</strong></p>
+          <p>{{ partner.address }}</p>
+          <p>Email: <a href="mailto:{{ partner.user.email }}">{{ partner.user.email }}</a></p>
+          <p>Phone: <a href="tel:{{ partner.phone }}">{{ partner.phone }}</a></p>
+          {% if partner.npwp %}<p>NPWP: {{ partner.npwp }}</p>{% endif %}
+          {% if partner.website %}<p>Website: <a href="{{ partner.website }}" target="_blank">{{ partner.website }}</a></p>{% endif %}
+        {% else %}
+          <p><em>No partner information available.</em></p>
+        {% endif %}
+      </div>
+
+      <div class="box">
+        <h4>Billed To</h4>
+        <p><strong>{{ request.user.get_full_name }}</strong></p>
+        <p>Email: <a href="mailto:{{ request.user.email }}">{{ request.user.email }}</a></p>
+        {% if request.user.phone %}<p>Phone: {{ request.user.phone }}</p>{% endif %}
+        {% if request.user.address %}<p>Address: {{ request.user.address|linebreaksbr }}</p>{% endif %}
+        {% if request.user.university %}<p>University: {{ request.user.university.name }}</p>{% endif %}
+      </div>
+    </div>
+
+    <div class="row" style="margin-bottom: 30px;">
+      <div class="box" style="flex: 1 1 100%;">
+        <h4>Transaction Details</h4>
+        <p><strong>ID:</strong> {{ transaction.id }}</p>
+        <p><strong>Date:</strong> {{ transaction.created_at|date:"d M Y, H:i" }}</p>
+        {% if transaction.payment_due_date %}
+          <p><strong>Due Date:</strong> {{ transaction.payment_due_date|date:"d M Y" }}</p>
+        {% endif %}
+        {% if transaction.payment_method %}
+          <p><strong>Payment Method:</strong> {{ transaction.payment_method }}</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <h4>Course List</h4>
+     <table class="table table-bordered align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>#</th>
+            <th>Course</th>
+            <th>Harga Awal</th>
+            <th>Diskon</th>
+            <th>Admin Fee</th>
+            <th>PPN</th>
+            <th>Total Bayar</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for course in transaction.courses.all %}
+            {% with course_price=course.prices.first %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ course.course_name }}</td>
+                <td>Rp {{ course_price.partner_price|intcomma }}</td>
+                <td>- Rp {{ course_price.discount_amount|intcomma }} ({{ course_price.discount_percent }}%)</td>
+                <td>+ Rp {{ course_price.admin_fee|intcomma }} ({{ course_price.ice_share_rate }}%)</td>
+                <td>+ Rp {{ course_price.ppn|intcomma }} ({{ course_price.ppn_rate }}%)</td>
+                <td><strong>Rp {{ course_price.user_payment|intcomma }}</strong></td>
+              </tr>
+            {% endwith %}
+          {% endfor %}
+        </tbody>
+      </table>
+
+    <div class="total">
+      Total Paid: Rp {{ transaction.total_amount|intcomma }}
+    </div>
+
+    <div class="note">
+      <p>This invoice is an <strong>official proof of payment</strong> and may be used for personal records, administrative reporting, reimbursement, or financial documentation purposes.</p>
+      <p>Thank you for your purchase and trust.</p>
+    </div>
+
+    <div class="footer">
+      &copy; {{ now|date:"Y" }} Your Company Name
+    </div>
+  </div>
+
+</body>
+</html>

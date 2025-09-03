@@ -17,12 +17,18 @@
         <h2 class="fw-bold fs-3 mb-2 mb-md-0">
           Invoice <span class="text-primary">#INV{{ transaction.created_at|date:"Ymd" }}{{ transaction.id }}</span>
         </h2>
+        
+
         <span class="badge
           {% if transaction.status == 'paid' %}bg-success
           {% elif transaction.status == 'pending' %}bg-warning text-dark
           {% else %}bg-danger{% endif %}
           fs-6 text-uppercase py-2 px-3">
           {{ transaction.status }}
+
+          <a href="?download=pdf" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+          Download PDF
+      </a>
         </span>
       </div>
 
@@ -100,33 +106,49 @@
       </div>
 
       <!-- Course List -->
-      <h5 class="mb-3 fw-semibold">Course List</h5>
+      <h5 class="mb-3 fw-semibold">Course List with Pricing</h5>
       <div class="table-responsive">
-        <table class="table table-striped align-middle mb-4">
-          <thead>
-            <tr>
-              <th scope="col" class="fs-6">#</th>
-              <th scope="col" class="fs-6">Course Name</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for course in transaction.courses.all %}
+       <table class="table table-bordered align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>#</th>
+            <th>Course</th>
+            <th>Harga Awal</th>
+            <th>Diskon</th>
+            <th>Admin Fee</th>
+            <th>PPN</th>
+            <th>Total Bayar</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for course in transaction.courses.all %}
+            {% with course_price=course.prices.first %}
               <tr>
-                <th scope="row">{{ forloop.counter }}</th>
-                <td>
-                  <a href="{% url 'courses:course_lms_detail' course.id course.slug %}" class="text-decoration-none text-primary">
-                    {{ course.course_name }}
-                  </a>
-                </td>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ course.course_name }}</td>
+                <td>Rp {{ course_price.partner_price|intcomma }}</td>
+                <td>- Rp {{ course_price.discount_amount|intcomma }} ({{ course_price.discount_percent }}%)</td>
+                <td>+ Rp {{ course_price.admin_fee|intcomma }} ({{ course_price.ice_share_rate }}%)</td>
+                <td>+ Rp {{ course_price.ppn|intcomma }} ({{ course_price.ppn_rate }}%)</td>
+                <td><strong>Rp {{ course_price.user_payment|intcomma }}</strong></td>
               </tr>
-            {% empty %}
-              <tr>
-                <td colspan="2" class="text-center text-muted fst-italic">No courses in this transaction.</td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+            {% endwith %}
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <div class="small text-muted fst-italic mt-2">
+        <p><strong>Notes:</strong></p>
+        <ul class="mb-0">
+          <li>The listed price includes admin fees and VAT.</li>
+          <li>Discounts are provided by the course partner.</li>
+          <li>Total payment is the final amount paid by the user.</li>
+        </ul>
       </div>
+
+
+      </div>
+
 
       <!-- Total -->
       <div class="d-flex justify-content-end mb-4">

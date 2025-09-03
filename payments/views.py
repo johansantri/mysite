@@ -17,6 +17,9 @@ from django.utils.http import urlencode
 from django.db.models import Q
 from django.utils import timezone
 from datetime import timedelta
+from weasyprint import HTML
+from django.http import HttpResponse
+from django.template.loader import render_to_string
 from .utils import get_client_ip, get_geo_from_ip
 
 
@@ -464,13 +467,26 @@ def transaction_invoice_detail(request, pk):
         pk=pk,
         user=request.user
     )
-    
+
     partner = None
     if transaction.courses.exists():
         partner = transaction.courses.first().org_partner
-    
+
+    if request.GET.get('download') == 'pdf':
+        html_string = render_to_string('payments/invoice_pdf.html', {
+            'transaction': transaction,
+            'partner': partner,
+            'request': request,
+        })
+        html = HTML(string=html_string, base_url=request.build_absolute_uri())
+        pdf = html.write_pdf()
+
+        invoice_number = f"INV{transaction.created_at.strftime('%Y%m%d')}{transaction.id}"
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="{invoice_number}.pdf"'
+        return response
+
     return render(request, 'payments/invoice_detail.html', {
         'transaction': transaction,
         'partner': partner,
     })
-
