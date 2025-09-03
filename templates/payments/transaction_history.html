@@ -88,7 +88,11 @@
           <div id="collapse-{{ tx.id }}" class="accordion-collapse collapse" data-bs-parent="#transactionAccordion">
             <div class="accordion-body">
               {% if tx.description %}
-                <p class="mb-2"><strong>Description:</strong> {{ tx.description }}</p>
+                <p class="mb-2"><strong>Description:</strong> {{ tx.description }} {% if tx.id %}
+                      <a href="{% url 'payments:transaction_invoice_detail' pk=tx.id %}">View Invoice</a>
+                    {% else %}
+                      <span class="text-muted">Invoice tidak tersedia</span>
+                    {% endif %}</p>
               {% endif %}
               <p class="mb-2"><strong>Courses:</strong></p>
               <ul class="list-group list-group-flush">
@@ -97,6 +101,9 @@
                     <a href="{% url 'courses:course_lms_detail' course.id course.slug %}" class="text-decoration-none text-primary">
                       {{ course.course_name }}
                     </a>
+                    
+
+
                   </li>
                 {% endfor %}
               </ul>

@@ -1,0 +1,162 @@
+{% extends 'home/tes.html' %}
+{% load humanize static %}
+
+{% block extra_head %}
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+{% endblock %}
+
+{% block content %}
+
+
+  <div class="card shadow-sm">
+    <div class="card-body p-4">
+
+      <!-- Header -->
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center border-bottom pb-3 mb-4">
+        <h2 class="fw-bold fs-3 mb-2 mb-md-0">
+          Invoice <span class="text-primary">#INV{{ transaction.created_at|date:"Ymd" }}{{ transaction.id }}</span>
+        </h2>
+        <span class="badge
+          {% if transaction.status == 'paid' %}bg-success
+          {% elif transaction.status == 'pending' %}bg-warning text-dark
+          {% else %}bg-danger{% endif %}
+          fs-6 text-uppercase py-2 px-3">
+          {{ transaction.status }}
+        </span>
+      </div>
+
+      <!-- Seller & Buyer Info -->
+      <div class="row g-3 mb-4">
+
+        <!-- Issued By -->
+        <div class="col-md-6">
+          <div class="p-3 bg-light rounded shadow-sm h-100">
+            <h6 class="text-muted fw-semibold mb-3"><i class="bi bi-building"></i> Issued By</h6>
+            {% if partner and partner.logo %}
+              <img src="{{ partner.logo.url }}" alt="Partner Logo" class="mb-3" style="max-height: 50px;">
+            {% else %}
+              <img src="{% static 'assets/img/icon/certificate.svg' %}" alt="Default Logo" class="mb-3" style="max-height: 50px;">
+            {% endif %}
+            <p class="mb-1 fw-semibold">{{ partner.name }}</p>
+            <p class="mb-1"><i class="bi bi-geo-alt-fill"></i> {{ partner.address }}</p>
+            <p class="mb-1"><i class="bi bi-envelope-fill"></i> <a href="mailto:billing@{{ partner.user.email }}" class="text-decoration-none">{{ partner.user.email }}</a></p>
+            <p class="mb-1"><i class="bi bi-telephone-fill"></i> <a href="tel:{{ partner.phone }}" class="text-decoration-none">{{ partner.phone }}</a></p>
+            {% if partner.npwp %}
+              <p class="mb-1">NPWP: {{ partner.npwp }}</p>
+            {% endif %}
+            {% if partner.website %}
+              <p><i class="bi bi-globe"></i> <a href="{{ partner.website }}" target="_blank" rel="noopener" class="text-decoration-none">{{ partner.website }}</a></p>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Billing To -->
+        <div class="col-md-6">
+          <div class="p-3 bg-light rounded shadow-sm h-100">
+            <h6 class="text-muted fw-semibold mb-3"><i class="bi bi-person-circle"></i> Billing To</h6>
+            <p><strong>{{ request.user.get_full_name }}</strong></p>
+            <p>{{ request.user.email }}</p>
+            {% if request.user.phone %}
+              <p><i class="bi bi-telephone-fill"></i> {{ request.user.phone }}</p>
+            {% endif %}
+            {% if request.user.gender %}
+              <p><i class="bi bi-gender-ambiguous"></i> Gender:
+                {% if request.user.gender == 'M' %}Male
+                {% elif request.user.gender == 'F' %}Female
+                {% else %}Other{% endif %}
+              </p>
+            {% endif %}
+            {% if request.user.address %}
+              <p><i class="bi bi-house-door-fill"></i> {{ request.user.address|linebreaksbr }}</p>
+            {% endif %}
+            {% if request.user.education %}
+              <p>Education: {{ request.user.education }}</p>
+            {% endif %}
+            {% if request.user.university %}
+              <p>University: {{ request.user.university.name }}</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Transaction Details -->
+      <div class="border-top pt-3 mb-4">
+        <h6 class="text-muted fw-semibold mb-3"><i class="bi bi-receipt-cutoff"></i> Transaction Details</h6>
+        <div class="row">
+          <div class="col-md-6">
+            <p><strong>Transaction ID:</strong> {{ transaction.id }}</p>
+            <p><strong>Date:</strong> {{ transaction.created_at|date:"d M Y, H:i" }}</p>
+          </div>
+          <div class="col-md-6">
+            {% if transaction.payment_due_date %}
+              <p><strong>Payment Due:</strong> {{ transaction.payment_due_date|date:"d M Y" }}</p>
+            {% endif %}
+            {% if transaction.payment_method %}
+              <p><strong>Payment Method:</strong> {{ transaction.payment_method }}</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Course List -->
+      <h5 class="mb-3 fw-semibold">Course List</h5>
+      <div class="table-responsive">
+        <table class="table table-striped align-middle mb-4">
+          <thead>
+            <tr>
+              <th scope="col" class="fs-6">#</th>
+              <th scope="col" class="fs-6">Course Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for course in transaction.courses.all %}
+              <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>
+                  <a href="{% url 'courses:course_lms_detail' course.id course.slug %}" class="text-decoration-none text-primary">
+                    {{ course.course_name }}
+                  </a>
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="2" class="text-center text-muted fst-italic">No courses in this transaction.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Total -->
+      <div class="d-flex justify-content-end mb-4">
+        <h4 class="fw-bold fs-3">
+          Total Paid:
+          <span class="text-primary border border-primary rounded px-3 py-1">
+            Rp {{ transaction.total_amount|intcomma }}
+          </span>
+        </h4>
+      </div>
+
+      <!-- Notes -->
+        <div class="mt-4 border-top pt-3">
+        <p class="fs-7 text-muted fst-italic mb-2">
+            This invoice is an <strong>official proof of payment</strong> and may be used for personal records, administrative reporting, reimbursement, or financial documentation purposes.
+        </p>
+        <p class="fs-7 text-muted fst-italic">
+            Please keep this invoice for your records. If you have any questions regarding this document, feel free to contact us at 
+            <a href="mailto:info@yourcompany.com" class="text-decoration-none">info@yourcompany.com</a>.
+        </p>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-muted fst-italic fs-7 mt-3">
+        Thank you for your purchase and trust.
+        </div>
+
+
+    </div>
+  </div>
+
+
+{% endblock %}

@@ -455,3 +455,22 @@ def transaction_history(request):
         'selected_status': status_filter,
     }
     return render(request, 'payments/transaction_history.html', context)
+
+
+@login_required
+def transaction_invoice_detail(request, pk):
+    transaction = get_object_or_404(
+        Transaction.objects.prefetch_related('courses__org_partner'),
+        pk=pk,
+        user=request.user
+    )
+    
+    partner = None
+    if transaction.courses.exists():
+        partner = transaction.courses.first().org_partner
+    
+    return render(request, 'payments/invoice_detail.html', {
+        'transaction': transaction,
+        'partner': partner,
+    })
+
