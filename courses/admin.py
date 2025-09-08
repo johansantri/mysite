@@ -1,8 +1,17 @@
 from django.contrib import admin
 from . import models 
-from .models import  InstructorCertificate,LTIResult,LTIExternalTool1,MicroClaim,UserMicroProgress,MicroCredentialComment,Certificate,Submission,CourseRating,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
+from .models import  InstructorCertificate,LTIResult,LastAccessCourse,LTIExternalTool1,MicroClaim,UserMicroProgress,MicroCredentialComment,Certificate,Submission,CourseRating,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
 from import_export.admin import ImportExportModelAdmin
 from django.utils.html import format_html
+
+@admin.register(LastAccessCourse)
+class LastAccessCourseAdmin(admin.ModelAdmin):
+    list_display = ('user', 'course', 'material', 'assessment', 'last_viewed_at')
+    list_filter = ('course', 'last_viewed_at')
+    search_fields = ('user__username', 'course__course_name')
+    raw_id_fields = ('user', 'course', 'material', 'assessment')
+    ordering = ('-last_viewed_at',)
+
 
 @admin.register(InstructorCertificate)
 class InstructorCertificateAdmin(admin.ModelAdmin):

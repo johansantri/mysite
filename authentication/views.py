@@ -140,6 +140,7 @@ def about(request):
 
 
 logger = logging.getLogger(__name__)
+
 @custom_ratelimit
 @login_required
 def mycourse(request):
@@ -164,7 +165,7 @@ def mycourse(request):
     search_query = request.GET.get('search', '')
     enrollments_page = request.GET.get('enrollments_page', 1)
 
-    enrollments = Enrollment.objects.filter(user=user).order_by('-enrolled_at')
+    enrollments = Enrollment.objects.filter(user=user).select_related('course').order_by('-enrolled_at')
 
     if search_query:
         enrollments = enrollments.filter(
@@ -197,11 +198,13 @@ def mycourse(request):
         assessments_completed = AssessmentRead.objects.filter(user=user, assessment__in=assessments).count()
         assessments_completed_percentage = (Decimal(assessments_completed) / Decimal(total_assessments) * Decimal('100')) if total_assessments > 0 else Decimal('0')
 
-        progress = ((materials_read_percentage + assessments_completed_percentage) / Decimal('2')) if (total_materials + total_assessments) > 0 else Decimal('0')
+        progress = min(((materials_read_percentage + assessments_completed_percentage) / Decimal('2')), Decimal('100')) if (total_materials + total_assessments) > 0 else Decimal('0')
 
         course_progress, created = CourseProgress.objects.get_or_create(user=user, course=course)
-        course_progress.progress_percentage = progress
-        course_progress.save()
+        if course_progress.progress_percentage != progress:
+            course_progress.progress_percentage = progress
+            course_progress.save()
+            logger.debug(f"Updated progress for user {user.id}, course {course.id}: {progress}%")
 
         grade_range = GradeRange.objects.filter(course=course, name='Pass').first()
         passing_threshold = grade_range.min_grade if grade_range else Decimal('52.00')
@@ -237,6 +240,10 @@ def mycourse(request):
 
         has_reviewed = CourseRating.objects.filter(user=user, course=course).exists()
 
+        # Logging untuk debugging
+        last_access = LastAccessCourse.objects.filter(user=user, course=course).first()
+        logger.debug(f"Course {course.id} ({course.course_name}): progress={progress}%, last_access_material={last_access.material_id if last_access and last_access.material else None}, last_access_assessment={last_access.assessment_id if last_access and last_access.assessment else None}")
+
         enrollments_data.append({
             'enrollment': enrollment,
             'progress': float(progress),
@@ -250,10 +257,8 @@ def mycourse(request):
     enrollments_paginator = Paginator(enrollments_data, 5)
     enrollments_page_obj = enrollments_paginator.get_page(enrollments_page)
 
-    # Tambahkan LastAccessCourse untuk tombol Resume
-    last_access_list = LastAccessCourse.objects.filter(user=user)
+    last_access_list = LastAccessCourse.objects.filter(user=user).select_related('material', 'assessment', 'course')
     last_access_map = {la.course_id: la for la in last_access_list}
-
     logger.debug(f"User {user.id} ({user.username}) accessed mycourse: {total_enrollments} enrollments, {len(last_access_list)} last accesses, last_access_map={[(k, v.material_id if v.material else None, v.assessment_id if v.assessment else None) for k, v in last_access_map.items()]}")
 
     today = timezone.now().date()
@@ -269,7 +274,6 @@ def mycourse(request):
         'completed_courses': completed_courses,
         'last_access_map': last_access_map,
     })
-
 @custom_ratelimit
 @login_required
 def microcredential_list(request):

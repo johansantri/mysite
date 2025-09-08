@@ -96,41 +96,46 @@
                                         <span class="badge bg-secondary">Not Eligible</span>
                                     {% endif %}
                                 </td>
-                                <td class="text-end pe-4">
+                               <td class="text-end pe-4">
                                     <div class="btn-group" role="group">
                                         {% with last_access=last_access_map|get_item:enrollment.course.id %}
-                                            {% if data.progress < 100 or data.overall_percentage < data.passing_threshold or not data.certificate_issued %}
-                                                {% if last_access %}
-                                                    {% if last_access.material %}
-                                                        <a href="{% url 'learner:course_learn' enrollment.user.username enrollment.course.id enrollment.course.slug %}?material_id={{ last_access.material.id }}" class="btn btn-warning btn-sm">
-                                                            <i class="fas fa-play-circle me-1"></i> Resume
-                                                        </a>
-                                                    {% elif last_access.assessment %}
-                                                        <a href="{% url 'learner:course_learn' enrollment.user.username enrollment.course.id enrollment.course.slug %}?assessment_id={{ last_access.assessment.id }}" class="btn btn-warning btn-sm">
-                                                            <i class="fas fa-play-circle me-1"></i> Resume
-                                                        </a>
-                                                    {% else %}
-                                                        <a href="{% url 'learner:course_learn' enrollment.user.username enrollment.course.id enrollment.course.slug %}" class="btn btn-primary btn-sm">
-                                                            <i class="fas fa-rocket me-1"></i> Get Started
-                                                        </a>
-                                                    {% endif %}
+                                            {% if data.progress == 100 %}
+                                                <span class="btn btn-success btn-sm disabled">
+                                                    <i class="fas fa-check-circle me-1"></i> Completed
+                                                </span>
+                                            {% elif data.progress > 0 or last_access %}
+                                                {% if last_access and last_access.material %}
+                                                    <a href="{% url 'learner:load_content' enrollment.user.username enrollment.course.id enrollment.course.slug 'material' last_access.material.id %}" class="btn btn-warning btn-sm">
+                                                        <i class="fas fa-play-circle me-1"></i> Resume
+                                                    </a>
+                                                {% elif last_access and last_access.assessment %}
+                                                    <a href="{% url 'learner:load_content' enrollment.user.username enrollment.course.id enrollment.course.slug 'assessment' last_access.assessment.id %}" class="btn btn-warning btn-sm">
+                                                        <i class="fas fa-play-circle me-1"></i> Resume
+                                                    </a>
                                                 {% else %}
-                                                    <a href="{% url 'learner:course_learn' enrollment.user.username enrollment.course.id enrollment.course.slug %}" class="btn btn-primary btn-sm">
-                                                        <i class="fas fa-rocket me-1"></i> Get Started
+                                                    <!-- Fallback ke konten pertama jika progres > 0 -->
+                                                    <a href="{% url 'learner:course_learn' enrollment.user.username enrollment.course.id enrollment.course.slug %}" class="btn btn-warning btn-sm">
+                                                        <i class="fas fa-play-circle me-1"></i> Resume
                                                     </a>
                                                 {% endif %}
+                                            {% else %}
+                                                <a href="{% url 'learner:course_learn' enrollment.user.username enrollment.course.id enrollment.course.slug %}" class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-rocket me-1"></i> Get Started
+                                                </a>
                                             {% endif %}
-                                            {% if data.certificate_eligible %}
+                                            {% if data.certificate_eligible and not data.certificate_issued %}
                                                 <a href="{% url 'courses:generate_certificate' enrollment.course.id %}" class="btn btn-success btn-sm">
                                                     <i class="fas fa-download me-1"></i> Claim Certificate
                                                 </a>
+                                            {% endif %}
+                                            {% if data.certificate_eligible %}
                                                 {% if data.has_reviewed %}
                                                     <a href="{% url 'courses:course_lms_detail' enrollment.course.id enrollment.course.slug %}" class="btn btn-info btn-sm">
-                                                        <i class="fas fa-eye me-1"></i> Review
+                                                        <i class="fas fa-eye me-1"></i> View Review
                                                     </a>
                                                 {% else %}
                                                     <a href="{% url 'courses:submit_rating' enrollment.course.id enrollment.course.slug %}" class="btn btn-warning btn-sm">
-                                                        <i class="fas fa-star me-1"></i> Review
+                                                        <i class="fas fa-star me-1"></i> Submit Review
                                                     </a>
                                                 {% endif %}
                                             {% endif %}

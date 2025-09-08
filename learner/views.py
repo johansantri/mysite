@@ -46,7 +46,7 @@ from courses.models import (
     AskOra, Choice, Comment, Course, CourseProgress, CourseStatusHistory,
     Enrollment, GradeRange, Instructor, LTIExternalTool1, Material,
     MaterialRead, Payment, PeerReview, Question, QuestionAnswer,LTIResult,
-    Score, Section, Submission, UserActivityLog, CommentReaction, AttemptedQuestion,
+    Score, Section, Submission, UserActivityLog, CommentReaction, AttemptedQuestion,LastAccessCourse,
 )
 from django.views.decorators.csrf import csrf_exempt
 from django.template import loader
@@ -990,21 +990,7 @@ def toggle_reaction(request, comment_id, reaction_type):
 
 logger = logging.getLogger(__name__)
 
-
 def _get_navigation_urls(username, id, slug, combined_content, current_index):
-    """
-    Menghasilkan URL sebelumnya dan berikutnya untuk navigasi konten.
-    
-    Args:
-        username: Nama pengguna.
-        id: ID kursus.
-        slug: Slug kursus.
-        combined_content: Daftar konten gabungan (material/assessment).
-        current_index: Indeks konten saat ini.
-    
-    Returns:
-        Tuple: (previous_url, next_url).
-    """
     previous_url = None
     next_url = None
     try:
@@ -1012,7 +998,7 @@ def _get_navigation_urls(username, id, slug, combined_content, current_index):
             prev_content = combined_content[current_index - 1]
             previous_url = reverse('learner:load_content', kwargs={
                 'username': username,
-                'id': id,  # Sertakan id
+                'id': id,
                 'slug': slug,
                 'content_type': prev_content[0],
                 'content_id': prev_content[1].id
@@ -1021,13 +1007,13 @@ def _get_navigation_urls(username, id, slug, combined_content, current_index):
             next_content = combined_content[current_index + 1]
             next_url = reverse('learner:load_content', kwargs={
                 'username': username,
-                'id': id,  # Sertakan id
+                'id': id,
                 'slug': slug,
                 'content_type': next_content[0],
                 'content_id': next_content[1].id
             })
     except NoReverseMatch as e:
-        #logger.error(f"NoReverseMatch di _get_navigation_urls: {str(e)}")
+        logger.error(f"NoReverseMatch di _get_navigation_urls: {str(e)}")
         previous_url = None
         next_url = None
     return previous_url, next_url
@@ -1035,7 +1021,7 @@ def _get_navigation_urls(username, id, slug, combined_content, current_index):
 @login_required
 def my_course(request, username, id, slug):
     if request.user.username != username:
-        #logger.warning(f"Upaya akses tidak sah oleh {request.user.username} untuk {username}")
+        logger.warning(f"Upaya akses tidak sah oleh {request.user.username} untuk {username}")
         return HttpResponse(status=403)
 
     user = request.user
@@ -1054,8 +1040,8 @@ def my_course(request, username, id, slug):
         return redirect('authentication:edit-profile', pk=user.pk)
 
     course = get_object_or_404(Course, id=id, slug=slug)
-    if not Enrollment.objects.filter(user=request.user, course=course).exists():
-        #logger.warning(f"Pengguna {request.user.username} tidak terdaftar di kursus {slug}")
+    if not Enrollment.objects.filter(user=user, course=course).exists():
+        logger.warning(f"Pengguna {user.username} tidak terdaftar di kursus {slug}")
         return HttpResponse(status=403)
 
     sections = Section.objects.filter(courses=course).prefetch_related(
@@ -1064,6 +1050,43 @@ def my_course(request, username, id, slug):
     ).order_by('order')
     combined_content = _build_combined_content(sections)
 
+    # Perbarui LastAccessCourse untuk konten pertama jika tidak ada akses sebelumnya
+    last_access = LastAccessCourse.objects.filter(user=user, course=course).first()
+    if not last_access and combined_content:
+        content_type, content_obj, _ = combined_content[0]
+        last_access, created = LastAccessCourse.objects.get_or_create(
+            user=user,
+            course=course,
+            defaults={
+                'material': content_obj if content_type == 'material' else None,
+                'assessment': content_obj if content_type == 'assessment' else None,
+                'last_viewed_at': timezone.now()
+            }
+        )
+        logger.debug(f"Created LastAccessCourse for user {user.id}, course {course.id}, {content_type} {content_obj.id}")
+
+    # Arahkan ke load_content untuk konten pertama atau terakhir yang diakses
+    if last_access and (last_access.material or last_access.assessment):
+        content_type = 'material' if last_access.material else 'assessment'
+        content_id = last_access.material.id if last_access.material else last_access.assessment.id
+    elif combined_content:
+        content_type, content_obj, _ = combined_content[0]
+        content_id = content_obj.id
+    else:
+        content_type, content_id = None, None
+
+    if content_type and content_id:
+        redirect_url = reverse('learner:load_content', kwargs={
+            'username': username,
+            'id': id,
+            'slug': slug,
+            'content_type': content_type,
+            'content_id': content_id
+        })
+        logger.info(f"Redirecting to load_content: {redirect_url}")
+        return HttpResponseRedirect(redirect_url)
+
+    # Jika tidak ada konten, render halaman kosong
     context = {
         'course': course,
         'course_name': course.course_name,
@@ -1097,104 +1120,37 @@ def my_course(request, username, id, slug):
         'lti_tool': None,
     }
 
-    user_progress, _ = CourseProgress.objects.get_or_create(user=request.user, course=course)
-
-    assessment_id = request.GET.get('assessment_id')
-    current_index = 0
-    if assessment_id:
-        assessment = get_object_or_404(Assessment, id=assessment_id)
-        context['assessment'] = assessment
-        section = next((s for s in sections if assessment in s.assessments.all()), None)
-        context['current_content'] = ('assessment', assessment, section)
-        current_index = next((i for i, c in enumerate(combined_content) if c[0] == 'assessment' and c[1].id == assessment.id), 0)
-
-        lti_tool = getattr(assessment, 'lti_tool', None)
-        context['lti_tool'] = lti_tool
-        context['is_lti'] = bool(lti_tool)
-
-        if course.payment_model == 'pay_for_exam':
-            payment = Payment.objects.filter(
-                user=request.user, course=course, status='completed', payment_model='pay_for_exam'
-            ).first()
-            if not payment:
-                context['assessment_locked'] = True
-                context['payment_required_url'] = reverse('payments:process_payment', kwargs={
-                    'course_id': course.id,
-                    'payment_type': 'exam'
-                })
-                #logger.info(f"Pembayaran diperlukan untuk penilaian {assessment_id} di kursus {course.id} untuk pengguna {request.user.username}")
-            else:
-                AssessmentRead.objects.get_or_create(user=request.user, assessment=assessment)
-                user_progress.progress_percentage = calculate_course_progress(request.user, course)
-                user_progress.save()
-        else:
-            AssessmentRead.objects.get_or_create(user=request.user, assessment=assessment)
-            user_progress.progress_percentage = calculate_course_progress(request.user, course)
-            user_progress.save()
-
-        session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
-        if session:
-            context['is_started'] = True
-            if session.end_time:
-                context['remaining_time'] = max(0, int((session.end_time - timezone.now()).total_seconds()))
-                context['is_expired'] = context['remaining_time'] <= 0
-                context['show_timer'] = context['remaining_time'] > 0
-            context['answered_questions'] = {
-                answer.question.id: answer for answer in QuestionAnswer.objects.filter(
-                    user=request.user, question__assessment=assessment
-                ).select_related('question', 'choice')
-            }
-        else:
-            if assessment.duration_in_minutes == 0:
-                context['is_started'] = True
-
-        context.update(_build_assessment_context(assessment, request.user))
-
-    else:
-        context['current_content'] = combined_content[0] if combined_content else None
-        if context['current_content']:
-            current_index = 0
-            if context['current_content'][0] == 'material':
-                context['material'] = context['current_content'][1]
-                context['comments'] = Comment.objects.filter(
-                    material=context['material'], parent=None
-                ).order_by('-created_at')
-                MaterialRead.objects.get_or_create(user=request.user, material=context['material'])
-                user_progress.progress_percentage = calculate_course_progress(request.user, course)
-                user_progress.save()
-            elif context['current_content'][0] == 'assessment':
-                context['assessment'] = context['current_content'][1]
-                assessment = context['assessment']
-
-                lti_tool = getattr(assessment, 'lti_tool', None)
-                context['lti_tool'] = lti_tool
-                context['is_lti'] = bool(lti_tool)
-
-                context.update(_build_assessment_context(assessment, request.user))
-                AssessmentRead.objects.get_or_create(user=request.user, assessment=assessment)
-                user_progress.progress_percentage = calculate_course_progress(request.user, course)
-                user_progress.save()
-
-    context['previous_url'], context['next_url'] = _get_navigation_urls(username, id, slug, combined_content, current_index)
-    context['course_progress'] = user_progress.progress_percentage
-    context['can_review'] = bool(context['submissions'])
-
-    #logger.info(f"my_course: Rendering untuk pengguna {username}, kursus {slug}, assessment_id={assessment_id}")
     response = render(request, 'learner/my_course.html', context)
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     return response
 
-
 @login_required
 def load_content(request, username, id, slug, content_type, content_id):
     if request.user.username != username:
-        #logger.warning(f"Upaya akses tidak sah oleh {request.user.username} untuk {username}")
+        logger.warning(f"Upaya akses tidak sah oleh {request.user.username} untuk {username}")
         return HttpResponse(status=403)
 
     course = get_object_or_404(Course, id=id, slug=slug)
     if not Enrollment.objects.filter(user=request.user, course=course).exists():
-        #logger.warning(f"Pengguna {request.user.username} tidak terdaftar di kursus {slug}")
+        logger.warning(f"Pengguna {request.user.username} tidak terdaftar di kursus {slug}")
         return HttpResponse(status=403)
+
+    # Perbarui LastAccessCourse
+    last_access, created = LastAccessCourse.objects.get_or_create(
+        user=request.user,
+        course=course,
+        defaults={
+            'material': Material.objects.filter(id=content_id).first() if content_type == 'material' else None,
+            'assessment': Assessment.objects.filter(id=content_id).first() if content_type == 'assessment' else None,
+            'last_viewed_at': timezone.now()
+        }
+    )
+    if not created:
+        last_access.material = Material.objects.filter(id=content_id).first() if content_type == 'material' else None
+        last_access.assessment = Assessment.objects.filter(id=content_id).first() if content_type == 'assessment' else None
+        last_access.last_viewed_at = timezone.now()
+        last_access.save()
+        logger.debug(f"Updated LastAccessCourse for user {request.user.id}, course {course.id}, {content_type} {content_id}")
 
     sections = Section.objects.filter(courses=course).prefetch_related(
         Prefetch('materials', queryset=Material.objects.all()),
@@ -1246,7 +1202,6 @@ def load_content(request, username, id, slug, content_type, content_id):
         context['comments'] = Comment.objects.filter(material=material, parent=None).select_related('user', 'parent').prefetch_related('children').order_by('-created_at')
         MaterialRead.objects.get_or_create(user=request.user, material=material)
         current_index = next((i for i, c in enumerate(combined_content) if c[0] == 'material' and c[1].id == material.id), 0)
-        # Perbarui progress_percentage
         user_progress.progress_percentage = calculate_course_progress(request.user, course)
         user_progress.save()
 
@@ -1270,15 +1225,13 @@ def load_content(request, username, id, slug, content_type, content_id):
                     'course_id': course.id,
                     'payment_type': 'exam'
                 })
-                #logger.info(f"Pembayaran diperlukan untuk penilaian {content_id} di kursus {course.id} untuk pengguna {request.user.username}")
+                logger.info(f"Pembayaran diperlukan untuk penilaian {content_id} di kursus {course.id} untuk pengguna {request.user.username}")
             else:
                 AssessmentRead.objects.get_or_create(user=request.user, assessment=assessment)
-                # Perbarui progress_percentage
                 user_progress.progress_percentage = calculate_course_progress(request.user, course)
                 user_progress.save()
         else:
             AssessmentRead.objects.get_or_create(user=request.user, assessment=assessment)
-            # Perbarui progress_percentage
             user_progress.progress_percentage = calculate_course_progress(request.user, course)
             user_progress.save()
 
@@ -1302,7 +1255,7 @@ def load_content(request, username, id, slug, content_type, content_id):
 
     template = 'learner/partials/content.html' if request.headers.get('HX-Request') == 'true' else 'learner/my_course.html'
 
-    #logger.info(f"load_content: Rendering {template} untuk pengguna {username}, {content_type} {content_id}")
+    logger.info(f"load_content: Rendering {template} untuk pengguna {username}, {content_type} {content_id}")
     response = render(request, template, context)
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     return response
