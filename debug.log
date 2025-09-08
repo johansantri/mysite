@@ -1414,3 +1414,43 @@ django.urls.exceptions.NoReverseMatch: Reverse for 'my_course' not found. 'my_co
 [WARNING] 2025-09-08 13:43:44,065 [django.request] Forbidden: /search/
 [WARNING] 2025-09-08 13:44:32,955 [django.request] Not Found: /partner/ping-session/
 [WARNING] 2025-09-08 13:45:32,955 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-09-08 13:48:03,345 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-09-08 13:49:10,480 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-09-08 13:49:10,541 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-09-08 13:49:10,618 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[DEBUG] 2025-09-08 13:49:17,318 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-09-08 13:49:17,323 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-09-08 13:49:17,324 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-09-08 05:49:17.318572+00:00
+[INFO] 2025-09-08 13:49:18,220 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:142.0) Gecko/20100101 Firefox/142.0", path_info: "/login/"}.
+[INFO] 2025-09-08 13:49:18,221 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-09-08 05:49:17.318572+00:00
+[WARNING] 2025-09-08 13:49:26,046 [django.request] Not Found: /favicon.ico
+[DEBUG] 2025-09-08 13:49:51,002 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-09-08 13:49:51,005 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-09-08 05:49:51.002358+00:00
+[INFO] 2025-09-08 13:49:51,005 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:142.0) Gecko/20100101 Firefox/142.0", path_info: "/logout/"}.
+[DEBUG] 2025-09-08 13:50:03,589 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-09-08 13:50:03,589 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-09-08 13:50:03,590 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-09-08 05:50:03.589505+00:00
+[INFO] 2025-09-08 13:50:04,495 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:142.0) Gecko/20100101 Firefox/142.0", path_info: "/login/"}.
+[INFO] 2025-09-08 13:50:04,497 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-09-08 05:50:03.589505+00:00
+[DEBUG] 2025-09-08 13:50:09,016 [authentication.views] Course 17 (Personal Branding Mastery): progress=100%, last_access_material=None, last_access_assessment=None
+[DEBUG] 2025-09-08 13:50:09,075 [authentication.views] Course 10 (Digital Marketing): progress=100%, last_access_material=37, last_access_assessment=None
+[DEBUG] 2025-09-08 13:50:09,115 [authentication.views] Course 16 (Kursus UI/UX Design: Dari Nol Hingga Mahir): progress=50%, last_access_material=78, last_access_assessment=None
+[DEBUG] 2025-09-08 13:50:09,152 [authentication.views] Updated progress for user 4, course 15: 16.66666666666666666666666667%
+[DEBUG] 2025-09-08 13:50:09,175 [authentication.views] Course 15 (Front End Developer): progress=16.66666666666666666666666667%, last_access_material=72, last_access_assessment=None
+[DEBUG] 2025-09-08 13:50:09,209 [authentication.views] Course 12 (Build Powerful Web Applications with Django): progress=100%, last_access_material=None, last_access_assessment=50
+[DEBUG] 2025-09-08 13:50:09,250 [authentication.views] Course 11 (Big Data Developer): progress=40.0%, last_access_material=45, last_access_assessment=None
+[DEBUG] 2025-09-08 13:50:09,278 [authentication.views] Course 5 (Front End Developer): progress=100%, last_access_material=21, last_access_assessment=None
+[DEBUG] 2025-09-08 13:50:09,312 [authentication.views] Course 4 (Build Powerful Web Applications with Django): progress=100%, last_access_material=17, last_access_assessment=None
+[DEBUG] 2025-09-08 13:50:09,330 [authentication.views] Course 1 (Backend development): progress=100%, last_access_material=1, last_access_assessment=None
+[DEBUG] 2025-09-08 13:50:09,333 [authentication.views] User 4 (@learn) accessed mycourse: 9 enrollments, 8 last accesses, last_access_map=[(1, 1, None), (5, 21, None), (4, 17, None), (10, 37, None), (11, 45, None), (12, None, 50), (15, 72, None), (16, 78, None)]
+[DEBUG] 2025-09-08 13:50:12,691 [authentication.views] Course 17 (Personal Branding Mastery): progress=100%, last_access_material=None, last_access_assessment=None
+[DEBUG] 2025-09-08 13:50:12,754 [authentication.views] Course 10 (Digital Marketing): progress=100%, last_access_material=37, last_access_assessment=None
+[DEBUG] 2025-09-08 13:50:12,795 [authentication.views] Course 16 (Kursus UI/UX Design: Dari Nol Hingga Mahir): progress=50%, last_access_material=78, last_access_assessment=None
+[DEBUG] 2025-09-08 13:50:12,833 [authentication.views] Updated progress for user 4, course 15: 16.66666666666666666666666667%
+[DEBUG] 2025-09-08 13:50:12,854 [authentication.views] Course 15 (Front End Developer): progress=16.66666666666666666666666667%, last_access_material=72, last_access_assessment=None
+[DEBUG] 2025-09-08 13:50:12,890 [authentication.views] Course 12 (Build Powerful Web Applications with Django): progress=100%, last_access_material=None, last_access_assessment=50
+[DEBUG] 2025-09-08 13:50:12,933 [authentication.views] Course 11 (Big Data Developer): progress=40.0%, last_access_material=45, last_access_assessment=None
+[DEBUG] 2025-09-08 13:50:12,957 [authentication.views] Course 5 (Front End Developer): progress=100%, last_access_material=21, last_access_assessment=None
+[DEBUG] 2025-09-08 13:50:12,993 [authentication.views] Course 4 (Build Powerful Web Applications with Django): progress=100%, last_access_material=17, last_access_assessment=None
+[DEBUG] 2025-09-08 13:50:13,014 [authentication.views] Course 1 (Backend development): progress=100%, last_access_material=1, last_access_assessment=None
+[DEBUG] 2025-09-08 13:50:13,017 [authentication.views] User 4 (@learn) accessed mycourse: 9 enrollments, 8 last accesses, last_access_map=[(1, 1, None), (5, 21, None), (4, 17, None), (10, 37, None), (11, 45, None), (12, None, 50), (15, 72, None), (16, 78, None)]
