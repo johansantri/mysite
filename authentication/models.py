@@ -284,6 +284,8 @@ class CustomUser(AbstractUser):
             models.Index(fields=["is_active"]),
         ]
 
+
+
 class Profile(models.Model):
     user = models.OneToOneField(CustomUser,on_delete=models.CASCADE)
     follows = models.ManyToManyField("self", related_name="followed_by",symmetrical=False,blank=True)
