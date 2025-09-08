@@ -4,7 +4,6 @@
 {% load humanize %}
 {% block content %}
 <div class="container-fluid py-4">
-    <!-- Tampilkan Pesan Sukses atau Error -->
     {% if messages %}
         <div class="mb-4">
             {% for message in messages %}
@@ -16,15 +15,13 @@
         </div>
     {% endif %}
 
-    <!-- Dashboard Header -->
     <div class="mb-4">
         <h2 class="fw-bold">Dashboard Overview</h2>
         <p class="text-muted">Monitor your key metrics and recent activities</p>
     </div>
 
-    <!-- Dashboard Grid -->
     <div class="row g-4 mb-5">
-        <!-- Enrolled Section -->
+        <!-- Enrolled -->
         <div class="col-lg-4 col-md-6">
             <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
                 <div class="card-body text-center">
@@ -35,7 +32,7 @@
             </div>
         </div>
 
-        <!-- Active Courses Section -->
+        <!-- Active Courses -->
         <div class="col-lg-4 col-md-6">
             <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
                 <div class="card-body text-center">
@@ -46,7 +43,7 @@
             </div>
         </div>
 
-        <!-- Partner Section -->
+        <!-- Partner -->
         {% if not user.is_instructor and not user.is_partner %}
         <div class="col-lg-4 col-md-6">
             <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
@@ -65,7 +62,7 @@
         </div>
         {% endif %}
 
-        <!-- Students Section -->
+        <!-- Students -->
         <div class="col-lg-4 col-md-6">
             <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
                 <div class="card-body text-center">
@@ -76,7 +73,7 @@
             </div>
         </div>
 
-        <!-- Courses Section -->
+        <!-- Courses -->
         <div class="col-lg-4 col-md-6">
             <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
                 <div class="card-body text-center">
@@ -87,7 +84,7 @@
             </div>
         </div>
 
-        <!-- Instructors Section -->
+        <!-- Instructors -->
         {% if not user.is_instructor %}
         <div class="col-lg-4 col-md-6">
             <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
@@ -99,239 +96,6 @@
             </div>
         </div>
         {% endif %}
-    </div>
-
-    <!-- Comments Section -->
-    <div class="card shadow-sm border-0 mb-5">
-        <div class="card-body">
-            <h4 class="fw-semibold mb-4">Comments</h4>
-            <ul class="list-unstyled">
-                {% for comment in comments_to_review %}
-                    <li class="border-0 p-3 mb-2 rounded-3 bg-light transition-all hover-bg-light">
-                        <div class="d-flex">
-                            <!-- Avatar untuk komentar utama -->
-                            {% if comment.user.photo %}
-                                <img src="{{ comment.user.photo.url }}" 
-                                    alt="Profile" 
-                                    class="rounded-circle me-3 border" 
-                                    style="width: 40px; height: 40px; object-fit: cover;">
-                            {% else %}
-                                <img src="{% static 'images/default-avatar.png' %}" 
-                                    alt="Profile" 
-                                    class="rounded-circle me-3 border" 
-                                    style="width: 40px; height: 40px; object-fit: cover;">
-                            {% endif %}
-
-
-                            <div class="flex-grow-1">
-                                <!-- Nama dan waktu -->
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <strong class="fs-6">
-                                            {{ comment.user.get_full_name|default:comment.user.email }}
-                                        </strong>
-                                        <span class="text-muted fs-6">
-                                            &bull; {{ comment.created_at|naturaltime }}
-                                        </span>
-                                    </div>
-                                    <!-- Tombol Hapus untuk Instruktur -->
-                                    {% if user.is_instructor or user.is_superuser %}
-                                        <button class="btn btn-link text-decoration-none p-0 text-danger" 
-                                                onclick="openDeleteModal('{% url 'authentication:delete_comment' comment.id %}', '{{ comment.content|truncatechars:30|escapejs }}')"
-                                                aria-label="Delete comment">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    {% endif %}
-                                </div>
-
-                                <!-- Isi komentar -->
-                                <p class="mt-1 fs-6 text-muted">
-                                    on the course "<em>{{ comment.material.section.courses.course_name }}</em>", in the material "<em>{{ comment.material.title }}</em>":
-                                </p>
-
-                                <p class="mt-1 text-dark">{{ comment.content }}</p>
-
-                                <!-- Tombol Balas -->
-                                <div class="mt-2">
-                                    <button class="btn btn-link text-decoration-none p-0 text-primary me-3" 
-                                            onclick="toggleReplyForm('reply-form-{{ comment.id }}')"
-                                            aria-expanded="false"
-                                            aria-controls="reply-form-{{ comment.id }}">
-                                        <i class="bi bi-reply me-1"></i> Balas
-                                    </button>
-                                    {% if comment.children.exists %}
-                                        <button class="btn btn-link text-decoration-none p-0 text-primary" 
-                                                onclick="toggleReplies('replies-{{ comment.id }}')"
-                                                aria-expanded="false"
-                                                aria-controls="replies-{{ comment.id }}">
-                                            <i class="bi bi-chat-dots me-1"></i> {{ comment.children.count }} Balasan
-                                        </button>
-                                    {% endif %}
-                                </div>
-
-                                <!-- Form balas untuk komentar utama -->
-                                <form method="post" 
-                                      action="{% url 'authentication:reply_comment' comment.id %}" 
-                                      class="mt-3 d-none reply-form" 
-                                      id="reply-form-{{ comment.id }}">
-                                    {% csrf_token %}
-                                    <div class="input-group">
-                                        {{ form.content|add_class:"form-control form-control-sm rounded-3" }}
-                                        <button type="submit" 
-                                                class="btn btn-primary btn-sm rounded-3">
-                                            Kirim
-                                        </button>
-                                    </div>
-                                </form>
-
-                                <!-- Tampilkan replies -->
-                                {% if comment.children.exists %}
-                                    <ul class="list-unstyled ms-4 mt-3 border-start ps-3 replies d-none" 
-                                        id="replies-{{ comment.id }}">
-                                        {% for reply in comment.children.all %}
-                                            <li class="mb-3">
-                                                <div class="d-flex">
-                                                    <!-- Avatar untuk reply -->
-                                                    <img src="{{ reply.user.photo.url|default:'/static/images/default-avatar.png' }}" 
-                                                         alt="Profile" 
-                                                         class="rounded-circle me-3 border" 
-                                                         style="width: 32px; height: 32px; object-fit: cover;">
-                                                    
-                                                    <div class="flex-grow-1">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <div>
-                                                                <strong class="fs-6">
-                                                                    {{ reply.user.get_full_name|default:reply.user.email }}
-                                                                </strong>
-                                                                <span class="text-muted fs-6">
-                                                                    &bull; {{ reply.created_at|naturaltime }}
-                                                                </span>
-                                                            </div>
-                                                            <!-- Tombol Hapus untuk Instruktur -->
-                                                            {% if user.is_instructor or user.is_superuser %}
-                                                                <button class="btn btn-link text-decoration-none p-0 text-danger" 
-                                                                        onclick="openDeleteModal('{% url 'authentication:delete_comment' reply.id %}', '{{ reply.content|truncatechars:30|escapejs }}')"
-                                                                        aria-label="Delete reply">
-                                                                    <i class="bi bi-trash"></i>
-                                                                </button>
-                                                            {% endif %}
-                                                        </div>
-                                                        <p class="mt-1 fs-6 text-dark">{{ reply.content }}</p>
-
-                                                        <!-- Tombol Balas untuk sub-komentar -->
-                                                        <div class="mt-2">
-                                                            <button class="btn btn-link text-decoration-none p-0 text-primary me-3" 
-                                                                    onclick="toggleReplyForm('reply-form-{{ reply.id }}')"
-                                                                    aria-expanded="false"
-                                                                    aria-controls="reply-form-{{ reply.id }}">
-                                                                <i class="bi bi-reply me-1"></i> Balas
-                                                            </button>
-                                                            {% if reply.children.exists %}
-                                                                <button class="btn btn-link text-decoration-none p-0 text-primary" 
-                                                                        onclick="toggleReplies('replies-{{ reply.id }}')"
-                                                                        aria-expanded="false"
-                                                                        aria-controls="replies-{{ reply.id }}">
-                                                                    <i class="bi bi-chat-dots me-1"></i> {{ reply.children.count }} Balasan
-                                                                </button>
-                                                            {% endif %}
-                                                        </div>
-
-                                                        <!-- Form balas untuk sub-komentar -->
-                                                        <form method="post" 
-                                                              action="{% url 'authentication:reply_comment' reply.id %}" 
-                                                              class="mt-3 d-none reply-form" 
-                                                              id="reply-form-{{ reply.id }}">
-                                                            {% csrf_token %}
-                                                            <div class="input-group">
-                                                                {{ form.content|add_class:"form-control form-control-sm rounded-3" }}
-                                                                <button type="submit" 
-                                                                        class="btn btn-primary btn-sm rounded-3">
-                                                                    Kirim
-                                                                </button>
-                                                            </div>
-                                                        </form>
-
-                                                        <!-- Tampilkan sub-replies -->
-                                                        {% if reply.children.exists %}
-                                                            <ul class="list-unstyled ms-4 mt-3 border-start ps-3 replies d-none" 
-                                                                id="replies-{{ reply.id }}">
-                                                                {% for subreply in reply.children.all %}
-                                                                    <li class="mb-3">
-                                                                        <div class="d-flex">
-                                                                            <!-- Avatar untuk sub-reply -->
-                                                                           {% if subreply.user.photo %}
-                                                                            <img src="{{ subreply.user.photo.url }}" 
-                                                                                alt="Profile" 
-                                                                                class="rounded-circle me-3 border" 
-                                                                                style="width: 32px; height: 32px; object-fit: cover;">
-                                                                            {% else %}
-                                                                            <img src="{% static 'images/default-avatar.png' %}" 
-                                                                                alt="Default Profile" 
-                                                                                class="rounded-circle me-3 border" 
-                                                                                style="width: 32px; height: 32px; object-fit: cover;">
-                                                                            {% endif %}
-
-                                                                            
-                                                                            <div class="flex-grow-1">
-                                                                                <div class="d-flex justify-content-between align-items-center">
-                                                                                    <div>
-                                                                                        <strong class="fs-6">
-                                                                                            {{ subreply.user.get_full_name|default:subreply.user.email }}
-                                                                                        </strong>
-                                                                                        <span class="text-muted fs-6">
-                                                                                            &bull; {{ subreply.created_at|naturaltime }}
-                                                                                        </span>
-                                                                                    </div>
-                                                                                    <!-- Tombol Hapus untuk Instruktur -->
-                                                                                    {% if user.is_instructor or user.is_superuser %}
-                                                                                        <button class="btn btn-link text-decoration-none p-0 text-danger" 
-                                                                                                onclick="openDeleteModal('{% url 'authentication:delete_comment' subreply.id %}', '{{ subreply.content|truncatechars:30|escapejs }}')"
-                                                                                                aria-label="Delete sub-reply">
-                                                                                            <i class="bi bi-trash"></i>
-                                                                                        </button>
-                                                                                    {% endif %}
-                                                                                </div>
-                                                                                <p class="mt-1 fs-6 text-dark">{{ subreply.content }}</p>
-                                                                            </div>
-                                                                        </div>
-                                                                    </li>
-                                                                {% endfor %}
-                                                            </ul>
-                                                        {% endif %}
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
-
-    <!-- Single Modal Konfirmasi Hapus -->
-    <div class="modal fade" id="deleteCommentModal" tabindex="-1" aria-labelledby="deleteCommentModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteCommentModalLabel">Konfirmasi Penghapusan</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Apakah Anda yakin ingin menghapus komentar ini: "<span id="comment-content-preview"></span>"? Tindakan ini tidak dapat dibatalkan.
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <form id="delete-comment-form" method="post" action="">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger">Hapus</button>
-                    </form>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- Partner-Specific Reports -->
@@ -391,7 +155,7 @@
         </div>
     </div>
 
-    <!-- Pagination Links -->
+    <!-- Pagination -->
     {% if courses_created_today.has_other_pages %}
     <nav aria-label="Pagination" class="mt-4">
         <ul class="pagination justify-content-center">
@@ -420,66 +184,4 @@
     </nav>
     {% endif %}
 </div>
-
-<!-- Custom CSS untuk meningkatkan UI/UX -->
-<style>
-    .transition-all {
-        transition: all 0.3s ease;
-    }
-    .hover-bg-light:hover {
-        background-color: #f8f9fa;
-    }
-    .reply-form {
-        transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-    .reply-form.d-none {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    .replies {
-        transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-    .replies.d-none {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    .form-control:focus {
-        border-color: #0d6efd;
-        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
-    }
-    .btn-primary:hover {
-        transform: translateY(-1px);
-    }
-</style>
-
-<!-- JavaScript untuk toggle form balas, replies, dan modal hapus -->
-<script>
-    function toggleReplyForm(formId) {
-        const form = document.getElementById(formId);
-        form.classList.toggle('d-none');
-        if (!form.classList.contains('d-none')) {
-            form.querySelector('textarea').focus();
-        }
-    }
-
-    function toggleReplies(repliesId) {
-        const replies = document.getElementById(repliesId);
-        replies.classList.toggle('d-none');
-    }
-
-    function openDeleteModal(deleteUrl, commentContent) {
-        const modal = document.getElementById('deleteCommentModal');
-        const form = document.getElementById('delete-comment-form');
-        const contentPreview = document.getElementById('comment-content-preview');
-        
-        // Update form action dynamically
-        form.action = deleteUrl;
-        // Update content preview in modal
-        contentPreview.textContent = commentContent;
-        
-        // Show modal
-        const bootstrapModal = new bootstrap.Modal(modal);
-        bootstrapModal.show();
-    }
-</script>
 {% endblock content %}

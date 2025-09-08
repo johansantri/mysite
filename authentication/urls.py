@@ -31,6 +31,10 @@ urlpatterns = [
     
     #admin,partner, instructur
     path('dasbord/',views.dasbord, name='dasbord'),
+    path('message_comment/', views.comments_dashboard, name='comments-dashboard'),
+    path('reply-comment/<int:comment_id>/', views.reply_comment, name='reply_comment'),
+    path('comment/<int:comment_id>/delete/', views.delete_comment, name='delete_comment'),
+
     #student
     path('dashbord/',views.dashbord, name='dashbord'),
 

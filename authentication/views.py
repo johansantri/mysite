@@ -66,7 +66,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import render
 import time
 from authentication.utils import calculate_course_status 
-
+from django.views.decorators.http import require_POST
 
 
 def custom_ratelimit(view_func):
@@ -833,10 +833,8 @@ def dasbord(request):
         messages.warning(request, f"Please complete the following information: {', '.join(missing_fields)}")
         return redirect('authentication:edit-profile', pk=user.pk)
 
-    # Get page number from GET parameters
     courses_page = request.GET.get('courses_page', 1)
 
-    # Initialize variables
     partner_courses = None
     partner_enrollments = None
     total_enrollments = 0
@@ -845,18 +843,13 @@ def dasbord(request):
     total_learners = 0
     total_partners = 0
     total_published_courses = 0
-    comments_to_review = []  # Default empty list
-    form = CommentForm()  # Default form for reply functionality
-    show_comments_section = False  # Control comments section visibility
 
     try:
         publish_status = CourseStatus.objects.get(status='published')
     except CourseStatus.DoesNotExist:
         publish_status = None
 
-    # Logic based on user role
     if request.user.is_superuser:
-        # Superuser: Access to all data
         total_enrollments = Enrollment.objects.count()
         total_courses = Course.objects.count()
         total_instructors = Instructor.objects.count()
@@ -864,10 +857,7 @@ def dasbord(request):
         total_partners = Partner.objects.count()
         total_published_courses = Course.objects.filter(status_course=publish_status).count() if publish_status else 0
         partner_courses = Course.objects.all()
-        comments_to_review = Comment.objects.filter(parent=None).select_related(
-            'user', 'material', 'material__section', 'material__section__courses'
-        ).order_by('-created_at')[:20]
-        show_comments_section = True  # Superusers can see comments
+
     elif request.user.is_partner:
         try:
             partner = Partner.objects.get(user=request.user)
@@ -885,20 +875,9 @@ def dasbord(request):
                 is_learner=True
             ).distinct().count()
             total_published_courses = partner_courses.filter(status_course=publish_status).count() if publish_status else 0
-            comments_to_review = Comment.objects.filter(
-                material__section__courses__org_partner=partner,
-                parent=None
-            ).select_related(
-                'user', 'material', 'material__section', 'material__section__courses'
-            ).order_by('-created_at')[:20]
-            show_comments_section = True  # Partners can see comments for their courses
         else:
             partner_courses = Course.objects.none()
-            total_enrollments = 0
-            total_courses = 0
-            total_instructors = 0
-            total_learners = 0
-            total_published_courses = 0
+
     elif request.user.is_instructor:
         try:
             instructor = Instructor.objects.get(user=request.user)
@@ -916,35 +895,13 @@ def dasbord(request):
                 is_learner=True
             ).distinct().count()
             total_published_courses = partner_courses.filter(status_course=publish_status).count() if publish_status else 0
-            comments_to_review = Comment.objects.filter(
-                material__section__courses__instructor=instructor,
-                parent=None
-            ).select_related(
-                'user', 'material', 'material__section', 'material__section__courses'
-            ).order_by('-created_at')[:20]
-            show_comments_section = True  # Instructors can see comments for their courses
         else:
             partner_courses = Course.objects.none()
-            total_enrollments = 0
-            total_courses = 0
-            total_instructors = 0
-            total_learners = 0
-            total_published_courses = 0
     else:
-        # Regular users (e.g., learners): No comments section
         partner_courses = Course.objects.none()
-        total_enrollments = 0
-        total_courses = 0
-        total_instructors = 0
-        total_learners = 0
-        total_published_courses = 0
-        comments_to_review = []  # No comments for regular users
-        show_comments_section = False  # Hide comments section
 
-    # Get the current date
     today = timezone.now().date()
 
-    # Filter courses created today
     if partner_courses is not None and partner_courses.exists():
         courses_created_today = partner_courses.filter(
             created_at__date=today,
@@ -954,7 +911,6 @@ def dasbord(request):
     else:
         courses_created_today = []
 
-    # Context for the template
     context = {
         'courses_page': courses_page,
         'total_enrollments': total_enrollments,
@@ -964,9 +920,6 @@ def dasbord(request):
         'total_partners': total_partners,
         'total_published_courses': total_published_courses,
         'courses_created_today': courses_created_today,
-        'comments_to_review': comments_to_review,
-        'form': form,
-        'show_comments_section': show_comments_section,  # Control comments section visibility
     }
 
     return render(request, 'home/dasbord.html', context)
@@ -975,39 +928,125 @@ def dasbord(request):
 
 @custom_ratelimit
 @login_required
-def reply_comment(request, comment_id):
-    comment = get_object_or_404(Comment, id=comment_id)
+def comments_dashboard(request):
+    user = request.user
 
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            reply = form.save(commit=False)
-            reply.user = request.user
-            reply.material = comment.material
-            reply.parent = comment
-            reply.save()
-            # Ganti 'dashboard' dengan nama URL yang sesuai di urls.py
-            return redirect('authentication:dasbord')  
-    else:
-        form = CommentForm()
+    if not (user.is_superuser or user.is_partner or user.is_instructor):
+        return HttpResponseForbidden("You don't have permission to view this page.")
+
+    try:
+        if user.is_superuser:
+            comments_to_review = Comment.objects.filter(parent=None).select_related(
+                'user', 'material', 'material__section', 'material__section__courses'
+            ).order_by('-created_at')[:20]
+
+        elif user.is_partner:
+            partner = Partner.objects.get(user=user)
+            comments_to_review = Comment.objects.filter(
+                material__section__courses__org_partner=partner,
+                parent=None
+            ).select_related(
+                'user', 'material', 'material__section', 'material__section__courses'
+            ).order_by('-created_at')[:20]
+
+        elif user.is_instructor:
+            instructor = Instructor.objects.get(user=user)
+            comments_to_review = Comment.objects.filter(
+                material__section__courses__instructor=instructor,
+                parent=None
+            ).select_related(
+                'user', 'material', 'material__section', 'material__section__courses'
+            ).order_by('-created_at')[:20]
+
+    except (Partner.DoesNotExist, Instructor.DoesNotExist):
+        comments_to_review = []
+
+    form = CommentForm()
 
     context = {
+        'comments_to_review': comments_to_review,
         'form': form,
-        'comment': comment,
     }
-    return render(request, 'home/dasbord.html', context)
+
+    return render(request, 'admin/comments_section.html', context)
+
+
+@custom_ratelimit
+@login_required
+@require_POST
+@login_required
+def reply_comment(request, comment_id):
+    parent_comment = get_object_or_404(Comment, id=comment_id)
+    content = request.POST.get('content')
+
+    if content:
+        reply = Comment.objects.create(
+            user=request.user,
+            content=content,
+            material=parent_comment.material,
+            parent=parent_comment,
+        )
+        return render(request, 'admin/partials/comment_item.html', {'comment': reply})
+    else:
+        return HttpResponseBadRequest("Isi komentar tidak boleh kosong.")
+
 
 @custom_ratelimit
 @login_required
 def delete_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
-    if request.user.is_instructor or request.user.is_superuser:
+    
+    if request.user.is_superuser or request.user.is_instructor:
         if request.method == 'POST':
             comment.delete()
-            messages.success(request, 'Komentar berhasil dihapus.')
-            return redirect('authentication:dasbord')  # Pastikan nama URL benar
-    return redirect('authentication:dasbord')  # Pastikan nama URL benar
+            return HttpResponse(status=204)  # Ini penting untuk HTMX agar langsung hilang
+        return HttpResponseForbidden("Method not allowed.")
+    
+    return HttpResponseForbidden("You don't have permission to delete this comment.")
 
+
+# Opsional: jika kamu mau buat load more pagination dengan HTMX
+@custom_ratelimit
+@login_required
+def load_more_comments(request):
+    user = request.user
+    page = int(request.GET.get('page', 2))
+
+    if not (user.is_superuser or user.is_partner or user.is_instructor):
+        return HttpResponseForbidden("You don't have permission.")
+
+    try:
+        if user.is_superuser:
+            qs = Comment.objects.filter(parent=None).select_related(
+                'user', 'material', 'material__section', 'material__section__courses'
+            ).order_by('-created_at')
+
+        elif user.is_partner:
+            partner = Partner.objects.get(user=user)
+            qs = Comment.objects.filter(
+                material__section__courses__org_partner=partner,
+                parent=None
+            ).select_related(
+                'user', 'material', 'material__section', 'material__section__courses'
+            ).order_by('-created_at')
+
+        elif user.is_instructor:
+            instructor = Instructor.objects.get(user=user)
+            qs = Comment.objects.filter(
+                material__section__courses__instructor=instructor,
+                parent=None
+            ).select_related(
+                'user', 'material', 'material__section', 'material__section__courses'
+            ).order_by('-created_at')
+    except (Partner.DoesNotExist, Instructor.DoesNotExist):
+        qs = Comment.objects.none()
+
+    from django.core.paginator import Paginator
+    paginator = Paginator(qs, 20)
+    comments_page = paginator.get_page(page)
+
+    html = render_to_string('partials/comment_partial.html', {'comments': comments_page}, request=request)
+    return HttpResponse(html)
 
 @custom_ratelimit
 @login_required

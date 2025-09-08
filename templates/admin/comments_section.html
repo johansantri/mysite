@@ -1,0 +1,15 @@
+{% extends 'home/tes.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<h3>Komentar Pengguna</h3>
+
+{% if comments_to_review %}
+    {% for comment in comments_to_review %}
+        {% include 'admin/partials/comment_item.html' with comment=comment %}
+    {% endfor %}
+{% else %}
+    <p class="text-muted">Tidak ada komentar untuk ditinjau.</p>
+{% endif %}
+{% endblock content %}
