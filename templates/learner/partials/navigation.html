@@ -60,12 +60,12 @@
                hx-target="#content-area"
                hx-swap="innerHTML"
                hx-push-url="true"
-               class="btn btn-primary"
+               class="btn btn-outline-danger"
                hx-on::after-request="document.body.dispatchEvent(new Event('contentLoaded'))">
                 <i class="bi bi-chevron-left me-2"></i>Previous
             </a>
         {% else %}
-            <button class="btn btn-primary" disabled><i class="bi bi-chevron-left me-2"></i>Previous</button>
+            <button class="btn btn-danger" disabled><i class="bi bi-chevron-left me-2"></i>Previous</button>
         {% endif %}
 
         <!-- Tombol Selanjutnya -->
@@ -75,12 +75,12 @@
             hx-target="#content-area"
             hx-swap="innerHTML"
             hx-push-url="true"
-            class="btn btn-primary"
+            class="btn btn-outline-danger"
             hx-on::after-request="htmx.trigger('#progress-bar', 'load')">
                 Next<i class="bi bi-chevron-right ms-2"></i>
             </a>
         {% else %}
-            <button class="btn btn-primary" disabled>Next<i class="bi bi-chevron-right ms-2"></i></button>
+            <button class="btn btn-danger" disabled>Next<i class="bi bi-chevron-right ms-2"></i></button>
         {% endif %}
     </div>
 {% endwith %}
