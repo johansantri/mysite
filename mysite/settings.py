@@ -559,6 +559,9 @@ CONTENT_SECURITY_POLICY = {
             'https://scholldecodewp.h5p.com', 
             "https://moodle.icei.ac.id",  # Tambahkan ini
             "https://asimarif.h5p.com",
+            'google.com',
+            'https://docs.google.com',
+            'https://drive.google.com',
         ),
 
         # Izinkan gambar dari domain sendiri dan dari inline base64 (data:)
