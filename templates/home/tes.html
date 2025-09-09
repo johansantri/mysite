@@ -638,7 +638,11 @@
                                 <i class="bi bi-laptop me-2"></i> Course
                             </a>
                         </li>
-
+                         <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'comments-dashboard' %}active{% endif %}" href="{% url 'authentication:comments-dashboard' %}">
+                                <i class="bi bi-book me-2"></i> Comments
+                            </a>
+                        </li>
 
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'instructor_view' %}active{% endif %}" href="{% url 'courses:instructor_view' %}">
@@ -714,6 +718,11 @@
                                 <li><a class="dropdown-item" href="{% url 'instructor:instructor_learning_report' %}">Report Course</a></li>
                             </ul>
                         </li>
+                         <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'comments-dashboard' %}active{% endif %}" href="{% url 'authentication:comments-dashboard' %}">
+                                <i class="bi bi-book me-2"></i> Comments
+                            </a>
+                        </li>
                         <li class="nav-item">
                         <a class="nav-link {% if request.resolver_match.url_name == 'dashbord' %}active{% endif %}" 
                             href="{% url 'authentication:dashbord' %}">
@@ -744,6 +753,11 @@
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'course_view' %}active{% endif %}" href="{% url 'courses:course_view' %}">
                                 <i class="bi bi-book me-2"></i> Course
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'comments-dashboard' %}active{% endif %}" href="{% url 'authentication:comments-dashboard' %}">
+                                <i class="bi bi-book me-2"></i> Comments
                             </a>
                         </li>
                         <li class="nav-item">
