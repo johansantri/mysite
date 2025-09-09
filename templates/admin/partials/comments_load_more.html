@@ -1,0 +1,13 @@
+{% include 'admin/partials/comments_list.html' %}
+
+{% if page_obj.has_next %}
+    <button
+        hx-get="?page={{ page_obj.next_page_number }}"
+        hx-target="#comments-container"
+        hx-swap="afterend"
+        class="btn btn-outline-primary w-100 mt-3"
+    >
+        Load More
+    </button>
+{% endif %}
+

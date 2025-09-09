@@ -936,38 +936,51 @@ def comments_dashboard(request):
 
     try:
         if user.is_superuser:
-            comments_to_review = Comment.objects.filter(parent=None).select_related(
+            comments = Comment.objects.filter(parent=None).select_related(
                 'user', 'material', 'material__section', 'material__section__courses'
-            ).order_by('-created_at')[:20]
+            ).order_by('-created_at')
 
         elif user.is_partner:
             partner = Partner.objects.get(user=user)
-            comments_to_review = Comment.objects.filter(
+            comments = Comment.objects.filter(
                 material__section__courses__org_partner=partner,
                 parent=None
             ).select_related(
                 'user', 'material', 'material__section', 'material__section__courses'
-            ).order_by('-created_at')[:20]
+            ).order_by('-created_at')
 
         elif user.is_instructor:
             instructor = Instructor.objects.get(user=user)
-            comments_to_review = Comment.objects.filter(
+            comments = Comment.objects.filter(
                 material__section__courses__instructor=instructor,
                 parent=None
             ).select_related(
                 'user', 'material', 'material__section', 'material__section__courses'
-            ).order_by('-created_at')[:20]
+            ).order_by('-created_at')
 
     except (Partner.DoesNotExist, Instructor.DoesNotExist):
-        comments_to_review = []
+        comments = Comment.objects.none()
 
-    form = CommentForm()
+    # Pagination setup
+    page_number = request.GET.get('page', 1)
+    paginator = Paginator(comments, 20)  # 20 comments per page
+
+    try:
+        page_obj = paginator.page(page_number)
+    except:
+        page_obj = paginator.page(1)
 
     context = {
-        'comments_to_review': comments_to_review,
-        'form': form,
+        'comments_to_review': page_obj.object_list,
+        'page_obj': page_obj,
+        'form': CommentForm(),
     }
 
+    # If HTMX request, return partial with comments + load more button
+    if request.headers.get('Hx-Request') == 'true':
+        return render(request, 'admin/partials/comments_load_more.html', context)
+
+    # Normal full page render
     return render(request, 'admin/comments_section.html', context)
 
 
@@ -1003,48 +1016,6 @@ def delete_comment(request, comment_id):
     return HttpResponseForbidden("You don't have permission to delete this comment.")
 
 
-# Opsional: jika kamu mau buat load more pagination dengan HTMX
-@custom_ratelimit
-@login_required
-def load_more_comments(request):
-    user = request.user
-    page = int(request.GET.get('page', 2))
-
-    if not (user.is_superuser or user.is_partner or user.is_instructor):
-        return HttpResponseForbidden("You don't have permission.")
-
-    try:
-        if user.is_superuser:
-            qs = Comment.objects.filter(parent=None).select_related(
-                'user', 'material', 'material__section', 'material__section__courses'
-            ).order_by('-created_at')
-
-        elif user.is_partner:
-            partner = Partner.objects.get(user=user)
-            qs = Comment.objects.filter(
-                material__section__courses__org_partner=partner,
-                parent=None
-            ).select_related(
-                'user', 'material', 'material__section', 'material__section__courses'
-            ).order_by('-created_at')
-
-        elif user.is_instructor:
-            instructor = Instructor.objects.get(user=user)
-            qs = Comment.objects.filter(
-                material__section__courses__instructor=instructor,
-                parent=None
-            ).select_related(
-                'user', 'material', 'material__section', 'material__section__courses'
-            ).order_by('-created_at')
-    except (Partner.DoesNotExist, Instructor.DoesNotExist):
-        qs = Comment.objects.none()
-
-    from django.core.paginator import Paginator
-    paginator = Paginator(qs, 20)
-    comments_page = paginator.get_page(page)
-
-    html = render_to_string('partials/comment_partial.html', {'comments': comments_page}, request=request)
-    return HttpResponse(html)
 
 @custom_ratelimit
 @login_required

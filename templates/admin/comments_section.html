@@ -3,13 +3,26 @@
 {% load humanize %}
 
 {% block content %}
-<h3>Komentar Pengguna</h3>
+<h3>User Comments</h3>
 
-{% if comments_to_review %}
+<div id="comments-container">
     {% for comment in comments_to_review %}
         {% include 'admin/partials/comment_item.html' with comment=comment %}
     {% endfor %}
-{% else %}
-    <p class="text-muted">Tidak ada komentar untuk ditinjau.</p>
-{% endif %}
+
+    {% if page_obj.has_next %}
+        <button
+            hx-get="?page={{ page_obj.next_page_number }}"
+            hx-target="#comments-container"
+            hx-swap="innerHTML"
+            class="btn btn-outline-primary w-100 mt-3"
+            id="load-more-btn"
+        >
+            Load More
+        </button>
+    {% else %}
+        <p class="text-muted text-center mt-3" id="end-comments-msg">No more comments.</p>
+    {% endif %}
+</div>
+
 {% endblock content %}
