@@ -56,3 +56,16 @@ def index(lst, i):
 @register.filter
 def add_class(field, css_class):
     return field.as_widget(attrs={"class": css_class})
+
+
+#untuk singkat nama di item komentar
+@register.filter
+def initials(full_name):
+    if not full_name:
+        return ""
+    parts = full_name.strip().split()
+    if len(parts) == 1:
+        # Kalau cuma 1 kata, ambil huruf pertama saja
+        return parts[0][0].upper()
+    # Ambil huruf pertama dari kata pertama & terakhir
+    return (parts[0][0] + parts[-1][0]).upper()

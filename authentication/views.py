@@ -993,15 +993,13 @@ def reply_comment(request, comment_id):
 
 @custom_ratelimit
 @login_required
+@require_POST
 def delete_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
-    
+
     if request.user.is_superuser or request.user.is_instructor:
-        if request.method == 'POST':
-            comment.delete()
-            return HttpResponse(status=204)  # Ini penting untuk HTMX agar langsung hilang
-        return HttpResponseForbidden("Method not allowed.")
-    
+        comment.delete()
+        return HttpResponse("", status=200)  # HTMX will use outerHTML to remove it
     return HttpResponseForbidden("You don't have permission to delete this comment.")
 
 

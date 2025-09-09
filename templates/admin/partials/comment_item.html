@@ -1,17 +1,20 @@
 {% load humanize %}
 {% load static %}
+{% load extra_filters %}
 <div class="comment-box border p-3 mb-3 rounded bg-light" id="comment-{{ comment.id }}">
+    <!-- Header: Avatar & Info Pengguna -->
     <div class="d-flex align-items-center mb-2">
         {% if comment.user.photo %}
             <img src="{{ comment.user.photo.url }}"
-                alt="Avatar"
-                class="rounded-circle me-2 border"
-                style="width: 40px; height: 40px; object-fit: cover;">
+                 alt="Avatar"
+                 class="rounded-circle me-2 border"
+                 style="width: 40px; height: 40px; object-fit: cover;">
         {% else %}
-            <img src="{% static 'images/default-avatar.png' %}"
-                alt="Avatar"
-                class="rounded-circle me-2 border"
-                style="width: 40px; height: 40px; object-fit: cover;">
+            <!-- Kalau tidak ada foto, tampilkan lingkaran dengan inisial -->
+            <div class="rounded-circle me-2 border bg-secondary text-white d-flex justify-content-center align-items-center"
+                 style="width: 40px; height: 40px; font-weight: 700; font-size: 1rem;">
+                {{ comment.user.get_full_name|default:comment.user.email|initials }}
+            </div>
         {% endif %}
 
         <div>
@@ -19,31 +22,50 @@
             <small class="text-muted">{{ comment.created_at|naturaltime }}</small>
         </div>
     </div>
-    <p>{{ comment.content }}</p>
 
-    <!-- Form Balas -->
-    <form 
-        hx-post="{% url 'authentication:reply_comment' comment.id %}" 
-        hx-target="#replies-{{ comment.id }}" 
-        hx-swap="beforeend" 
-        hx-on::after-request="this.reset()"  
-        class="mb-3"
-    >
-        {% csrf_token %}
-        <textarea name="content" rows="2" class="form-control mb-2" placeholder="Tulis balasan..." required></textarea>
-        <button type="submit" class="btn btn-sm btn-primary">Balas</button>
-    </form>
+    <!-- Isi Komentar -->
+    <p class="mb-2">{{ comment.content }}</p>
 
-    <!-- Form Hapus -->
-    <form 
-        hx-post="{% url 'authentication:delete_comment' comment.id %}" 
-        hx-swap="outerHTML"
-        onsubmit="return confirm('Yakin ingin menghapus komentar ini?')"
-        style="display:inline-block;"
-    >
-        {% csrf_token %}
-        <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
-    </form>
+    <!-- Actions: Form Balas dan Tombol Hapus -->
+    <div class="row align-items-start g-2 mb-3">
+        <!-- Form Balas -->
+        <div class="col-12 col-md">
+            <form 
+                hx-post="{% url 'authentication:reply_comment' comment.id %}" 
+                hx-target="#replies-{{ comment.id }}" 
+                hx-swap="beforeend" 
+                hx-on::after-request="this.reset()"  
+            >
+                {% csrf_token %}
+                <div class="input-group input-group-sm">
+                    <textarea 
+                        name="content" 
+                        class="form-control" 
+                        placeholder="Tulis balasan..." 
+                        required 
+                        rows="1"
+                        style="resize: vertical;"
+                    ></textarea>
+                    <button type="submit" class="btn btn-outline-primary px-3">Balas</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Tombol Hapus -->
+        <div class="col-auto">
+            <form 
+                hx-post="{% url 'authentication:delete_comment' comment.id %}" 
+                hx-target="#comment-{{ comment.id }}" 
+                hx-swap="outerHTML"
+                onsubmit="return confirm('Yakin ingin menghapus komentar ini?')"
+            >
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-danger btn-sm">
+                    🗑 Hapus
+                </button>
+            </form>
+        </div>
+    </div>
 
     <!-- Tempat Nested Replies -->
     <div id="replies-{{ comment.id }}" class="ms-4 mt-3">
