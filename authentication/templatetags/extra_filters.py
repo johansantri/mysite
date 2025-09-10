@@ -4,6 +4,9 @@ from django import template
 import random
 from django.utils.translation import get_language_info
 register = template.Library()
+from authentication.utils import is_user_online
+
+
 @register.filter
 def get_language_name(language_code):
     """Mengambil nama bahasa berdasarkan kode bahasa"""
@@ -69,3 +72,8 @@ def initials(full_name):
         return parts[0][0].upper()
     # Ambil huruf pertama dari kata pertama & terakhir
     return (parts[0][0] + parts[-1][0]).upper()
+
+#online user check
+@register.simple_tag
+def user_online(user):
+    return is_user_online(user)

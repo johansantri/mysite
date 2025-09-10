@@ -67,7 +67,7 @@ from django.shortcuts import render
 import time
 from authentication.utils import calculate_course_status 
 from django.views.decorators.http import require_POST
-
+from authentication.utils import is_user_online  # fungsi cek online
 
 def custom_ratelimit(view_func):
     def wrapper(request, *args, **kwargs):
@@ -814,6 +814,7 @@ def all_user(request):
     return render(request, 'authentication/all_user.html', context)
 
 
+
 @custom_ratelimit
 @login_required
 @ratelimit(key='ip', rate='100/h')
@@ -852,6 +853,9 @@ def dasbord(request):
     except CourseStatus.DoesNotExist:
         publish_status = None
 
+    # ============================================================
+    # === ROLE-BASED HANDLING (Superuser, Partner, Instructor) ===
+    # ============================================================
     if request.user.is_superuser:
         total_enrollments = Enrollment.objects.count()
         total_courses = Course.objects.count()
@@ -860,6 +864,9 @@ def dasbord(request):
         total_partners = Partner.objects.count()
         total_published_courses = Course.objects.filter(status_course=publish_status).count() if publish_status else 0
         partner_courses = Course.objects.all()
+
+        # Superuser can see all users
+        users = CustomUser.objects.all()
 
     elif request.user.is_partner:
         try:
@@ -878,8 +885,14 @@ def dasbord(request):
                 is_learner=True
             ).distinct().count()
             total_published_courses = partner_courses.filter(status_course=publish_status).count() if publish_status else 0
+
+            # Partner only sees users related to their courses
+            users = CustomUser.objects.filter(
+                enrollments__course__org_partner=partner
+            ).distinct()
         else:
             partner_courses = Course.objects.none()
+            users = CustomUser.objects.none()
 
     elif request.user.is_instructor:
         try:
@@ -898,11 +911,21 @@ def dasbord(request):
                 is_learner=True
             ).distinct().count()
             total_published_courses = partner_courses.filter(status_course=publish_status).count() if publish_status else 0
+
         else:
             partner_courses = Course.objects.none()
+
+        # Instructors don't see user online/offline stats
+        users = CustomUser.objects.none()
+
     else:
+        # Learners (and others) don’t see user stats
+        users = CustomUser.objects.none()
         partner_courses = Course.objects.none()
 
+    # ============================================================
+    # === COURSES CREATED TODAY ===
+    # ============================================================
     today = timezone.now().date()
 
     if partner_courses is not None and partner_courses.exists():
@@ -914,6 +937,12 @@ def dasbord(request):
     else:
         courses_created_today = []
 
+    # ============================================================
+    # === ONLINE / OFFLINE USERS ===
+    # ============================================================
+    online_users = [user for user in users if is_user_online(user)]
+    offline_users = [user for user in users if not is_user_online(user)]
+
     context = {
         'courses_page': courses_page,
         'total_enrollments': total_enrollments,
@@ -923,6 +952,8 @@ def dasbord(request):
         'total_partners': total_partners,
         'total_published_courses': total_published_courses,
         'courses_created_today': courses_created_today,
+        'total_online': len(online_users),
+        'total_offline': len(offline_users),
     }
 
     return render(request, 'home/dasbord.html', context)
@@ -1134,6 +1165,10 @@ def dashbord(request):
     user_licenses = user.licenses.all()
     for lic in user_licenses:
         lic.is_active = lic.start_date <= today <= lic.expiry_date
+    
+
+
+    
 
     return render(request, 'learner/dashbord.html', {
         'enrollments': enrollments_page_obj,
@@ -1144,6 +1179,7 @@ def dashbord(request):
         'completed_courses': completed_courses,
         'user_licenses': user_licenses,
         'user': user,  # Ensure user is passed to template
+        
     })
 
 

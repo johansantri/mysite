@@ -101,6 +101,7 @@ MIDDLEWARE = [
     'audit.middleware.CurrentUserMiddleware',
     'audit.middleware.AuditLogMiddleware',
     "django_htmx.middleware.HtmxMiddleware",
+    'authentication.middleware.ActiveUserMiddleware', 
 ]
 
 ROOT_URLCONF = 'mysite.urls'

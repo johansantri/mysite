@@ -1,20 +1,40 @@
 {% extends 'home/tes.html' %}
 {% load static %}
 {% load mathfilters %}
+{% load extra_filters %}
 
 {% block content %}
 
 <section class="mb-4">
     <div class="row">
-        <!-- Kolom Kiri: Teks Selamat Datang dalam Card -->
-        <div class="col-md-6 mb-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h1 class="display-4 text-danger">Hi, {{ request.user.username }}!</h1>
-                    <p class="lead text-muted">Great to see you back. Let’s continue your learning journey or explore new courses to unlock your full potential!</p>
+        <div class="row">
+            <!-- Kolom Kiri: Welcome Card -->
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm h-100 border-0">
+                    <div class="card-body d-flex flex-column justify-content-center">
+                        <h1 class="display-5 text-danger fw-bold mb-3">
+                            👋 Hi, {{ request.user.username }}!
+                        </h1>
+                        <p class="lead text-muted">
+                            Great to see you back! Continue your learning journey or explore new courses to unlock your full potential. 🚀
+                        </p>
+                        <a href="{% url 'authentication:course_list' %}" class="btn btn-outline-primary mt-3">
+                            <i class="fas fa-compass me-1"></i> Explore Courses
+                        </a>
+                    </div>
                 </div>
             </div>
+
+          
         </div>
+
+
+        
+
+
+
+
+        
 
         <!-- Kolom Kanan: Informasi Lisensi dalam Card -->
         <div class="col-md-6 mb-4">

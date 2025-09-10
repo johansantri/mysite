@@ -3,7 +3,8 @@ from courses.models import (
     Assessment, QuestionAnswer, GradeRange,
     LTIResult, CourseProgress
 )
-
+from django.core.cache import cache
+import datetime
 
 def calculate_course_status(user, course):
     total_score = Decimal('0')
@@ -83,3 +84,17 @@ def calculate_course_status(user, course):
         'overall_percentage': overall_percentage,
         'passing_threshold': passing_threshold.quantize(Decimal("0.01")),
     }
+
+
+
+
+def is_user_online(user):
+    if not hasattr(user, 'id'):
+        return False  # jika bukan user object, anggap offline
+
+    last_seen = cache.get(f'seen_{user.id}')
+    if last_seen:
+        now = datetime.datetime.now()
+        if (now - last_seen).total_seconds() < 300:
+            return True
+    return False
