@@ -67,10 +67,17 @@
                     <div class="flex flex-col md:flex-row items-center">
                         <div class="md:w-1/3 text-center mb-6 md:mb-0">
                             <div class="w-32 h-32 md:w-40 md:h-40 mx-auto">
-                                <img src="{% if learner.photo %}{{ learner.photo.url }}{% else %}{% static 'img/default-avatar.png' %}{% endif %}" 
-                                     class="w-full h-full object-cover rounded-full border border-gray-300" 
-                                     alt="Profile">
+                                {% if learner.photo %}
+                                    <img src="{{ learner.photo.url }}" 
+                                        class="w-full h-full object-cover rounded-full border border-gray-300" 
+                                        alt="{{ learner.first_name }} {{ learner.last_name }}">
+                                {% else %}
+                                    <div class="w-full h-full flex items-center justify-center rounded-full border border-gray-300 bg-red-500 text-white font-bold text-6xl uppercase select-none">
+                                        {{ learner.first_name|slice:":1" }}{{ learner.last_name|slice:":1" }}
+                                    </div>
+                                {% endif %}
                             </div>
+
                             <h3 class="font-bold text-black mt-3 text-xl md:text-2xl">{{ learner.first_name }} {{ learner.last_name }}</h3>
                         </div>
                         <div class="md:w-2/3">

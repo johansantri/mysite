@@ -383,8 +383,18 @@
                                         {% if review.user.photo %}
                                             <img src="{{ review.user.photo.url }}" alt="Reviewer" class="w-16 h-16 object-cover rounded-full border">
                                         {% else %}
-                                            <img src="{% static 'images/default_profile.png' %}" alt="Reviewer" class="w-16 h-16 object-cover rounded-full border">
+                                            <div class="w-16 h-16 flex items-center justify-center rounded-full border bg-red-600 text-white font-bold text-xl">
+                                                {% with review.user.full_name|default:review.user.get_full_name as full_name %}
+                                                    {% if full_name %}
+                                                        {{ full_name|slice:":1" }}{% with full_name.split|last as last_name %}{{ last_name|slice:":1" }}{% endwith %}
+                                                    {% else %}
+                                                        U
+                                                    {% endif %}
+                                                {% endwith %}
+                                            </div>
+
                                         {% endif %}
+
                                     </a>
                                 </div>
                                 <div>
