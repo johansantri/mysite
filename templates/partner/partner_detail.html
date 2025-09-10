@@ -468,43 +468,53 @@
 
 
    <!-- Payments Tab -->
-    <div class="tab-pane fade" id="payments" role="tabpanel" aria-labelledby="payments-tab">
-        <div class="text-center mb-3">
-            <p class="text-muted mb-1">Total Payments</p>
-            <p class="h4 fw-bold">{{ total_payments }}</p>
-            <p class="text-success fw-bold">Total Amount: IDR{{ total_payment_amount|intcomma }}</p>
-        </div>
-        <hr>
-        <h5>Recent Payments</h5>
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Payment ID</th>
-                    <th>User</th>
-                    <th>Course</th>
-                    <th>Amount</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for payment in recent_payments %}
-                    <tr>
-                        <td>{{ payment.id }}</td>
-                        <td>{{ payment.user.get_full_name|default:payment.user.username }}</td>
-                        <td>{{ payment.course.course_name }}</td>
-                        <td>IDR{{ payment.amount|intcomma }}</td>
-                        <td>{{ payment.created_at|date:"M d, Y" }}</td>
-                        <td>{{ payment.status|default:"-" }}</td>
-                    </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="6" class="text-center text-muted">No payments found.</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <!-- Payments Tab -->
+<div class="tab-pane fade" id="payments" role="tabpanel" aria-labelledby="payments-tab">
+    <div class="text-center mb-3">
+        <p class="text-muted mb-1">Total Payments</p>
+        <p class="h4 fw-bold">{{ total_payments }}</p>
+        <p class="text-success fw-bold">
+            Total Partner Earnings: IDR{{ total_payment_amount|intcomma }}
+        </p>
     </div>
+    <hr>
+    <h5>Recent Payments</h5>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Payment ID</th>
+                <th>User</th>
+                <th>Course</th>
+                <th>Amount (Partner)</th>
+                <th>Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in recent_payments %}
+                <tr>
+                    <td>{{ payment.id }}</td>
+                    <td>{{ payment.user.get_full_name|default:payment.user.username }}</td>
+                    <td>{{ payment.course.course_name }}</td>
+                    <td>IDR{{ payment.snapshot_partner_earning|intcomma }}</td>
+                    <td>{{ payment.created_at|date:"M d, Y" }}</td>
+                    <td>
+                        {% if payment.status == "completed" %}
+                            <span class="badge bg-success">{{ payment.status }}</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ payment.status|default:"-" }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted">No payments found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
 
 </div>
 

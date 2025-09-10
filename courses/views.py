@@ -5723,10 +5723,19 @@ def partner_detail(request, partner_id):
     learners_detail = CustomUser.objects.filter(id__in=unique_user_ids)
 
 
-    # Ambil payments yang terkait course partner
-    payments = Payment.objects.filter(course__in=related_courses)
+    # Ambil payments yang terkait course partner, hanya yang completed
+    payments = Payment.objects.filter(
+        course__org_partner=partner,
+        status='completed'
+    )
+
+    # Total pembayaran & jumlah transaksi
     total_payments = payments.count()
-    total_payment_amount = payments.aggregate(total_amount=Sum('amount'))['total_amount'] or 0
+    total_payment_amount = payments.aggregate(
+        total_amount=Sum('snapshot_partner_earning')
+    )['total_amount'] or 0
+
+    # Pembayaran terbaru
     recent_payments = payments.order_by('-created_at')[:5]
 
     # Pagination courses, 10 per page
