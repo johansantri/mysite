@@ -62,7 +62,7 @@
                             <option value="">-- Filter by Partner --</option>
                             {% for partner in partners %}
                             <option value="{{ partner.id }}" {% if request.GET.partner == partner.id|stringformat:"s" %}selected{% endif %}>
-                                {{ partner.name }}
+                                {{ partner.name__name }}
                             </option>
                             {% endfor %}
                         </select>

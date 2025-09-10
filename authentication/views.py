@@ -703,8 +703,9 @@ def all_user(request):
             )
 
             if partners is None:
-                partners = list(Partner.objects.values('id', 'name'))
+                partners = list(Partner.objects.select_related('name').values('id', 'name__name'))
                 safe_cache_set(cache_key_partners, partners, timeout=300)
+
 
         elif request.user.is_partner and request.user.university:
             users_qs = CustomUser.objects.select_related('university').filter(
