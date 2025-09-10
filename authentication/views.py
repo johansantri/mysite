@@ -274,6 +274,8 @@ def mycourse(request):
         'completed_courses': completed_courses,
         'last_access_map': last_access_map,
     })
+
+
 @custom_ratelimit
 @login_required
 def microcredential_list(request):

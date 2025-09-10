@@ -3888,9 +3888,11 @@ def course_lms_detail(request, id, slug):
     if getattr(request, 'limited', False):
         return HttpResponse("Terlalu banyak permintaan. Coba lagi nanti.", status=429)
     
-    # Get the course with related data
-    course = get_object_or_404(Course.objects.select_related('category', 'instructor__user', 'status_course')
-        .prefetch_related('enrollments', 'ratings'), id=id, slug=slug)
+    course = get_object_or_404(
+        Course.objects.select_related('category', 'instructor__user', 'status_course')
+        .prefetch_related('enrollments', 'ratings'),
+        id=id, slug=slug
+    )
 
     try:
         published_status = CourseStatus.objects.get(status='published')
@@ -3898,13 +3900,12 @@ def course_lms_detail(request, id, slug):
         return redirect('/')
 
     today = timezone.now().date()
-
     is_enrolled = request.user.is_authenticated and course.enrollments.filter(user=request.user).exists()
 
     if not is_enrolled and (course.status_course != published_status or course.end_enrol < today):
         return redirect('/')
 
-    # Handle view count
+    # View counter
     user_agent = request.META.get('HTTP_USER_AGENT', '').lower()
     if 'bot' not in user_agent:
         ip = get_client_ip(request)
@@ -3916,12 +3917,64 @@ def course_lms_detail(request, id, slug):
         if not created:
             CourseViewLog.objects.filter(pk=view_log.pk).update(count=F('count') + 1)
 
+    # Course status (get_started, resume, completed)
+    course_status = None
+    if is_enrolled:
+        user = request.user
+        # Cek apakah user pernah mengakses materi/assessment
+        has_accessed = LastAccessCourse.objects.filter(user=user, course=course).exists()
+
+        # Cek progress & kelulusan
+        course_progress = CourseProgress.objects.filter(user=user, course=course).first()
+        progress = course_progress.progress_percentage if course_progress else 0
+
+        # Cek kelulusan
+        grade_range = GradeRange.objects.filter(course=course, name='Pass').first()
+        passing_threshold = grade_range.min_grade if grade_range else Decimal('52.00')
+
+        # Hitung total skor user
+        total_score = Decimal('0')
+        total_max_score = Decimal('0')
+
+        assessments = Assessment.objects.filter(section__courses=course).distinct()
+        for assessment in assessments:
+            score_value = Decimal('0')
+            total_questions = assessment.questions.count()
+            if total_questions > 0:
+                total_correct = QuestionAnswer.objects.filter(
+                    question__assessment=assessment,
+                    user=user,
+                    choice__is_correct=True
+                ).count()
+                score_value = (Decimal(total_correct) / Decimal(total_questions)) * Decimal(assessment.weight)
+            else:
+                submissions = Submission.objects.filter(askora__assessment=assessment, user=user)
+                if submissions.exists():
+                    latest = submissions.order_by('-submitted_at').first()
+                    score_obj = AssessmentScore.objects.filter(submission=latest).first()
+                    if score_obj:
+                        score_value = Decimal(score_obj.final_score)
+            total_score += score_value
+            total_max_score += Decimal(assessment.weight)
+
+        overall_percentage = (total_score / total_max_score * Decimal('100')) if total_max_score > 0 else Decimal('0')
+
+        # Tentukan status
+        if progress >= 100 and overall_percentage >= passing_threshold:
+            course_status = 'completed'
+        elif has_accessed:
+            course_status = 'resume'
+        else:
+            course_status = 'get_started'
+
+    # Similar courses
     similar_courses = Course.objects.filter(
         category=course.category,
         status_course=published_status,
         end_enrol__gte=today
     ).exclude(id=course.id)[:5]
 
+    # Comments dan replies
     comments = CourseComment.objects.filter(course=course, parent=None).order_by('-created_at')
     for comment in comments:
         for reply in comment.replies.all().order_by('-created_at'):
@@ -3939,7 +3992,6 @@ def course_lms_detail(request, id, slug):
         status_course=published_status,
         end_enrol__gte=today
     )
-
     instructor_total_courses = instructor_courses.count()
     instructor_total_students = sum(c.enrollments.count() for c in instructor_courses)
     instructor_total_effort_hours = sum(int(c.hour) for c in instructor_courses if c.hour and str(c.hour).isdigit())
@@ -3947,19 +3999,17 @@ def course_lms_detail(request, id, slug):
     instructor_total_sections = instructor_sections.count()
     instructor_total_materials = sum(s.materials.count() for s in instructor_sections)
 
-    # Fetch reviews and calculate total_reviews
+    # Reviews
     reviews = CourseRating.objects.filter(course=course).order_by('-created_at')
-    total_reviews = reviews.count()  # Use count() to get total reviews
+    total_reviews = reviews.count()
     paginator = Paginator(reviews, 5)
     page_obj = paginator.get_page(request.GET.get('page'))
-
     user_has_rated = request.user.is_authenticated and CourseRating.objects.filter(user=request.user, course=course).exists()
 
     average_rating = course.average_rating
     full_stars = int(average_rating)
     half_star = (average_rating % 1) >= 0.5
     empty_stars = 5 - (full_stars + (1 if half_star else 0))
-
     course_price = course.get_course_price()
 
     return render(request, 'home/course_detail.html', {
@@ -3987,7 +4037,9 @@ def course_lms_detail(request, id, slug):
         'average_rating': average_rating,
         'course_price': course_price,
         'total_reviews': total_reviews,
+        'course_status': course_status,  # 👈 Tambahkan ini
     })
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 

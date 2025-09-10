@@ -710,7 +710,22 @@
                               {% with today=now|date:"Y-m-d" %}
                                     {% if request.user.is_authenticated %}
                                         {% if is_enrolled %}
-                                            <a href="{% url 'learner:course_learn' request.user.username course.id course.slug %}" class="block bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">Start Course</a>
+                                            {% if course_status == 'completed' %}
+                                                <button class="block w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors" disabled>
+                                                    ✅ Completed
+                                                </button>
+                                            {% elif course_status == 'resume' %}
+                                                <a href="{% url 'learner:course_learn' request.user.username course.id course.slug %}"
+                                                class="block w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
+                                                    ▶️ Resume Course
+                                                </a>
+                                            {% elif course_status == 'get_started' %}
+                                                <a href="{% url 'learner:course_learn' request.user.username course.id course.slug %}"
+                                                class="block w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
+                                                    🚀 Get Started
+                                                </a>
+                                            {% endif %}
+
                                         {% else %}
                                             {% if course.end_enrol and course.end_enrol|stringformat:"Y-m-d" < today %}
                                                 <button class="block w-full bg-gray-400 text-white px-4 py-2 rounded-lg cursor-not-allowed" disabled>
@@ -741,6 +756,7 @@
                                             Join Now
                                         </a>
                                     {% endif %}
+
                                 {% endwith %}
 
 
