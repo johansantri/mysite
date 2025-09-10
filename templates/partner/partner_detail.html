@@ -3,7 +3,7 @@
 {% load static %}
 {% block content %}
 
-<!-- Logo and Description Section -->
+<!-- Logo Section -->
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
     <div class="d-flex align-items-center mb-4 mb-md-0 order-1 order-md-0">
         {% if partner.logo %}
@@ -22,15 +22,12 @@
     </div>
 </div>
 
+
+
 <!-- Stats Tabs Section -->
 <ul class="nav nav-tabs mt-4" id="statsTab" role="tablist">
     <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="true">
-            Profile
-        </button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="learners-tab" data-bs-toggle="tab" data-bs-target="#learners" type="button" role="tab" aria-controls="learners" aria-selected="false">
+        <button class="nav-link active" id="learners-tab" data-bs-toggle="tab" data-bs-target="#learners" type="button" role="tab" aria-controls="learners" aria-selected="true">
             Learners
         </button>
     </li>
@@ -41,7 +38,7 @@
     </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link" id="courses-tab" data-bs-toggle="tab" data-bs-target="#courses" type="button" role="tab" aria-controls="courses" aria-selected="false">
-            Courses 
+            Courses
         </button>
     </li>
     <li class="nav-item" role="presentation">
@@ -58,70 +55,13 @@
 
 <div class="tab-content p-4 border border-top-0" id="statsTabContent">
 
-    <!-- Profile Tab -->
-    <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-        <!-- Profile Update Form -->
-        <form method="post" action="#" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="row">
-                <div class="col-md-3 text-center">
-                    {% if partner.logo %}
-                        <img src="{{ partner.logo.url }}" alt="{{ partner.slug }}" class="img-fluid rounded mb-3" />
-                    {% else %}
-                        <img src="https://via.placeholder.com/150" alt="No Logo Available" class="img-fluid rounded mb-3" />
-                    {% endif %}
-                    <div class="mb-3">
-                        <label for="id_logo" class="form-label">Change Logo</label>
-                        <input type="file" class="form-control" id="id_logo" name="logo">
-                    </div>
-                </div>
-                <div class="col-md-9">
-                    <div class="mb-3">
-                        <label for="id_name" class="form-label">Partner Name</label>
-                        <input type="text" class="form-control" id="id_name" name="name" value="{{ partner.name }}" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="id_description" class="form-label">Description</label>
-                        <textarea class="form-control" id="id_description" name="description" rows="4">{{ partner.description }}</textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="id_address" class="form-label">Address</label>
-                        <textarea class="form-control" id="id_address" name="address" rows="2">{{ partner.address }}</textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="id_phone" class="form-label">Phone</label>
-                        <input type="text" class="form-control" id="id_phone" name="phone" value="{{ partner.phone }}">
-                    </div>
-                    <div class="mb-3">
-                        <label for="id_email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="id_email" name="email" value="{{ partner.email }}">
-                    </div>
-                    <div class="mb-3">
-                        <label for="id_contact_email" class="form-label">Contact Person Email</label>
-                        <input type="email" class="form-control" id="id_contact_email" name="contact_email" value="{{ partner.user.email }}" readonly>
-                        <small class="text-muted">Contact email cannot be changed here.</small>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Update Partner</button>
-                </div>
-            </div>
-        </form>
-    </div>
-
-
     <!-- Learners Tab -->
-    <div class="tab-pane fade" id="learners" role="tabpanel" aria-labelledby="learners-tab">
-
+    <div class="tab-pane fade show active" id="learners" role="tabpanel" aria-labelledby="learners-tab">
         <div class="text-center mb-3">
             <p class="text-muted mb-1">Total Unique Learners</p>
             <p class="h4 fw-bold">{{ unique_learners }}</p>
         </div>
-
-        
-
         <hr>
-
-        <!-- Summary Count -->
         <div class="row text-center mb-4">
             <div class="col">
                 <h6 class="text-muted">Inbound</h6>
@@ -136,390 +76,45 @@
                 <p class="fw-bold">{{ internal_count }}</p>
             </div>
         </div>
-
-        <!-- Inbound Learners -->
-        <h5 class="mt-3">Inbound Learners <small class="text-muted">(from outside universities)</small></h5>
-        <ul class="list-group mb-3">
-            {% for learner in inbound_users %}
-                <li class="list-group-item">
-                    <strong>{{ learner.get_full_name|default:learner.username }}</strong><br>
-                    <small>Email: {{ learner.email }}</small><br>
-                    {% if learner.university %}
-                        <small>University: {{ learner.university.name }}</small><br>
-                    {% endif %}
-                    {% if learner.country %}
-                        <small>Country: {{ learner.get_country_display }}</small><br>
-                    {% endif %}
-                    {% if learner.education %}
-                        <small>Education: {{ learner.get_education_display }}</small><br>
-                    {% endif %}
-                </li>
-            {% empty %}
-                <li class="list-group-item text-muted">No inbound learners.</li>
-            {% endfor %}
-        </ul>
-
-        <!-- Outbound Learners -->
-        <h5 class="mt-3">Outbound Learners <small class="text-muted">(from this university to other courses)</small></h5>
-        <ul class="list-group mb-3">
-            {% for learner in outbound_users %}
-                <li class="list-group-item">
-                    <strong>{{ learner.get_full_name|default:learner.username }}</strong><br>
-                    <small>Email: {{ learner.email }}</small><br>
-                    {% if learner.university %}
-                        <small>University: {{ learner.university.name }}</small><br>
-                    {% endif %}
-                    {% if learner.country %}
-                        <small>Country: {{ learner.get_country_display }}</small><br>
-                    {% endif %}
-                    {% if learner.education %}
-                        <small>Education: {{ learner.get_education_display }}</small><br>
-                    {% endif %}
-                </li>
-            {% empty %}
-                <li class="list-group-item text-muted">No outbound learners.</li>
-            {% endfor %}
-        </ul>
-
-        <!-- Internal Learners -->
-        <h5 class="mt-3">Internal Learners <small class="text-muted">(from this university to own courses)</small></h5>
-        <ul class="list-group mb-3">
-            {% for learner in internal_users %}
-                <li class="list-group-item">
-                    <strong>{{ learner.get_full_name|default:learner.username }}</strong><br>
-                    <small>Email: {{ learner.email }}</small><br>
-                    {% if learner.university %}
-                        <small>University: {{ learner.university.name }}</small><br>
-                    {% endif %}
-                    {% if learner.country %}
-                        <small>Country: {{ learner.get_country_display }}</small><br>
-                    {% endif %}
-                    {% if learner.education %}
-                        <small>Education: {{ learner.get_education_display }}</small><br>
-                    {% endif %}
-                </li>
-            {% empty %}
-                <li class="list-group-item text-muted">No internal learners.</li>
-            {% endfor %}
-        </ul>
-
     </div>
-
 
     <!-- Reviews Tab -->
     <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
         <div class="text-center mb-3">
             <p class="text-muted mb-1">Total Reviews</p>
-            <p class="h4 fw-bold">
-                {{ total_reviews }} <small class="text-muted">{{ average_rating }}/5</small>
-            </p>
+            <p class="h4 fw-bold">{{ total_reviews }} <small class="text-muted">{{ average_rating }}/5</small></p>
         </div>
-        <hr>
-        <h5>Recent Reviews</h5>
-        {% for review in recent_reviews %}
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h6 class="card-title">{{ review.user.get_full_name|default:review.user.username }} - <small>{{ review.created_at|date:"M d, Y" }}</small></h6>
-                    <p class="mb-1">Course: <strong>{{ review.course.course_name }}</strong></p>
-                    <p class="mb-1">Rating: {{ review.rating }} ⭐</p>
-                    <p class="card-text">{{ review.comment|default:"No comment" }}</p>
-                </div>
-            </div>
-        {% empty %}
-            <p class="text-muted">No reviews found.</p>
-        {% endfor %}
     </div>
 
     <!-- Courses Tab -->
     <div class="tab-pane fade" id="courses" role="tabpanel" aria-labelledby="courses-tab">
-        
-        <!-- Total Courses Summary -->
         <div class="text-center mb-4">
             <p class="text-muted mb-1">Total Courses</p>
             <p class="h4 fw-bold">{{ total_courses }}</p>
         </div>
-        
-        <!-- Search, Filter, Sorting Form -->
-        <form method="get" action="{% url 'courses:partner_detail' partner.id %}" class="mb-3">
-            <div class="row g-3 align-items-center">
-                <div class="col-md-5">
-                    <input type="text" name="search" class="form-control" placeholder="Find courses..." value="{{ search_query }}">
-                </div>
-                <div class="col-md-4">
-                    <select name="category" class="form-select" onchange="this.form.submit()">
-                        <option value="" {% if not selected_category %}selected{% endif %}>All Categories</option>
-                        {% for category in categories %}
-                            <option value="{{ category.name }}" {% if selected_category == category.name %}selected{% endif %}>
-                                {{ category.name }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <select name="sort_by" class="form-select" onchange="this.form.submit()">
-                        <option value="name" {% if sort_by == 'name' %}selected{% endif %}>Sort by Name</option>
-                        <option value="date" {% if sort_by == 'date' %}selected{% endif %}>Sort by Date</option>
-                        <option value="learners" {% if sort_by == 'learners' %}selected{% endif %}>Sort by Learners</option>
-                        <option value="status" {% if sort_by == 'status' %}selected{% endif %}>Sort by Status</option>
-                    </select>
-                </div>
-            </div>
-            <!-- Preserve search and category on form submit -->
-            <input type="hidden" name="page" value="1">
-        </form>
-
-        <!-- Courses Table -->
-        <div class="table-responsive">
-            <table class="table table-hover align-middle">
-                <thead>
-                    <tr>
-                        <th>Course Name</th>
-                        <th>Image</th>
-                        <th>Price</th>
-                        <th>Participants</th>
-                        <th>Status</th>
-                        <th>Rating</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for course in page_obj %}
-                        <tr>
-                            <td>
-                                <a href="{% url 'courses:course_lms_detail' course.id course.slug %}" class="text-decoration-none text-primary">{{ course.course_name }}</a>
-                            </td>
-                            <td>
-                                {% if course.image %}
-                                    <img src="{{ course.image.url }}" alt="Course image" class="img-fluid rounded" width="100" height="60" />
-                                {% else %}
-                                    <span class="text-muted">No Image Available</span>
-                                {% endif %}
-                            </td>
-                            <td class="text-success fw-bold">
-                                {% if course.price_value == 0 %}
-                                    Free
-                                {% else %}
-                                    IDR {{ course.price_value |intcomma}}
-                                {% endif %}
-                            </td>
-                            <td class="text-muted">{{ course.learner_count }}</td>
-                            <td>
-                                {% if course.status_course %}
-                                    {% with status=course.status_course.status %}
-                                        {% if status == 'draft' %}
-                                            <span class="badge bg-secondary">{{ course.status_course.get_status_display }}</span>
-                                        {% elif status == 'curation' %}
-                                            <span class="badge bg-warning text-dark">{{ course.status_course.get_status_display }}</span>
-                                        {% elif status == 'published' %}
-                                            <span class="badge bg-success">{{ course.status_course.get_status_display }}</span>
-                                        {% elif status == 'archived' %}
-                                            <span class="badge bg-danger">{{ course.status_course.get_status_display }}</span>
-                                        {% else %}
-                                            <span class="badge bg-light text-dark">Unknown</span>
-                                        {% endif %}
-                                    {% endwith %}
-                                {% else %}
-                                    <span class="badge bg-light text-dark">No Status</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <div>
-                                    <span class="fw-bold">{{ course.average_rating }} ⭐</span>
-                                    <small class="text-muted">({{ course.total_reviews }} reviews)</small>
-                                </div>
-                            </td>
-                        </tr>
-                    {% empty %}
-                        <tr>
-                            <td colspan="6" class="text-center text-muted">No related courses found.</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Pagination Controls -->
-        <nav aria-label="Courses pagination" class="d-flex justify-content-center mt-4">
-            <ul class="pagination">
-                {% if page_obj.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page=1&category={{ selected_category }}&search={{ search_query }}&sort_by={{ sort_by }}" aria-label="First">
-                            &laquo;&laquo; First
-                        </a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}&category={{ selected_category }}&search={{ search_query }}&sort_by={{ sort_by }}" aria-label="Previous">
-                            &laquo; Previous
-                        </a>
-                    </li>
-                {% else %}
-                    <li class="page-item disabled"><span class="page-link">&laquo;&laquo; First</span></li>
-                    <li class="page-item disabled"><span class="page-link">&laquo; Previous</span></li>
-                {% endif %}
-
-                <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
-
-                {% if page_obj.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.next_page_number }}&category={{ selected_category }}&search={{ search_query }}&sort_by={{ sort_by }}" aria-label="Next">
-                            Next &raquo;
-                        </a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&category={{ selected_category }}&search={{ search_query }}&sort_by={{ sort_by }}" aria-label="Last">
-                            Last &raquo;&raquo;
-                        </a>
-                    </li>
-                {% else %}
-                    <li class="page-item disabled"><span class="page-link">Next &raquo;</span></li>
-                    <li class="page-item disabled"><span class="page-link">Last &raquo;&raquo;</span></li>
-                {% endif %}
-            </ul>
-        </nav>
     </div>
 
     <!-- Instructors Tab -->
-        <div class="tab-pane fade" id="instructors" role="tabpanel" aria-labelledby="instructors-tab">
+    <div class="tab-pane fade" id="instructors" role="tabpanel" aria-labelledby="instructors-tab">
         <div class="text-center mb-4">
             <p class="text-muted mb-1">Total Instructors</p>
-            <p class="h4 fw-bold">{{ instructors_data|length }}</p>
-        </div>
-
-        <div class="row row-cols-1 row-cols-md-2 g-4">
-            {% for instructor in instructors_data %}
-                <div class="col">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title"><a href="{% url 'courses:instructor_detail' id=instructor.id %}">
-                                {{ instructor.full_name }}
-                            </a></h5>
-
-                            {% if instructor.email %}
-                                <p class="text-muted small mb-2">{{ instructor.email }}</p>
-                            {% endif %}
-
-                            <p class="mb-1">
-                                <i class="bi bi-clock-history me-1"></i>
-                                <small class="text-muted">
-                                    Last Active:
-                                    {% if instructor.last_login %}
-                                        {{ instructor.last_login|date:"M d, Y H:i" }}
-                                    {% else %}
-                                        Never
-                                    {% endif %}
-                                </small>
-                            </p>
-
-                            <p class="mb-3">
-                                <i class="bi bi-journal-bookmark-fill me-1"></i>
-                                <small class="text-muted">Total Courses: {{ instructor.course_count }}</small>
-                            </p>
-
-                            {% if instructor.courses %}
-                                <!-- Toggle Button -->
-                                <button class="btn btn-sm btn-outline-primary mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#courses-{{ forloop.counter }}" aria-expanded="false" aria-controls="courses-{{ forloop.counter }}">
-                                    Show Courses
-                                </button>
-
-                                <div class="collapse" id="courses-{{ forloop.counter }}">
-                                    <div class="table-responsive">
-                                        <table class="table table-sm table-bordered align-middle">
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>Name</th>
-                                                    <th>Run</th>
-                                                    <th>Status</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {% for course in instructor.courses %}
-                                                    <tr>
-                                                        <td>{{ forloop.counter }}</td>
-                                                        <td>{{ course.course_name }}</td>
-                                                        <td>{{ course.course_run|default:"-" }}</td>
-                                                        <td>
-                                                            {% if course.status_course.status == 'published' %}
-                                                                <span class="badge bg-success">{{ course.status_course.status|capfirst }}</span>
-                                                            {% elif course.status_course.status == 'draft' %}
-                                                                <span class="badge bg-secondary">{{ course.status_course.status|capfirst }}</span>
-                                                            {% elif course.status_course.status == 'archived' %}
-                                                                <span class="badge bg-danger">{{ course.status_course.status|capfirst }}</span>
-                                                            {% else %}
-                                                                <span class="badge bg-info">{{ course.status_course.status|capfirst }}</span>
-                                                            {% endif %}
-                                                        </td>
-                                                    </tr>
-                                                {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            {% empty %}
-                <div class="col">
-                    <div class="alert alert-secondary">No instructors found.</div>
-                </div>
-            {% endfor %}
+            <p class="h4 fw-bold">{{ total_instructors }}</p>
         </div>
     </div>
 
-
-   <!-- Payments Tab -->
     <!-- Payments Tab -->
-<div class="tab-pane fade" id="payments" role="tabpanel" aria-labelledby="payments-tab">
-    <div class="text-center mb-3">
-        <p class="text-muted mb-1">Total Payments</p>
-        <p class="h4 fw-bold">{{ total_payments }}</p>
-        <p class="text-success fw-bold">
-            Total Partner Earnings: IDR{{ total_payment_amount|intcomma }}
-        </p>
+    <div class="tab-pane fade" id="payments" role="tabpanel" aria-labelledby="payments-tab">
+        <div class="text-center mb-3">
+            <p class="text-muted mb-1">Total Payments</p>
+            <p class="h4 fw-bold">{{ total_payments }}</p>
+            <p class="text-success fw-bold">Total Partner Earnings: IDR{{ total_payment_amount|intcomma }}</p>
+        </div>
     </div>
-    <hr>
-    <h5>Recent Payments</h5>
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Payment ID</th>
-                <th>User</th>
-                <th>Course</th>
-                <th>Amount (Partner)</th>
-                <th>Date</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for payment in recent_payments %}
-                <tr>
-                    <td>{{ payment.id }}</td>
-                    <td>{{ payment.user.get_full_name|default:payment.user.username }}</td>
-                    <td>{{ payment.course.course_name }}</td>
-                    <td>IDR{{ payment.snapshot_partner_earning|intcomma }}</td>
-                    <td>{{ payment.created_at|date:"M d, Y" }}</td>
-                    <td>
-                        {% if payment.status == "completed" %}
-                            <span class="badge bg-success">{{ payment.status }}</span>
-                        {% else %}
-                            <span class="badge bg-secondary">{{ payment.status|default:"-" }}</span>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="6" class="text-center text-muted">No payments found.</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-
 
 </div>
 
 <!-- Social Links -->
-<div class="d-flex mt-3 mt-md-0 justify-content-center gap-3">
+<div class="d-flex mt-3 justify-content-center gap-3">
     <a href="#" class="text-danger"><i class="fab fa-facebook-f"></i></a>
     <a href="#" class="text-danger"><i class="fab fa-twitter"></i></a>
     <a href="#" class="text-danger"><i class="fab fa-linkedin-in"></i></a>
