@@ -27,7 +27,7 @@ from django.urls import reverse
 from django.core.mail import send_mail
 from authentication.forms import  UserProfileForm, UserPhoto,PasswordResetForms
 from .models import Profile
-from courses.models import Comment,LastAccessCourse,UserActivityLog,SearchHistory,Instructor,CourseRating,Partner,Assessment,GradeRange,AssessmentRead,Material, MaterialRead, Submission,AssessmentScore,QuestionAnswer,CourseStatus,Enrollment,MicroCredential, MicroCredentialEnrollment,Course, Enrollment, Category,CourseProgress
+from courses.models import Certificate,Comment,LastAccessCourse,UserActivityLog,SearchHistory,Instructor,CourseRating,Partner,Assessment,GradeRange,AssessmentRead,Material, MaterialRead, Submission,AssessmentScore,QuestionAnswer,CourseStatus,Enrollment,MicroCredential, MicroCredentialEnrollment,Course, Enrollment, Category,CourseProgress
 from .forms import CommentForm
 from django.http import HttpResponse,JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -1462,6 +1462,9 @@ def home(request):
     "bg-teal-100 text-teal-700 hover:border-teal-500",
     "bg-purple-100 text-purple-700 hover:border-purple-500",
     ]
+
+    total_certificates = Certificate.objects.count()
+
     return render(request, 'home/index.html', {
         'popular_categories': popular_categories,
         'popular_microcredentials': popular_microcredentials,
@@ -1473,6 +1476,7 @@ def home(request):
         'instructors': instructors_page,
         'latest_articles': latest_articles,
         'tw_colors': tw_colors,
+        'total_certificates': total_certificates,  
     })
 
 logger = logging.getLogger(__name__)
