@@ -17,14 +17,14 @@
             </div>
         {% endif %}
 
-        <div>
+        <div class="text-muted">
             <strong>{{ comment.user.get_full_name|default:comment.user.email }}</strong><br>
             <small class="text-muted">{{ comment.created_at|naturaltime }}</small>
         </div>
     </div>
 
     <!-- Comment Content -->
-    <p class="mb-2">{{ comment.content }}</p>
+    <p class="mb-2 text-muted">{{ comment.content }}</p>
 
     <!-- Course and Material Info -->
     <small class="text-muted fst-italic">

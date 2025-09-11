@@ -68,7 +68,7 @@
             <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
                 <div class="card-body text-center">
                     <i class="bi bi-person-check text-primary fs-2 mb-3"></i>
-                    <h5 class="card-title fw-semibold">Enrolled</h5>
+                    <h5 class="card-title fw-semibold text-muted">Enrolled</h5>
                     <h2 class="card-text text-primary fw-bold">{{ total_enrollments }}</h2>
                 </div>
             </div>
@@ -79,7 +79,7 @@
             <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
                 <div class="card-body text-center">
                     <i class="bi bi-book text-success fs-2 mb-3"></i>
-                    <h5 class="card-title fw-semibold">Active Courses</h5>
+                    <h5 class="card-title fw-semibold text-muted">Active Courses</h5>
                     <h2 class="card-text text-success fw-bold">{{ total_published_courses }}</h2>
                 </div>
             </div>
@@ -91,7 +91,7 @@
             <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
                 <div class="card-body text-center">
                     <i class="bi bi-people text-warning fs-2 mb-3"></i>
-                    <h5 class="card-title fw-semibold">Partner</h5>
+                    <h5 class="card-title fw-semibold text-muted">Partner</h5>
                     <h2 class="card-text text-warning fw-bold">
                         {% if user.is_superuser %}
                             {{ total_partners }}
@@ -109,7 +109,7 @@
             <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
                 <div class="card-body text-center">
                     <i class="bi bi-mortarboard text-info fs-2 mb-3"></i>
-                    <h5 class="card-title fw-semibold">Students</h5>
+                    <h5 class="card-title fw-semibold text-muted">Students</h5>
                     <h2 class="card-text text-info fw-bold">{{ total_learners }}</h2>
                 </div>
             </div>
@@ -120,7 +120,7 @@
             <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
                 <div class="card-body text-center">
                     <i class="bi bi-collection-play text-danger fs-2 mb-3"></i>
-                    <h5 class="card-title fw-semibold">Courses</h5>
+                    <h5 class="card-title fw-semibold text-muted">Courses</h5>
                     <h2 class="card-text text-danger fw-bold">{{ total_courses }}</h2>
                 </div>
             </div>
@@ -132,7 +132,7 @@
             <div class="card shadow-sm border-0 h-100 transition-all hover-scale">
                 <div class="card-body text-center">
                     <i class="bi bi-person-workspace text-secondary fs-2 mb-3"></i>
-                    <h5 class="card-title fw-semibold">Instructors</h5>
+                    <h5 class="card-title fw-semibold text-muted">Instructors</h5>
                     <h2 class="card-text text-secondary fw-bold">{{ total_instructors }}</h2>
                 </div>
             </div>
@@ -161,7 +161,7 @@
     <!-- Recently Created Courses Table -->
     <div class="card shadow-sm border-0">
         <div class="card-body">
-            <h4 class="fw-semibold mb-4">Recently Created Courses</h4>
+            <h4 class="fw-semibold mb-4 text-muted">Recently Created Courses</h4>
             <div class="table-responsive">
                 {% if courses_created_today %}
                 <table class="table table-hover table-bordered align-middle">

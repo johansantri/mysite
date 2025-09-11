@@ -79,7 +79,8 @@
 <section class="list-section">
   <div class="list-card card border-0 shadow-sm">
     <div class="card-body">
-      <h1 class="fw-bold mb-4">{{ title }}</h1>
+      <h1 class="display-5 fw-bold text-danger mb-4">{{ title }}</h1>
+      <hr>
       {% if messages %}
         {% for message in messages %}
           <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
