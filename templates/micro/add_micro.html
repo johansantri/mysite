@@ -14,4 +14,20 @@
         <button type="submit" class="btn btn-primary">Simpan</button>
     </form>
 
+<script>
+function listingslug(value) {
+    // Create a slug from the title input
+    let slug = value.toLowerCase()
+                    .replace(/[^a-z0-9\s-]/g, '')  // Remove invalid chars
+                    .replace(/\s+/g, '-')          // Replace spaces with -
+                    .replace(/-+/g, '-')           // Collapse multiple -
+                    .substring(0, 200);            // Optional: limit to 200 chars
+
+    // Set the value of the slug input
+    document.getElementById('id_slug').value = slug;
+}
+</script>
+
+
+
 {% endblock %}
