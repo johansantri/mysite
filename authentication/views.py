@@ -942,6 +942,7 @@ def dasbord(request):
     # ============================================================
     online_users = [user for user in users if is_user_online(user)]
     offline_users = [user for user in users if not is_user_online(user)]
+    total_certificates = Certificate.objects.count()
 
     context = {
         'courses_page': courses_page,
@@ -954,6 +955,7 @@ def dasbord(request):
         'courses_created_today': courses_created_today,
         'total_online': len(online_users),
         'total_offline': len(offline_users),
+        'total_certificates': total_certificates,
     }
 
     return render(request, 'home/dasbord.html', context)
