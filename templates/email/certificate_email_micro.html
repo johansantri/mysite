@@ -5,19 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Congratulations on Your MicroCredential!</title>
 </head>
-<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4; color: #333;">
-    <div style="max-width: 600px; margin: 20px auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-        <div style="background-color: #007bff; padding: 20px; text-align: center; color: #ffffff;">
-            <h1 style="margin: 0; font-size: 24px;">Congratulations, {{ user.get_full_name|default:user.username }}!</h1>
+<body style="margin: 0; padding: 0; font-family: 'Poppins', Arial, sans-serif; background-color: #f4f4f4; color: #333;">
+    <div style="max-width: 600px; margin: 20px auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);">
+        <div style="background: linear-gradient(135deg, #007bff, #00d4ff); padding: 40px 20px; text-align: center; color: #ffffff; position: relative;">
+            <!-- Ganti dengan URL logo organisasi atau ikon sertifikat -->
+            <img src="https://ini.icei.ac.id/static/assets/img/icon/certificate.svg" alt="Certificate Icon" style="max-width: 80px; margin-bottom: 10px;">
+            <h1 style="margin: 0; font-size: 28px; font-weight: 600;">Congratulations, {{ user.get_full_name|default:user.username }}!</h1>
         </div>
-        <div style="padding: 30px; line-height: 1.6;">
-            <p style="margin: 0 0 15px;">{{ congratulatory_message }}</p>
-            <p style="margin: 0 0 15px;">Your certificate ID: <span style="font-weight: bold; color: #007bff;">{{ certificate_id }}</span></p>
-            <p style="margin: 0 0 15px;">You can verify your certificate by clicking the button below:</p>
-            <a href="{{ verification_url }}" style="display: inline-block; padding: 12px 24px; background-color: #007bff; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold; margin: 15px 0; text-align: center;">Verify Certificate</a>
-            <p style="margin: 0 0 15px;">The certificate is attached to this email for your records. Please keep it safe!</p>
+        <div style="padding: 30px; line-height: 1.8; font-size: 16px;">
+            <p style="margin: 0 0 20px;">{{ congratulatory_message }}</p>
+            <p style="margin: 0 0 20px;">Your certificate ID: <span style="font-weight: 600; color: #007bff; background-color: #e7f3ff; padding: 5px 10px; border-radius: 5px; display: inline-block;">{{ certificate_id }}</span></p>
+            <p style="margin: 0 0 20px;">You can verify your certificate by clicking the button below:</p>
+            <a href="{{ verification_url }}" style="display: inline-block; padding: 14px 28px; background: linear-gradient(135deg, #007bff, #00d4ff); color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: 600; text-align: center;">Verify Certificate</a>
+            <p style="margin: 20px 0 0;">The certificate is attached to this email for your records. Please keep it safe!</p>
         </div>
-        <div style="background-color: #f8f9fa; padding: 15px; text-align: center; font-size: 12px; color: #666;">
+        <div style="background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 14px; color: #666;">
             <p style="margin: 0;">Best regards,<br>Your Organization</p>
             <p style="margin: 0;">&copy; {{ current_date|date:"Y" }} Your Organization. All rights reserved.</p>
         </div>
