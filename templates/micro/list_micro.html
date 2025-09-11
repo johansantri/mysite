@@ -34,11 +34,17 @@
                         {% for mc in page_obj.object_list %}
                             <tr>
                                 <td>
-                                    <a href="{% url 'courses:micro_detail' mc.id mc.slug %}">
-                                        {{ mc.title }}
-                                    </a><br>
+                                    {% if mc.slug %}
+                                        <a href="{% url 'courses:micro_detail' mc.id mc.slug %}">
+                                            {{ mc.title }}
+                                        </a>
+                                    {% else %}
+                                        {{ mc.title }} <span class="text-muted">(missing slug)</span>
+                                    {% endif %}
+                                    <br>
                                     <small class="text-muted">{{ mc.category.name }}</small>
                                 </td>
+
                                 <td>{{ mc.num_courses }}</td>
                                 <td><a href="{% url 'courses:microcredential_report' mc.id %}">{{ mc.num_enrollments }}</a></td>
                                 <td>

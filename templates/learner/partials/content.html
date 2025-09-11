@@ -23,11 +23,11 @@
                             {% endif %}
                         </a>
                         <div>
-                            <p class="mb-0 text-white fw-bold">
-                                <a href="{% url 'authentication:profile' request.user.username %}" class="text-white text-decoration-none transition-all hover-scale">{{ request.user.first_name }} {{ request.user.last_name }}</a>
+                            <p class="mb-0 text-muted fw-bold">
+                                <a href="{% url 'authentication:profile' request.user.username %}" class="text-muted text-decoration-none transition-all hover-scale">{{ request.user.first_name }} {{ request.user.last_name }}</a>
                             </p>
                             <small class="text-muted">{{ request.user.hobby|default:"No hobby set" }}</small>
-                            <span class="badge bg-secondary text-white mt-2 d-inline-block">
+                            <span class="badge bg-secondary text-muted mt-2 d-inline-block">
                                 {% if request.user.is_superuser %}
                                     Superuser
                                 {% elif request.user.is_partner %}
