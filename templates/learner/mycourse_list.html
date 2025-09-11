@@ -72,8 +72,14 @@
                             {% with enrollment=data.enrollment %}
                             <tr>
                                 <td class="ps-4">
-                                    <a href="{% url 'courses:course_lms_detail' enrollment.course.id enrollment.course.slug %}" class="text-decoration-none text-primary fw-medium">
+                                    <a href="{% url 'courses:course_lms_detail' enrollment.course.id enrollment.course.slug %}" 
+                                    class="text-decoration-none text-primary fw-medium">
                                         {{ enrollment.course.course_name }}
+                                    </a>
+                                    &nbsp; &nbsp;
+                                    <a href="{% url 'learner:score_summary' username=request.user.username course_id=enrollment.course.id %}" 
+                                    class="text-decoration-none text-primary fw-medium">
+                                        <i class="bi bi-clipboard-data me-2"></i>Score
                                     </a>
                                 </td>
                                 <td>{{ enrollment.enrolled_at|date:"d M Y" }}</td>
