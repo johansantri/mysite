@@ -2063,6 +2063,7 @@ def generate_microcredential_certificate(request, id):
         certificate_uuid = existing_claim.certificate_uuid
         certificate_id = existing_claim.certificate_id
     else:
+        # Generate certificate details for new claim
         certificate_uuid = str(uuid.uuid4())
         certificate_id = f"CERT-{microcredential.id}-{request.user.id}"
         MicroClaim.objects.create(
@@ -2072,13 +2073,56 @@ def generate_microcredential_certificate(request, id):
             certificate_uuid=certificate_uuid
         )
 
-    base_url = request.build_absolute_uri('/')
+        # Send email notification with certificate and congratulatory message
+        try:
+            # Render email template
+            email_context = {
+                'user': request.user,
+                'microcredential': microcredential,
+                'certificate_id': certificate_id,
+                'verification_url': f"{request.build_absolute_uri('/').rstrip('/')}/verify-micro/{certificate_uuid}/",
+                'congratulatory_message': f"Congratulations, {request.user.get_full_name() or request.user.username}! You have successfully earned the {microcredential.title} MicroCredential!",
+            }
+            email_subject = f"Congratulations! Your {microcredential.title} Certificate"
+            email_body = render_to_string('email/certificate_email_micro.html', email_context)
+
+            # Generate PDF for attachment
+            base_url = request.build_absolute_uri('/')
+            html_content = render_to_string('learner/microcredential_certificate.html', {
+                'microcredential': microcredential,
+                'user': request.user,
+                'current_date': timezone.now().date(),
+                'certificate_id': certificate_id,
+                'certificate_uuid': certificate_uuid,
+                'verification_url': email_context['verification_url'],  # For verification button
+                'course_grades': course_grades,
+                'min_total_score': microcredential.min_total_score,
+            })
+            pdf = HTML(string=html_content, base_url=base_url).write_pdf()
+
+            # Send email
+            email = EmailMessage(
+                subject=email_subject,
+                body=email_body,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=[request.user.email],
+            )
+            email.attach(f"certificate_{microcredential.slug}.pdf", pdf, 'application/pdf')
+            email.content_subtype = 'html'  # Set email to HTML format
+            email.send()
+
+            # Add success message for user
+            messages.success(request, f"Congratulations! You have earned the {microcredential.title} certificate. A copy has been sent to your email.")
+        except Exception as e:
+            logger.error(f"Error sending email: {str(e)}")
+            messages.error(request, f"Certificate generated, but there was an issue sending the email: {str(e)}")
+
+    # Generate QR Code
     qr_dir = os.path.join(settings.MEDIA_ROOT, 'qrcodes')
     os.makedirs(qr_dir, exist_ok=True)
     qr_path = os.path.join(qr_dir, f'certificate_{certificate_uuid}.png')
     qr_code_url = f"{base_url.rstrip('/')}{settings.MEDIA_URL}qrcodes/certificate_{certificate_uuid}.png"
 
-    # Generate QR Code hanya jika file belum ada
     if not os.path.exists(qr_path):
         verification_url = f"{base_url.rstrip('/')}/verify-micro/{certificate_uuid}/"
         qr = qrcode.QRCode(version=1, box_size=10, border=4)
@@ -2108,6 +2152,7 @@ def generate_microcredential_certificate(request, id):
         'min_total_score': microcredential.min_total_score,
         'qr_code_url': qr_code_url,
         'certificate_uuid': certificate_uuid,
+        'verification_url': f"{base_url.rstrip('/')}/verify-micro/{certificate_uuid}/",  # For verification button
     }
 
     html_content = render_to_string('learner/microcredential_certificate.html', context)
@@ -2122,6 +2167,7 @@ def generate_microcredential_certificate(request, id):
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
     return response
+
 
 def verify_certificate_micro(request, certificate_id):
     # Ambil MicroClaim berdasarkan certificate_uuid yang diberikan
