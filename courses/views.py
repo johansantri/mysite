@@ -37,7 +37,7 @@ from oauthlib.common import to_unicode
 from requests_oauthlib import OAuth1, OAuth1Session
 from weasyprint import HTML
 from django_ckeditor_5.widgets import CKEditor5Widget
-
+from django.core.mail import EmailMessage
 # Django core
 from django import forms
 from django.conf import settings
@@ -3230,6 +3230,8 @@ def submit_answer(request, askora_id):
 
 
 # Setup logging untuk debugging
+logger = logging.getLogger(__name__)
+
 def generate_certificate(request, course_id):
     if not request.user.is_authenticated:
         logger.info(f"Unauthenticated user attempted to claim certificate for course {course_id}")
@@ -3313,10 +3315,7 @@ def generate_certificate(request, course_id):
     passing_criteria_met = overall_percentage >= passing_threshold
     status = "Pass" if all_assessments_submitted and passing_criteria_met else "Fail"
 
-    if status == "Fail":
-        logger.error(f"User {request.user.username} failed course {course.id}")
-        messages.error(request, "You have not met the passing criteria for this course.")
-        return redirect('authentication:dashbord')
+    
 
     assessment_results = [
         {'name': score['assessment'].name, 'max_score': score['weight'], 'score': score['score']}
@@ -3392,7 +3391,7 @@ def generate_certificate(request, course_id):
     logger.info(f"QR code generated: {qr_url}")
 
     try:
-        Certificate.objects.create(
+        certificate = Certificate.objects.create(
             certificate_id=certificate_id,
             user=request.user,
             course=course,
@@ -3421,9 +3420,42 @@ def generate_certificate(request, course_id):
 
     try:
         pdf = HTML(string=html_content, base_url=base_url).write_pdf()
+        
+        # Kirim email notifikasi dengan lampiran PDF
+        email_subject = f"Your LMSKu Certificate for {course.course_name}"
+        email_html = render_to_string('email/certificate_notification.html', {
+            'user': request.user,
+            'course': course,
+            'issue_date': timezone.now().strftime('%Y-%m-%d'),
+            'total_score': total_score,
+            'max_score': total_max_score,
+            'certificate_id': certificate_id,
+            'verification_url': verification_url,
+        })
+        email_text = render_to_string('email/certificate_notification.txt', {
+            'user': request.user,
+            'course': course,
+            'issue_date': timezone.now().strftime('%Y-%m-%d'),
+            'total_score': total_score,
+            'max_score': total_max_score,
+            'certificate_id': certificate_id,
+            'verification_url': verification_url,
+        })
+
+        email = EmailMessage(
+            subject=email_subject,
+            body=email_html,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[request.user.email],
+        )
+        email.content_subtype = 'html'  # Set email ke format HTML
+        email.attach(f'certificate_{course.slug}.pdf', pdf, 'application/pdf')
+        email.send(fail_silently=False)
+        logger.info(f"Certificate notification email sent to {request.user.email}")
+
     except Exception as e:
-        logger.error(f"Error generating PDF: {str(e)}")
-        messages.error(request, "Error generating certificate.")
+        logger.error(f"Error generating PDF or sending email: {str(e)}")
+        messages.error(request, "Error generating certificate or sending notification.")
         return redirect('authentication:dashbord')
 
     response = HttpResponse(pdf, content_type='application/pdf')
