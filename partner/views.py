@@ -528,21 +528,24 @@ def top_courses_by_rating_view(request):
 @login_required
 @user_passes_test(lambda u: u.is_superuser or getattr(u, 'is_partner', False))
 def retention_rate_view(request):
-    today = now().date()
+    today = now()
     start_date = today - timedelta(weeks=12)
 
+    # Ambil user yg join setelah start_date
     users = CustomUser.objects.filter(date_joined__gte=start_date)
 
-    # Jika user partner, filter berdasarkan partner
     if request.user.is_partner and not request.user.is_superuser:
         try:
-            partner = request.user.partner_user  # related_name dari Partner
-            users = users.filter(partner_user=partner)  # pastikan ini sesuai dengan OneToOne atau FK
+            partner = request.user.partner_user
+            users = users.filter(partner_user=partner)
         except Partner.DoesNotExist:
             messages.error(request, "Akun Anda belum terhubung ke data Partner.")
             return redirect('authentication:dashboard')
 
-    # Cohort by week
+    # Debug print: pastikan user ada
+    print(f"Users count: {users.count()}")
+
+    # Buat cohorts mingguan
     cohorts = (
         users
         .annotate(week_joined=TruncWeek('date_joined'))
@@ -554,11 +557,17 @@ def retention_rate_view(request):
         .order_by('week_joined')
     )
 
-    week_labels = [c['week_joined'].strftime('%Y-%m-%d') for c in cohorts]
-    new_users = [c['new_users'] for c in cohorts]
-    retained_users = [c['retained_users'] for c in cohorts]
+    week_labels = []
+    new_users = []
+    retained_users = []
 
-    # Login activity per day
+    for c in cohorts:
+        week_labels.append(c['week_joined'].strftime('%Y-%m-%d') if c['week_joined'] else 'Unknown')
+        new_users.append(c['new_users'])
+        retained_users.append(c['retained_users'])
+
+    print("Cohorts:", list(cohorts))  # Debug print
+
     user_ids = users.values_list('id', flat=True)
     activity = (
         UserActivityLog.objects.filter(
@@ -572,16 +581,24 @@ def retention_rate_view(request):
         .order_by('day')
     )
 
-    day_labels = [a['day'].strftime('%Y-%m-%d') for a in activity]
-    daily_active_users = [a['active_users'] for a in activity]
+    day_labels = []
+    daily_active_users = []
 
-    return render(request, 'partner/retention_rate.html', {
+    for a in activity:
+        day_labels.append(a['day'].strftime('%Y-%m-%d') if a['day'] else 'Unknown')
+        daily_active_users.append(a['active_users'])
+
+    print("Activity:", list(activity))  # Debug print
+
+    context = {
         'week_labels': week_labels,
         'new_users': new_users,
         'retained_users': retained_users,
         'day_labels': day_labels,
         'daily_active_users': daily_active_users,
-    })
+    }
+
+    return render(request, 'partner/retention_rate.html', context)
 
 
 

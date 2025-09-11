@@ -18,17 +18,26 @@
 
   <div class="card shadow-sm p-4 mb-5">
     <h5 class="text-muted">Weekly Retention Rate</h5>
+    {% if week_labels %}
     <canvas id="retentionChart" height="120"></canvas>
+    {% else %}
+    <p class="text-danger">Tidak ada data pengguna dalam 12 minggu terakhir.</p>
+    {% endif %}
   </div>
 
   <div class="card shadow-sm p-4">
     <h5 class="text-muted">Daily Active Users</h5>
+    {% if day_labels %}
     <canvas id="activeChart" height="120"></canvas>
+    {% else %}
+    <p class="text-danger">Tidak ada aktivitas login pengguna dalam 12 minggu terakhir.</p>
+    {% endif %}
   </div>
 </div>
 
 <script src="{% static 'js/chart.umd.min.js' %}"></script>
 <script>
+  {% if week_labels %}
   const retentionChart = new Chart(document.getElementById("retentionChart"), {
     type: 'bar',
     data: {
@@ -57,7 +66,9 @@
       }
     }
   });
+  {% endif %}
 
+  {% if day_labels %}
   const activeChart = new Chart(document.getElementById("activeChart"), {
     type: 'line',
     data: {
@@ -82,5 +93,6 @@
       }
     }
   });
+  {% endif %}
 </script>
 {% endblock %}
