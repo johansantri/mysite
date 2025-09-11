@@ -6,6 +6,9 @@ from django.utils.translation import get_language_info
 register = template.Library()
 from authentication.utils import is_user_online
 
+from django.utils.safestring import mark_safe
+from django.utils.html import strip_tags
+
 
 @register.filter
 def get_language_name(language_code):
@@ -77,3 +80,13 @@ def initials(full_name):
 @register.simple_tag
 def user_online(user):
     return is_user_online(user)
+
+
+#batasi text di index micro course
+@register.filter
+def truncatechars_safe(value, length):
+    """Truncates text to a specific number of characters, preserving HTML safety."""
+    text = strip_tags(value) if value else ''  # Remove HTML tags for accurate counting
+    if len(text) > length:
+        return mark_safe(text[:length].rsplit(' ', 1)[0] + '...')
+    return mark_safe(text)
