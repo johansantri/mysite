@@ -1,8 +1,61 @@
 from django.contrib import admin
 from . import models 
-from .models import  InstructorCertificate,LTIResult,LastAccessCourse,LTIExternalTool1,MicroClaim,UserMicroProgress,MicroCredentialComment,Certificate,Submission,CourseRating,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
+from .models import  CourseSessionLog,InstructorCertificate,LTIResult,LastAccessCourse,LTIExternalTool1,MicroClaim,UserMicroProgress,MicroCredentialComment,Certificate,Submission,CourseRating,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
 from import_export.admin import ImportExportModelAdmin
 from django.utils.html import format_html
+
+@admin.register(CourseSessionLog)
+class CourseSessionLogAdmin(admin.ModelAdmin):
+    # Menampilkan data yang penting di list view
+    list_display = ('user', 'course', 'started_at', 'ended_at', 'duration_seconds', 'location_country', 'location_city')
+    
+    # Memfilter berdasarkan relasi
+    list_filter = ('course', 'started_at', 'ended_at', 'location_country')
+    
+    # Menambahkan pencarian di beberapa field
+    search_fields = ('user__username', 'course__course_name', 'location_country', 'location_city')
+
+    # Batasi jumlah data per halaman untuk mengurangi beban server
+    list_per_page = 50  # Bisa disesuaikan sesuai kebutuhan
+
+    # Optimalkan pengambilan data dengan select_related untuk ForeignKey
+    # Ini membantu jika kamu memerlukan data terkait (user, course) dalam satu query
+    list_select_related = ('user', 'course')
+
+    # Gunakan raw_id_fields untuk memilih relasi yang besar dengan lebih efisien
+    raw_id_fields = ('user', 'course')
+
+    # Untuk mengoptimalkan pencarian dalam ForeignKey (jika ada banyak data), kita bisa menggunakan autocomplete_fields
+    autocomplete_fields = ('user', 'course')
+
+    # Jika ada query yang membutuhkan agregasi atau statistik lainnya
+    def duration_min(self, obj):
+        return obj.duration_seconds // 60  # Durasi dalam menit
+
+    duration_min.admin_order_field = 'duration_seconds'  # Menambahkan urutan berdasarkan durasi
+    duration_min.short_description = 'Durasi (Menit)'
+
+    # Jika ingin menambahkan custom actions
+    actions = ['export_to_csv']
+
+    def export_to_csv(self, request, queryset):
+        import csv
+        from django.http import HttpResponse
+
+        # Mengambil data yang dipilih dalam format CSV
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="course_session_logs.csv"'
+
+        writer = csv.writer(response)
+        writer.writerow(['User', 'Course', 'Started At', 'Ended At', 'Duration (Seconds)', 'Location Country', 'Location City'])
+
+        for log in queryset:
+            writer.writerow([log.user.username, log.course.course_name, log.started_at, log.ended_at, log.duration_seconds, log.location_country, log.location_city])
+
+        return response
+
+    export_to_csv.short_description = "Export to CSV"
+
 
 @admin.register(LastAccessCourse)
 class LastAccessCourseAdmin(admin.ModelAdmin):
