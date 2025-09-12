@@ -9,7 +9,7 @@ from courses.models import Course, Material,CourseStatus,GradeRange,MaterialRead
 from payments.models import Payment
 from authentication.models import CustomUser
 from collections import defaultdict
-from django.db.models import Avg, Count, Q,F,FloatField, ExpressionWrapper
+from django.db.models import Avg, Count, Q,F,FloatField, ExpressionWrapper,DecimalField
 from django.contrib import messages
 from datetime import timedelta
 from django.utils.timezone import now
@@ -37,7 +37,7 @@ from django.db.models import Count, Avg, Max, Min
 from django.contrib.admin.views.decorators import staff_member_required
 import pprint
 from decimal import Decimal, ROUND_HALF_UP
-
+from django.db.models.functions import Coalesce
 
 
 @cache_page(60 * 5)
@@ -237,17 +237,20 @@ def top_courses_by_revenue_view(request):
         courses = courses.filter(org_partner__user=request.user)
 
     courses = courses.annotate(
-        revenue=Sum('payments__amount', filter=Q(payments__status='completed'))
+        revenue=Coalesce(
+            Sum('payments__amount', filter=Q(payments__status='completed')),
+            0,
+            output_field=DecimalField()
+        )
     ).order_by('-revenue')[:10]
 
     labels = [course.course_name for course in courses]
-    revenues = [course.revenue or 0 for course in courses]
+    revenues = [float(course.revenue) for course in courses]  # Convert Decimal ke float
 
     return render(request, 'partner/top_courses_revenue.html', {
         'labels': labels,
         'revenues': revenues,
     })
-
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.is_partner)

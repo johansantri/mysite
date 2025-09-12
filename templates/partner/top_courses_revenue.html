@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<div class="container py-5">
+
   <div class="text-center mb-4">
     <h2 class="text-primary fw-bold">
       <i class="bi bi-currency-dollar me-2"></i>Top Courses by Revenue
@@ -21,18 +21,20 @@
   <div class="card shadow-lg border-0 rounded-4 p-4 mx-auto" style="max-width: 700px;">
     <canvas id="revenueChart" height="300"></canvas>
   </div>
-</div>
+
 
 <script src="{% static 'js/chart.umd.min.js' %}"></script>
- <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/9.0.0/decimal.js" integrity="sha512-j7XClNLgl5hebr3jl5xMoEpuaniuP60N1Sz62xHwJSbuCgUNgP0kDZCGFbUAphBB6dgk7WxMnwKmP6vsY7fV7g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
+  const labels = {{ labels|safe }};
+  const revenues = {{ revenues|safe }};
+
   new Chart(document.getElementById("revenueChart"), {
     type: 'bar',
     data: {
-      labels: {{ labels|safe }},
+      labels: labels,
       datasets: [{
         label: "Total Revenue (Rp)",
-        data: {{ revenues|safe }},
+        data: revenues,
         backgroundColor: '#3b82f6',
         borderRadius: 5,
         barThickness: 40
@@ -48,7 +50,7 @@
         tooltip: {
           callbacks: {
             label: function(ctx) {
-              return 'Rp ' + ctx.raw.toLocaleString();
+              return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(ctx.raw);
             }
           }
         }
@@ -56,7 +58,7 @@
       scales: {
         y: {
           ticks: {
-            callback: value => 'Rp ' + value.toLocaleString()
+            callback: value => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(value)
           }
         }
       }
