@@ -571,7 +571,7 @@ def retention_rate_view(request):
     user_ids = users.values_list('id', flat=True)
     activity = (
         UserActivityLog.objects.filter(
-            activity_type='login',
+            activity_type='login_view',
             timestamp__gte=start_date,
             user_id__in=user_ids
         )
