@@ -4909,6 +4909,32 @@ def become_instructor(request):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
     # Check if the user is already an instructor
+
+    user = request.user
+
+    # Validasi data diri wajib
+    required_fields = {
+        'first_name': 'First Name',
+        'last_name': 'Last Name',
+        'email': 'Email',
+        'phone': 'Phone Number',
+        'gender': 'Gender',
+        'birth': 'Date of Birth',
+    }
+
+    missing_fields = [
+        label for field, label in required_fields.items()
+        if not getattr(user, field, None)
+        or (isinstance(getattr(user, field), str) and not getattr(user, field).strip())
+    ]
+
+    if missing_fields:
+        messages.warning(
+            request,
+            f"Please complete your profile before accessing microcredentials: {', '.join(missing_fields)}"
+        )
+        return redirect('authentication:edit-profile', pk=user.pk)
+    
     try:
         application = Instructor.objects.get(user=request.user)
         if application.status == "Pending":
