@@ -367,7 +367,7 @@ logger = logging.getLogger(__name__)
 
 
 @custom_ratelimit
-@cache_page(60 * 5)
+
 @vary_on_headers('Accept-Language')
 def course_list(request):
     try:
