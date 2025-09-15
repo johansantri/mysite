@@ -1,75 +1,157 @@
-[INFO] 2025-09-12 09:03:22,592 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:03:22,751 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:03:22,838 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:10:09,621 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:10:09,622 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:10:09,636 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:12:04,354 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[WARNING] 2025-09-12 09:12:13,126 [django.request] Not Found: /favicon.ico
-[INFO] 2025-09-12 09:16:05,237 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:17:17,552 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:17:17,745 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:17:17,755 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:18:25,938 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:18:26,050 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:18:26,090 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:21:18,188 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:23:06,388 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:23:06,568 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:23:06,615 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[ERROR] 2025-09-12 09:23:10,324 [django.request] Internal Server Error: /top-courses-revenue/
-Traceback (most recent call last):
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
-    response = get_response(request)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
-    return view_func(request, *args, **kwargs)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
-    return view_func(request, *args, **kwargs)
-  File "/home/TIM/mysite/partner/views.py", line 243, in top_courses_by_revenue_view
-    labels = [course.course_name for course in courses]
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 384, in __iter__
-    self._fetch_all()
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1945, in _fetch_all
-    self._result_cache = list(self._iterable_class(self))
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 91, in __iter__
-    results = compiler.execute_sql(
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1610, in execute_sql
-    sql, params = self.as_sql()
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 766, in as_sql
-    extra_select, order_by, group_by = self.pre_sql_setup(
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 85, in pre_sql_setup
-    self.setup_query(with_col_aliases=with_col_aliases)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 74, in setup_query
-    self.select, self.klass_info, self.annotation_col_map = self.get_select(
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 329, in get_select
-    sql, params = col.select_format(self, sql, params)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/expressions.py", line 498, in select_format
-    if hasattr(self.output_field, "select_format"):
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/functional.py", line 47, in __get__
-    res = instance.__dict__[self.name] = self.func(instance)
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/expressions.py", line 327, in output_field
-    output_field = self._resolve_output_field()
-  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/expressions.py", line 365, in _resolve_output_field
-    raise FieldError(
-django.core.exceptions.FieldError: Expression contains mixed types: DecimalField, IntegerField. You must set output_field.
-[INFO] 2025-09-12 09:24:34,588 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:24:34,761 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:24:34,781 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:26:36,668 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:26:36,695 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:26:36,769 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:27:18,504 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:27:18,573 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:27:18,670 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:27:49,595 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:27:49,643 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:27:49,714 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:28:18,577 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:28:18,606 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 09:28:18,766 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 14:38:13,248 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 14:40:19,838 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 14:40:19,934 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-09-12 14:40:19,977 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-09-15 10:14:12,872 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-09-15 10:14:12,906 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-09-15 10:14:12,945 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-09-15 10:14:21,489 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:14:21,527 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:14:21,545 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:14:21,547 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:14:21,561 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:14:21,570 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:14:21,573 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:14:21,585 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:14:21,591 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:14:21,595 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:14:21,605 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:14:21,615 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:14:21,621 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:14:21,631 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:14:21,634 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:14:21,640 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:14:21,650 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:14:21,656 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:14:21,659 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:14:21,663 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:14:21,669 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:14:21,679 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:14:21,679 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:14:21,688 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:14:21,691 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:14:21,699 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:14:21,706 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:14:21,708 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:14:21,712 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:15:19,036 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:15:19,039 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:15:19,048 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:15:19,050 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:15:19,064 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:15:19,066 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:15:19,076 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:15:19,078 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:15:19,087 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:15:19,091 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:15:19,101 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:15:19,103 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:15:19,117 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:15:19,121 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:15:19,132 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:15:19,140 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:15:19,141 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:15:19,145 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:15:19,154 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:15:19,160 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:15:19,161 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:15:19,165 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:15:19,175 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:15:19,183 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:15:19,182 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:15:19,185 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:15:19,193 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:15:19,193 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:16:19,026 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:16:19,029 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:16:19,031 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:16:19,044 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:16:19,052 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:16:19,057 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:16:19,058 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:16:19,069 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:16:19,076 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:16:19,083 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:16:19,086 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:16:19,098 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:16:19,101 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:16:19,108 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:16:19,114 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:16:19,125 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:16:19,129 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:16:19,134 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:16:19,135 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:16:19,145 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:16:19,152 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:16:19,156 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:16:19,156 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:16:19,167 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:16:19,177 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:16:19,178 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:16:19,182 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:16:19,190 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:16:19,194 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-09-15 10:17:12,220 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-09-15 10:17:12,339 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-09-15 10:17:12,414 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-09-15 10:17:19,073 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:17:19,107 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:17:19,127 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:17:19,150 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:17:19,175 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:17:19,198 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:17:19,222 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:17:19,234 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:17:19,247 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:17:19,260 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:17:19,272 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:17:19,283 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:17:19,295 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:17:19,315 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:17:19,326 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:17:19,337 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:17:19,348 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:17:19,358 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:17:19,361 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:17:19,374 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:17:19,377 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:17:19,388 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:17:19,399 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:17:19,399 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:17:19,410 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:17:19,420 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:17:19,423 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:17:20,374 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-09-15 10:17:25,051 [urllib3.connectionpool] Starting new HTTPS connection (1): oauth2.googleapis.com:443
+[DEBUG] 2025-09-15 10:17:25,400 [urllib3.connectionpool] https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+[DEBUG] 2025-09-15 10:17:25,576 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-09-15 10:17:25,577 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36", path_info: "/accounts/google/login/callback/"}.
+[INFO] 2025-09-15 10:17:25,579 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-09-15 02:17:25.576186+00:00
+[INFO] 2025-09-15 10:18:15,821 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-09-15 10:18:15,960 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-09-15 10:18:16,078 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-09-15 10:18:21,739 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:18:21,772 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:18:21,789 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:18:21,805 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:18:21,807 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:18:21,821 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:18:21,832 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:18:21,834 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:18:21,844 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:18:21,854 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:18:21,856 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:18:21,866 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:18:21,876 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:18:21,879 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:18:21,886 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:18:21,896 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:18:21,899 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:18:21,915 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:18:21,918 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:18:21,920 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:18:21,933 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:18:21,940 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:18:21,942 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:18:21,944 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:18:21,955 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:18:21,967 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:18:21,975 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:18:21,981 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-15 10:18:21,988 [django.request] Not Found: /partner/ping-session/

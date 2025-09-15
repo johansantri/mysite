@@ -201,7 +201,12 @@ SOCIALACCOUNT_PROVIDERS = {
             'client_id':'685028379285-6frcirokho5copovj8s61s33251bs8p6.apps.googleusercontent.com',
             'secret':'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',
             'key':''
-        }
+        },
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+
     }
 }
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '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'
