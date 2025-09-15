@@ -2,7 +2,7 @@
 {% load extra_filters %}
 
 {% block content %}
-<div class="container my-5">
+
     <!-- Header Section -->
     <div class="card bg-light border-0 shadow-sm mb-5">
         <div class="card-body text-center py-5">
@@ -28,7 +28,7 @@
             <!-- About Section -->
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
-                    <h3 class="h4 text-primary mb-3 border-bottom pb-2">About Me</h3>
+                    <h3 class="h4 text-danger mb-3 border-bottom pb-2">About Me</h3>
                     {% if instructor %}
                         <p class="text-dark">{{ instructor.bio|default:"No bio provided" }}</p>
                     {% else %}
@@ -40,7 +40,7 @@
             <!-- Experience Section -->
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
-                    <h3 class="h4 text-primary mb-3 border-bottom pb-2">Experience</h3>
+                    <h3 class="h4 text-danger mb-3 border-bottom pb-2">Experience</h3>
                     <div class="mb-3">
                         <h6 class="text-muted fw-semibold mb-1">{{ user.hobby|default:"No hobby specified" }}</h6>
                         <p class="mb-2">
@@ -48,7 +48,7 @@
                         </p>
                         <ul class="list-group list-group-flush">
                             {% if instructor and instructor.expertise %}
-                                <li class="list-group-item border-0">{{ instructor.expertise }}</li>
+                                <li class="list-group-item border-0">{{ instructor.expertise |default:"No expertise specified"|safe }}</li>
                             {% else %}
                                 <li class="list-group-item border-0 text-muted">No expertise listed.</li>
                             {% endif %}
@@ -60,7 +60,7 @@
             <!-- Education Section -->
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
-                    <h3 class="h4 text-primary mb-3 border-bottom pb-2">Education</h3>
+                    <h3 class="h4 text-danger mb-3 border-bottom pb-2">Education</h3>
                     {% if user.education and user.university %}
                         <p class="text-dark">
                             <strong>{{ user.education }}</strong> | 
@@ -78,11 +78,11 @@
             <!-- Skills Section -->
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
-                    <h3 class="h4 text-primary mb-3 border-bottom pb-2">Skills</h3>
+                    <h3 class="h4 text-danger mb-3 border-bottom pb-2">Skills</h3>
                     <div class="d-flex flex-wrap gap-2">
                         {% if instructor.tech %}
                             {% for skill in instructor.tech|split:"," %}
-                                <span class="badge bg-primary text-white p-2">{{ skill|trim }}</span>
+                                <span class="badge bg-danger text-white p-2">{{ skill|trim }}</span>
                             {% endfor %}
                         {% else %}
                             <p class="text-muted">No skills listed.</p>
@@ -94,21 +94,21 @@
             <!-- Contact Section -->
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
-                    <h3 class="h4 text-primary mb-3 border-bottom pb-2">Contact</h3>
+                    <h3 class="h4 text-danger mb-3 border-bottom pb-2">Contact</h3>
                     <ul class="list-unstyled text-dark">
                         <li class="mb-2">
-                            <i class="fas fa-envelope me-2 text-primary"></i>
+                            <i class="fas fa-envelope me-2 text-danger"></i>
                             <strong>Email:</strong> {{ user.email }}
                         </li>
                         <li class="mb-2">
-                            <i class="fas fa-phone me-2 text-primary"></i>
+                            <i class="fas fa-phone me-2 text-danger"></i>
                             <strong>Phone:</strong> {{ user.phone|default:"Not provided" }}
                         </li>
                         <li>
-                            <i class="fab fa-linkedin me-2 text-primary"></i>
+                            <i class="fab fa-linkedin me-2 text-danger"></i>
                             <strong>LinkedIn:</strong>
                             {% if user.linkedin_url %}
-                                <a href="{{ user.linkedin_url }}" target="_blank" class="text-primary text-decoration-none">
+                                <a href="{{ user.linkedin_url }}" target="_blank" class="text-danger text-decoration-none">
                                     {{ user.linkedin_url|urlize }}
                                 </a>
                             {% else %}
@@ -123,7 +123,7 @@
 
     <!-- Edit Profile Link -->
     <div class="text-end mt-4">
-        <a href="{% url 'authentication:edit-profile' user.id %}" class="btn btn-outline-primary px-4 py-2">
+        <a href="{% url 'authentication:edit-profile' user.id %}" class="btn btn-outline-danger px-4 py-2">
             <i class="fas fa-edit me-2"></i> Edit Profile
         </a>
     </div>
@@ -134,5 +134,5 @@
     </div>
    
 
-</div>
+
 {% endblock content %}

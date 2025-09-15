@@ -1,4 +1,5 @@
 from django import forms
+import os
 from captcha.fields import CaptchaField
 import logging
 import unicodedata
@@ -16,6 +17,13 @@ from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
+
+from PIL import Image
+from io import BytesIO
+from django.core.files.uploadedfile import InMemoryUploadedFile
+import sys
+import imghdr
+
 logger = logging.getLogger("django.contrib.auth")
 
 
@@ -302,6 +310,69 @@ class UserProfileForm(forms.ModelForm):
             if url and not re.match(r'^https?://', url):
                 self.add_error(field, "URL harus dimulai dengan http:// atau https://")
         return cleaned_data
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)  # ✅ benar
+        self.fields['photo'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Upload your photo',
+            'required': True
+        })
+        # ✅ simpan foto lama untuk pengecekan
+        self.old_photo = self.instance.photo
+
+    def clean_photo(self):
+        photo = self.cleaned_data.get('photo')
+        if not photo:
+            raise ValidationError("Foto wajib diunggah.")
+
+        if photo.size > 2 * 1024 * 1024:
+            raise ValidationError("Ukuran file tidak boleh lebih dari 2MB.")
+
+        if not photo.content_type.startswith('image/'):
+            raise ValidationError("Hanya file gambar yang diperbolehkan.")
+
+        if imghdr.what(photo) not in ['jpeg', 'png', 'webp']:
+            raise ValidationError("Format gambar tidak dikenali atau tidak didukung.")
+
+        return photo
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        photo = self.cleaned_data.get('photo')
+
+        if photo:
+            # ✅ Hapus foto lama jika diganti
+            if self.old_photo and self.old_photo != photo:
+                try:
+                    old_path = self.old_photo.path
+                    if os.path.isfile(old_path):
+                        os.remove(old_path)
+                except Exception as e:
+                    print(f"Gagal menghapus foto lama: {e}")
+
+            # ✅ Proses WebP
+            img = Image.open(photo)
+
+            # Resize jika terlalu besar
+            max_size = (300, 300)
+            img.thumbnail(max_size)
+
+            # Konversi ke WebP
+            output = BytesIO()
+            img.convert("RGB").save(output, format="WEBP", quality=85)
+            output.seek(0)
+
+            # Simpan file WebP
+            filename = f"{photo.name.rsplit('.', 1)[0]}.webp"
+            user.photo = InMemoryUploadedFile(
+                output, 'ImageField', filename, 'image/webp',
+                sys.getsizeof(output), None
+            )
+
+        if commit:
+            user.save()
+        return user
 
 
        
