@@ -1218,6 +1218,12 @@ class CourseSessionLog(models.Model):
         durasi = self.duration_seconds
         menit = durasi // 60
         return f"{self.user.username} - {self.course.course_name} - {menit} menit"
+    
+    class Meta:
+        indexes = [
+            models.Index(fields=['user', 'course', 'ended_at']),
+            models.Index(fields=['started_at']),
+        ]
 
 class MaterialRead(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)

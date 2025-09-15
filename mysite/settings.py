@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+from celery.schedules import crontab
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -643,3 +644,22 @@ CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
 CAPTCHA_BACKGROUND_COLOR = '#ffffff'  # putih
 CAPTCHA_NOISE_FUNCTIONS = []          # hilangkan noise (tidak ada titik/garis)
 CAPTCHA_FOREGROUND_COLOR = '#000000'  # teks hitam
+
+
+#auto cron celery
+
+# Konfigurasi Celery
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Pastikan ini sesuai dengan Redis di server live
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Jakarta'  # Sesuai WIB (11:42 AM WIB, 15 Sep 2025)
+
+# Konfigurasi Celery Beat
+CELERY_BEAT_SCHEDULE = {
+    'close-idle-sessions': {
+        'task': 'learner.tasks.close_idle_sessions',
+        'schedule': crontab(minute='*/5'),  # Jalankan setiap 5 menit
+    },
+}

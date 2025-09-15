@@ -46,13 +46,15 @@ from courses.models import (
     AskOra, Choice, Comment, Course, CourseProgress, CourseStatusHistory,
     Enrollment, GradeRange, Instructor, LTIExternalTool1, Material,
     MaterialRead, Payment, PeerReview, Question, QuestionAnswer,LTIResult,
-    Score, Section, Submission, UserActivityLog, CommentReaction, AttemptedQuestion,LastAccessCourse,
+    Score, Section, Submission, UserActivityLog, CommentReaction, AttemptedQuestion,LastAccessCourse,CourseSessionLog,
 )
 from django.views.decorators.csrf import csrf_exempt
 from django.template import loader
 from django.conf import settings
 from oauthlib.oauth1 import Client
 from .lti_utils import verify_oauth_signature, parse_lti_grade_xml
+from geoip2.database import Reader as GeoIP2Reader
+import geoip2.errors
 
 logger = logging.getLogger(__name__)
 
@@ -1134,6 +1136,47 @@ def load_content(request, username, id, slug, content_type, content_id):
     if not Enrollment.objects.filter(user=request.user, course=course).exists():
         logger.warning(f"Pengguna {request.user.username} tidak terdaftar di kursus {slug}")
         return HttpResponse(status=403)
+
+    # Ambil informasi user_agent dan ip_address
+    user_agent = request.META.get('HTTP_USER_AGENT', '')
+    ip_address = request.META.get('REMOTE_ADDR')
+    if 'HTTP_X_FORWARDED_FOR' in request.META:
+        ip_address = request.META['HTTP_X_FORWARDED_FOR'].split(',')[0].strip()
+
+    # Inisialisasi location_country dan location_city
+    location_country = None
+    location_city = None
+    try:
+        # Ganti dengan path ke database GeoIP2 Anda
+        geoip_reader = GeoIP2Reader('/path/to/GeoLite2-City.mmdb')
+        geo_response = geoip_reader.city(ip_address)
+        location_country = geo_response.country.name
+        location_city = geo_response.city.name
+    except (geoip2.errors.AddressNotFoundError, FileNotFoundError, Exception) as e:
+        logger.warning(f"Gagal mendapatkan lokasi untuk IP {ip_address}: {str(e)}")
+
+    # Tutup entri CourseSessionLog sebelumnya (jika ada)
+    last_session = CourseSessionLog.objects.filter(
+        user=request.user, 
+        course=course, 
+        ended_at__isnull=True
+    ).order_by('-started_at').first()
+    if last_session:
+        last_session.ended_at = timezone.now()
+        last_session.save()
+        logger.debug(f"Closed previous CourseSessionLog for user {request.user.id}, course {course.id}")
+
+    # Buat entri baru di CourseSessionLog
+    session_log = CourseSessionLog.objects.create(
+        user=request.user,
+        course=course,
+        started_at=timezone.now(),
+        user_agent=user_agent,
+        ip_address=ip_address,
+        location_country=location_country,
+        location_city=location_city
+    )
+    logger.debug(f"Created CourseSessionLog for user {request.user.id}, course {course.id}, {content_type} {content_id}")
 
     # Perbarui LastAccessCourse
     last_access, created = LastAccessCourse.objects.get_or_create(
