@@ -3,7 +3,9 @@
 {% load static %}
 {% block meta %}
   <title>LMSKu - Learn New Skills with Expert-Led Online Courses</title>
-  <meta name="description" content="Join {{ total_users|default:"thousands of" }} learners in exploring {{ total_courses|default:"hundreds of" }} online courses with certifications from {{ total_instructors|default:"expert" }} instructors. Start learning today!">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Join {{ total_users|default:'thousands of' }} learners in exploring {{ total_courses|default:'hundreds of' }} online courses with certifications from {{ total_instructors|default:'expert' }} instructors. Start learning today!">
   <meta name="keywords" content="online learning, e-learning, LMSKu, education, certifications{% if popular_categories %}, {{ popular_categories|join:', ' }}{% endif %}, expert instructors">
   <meta name="robots" content="index, follow">
   <meta name="googlebot" content="index, follow">
@@ -15,24 +17,28 @@
   {# Base absolute URL to reuse in image and structured data #}
   {% with base_url=request.scheme|add:"://"|add:request.get_host %}
   
-  <!-- Open Graph -->
+  <!-- Open Graph (Optimized for WhatsApp and Facebook) -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="LMSKu">
   <meta property="og:title" content="LMSKu - Learn New Skills with Expert-Led Online Courses">
-  <meta property="og:description" content="Explore {{ total_courses|default:"hundreds of" }}+ expert-led courses and earn certifications anytime, anywhere.">
-  <meta property="og:image" content="{{ base_url }}{% static 'assets/img/logo/logo-five.png' %}">
+  <meta property="og:description" content="Explore {{ total_courses|default:'hundreds of' }}+ expert-led courses and earn certifications anytime, anywhere.">
+  <meta property="og:image" content="https://ini.icei.ac.id/static/assets/img/logo/logo-five.png"> <!-- Hardcode untuk WhatsApp -->
+  <meta property="og:image:secure_url" content="https://ini.icei.ac.id/static/assets/img/logo/logo-five.png"> <!-- HTTPS untuk WhatsApp -->
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Logo LMSKu - Platform Pembelajaran Online">
   <meta property="og:url" content="{{ base_url }}{{ request.path }}">
+  <meta property="og:locale" content="en_US">
 
   <!-- Twitter/X -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@LMSKu">
   <meta name="twitter:creator" content="@LMSKu">
   <meta name="twitter:title" content="LMSKu - Learn Anytime, Anywhere">
-  <meta name="twitter:description" content="Join {{ total_users|default:"thousands of" }} learners taking {{ total_courses|default:"hundreds of" }} online courses with LMSKu.">
-  <meta name="twitter:image" content="{{ base_url }}{% static 'assets/img/logo/logo-five.png' %}">
+  <meta name="twitter:description" content="Join {{ total_users|default:'thousands of' }} learners taking {{ total_courses|default:'hundreds of' }} online courses with LMSKu.">
+  <meta name="twitter:image" content="https://ini.icei.ac.id/static/assets/img/logo/logo-five.png"> <!-- Hardcode untuk konsistensi -->
+  <meta name="twitter:image:alt" content="Logo LMSKu - Platform Pembelajaran Online">
 
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
@@ -41,13 +47,13 @@
     "@type": "WebSite",
     "name": "LMSKu",
     "url": "{{ base_url }}",
-    "description": "LMSKu offers {{ total_courses|default:"hundreds of" }}+ online courses and certifications to support your learning journey.",
+    "description": "LMSKu offers {{ total_courses|default:'hundreds of' }}+ online courses and certifications to support your learning journey.",
     "publisher": {
       "@type": "Organization",
       "name": "LMSKu",
       "logo": {
         "@type": "ImageObject",
-        "url": "{{ base_url }}{% static 'assets/img/logo/logo-five.png' %}",
+        "url": "https://ini.icei.ac.id/static/assets/img/logo/logo-five.png",
         "width": 1200,
         "height": 630
       }
@@ -60,7 +66,6 @@
   }
   </script>
   {% endwith %}
-
 {% endblock %}
 
 {% block content %}
