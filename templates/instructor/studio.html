@@ -3,14 +3,14 @@
 
 {% block content %}
 <!-- Dashboard Grid -->
-<div class="container mt-5">
-    <h2 class="mb-4 text-center"><a href="{% url 'courses:studio' course.id %}">{{ course.course_name }}</a></h2>
+
+    {% include "courses/course_set.html" %}
 
     <!-- Status dan Pesan -->
     <div class="card mb-4">
         <div class="card-body">
-            <h5 class="card-title">Current Status</h5>
-            <p class="card-text">
+            <h5 class="card-title text-dark text-decoration-none">Current Status</h5>
+            <p class="card-text text-dark text-decoration-none">
                 <strong>Status:</strong>
                 {% if course.status_course == 'curation' %}
                     <span class="badge bg-primary">{{ course.status_course.get_status_display }}</span>
@@ -24,14 +24,14 @@
                     <span class="badge bg-secondary">{{ course.status_course.get_status_display }}</span>
                 {% endif %}
             </p>
-            <p><strong>Latest Message:</strong> {{ course.status_course.manual_message|default:"No message" }}</p>
+            <p class="text-dark text-decoration-none"><strong >Latest Message:</strong> {{ course.status_course.manual_message|default:"No message" }}</p>
         </div>
     </div>
 
     <!-- Informasi Author -->
     <div class="card mb-4">
         <div class="card-body">
-            <h5 class="card-title">Information Partner</h5>
+            <h5 class="card-title text-dark text-decoration-none">Information Partner</h5>
             <ul class="list-group">
                 <li class="list-group-item"><strong>Full Name:</strong> {{ author_full_name }}</li>
                 <li class="list-group-item"><strong>Email:</strong> {{ author_email }}</li>
@@ -44,7 +44,7 @@
     <!-- Detail Kursus -->
     <div class="card mb-4">
         <div class="card-body">
-            <h5 class="card-title">Course Details</h5>
+            <h5 class="card-title text-dark text-decoration-none">Course Details</h5>
             <ul class="list-group">
                 <li class="list-group-item"><strong>Partner:</strong> {{ course.org_partner.name }}</li>
                 <li class="list-group-item"><strong>Instructor:</strong> {{ course.instructor.user.username|default:"Not assigned" }}</li>
@@ -60,11 +60,11 @@
     <!-- Riwayat Status -->
     <div class="card mb-4">
         <div class="card-body">
-            <h5 class="card-title">Status History</h5>
+            <h5 class="card-title text-dark text-decoration-none">Status History</h5>
             {% if status_history %}
             <table class="table table-bordered">
                 <thead>
-                    <tr>
+                    <tr class="text-dark text-decoration-none">
                         <th>Status</th>
                         <th>Action</th>
                         <th>Message</th>
@@ -107,10 +107,10 @@
     <!-- Aksi Berdasarkan Peran -->
     <div class="card mb-4">
         <div class="card-body">
-            <h5 class="card-title">Actions</h5>
+            <h5 class="card-title text-dark text-decoration-none">Actions</h5>
             <form method="post">
                 {% csrf_token %}
-                <div class="form-group mb-3">
+                <div class="form-group mb-3 text-dark text-decoration-none">
                     <label for="message">Message:</label>
                     <textarea name="message" id="message" class="form-control" rows="5"></textarea>
                 </div>
@@ -137,5 +137,5 @@
 
     <!-- Tombol Kembali -->
     <a href="#" class="btn btn-secondary mt-3">Back to Catalog</a>
-</div>
+
 {% endblock %}
