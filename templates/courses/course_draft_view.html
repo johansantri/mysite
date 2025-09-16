@@ -2,58 +2,25 @@
 {% load static %}
 {% load extra_custom_filters %}
 
-
 {% block content %}
-
 <!-- Inner Banner -->
-<div class="inner-banner bg-light py-5">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-8">
-                <div class="instructor-wrap d-flex flex-wrap align-items-center bg-white p-4 rounded shadow-sm mb-4">
-                    <div class="about-instructor d-flex align-items-center">
-                        <div class="abt-instructor-img me-3">
-                            {% if course.instructor.user.photo %}
-                                <a href="instructor-profile.html">
-                                    <img src="{{ course.instructor.user.photo.url }}" alt="Instructor" class="img-fluid rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
-                                </a>
-                            {% else %}
-                                <a href="instructor-profile.html">
-                                    <img src="{% static 'assets/img/user/user1.jpg' %}" alt="Default" class="img-fluid rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
-                                </a>
-                            {% endif %}
-                        </div>
-                        <div class="instructor-detail flex-grow-1">
-                            <h5 class="mb-1"><a href="instructor-profile.html" class="text-dark text-decoration-none">{{ course.instructor.user.first_name }} {{ course.instructor.user.last_name }}</a></h5>
-                            <p class="text-muted mb-0">{{ course.instructor.user.hobby }}</p>
-                        </div>
-                        <div class="rating text-end">
-                            <i class="fas fa-star filled text-warning"></i>
-                            <i class="fas fa-star filled text-warning"></i>
-                            <i class="fas fa-star filled text-warning"></i>
-                            <i class="fas fa-star filled text-warning"></i>
-                            <i class="fas fa-star text-muted"></i>
-                            <span class="d-inline-block average-rating ms-2"><strong>4.5</strong> (15)</span>
-                        </div>
-                    </div>
-                </div>
-                <span class="badge bg-primary mb-3">{{ course.category }}</span>
-                <h2 class="fw-bold text-dark">{{ course.course_name }}</h2>
-                <p class="text-muted">{{ course.sort_description }}</p>
-                <div class="course-info d-flex flex-wrap gap-3 border-top pt-3">
-                    <div class="cou-info d-flex align-items-center">
-                        <img src="{% static 'assets/img/icon/icon-01.svg' %}" alt="Lessons" class="me-2" style="width: 20px;">
-                        <p class="mb-0">12+ Lessons</p>
-                    </div>
-                    <div class="cou-info d-flex align-items-center">
-                        <img src="{% static 'assets/img/icon/timer-icon.svg' %}" alt="Duration" class="me-2" style="width: 20px;">
-                        <p class="mb-0">9hr 30min</p>
-                    </div>
-                    <div class="cou-info d-flex align-items-center">
-                        <img src="{% static 'assets/img/icon/people.svg' %}" alt="Students" class="me-2" style="width: 20px;">
-                        <p class="mb-0">32 students enrolled</p>
-                    </div>
-                </div>
+<div class="row align-items-center">
+    <div class="col-lg-8">
+        <span class="badge bg-primary mb-3">{{ course.category }}</span>
+        <h2 class="fw-bold text-dark">{{ course.course_name }}</h2>
+        <p class="text-muted">{{ course.sort_description }}</p>
+        <div class="course-info d-flex flex-wrap gap-3 border-top pt-3">
+            <div class="cou-info d-flex align-items-center">
+                <img src="{% static 'assets/img/icon/icon-01.svg' %}" alt="Lessons" class="me-2" style="width: 20px;">
+                <p class="mb-0">0 Lessons</p>
+            </div>
+            <div class="cou-info d-flex align-items-center">
+                <img src="{% static 'assets/img/icon/timer-icon.svg' %}" alt="Duration" class="me-2" style="width: 20px;">
+                <p class="mb-0">0hr 00min</p>
+            </div>
+            <div class="cou-info d-flex align-items-center">
+                <img src="{% static 'assets/img/icon/people.svg' %}" alt="Students" class="me-2" style="width: 20px;">
+                <p class="mb-0">0 students enrolled</p>
             </div>
         </div>
     </div>
@@ -62,233 +29,248 @@
 
 <!-- Course Content -->
 <section class="page-content course-sec py-5">
-    <div class="container">
-        <div class="row g-4">
-            <div class="col-lg-8">
-                <!-- Overview -->
-                <div class="card overview-sec border-0 shadow-sm mb-4">
-                    <div class="card-body">
-                        <h5 class="subs-title text-primary fw-semibold mb-3 border-bottom pb-2">Overview</h5>
-                        <h6 class="fw-semibold">Course Description</h6>
-                        <p class="text-dark">{{ course.description | safe }}</p>
-                    </div>
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <!-- Overview -->
+            <div class="card overview-sec border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="subs-title text-primary fw-semibold mb-3 border-bottom pb-2">Overview</h5>
+                    <h6 class="fw-semibold text-muted">Course Description</h6>
+                    <p class="text-muted">{{ course.description | safe }}</p>
                 </div>
-                <!-- /Overview -->
-
-                <!-- Course Content -->
-                <div class="card content-sec border-0 shadow-sm mb-4">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="subs-title text-primary fw-semibold">Course Content</h5>
-                            <h6 class="text-muted">92 Lectures | 10:56:11</h6>
-                        </div>
-                        <div class="accordion" id="courseAccordion">
-                            {% for section in "In which areas do you operate?,The Brief,Wireframing Low Fidelity,Type, Color & Icon Introduction"|split:"," %}
-                                <div class="course-card mb-3">
-                                    <h6 class="cou-title mb-0">
-                                        <a class="collapsed text-dark text-decoration-none fw-semibold" data-bs-toggle="collapse" href="#collapse{{ forloop.counter }}" aria-expanded="false">{{ section }}</a>
-                                    </h6>
-                                    <div id="collapse{{ forloop.counter }}" class="collapse" data-bs-parent="#courseAccordion">
-                                        <ul class="list-unstyled mt-2">
-                                            {% for i in "1,2,3,4,5"|split:"," %}
-                                                <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
-                                                    <p class="mb-0"><img src="{% static 'assets/img/icon/play.svg' %}" alt="Play" class="me-2" style="width: 16px;">Lecture{{ forloop.parentloop.counter }}.{{ i }} {{ section }} Content</p>
-                                                    <div>
-                                                        <a href="javascript:void(0);" class="text-primary me-3">Preview</a>
-                                                        <span class="text-muted">02:53</span>
-                                                    </div>
-                                                </li>
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-                <!-- /Course Content -->
-
-                <!-- Instructor -->
-                <div class="card instructor-sec border-0 shadow-sm mb-4">
-                    <div class="card-body">
-                        <h5 class="subs-title text-primary fw-semibold mb-3 border-bottom pb-2">About the Instructor</h5>
-                        <div class="instructor-wrap d-flex flex-wrap align-items-center">
-                            <div class="about-instructor d-flex align-items-center">
-                                <div class="abt-instructor-img me-3">
-                                    {% if course.instructor.user.photo %}
-                                        <a href="instructor-profile.html">
-                                            <img src="{{ course.instructor.user.photo.url }}" alt="Instructor" class="img-fluid rounded-circle" style="width: 60px; height: 60px; object-fit: cover;">
-                                        </a>
-                                    {% else %}
-                                        <a href="instructor-profile.html">
-                                            <img src="{% static 'assets/img/user/user1.jpg' %}" alt="Default" class="img-fluid rounded-circle" style="width: 60px; height: 60px; object-fit: cover;">
-                                        </a>
-                                    {% endif %}
-                                </div>
-                                <div class="instructor-detail">
-                                    <h5 class="mb-1"><a href="instructor-profile.html" class="text-dark text-decoration-none">{{ course.instructor.user.first_name }} {{ course.instructor.user.last_name }}</a></h5>
-                                    <p class="text-muted mb-0">{{ course.instructor.user.hobby }}</p>
-                                </div>
-                            </div>
-                            <div class="rating ms-auto">
-                                <i class="fas fa-star filled text-warning"></i>
-                                <i class="fas fa-star filled text-warning"></i>
-                                <i class="fas fa-star filled text-warning"></i>
-                                <i class="fas fa-star filled text-warning"></i>
-                                <i class="fas fa-star text-muted"></i>
-                                <span class="d-inline-block average-rating ms-2">4.5 Instructor Rating</span>
-                            </div>
-                        </div>
-                        <div class="course-info d-flex flex-wrap gap-3 mt-3">
-                            <div class="cou-info d-flex align-items-center"><img src="{% static 'assets/img/icon/play.svg' %}" alt="Courses" class="me-2" style="width: 20px;">5 Courses</div>
-                            <div class="cou-info d-flex align-items-center"><img src="{% static 'assets/img/icon/icon-01.svg' %}" alt="Lessons" class="me-2" style="width: 20px;">12+ Lessons</div>
-                            <div class="cou-info d-flex align-items-center"><img src="{% static 'assets/img/icon/icon-02.svg' %}" alt="Duration" class="me-2" style="width: 20px;">9hr 30min</div>
-                            <div class="cou-info d-flex align-items-center"><img src="{% static 'assets/img/icon/people.svg' %}" alt="Students" class="me-2" style="width: 20px;">270,866 students enrolled</div>
-                        </div>
-                        <p class="mt-3 text-dark">{{ course.instructor.bio }}</p>
-                    </div>
-                </div>
-                <!-- /Instructor -->
-
-                <!-- Reviews -->
-                <div class="card review-sec border-0 shadow-sm mb-4">
-                    <div class="card-body">
-                        <h5 class="subs-title text-primary fw-semibold mb-3 border-bottom pb-2">Reviews</h5>
-                        <div class="instructor-wrap d-flex flex-wrap align-items-center">
-                            <div class="about-instructor d-flex align-items-center">
-                                <div class="abt-instructor-img me-3">
-                                    <a href="instructor-profile.html"><img src="{% static 'assets/img/user/user1.jpg' %}" alt="Reviewer" class="img-fluid rounded-circle" style="width: 50px; height: 50px; object-fit: cover;"></a>
-                                </div>
-                                <div class="instructor-detail">
-                                    <h5 class="mb-1"><a href="instructor-profile.html" class="text-dark text-decoration-none">Nicole Brown</a></h5>
-                                    <p class="text-muted mb-0">UX/UI Designer</p>
-                                </div>
-                            </div>
-                            <div class="rating ms-auto">
-                                <i class="fas fa-star filled text-warning"></i>
-                                <i class="fas fa-star filled text-warning"></i>
-                                <i class="fas fa-star filled text-warning"></i>
-                                <i class="fas fa-star filled text-warning"></i>
-                                <i class="fas fa-star text-muted"></i>
-                                <span class="d-inline-block average-rating ms-2">4.5</span>
-                            </div>
-                        </div>
-                        <p class="rev-info mt-3 text-dark">“This is the second Photoshop course I have completed with Cristian. Worth every penny and recommend it highly...”</p>
-                        <a href="javascript:void(0);" class="btn btn-outline-primary btn-sm"><i class="feather-corner-up-left me-1"></i> Reply</a>
-                    </div>
-                </div>
-                <!-- /Reviews -->
-
-                <!-- Comment -->
-                <div class="card comment-sec border-0 shadow-sm">
-                    <div class="card-body">
-                        <h5 class="subs-title text-primary fw-semibold mb-3 border-bottom pb-2">Post a Comment</h5>
-                        <form>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <input type="text" class="form-control" placeholder="Full Name">
-                                </div>
-                                <div class="col-md-6">
-                                    <input type="email" class="form-control" placeholder="Email">
-                                </div>
-                                <div class="col-12">
-                                    <input type="text" class="form-control" placeholder="Subject">
-                                </div>
-                                <div class="col-12">
-                                    <textarea rows="4" class="form-control" placeholder="Your Comments"></textarea>
-                                </div>
-                                <div class="col-12">
-                                    <button class="btn btn-primary w-100" type="submit">Submit</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <!-- /Comment就在这里结束-->
             </div>
+            <!-- /Overview -->
 
-            <div class="col-lg-4">
-                <div class="sidebar-sec sticky-top" style="top: 20px;">
-                   <!-- Video -->
-						<div class="video-sec vid-bg mb-4">
-							<div class="card border-0 shadow-sm">
-								<div class="card-body p-0">
-									{% if course.link_video %}
-										<a href="{{ course.link_video }}" class="video-thumbnail position-relative d-block" data-fancybox="video-gallery" style="pointer-events: auto;">
-											<div class="play-icon position-absolute top-50 start-50 translate-middle text-white" style="font-size: 2rem; z-index: 1;">
-												<i class="fa-solid fa-play"></i>
-											</div>
-											{% if course.image %}
-												<img class="img-fluid rounded" src="{{ course.image.url }}" alt="{{ course.name }} Image">
-											{% else %}
-												<img class="img-fluid rounded" src="{% static 'assets/img/user/logo.5272a797c07c.png' %}" alt="Default Image">
-											{% endif %}
-										</a>
-									{% else %}
-										<a href="https://www.youtube.com/watch?v=nc6m9WM3Gyw" class="video-thumbnail position-relative d-block" data-fancybox="video-gallery" style="pointer-events: auto;">
-											<div class="play-icon position-absolute top-50 start-50 translate-middle text-white" style="font-size: 2rem; z-index: 1;">
-												<i class="fa-solid fa-play"></i>
-											</div>
-											<img class="img-fluid rounded" src="{% static 'assets/img/user/logo.5272a797c07c.png' %}" alt="Default Image">
-										</a>
-									{% endif %}
-									<div class="video-details p-3">
-										<div class="course-fee mb-3">
-											<h2 class="text-success fw-bold">FREE</h2>
-											<p class="text-muted"><span class="text-decoration-line-through">$99.00</span> 50% off</p>
-										</div>
-										<div class="row gx-2 mb-3">
-											<div class="col-6">
-												<a href="course-wishlist.html" class="btn btn-outline-primary w-100"><i class="feather-heart me-1"></i> Wishlist</a>
-											</div>
-											<div class="col-6">
-												<a href="javascript:void(0);" class="btn btn-outline-primary w-100"><i class="feather-share-2 me-1"></i> Share</a>
-											</div>
-										</div>
-										<form id="enrollForm">
-											<button type="button" onclick="enrollCourse()" class="btn btn-primary w-100">Enroll Now</button>
-										</form>
-									</div>
-								</div>
-							</div>
-						</div>
-						<!-- /Video -->
+            <!-- Course Content -->
+            <div class="card content-sec border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="subs-title text-primary fw-semibold">Course Content</h5>
+                        <h6 class="text-muted">92 Lectures | 10:56:11</h6>
+                    </div>
+                    <div class="accordion" id="courseAccordion">
+                        {% for section in "In which areas do you operate?,The Brief,Wireframing Low Fidelity,Type, Color & Icon Introduction"|split:"," %}
+                            <div class="course-card mb-3">
+                                <h6 class="cou-title mb-0">
+                                    <a class="collapsed text-muted text-decoration-none fw-semibold" data-bs-toggle="collapse" href="#collapse{{ forloop.counter }}" aria-expanded="false">{{ section }}</a>
+                                </h6>
+                                <div id="collapse{{ forloop.counter }}" class="collapse" data-bs-parent="#courseAccordion">
+                                    <ul class="list-unstyled mt-2">
+                                        {% for i in "1,2,3,4,5"|split:"," %}
+                                            <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                                                <p class="mb-0"><img src="{% static 'assets/img/icon/play.svg' %}" alt="Play" class="me-2" style="width: 16px;">Lecture{{ forloop.parentloop.counter }}.{{ i }} {{ section }} Content</p>
+                                                <div>
+                                                    <a href="javascript:void(0);" class="text-primary me-3">Preview</a>
+                                                    <span class="text-muted">02:53</span>
+                                                </div>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <!-- /Course Content -->
 
-                    <!-- Features -->
-                    <div class="card feature-sec border-0 shadow-sm">
-                        <div class="card-body">
-                            <h4 class="text-primary fw-semibold mb-3 border-bottom pb-2">Includes</h4>
-                            <ul class="list-unstyled">
-                                <li class="d-flex justify-content-between py-1"><span>Course Number:</span> <span>{{ course.course_number }}</span></li>
-                                <li class="d-flex justify-content-between py-1"><span>Class Run:</span> <span>{{ course.course_run }}</span></li>
-                                <li class="d-flex justify-content-between py-1"><span>Class Start:</span> <span>{{ course.start_date }}</span></li>
-                                <li class="d-flex justify-content-between py-1"><span>Class End:</span> <span>{{ course.end_date }}</span></li>
-                                <li class="d-flex justify-content-between py-1"><span>Enroll Start:</span> <span>{{ course.start_enrol }}</span></li>
-                                <li class="d-flex justify-content-between py-1"><span>Enroll End:</span> <span>{{ course.end_enrol }}</span></li>
-                                <li class="d-flex justify-content-between py-1"><span>Hours Effort:</span> <span>{{ course.hour }}</span></li>
-                                <li class="d-flex justify-content-between py-1"><span>Language:</span> <span>{{ course.language }}</span></li>
-                                <li class="d-flex justify-content-between py-1"><span>Level:</span> <span>{{ course.level }}</span></li>
-                            </ul>
+            <!-- Instructor -->
+            <div class="card instructor-sec border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="subs-title text-primary fw-semibold mb-3 border-bottom pb-2">About the Instructor</h5>
+                    <div class="instructor-wrap d-flex flex-wrap align-items-center">
+                        <div class="about-instructor d-flex align-items-center">
+                            <div class="abt-instructor-img me-3">
+                                {% if course.instructor.user.photo %}
+                                    <a href="instructor-profile.html">
+                                        <img src="{{ course.instructor.user.photo.url }}" alt="Instructor" class="img-fluid rounded-circle" style="width: 60px; height: 60px; object-fit: cover;">
+                                    </a>
+                                {% else %}
+                                    <a href="instructor-profile.html">
+                                        <img src="{% static 'assets/img/user/user1.jpg' %}" alt="Default" class="img-fluid rounded-circle" style="width: 60px; height: 60px; object-fit: cover;">
+                                    </a>
+                                {% endif %}
+                            </div>
+                            <div class="instructor-detail">
+                                <h5 class="mb-1"><a href="instructor-profile.html" class="text-dark text-decoration-none">{{ course.instructor.user.first_name }} {{ course.instructor.user.last_name }}</a></h5>
+                                <p class="text-muted mb-0">{{ course.instructor.user.hobby }}</p>
+                            </div>
+                        </div>
+                        <div class="rating ms-auto">
+                            <i class="fas fa-star filled text-warning"></i>
+                            <i class="fas fa-star filled text-warning"></i>
+                            <i class="fas fa-star filled text-warning"></i>
+                            <i class="fas fa-star filled text-warning"></i>
+                            <i class="fas fa-star text-muted"></i>
+                            <span class="d-inline-block average-rating ms-2">4.5 Instructor Rating</span>
                         </div>
                     </div>
-                    <!-- /Features -->
+                    <div class="course-info d-flex flex-wrap gap-3 mt-3">
+                        <div class="cou-info d-flex align-items-center"><img src="{% static 'assets/img/icon/play.svg' %}" alt="Courses" class="me-2" style="width: 20px;">5 Courses</div>
+                        <div class="cou-info d-flex align-items-center"><img src="{% static 'assets/img/icon/icon-01.svg' %}" alt="Lessons" class="me-2" style="width: 20px;">12+ Lessons</div>
+                        <div class="cou-info d-flex align-items-center"><img src="{% static 'assets/img/icon/icon-02.svg' %}" alt="Duration" class="me-2" style="width: 20px;">9hr 30min</div>
+                        <div class="cou-info d-flex align-items-center"><img src="{% static 'assets/img/icon/people.svg' %}" alt="Students" class="me-2" style="width: 20px;">270,866 students enrolled</div>
+                    </div>
+                    <p class="mt-3 text-dark">{{ course.instructor.bio }}</p>
                 </div>
+            </div>
+            <!-- /Instructor -->
+        </div>
+
+        <div class="col-lg-4">
+            <div class="sidebar-sec sticky-top" style="top: 20px;">
+                <!-- Video -->
+                <div class="video-sec vid-bg mb-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-0">
+                            {% if course.link_video %}
+                                <a href="{{ course.link_video }}" class="video-thumbnail position-relative d-block" data-fancybox="video-gallery" style="pointer-events: auto;">
+                                    <div class="play-icon position-absolute top-50 start-50 translate-middle text-white" style="font-size: 3rem; z-index: 20; background: rgba(0, 0, 0, 0.7); border-radius: 50%; padding: 20px; transition: all 0.3s ease;">
+                                        <i class="fa-solid fa-play"></i>
+                                    </div>
+                                    <div class="thumbnail-overlay position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0, 0, 0, 0.4); z-index: 10; border-radius: 0.25rem;"></div>
+                                    {% if course.image %}
+                                        <img class="img-fluid rounded" src="{{ course.image.url }}" alt="{{ course.name }} Image">
+                                    {% else %}
+                                        <img class="img-fluid rounded" src="{% static 'assets/img/user/logo.5272a797c07c.png' %}" alt="Default Image">
+                                    {% endif %}
+                                </a>
+                            {% else %}
+                                <a href="https://www.youtube.com/watch?v=nc6m9WM3Gyw" class="video-thumbnail position-relative d-block" data-fancybox="video-gallery" style="pointer-events: auto;">
+                                    <div class="play-icon position-absolute top-50 start-50 translate-middle text-white" style="font-size: 3rem; z-index: 20; background: rgba(0, 0, 0, 0.7); border-radius: 50%; padding: 20px; transition: all 0.3s ease;">
+                                        <i class="fa-solid fa-play"></i>
+                                    </div>
+                                    <div class="thumbnail-overlay position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0, 0, 0, 0.4); z-index: 10; border-radius: 0.25rem;"></div>
+                                    <img class="img-fluid rounded" src="{% static 'assets/img/user/logo.5272a797c07c.png' %}" alt="Default Image">
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <!-- /Video -->
+
+                <!-- Features -->
+                <div class="card feature-sec border-0 shadow-sm">
+                    <div class="card-body">
+                        <h4 class="text-primary fw-semibold mb-3 border-bottom pb-2">Includes</h4>
+                        <ul class="list-unstyled">
+                            <li class="d-flex justify-content-between py-1"><span>Course Number:</span> <span>{{ course.course_number }}</span></li>
+                            <li class="d-flex justify-content-between py-1"><span>Class Run:</span> <span>{{ course.course_run }}</span></li>
+                            <li class="d-flex justify-content-between py-1"><span>Class Start:</span> <span>{{ course.start_date }}</span></li>
+                            <li class="d-flex justify-content-between py-1"><span>Class End:</span> <span>{{ course.end_date }}</span></li>
+                            <li class="d-flex justify-content-between py-1"><span>Enroll Start:</span> <span>{{ course.start_enrol }}</span></li>
+                            <li class="d-flex justify-content-between py-1"><span>Enroll End:</span> <span>{{ course.end_enrol }}</span></li>
+                            <li class="d-flex justify-content-between py-1"><span>Hours Effort:</span> <span>{{ course.hour }}</span></li>
+                            <li class="d-flex justify-content-between py-1"><span>Language:</span> <span>{{ course.language }}</span></li>
+                            <li class="d-flex justify-content-between py-1"><span>Level:</span> <span>{{ course.level }}</span></li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- /Features -->
             </div>
         </div>
     </div>
 </section>
 <!-- /Course Content -->
-
-<!-- Scripts -->
 {% endblock %}
 
- {% block scripts %}
+{% block scripts %}
+<!-- Pastikan Font Awesome dan Fancybox dimuat -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+<!-- CSS Kustom untuk video dan ikon -->
+<style>
+    .video-thumbnail {
+        position: relative;
+        display: block;
+    }
+    .video-thumbnail::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4); /* Overlay gelap */
+        z-index: 10;
+        border-radius: 0.25rem;
+    }
+    .play-icon {
+        z-index: 20; /* Di atas overlay */
+        transition: all 0.3s ease;
+    }
+    .play-icon:hover {
+        transform: scale(1.2); /* Efek zoom saat hover */
+    }
+    .fancybox-centered-video .fancybox__container {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        z-index: 10000 !important;
+    }
+    .fancybox-centered-video .fancybox__content {
+        max-width: 90vw !important;
+        max-height: 90vh !important;
+        width: auto !important;
+        height: auto !important;
+        margin: auto !important;
+        background: #000 !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+    .fancybox-centered-video .fancybox__content iframe,
+    .fancybox-centered-video .fancybox__content video {
+        max-width: 100% !important;
+        max-height: 100% !important;
+        width: auto !important;
+        height: auto !important;
+        margin: auto !important;
+    }
+</style>
+
 <script>
-    Fancybox.bind('[data-fancybox="video-gallery"]', {
-        infinite: false,
-        arrows: true,
-        closeButton: "top",
-        dragToClose: true
+    document.addEventListener("DOMContentLoaded", function() {
+        Fancybox.bind('[data-fancybox="video-gallery"]', {
+            infinite: false,
+            arrows: true,
+            closeButton: "top",
+            dragToClose: true,
+            mainClass: "fancybox-centered-video",
+            contentClick: "play",
+            on: {
+                init: () => {
+                    document.querySelectorAll(".fancybox__content video, .fancybox__content iframe").forEach(el => {
+                        el.style.maxWidth = "90vw";
+                        el.style.maxHeight = "90vh";
+                        el.style.width = "auto";
+                        el.style.height = "auto";
+                        el.style.margin = "auto";
+                    });
+                },
+                ready: () => {
+                    const fancyboxContainer = document.querySelector(".fancybox__container");
+                    if (fancyboxContainer) {
+                        fancyboxContainer.style.display = "flex";
+                        fancyboxContainer.style.justifyContent = "center";
+                        fancyboxContainer.style.alignItems = "center";
+                        fancyboxContainer.style.position = "fixed";
+                        fancyboxContainer.style.top = "0";
+                        fancyboxContainer.style.left = "0";
+                        fancyboxContainer.style.width = "100vw";
+                        fancyboxContainer.style.height = "100vh";
+                        fancyboxContainer.style.zIndex = "10000";
+                    }
+                }
+            }
+        });
     });
 
     function enrollCourse() {
@@ -299,15 +281,5 @@
         .then(response => response.json())
         .then(data => alert(data.message));
     }
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        Fancybox.bind('[data-fancybox="video-gallery"]', {
-            infinite: false,
-            arrows: true,
-            closeButton: "top",
-            dragToClose: true
-        });
-    });
 </script>
 {% endblock %}
