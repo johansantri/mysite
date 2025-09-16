@@ -67,7 +67,7 @@ from django.shortcuts import render
 import time
 from authentication.utils import calculate_course_status 
 from django.views.decorators.http import require_POST
-from authentication.utils import is_user_online  # fungsi cek online
+from authentication.utils import is_user_online,get_total_online_users  # fungsi cek online
 
 def custom_ratelimit(view_func):
     def wrapper(request, *args, **kwargs):
@@ -823,6 +823,8 @@ def dasbord(request):
         return redirect("/login/?next=%s" % request.path)
 
     user = request.user
+
+    # ========== VALIDASI PROFIL LENGKAP ==========
     required_fields = {
         'first_name': 'First Name',
         'last_name': 'Last Name',
@@ -832,50 +834,63 @@ def dasbord(request):
         'birth': 'Date of Birth',
     }
     missing_fields = [label for field, label in required_fields.items() if not getattr(user, field)]
-
     if missing_fields:
         messages.warning(request, f"Please complete the following information: {', '.join(missing_fields)}")
         return redirect('authentication:edit-profile', pk=user.pk)
 
     courses_page = request.GET.get('courses_page', 1)
 
-    partner_courses = None
-    partner_enrollments = None
+    # ========== INITIAL VAR ==========
+    partner_courses = Course.objects.none()
+    partner_enrollments = Enrollment.objects.none()
+    users = CustomUser.objects.none()
+
     total_enrollments = 0
     total_courses = 0
     total_instructors = 0
     total_learners = 0
     total_partners = 0
     total_published_courses = 0
+    total_certificates = 0
+    total_online = 0
+    total_offline = 0
 
-    try:
-        publish_status = CourseStatus.objects.get(status='published')
-    except CourseStatus.DoesNotExist:
-        publish_status = None
+    publish_status = cache.get('publish_status')
+    if not publish_status:
+        try:
+            publish_status = CourseStatus.objects.get(status='published')
+            cache.set('publish_status', publish_status, 300)
+        except CourseStatus.DoesNotExist:
+            publish_status = None
 
-    # ============================================================
-    # === ROLE-BASED HANDLING (Superuser, Partner, Instructor) ===
-    # ============================================================
-    if request.user.is_superuser:
-        total_enrollments = Enrollment.objects.count()
-        total_courses = Course.objects.count()
-        total_instructors = Instructor.objects.count()
-        total_learners = CustomUser.objects.filter(is_learner=True).count()
-        total_partners = Partner.objects.count()
-        total_published_courses = Course.objects.filter(status_course=publish_status).count() if publish_status else 0
-        partner_courses = Course.objects.all()
+    # ========== SUPERUSER ==========
+    if user.is_superuser:
+        total_enrollments = cache.get('total_enrollments') or Enrollment.objects.count()
+        cache.set('total_enrollments', total_enrollments, 300)
 
-        # Superuser can see all users
+        total_courses = cache.get('total_courses') or Course.objects.count()
+        cache.set('total_courses', total_courses, 300)
+
+        total_instructors = cache.get('total_instructors') or Instructor.objects.count()
+        cache.set('total_instructors', total_instructors, 300)
+
+        total_learners = cache.get('total_learners') or CustomUser.objects.filter(is_learner=True).count()
+        cache.set('total_learners', total_learners, 300)
+
+        total_partners = cache.get('total_partners') or Partner.objects.count()
+        cache.set('total_partners', total_partners, 300)
+
+        if publish_status:
+            total_published_courses = Course.objects.filter(status_course=publish_status).count()
+
+        partner_courses = Course.objects.select_related('status_course', 'org_partner').prefetch_related('enrollments', 'instructor')
         users = CustomUser.objects.all()
 
-    elif request.user.is_partner:
-        try:
-            partner = Partner.objects.get(user=request.user)
-        except Partner.DoesNotExist:
-            partner = None
-
+    # ========== PARTNER ==========
+    elif user.is_partner:
+        partner = Partner.objects.select_related('user').filter(user=user).first()
         if partner:
-            partner_courses = Course.objects.filter(org_partner=partner)
+            partner_courses = Course.objects.filter(org_partner=partner).select_related('status_course').prefetch_related('enrollments', 'instructor')
             partner_enrollments = Enrollment.objects.filter(course__org_partner=partner)
             total_enrollments = partner_enrollments.count()
             total_courses = partner_courses.count()
@@ -884,24 +899,15 @@ def dasbord(request):
                 enrollments__course__org_partner=partner,
                 is_learner=True
             ).distinct().count()
-            total_published_courses = partner_courses.filter(status_course=publish_status).count() if publish_status else 0
+            if publish_status:
+                total_published_courses = partner_courses.filter(status_course=publish_status).count()
+            users = CustomUser.objects.filter(enrollments__course__org_partner=partner).distinct()
 
-            # Partner only sees users related to their courses
-            users = CustomUser.objects.filter(
-                enrollments__course__org_partner=partner
-            ).distinct()
-        else:
-            partner_courses = Course.objects.none()
-            users = CustomUser.objects.none()
-
-    elif request.user.is_instructor:
-        try:
-            instructor = Instructor.objects.get(user=request.user)
-        except Instructor.DoesNotExist:
-            instructor = None
-
+    # ========== INSTRUCTOR ==========
+    elif user.is_instructor:
+        instructor = Instructor.objects.select_related('user').filter(user=user).first()
         if instructor:
-            partner_courses = Course.objects.filter(instructor=instructor)
+            partner_courses = Course.objects.filter(instructor=instructor).select_related('status_course').prefetch_related('enrollments')
             partner_enrollments = Enrollment.objects.filter(course__instructor=instructor)
             total_enrollments = partner_enrollments.count()
             total_courses = partner_courses.count()
@@ -910,40 +916,30 @@ def dasbord(request):
                 enrollments__course__instructor=instructor,
                 is_learner=True
             ).distinct().count()
-            total_published_courses = partner_courses.filter(status_course=publish_status).count() if publish_status else 0
+            if publish_status:
+                total_published_courses = partner_courses.filter(status_course=publish_status).count()
 
-        else:
-            partner_courses = Course.objects.none()
-
-        # Instructors don't see user online/offline stats
-        users = CustomUser.objects.none()
-
-    else:
-        # Learners (and others) don’t see user stats
-        users = CustomUser.objects.none()
-        partner_courses = Course.objects.none()
-
-    # ============================================================
-    # === COURSES CREATED TODAY ===
-    # ============================================================
+    # ========== COURSE CREATED TODAY ==========
     today = timezone.now().date()
-
-    if partner_courses is not None and partner_courses.exists():
-        courses_created_today = partner_courses.filter(
-            created_at__date=today,
-        ).order_by('created_at')
-        courses_paginator = Paginator(courses_created_today, 5)
-        courses_created_today = courses_paginator.get_page(courses_page)
+    if partner_courses.exists():
+        courses_created_today_qs = partner_courses.filter(created_at__date=today).order_by('created_at')
+        paginator = Paginator(courses_created_today_qs, 5)
+        courses_created_today = paginator.get_page(courses_page)
     else:
         courses_created_today = []
 
-    # ============================================================
-    # === ONLINE / OFFLINE USERS ===
-    # ============================================================
-    online_users = [user for user in users if is_user_online(user)]
-    offline_users = [user for user in users if not is_user_online(user)]
-    total_certificates = Certificate.objects.count()
+    # ========== ONLINE/OFFLINE USERS (Only for Superuser & Partner) ==========
+    if user.is_superuser or user.is_partner:
+        # Optional: Buat fungsi get_total_online_users() yang lebih efisien
+        total_users_count = users.count()
+        total_online = get_total_online_users(users)
+        total_offline = total_users_count - total_online
 
+    # ========== CERTIFICATES ==========
+    total_certificates = cache.get('total_certificates') or Certificate.objects.count()
+    cache.set('total_certificates', total_certificates, 300)
+
+    # ========== CONTEXT ==========
     context = {
         'courses_page': courses_page,
         'total_enrollments': total_enrollments,
@@ -953,14 +949,12 @@ def dasbord(request):
         'total_partners': total_partners,
         'total_published_courses': total_published_courses,
         'courses_created_today': courses_created_today,
-        'total_online': len(online_users),
-        'total_offline': len(offline_users),
+        'total_online': total_online,
+        'total_offline': total_offline,
         'total_certificates': total_certificates,
     }
 
     return render(request, 'home/dasbord.html', context)
-
-
 
 @custom_ratelimit
 @login_required

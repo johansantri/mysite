@@ -98,3 +98,17 @@ def is_user_online(user):
         if (now - last_seen).total_seconds() < 300:
             return True
     return False
+
+def get_total_online_users(users_qs):
+    from django.contrib.sessions.models import Session
+    from django.utils.timezone import now
+
+    sessions = Session.objects.filter(expire_date__gte=now())
+    uid_list = []
+    for session in sessions:
+        data = session.get_decoded()
+        uid = data.get('_auth_user_id')
+        if uid:
+            uid_list.append(uid)
+
+    return users_qs.filter(id__in=uid_list).count()

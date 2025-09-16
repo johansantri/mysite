@@ -18,8 +18,8 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
 django.setup()
 
 fake = Faker()
-batch_size = 10000
-total_users = 1000000
+batch_size = 100
+total_users = 10000
 
 universitas_ids = list(Universiti.objects.values_list('id', flat=True))
 users_to_create = []
