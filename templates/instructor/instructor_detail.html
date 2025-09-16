@@ -8,7 +8,7 @@
     <div class="row">
       <!-- Left Section: Profile Info -->
       <div class="col-md-8">
-        <h1 class="display-4 fw-bold">{{instructor.user.first_name}} {{instructor.user.last_name}}</h1>
+        <h1 class="display-5 fw-bold text-danger mb-4">{{instructor.user.first_name}} {{instructor.user.last_name}}</h1>
         <p class="lead text-muted">{{instructor.user.hobby}}</p>
         {% if partner_slug %}
     <a href="{% url 'courses:org_partner' partner_slug %}">
@@ -23,12 +23,12 @@
         <div class="mt-4">
           <div class="d-flex gap-4">
             <div>
-              <p class="h5 fw-bold">Total students</p>
+              <p class="h5 fw-bold">Students</p>
               <p class="h4">{{ total_students }}</p>
             </div>
             <div>
               <p class="h5 fw-bold">Reviews</p>
-              <p class="h4">926,979</p>
+              <p class="h4">{{ total_reviews }}</p>
             </div>
           </div>
         </div>

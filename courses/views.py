@@ -90,7 +90,7 @@ from .models import (
     AskOra, PeerReview, AssessmentScore, Submission, CourseStatus, AssessmentSession,
     CourseComment, Comment, Choice, Score, CoursePrice, AssessmentRead, QuestionAnswer,
     Enrollment, PricingType, Partner, CourseProgress, MaterialRead, GradeRange, Category,
-    Section, Instructor, TeamMember, Material, Question, Assessment,LTIResult
+    Section, Instructor, TeamMember, Material, Question, Assessment,LTIResult,
 )
 
 # Project-level apps
@@ -4749,12 +4749,20 @@ def instructor_detail(request, id):
     # Get the count of filtered courses
     courses_count = courses.count()
 
-       # Hitung jumlah total siswa yang terdaftar di semua kursus yang diberikan instruktur ini
+    # Hitung jumlah total siswa yang terdaftar di semua kursus yang diberikan instruktur ini
     total_students = Enrollment.objects.filter(course__in=courses).values('user').annotate(num_students=Count('user')).count()
 
-    # Add a participant count for each course
-    # We're using annotate to count the number of enrollments for each course
-    courses = courses.annotate(participants_count=Count('enrollments'))
+    # Hitung jumlah total ulasan untuk semua kursus instruktur
+    total_reviews = CourseRating.objects.filter(course__in=courses).count()
+
+    # Hitung rata-rata rating untuk semua kursus instruktur
+    avg_rating = CourseRating.objects.filter(course__in=courses).aggregate(avg_rating=Avg('rating'))['avg_rating'] or 0
+
+    # Add a participant count and review count for each course
+    courses = courses.annotate(
+        participants_count=Count('enrollments'),
+        ratings_count=Count('ratings')  # Jumlah ulasan per kursus menggunakan related_name='ratings'
+    )
 
     # Implement pagination: Show 6 courses per page
     paginator = Paginator(courses, 6)
@@ -4784,6 +4792,8 @@ def instructor_detail(request, id):
         'search_term': search_term,  # Pass the search query to the template
         'partner_slug': partner_slug,  # Pass the partner slug to the template
         'total_students': total_students,
+        'total_reviews': total_reviews,  # Total ulasan untuk semua kursus
+        'avg_rating': round(avg_rating, 1) if avg_rating else 0,  # Rata-rata rating, dibulatkan ke 1 desimal
     }
 
     # Render the instructor_detail template with the context
