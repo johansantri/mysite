@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-*t=li&h7o=sj40!ic&)p+8!fy3p@*tfg+mz6!xuftigv_qa9yy
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 #ALLOWED_HOSTS = ['127.0.0.1','localhost']
-ALLOWED_HOSTS = ['ini.icei.ac.id','20.11.247.222']
+ALLOWED_HOSTS = ['ini.icei.ac.id']
 SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
