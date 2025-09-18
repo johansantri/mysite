@@ -1590,6 +1590,9 @@ def logout_view(request):
 #login view
 @ratelimit(key='ip', rate='5/m', block=False)
 def login_view(request):
+    # Cek apakah user sudah login
+    if request.user.is_authenticated:
+        return redirect('authentication:home')  # Ganti dengan nama URL home-mu
     was_limited = getattr(request, 'limited', False)
 
     if request.method == 'POST':
@@ -1626,10 +1629,15 @@ def login_view(request):
 
     return render(request, 'authentication/login.html', {'form': form})
 
+
+
 @custom_ratelimit
 # Register view
 @ratelimit(key='ip', rate='100/h')
 def register_view(request):
+    if request.user.is_authenticated:
+        return redirect('authentication:home')  # Ganti dengan nama URL home-mu
+    
     if request.method == "POST":
         form = RegistrationForm(request.POST)
         if form.is_valid():
@@ -1692,6 +1700,8 @@ def activate_account(request, uidb64, token):
 @ratelimit(key='ip', rate='100/h')
 # Custom Password Reset View
 def custom_password_reset(request):
+    if request.user.is_authenticated:
+        return redirect('authentication:home')  # Ganti dengan nama URL home-mu
     form = PasswordResetForms(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
