@@ -4302,7 +4302,7 @@ def update_grade_range(request, id):
 
 #creat assesment type name
 #@login_required
-@csrf_exempt
+@csrf_protect
 def create_assessment(request, idcourse, idsection):
     # Check if the user is authenticated
     if not request.user.is_authenticated:
@@ -4353,7 +4353,7 @@ def create_assessment(request, idcourse, idsection):
 
 #edit assesment type name
 #@login_required
-@csrf_exempt
+@csrf_protect
 def edit_assessment(request, idcourse, idsection, idassessment):
     # Check if the user is authenticated
     if not request.user.is_authenticated:
@@ -4412,7 +4412,7 @@ def edit_assessment(request, idcourse, idsection, idassessment):
 
 #delete assesment type name
 #@login_required
-@csrf_exempt
+@csrf_protect
 def delete_assessment(request, idcourse, idsection, idassessment):
     # Check if the user is authenticated
     if not request.user.is_authenticated:
@@ -5061,7 +5061,7 @@ def remove_team_member(request, member_id):
     return redirect('courses:course_team', id=course_id)  # Redir
 
 #course profile
-@csrf_exempt  # Be cautious with this decorator; it's better to avoid using it if unnecessary
+@csrf_protect
 def course_profile(request, id):
     # Check if the user is authenticated
     if not request.user.is_authenticated:
@@ -5101,7 +5101,7 @@ def course_profile(request, id):
 
 #add section
 #@login_required
-@csrf_exempt
+@csrf_protect
 def create_section(request, idcourse):
     # Check if the user is authenticated
     if not request.user.is_authenticated:
@@ -5133,7 +5133,7 @@ def create_section(request, idcourse):
 
 # Delete section
 #@login_required
-@csrf_exempt
+@csrf_protect
 def delete_section(request, pk):
     # Check if the user is authenticated
     if not request.user.is_authenticated:
@@ -5169,7 +5169,7 @@ def delete_section(request, pk):
 # Update Section
 # Update Section with Role-Based Access
 #@login_required
-@csrf_exempt
+@csrf_protect
 def update_section(request, pk):
     # Check if the user is authenticated
     if not request.user.is_authenticated:
@@ -5210,7 +5210,7 @@ def update_section(request, pk):
 
 #add matrial course
 #@login_required
-@csrf_exempt
+@csrf_protect
 def add_matrial(request, idcourse, idsection):
     # Check if the user is authenticated
     if not request.user.is_authenticated:
@@ -5263,7 +5263,7 @@ def add_matrial(request, idcourse, idsection):
 
 #edit matrial course
 #@login_required
-@csrf_exempt
+@csrf_protect
 def edit_matrial(request, idcourse, idmaterial):
     # Check the role of the user and determine access permissions
     # Check if the user is authenticated
@@ -5319,7 +5319,7 @@ def edit_matrial(request, idcourse, idmaterial):
 
 #delete matrial course
 #@login_required
-@csrf_exempt
+@csrf_protect
 def delete_matrial(request, pk):
     # Check if the user is authenticated
     if not request.user.is_authenticated:
