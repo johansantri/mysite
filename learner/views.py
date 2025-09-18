@@ -1695,6 +1695,7 @@ def add_comment(request):
         return HttpResponseRedirect(reverse('learner:load_content', kwargs={
             'username': request.user.username,
             'slug': course.slug,
+            'id': course.id,
             'content_type': 'material',
             'content_id': material_id
         }))
