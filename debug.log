@@ -1272,3 +1272,321 @@ Traceback (most recent call last):
 django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
 [WARNING] 2025-09-19 10:58:53,313 [django.request] Bad Request: /.env
 [WARNING] 2025-09-19 10:59:23,711 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:00:23,794 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-09-19 11:00:32,108 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-09-19 11:00:32,110 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-09-19 03:00:32.108105+00:00
+[INFO] 2025-09-19 11:00:32,110 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0", path_info: "/logout/"}.
+[ERROR] 2025-09-19 11:00:33,107 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-09-19 11:00:33,110 [django.request] Bad Request: /
+[DEBUG] 2025-09-19 11:00:49,125 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-09-19 11:00:49,125 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-09-19 11:00:49,126 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-09-19 03:00:49.125548+00:00
+[INFO] 2025-09-19 11:00:50,097 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0", path_info: "/login/"}.
+[INFO] 2025-09-19 11:00:50,098 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-09-19 03:00:49.125548+00:00
+[WARNING] 2025-09-19 11:01:03,605 [django.request] Not Found: /favicon.ico
+[INFO] 2025-09-19 11:01:06,620 [courses.views] [Enroll] User: learn1@learn.com, Course: Build Powerful Web Applications with Django, Free: False, Has License: False
+[WARNING] 2025-09-19 11:01:06,621 [courses.views] [Enroll Blocked] learn1@learn.com tidak punya lisensi aktif untuk course Build Powerful Web Applications with Django yang berbayar
+[INFO] 2025-09-19 11:01:06,621 [courses.views] [Enroll] Payment model: pay_for_certificate
+[INFO] 2025-09-19 11:01:06,622 [courses.views] [Enroll] Price type found: pay_for_certificate
+[DEBUG] 2025-09-19 11:01:06,622 [courses.models] Enrolling user learn1@learn.com (ID: 56) for course Build Powerful Web Applications with Django (ID: 12) with payment_model pay_for_certificate
+[INFO] 2025-09-19 11:01:06,652 [courses.models] User learn1@learn.com enrolled in course Build Powerful Web Applications with Django with model pay_for_certificate
+[INFO] 2025-09-19 11:01:06,653 [courses.views] [Enroll Result] {'status': 'success', 'message': 'Berhasil mendaftar ke kursus ini.'}
+[INFO] 2025-09-19 11:01:06,795 [learner.views] Redirecting to load_content: /learn1/12/build-powerful-web-applications-with-django-2026/material/53/
+[WARNING] 2025-09-19 11:01:06,930 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 11:01:06,970 [learner.views] Closed previous CourseSessionLog for user 56, course 12
+[DEBUG] 2025-09-19 11:01:06,999 [learner.views] Created CourseSessionLog for user 56, course 12, material 53
+[DEBUG] 2025-09-19 11:01:07,037 [learner.views] Updated LastAccessCourse for user 56, course 12, material 53
+[INFO] 2025-09-19 11:01:07,072 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn1, material 53
+[WARNING] 2025-09-19 11:01:23,862 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:01:34,257 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 11:01:34,295 [learner.views] Closed previous CourseSessionLog for user 56, course 12
+[DEBUG] 2025-09-19 11:01:34,330 [learner.views] Created CourseSessionLog for user 56, course 12, material 53
+[DEBUG] 2025-09-19 11:01:34,375 [learner.views] Updated LastAccessCourse for user 56, course 12, material 53
+[INFO] 2025-09-19 11:01:34,384 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn1, material 53
+[WARNING] 2025-09-19 11:01:38,362 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 11:01:38,404 [learner.views] Closed previous CourseSessionLog for user 56, course 12
+[DEBUG] 2025-09-19 11:01:38,454 [learner.views] Created CourseSessionLog for user 56, course 12, assessment 53
+[DEBUG] 2025-09-19 11:01:38,495 [learner.views] Updated LastAccessCourse for user 56, course 12, assessment 53
+[INFO] 2025-09-19 11:01:38,565 [learner.views] Progress updated for user learn1 on course Build Powerful Web Applications with Django: 8.333333333333332%
+[INFO] 2025-09-19 11:01:38,577 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, assessment 53
+[WARNING] 2025-09-19 11:02:23,862 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-09-19 11:02:25,582 [learner.views] Assessment submitted for user learn1, assessment 53
+[INFO] 2025-09-19 11:02:25,596 [learner.views] submit_assessment_new: Rendering HTMX for user learn1, assessment 53
+[WARNING] 2025-09-19 11:02:29,032 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 11:02:29,065 [learner.views] Closed previous CourseSessionLog for user 56, course 12
+[DEBUG] 2025-09-19 11:02:29,096 [learner.views] Created CourseSessionLog for user 56, course 12, material 54
+[DEBUG] 2025-09-19 11:02:29,138 [learner.views] Updated LastAccessCourse for user 56, course 12, material 54
+[INFO] 2025-09-19 11:02:29,170 [learner.views] Progress updated for user learn1 on course Build Powerful Web Applications with Django: 16.666666666666664%
+[INFO] 2025-09-19 11:02:29,171 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 54
+[WARNING] 2025-09-19 11:02:33,120 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 11:02:33,154 [learner.views] Closed previous CourseSessionLog for user 56, course 12
+[DEBUG] 2025-09-19 11:02:33,183 [learner.views] Created CourseSessionLog for user 56, course 12, material 55
+[DEBUG] 2025-09-19 11:02:33,221 [learner.views] Updated LastAccessCourse for user 56, course 12, material 55
+[INFO] 2025-09-19 11:02:33,229 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 55
+[WARNING] 2025-09-19 11:02:34,761 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-09-19 11:02:54,277 [authentication.views] Updated progress for user 56, course 12: 16.66666666666666666666666667%
+[DEBUG] 2025-09-19 11:02:54,311 [authentication.views] Course 12 (Build Powerful Web Applications with Django): progress=16.66666666666666666666666667%, last_access_material=55, last_access_assessment=None
+[DEBUG] 2025-09-19 11:02:54,355 [authentication.views] Course 11 (Big Data Developer): progress=10.0%, last_access_material=49, last_access_assessment=None
+[DEBUG] 2025-09-19 11:02:54,400 [authentication.views] Course 16 (Kursus UI/UX Design: Dari Nol Hingga Mahir): progress=100%, last_access_material=82, last_access_assessment=None
+[DEBUG] 2025-09-19 11:02:54,403 [authentication.views] User 56 (learn1) accessed mycourse: 3 enrollments, 3 last accesses, last_access_map=[(16, 82, None), (11, 49, None), (12, 55, None)]
+[WARNING] 2025-09-19 11:03:24,101 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:03:37,520 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-09-19 11:03:37,520 [django.request] Forbidden: /search/
+[WARNING] 2025-09-19 11:04:24,221 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:04:24,443 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-09-19 11:04:24,444 [django.request] Forbidden: /search/
+[WARNING] 2025-09-19 11:05:24,299 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:06:24,378 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:07:24,460 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:08:23,156 [learner.views] Gagal mendapatkan lokasi untuk IP 114.8.211.203: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 11:08:23,202 [learner.views] Closed previous CourseSessionLog for user 1, course 16
+[DEBUG] 2025-09-19 11:08:23,232 [learner.views] Created CourseSessionLog for user 1, course 16, material 80
+[DEBUG] 2025-09-19 11:08:23,274 [learner.views] Updated LastAccessCourse for user 1, course 16, material 80
+[INFO] 2025-09-19 11:08:23,282 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna admin, material 80
+[WARNING] 2025-09-19 11:08:24,545 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:08:26,557 [learner.views] Gagal mendapatkan lokasi untuk IP 114.8.211.203: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 11:08:26,594 [learner.views] Closed previous CourseSessionLog for user 1, course 16
+[DEBUG] 2025-09-19 11:08:26,622 [learner.views] Created CourseSessionLog for user 1, course 16, material 81
+[DEBUG] 2025-09-19 11:08:26,657 [learner.views] Updated LastAccessCourse for user 1, course 16, material 81
+[INFO] 2025-09-19 11:08:26,686 [learner.views] Progress updated for user admin on course Kursus UI/UX Design: Dari Nol Hingga Mahir: 100.0%
+[INFO] 2025-09-19 11:08:26,687 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna admin, material 81
+[WARNING] 2025-09-19 11:08:29,036 [learner.views] Gagal mendapatkan lokasi untuk IP 114.8.211.203: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 11:08:29,073 [learner.views] Closed previous CourseSessionLog for user 1, course 16
+[DEBUG] 2025-09-19 11:08:29,102 [learner.views] Created CourseSessionLog for user 1, course 16, material 82
+[DEBUG] 2025-09-19 11:08:29,139 [learner.views] Updated LastAccessCourse for user 1, course 16, material 82
+[INFO] 2025-09-19 11:08:29,166 [learner.views] Progress updated for user admin on course Kursus UI/UX Design: Dari Nol Hingga Mahir: 100.0%
+[INFO] 2025-09-19 11:08:29,168 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna admin, material 82
+[WARNING] 2025-09-19 11:08:31,659 [learner.views] Gagal mendapatkan lokasi untuk IP 114.8.211.203: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 11:08:31,693 [learner.views] Closed previous CourseSessionLog for user 1, course 16
+[DEBUG] 2025-09-19 11:08:31,723 [learner.views] Created CourseSessionLog for user 1, course 16, material 84
+[DEBUG] 2025-09-19 11:08:31,754 [learner.views] Updated LastAccessCourse for user 1, course 16, material 84
+[INFO] 2025-09-19 11:08:31,781 [learner.views] Progress updated for user admin on course Kursus UI/UX Design: Dari Nol Hingga Mahir: 100.0%
+[INFO] 2025-09-19 11:08:31,782 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna admin, material 84
+[INFO] 2025-09-19 11:09:14,367 [courses.views] [Enroll] User: admin@admin.com, Course: Big Data Developer, Free: False, Has License: False
+[WARNING] 2025-09-19 11:09:14,367 [courses.views] [Enroll Blocked] admin@admin.com tidak punya lisensi aktif untuk course Big Data Developer yang berbayar
+[INFO] 2025-09-19 11:09:14,367 [courses.views] [Enroll] Payment model: pay_for_exam
+[INFO] 2025-09-19 11:09:14,368 [courses.views] [Enroll] Price type found: pay_for_exam
+[DEBUG] 2025-09-19 11:09:14,368 [courses.models] Enrolling user admin@admin.com (ID: 1) for course Big Data Developer (ID: 11) with payment_model pay_for_exam
+[INFO] 2025-09-19 11:09:14,394 [courses.models] User admin@admin.com enrolled in course Big Data Developer with model pay_for_exam
+[INFO] 2025-09-19 11:09:14,394 [courses.views] [Enroll Result] {'status': 'success', 'message': 'Berhasil mendaftar ke kursus ini.'}
+[INFO] 2025-09-19 11:09:14,603 [learner.views] Menampilkan pesan sapaan untuk pengguna admin pada kursus Big Data Developer
+[DEBUG] 2025-09-19 11:09:14,624 [learner.views] Created LastAccessCourse for user 1, course 11, material 45
+[INFO] 2025-09-19 11:09:14,625 [learner.views] Redirecting to load_content: /admin/11/big-data-developer-2026/material/45/
+[WARNING] 2025-09-19 11:09:14,781 [learner.views] Gagal mendapatkan lokasi untuk IP 114.8.211.203: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 11:09:14,811 [learner.views] Created CourseSessionLog for user 1, course 11, material 45
+[DEBUG] 2025-09-19 11:09:14,848 [learner.views] Updated LastAccessCourse for user 1, course 11, material 45
+[INFO] 2025-09-19 11:09:14,874 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna admin, material 45
+[WARNING] 2025-09-19 11:09:24,656 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:10:12,899 [learner.views] Gagal mendapatkan lokasi untuk IP 114.8.211.203: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 11:10:12,935 [learner.views] Closed previous CourseSessionLog for user 1, course 11
+[DEBUG] 2025-09-19 11:10:12,963 [learner.views] Created CourseSessionLog for user 1, course 11, material 45
+[DEBUG] 2025-09-19 11:10:12,997 [learner.views] Updated LastAccessCourse for user 1, course 11, material 45
+[INFO] 2025-09-19 11:10:13,004 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna admin, material 45
+[WARNING] 2025-09-19 11:10:19,450 [learner.views] Gagal mendapatkan lokasi untuk IP 114.8.211.203: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 11:10:19,491 [learner.views] Closed previous CourseSessionLog for user 1, course 11
+[DEBUG] 2025-09-19 11:10:19,518 [learner.views] Created CourseSessionLog for user 1, course 11, assessment 45
+[DEBUG] 2025-09-19 11:10:19,551 [learner.views] Updated LastAccessCourse for user 1, course 11, assessment 45
+[INFO] 2025-09-19 11:10:19,613 [learner.views] Progress updated for user admin on course Big Data Developer: 10.0%
+[INFO] 2025-09-19 11:10:19,620 [learner.views] Pembayaran diperlukan untuk penilaian 45 di kursus 11 untuk pengguna admin
+[INFO] 2025-09-19 11:10:19,628 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna admin, assessment 45
+[WARNING] 2025-09-19 11:10:21,139 [learner.views] Gagal mendapatkan lokasi untuk IP 114.8.211.203: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 11:10:21,180 [learner.views] Closed previous CourseSessionLog for user 1, course 11
+[DEBUG] 2025-09-19 11:10:21,208 [learner.views] Created CourseSessionLog for user 1, course 11, material 45
+[DEBUG] 2025-09-19 11:10:21,252 [learner.views] Updated LastAccessCourse for user 1, course 11, material 45
+[INFO] 2025-09-19 11:10:21,261 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna admin, material 45
+[WARNING] 2025-09-19 11:10:24,762 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-09-19 11:10:25,811 [learner.views] Comment added by admin for material 45, parent_id=
+[WARNING] 2025-09-19 11:11:24,848 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:12:24,934 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:13:25,049 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:14:25,132 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:14:48,447 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-09-19 11:14:48,448 [django.request] Forbidden: /search/
+[WARNING] 2025-09-19 11:15:25,214 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:16:25,293 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:17:25,409 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:18:25,486 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:19:25,607 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:20:25,722 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:21:25,844 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:21:38,836 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-09-19 11:21:38,836 [django.request] Forbidden: /search/
+[WARNING] 2025-09-19 11:22:25,928 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:23:25,930 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:24:26,108 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:25:26,215 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:26:26,299 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:27:26,383 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:28:06,906 [learner.views] Gagal mendapatkan lokasi untuk IP 114.8.208.89: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 11:28:06,945 [learner.views] Closed previous CourseSessionLog for user 1, course 11
+[DEBUG] 2025-09-19 11:28:06,971 [learner.views] Created CourseSessionLog for user 1, course 11, material 45
+[DEBUG] 2025-09-19 11:28:07,008 [learner.views] Updated LastAccessCourse for user 1, course 11, material 45
+[INFO] 2025-09-19 11:28:07,015 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna admin, material 45
+[WARNING] 2025-09-19 11:28:26,431 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:29:26,545 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:29:39,064 [django.request] Not Found: /learner/learn/
+[WARNING] 2025-09-19 11:30:26,626 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:31:26,708 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:32:26,792 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:33:26,879 [django.request] Not Found: /partner/ping-session/
+[ERROR] 2025-09-19 11:34:24,082 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-09-19 11:34:24,083 [django.request] Bad Request: /
+[WARNING] 2025-09-19 11:34:26,956 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:34:41,971 [django.request] Not Found: /robots.txt
+[WARNING] 2025-09-19 11:35:27,078 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:36:27,165 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:37:27,245 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:38:27,329 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:39:27,413 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:40:27,497 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:41:27,577 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:42:27,661 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:42:37,794 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-09-19 11:42:37,794 [django.request] Forbidden: /search/
+[WARNING] 2025-09-19 11:43:27,710 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:44:27,824 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:45:27,875 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:46:27,998 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:47:28,129 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:48:28,219 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:49:28,297 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:50:28,382 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:51:28,510 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:52:28,511 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:53:28,683 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:54:28,770 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:55:28,859 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:56:28,909 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:57:29,031 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 11:58:29,113 [django.request] Not Found: /partner/ping-session/
+[ERROR] 2025-09-19 11:59:13,903 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-09-19 11:59:13,904 [django.request] Bad Request: /
+[WARNING] 2025-09-19 11:59:29,204 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:00:29,305 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:01:29,381 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:02:29,387 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:03:29,594 [django.request] Not Found: /partner/ping-session/
+[ERROR] 2025-09-19 12:04:24,815 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-09-19 12:04:24,816 [django.request] Bad Request: /.env
+[ERROR] 2025-09-19 12:04:25,747 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-09-19 12:04:25,748 [django.request] Bad Request: /
+[WARNING] 2025-09-19 12:04:29,683 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:05:29,770 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:06:29,881 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:07:30,007 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:08:30,101 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:09:30,095 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:10:30,301 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:11:30,369 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:12:30,501 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:13:30,557 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:14:30,710 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:15:30,809 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:16:30,904 [django.request] Not Found: /partner/ping-session/
+[ERROR] 2025-09-19 12:16:31,252 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-09-19 12:16:31,253 [django.request] Bad Request: /
+[WARNING] 2025-09-19 12:17:14,649 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-09-19 12:17:14,650 [django.request] Forbidden: /search/
+[WARNING] 2025-09-19 12:17:30,994 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:18:31,104 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:19:31,217 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:20:31,274 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:21:31,400 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:21:54,995 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-09-19 12:21:54,995 [django.request] Forbidden: /search/
+[WARNING] 2025-09-19 12:22:31,491 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:23:31,581 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:24:31,674 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:25:31,762 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:26:31,852 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:27:31,943 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:28:32,027 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:29:32,116 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:30:32,210 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:31:32,208 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:32:32,389 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:33:32,476 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:34:32,567 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:35:32,667 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:36:32,780 [django.request] Not Found: /partner/ping-session/
+[ERROR] 2025-09-19 12:37:02,084 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-09-19 12:37:02,085 [django.request] Bad Request: /
+[WARNING] 2025-09-19 12:37:32,852 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:38:32,970 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-09-19 12:38:46,181 [authentication.views] Updated progress for user 56, course 12: 16.66666666666666666666666667%
+[DEBUG] 2025-09-19 12:38:46,209 [authentication.views] Course 12 (Build Powerful Web Applications with Django): progress=16.66666666666666666666666667%, last_access_material=55, last_access_assessment=None
+[DEBUG] 2025-09-19 12:38:46,248 [authentication.views] Course 11 (Big Data Developer): progress=10.0%, last_access_material=49, last_access_assessment=None
+[DEBUG] 2025-09-19 12:38:46,282 [authentication.views] Course 16 (Kursus UI/UX Design: Dari Nol Hingga Mahir): progress=100%, last_access_material=82, last_access_assessment=None
+[DEBUG] 2025-09-19 12:38:46,284 [authentication.views] User 56 (learn1) accessed mycourse: 3 enrollments, 3 last accesses, last_access_map=[(16, 82, None), (11, 49, None), (12, 55, None)]
+[WARNING] 2025-09-19 12:38:50,109 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-09-19 12:39:33,012 [django.request] Not Found: /partner/ping-session/
