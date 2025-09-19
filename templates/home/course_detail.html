@@ -398,42 +398,45 @@
                 <div class="bg-white rounded-xl shadow-md p-6 mt-6">
                     <h5 class="text-lg font-bold text-gray-900 mb-4">Reviews</h5>
                     {% for review in reviews %}
-                        <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm mb-4 flex flex-wrap items-center gap-4">
-                            <div class="flex items-center">
-                                <div class="mr-3">
-                                    <a href="{% url 'learner:learner_detail' review.user.username %}" target="_blank">
-                                        {% if review.user.photo %}
-                                            <img src="{{ review.user.photo.url }}" alt="Reviewer" class="w-16 h-16 object-cover rounded-full border">
-                                        {% else %}
-                                            <div class="w-16 h-16 flex items-center justify-center rounded-full border bg-red-600 text-white font-bold text-xl">
-                                                {% with review.user.full_name|default:review.user.get_full_name as full_name %}
-                                                    {% if full_name %}
-                                                        {{ full_name|slice:":1" }}{% with full_name.split|last as last_name %}{{ last_name|slice:":1" }}{% endwith %}
-                                                    {% else %}
-                                                        U
-                                                    {% endif %}
-                                                {% endwith %}
-                                            </div>
-
-                                        {% endif %}
-
-                                    </a>
+                        <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm mb-4">
+                            <!-- Flex container for user info and rating -->
+                            <div class="flex flex-wrap items-center gap-4 mb-3">
+                                <div class="flex items-center">
+                                    <div class="mr-3">
+                                        <a href="{% url 'learner:learner_detail' review.user.username %}" target="_blank">
+                                            {% if review.user.photo %}
+                                                <img src="{{ review.user.photo.url }}" alt="Reviewer" class="w-16 h-16 object-cover rounded-full border">
+                                            {% else %}
+                                                <div class="w-16 h-16 flex items-center justify-center rounded-full border bg-red-600 text-white font-bold text-xl">
+                                                    {% with review.user.full_name|default:review.user.get_full_name as full_name %}
+                                                        {% if full_name %}
+                                                            {{ full_name|slice:":1" }}{% with full_name.split|last as last_name %}{{ last_name|slice:":1" }}{% endwith %}
+                                                        {% else %}
+                                                            U
+                                                        {% endif %}
+                                                    {% endwith %}
+                                                </div>
+                                            {% endif %}
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <h5 class="text-md font-bold">
+                                            <a href="{% url 'learner:learner_detail' review.user.username %}" target="_blank" class="text-gray-900 hover:text-red-500 transition-colors">{{ review.user.username }}</a>
+                                        </h5>
+                                        <p class="text-gray-600 mb-0">{{ review.user.get_full_name }}</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h5 class="text-md font-bold">
-                                        <a href="{% url 'learner:learner_detail' review.user.username %}" target="_blank" class="text-gray-900 hover:text-red-500 transition-colors">{{ review.user.username }}</a>
-                                    </h5>
-                                    <p class="text-gray-600 mb-0">{{ review.user.get_full_name }}</p>
+                                <div class="ml-auto flex items-center">
+                                    {% for i in range %}
+                                        <i class="fas fa-star {% if i <= review.rating %}text-yellow-400{% else %}text-gray-400{% endif %}"></i>
+                                    {% endfor %}
+                                    <span class="font-bold ml-1">{{ review.rating }}</span>
                                 </div>
                             </div>
-                            <div class="ml-auto flex items-center">
-                                {% for i in range %}
-                                    <i class="fas fa-star {% if i <= review.rating %}text-yellow-400{% else %}text-gray-400{% endif %}"></i>
-                                {% endfor %}
-                                <span class="font-bold ml-1">{{ review.rating }}</span>
-                            </div>
+                            <!-- Comment always below -->
+                            <p class="text-gray-600">“{{ review.comment }}”</p>
                         </div>
-                        <p class="text-gray-600 mb-3">“{{ review.comment }}”</p>
+                        
                     {% empty %}
                         <p class="text-gray-600">Belum ada review untuk kursus ini.</p>
                     {% endfor %}
