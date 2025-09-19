@@ -1620,3 +1620,208 @@ django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'
 [INFO] 2025-09-19 12:44:28,049 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [INFO] 2025-09-19 12:44:28,286 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [WARNING] 2025-09-19 12:44:47,097 [django.request] Not Found: /favicon.ico
+[DEBUG] 2025-09-19 12:46:31,711 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-09-19 12:46:31,713 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-09-19 04:46:31.711390+00:00
+[INFO] 2025-09-19 12:46:31,714 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0", path_info: "/logout/"}.
+[WARNING] 2025-09-19 12:47:37,672 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-09-19 12:47:37,673 [django.request] Forbidden: /search/
+[DEBUG] 2025-09-19 12:48:52,339 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-09-19 12:48:52,341 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-09-19 12:48:52,341 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-09-19 04:48:52.339913+00:00
+[INFO] 2025-09-19 12:48:53,316 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0", path_info: "/login/"}.
+[INFO] 2025-09-19 12:48:53,318 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-09-19 04:48:52.339913+00:00
+[DEBUG] 2025-09-19 12:49:43,832 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-09-19 12:49:43,833 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-09-19 04:49:43.832071+00:00
+[INFO] 2025-09-19 12:49:43,833 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0", path_info: "/logout/"}.
+[DEBUG] 2025-09-19 13:22:15,861 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-09-19 13:22:15,862 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-09-19 13:22:15,863 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-09-19 05:22:15.861355+00:00
+[INFO] 2025-09-19 13:22:16,881 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0", path_info: "/login/"}.
+[INFO] 2025-09-19 13:22:16,882 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-09-19 05:22:15.861355+00:00
+[ERROR] 2025-09-19 13:22:40,840 [audit.signals] Error in audit log (post_delete) for Comment pk=57: Comment matching query does not exist.
+[INFO] 2025-09-19 13:24:02,839 [learner.views] Redirecting to load_content: /admin/16/kursus-uiux-design-dari-nol-hingga-mahir/material/84/
+[WARNING] 2025-09-19 13:24:02,970 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 13:24:03,009 [learner.views] Closed previous CourseSessionLog for user 1, course 16
+[DEBUG] 2025-09-19 13:24:03,050 [learner.views] Created CourseSessionLog for user 1, course 16, material 84
+[DEBUG] 2025-09-19 13:24:03,100 [learner.views] Updated LastAccessCourse for user 1, course 16, material 84
+[INFO] 2025-09-19 13:24:03,109 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna admin, material 84
+[WARNING] 2025-09-19 13:25:03,788 [django.request] Not Found: /partner/ping-session/
+[ERROR] 2025-09-19 13:25:46,952 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-09-19 13:25:46,955 [django.request] Bad Request: /
+[WARNING] 2025-09-19 13:26:03,782 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 13:27:03,787 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 13:27:18,516 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-09-19 13:27:18,517 [django.request] Forbidden: /search/
+[INFO] 2025-09-19 13:27:35,084 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-09-19 13:27:35,273 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-09-19 13:27:35,432 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[DEBUG] 2025-09-19 13:27:38,893 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-09-19 13:27:38,895 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-09-19 05:27:38.893153+00:00
+[INFO] 2025-09-19 13:27:38,896 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0", path_info: "/logout/"}.
+[DEBUG] 2025-09-19 13:27:49,882 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-09-19 13:27:49,882 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-09-19 13:27:49,883 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-09-19 05:27:49.882266+00:00
+[INFO] 2025-09-19 13:27:50,926 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0", path_info: "/login/"}.
+[INFO] 2025-09-19 13:27:50,928 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-09-19 05:27:49.882266+00:00
+[WARNING] 2025-09-19 13:28:03,783 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-09-19 13:28:24,235 [courses.views] [Enroll] User: partner4@partner.com, Course: Kursus UI/UX Design: Dari Nol Hingga Mahir, Free: True, Has License: False
+[INFO] 2025-09-19 13:28:24,235 [courses.views] [Enroll] Payment model: free
+[INFO] 2025-09-19 13:28:24,236 [courses.views] [Enroll] Price type found: free
+[DEBUG] 2025-09-19 13:28:24,236 [courses.models] Enrolling user partner4@partner.com (ID: 14) for course Kursus UI/UX Design: Dari Nol Hingga Mahir (ID: 16) with payment_model free
+[INFO] 2025-09-19 13:28:24,254 [courses.models] User partner4@partner.com enrolled in free course Kursus UI/UX Design: Dari Nol Hingga Mahir
+[INFO] 2025-09-19 13:28:24,254 [courses.views] [Enroll Result] {'status': 'success', 'message': 'Berhasil mendaftar ke kursus ini secara gratis.'}
+[INFO] 2025-09-19 13:28:24,399 [learner.views] Redirecting to load_content: /partner4/16/kursus-uiux-design-dari-nol-hingga-mahir/material/78/
+[WARNING] 2025-09-19 13:28:24,533 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 13:28:24,577 [learner.views] Closed previous CourseSessionLog for user 14, course 16
+[DEBUG] 2025-09-19 13:28:24,605 [learner.views] Created CourseSessionLog for user 14, course 16, material 78
+[DEBUG] 2025-09-19 13:28:24,648 [learner.views] Updated LastAccessCourse for user 14, course 16, material 78
+[INFO] 2025-09-19 13:28:24,674 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna partner4, material 78
+[WARNING] 2025-09-19 13:29:03,786 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 13:29:25,094 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-09-19 13:29:40,792 [learner.views] Comment added by partner4 for material 78, parent_id=
+[WARNING] 2025-09-19 13:30:03,781 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 13:30:25,220 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 13:30:51,598 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-09-19 13:30:51,599 [django.request] Forbidden: /search/
+[WARNING] 2025-09-19 13:31:03,780 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 13:31:07,174 [django.request] Not Found: /robots.txt
+[WARNING] 2025-09-19 13:31:25,432 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 13:32:03,785 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 13:32:11,324 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 13:32:11,357 [learner.views] Closed previous CourseSessionLog for user 14, course 16
+[DEBUG] 2025-09-19 13:32:11,384 [learner.views] Created CourseSessionLog for user 14, course 16, material 78
+[DEBUG] 2025-09-19 13:32:11,428 [learner.views] Updated LastAccessCourse for user 14, course 16, material 78
+[INFO] 2025-09-19 13:32:11,437 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna partner4, material 78
+[WARNING] 2025-09-19 13:32:26,821 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 13:32:26,849 [learner.views] Closed previous CourseSessionLog for user 14, course 16
+[DEBUG] 2025-09-19 13:32:26,876 [learner.views] Created CourseSessionLog for user 14, course 16, material 79
+[DEBUG] 2025-09-19 13:32:26,909 [learner.views] Updated LastAccessCourse for user 14, course 16, material 79
+[INFO] 2025-09-19 13:32:26,964 [learner.views] Progress updated for user partner4 on course Kursus UI/UX Design: Dari Nol Hingga Mahir: 8.333333333333332%
+[INFO] 2025-09-19 13:32:26,966 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna partner4, material 79
+[WARNING] 2025-09-19 13:32:29,491 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 13:32:29,533 [learner.views] Closed previous CourseSessionLog for user 14, course 16
+[DEBUG] 2025-09-19 13:32:29,560 [learner.views] Created CourseSessionLog for user 14, course 16, material 80
+[DEBUG] 2025-09-19 13:32:29,595 [learner.views] Updated LastAccessCourse for user 14, course 16, material 80
+[INFO] 2025-09-19 13:32:29,667 [learner.views] Progress updated for user partner4 on course Kursus UI/UX Design: Dari Nol Hingga Mahir: 16.666666666666664%
+[INFO] 2025-09-19 13:32:29,669 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna partner4, material 80
+[WARNING] 2025-09-19 13:32:31,549 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 13:32:31,582 [learner.views] Closed previous CourseSessionLog for user 14, course 16
+[DEBUG] 2025-09-19 13:32:31,613 [learner.views] Created CourseSessionLog for user 14, course 16, material 81
+[DEBUG] 2025-09-19 13:32:31,647 [learner.views] Updated LastAccessCourse for user 14, course 16, material 81
+[INFO] 2025-09-19 13:32:31,707 [learner.views] Progress updated for user partner4 on course Kursus UI/UX Design: Dari Nol Hingga Mahir: 25.0%
+[INFO] 2025-09-19 13:32:31,709 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna partner4, material 81
+[WARNING] 2025-09-19 13:32:34,349 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 13:32:34,383 [learner.views] Closed previous CourseSessionLog for user 14, course 16
+[DEBUG] 2025-09-19 13:32:34,408 [learner.views] Created CourseSessionLog for user 14, course 16, material 82
+[DEBUG] 2025-09-19 13:32:34,452 [learner.views] Updated LastAccessCourse for user 14, course 16, material 82
+[INFO] 2025-09-19 13:32:34,508 [learner.views] Progress updated for user partner4 on course Kursus UI/UX Design: Dari Nol Hingga Mahir: 33.33333333333333%
+[INFO] 2025-09-19 13:32:34,510 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna partner4, material 82
+[WARNING] 2025-09-19 13:32:36,332 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 13:32:36,364 [learner.views] Closed previous CourseSessionLog for user 14, course 16
+[DEBUG] 2025-09-19 13:32:36,389 [learner.views] Created CourseSessionLog for user 14, course 16, material 84
+[DEBUG] 2025-09-19 13:32:36,425 [learner.views] Updated LastAccessCourse for user 14, course 16, material 84
+[INFO] 2025-09-19 13:32:36,486 [learner.views] Progress updated for user partner4 on course Kursus UI/UX Design: Dari Nol Hingga Mahir: 41.66666666666667%
+[INFO] 2025-09-19 13:32:36,488 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna partner4, material 84
+[WARNING] 2025-09-19 13:32:38,496 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 13:32:38,535 [learner.views] Closed previous CourseSessionLog for user 14, course 16
+[DEBUG] 2025-09-19 13:32:38,560 [learner.views] Created CourseSessionLog for user 14, course 16, assessment 80
+[DEBUG] 2025-09-19 13:32:38,596 [learner.views] Updated LastAccessCourse for user 14, course 16, assessment 80
+[INFO] 2025-09-19 13:32:38,666 [learner.views] Progress updated for user partner4 on course Kursus UI/UX Design: Dari Nol Hingga Mahir: 50.0%
+[INFO] 2025-09-19 13:32:38,679 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna partner4, assessment 80
+[WARNING] 2025-09-19 13:33:04,219 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 13:33:08,411 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 13:33:08,447 [learner.views] Closed previous CourseSessionLog for user 14, course 16
+[DEBUG] 2025-09-19 13:33:08,473 [learner.views] Created CourseSessionLog for user 14, course 16, material 84
+[DEBUG] 2025-09-19 13:33:08,514 [learner.views] Updated LastAccessCourse for user 14, course 16, material 84
+[INFO] 2025-09-19 13:33:08,522 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna partner4, material 84
+[WARNING] 2025-09-19 13:33:11,830 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 13:33:27,231 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 13:33:29,923 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 13:33:31,958 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 13:33:34,765 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 13:33:36,733 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 13:33:38,924 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-09-19 13:34:02,495 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-09-19 13:34:02,625 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-09-19 13:34:02,625 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[DEBUG] 2025-09-19 13:34:04,463 [learner.views] Comment added by partner4 for material 84, parent_id=
+[WARNING] 2025-09-19 13:34:05,452 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 13:34:07,849 [learner.views] Rate limit exceeded for user partner4
+[WARNING] 2025-09-19 13:34:07,849 [learner.views] Spam comment detected by partner4: 2
+[WARNING] 2025-09-19 13:34:07,985 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 13:34:08,032 [learner.views] Closed previous CourseSessionLog for user 14, course 16
+[DEBUG] 2025-09-19 13:34:08,059 [learner.views] Created CourseSessionLog for user 14, course 16, material 84
+[DEBUG] 2025-09-19 13:34:08,101 [learner.views] Updated LastAccessCourse for user 14, course 16, material 84
+[INFO] 2025-09-19 13:34:08,110 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna partner4, material 84
+[WARNING] 2025-09-19 13:34:08,768 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 13:34:11,836 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 13:34:14,440 [learner.views] Rate limit exceeded for user partner4
+[WARNING] 2025-09-19 13:34:14,441 [learner.views] Spam comment detected by partner4: 3
+[WARNING] 2025-09-19 13:34:14,663 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 13:34:14,697 [learner.views] Closed previous CourseSessionLog for user 14, course 16
+[DEBUG] 2025-09-19 13:34:14,723 [learner.views] Created CourseSessionLog for user 14, course 16, material 84
+[DEBUG] 2025-09-19 13:34:14,755 [learner.views] Updated LastAccessCourse for user 14, course 16, material 84
+[INFO] 2025-09-19 13:34:14,762 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna partner4, material 84
+[WARNING] 2025-09-19 13:34:21,643 [learner.views] Rate limit exceeded for user partner4
+[WARNING] 2025-09-19 13:34:21,643 [learner.views] Spam comment detected by partner4: 4
+[WARNING] 2025-09-19 13:34:21,779 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 13:34:21,815 [learner.views] Closed previous CourseSessionLog for user 14, course 16
+[DEBUG] 2025-09-19 13:34:21,845 [learner.views] Created CourseSessionLog for user 14, course 16, material 84
+[DEBUG] 2025-09-19 13:34:21,883 [learner.views] Updated LastAccessCourse for user 14, course 16, material 84
+[INFO] 2025-09-19 13:34:21,893 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna partner4, material 84
+[WARNING] 2025-09-19 13:34:27,236 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 13:34:27,304 [learner.views] Rate limit exceeded for user partner4
+[WARNING] 2025-09-19 13:34:27,304 [learner.views] Spam comment detected by partner4: 5
+[WARNING] 2025-09-19 13:34:27,444 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 13:34:27,479 [learner.views] Closed previous CourseSessionLog for user 14, course 16
+[DEBUG] 2025-09-19 13:34:27,505 [learner.views] Created CourseSessionLog for user 14, course 16, material 84
+[DEBUG] 2025-09-19 13:34:27,551 [learner.views] Updated LastAccessCourse for user 14, course 16, material 84
+[INFO] 2025-09-19 13:34:27,564 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna partner4, material 84
+[WARNING] 2025-09-19 13:34:29,919 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 13:34:31,959 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 13:34:34,769 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 13:34:36,902 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 13:34:38,924 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 13:35:02,461 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 13:35:02,505 [learner.views] Closed previous CourseSessionLog for user 14, course 16
+[DEBUG] 2025-09-19 13:35:02,536 [learner.views] Created CourseSessionLog for user 14, course 16, material 84
+[DEBUG] 2025-09-19 13:35:02,575 [learner.views] Updated LastAccessCourse for user 14, course 16, material 84
+[INFO] 2025-09-19 13:35:02,585 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna partner4, material 84
+[WARNING] 2025-09-19 13:35:04,351 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-09-19 13:35:14,775 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-09-19 13:35:14,777 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-09-19 13:35:14,777 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-09-19 05:35:14.775536+00:00
+[INFO] 2025-09-19 13:35:15,737 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36", path_info: "/kuruk/login/"}.
+[INFO] 2025-09-19 13:35:15,739 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-09-19 05:35:14.775536+00:00
+[WARNING] 2025-09-19 13:35:49,649 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 13:35:49,682 [learner.views] Closed previous CourseSessionLog for user 14, course 16
+[DEBUG] 2025-09-19 13:35:49,712 [learner.views] Created CourseSessionLog for user 14, course 16, material 84
+[DEBUG] 2025-09-19 13:35:49,750 [learner.views] Updated LastAccessCourse for user 14, course 16, material 84
+[INFO] 2025-09-19 13:35:49,757 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna partner4, material 84
+[WARNING] 2025-09-19 13:35:54,601 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 13:35:54,687 [learner.views] Closed previous CourseSessionLog for user 14, course 16
+[DEBUG] 2025-09-19 13:35:54,714 [learner.views] Created CourseSessionLog for user 14, course 16, assessment 80
+[DEBUG] 2025-09-19 13:35:54,757 [learner.views] Updated LastAccessCourse for user 14, course 16, assessment 80
+[INFO] 2025-09-19 13:35:54,797 [learner.views] Progress updated for user partner4 on course Kursus UI/UX Design: Dari Nol Hingga Mahir: 50.0%
+[INFO] 2025-09-19 13:35:54,807 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna partner4, assessment 80
+[WARNING] 2025-09-19 13:35:57,065 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 13:35:57,101 [learner.views] Closed previous CourseSessionLog for user 14, course 16
+[DEBUG] 2025-09-19 13:35:57,126 [learner.views] Created CourseSessionLog for user 14, course 16, material 84
+[DEBUG] 2025-09-19 13:35:57,168 [learner.views] Updated LastAccessCourse for user 14, course 16, material 84
+[INFO] 2025-09-19 13:35:57,175 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna partner4, material 84
+[WARNING] 2025-09-19 13:36:04,351 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 13:36:11,005 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-09-19 13:36:11,045 [learner.views] Closed previous CourseSessionLog for user 14, course 16
+[DEBUG] 2025-09-19 13:36:11,081 [learner.views] Created CourseSessionLog for user 14, course 16, assessment 80
+[DEBUG] 2025-09-19 13:36:11,117 [learner.views] Updated LastAccessCourse for user 14, course 16, assessment 80
+[INFO] 2025-09-19 13:36:11,133 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna partner4, assessment 80
