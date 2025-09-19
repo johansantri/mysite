@@ -1590,3 +1590,33 @@ django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'
 [DEBUG] 2025-09-19 12:38:46,284 [authentication.views] User 56 (learn1) accessed mycourse: 3 enrollments, 3 last accesses, last_access_map=[(16, 82, None), (11, 49, None), (12, 55, None)]
 [WARNING] 2025-09-19 12:38:50,109 [django.request] Not Found: /favicon.ico
 [WARNING] 2025-09-19 12:39:33,012 [django.request] Not Found: /partner/ping-session/
+[ERROR] 2025-09-19 12:39:56,392 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-09-19 12:39:56,393 [django.request] Bad Request: /
+[DEBUG] 2025-09-19 12:39:57,947 [authentication.views] Updated progress for user 56, course 12: 16.66666666666666666666666667%
+[DEBUG] 2025-09-19 12:39:57,975 [authentication.views] Course 12 (Build Powerful Web Applications with Django): progress=16.66666666666666666666666667%, last_access_material=55, last_access_assessment=None
+[DEBUG] 2025-09-19 12:39:58,018 [authentication.views] Course 11 (Big Data Developer): progress=10.0%, last_access_material=49, last_access_assessment=None
+[DEBUG] 2025-09-19 12:39:58,058 [authentication.views] Course 16 (Kursus UI/UX Design: Dari Nol Hingga Mahir): progress=100%, last_access_material=82, last_access_assessment=None
+[DEBUG] 2025-09-19 12:39:58,061 [authentication.views] User 56 (learn1) accessed mycourse: 3 enrollments, 3 last accesses, last_access_map=[(16, 82, None), (11, 49, None), (12, 55, None)]
+[INFO] 2025-09-19 12:40:35,608 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-09-19 12:40:35,882 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-09-19 12:40:36,209 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-09-19 12:40:49,970 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-09-19 12:41:33,339 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:42:33,462 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-09-19 12:43:03,682 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-09-19 12:43:03,683 [django.request] Forbidden: /search/
+[WARNING] 2025-09-19 12:43:33,521 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-09-19 12:44:27,995 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-09-19 12:44:28,049 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-09-19 12:44:28,286 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-09-19 12:44:47,097 [django.request] Not Found: /favicon.ico
