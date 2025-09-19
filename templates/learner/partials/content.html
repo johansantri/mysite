@@ -151,6 +151,51 @@
                 {% endfor %}
             </ul>
         </div>
+
+            <!-- Modal Bootstrap untuk pesan sapaan -->
+        {% if messages %}
+            <div class="modal fade" id="welcomeModal" tabindex="-1" aria-labelledby="welcomeModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            {% for message in messages %}
+                                <div class="text-center">
+                                    <!-- Gambar kustom (opsional) -->
+                                    
+                                    {{ message | safe }} <!-- Gunakan safe karena pesan berisi HTML -->
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="modal-footer">
+                           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">View Course Details</button>
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Start Learning!</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- JavaScript untuk memicu modal saat halaman dimuat -->
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    var welcomeModal = new bootstrap.Modal(document.getElementById('welcomeModal'), {
+                        backdrop: 'static', // Tidak bisa ditutup dengan klik di luar
+                        keyboard: false // Tidak bisa ditutup dengan tombol Esc
+                    });
+                    welcomeModal.show();
+
+                    // Redirect ke detail kursus jika tombol sekunder diklik
+                    document.querySelector('.modal-footer .btn-secondary').addEventListener('click', function() {
+                        window.location.href = '{% url "courses:course_lms_detail" id=course.id slug=slug %}';
+                    });
+                });
+            </script>
+        {% endif %}
+
         <!-- Konten Utama -->
         <div class="col-md-12 content-column" id="content-area">
             {% if current_content %}

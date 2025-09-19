@@ -1013,7 +1013,7 @@ def _get_navigation_urls(username, id, slug, combined_content, current_index):
                 'slug': slug,
                 'content_type': next_content[0],
                 'content_id': next_content[1].id
-            })
+            }) + '?from_next=1'  # Tambahkan parameter from_next
     except NoReverseMatch as e:
         logger.error(f"NoReverseMatch di _get_navigation_urls: {str(e)}")
         previous_url = None
@@ -1052,8 +1052,36 @@ def my_course(request, username, id, slug):
     ).order_by('order')
     combined_content = _build_combined_content(sections)
 
-    # Perbarui LastAccessCourse untuk konten pertama jika tidak ada akses sebelumnya
+    # Periksa apakah ini akses pertama
     last_access = LastAccessCourse.objects.filter(user=user, course=course).first()
+    is_first_access = not last_access
+
+    # Ambil enrollment untuk memeriksa welcome_message_shown (opsional)
+    enrollment = Enrollment.objects.filter(user=user, course=course).first()
+
+    if is_first_access and enrollment and not getattr(enrollment, 'welcome_message_shown', False):
+        instructor_name = course.instructor.user.get_full_name() if course.instructor else "Instructor"
+      
+
+        welcome_message = (
+            f"<strong>Welcome, {user.get_full_name() or user.username}!</strong><br><br>"
+            f"We’re delighted to have you enrolled in <strong>{course.course_name}</strong>.<br><br>"
+            f"<b>Course Overview:</b><br>"
+            f"- {course.sort_description}<br>"
+            f"- Estimated Time Commitment: {course.hour}<br>"
+           
+            f"We look forward to supporting you on this learning journey.<br><br>"
+            f"Best wishes,<br><strong>{instructor_name}</strong>"
+        )
+
+        messages.error(request, welcome_message)
+        logger.info(f"Menampilkan pesan sapaan untuk pengguna {user.username} pada kursus {course.course_name}")
+
+        # Tandai bahwa pesan sudah ditampilkan (opsional)
+        if hasattr(enrollment, 'welcome_message_shown'):
+            enrollment.welcome_message_shown = True
+            enrollment.save()
+
     if not last_access and combined_content:
         content_type, content_obj, _ = combined_content[0]
         last_access, created = LastAccessCourse.objects.get_or_create(
@@ -1067,7 +1095,6 @@ def my_course(request, username, id, slug):
         )
         logger.debug(f"Created LastAccessCourse for user {user.id}, course {course.id}, {content_type} {content_obj.id}")
 
-    # Arahkan ke load_content untuk konten pertama atau terakhir yang diakses
     if last_access and (last_access.material or last_access.assessment):
         content_type = 'material' if last_access.material else 'assessment'
         content_id = last_access.material.id if last_access.material else last_access.assessment.id
@@ -1088,7 +1115,8 @@ def my_course(request, username, id, slug):
         logger.info(f"Redirecting to load_content: {redirect_url}")
         return HttpResponseRedirect(redirect_url)
 
-    # Jika tidak ada konten, render halaman kosong
+    user_progress, _ = CourseProgress.objects.get_or_create(user=user, course=course, defaults={'progress_percentage': 0})
+
     context = {
         'course': course,
         'course_name': course.course_name,
@@ -1105,7 +1133,7 @@ def my_course(request, username, id, slug):
         'is_expired': False,
         'remaining_time': 0,
         'answered_questions': {},
-        'course_progress': 0,
+        'course_progress': user_progress.progress_percentage,
         'previous_url': None,
         'next_url': None,
         'ask_oras': [],
@@ -1143,11 +1171,9 @@ def load_content(request, username, id, slug, content_type, content_id):
     if 'HTTP_X_FORWARDED_FOR' in request.META:
         ip_address = request.META['HTTP_X_FORWARDED_FOR'].split(',')[0].strip()
 
-    # Inisialisasi location_country dan location_city
     location_country = None
     location_city = None
     try:
-        # Ganti dengan path ke database GeoIP2 Anda
         geoip_reader = GeoIP2Reader('/path/to/GeoLite2-City.mmdb')
         geo_response = geoip_reader.city(ip_address)
         location_country = geo_response.country.name
@@ -1155,7 +1181,6 @@ def load_content(request, username, id, slug, content_type, content_id):
     except (geoip2.errors.AddressNotFoundError, FileNotFoundError, Exception) as e:
         logger.warning(f"Gagal mendapatkan lokasi untuk IP {ip_address}: {str(e)}")
 
-    # Tutup entri CourseSessionLog sebelumnya (jika ada)
     last_session = CourseSessionLog.objects.filter(
         user=request.user, 
         course=course, 
@@ -1166,7 +1191,6 @@ def load_content(request, username, id, slug, content_type, content_id):
         last_session.save()
         logger.debug(f"Closed previous CourseSessionLog for user {request.user.id}, course {course.id}")
 
-    # Buat entri baru di CourseSessionLog
     session_log = CourseSessionLog.objects.create(
         user=request.user,
         course=course,
@@ -1178,7 +1202,6 @@ def load_content(request, username, id, slug, content_type, content_id):
     )
     logger.debug(f"Created CourseSessionLog for user {request.user.id}, course {course.id}, {content_type} {content_id}")
 
-    # Perbarui LastAccessCourse
     last_access, created = LastAccessCourse.objects.get_or_create(
         user=request.user,
         course=course,
@@ -1203,7 +1226,29 @@ def load_content(request, username, id, slug, content_type, content_id):
     combined_content = _build_combined_content(sections)
     current_index = 0
 
-    user_progress, _ = CourseProgress.objects.get_or_create(user=request.user, course=course)
+    user_progress, _ = CourseProgress.objects.get_or_create(user=request.user, course=course, defaults={'progress_percentage': 0})
+
+    # Periksa apakah permintaan berasal dari klik tombol "next"
+    from_next = request.GET.get('from_next', '0') == '1'
+    if from_next:
+        # Ambil konten sebelumnya dari sesi
+        prev_content_type = request.session.get('prev_content_type')
+        prev_content_id = request.session.get('prev_content_id')
+        if prev_content_type and prev_content_id:
+            if prev_content_type == 'material':
+                material = get_object_or_404(Material, id=prev_content_id)
+                MaterialRead.objects.get_or_create(user=request.user, material=material)
+            elif prev_content_type == 'assessment':
+                assessment = get_object_or_404(Assessment, id=prev_content_id)
+                AssessmentRead.objects.get_or_create(user=request.user, assessment=assessment)
+            # Hitung ulang progress
+            user_progress.progress_percentage = calculate_course_progress(request.user, course)
+            user_progress.save()
+            logger.info(f"Progress updated for user {request.user.username} on course {course.course_name}: {user_progress.progress_percentage}%")
+
+    # Simpan konten saat ini ke sesi untuk digunakan saat klik "next" berikutnya
+    request.session['prev_content_type'] = content_type
+    request.session['prev_content_id'] = content_id
 
     context = {
         'course': course,
@@ -1243,10 +1288,7 @@ def load_content(request, username, id, slug, content_type, content_id):
         context['material'] = material
         context['current_content'] = ('material', material, next((s for s in sections if material in s.materials.all()), None))
         context['comments'] = Comment.objects.filter(material=material, parent=None).select_related('user', 'parent').prefetch_related('children').order_by('-created_at')
-        MaterialRead.objects.get_or_create(user=request.user, material=material)
         current_index = next((i for i, c in enumerate(combined_content) if c[0] == 'material' and c[1].id == material.id), 0)
-        user_progress.progress_percentage = calculate_course_progress(request.user, course)
-        user_progress.save()
 
     elif content_type == 'assessment':
         assessment = get_object_or_404(Assessment.objects.select_related('section__courses'), id=content_id)
@@ -1270,13 +1312,11 @@ def load_content(request, username, id, slug, content_type, content_id):
                 })
                 logger.info(f"Pembayaran diperlukan untuk penilaian {content_id} di kursus {course.id} untuk pengguna {request.user.username}")
             else:
-                AssessmentRead.objects.get_or_create(user=request.user, assessment=assessment)
-                user_progress.progress_percentage = calculate_course_progress(request.user, course)
-                user_progress.save()
+                # AssessmentRead ditunda sampai klik "next"
+                pass
         else:
-            AssessmentRead.objects.get_or_create(user=request.user, assessment=assessment)
-            user_progress.progress_percentage = calculate_course_progress(request.user, course)
-            user_progress.save()
+            # AssessmentRead ditunda sampai klik "next"
+            pass
 
         session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
         if session:
@@ -1294,7 +1334,6 @@ def load_content(request, username, id, slug, content_type, content_id):
         context.update(_build_assessment_context(assessment, request.user))
 
     context['previous_url'], context['next_url'] = _get_navigation_urls(username, id, slug, combined_content, current_index)
-    context['course_progress'] = user_progress.progress_percentage
 
     template = 'learner/partials/content.html' if request.headers.get('HX-Request') == 'true' else 'learner/my_course.html'
 
