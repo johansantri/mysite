@@ -3278,6 +3278,30 @@ def submit_answer(request, askora_id):
 # Setup logging untuk debugging
 logger = logging.getLogger(__name__)
 
+def build_verifiable_credential(certificate, passing_threshold):
+    return {
+        "@context": ["https://www.w3.org/2018/credentials/v1"],
+        "id": f"urn:uuid:{certificate.certificate_id}",
+        "type": ["VerifiableCredential", "CourseCertificate"],
+        "issuer": {
+            "id": "https://ini.icei.ac.id",
+            "name": "LMSKu"
+        },
+        "issuanceDate": certificate.issue_date.isoformat() + "T00:00:00Z",
+        "credentialSubject": {
+            "id": f"did:user:{certificate.user.id}",
+            "name": certificate.user.get_full_name(),
+            "email": certificate.user.email,
+            "course": {
+                "id": str(certificate.course.id),
+                "name": certificate.course.course_name,
+            },
+            "score": str(certificate.total_score),
+            "status": "Pass" if certificate.total_score >= passing_threshold else "Fail"
+        }
+    }
+
+
 def generate_certificate(request, course_id):
     if not request.user.is_authenticated:
         logger.info(f"Unauthenticated user attempted to claim certificate for course {course_id}")
@@ -3285,13 +3309,13 @@ def generate_certificate(request, course_id):
 
     course = get_object_or_404(Course, id=course_id)
 
-    # Cek apakah pengguna terdaftar di kursus
+    # === CEK ENROLLMENT ===
     if not Enrollment.objects.filter(user=request.user, course=course).exists():
         logger.warning(f"User {request.user.username} not enrolled in course {course.id}")
         messages.error(request, "You are not enrolled in this course.")
         return redirect('authentication:dashbord')
 
-    # Cek pembayaran jika diperlukan
+    # === CEK PEMBAYARAN (JIKA MODELNYA PAY-FOR-CERTIFICATE) ===
     if course.payment_model == 'pay_for_certificate':
         payment = Payment.objects.filter(
             user=request.user,
@@ -3304,11 +3328,9 @@ def generate_certificate(request, course_id):
             messages.info(request, "This certificate requires payment.")
             return redirect(reverse('payments:process_payment', kwargs={'course_id': course.id, 'payment_type': 'certificate'}))
 
-    # Ambil asesmen dan nilai
+    # === HITUNG NILAI ASESMEN ===
     assessments = Assessment.objects.filter(section__courses=course)
-    assessment_scores = []
-    total_max_score = 0
-    total_score = 0
+    assessment_scores, total_max_score, total_score = [], 0, 0
     all_assessments_submitted = True
 
     grade_range = GradeRange.objects.filter(course=course)
@@ -3361,8 +3383,7 @@ def generate_certificate(request, course_id):
     passing_criteria_met = overall_percentage >= passing_threshold
     status = "Pass" if all_assessments_submitted and passing_criteria_met else "Fail"
 
-    
-
+    # === PREPARE DATA UNTUK TEMPLATE ===
     assessment_results = [
         {'name': score['assessment'].name, 'max_score': score['weight'], 'score': score['score']}
         for score in assessment_scores
@@ -3370,7 +3391,6 @@ def generate_certificate(request, course_id):
     assessment_results.append({'name': 'Total', 'max_score': total_max_score, 'score': total_score})
 
     base_url = request.build_absolute_uri('/')
-
     partner_logo_url = None
     try:
         if course.org_partner and course.org_partner.logo:
@@ -3381,12 +3401,12 @@ def generate_certificate(request, course_id):
     except Exception as e:
         logger.error(f"Error fetching partner logo: {str(e)}")
 
-    # CEK JIKA SERTIFIKAT SUDAH ADA
+    # === CEK JIKA SERTIFIKAT SUDAH ADA ===
     existing_certificate = Certificate.objects.filter(user=request.user, course=course).first()
     if existing_certificate:
         logger.info(f"Certificate {existing_certificate.certificate_id} already exists for user {request.user.username}")
 
-        # CEK APAKAH FILE QR-NYA MASIH ADA
+        # CEK/GENERATE QR CODE
         existing_qr_path = os.path.join(settings.MEDIA_ROOT, 'qrcodes', f'certificate_{existing_certificate.certificate_id}.png')
         if not os.path.exists(existing_qr_path):
             verification_url = f"{base_url.rstrip('/')}/verify/{existing_certificate.certificate_id}/"
@@ -3400,6 +3420,18 @@ def generate_certificate(request, course_id):
 
         qr_url = request.build_absolute_uri(settings.MEDIA_URL + f'qrcodes/certificate_{existing_certificate.certificate_id}.png')
 
+        # === REGENERATE VC JSON UNTUK SERTIFIKAT LAMA ===
+        try:
+            vc = build_verifiable_credential(existing_certificate, passing_threshold)
+            vc_path = os.path.join(settings.MEDIA_ROOT, 'credentials', f'vc_{existing_certificate.certificate_id}.json')
+            os.makedirs(os.path.dirname(vc_path), exist_ok=True)
+            with open(vc_path, 'w', encoding='utf-8') as f:
+                json.dump(vc, f, ensure_ascii=False, indent=4)
+            logger.info(f"VC JSON regenerated for existing certificate: {vc_path}")
+        except Exception as e:
+            logger.error(f"Error generating VC for existing certificate {existing_certificate.certificate_id}: {str(e)}")
+
+        # === GENERATE PDF ===
         html_content = render_to_string('learner/certificate_template.html', {
             'passing_threshold': passing_threshold,
             'status': status,
@@ -3423,7 +3455,7 @@ def generate_certificate(request, course_id):
             messages.error(request, "Error retrieving certificate.")
             return redirect('authentication:dashbord')
 
-    # SERTIFIKAT BELUM ADA — BUAT BARU
+    # === JIKA BELUM ADA — BUAT SERTIFIKAT BARU ===
     certificate_id = uuid.uuid4()
     verification_url = f"{base_url.rstrip('/')}/verify/{certificate_id}/"
     qr = qrcode.QRCode(version=1, box_size=10, border=4)
@@ -3445,12 +3477,23 @@ def generate_certificate(request, course_id):
             total_score=total_score,
             partner=course.org_partner
         )
+
+        # === Generate VC JSON untuk sertifikat baru ===
+        vc = build_verifiable_credential(certificate, passing_threshold)
+        vc_path = os.path.join(settings.MEDIA_ROOT, 'credentials', f'vc_{certificate.certificate_id}.json')
+        os.makedirs(os.path.dirname(vc_path), exist_ok=True)
+        with open(vc_path, 'w', encoding='utf-8') as f:
+            json.dump(vc, f, ensure_ascii=False, indent=4)
+        logger.info(f"VC JSON generated for new certificate: {vc_path}")
+
         logger.info(f"Certificate {certificate_id} saved for user {request.user.username}")
+
     except Exception as e:
-        logger.error(f"Error saving certificate: {str(e)}")
+        logger.error(f"Error saving certificate or generating VC: {str(e)}")
         messages.error(request, "Error generating certificate.")
         return redirect('authentication:dashbord')
 
+    # === GENERATE PDF DAN KIRIM EMAIL ===
     html_content = render_to_string('learner/certificate_template.html', {
         'passing_threshold': passing_threshold,
         'status': status,
@@ -3467,7 +3510,7 @@ def generate_certificate(request, course_id):
     try:
         pdf = HTML(string=html_content, base_url=base_url).write_pdf()
         
-        # Kirim email notifikasi dengan lampiran PDF
+        # Kirim email notifikasi
         email_subject = f"Your LMSKu Certificate for {course.course_name}"
         email_html = render_to_string('email/certificate_notification.html', {
             'user': request.user,
@@ -3494,8 +3537,20 @@ def generate_certificate(request, course_id):
             from_email=settings.DEFAULT_FROM_EMAIL,
             to=[request.user.email],
         )
-        email.content_subtype = 'html'  # Set email ke format HTML
+        email.content_subtype = 'html'
         email.attach(f'certificate_{course.slug}.pdf', pdf, 'application/pdf')
+
+        # Attach VC JSON
+        try:
+            email.attach(
+                f'vc_certificate_{course.slug}.json',
+                json.dumps(vc, ensure_ascii=False, indent=4),
+                'application/json'
+            )
+            logger.info(f"VC JSON attached to email for certificate {certificate.certificate_id}")
+        except Exception as e:
+            logger.error(f"Error attaching VC JSON to email: {str(e)}")
+
         email.send(fail_silently=False)
         logger.info(f"Certificate notification email sent to {request.user.email}")
 
@@ -3507,6 +3562,7 @@ def generate_certificate(request, course_id):
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="certificate_{course.slug}.pdf"'
     return response
+
 
 
 
