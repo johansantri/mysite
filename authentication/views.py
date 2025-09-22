@@ -1628,7 +1628,8 @@ def register_view(request):
             email.attach_alternative(html_message, "text/html")  # Menambahkan versi HTML
             email.send()
 
-            return HttpResponse('Registration successful! Please check your email to activate your account.')
+            messages.success(request, 'Registration successful! Please check your email to activate your account.')
+            return redirect('authentication:login')  # Ganti 'login' dengan nama URL pattern halaman login kamu
     else:
         form = RegistrationForm()
     return render(request, 'authentication/register.html', {'form': form})
