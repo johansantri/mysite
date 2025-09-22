@@ -23,11 +23,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-*t=li&h7o=sj40!ic&)p+8!fy3p@*tfg+mz6!xuftigv_qa9yy'
 
+#=============================== for development ===============================
+#DEBUG = True
+#ALLOWED_HOSTS = ['127.0.0.1','localhost']
 
+#=============================== end development ===============================
 
 # SECURITY WARNING: don't run with debug turned on in production!
+
+
+#=============================== for production ===============================
+
 DEBUG = False
-#ALLOWED_HOSTS = ['127.0.0.1','localhost']
 ALLOWED_HOSTS = ['ini.icei.ac.id']
 SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_HTTPONLY = True
@@ -41,7 +48,7 @@ SECURE_SSL_REDIRECT = True
 RATELIMIT_IP_META_KEY = 'HTTP_X_REAL_IP'
 CSRF_TRUSTED_ORIGINS = ['https://ini.icei.ac.id']
 ALLOWED_REFERER = 'https://ini.icei.ac.id'
-
+#=============================== end production ===============================
 
 
 
