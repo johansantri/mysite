@@ -1095,3 +1095,44 @@ django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'
 [WARNING] 2025-09-22 16:10:28,976 [authentication.views] Invalid referer:  from IP 
 [WARNING] 2025-09-22 16:10:28,976 [django.request] Forbidden: /search/
 [WARNING] 2025-09-22 16:11:57,927 [django.request] Not Found: /robots.txt
+[INFO] 2025-09-23 09:52:42,424 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-09-23 09:52:42,651 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-09-23 09:52:42,670 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-09-23 09:52:48,418 [django.request] Not Found: /favicon.ico
+[DEBUG] 2025-09-23 09:52:50,477 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-09-23 09:52:50,479 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-09-23 09:52:50,479 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-09-23 01:52:50.477913+00:00
+[INFO] 2025-09-23 09:52:51,458 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36", path_info: "/kuruk/login/"}.
+[INFO] 2025-09-23 09:52:51,460 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-09-23 01:52:50.477913+00:00
+[ERROR] 2025-09-23 10:01:53,480 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-09-23 10:01:53,482 [django.request] Bad Request: /
+[DEBUG] 2025-09-23 10:08:28,218 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-09-23 10:08:28,220 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-09-23 10:08:28,220 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-09-23 02:08:28.218802+00:00
+[INFO] 2025-09-23 10:08:29,190 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36", path_info: "/login/"}.
+[INFO] 2025-09-23 10:08:29,191 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-09-23 02:08:28.218802+00:00
+[ERROR] 2025-09-23 10:09:27,329 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-09-23 10:09:27,334 [django.request] Bad Request: /webui/
+[INFO] 2025-09-23 10:10:09,949 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-09-23 10:10:10,021 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-09-23 10:10:10,198 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
