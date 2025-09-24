@@ -581,7 +581,8 @@ CONTENT_SECURITY_POLICY = {
         # Izinkan gambar dari domain sendiri dan dari inline base64 (data:)
         'img-src': (
             "'self'",
-            "data:",  # misalnya untuk gambar yang di-embed sebagai base64
+            "data:",
+              "https://eduma.thimpress.com",  # misalnya untuk gambar yang di-embed sebagai base64
         ),
 
         # Blokir plugin seperti Flash, Java Applet, dll — demi keamanan

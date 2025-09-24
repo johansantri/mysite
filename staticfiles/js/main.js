@@ -241,3 +241,18 @@ document.addEventListener('DOMContentLoaded', function () {
         targetForm.classList.remove('hidden');
     }
     }
+
+
+  // Auto-scroll slider
+        const slider = document.querySelector('.slider');
+        let scrollAmount = 0;
+        setInterval(() => {
+            scrollAmount += slider.offsetWidth;
+            if (scrollAmount >= slider.scrollWidth) {
+                scrollAmount = 0;
+            }
+            slider.scrollTo({
+                left: scrollAmount,
+                behavior: 'smooth'
+            });
+        }, 3000);

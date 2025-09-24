@@ -71,55 +71,107 @@
 {% block content %}
 
 
+  <style>
+        /* Custom styles for slider */
+        .slider {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
+        }
+        .slider img {
+            scroll-snap-align: start;
+            flex-shrink: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
 
+ <!-- Hero Section with Slider -->
+    <section id="home" class="pt-20">
+        <div class="slider">
+            <img src="https://eduma.thimpress.com/demo-udemy/wp-content/uploads/sites/93/2024/04/banner-home-2.jpg?text=Slide+1" alt="Slide 1">
+            <img src="https://eduma.thimpress.com/demo-udemy/wp-content/uploads/sites/93/2024/04/banner-home-2.jpg?text=Slide+2" alt="Slide 2">
+            <img src="https://eduma.thimpress.com/demo-udemy/wp-content/uploads/sites/93/2024/04/banner-home-2.jpg?text=Slide+3" alt="Slide 3">
+        </div>
+        
+    </section>
 
+    
 
+<section class="py-12 sm:py-16 lg:py-20 bg-gray-50 relative overflow-hidden" aria-labelledby="micro-courses-heading">
+  <div class="absolute inset-0 bg-gradient-to-br from-red-50 to-gray-100 opacity-50"></div>
 
-
-<!-- Hero Section: Merah Putih dengan Gradient Garis -->
-<section class="bg-white text-gray-900 py-12 sm:py-16 md:py-20 lg:py-24 relative overflow-hidden" role="banner" aria-labelledby="hero-heading">
-  <!-- Background Guardian: Gradient Merah-Putih Diagonal -->
-  <div class="absolute inset-0 bg-gradient-to-br from-black to-gray-700 opacity-10 transform -skew-y-6"></div>
-  <!-- Pola Garis Melengkung -->
-  <div class="absolute inset-0 bg-[url('{% static 'assets/img/patterns/hero-pattern.svg' %}')] bg-cover bg-center opacity-10 pointer-events-none"></div>
-
-  <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-    <!-- Heading -->
-    <h1 id="hero-heading" class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold mb-4 text-center text-gray-900 tracking-tight animate-fade-in">
-      Master New Skills with LMSKu Online Courses
-    </h1>
-    <!-- Subheading -->
-    <p class="text-base sm:text-lg md:text-xl lg:text-2xl mb-8 text-center text-gray-700 max-w-3xl mx-auto leading-relaxed animate-fade-in animation-delay-200">
-      Join <span class="font-semibold">{{ total_users|default:"thousands of" }}</span> learners exploring <span class="font-semibold">{{ total_courses|default:"hundreds of" }}</span> expert-led courses, anytime, anywhere.
-    </p>
-    <!-- CTA -->
-    <div class="text-center animate-fade-in animation-delay-400">
-      {% if request.user.is_authenticated %}
-        <a href="{% url 'authentication:course_list' %}"
-           class="inline-block bg-red-600 text-white font-semibold px-6 py-3 sm:px-8 sm:py-4 rounded-lg hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 text-base sm:text-lg shadow-md hover:shadow-lg"
-           aria-label="Discover available courses on LMSKu">
-          Discover Courses
-        </a>
-      {% else %}
-        <a href="{% url 'authentication:register' %}"
-           class="inline-block bg-red-600 text-white font-semibold px-6 py-3 sm:px-8 sm:py-4 rounded-lg hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 text-base sm:text-lg shadow-md hover:shadow-lg"
-           aria-label="Start learning with LMSKu by registering now">
-          Start Learning Now
-        </a>
-      {% endif %}
-    </div>
- 
-    <div class="mt-10 hidden lg:block animate-fade-in animation-delay-600 text-center">
-      <!-- Icon -->
-      <i class="fas fa-book-reader text-red-600 mx-auto text-[6rem]"></i>
-
-      <!-- Tulisan -->
-      <p class="mt-4 text-lg font-semibold text-gray-900">
-        Online learning illustration with LMSKu
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <!-- Title & Description -->
+    <div class="text-center mb-10 sm:mb-12 lg:mb-16">
+      <h2 id="micro-courses-heading" class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 tracking-tight">
+        Master Skills with Microcredentials
+      </h2>
+      <p class="text-gray-600 text-base sm:text-lg lg:text-xl max-w-3xl mx-auto leading-relaxed">
+        Our microcredential courses are crafted for professionals seeking practical expertise without long-term commitments.
       </p>
     </div>
+
+    <!-- List microcredentials -->
+    <div class="flex flex-col space-y-10">
+      {% for microcredential in popular_microcredentials|slice:":3" %}
+        <a href="{% url 'courses:micro_detail' microcredential.id microcredential.slug %}"
+           class="flex items-center bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-transform duration-300 ease-in-out p-6 group"
+           aria-label="Explore {{ microcredential.title|truncatechars_safe:50 }} microcredential on LMSKu">
+           
+          <!-- Image on left -->
+          <div class="flex-shrink-0 w-36 h-36 sm:w-40 sm:h-40 rounded-lg overflow-hidden ring-2 ring-gray-200 group-hover:ring-red-400 transition-all duration-300">
+            <img
+              src="{{ microcredential.image.url|default:'/static/images/micro-200.webp' }}"
+              alt="{{ microcredential.title|truncatechars_safe:50 }} - LMSKu Microcredential"
+              class="w-full h-full object-contain"
+              loading="lazy"
+              width="160" height="160"
+            >
+          </div>
+
+          <!-- Text on right -->
+          <div class="ml-6 flex flex-col justify-between flex-grow min-w-0">
+            <h3 class="text-lg font-semibold text-gray-900 group-hover:text-red-600 transition-colors duration-200 line-clamp-2">
+              {{ microcredential.title|truncatechars_safe:50 }}
+            </h3>
+            <p class="text-sm text-gray-600 mt-2 line-clamp-4">
+              {{ microcredential.description|safe|truncatechars_safe:100 }}
+            </p>
+            <span class="inline-block mt-4 px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full w-max">
+              {{ microcredential.category|default:"Microcredential" }}
+            </span>
+          </div>
+        </a>
+      {% empty %}
+        <p class="text-center text-gray-500 text-base sm:text-lg py-8">
+          No microcredentials available at the moment. Check back soon!
+        </p>
+      {% endfor %}
+    </div>
+
+    <!-- CTA Button -->
+    {% if popular_microcredentials|length > 3 %}
+      <div class="text-center mt-12">
+        <a href="{% url 'courses:micro_list' %}"
+           class="inline-block bg-red-600 text-white px-8 py-3 rounded-lg font-semibold text-base sm:text-lg hover:bg-red-700 hover:shadow-xl focus:ring-4 focus:ring-red-300 focus:ring-offset-2 transition-all duration-300 shadow-md"
+           aria-label="Explore all microcredentials on LMSKu">
+          Discover All Microcredentials
+        </a>
+      </div>
+    {% endif %}
   </div>
 </section>
+
+
+
+
+
+
+
 
 <section class="py-14 bg-white">
   <div class="mx-auto px-4 md:px-8 max-w-7xl">
@@ -174,7 +226,7 @@
             </div>
             <!-- Gambar Founder -->
             <div class="md:w-1/2 p-4 sm:p-6 z-10" data-aos="fade-left">
-                <img src="{% static 'assets/img/students/learn-anything.png' %}" alt="Founder Photo" class="rounded-2xl shadow-2xl max-w-full mx-auto md:max-w-md">
+                <img src="{% static 'assets/img/gallery/gallery-2.jpg' %}" alt="Founder Photo" class="rounded-2xl shadow-2xl max-w-full mx-auto md:max-w-md">
             </div>
         </div>
     </div>
@@ -182,14 +234,11 @@
 
 
 <!-- Popular Categories Section -->
-<section class="py-14 sm:py-20 bg-gray-50 relative overflow-hidden" aria-labelledby="categories-heading">
-  <!-- Background Layer -->
-  <div class="absolute inset-0 bg-gradient-to-br from-black to-gray-700 opacity-10 transform -skew-y-6"></div>
-
-  <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+<section class="py-14 sm:py-20 bg-gray-50" aria-labelledby="categories-heading">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <!-- Section Header -->
     <div class="text-center mb-10">
-      <h2 id="categories-heading" class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 mb-3 hover:text-red-500 transition">
+      <h2 id="categories-heading" class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4 hover:text-red-500 transition">
         Explore Top Categories
       </h2>
       <p class="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">
@@ -197,19 +246,28 @@
       </p>
     </div>
 
-    <!-- Categories Grid -->
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-      {% for category in popular_categories|slice:":4" %}
-        <a href="{% url 'courses:category_list' category.slug %}" class="no-underline group block" aria-label="Explore {{ category.name }} courses">
-          <div class="bg-white p-5 sm:p-6 rounded-xl text-center shadow-md hover:shadow-lg hover:bg-white transition-all duration-300 ring-1 ring-gray-100 group-hover:ring-red-400">
-            <span class="text-base sm:text-lg font-semibold text-gray-800 group-hover:text-red-500 transition-colors">{{ category.name }}</span>
-            <p class="text-xs sm:text-sm text-gray-600 mt-2">{{ category.num_courses }} Courses Available</p>
-          </div>
+    <!-- Categories as Tag List -->
+    <div class="flex flex-wrap justify-center gap-3 sm:gap-4">
+      {% for category in popular_categories|slice:":12" %}
+        <a href="{% url 'courses:category_list' category.slug %}"
+           class="inline-flex items-center px-4 py-2 rounded-full bg-white text-sm sm:text-base font-medium text-gray-700 border border-gray-200 hover:bg-red-50 hover:text-red-600 hover:border-red-400 transition-all duration-200 shadow-sm group"
+           aria-label="Explore {{ category.name }} courses">
+
+          <span class="truncate max-w-[140px] sm:max-w-[180px] group-hover:text-red-600">
+            {{ category.name }}
+          </span>
+
+          {% if category.num_courses %}
+            <span class="ml-2 text-xs text-gray-500 group-hover:text-red-400 whitespace-nowrap">
+              ({{ category.num_courses }})
+            </span>
+          {% endif %}
         </a>
       {% endfor %}
     </div>
   </div>
 </section>
+
 
 
 <!-- Popular Courses Section -->
@@ -299,75 +357,6 @@
 
 
 
-<!-- Micro Courses Section -->
-<section class="py-12 sm:py-16 lg:py-20 bg-gray-50 relative overflow-hidden" aria-labelledby="micro-courses-heading">
-  <div class="absolute inset-0 bg-gradient-to-br from-red-50 to-gray-100 opacity-50"></div>
-
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-    <!-- Title & Narasi -->
-    <div class="text-center mb-10 sm:mb-12 lg:mb-16">
-      <h2 id="micro-courses-heading" class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 tracking-tight transition-opacity duration-500 ease-in-out animate-fade-in">
-        Master Skills with Microcredentials
-      </h2>
-      <p class="text-gray-600 text-base sm:text-lg lg:text-xl max-w-3xl mx-auto leading-relaxed transition-opacity duration-500 ease-in-out animate-fade-in animation-delay-200">
-        Unlock job-ready skills in just 2 hours or less. Our microcredential courses are crafted for professionals seeking practical expertise without long-term commitments.
-      </p>
-    </div>
-
-    <!-- Micro Course Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-      {% for microcredential in popular_microcredentials|slice:":3" %}
-        <a href="{% url 'courses:micro_detail' microcredential.id microcredential.slug %}"
-           class="group block bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 ease-in-out animate-fade-in animation-delay-{% cycle '200' '400' '600' %}"
-           aria-label="Explore {{ microcredential.title|truncatechars_safe:50 }} microcredential on LMSKu">
-          <div class="flex items-start gap-6 sm:gap-8 h-60 sm:h-64">
-            <!-- Thumbnail (~40%, Prominent 4x4 Square) -->
-            <div class="w-2/5 h-full flex items-center justify-center">
-              <img 
-                src="{{ microcredential.image.url|default:'/static/images/micro-200.webp' }}" 
-                srcset="{{ microcredential.image.url|default:'/static/images/micro-100.webp' }} 100w, {{ microcredential.image.url|default:'/static/images/micro-200.webp' }} 200w" 
-                sizes="(max-width: 600px) 100px, 200px" 
-                alt="{{ microcredential.title|truncatechars_safe:50 }} - LMSKu Microcredential" 
-                class="w-[200px] h-[200px] sm:w-[200px] sm:h-[200px] rounded-lg object-contain ring-2 ring-gray-200 group-hover:ring-red-400 transition-all duration-300"
-                loading="lazy"
-                width="200" height="200">
-            </div>
-            <!-- Text Content (~60%, Balanced Sizes) -->
-            <div class="w-3/5 flex flex-col flex-grow min-w-0 h-full justify-between space-y-4">
-              <div class="space-y-3">
-                <h3 class="text-base font-semibold text-gray-900 group-hover:text-red-600 transition-colors duration-200 line-clamp-2">
-                  {{ microcredential.title|truncatechars_safe:50 }}
-                </h3>
-                <p class="text-sm text-gray-600 line-clamp-3">
-                  {{ microcredential.description|safe|truncatechars_safe:100 }}
-                </p>
-              </div>
-              <!-- Category Badge -->
-              <span class="inline-block px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full">
-                {{ microcredential.category|default:"Microcredential" }}
-              </span>
-            </div>
-          </div>
-        </a>
-      {% empty %}
-        <p class="text-center text-gray-500 text-base sm:text-lg col-span-full py-8">
-          No microcredentials available at the moment. Check back soon!
-        </p>
-      {% endfor %}
-    </div>
-
-    <!-- CTA -->
-    {% if popular_microcredentials|length > 3 %}
-      <div class="text-center mt-10 sm:mt-12 lg:mt-16 transition-opacity duration-500 ease-in-out animate-fade-in animation-delay-800">
-        <a href="{% url 'courses:micro_list' %}"
-           class="inline-block bg-red-600 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-lg font-semibold text-base sm:text-lg hover:bg-red-700 hover:shadow-xl focus:ring-4 focus:ring-red-300 focus:ring-offset-2 transition-all duration-300 shadow-md"
-           aria-label="Explore all microcredentials on LMSKu">
-          Discover All Microcredentials
-        </a>
-      </div>
-    {% endif %}
-  </div>
-</section>
 
 
 <!-- Blog Section -->
