@@ -71,33 +71,132 @@
 {% block content %}
 
 
-  <style>
-        /* Custom styles for slider */
-        .slider {
-            display: flex;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
-            -webkit-overflow-scrolling: touch;
-            scroll-behavior: smooth;
-        }
-        .slider img {
-            scroll-snap-align: start;
-            flex-shrink: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-    </style>
 
- <!-- Hero Section with Slider -->
-    <section id="home" class="pt-20">
-        <div class="slider">
-            <img src="https://eduma.thimpress.com/demo-udemy/wp-content/uploads/sites/93/2024/04/banner-home-2.jpg?text=Slide+1" alt="Slide 1">
-            <img src="https://eduma.thimpress.com/demo-udemy/wp-content/uploads/sites/93/2024/04/banner-home-2.jpg?text=Slide+2" alt="Slide 2">
-            <img src="https://eduma.thimpress.com/demo-udemy/wp-content/uploads/sites/93/2024/04/banner-home-2.jpg?text=Slide+3" alt="Slide 3">
+<!-- ✅ Hero Slider Section -->
+<section class="bg-red-50 py-12 md:py-20">
+  <div class="max-w-7xl mx-auto px-4 relative min-h-[500px]">
+    <!-- SLIDER WRAPPER -->
+    <div id="heroSlider" class="relative space-y-12">
+      <!-- ✅ Slide 1 -->
+      <div class="slider-item active flex flex-col lg:flex-row items-center gap-6 lg:gap-12">
+        <!-- Mobile: Judul -->
+        <div class="w-full text-center lg:hidden pt-6">
+          <h1 class="text-2xl sm:text-3xl font-bold mb-4">Upgrade Your Skills Today</h1>
         </div>
+
+        <!-- Mobile: Deskripsi + Gambar -->
+        <div class="w-full flex flex-col sm:flex-row items-center justify-center gap-4 lg:hidden">
+          <div class="w-full sm:w-1/2 text-center sm:text-right px-2">
+            <p class="text-sm sm:text-base text-gray-600">
+              Learn from expert instructors. Get access to thousands of online courses for all levels.
+            </p>
+          </div>
+          <div class="w-full sm:w-1/2 px-2">
+            <img src="https://dreamslms.dreamstechnologies.com/html/template/assets/img/course/course-43.jpg"
+              alt="Slide 1" loading="lazy"
+              class="w-full h-auto max-h-48 object-cover rounded-lg shadow mx-auto" />
+          </div>
+        </div>
+
+        <!-- Mobile: Tombol -->
+       
+
+        <!-- Desktop -->
+        <div class="hidden lg:flex w-full lg:w-1/2 flex-col text-left">
+          <h1 class="text-3xl md:text-4xl font-bold mb-4">Upgrade Your Skills Today</h1>
+          <p class="text-base md:text-lg text-gray-600 mb-6">
+            Learn from expert instructors. Get access to thousands of online courses for all levels.
+          </p>
+          
+        </div>
+        <div class="hidden lg:block w-full lg:w-1/2">
+          <img src="https://dreamslms.dreamstechnologies.com/html/template/assets/img/course/course-43.jpg"
+            alt="Slide 1" loading="lazy"
+            class="w-full h-auto max-h-96 object-cover rounded-lg shadow" />
+        </div>
+      </div>
+
+      <!-- ✅ Slide 2 -->
+      <div class="slider-item flex flex-col lg:flex-row items-center gap-6 lg:gap-12">
+        <!-- Mobile: Judul -->
+        <div class="w-full text-center lg:hidden pt-6">
+          <h1 class="text-2xl sm:text-3xl font-bold mb-4">Learn Modern UI/UX Design</h1>
+        </div>
+
+        <!-- Mobile: Deskripsi + Gambar -->
+        <div class="w-full flex flex-col sm:flex-row items-center justify-center gap-4 lg:hidden">
+          <div class="w-full sm:w-1/2 text-center sm:text-right px-2">
+            <p class="text-sm sm:text-base text-gray-600">
+              Master the fundamentals and advanced techniques of user interface and experience design.
+            </p>
+          </div>
+          <div class="w-full sm:w-1/2 px-2">
+            <img src="https://dreamslms.dreamstechnologies.com/html/template/assets/img/course/course-42.jpg"
+              alt="Slide 2" loading="lazy"
+              class="w-full h-auto max-h-48 object-cover rounded-lg shadow mx-auto" />
+          </div>
+        </div>
+
         
-    </section>
+
+        <!-- Desktop -->
+        <div class="hidden lg:flex w-full lg:w-1/2 flex-col text-left">
+          <h1 class="text-3xl md:text-4xl font-bold mb-4">Learn Modern UI/UX Design</h1>
+          <p class="text-base md:text-lg text-gray-600 mb-6">
+            Master the fundamentals and advanced techniques of user interface and experience design.
+          </p>
+         
+        </div>
+        <div class="hidden lg:block w-full lg:w-1/2">
+          <img src="https://dreamslms.dreamstechnologies.com/html/template/assets/img/course/course-42.jpg"
+            alt="Slide 2" loading="lazy"
+            class="w-full h-auto max-h-96 object-cover rounded-lg shadow" />
+        </div>
+      </div>
+
+      <!-- ✅ Slide 3 -->
+      <div class="slider-item flex flex-col lg:flex-row items-center gap-6 lg:gap-12">
+        <!-- Mobile: Judul -->
+        <div class="w-full text-center lg:hidden pt-6">
+          <h1 class="text-2xl sm:text-3xl font-bold mb-4">Master Data Science & Python</h1>
+        </div>
+
+        <!-- Mobile: Deskripsi + Gambar -->
+        <div class="w-full flex flex-col sm:flex-row items-center justify-center gap-4 lg:hidden">
+          <div class="w-full sm:w-1/2 text-center sm:text-right px-2">
+            <p class="text-sm sm:text-base text-gray-600">
+              Learn data analysis, visualization, and machine learning from scratch.
+            </p>
+          </div>
+          <div class="w-full sm:w-1/2 px-2">
+            <img src="https://dreamslms.dreamstechnologies.com/html/template/assets/img/course/course-40.jpg"
+              alt="Slide 3" loading="lazy"
+              class="w-full h-auto max-h-48 object-cover rounded-lg shadow mx-auto" />
+          </div>
+        </div>
+
+        
+
+        <!-- Desktop -->
+        <div class="hidden lg:flex w-full lg:w-1/2 flex-col text-left">
+          <h1 class="text-3xl md:text-4xl font-bold mb-4">Master Data Science & Python</h1>
+          <p class="text-base md:text-lg text-gray-600 mb-6">
+            Learn data analysis, visualization, and machine learning from scratch.
+          </p>
+         
+        </div>
+        <div class="hidden lg:block w-full lg:w-1/2">
+          <img src="https://dreamslms.dreamstechnologies.com/html/template/assets/img/course/course-40.jpg"
+            alt="Slide 3" loading="lazy"
+            class="w-full h-auto max-h-96 object-cover rounded-lg shadow" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+ 
+
 
     
 
@@ -119,11 +218,11 @@
     <div class="flex flex-col space-y-10">
       {% for microcredential in popular_microcredentials|slice:":3" %}
         <a href="{% url 'courses:micro_detail' microcredential.id microcredential.slug %}"
-           class="flex items-center bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-transform duration-300 ease-in-out p-6 group"
+           class="flex flex-col sm:flex-row items-center bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-transform duration-300 ease-in-out p-6 group"
            aria-label="Explore {{ microcredential.title|truncatechars_safe:50 }} microcredential on LMSKu">
            
           <!-- Image on left -->
-          <div class="flex-shrink-0 w-36 h-36 sm:w-40 sm:h-40 rounded-lg overflow-hidden ring-2 ring-gray-200 group-hover:ring-red-400 transition-all duration-300">
+          <div class="flex-shrink-0 w-50 h-50 sm:w-40 sm:h-40 rounded-lg overflow-hidden ring-2 ring-gray-200 group-hover:ring-red-400 transition-all duration-300">
             <img
               src="{{ microcredential.image.url|default:'/static/images/micro-200.webp' }}"
               alt="{{ microcredential.title|truncatechars_safe:50 }} - LMSKu Microcredential"
@@ -134,18 +233,22 @@
           </div>
 
           <!-- Text on right -->
-          <div class="ml-6 flex flex-col justify-between flex-grow min-w-0">
-            <h3 class="text-lg font-semibold text-gray-900 group-hover:text-red-600 transition-colors duration-200 line-clamp-2">
+          <div class="mt-4 sm:mt-0 sm:ml-6 flex flex-col justify-between flex-grow min-w-0 w-full">
+            <h3 class="text-lg font-semibold text-gray-900 group-hover:text-red-600 transition-colors duration-200 line-clamp-2 break-words">
               {{ microcredential.title|truncatechars_safe:50 }}
             </h3>
-            <p class="text-sm text-gray-600 mt-2 line-clamp-4">
-              {{ microcredential.description|safe|truncatechars_safe:100 }}
+            <p class="text-sm text-gray-600 mt-2 line-clamp-4 break-words">
+              {{ microcredential.description|safe|truncatechars_safe:200 }}
             </p>
-            <span class="inline-block mt-4 px-3 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full w-max">
+            &nbsp;
+            <span class="text-sm bg-gray-200 text-blue-800 px-3 py-1 rounded-full">
               {{ microcredential.category|default:"Microcredential" }}
             </span>
           </div>
         </a>
+        <br>
+        &nbsp;
+        &nbsp;
       {% empty %}
         <p class="text-center text-gray-500 text-base sm:text-lg py-8">
           No microcredentials available at the moment. Check back soon!
@@ -165,7 +268,6 @@
     {% endif %}
   </div>
 </section>
-
 
 
 

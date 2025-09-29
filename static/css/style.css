@@ -145,3 +145,16 @@ body {
     }
 
 
+.slider-item {
+      opacity: 0;
+      transition: opacity 0.6s ease-in-out;
+      position: absolute;
+      inset: 0;
+      width: 100%;
+    }
+
+    .slider-item.active {
+      opacity: 1;
+      position: relative;
+      z-index: 10;
+    }
