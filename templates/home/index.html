@@ -2,11 +2,11 @@
 {% load extra_filters %}
 {% load static %}
 {% block meta %}
-  <title>LMSKu - Learn New Skills with Expert-Led Online Courses</title>
+  <title>MyICE - Learn New Skills with Expert-Led Online Courses</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Join {{ total_users|default:'thousands of' }} learners in exploring {{ total_courses|default:'hundreds of' }} online courses with certifications from {{ total_instructors|default:'expert' }} instructors. Start learning today!">
-  <meta name="keywords" content="online learning, e-learning, LMSKu, education, certifications{% if popular_categories %}, {{ popular_categories|join:', ' }}{% endif %}, expert instructors">
+  <meta name="keywords" content="online learning, e-learning, MyICE, education, certifications{% if popular_categories %}, {{ popular_categories|join:', ' }}{% endif %}, expert instructors">
   <meta name="robots" content="index, follow">
   <meta name="googlebot" content="index, follow">
   <meta name="googlebot-news" content="index, follow">
@@ -19,38 +19,38 @@
   
   <!-- Open Graph (Optimized for WhatsApp and Facebook) -->
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="LMSKu">
-  <meta property="og:title" content="LMSKu - Learn New Skills with Expert-Led Online Courses">
+  <meta property="og:site_name" content="MyICE">
+  <meta property="og:title" content="MyICE - Learn New Skills with Expert-Led Online Courses">
   <meta property="og:description" content="Explore {{ total_courses|default:'hundreds of' }}+ expert-led courses and earn certifications anytime, anywhere.">
   <meta property="og:image" content="https://ini.icei.ac.id/static/assets/img/logo/logo-five.png"> <!-- Hardcode untuk WhatsApp -->
   <meta property="og:image:secure_url" content="https://ini.icei.ac.id/static/assets/img/logo/logo-five.png"> <!-- HTTPS untuk WhatsApp -->
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Logo LMSKu - Platform Pembelajaran Online">
+  <meta property="og:image:alt" content="Logo MyICE - Platform Pembelajaran Online">
   <meta property="og:url" content="{{ base_url }}{{ request.path }}">
   <meta property="og:locale" content="en_US">
 
   <!-- Twitter/X -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@LMSKu">
-  <meta name="twitter:creator" content="@LMSKu">
-  <meta name="twitter:title" content="LMSKu - Learn Anytime, Anywhere">
-  <meta name="twitter:description" content="Join {{ total_users|default:'thousands of' }} learners taking {{ total_courses|default:'hundreds of' }} online courses with LMSKu.">
+  <meta name="twitter:site" content="@MyICE">
+  <meta name="twitter:creator" content="@MyICE">
+  <meta name="twitter:title" content="MyICE - Learn Anytime, Anywhere">
+  <meta name="twitter:description" content="Join {{ total_users|default:'thousands of' }} learners taking {{ total_courses|default:'hundreds of' }} online courses with MyICE.">
   <meta name="twitter:image" content="https://ini.icei.ac.id/static/assets/img/logo/logo-five.png"> <!-- Hardcode untuk konsistensi -->
-  <meta name="twitter:image:alt" content="Logo LMSKu - Platform Pembelajaran Online">
+  <meta name="twitter:image:alt" content="Logo MyICE - Platform Pembelajaran Online">
 
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "LMSKu",
+    "name": "MyICE",
     "url": "{{ base_url }}",
-    "description": "LMSKu offers {{ total_courses|default:'hundreds of' }}+ online courses and certifications to support your learning journey.",
+    "description": "MyICE offers {{ total_courses|default:'hundreds of' }}+ online courses and certifications to support your learning journey.",
     "publisher": {
       "@type": "Organization",
-      "name": "LMSKu",
+      "name": "MyICE",
       "logo": {
         "@type": "ImageObject",
         "url": "https://ini.icei.ac.id/static/assets/img/logo/logo-five.png",
@@ -219,13 +219,13 @@
       {% for microcredential in popular_microcredentials|slice:":3" %}
         <a href="{% url 'courses:micro_detail' microcredential.id microcredential.slug %}"
            class="flex flex-col sm:flex-row items-center bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-transform duration-300 ease-in-out p-6 group"
-           aria-label="Explore {{ microcredential.title|truncatechars_safe:50 }} microcredential on LMSKu">
+           aria-label="Explore {{ microcredential.title|truncatechars_safe:50 }} microcredential on MyICE">
            
           <!-- Image on left -->
           <div class="flex-shrink-0 w-50 h-50 sm:w-40 sm:h-40 rounded-lg overflow-hidden ring-2 ring-gray-200 group-hover:ring-red-400 transition-all duration-300">
             <img
               src="{{ microcredential.image.url|default:'/static/images/micro-200.webp' }}"
-              alt="{{ microcredential.title|truncatechars_safe:50 }} - LMSKu Microcredential"
+              alt="{{ microcredential.title|truncatechars_safe:50 }} - MyICE Microcredential"
               class="w-full h-full object-contain"
               loading="lazy"
               width="160" height="160"
@@ -261,7 +261,7 @@
       <div class="text-center mt-12">
         <a href="{% url 'courses:micro_list' %}"
            class="inline-block bg-red-600 text-white px-8 py-3 rounded-lg font-semibold text-base sm:text-lg hover:bg-red-700 hover:shadow-xl focus:ring-4 focus:ring-red-300 focus:ring-offset-2 transition-all duration-300 shadow-md"
-           aria-label="Explore all microcredentials on LMSKu">
+           aria-label="Explore all microcredentials on MyICE">
           Discover All Microcredentials
         </a>
       </div>
@@ -277,7 +277,7 @@
 
 <section class="py-14 bg-white">
   <div class="mx-auto px-4 md:px-8 max-w-7xl">
-    <h2 class="text-3xl font-extrabold mb-10 text-center text-black">Why Learn with LMSKu?</h2>
+    <h2 class="text-3xl font-extrabold mb-10 text-center text-black">Why Learn with MyICE?</h2>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
       
       <!-- Courses -->
@@ -323,8 +323,8 @@
             <div class="absolute inset-0 hidden md:block bg-gradient-to-br from-indigo-600 via-purple-700 to-pink-500 opacity-70" style="clip-path: polygon(0 100%, 100% 0, 100% 100%, 0 0); z-index: 1;"></div>
             <!-- Teks Founder -->
             <div class="md:w-1/2 p-4 sm:p-6 z-10" data-aos="fade-right">
-                <p class="text-xl sm:text-2xl italic text-gray-600 mb-6">"We believe that education is the key to unlocking limitless potential. LMSku is here to make it easily accessible."</p>
-                <p class="text-lg sm:text-xl font-semibold text-indigo-600">— Dr. John Doe, Founder of LMSku</p>
+                <p class="text-xl sm:text-2xl italic text-gray-600 mb-6">"We believe that education is the key to unlocking limitless potential. MyICE is here to make it easily accessible."</p>
+                <p class="text-lg sm:text-xl font-semibold text-indigo-600">— Dr. John Doe, Founder of MyICE</p>
             </div>
             <!-- Gambar Founder -->
             <div class="md:w-1/2 p-4 sm:p-6 z-10" data-aos="fade-left">
@@ -424,7 +424,7 @@
         Trusted by Learners & Institutions Across the Globe
       </h2>
       <p class="text-gray-600 text-sm sm:text-base md:text-lg max-w-xl mx-auto leading-relaxed animate-fade-in animation-delay-200">
-        Join thousands of users from over 40 countries who trust LMSKu for personal and professional growth.
+        Join thousands of users from over 40 countries who trust MyICE for personal and professional growth.
       </p>
     </div>
 
@@ -434,7 +434,7 @@
         {% if partner.name and partner.name.slug %}
           <a href="{% url 'courses:org_partner' partner.name.slug %}"
              class="flex flex-col items-center group transition animate-fade-in animation-delay-{% cycle '200' '400' '600' '800' '1000' '1200' '1400' %}"
-             aria-label="View {{ partner.name }} partnership with LMSKu">
+             aria-label="View {{ partner.name }} partnership with MyICE">
             {% if partner.icon_class %}
               <!-- Font Awesome Icon -->
               <i class="{{ partner.icon_class }} group-hover:text-red-600 transition-colors duration-300"
@@ -442,7 +442,7 @@
             {% else %}
               <!-- Image Logo Fallback -->
               <img src="{% if partner.logo %}{{ partner.logo.url }}{% else %}/static/images/partner-100.webp{% endif %}"
-                   alt="{{ partner.name }} - LMSKu Partner"
+                   alt="{{ partner.name }} - MyICE Partner"
                    class="w-16 h-16 sm:w-20 sm:h-20 object-contain grayscale group-hover:grayscale-0 group-hover:ring-1 group-hover:ring-red-400 transition-all duration-300 rounded"
                    loading="lazy">
             {% endif %}
@@ -487,7 +487,7 @@
           <a href="{% url 'blog:blog-detail' slug=article.slug %}" class="block p-5" aria-label="Read article: {{ article.title }}">
             <!-- Image -->
             {% if article.image %}
-              <img src="{{ article.image.url }}" alt="{{ article.title }} - LMSKu Blog" class="rounded mb-4 w-full h-48 object-cover" loading="lazy">
+              <img src="{{ article.image.url }}" alt="{{ article.title }} - MyICE Blog" class="rounded mb-4 w-full h-48 object-cover" loading="lazy">
             {% endif %}
             <!-- Title -->
             <h3 class="text-base sm:text-lg font-semibold text-gray-900 hover:text-red-600 line-clamp-2 mb-2 transition-colors duration-300">
@@ -511,7 +511,7 @@
     <div class="text-center mt-10 animate-fade-in animation-delay-800">
       <a href="{% url 'blog:blog-list' %}"
          class="inline-block bg-red-600 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-lg font-semibold hover:bg-red-700 hover:shadow-lg focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-300 text-base sm:text-lg shadow-md"
-         aria-label="Read all blog articles on LMSKu">
+         aria-label="Read all blog articles on MyICE">
         Read All Articles
       </a>
     </div>
@@ -591,7 +591,7 @@
   <div class="absolute inset-0 bg-gradient-to-br from-black to-gray-700 opacity-50"></div>
   <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl relative z-10">
     <h2 id="cta-heading" class="text-xl sm:text-2xl md:text-3xl font-extrabold mb-6 hover:text-red-500 transition-colors duration-300">Ready to Unleash Your Potential?</h2>
-    <p class="text-sm sm:text-base mdlg mb-8 text-gray-200 hover:text-red-500 transition-colors duration-300">Join {{ total_users }}+ learners and start your journey with LMSKu today!</p>
+    <p class="text-sm sm:text-base mdlg mb-8 text-gray-200 hover:text-red-500 transition-colors duration-300">Join {{ total_users }}+ learners and start your journey with MyICE today!</p>
     <a href="{% url 'authentication:course_list' %}" class="inline-block bg-white text-black font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-gray-200 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base">Get Started Now</a>
   </div>
 </section>
@@ -600,7 +600,7 @@
 <section class="py-12 sm:py-16 bg-gray-900 text-white text-center relative overflow-hidden" aria-labelledby="cta-heading">
   <div class="absolute inset-0 bg-gradient-to-br from-black to-gray-700 opacity-50"></div>
   <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl relative z-10">
-    <h2 id="cta-heading" class="text-xl sm:text-2xl md:text-3xl font-extrabold mb-6 hover:text-red-500 transition-colors duration-300">Join the LMSKu Community!</h2>
+    <h2 id="cta-heading" class="text-xl sm:text-2xl md:text-3xl font-extrabold mb-6 hover:text-red-500 transition-colors duration-300">Join the MyICE Community!</h2>
     <p class="text-sm sm:text-base md:text-lg mb-8 text-gray-200 hover:text-red-500 transition-colors duration-300">Sign up now to explore {{ total_courses }}+ courses and start learning with expert instructors.</p>
     <a href="{% url 'authentication:register' %}" class="inline-block bg-white text-black font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-gray-200 hover:text-red-500 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors duration-300 text-sm sm:text-base">Create Your Account</a>
   </div>

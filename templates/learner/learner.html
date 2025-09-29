@@ -4,9 +4,9 @@
 
 {% block meta %}
     <!-- Standard Meta Tags -->
-    <title>{{ learner.first_name }} {{ learner.last_name }} - Learner Profile | LMSKu</title>
-    <meta name="description" content="Lihat profil lengkap {{ learner.first_name }} {{ learner.last_name }} di LMSKu. Temukan informasi pribadi, kursus yang telah diselesaikan, dan koneksi sosial.">
-    <meta name="keywords" content="{{ learner.first_name }}, {{ learner.last_name }}, LMSKu, learner profile, online learning, {{ learner.hobby|default:'hobi' }}, {{ learner.country|default:'negara' }}, {{ learner.university.name|default:'universitas' }}">
+    <title>{{ learner.first_name }} {{ learner.last_name }} - Learner Profile | MyICE</title>
+    <meta name="description" content="Lihat profil lengkap {{ learner.first_name }} {{ learner.last_name }} di MyICE. Temukan informasi pribadi, kursus yang telah diselesaikan, dan koneksi sosial.">
+    <meta name="keywords" content="{{ learner.first_name }}, {{ learner.last_name }}, MyICE, learner profile, online learning, {{ learner.hobby|default:'hobi' }}, {{ learner.country|default:'negara' }}, {{ learner.university.name|default:'universitas' }}">
     <meta name="author" content="{{ learner.first_name }} {{ learner.last_name }}">
     <meta name="robots" content="index, follow">
     <meta charset="UTF-8">
@@ -14,8 +14,8 @@
     <link rel="canonical" href="{{ request.build_absolute_uri }}">
 
     <!-- Open Graph (OG) Tags -->
-    <meta property="og:title" content="{{ learner.first_name }} {{ learner.last_name }} - Learner Profile | LMSKu">
-    <meta property="og:description" content="Lihat profil {{ learner.first_name }} {{ learner.last_name }} di LMSKu. Informasi pribadi, kursus yang diselesaikan, dan media sosial.">
+    <meta property="og:title" content="{{ learner.first_name }} {{ learner.last_name }} - Learner Profile | MyICE">
+    <meta property="og:description" content="Lihat profil {{ learner.first_name }} {{ learner.last_name }} di MyICE. Informasi pribadi, kursus yang diselesaikan, dan media sosial.">
     <meta property="og:type" content="profile">
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
     {% if learner.photo %}
@@ -26,20 +26,20 @@
     <meta property="og:image:alt" content="Foto profil {{ learner.first_name }} {{ learner.last_name }}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:site_name" content="LMSKu">
+    <meta property="og:site_name" content="MyICE">
     <meta property="og:locale" content="id_ID">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ learner.first_name }} {{ learner.last_name }} - Learner Profile | LMSKu">
-    <meta name="twitter:description" content="Temukan perjalanan belajar {{ learner.first_name }} di LMSKu, lengkap dengan kursus yang diselesaikan dan profil pribadi.">
+    <meta name="twitter:title" content="{{ learner.first_name }} {{ learner.last_name }} - Learner Profile | MyICE">
+    <meta name="twitter:description" content="Temukan perjalanan belajar {{ learner.first_name }} di MyICE, lengkap dengan kursus yang diselesaikan dan profil pribadi.">
     {% if learner.photo %}
         <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ learner.photo.url }}">
     {% else %}
         <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'img/default-avatar.png' %}">
     {% endif %}
     <meta name="twitter:image:alt" content="Foto profil {{ learner.first_name }} {{ learner.last_name }}">
-    <meta name="twitter:site" content="@LMSKuOfficial">
+    <meta name="twitter:site" content="@MyICEOfficial">
 
     <!-- Additional SEO Meta Tags -->
     <meta name="geo.placename" content="{{ learner.city|default:'Indonesia' }}">
