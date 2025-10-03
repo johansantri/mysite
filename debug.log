@@ -1,3 +1,82 @@
 [INFO] 2025-10-03 16:14:12,279 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [INFO] 2025-10-03 16:14:12,479 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [INFO] 2025-10-03 16:14:12,598 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-03 16:14:40,538 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:15:16,334 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-03 16:15:39,874 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:16:39,846 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-10-03 16:17:24,181 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-10-03 16:17:24,182 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-10-03 16:17:24,183 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-10-03 08:17:24.181503+00:00
+[INFO] 2025-10-03 16:17:25,173 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36", path_info: "/login/"}.
+[INFO] 2025-10-03 16:17:25,175 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-03 08:17:24.181503+00:00
+[WARNING] 2025-10-03 16:17:39,867 [django.request] Not Found: /partner/ping-session/
+[ERROR] 2025-10-03 16:17:40,826 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-03 16:17:40,830 [django.request] Bad Request: /
+[DEBUG] 2025-10-03 16:18:36,720 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-10-03 16:18:36,722 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-03 08:18:36.720274+00:00
+[INFO] 2025-10-03 16:18:36,722 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36", path_info: "/logout/"}.
+[WARNING] 2025-10-03 16:18:39,919 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-10-03 16:19:37,788 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-10-03 16:19:37,789 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-10-03 16:19:37,789 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-10-03 08:19:37.788648+00:00
+[INFO] 2025-10-03 16:19:38,717 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36", path_info: "/login/"}.
+[INFO] 2025-10-03 16:19:38,718 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-03 08:19:37.788648+00:00
+[WARNING] 2025-10-03 16:19:40,051 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:20:40,155 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:21:40,227 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:22:40,331 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:23:40,402 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:24:40,558 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:25:40,665 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:25:51,844 [django.request] Not Found: /course_list//course-detail/10/digital-marketing-2026/
+[WARNING] 2025-10-03 16:25:51,852 [django.request] Not Found: /course_list//course-detail/11/big-data-developer-2026/
+[WARNING] 2025-10-03 16:25:51,881 [django.request] Not Found: /course_list//course-detail/12/build-powerful-web-applications-with-django-2026/
+[WARNING] 2025-10-03 16:25:51,886 [django.request] Not Found: /course_list//course-detail/17/personal-branding-mastery/
+[WARNING] 2025-10-03 16:25:51,890 [django.request] Not Found: /course_list//course-detail/16/kursus-uiux-design-dari-nol-hingga-mahir/
+[WARNING] 2025-10-03 16:26:40,753 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:27:40,829 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:28:40,953 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:29:41,069 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:30:41,177 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:31:27,523 [django.request] Bad Request: /payments/tripay-callback/
+[WARNING] 2025-10-03 16:31:41,270 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:32:41,383 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:33:41,466 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:34:41,577 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:35:41,654 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:36:41,785 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:37:41,873 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:38:42,026 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:39:42,091 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:40:42,162 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:41:42,166 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:42:42,309 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:43:42,355 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:44:42,496 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:45:42,600 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:45:53,969 [django.request] Bad Request: /payments/tripay-callback/
+[WARNING] 2025-10-03 16:46:42,601 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:47:42,798 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:48:20,596 [django.request] Bad Request: /payments/tripay-callback/
+[WARNING] 2025-10-03 16:48:42,897 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:49:42,976 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:50:43,055 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:51:43,163 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:52:43,266 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-10-03 16:53:00,885 [urllib3.connectionpool] Starting new HTTP connection (1): ip-api.com:80
+[DEBUG] 2025-10-03 16:53:00,967 [urllib3.connectionpool] http://ip-api.com:80 "GET /json/203.217.140.215 HTTP/1.1" 200 280
+[WARNING] 2025-10-03 16:53:43,366 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:54:43,487 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:55:43,596 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-03 16:56:43,703 [django.request] Not Found: /partner/ping-session/
