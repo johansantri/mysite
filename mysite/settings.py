@@ -24,8 +24,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-*t=li&h7o=sj40!ic&)p+8!fy3p@*tfg+mz6!xuftigv_qa9yy'
 
 #=============================== for development ===============================
-#DEBUG = True
-#ALLOWED_HOSTS = ['127.0.0.1','localhost']
+DEBUG = True
+ALLOWED_HOSTS = ['127.0.0.1','localhost']
 
 #=============================== end development ===============================
 
@@ -34,20 +34,20 @@ SECRET_KEY = 'django-insecure-*t=li&h7o=sj40!ic&)p+8!fy3p@*tfg+mz6!xuftigv_qa9yy
 
 #=============================== for production ===============================
 
-DEBUG = False
-ALLOWED_HOSTS = ['ini.icei.ac.id']
-SESSION_COOKIE_SECURE = True
-SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_SAMESITE = 'Lax'
-CSRF_COOKIE_SECURE = True
-CSRF_COOKIE_HTTPONLY = True
-CSRF_COOKIE_SAMESITE = 'Lax'
+# DEBUG = False
+# ALLOWED_HOSTS = ['ini.icei.ac.id']
+# SESSION_COOKIE_SECURE = True
+# SESSION_COOKIE_HTTPONLY = True
+# SESSION_COOKIE_SAMESITE = 'Lax'
+# CSRF_COOKIE_SECURE = True
+# CSRF_COOKIE_HTTPONLY = True
+# CSRF_COOKIE_SAMESITE = 'Lax'
 
-SECURE_SSL_REDIRECT = True
-#SECURE_CONTENT_TYPE_NOSNIFF = True
-RATELIMIT_IP_META_KEY = 'HTTP_X_REAL_IP'
-CSRF_TRUSTED_ORIGINS = ['https://ini.icei.ac.id']
-ALLOWED_REFERER = 'https://ini.icei.ac.id'
+# SECURE_SSL_REDIRECT = True
+# #SECURE_CONTENT_TYPE_NOSNIFF = True
+# RATELIMIT_IP_META_KEY = 'HTTP_X_REAL_IP'
+# CSRF_TRUSTED_ORIGINS = ['https://ini.icei.ac.id']
+# ALLOWED_REFERER = 'https://ini.icei.ac.id'
 #=============================== end production ===============================
 
 
@@ -671,3 +671,9 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(minute='*/5'),  # Jalankan setiap 5 menit
     },
 }
+
+
+# payments
+TRIPAY_API_KEY = 'your_api_key_here'
+TRIPAY_PRIVATE_KEY = 'your_private_key_here'
+TRIPAY_MERCHANT_CODE = 'your_merchant_code_here'

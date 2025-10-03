@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='course',
             name='payment_model',
-            field=models.CharField(choices=[('buy_first', 'Beli dulu baru enrol'), ('pay_for_exam', 'Enrol dulu, bayar saat ujian'), ('pay_for_certificate', 'Enrol & ujian dulu, bayar saat sertifikat'), ('free', 'Gratis')], default='buy_first', max_length=20),
+            field=models.CharField(choices=[('buy first', 'Beli dulu baru enrol'), ('pay for exam', 'Enrol dulu, bayar saat ujian'), ('pay for certificate', 'Enrol & ujian dulu, bayar saat sertifikat'), ('free', 'Gratis')], default='buy first', max_length=20),
         ),
         migrations.AddField(
             model_name='course',

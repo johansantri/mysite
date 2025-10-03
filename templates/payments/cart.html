@@ -10,7 +10,7 @@
                 <li class="flex flex-col md:flex-row justify-between items-start md:items-center bg-white shadow-sm rounded-2xl p-4 border border-gray-200">
                     <div class="mb-3 md:mb-0">
                         <h5 class="text-lg font-semibold text-gray-800">{{ item.course.course_name }}</h5>
-                        <p class="text-sm text-gray-500">IDR {{ item.course.get_course_price.user_payment|intcomma }}</p>
+                        <p class="text-sm text-gray-500">IDR {{ item.course_price_portal_price|intcomma }}</p>
                     </div>
                     <a href="{% url 'payments:cart_item_delete' item.pk %}"
                        class="text-sm border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-colors duration-200 px-4 py-2 rounded-md w-full md:w-auto text-center"
@@ -24,19 +24,22 @@
         <div class="text-right space-y-2">
             <h4 class="text-xl font-bold text-gray-800">Total: IDR {{ total_price|intcomma }}</h4>
             <div class="flex flex-col sm:flex-row justify-end gap-2 mt-4">
-                <a href="{% url 'payments:checkout' %}" class="bg-green-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition">
-                    Proceed to Checkout
+                <a href="{% url 'payments:checkout' %}" 
+                   class="bg-green-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-green-700 transition">
+                   Proceed to Checkout
                 </a>
-                <a href="{% url 'payments:transaction_history' %}" class="text-sm text-blue-600 hover:underline self-center sm:self-auto">
-                    My Transactions
+                <a href="{% url 'payments:transaction_history' %}" 
+                   class="text-sm text-blue-600 hover:underline self-center sm:self-auto">
+                   My Transactions
                 </a>
             </div>
         </div>
     {% else %}
         <div class="bg-yellow-50 border-l-4 border-yellow-400 text-yellow-700 p-4 rounded-lg">
             <p class="mb-2">Your cart is empty.</p>
-            <a href="{% url 'authentication:course_list' %}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded-md mt-2 hover:bg-blue-700 transition">
-                Browse Courses
+            <a href="{% url 'authentication:course_list' %}" 
+               class="inline-block bg-blue-600 text-white px-4 py-2 rounded-md mt-2 hover:bg-blue-700 transition">
+               Browse Courses
             </a>
         </div>
     {% endif %}

@@ -9,7 +9,7 @@ import csv
 from django.core.mail import send_mail
 from decimal import Decimal
 from django.contrib import messages
-from courses.models import InstructorCertificate,Course,CoursePrice, Enrollment,Section,GradeRange,CourseStatusHistory,QuestionAnswer, CourseProgress, PeerReview,MaterialRead, AssessmentRead, AssessmentScore,Material,Assessment, Submission, CustomUser, Instructor
+from courses.models import InstructorCertificate,Course,CoursePrice,PricingType, Enrollment,Section,GradeRange,CourseStatusHistory,QuestionAnswer, CourseProgress, PeerReview,MaterialRead, AssessmentRead, AssessmentScore,Material,Assessment, Submission, CustomUser, Instructor
 from authentication.models import CustomUser, Universiti
 # Create your views here.
 from django.template.loader import render_to_string
@@ -308,12 +308,13 @@ def partner_review_curation(request, course_id):
 def superuser_publish_course(request, course_id):
     course = get_object_or_404(Course, id=course_id)
 
-    # Pastikan pengguna adalah Superuser
+    # Pastikan user superuser
     if not request.user.is_superuser:
         raise PermissionDenied("You do not have permission to publish this course.")
 
-    # Ambil harga kursus terbaru
+    # Ambil harga kursus terbaru dengan price_type yang valid
     course_price = CoursePrice.objects.filter(course=course, price_type__isnull=False).order_by('-id').first()
+
     price_info = {
         'price_type_description': (
             course_price.price_type.description if course_price and course_price.price_type and course_price.price_type.description
@@ -324,24 +325,25 @@ def superuser_publish_course(request, course_id):
         'discount_percent': course_price.discount_percent if course_price else 0,
     }
 
-    # Siapkan data payment_model
-    payment_model_choices = dict(Course.PAYMENT_MODEL_CHOICES)
+    # Ambil semua pricing type sebagai pilihan payment_model
+    payment_model_choices = PricingType.objects.all()
 
     if request.method == "POST":
         action = request.POST.get('action')
 
-        # Handle update payment_model
+        # Update payment_model
         if action == 'update_payment_model':
-            new_payment_model = request.POST.get('payment_model')
-            if new_payment_model in [choice[0] for choice in Course.PAYMENT_MODEL_CHOICES]:
+            new_payment_model_id = request.POST.get('payment_model')
+            try:
+                new_payment_model = PricingType.objects.get(id=new_payment_model_id)
                 course.payment_model = new_payment_model
                 course.save()
-                messages.success(request, f"Payment model updated to '{payment_model_choices[new_payment_model]}'.")
-            else:
+                messages.success(request, f"Payment model updated to '{new_payment_model.name}'.")
+            except PricingType.DoesNotExist:
                 messages.error(request, "Invalid payment model selected.")
             return redirect('instructor:superuser_publish_course', course_id=course.id)
 
-        # Handle existing actions
+        # Semua aksi lain butuh pesan
         message = request.POST.get('message')
         if action in ['superuser_reject', 'superuser_archive', 'superuser_reject_to_draft'] and not message:
             messages.error(request, "Please provide a message for your action.")
@@ -370,6 +372,7 @@ def superuser_publish_course(request, course_id):
                 return redirect('instructor:superuser_publish_course', course_id=course.id)
             course.change_status('archived', request.user, message=message)
             messages.success(request, "Course has been archived.")
+
             instructor_email = course.instructor.user.email if course.instructor else None
             partner_email = course.org_partner.user.email if course.org_partner else None
             recipient_list = [email for email in [instructor_email, partner_email] if email]
@@ -395,6 +398,7 @@ def superuser_publish_course(request, course_id):
                 return redirect('instructor:superuser_publish_course', course_id=course.id)
             course.change_status('draft', request.user, message=message)
             messages.success(request, "Course has been rejected and returned to Instructor as Draft.")
+
             instructor_email = course.instructor.user.email if course.instructor else None
             partner_email = course.org_partner.user.email if course.org_partner else None
             recipient_list = [email for email in [instructor_email, partner_email] if email]
@@ -424,10 +428,9 @@ def superuser_publish_course(request, course_id):
         'course': course,
         'history': course.status_history.all(),
         'price_info': price_info,
-        'payment_model_choices': Course.PAYMENT_MODEL_CHOICES,
+        'payment_model_choices': payment_model_choices,
         'current_payment_model': course.payment_model,
     })
-
 
 @login_required
 def studios(request, id):

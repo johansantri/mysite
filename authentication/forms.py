@@ -9,7 +9,7 @@ import re
 from .models import CustomUser
 from django.core.exceptions import ValidationError
 import imghdr
-
+from django.core.files.uploadedfile import UploadedFile
 from django.core.mail import EmailMultiAlternatives
 from django.template import loader
 from django.utils.translation import gettext_lazy as _
@@ -323,17 +323,14 @@ class UserProfileForm(forms.ModelForm):
 
     def clean_photo(self):
         photo = self.cleaned_data.get('photo')
-        if not photo:
-            raise ValidationError("Foto wajib diunggah.")
 
-        if photo.size > 2 * 1024 * 1024:
-            raise ValidationError("Ukuran file tidak boleh lebih dari 2MB.")
-
-        if not photo.content_type.startswith('image/'):
-            raise ValidationError("Hanya file gambar yang diperbolehkan.")
-
-        if imghdr.what(photo) not in ['jpeg', 'png', 'webp']:
-            raise ValidationError("Format gambar tidak dikenali atau tidak didukung.")
+        if photo:
+            if isinstance(photo, UploadedFile):
+                content_type = photo.content_type
+                # validate content_type here, e.g.:
+                if content_type not in ['image/jpeg', 'image/png']:
+                    raise forms.ValidationError("Unsupported file type.")
+            # else, it's an existing ImageFieldFile, skip content_type check
 
         return photo
 

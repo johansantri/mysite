@@ -1,0 +1,62 @@
+{% extends "home/base.html" %}
+{% block content %}
+
+<section class="bg-white py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-3xl mx-auto">
+    <h1 class="text-3xl font-extrabold text-gray-900 mb-6 text-center drop-shadow-sm">
+      📩 Contact Us
+    </h1>
+    
+    <p class="text-gray-600 text-center mb-10 text-lg leading-relaxed">
+      Have questions, feedback, or partnership inquiries? We'd love to hear from you!
+    </p>
+
+    <form action="#" method="POST" class="space-y-8 bg-gray-50 p-8 rounded-2xl shadow-lg border border-gray-200">
+      {% csrf_token %}
+      
+      <!-- Name -->
+      <div>
+        <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+        <input type="text" name="name" id="name" required
+               class="w-full rounded-md border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition shadow-sm sm:text-sm" placeholder="Your full name">
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+        <input type="email" name="email" id="email" required
+               class="w-full rounded-md border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition shadow-sm sm:text-sm" placeholder="you@example.com">
+      </div>
+
+      <!-- Subject -->
+      <div>
+        <label for="subject" class="block text-sm font-medium text-gray-700 mb-2">Subject</label>
+        <input type="text" name="subject" id="subject"
+               class="w-full rounded-md border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition shadow-sm sm:text-sm" placeholder="Subject (optional)">
+      </div>
+
+      <!-- Message -->
+      <div>
+        <label for="message" class="block text-sm font-medium text-gray-700 mb-2">Message</label>
+        <textarea name="message" id="message" rows="5" required
+                  class="w-full rounded-md border border-gray-300 px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition shadow-sm sm:text-sm" placeholder="Write your message here..."></textarea>
+      </div>
+
+      <!-- Submit Button -->
+      <div>
+        <button type="submit"
+                class="w-full inline-flex justify-center py-3 px-6 border border-red-600 rounded-md shadow-md text-lg font-semibold text-black bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition">
+          Send Message
+        </button>
+      </div>
+    </form>
+
+    <!-- Optional Contact Info -->
+    <div class="mt-12 text-center text-gray-500 text-sm sm:text-base space-y-2">
+      <p>📧 Email us at: <a href="mailto:support@ini.icei.ac.id" class="text-indigo-600 hover:underline">support@ini.icei.ac.id</a></p>
+      <p>📞 Call us: <a href="tel:+6281234567890" class="text-indigo-600 hover:underline">+62 812 3456 7890</a></p>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

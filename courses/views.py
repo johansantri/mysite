@@ -460,23 +460,18 @@ def add_microcredential_review(request, microcredential_id):
 
 def self_course(request, username, id, slug):
     if not request.user.is_authenticated:
-        return redirect("/login/?next=%s" % request.path)
+        return redirect(f"/login/?next={request.path}")
 
-    # Ambil course berdasarkan id dan slug
     course = get_object_or_404(Course, id=id, slug=slug)
 
-    # Pastikan user yang mengakses adalah user yang benar
+    # Redirect jika bukan user yang benar
     if request.user.username != username:
         return redirect('authentication:course_list')
 
-    # Cek apakah user adalah instruktur dari course ini
     is_instructor = course.instructor == request.user
-
-   
-    
     course_name = course.course_name
 
-    # Ambil section, material, assessment, dan askora
+    # Prefetch semua konten yang diperlukan
     sections = Section.objects.filter(courses=course).prefetch_related(
         Prefetch('materials', queryset=Material.objects.all()),
         Prefetch('assessments', queryset=Assessment.objects.all().prefetch_related(
@@ -487,7 +482,7 @@ def self_course(request, username, id, slug):
         ))
     )
 
-    # Buat daftar konten gabungan dengan informasi section
+    # Gabungkan material dan assessment jadi satu urutan
     combined_content = []
     for section in sections:
         for material in section.materials.all():
@@ -497,22 +492,23 @@ def self_course(request, username, id, slug):
 
     total_content = len(combined_content)
 
-    # Ambil ID konten saat ini dari parameter URL
+    # Tentukan konten saat ini
     material_id = request.GET.get('material_id')
     assessment_id = request.GET.get('assessment_id')
-
-    # Tentukan current_content
     current_content = None
+
     if not material_id and not assessment_id:
         current_content = combined_content[0] if combined_content else None
     elif material_id:
         material = get_object_or_404(Material, id=material_id)
-        current_content = ('material', material, next((s for s in sections if material in s.materials.all()), None))
+        section = next((s for s in sections if material in s.materials.all()), None)
+        current_content = ('material', material, section)
     elif assessment_id:
         assessment = get_object_or_404(Assessment, id=assessment_id)
-        current_content = ('assessment', assessment, next((s for s in sections if assessment in s.assessments.all()), None))
+        section = next((s for s in sections if assessment in s.assessments.all()), None)
+        current_content = ('assessment', assessment, section)
 
-    # Handle comments and pagination based on current_content
+    # Komentar
     comments = None
     page_comments = []
     if current_content:
@@ -528,13 +524,13 @@ def self_course(request, username, id, slug):
             page_number = request.GET.get('page')
             page_comments = paginator.get_page(page_number)
 
-    # Cek status assessment untuk peserta
+    # Cek status assessment hanya jika sedang di assessment
     is_started = False
     is_expired = False
     remaining_time = 0
 
-    # Jika user adalah instruktur, abaikan cek session assessment
-    if not is_instructor:
+    if not is_instructor and current_content and current_content[0] == 'assessment':
+        assessment = current_content[1]
         session = AssessmentSession.objects.filter(user=request.user, assessment=assessment).first()
         if session:
             is_started = True
@@ -543,96 +539,90 @@ def self_course(request, username, id, slug):
                 is_expired = True
                 remaining_time = 0
         else:
-            if assessment.duration_in_minutes == 0:
-                is_started = True
-                remaining_time = 0
-            else:
-                is_started = False
+            is_started = assessment.duration_in_minutes == 0
 
-    # Tentukan indeks konten saat ini
+    # Index konten
     current_index = -1
     if current_content:
         for i, content in enumerate(combined_content):
-            if (content[0] == current_content[0] and 
-                content[1].id == current_content[1].id and 
+            if (content[0] == current_content[0] and
+                content[1].id == current_content[1].id and
                 content[2].id == current_content[2].id):
                 current_index = i
                 break
-        if current_index == -1:
-            print("Warning: Current content not found in combined_content, defaulting to first content")
-            current_index = 0
-            current_content = combined_content[0] if combined_content else None
 
-    # Tentukan konten sebelumnya dan berikutnya
+    # Navigasi
     previous_content = combined_content[current_index - 1] if current_index > 0 else None
-    next_content = combined_content[current_index + 1] if current_index < len(combined_content) - 1 and current_index != -1 else None
+    next_content = combined_content[current_index + 1] if 0 <= current_index < total_content - 1 else None
     is_last_content = next_content is None
 
-    # Buat URL untuk navigasi
     previous_url = "#" if not previous_content else f"?{previous_content[0]}_id={previous_content[1].id}"
     next_url = "#" if not next_content else f"?{next_content[0]}_id={next_content[1].id}"
 
-    # Skip progres dan sertifikat untuk instruktur
+    # Progres dan tracking
     if not is_instructor:
-        # Save track records
         if current_content:
             if current_content[0] == 'material':
                 material = current_content[1]
-                if not MaterialRead.objects.filter(user=request.user, material=material).exists():
-                    MaterialRead.objects.create(user=request.user, material=material)
+                MaterialRead.objects.get_or_create(user=request.user, material=material)
             elif current_content[0] == 'assessment':
                 assessment = current_content[1]
-                if not AssessmentRead.objects.filter(user=request.user, assessment=assessment).exists():
-                    AssessmentRead.objects.create(user=request.user, assessment=assessment)
+                AssessmentRead.objects.get_or_create(user=request.user, assessment=assessment)
 
-        # Lacak kemajuan pengguna
-        user_progress, created = CourseProgress.objects.get_or_create(user=request.user, course=course)
-        if current_content and (current_index + 1) > user_progress.progress_percentage / 100 * total_content:
-            user_progress.progress_percentage = (current_index + 1) / total_content * 100
+        user_progress, _ = CourseProgress.objects.get_or_create(user=request.user, course=course)
+        if current_index + 1 > user_progress.progress_percentage / 100 * total_content:
+            user_progress.progress_percentage = ((current_index + 1) / total_content) * 100
             user_progress.save()
 
-    # Ambil skor terakhir dari pengguna (untuk peserta)
+    # Skor dan penilaian
+    user_grade = None
     if not is_instructor:
         score = Score.objects.filter(user=request.user.username, course=course).order_by('-date').first()
         user_grade = 'Fail'
-        if score:
+        if score and score.total_questions > 0:
             score_percentage = (score.score / score.total_questions) * 100
             user_grade = calculate_grade(score_percentage, course)
 
-    # Proses assessment untuk instruktur dan peserta
     assessments = Assessment.objects.filter(section__courses=course)
     assessment_scores = []
+    total_score = 0
     total_max_score = 0
-    total_score = 0  # Inisialisasi total_score
     all_assessments_submitted = True
 
-    grade_range = GradeRange.objects.filter(course=course).all()
-    if grade_range:
-        passing_threshold = grade_range.filter(name='Pass').first().min_grade
-        max_grade = grade_range.filter(name='Pass').first().max_grade
+    grade_range = GradeRange.objects.filter(course=course)
+    if grade_range.exists():
+        pass_grade = grade_range.filter(name='Pass').first()
+        passing_threshold = pass_grade.min_grade if pass_grade else 0
     else:
-        return render(request, 'error_template.html', {'message': 'Grade range not found for this course.'})
+        from django.urls import reverse
+        grade_url = reverse('courses:course_grade', kwargs={'id': course.id})
+        message = f'Grade range not found for this course. <a href="{grade_url}">Click here to add it.</a>'
+        return render(request, 'error.html', {'message': message})
 
-    # Proses skor untuk setiap assessment
+
     for assessment in assessments:
         score_value = Decimal(0)
-        total_correct_answers = 0
         total_questions = assessment.questions.count()
+        total_correct = 0
+        answers_exist = False
+
         if total_questions > 0:
-            answers_exist = False
             for question in assessment.questions.all():
                 answers = QuestionAnswer.objects.filter(question=question, user=request.user)
                 if answers.exists():
                     answers_exist = True
-                total_correct_answers += answers.filter(choice__is_correct=True).count()
+                total_correct += answers.filter(choice__is_correct=True).count()
+
             if not answers_exist:
                 all_assessments_submitted = False
+
             if total_questions > 0:
-                score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
-        else:  # Assessment adalah AskOra
+                score_value = (Decimal(total_correct) / Decimal(total_questions)) * Decimal(assessment.weight)
+
+        else:
+            # Handle AskOra
             askora_submissions = Submission.objects.filter(
-                askora__assessment=assessment,
-                user=request.user
+                askora__assessment=assessment, user=request.user
             )
             if not askora_submissions.exists():
                 all_assessments_submitted = False
@@ -643,14 +633,15 @@ def self_course(request, username, id, slug):
                     score_value = Decimal(assessment_score.final_score)
 
         score_value = min(score_value, Decimal(assessment.weight))
+        total_score += score_value
+        total_max_score += assessment.weight
+
         assessment_scores.append({
             'assessment': assessment,
             'score': score_value,
             'weight': assessment.weight
         })
-        total_max_score += assessment.weight
 
-    # Jangan lupa untuk merender halaman dengan context
     context = {
         'course': course,
         'course_name': course_name,
@@ -662,7 +653,7 @@ def self_course(request, username, id, slug):
         'user_grade': user_grade if not is_instructor else None,
         'assessment_results': assessment_scores,
         'total_score': total_score,
-        'overall_percentage': (total_score / total_max_score) * 100 if total_max_score > 0 else 0,
+        'overall_percentage': (total_score / total_max_score * 100) if total_max_score > 0 else 0,
         'total_weight': total_max_score,
         'status': 'Pass' if total_score >= passing_threshold else 'Fail',
         'is_last_content': is_last_content,
@@ -1315,7 +1306,7 @@ def category_course_list(request, slug):
 
         # Get pricing information
         course_price = course.prices.first()  # Get the first CoursePrice (adjust if specific price_type needed)
-        price = course_price.user_payment if course_price else Decimal('0.00')
+        price = course_price.portal_price if course_price else Decimal('0.00')
         is_free = price == Decimal('0.00')
         discount_amount = course_price.discount_amount if course_price else Decimal('0.00')
         normal_price = course_price.normal_price if course_price else Decimal('0.00')
@@ -2944,13 +2935,13 @@ def course_learn(request, username, slug):
         current_content = ('material', material, next((s for s in sections if material in s.materials.all()), None))
     elif assessment_id:
         assessment = get_object_or_404(Assessment, id=assessment_id)
-        # Cek pembayaran untuk pay_for_exam
-        if course.payment_model == 'pay_for_exam':
+        # Cek pembayaran untuk pay for exam
+        if course.payment_model == 'pay for exam':
             payment = Payment.objects.filter(
                 user=request.user,
                 course=course,
                 status='completed',
-                payment_model='pay_for_exam'
+                payment_model='pay for exam'
             ).first()
             if not payment:
                 assessment_locked = True
@@ -3316,12 +3307,12 @@ def generate_certificate(request, course_id):
         return redirect('authentication:dashbord')
 
     # === CEK PEMBAYARAN (JIKA MODELNYA PAY-FOR-CERTIFICATE) ===
-    if course.payment_model == 'pay_for_certificate':
+    if course.payment_model.code == 'pay_only_certificate':
         payment = Payment.objects.filter(
             user=request.user,
             course=course,
             status='completed',
-            payment_model='pay_for_certificate'
+            payment_model='pay_only_certificate'
         ).first()
         if not payment:
             logger.info(f"Payment required for certificate in course {course.id} for user {request.user.username}")
@@ -3756,60 +3747,43 @@ def course_reruns(request, id):
 
     return render(request, 'courses/course_reruns.html', {'form': form, 'course': course})
 
-#add course price
 def add_course_price(request, id):
     if not request.user.is_authenticated:
         return redirect(f"/login/?next={request.path}")
 
-    course = None
-    if hasattr(request.user, 'is_partner') and request.user.is_partner:
-        course = get_object_or_404(Course, id=id, org_partner__user_id=request.user.id)
-        existing_price = CoursePrice.objects.filter(course=course, price_type__isnull=False).first()
-    else:
+    if not (hasattr(request.user, 'is_partner') and request.user.is_partner):
         messages.error(request, "Anda tidak memiliki izin untuk menambahkan harga ke kursus ini.")
         return redirect('courses:studio', id=id)
 
-    if request.method == 'POST':
-        print("✅ POST request received")
-        print("📨 Data yang dikirim:", request.POST)
+    course = get_object_or_404(Course, id=id, org_partner__user_id=request.user.id)
+    partner = request.user.partner_user
 
-        form = CoursePriceForm(request.POST, user=request.user, course=course, instance=existing_price)
+    existing_price = CoursePrice.objects.filter(course=course, partner=partner).first()
+
+    if request.method == 'POST':
+        form = CoursePriceForm(request.POST, user=request.user, instance=existing_price)
+
         if form.is_valid():
-            print("✅ Form is valid")
             course_price = form.save(commit=False)
             course_price.course = course
+            course_price.partner = partner
             course_price.save()
             messages.success(request, "✅ Harga kursus berhasil disimpan!")
-            print("✅ Data berhasil disimpan!")
-            # Simpan ID instance di session
-            request.session['last_course_price_id'] = course_price.id
             return redirect(reverse('courses:add_course_price', args=[course.id]))
         else:
-            print("❌ Form is NOT valid")
-            print(form.errors)
-            for error in form.errors.get("__all__", []):
-                messages.error(request, error)
+            messages.error(request, "Terdapat kesalahan pada form, silakan cek kembali.")
     else:
-        # Cek apakah ada instance dari session
-        last_price_id = request.session.get('last_course_price_id')
-        if last_price_id:
-            try:
-                last_price = CoursePrice.objects.get(id=last_price_id, course=course)
-                form = CoursePriceForm(user=request.user, course=course, instance=last_price)
-            except CoursePrice.DoesNotExist:
-                form = CoursePriceForm(user=request.user, course=course, instance=existing_price)
-            # Hapus session setelah digunakan
-            request.session.pop('last_course_price_id', None)
-        else:
-            form = CoursePriceForm(user=request.user, course=course, instance=existing_price)
+        form = CoursePriceForm(user=request.user, instance=existing_price)
 
-    return render(request, 'courses/course_price_form.html', {'form': form, 'course': course})
-
+    return render(request, 'courses/course_price_form.html', {
+        'form': form,
+        'course': course,
+    })
 
 #instrcutor profile
 
-@cache_page(60 * 5)  # Cache for 5 minutes
-@ratelimit(key='ip', rate='30/h', block=True)  # Rate limit 30 requests per hour per IP
+# @cache_page(60 * 5)  # Cache for 5 minutes
+# @ratelimit(key='ip', rate='30/h', block=True)  # Rate limit 30 requests per hour per IP
 def instructor_profile(request, username):
     try:
         # Get instructor by username
@@ -3872,7 +3846,7 @@ def instructor_profile(request, username):
                 # Fetch CoursePrice
                 course_obj = Course.objects.filter(id=course['id']).prefetch_related('prices').first()
                 course_price = course_obj.prices.first() if course_obj else None
-                price = course_price.user_payment if course_price else Decimal('0.00')
+                price = course_price.portal_price if course_price else Decimal('0.00')
                 is_free = price == Decimal('0.00')
                 discount_amount = course_price.discount_amount if course_price else Decimal('0.00')
                 normal_price = course_price.normal_price if course_price else Decimal('0.00')
@@ -3945,30 +3919,29 @@ def enroll_course(request, course_id):
     if not is_course_free and not has_active_license:
         logger.warning(f"[Enroll Blocked] {user.email} tidak punya lisensi aktif untuk course {course.course_name} yang berbayar")
         
-        if course.payment_model == 'buy_first':
+        if course.payment_model == 'buy first':
             messages.info(request, "Anda perlu membayar untuk mengikuti kursus ini.")
             return redirect('payments:process_payment', course_id=course.id)
 
-        # pay_for_exam atau pay_for_certificate: boleh lanjut, bayar nanti
+        # pay for exam atau pay for certificate: boleh lanjut, bayar nanti
         messages.info(request, "Anda bisa mendaftar sekarang, tetapi pembayaran akan diperlukan nanti.")
 
     # Tentukan tipe harga sesuai payment model
-    price_type_map = {
-        'buy_first': 'buy_first',
-        'pay_for_exam': 'pay_for_exam',
-        'pay_for_certificate': 'pay_for_certificate',
-        'free': 'free',
+    # Optional alias if needed
+    payment_model_aliases = {
         'subscription': 'free',
     }
 
-    logger.info(f"[Enroll] Payment model: {course.payment_model}")
+    payment_model_name = payment_model_aliases.get(course.payment_model, course.payment_model)
+
     try:
-        price_type = PricingType.objects.get(name=price_type_map.get(course.payment_model, 'buy_first'))
+        price_type = PricingType.objects.get(name=payment_model_name)
         logger.info(f"[Enroll] Price type found: {price_type.name}")
     except PricingType.DoesNotExist:
-        logger.error(f"[Enroll Error] Price type not found for {course.payment_model}")
+        logger.error(f"[Enroll Error] Price type not found for {payment_model_name}")
         messages.error(request, f"Tipe harga untuk model {course.payment_model} tidak ditemukan.")
         return redirect('courses:course_lms_detail', id=course_id, slug=course.slug)
+
 
     # Lanjutkan proses pendaftaran
     response = course.enroll_user(user, partner=partner, price_type=price_type)
@@ -3979,7 +3952,7 @@ def enroll_course(request, course_id):
         return redirect('learner:course_learn', username=user.username, id=course.id, slug=course.slug)
 
     elif response["status"] == "error":
-        if course.payment_model == 'buy_first' and "Payment required" in response["message"]:
+        if course.payment_model == 'buy first' and "Payment required" in response["message"]:
             return redirect('payments:process_payment', course_id=course.id)
         messages.error(request, response["message"])
     else:
@@ -4017,7 +3990,7 @@ def get_client_ip(request):
     return request.META.get('REMOTE_ADDR')
 
 
-@ratelimit(key='ip', rate='30/h', method='GET', block=True)
+#@ratelimit(key='ip', rate='30/h', method='GET', block=True)
 def course_lms_detail(request, id, slug):
     if getattr(request, 'limited', False):
         return HttpResponse("Terlalu banyak permintaan. Coba lagi nanti.", status=429)
@@ -4055,18 +4028,12 @@ def course_lms_detail(request, id, slug):
     course_status = None
     if is_enrolled:
         user = request.user
-        # Cek apakah user pernah mengakses materi/assessment
         has_accessed = LastAccessCourse.objects.filter(user=user, course=course).exists()
-
-        # Cek progress & kelulusan
         course_progress = CourseProgress.objects.filter(user=user, course=course).first()
         progress = course_progress.progress_percentage if course_progress else 0
-
-        # Cek kelulusan
         grade_range = GradeRange.objects.filter(course=course, name='Pass').first()
         passing_threshold = grade_range.min_grade if grade_range else Decimal('52.00')
 
-        # Hitung total skor user
         total_score = Decimal('0')
         total_max_score = Decimal('0')
 
@@ -4093,7 +4060,6 @@ def course_lms_detail(request, id, slug):
 
         overall_percentage = (total_score / total_max_score * Decimal('100')) if total_max_score > 0 else Decimal('0')
 
-        # Tentukan status
         if progress >= 100 and overall_percentage >= passing_threshold:
             course_status = 'completed'
         elif has_accessed:
@@ -4144,7 +4110,19 @@ def course_lms_detail(request, id, slug):
     full_stars = int(average_rating)
     half_star = (average_rating % 1) >= 0.5
     empty_stars = 5 - (full_stars + (1 if half_star else 0))
-    course_price = course.get_course_price()
+
+    # --- DYNAMIC PRICING PART ---
+    partner = None
+    if request.user.is_authenticated:
+        partner = getattr(request.user, 'partner', None)  # Sesuaikan jika kamu punya cara lain
+
+    course_prices_qs = CoursePrice.objects.filter(course=course)
+    if partner:
+        course_prices_qs = course_prices_qs.filter(partner=partner)
+
+    course_prices = {}
+    for cp in course_prices_qs.select_related('price_type'):
+        course_prices[cp.price_type.name] = cp
 
     return render(request, 'home/course_detail.html', {
         'course': course,
@@ -4169,13 +4147,10 @@ def course_lms_detail(request, id, slug):
         'half_star': half_star,
         'empty_star_range': range(empty_stars),
         'average_rating': average_rating,
-        'course_price': course_price,
+        'course_prices': course_prices,  # <-- di sini
         'total_reviews': total_reviews,
-        'course_status': course_status,  # 👈 Tambahkan ini
+        'course_status': course_status,
     })
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 @login_required
 def course_instructor(request, id):

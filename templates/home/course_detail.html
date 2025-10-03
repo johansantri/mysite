@@ -612,49 +612,36 @@
                                 {% endif %}
                             </div>
                             <div class="text-center">
-                               {% with course_price=course.get_course_price %}
-                                    <div class="mb-4">
-                                        {% if course_price %}
-                                            <h2 class="text-2xl font-bold text-gray-900 mb-1">
-                                                {% if course.payment_model == 'free' %}
-                                                    Free
-                                                {% else %}
-                                                    IDR {{ course_price.user_payment|intcomma }}
-                                                {% endif %}
-                                            </h2>
-
-                                            {% if course.payment_model == 'pay_for_exam' %}
-                                                <div class="bg-blue-50 text-blue-800 p-3 rounded-lg">
-                                                <p class="text-red-600 mb-0">Free to enroll, pay only when taking the exam</p>
-                                                </div>
-                                            {% elif course.payment_model == 'pay_for_certificate' %}
-                                                <div class="bg-blue-50 text-blue-800 p-3 rounded-lg">
-                                                <p class="text-red-600 mb-0">Free to enroll and take the exam, pay only when claiming certificate</p>
-                                                </div>
-                                                {% if course_price.discount_percent > 0 %}
-                                                    <p class="text-gray-600 mb-0">
-                                                        <span class="line-through">IDR {{ course_price.normal_price|intcomma }}</span>
-                                                        
-                                                    </p>
-                                                {% endif %}
-                                            {% elif course.payment_model == 'buy_first' %}
-                                                {% if course_price.discount_percent > 0 %}
-                                                    <p class="text-gray-600 mb-0">
-                                                        <span class="line-through">IDR {{ course_price.normal_price|intcomma }}</span>
-                                                        
-                                                    </p>
-                                                {% endif %}
-                                                <div class="bg-blue-50 text-blue-800 p-3 rounded-lg">
-                                                <p class="text-red-600 mb-0">Payment required before enrollment</p>
-                                                </div>
-                                            {% endif %}
+                              
+                                {% if course_prices %}
+                                <ul>
+                                    {% for price_type_name, price_obj in course_prices.items %}
+                                    <li>
+                                        <!-- Harga atau label Free -->
+                                        <p class="bg-red-50 text-red-800 px-3 py-1 rounded-lg text-3xl text-center">
+                                        {% if price_obj.portal_price|floatformat:2 == "0.00" %}
+                                            {{ price_type_name }}
                                         {% else %}
-                                            <h2 class="text-2xl font-bold text-gray-900 mb-1">Price not available</h2>
-                                            <p class="text-gray-600 mb-0">Please contact support to set up pricing for this course.</p>
+                                            IDR {{ price_obj.portal_price|intcomma }}
+                                            <!-- Tipe Harga -->
+                                             <br>
+                                            <span class="text-sm text-gray-600 mt-1">
+                                            <strong>{{ price_type_name }}</strong>
+                                            </span>
+                                            <br>
                                         {% endif %}
-                                    </div>
-                                    {% endwith %}
+                                        </p>
 
+                                        
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                                {% else %}
+                                <!-- jika tidak diset harga info -->
+                                {% endif %}
+
+
+                            <br>
 
                                <div class="grid grid-cols-3 gap-2 sm:gap-3 mb-4">
                                 <!-- Wishlist -->
@@ -737,58 +724,71 @@
 
 
                               {% with today=now|date:"Y-m-d" %}
-                                    {% if request.user.is_authenticated %}
-                                        {% if is_enrolled %}
-                                            {% if course_status == 'completed' %}
-                                               <button onclick="window.location.href='{% url 'courses:generate_certificate' course_id=course.id %}'" 
-                                                        class="block w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors text-center"
-                                                        aria-label="Download certificate for completed course">
-                                                    ✅ Completed
-                                                </button>
-                                            {% elif course_status == 'resume' %}
-                                                <a href="{% url 'learner:course_learn' request.user.username course.id course.slug %}"
-                                                class="block w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
-                                                    ▶️ Resume Course
-                                                </a>
-                                            {% elif course_status == 'get_started' %}
-                                                <a href="{% url 'learner:course_learn' request.user.username course.id course.slug %}"
-                                                class="block w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
-                                                    🚀 Get Started
-                                                </a>
-                                            {% endif %}
+                                {% if request.user.is_authenticated %}
+                                    
+                                    {% if is_enrolled %}
+                                        {# ✅ USER SUDAH TERDAFTAR — tampilkan tombol Resume/Get Started/Completed #}
+                                        {% if course_status == 'completed' %}
+                                            <button onclick="window.location.href='{% url 'courses:generate_certificate' course_id=course.id %}'" 
+                                                    class="block w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors text-center"
+                                                    aria-label="Download certificate for completed course">
+                                                ✅ Completed
+                                            </button>
+                                        {% elif course_status == 'resume' %}
+                                            <a href="{% url 'learner:course_learn' request.user.username course.id course.slug %}"
+                                            class="block w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
+                                                ▶️ Resume Course
+                                            </a>
+                                        {% elif course_status == 'get_started' %}
+                                            <a href="{% url 'learner:course_learn' request.user.username course.id course.slug %}"
+                                            class="block w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
+                                                🚀 Get Started
+                                            </a>
+                                        {% endif %}
 
+                                    {% else %}
+                                        {# ✅ USER BELUM TERDAFTAR — cek apakah enrollment masih dibuka dan tampilkan Enroll Now/Add to Cart #}
+                                        {% if course.end_enrol and course.end_enrol|stringformat:"Y-m-d" < today %}
+                                            <button class="block w-full bg-gray-400 text-white px-4 py-2 rounded-lg cursor-not-allowed" disabled>
+                                                Enrollment Closed
+                                            </button>
                                         {% else %}
-                                            {% if course.end_enrol and course.end_enrol|stringformat:"Y-m-d" < today %}
-                                                <button class="block w-full bg-gray-400 text-white px-4 py-2 rounded-lg cursor-not-allowed" disabled>
-                                                    Enrollment Closed
-                                                </button>
-                                            {% else %}
-                                                {% with course_price=course.get_course_price %}
-                                                    {% if course.payment_model == 'free' or course.payment_model == 'pay_for_exam' or course.payment_model == 'pay_for_certificate' %}
-                                                        <form id="enrollForm" method="POST" action="{% url 'courses:enroll' course.id %}">
-                                                            {% csrf_token %}
-                                                            <button type="submit" class="block w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
-                                                                Enroll Now
-                                                            </button>
-                                                        </form>
-                                                    {% else %}
+                                            {% with course_prices=course.get_course_price %}
+                                                {% if course.payment_model and course.payment_model.code != 'buy_first' %}
+                                                    <form id="enrollForm" method="POST" action="{% url 'courses:enroll' course.id %}">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="block w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
+                                                            Enroll Now
+                                                        </button>
+                                                    </form>
+                                                {% elif course.payment_model and course.payment_model.code == 'buy_first' %}
+                                                    {% if course_prices %}
                                                         <form method="POST" action="{% url 'payments:add_to_cart' course.id %}">
                                                             {% csrf_token %}
                                                             <button type="submit" class="block w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
                                                                 Add to Cart
                                                             </button>
                                                         </form>
+                                                    {% else %}
+                                                        <p class="text-gray-500 text-sm italic text-center">Harga belum tersedia</p>
                                                     {% endif %}
-                                                {% endwith %}
-                                            {% endif %}
+                                                {% else %}
+                                                    <p class="text-gray-500 text-sm italic text-center">Tipe pembayaran belum disetel</p>
+                                                {% endif %}
+                                            {% endwith %}
                                         {% endif %}
-                                    {% else %}
-                                        <a href="{% url 'authentication:register' %}?next={% url 'courses:course_lms_detail' id=course.id slug=course.slug %}" class="block bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
-                                            Join Now
-                                        </a>
                                     {% endif %}
 
-                                {% endwith %}
+                                {% else %}
+                                    {# ✅ USER BELUM LOGIN — tampilkan tombol Join Now #}
+                                    <a href="{% url 'authentication:register' %}?next={% url 'courses:course_lms_detail' id=course.id slug=course.slug %}" 
+                                    class="block w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors text-center">
+                                        Join Now
+                                    </a>
+                                {% endif %}
+                            {% endwith %}
+
+
 
 
                             </div>

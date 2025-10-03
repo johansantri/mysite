@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='payment',
             name='payment_model',
-            field=models.CharField(choices=[('buy_first', 'Beli dulu baru enrol'), ('pay_for_exam', 'Enrol dulu, bayar saat ujian'), ('pay_for_certificate', 'Enrol & ujian dulu, bayar saat sertifikat'), ('free', 'Gratis')], max_length=20),
+            field=models.CharField(choices=[('buy first', 'Beli dulu baru enrol'), ('pay for exam', 'Enrol dulu, bayar saat ujian'), ('pay for certificate', 'Enrol & ujian dulu, bayar saat sertifikat'), ('free', 'Gratis')], max_length=20),
         ),
         migrations.AlterUniqueTogether(
             name='payment',

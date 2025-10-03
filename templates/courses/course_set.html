@@ -1,11 +1,36 @@
 <!-- Menu container -->
 <div class="d-flex justify-content-between align-items-center p-3 shadow-sm  rounded">
   <!-- Judul -->
-  <div class="fw-bold">
-    <a href="{% url 'courses:studio' course.id %}" class="text-dark text-decoration-none">
-      {{ course.course_name }}
-    </a>
-  </div>
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+      <!-- Course Name -->
+      <a href="{% url 'courses:studio' course.id %}" class="text-dark text-decoration-none fw-bold me-3">
+        {{ course.course_name }}
+      </a>
+
+      <!-- Inline Messages (no box, with color tags) -->
+        {% if messages %}
+          <div class="d-flex flex-column gap-1 small">
+            {% for message in messages %}
+              <div class="alert alert-dismissible fade show d-flex align-items-center gap-2 p-1" role="alert" style="background: transparent; line-height: 1.2;">
+                <span class="fw-normal
+                  {% if message.tags == 'success' %}text-success
+                  {% elif message.tags == 'error' or message.tags == 'danger' %}text-danger
+                  {% elif message.tags == 'warning' %}text-warning
+                  {% elif message.tags == 'info' %}text-info
+                  {% else %}text-muted{% endif %}" style="line-height: 1.2; font-size: 0.875rem;">
+                  {{ message }}
+                </span>
+                <button type="button" class="btn-close btn-sm ms-auto" data-bs-dismiss="alert" aria-label="Close" style="float:none; position:static; padding: 0.2rem;"></button>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+
+
+    </div>
+
+
 
   <!-- Ikon Titik Tiga sebagai Dropdown -->
   <div class="dropdown">
@@ -14,9 +39,9 @@
     </button>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="moreMenuButton">
       <li><a class="dropdown-item" href="{% url 'courses:studio' course.id %}">Outline</a></li>
-      <li><a class="dropdown-item" href="{% url 'instructor:studios' course.id %}">Status Curation</a></li>
+      <li><a class="dropdown-item" href="{% url 'instructor:studios' course.id %}">Curation</a></li>
       <li><hr class="dropdown-divider"></li>
-      <li><a class="dropdown-item" href="{% url 'courses:self_course' username=request.user.username id=course.id slug=course.slug %}">Access Course</a></li>
+      <li><a class="dropdown-item" href="{% url 'courses:self_course' username=request.user.username id=course.id slug=course.slug %}">Access</a></li>
       <li><a class="dropdown-item" href="{% url 'courses:course_profile' course.id %}">Schedule</a></li>
       <li><a class="dropdown-item" href="{% url 'courses:course_grade' course.id %}">Grading</a></li>
       <li><a class="dropdown-item" href="{% url 'courses:course_team' course.id %}">Team</a></li>

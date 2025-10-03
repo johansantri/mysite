@@ -10,17 +10,54 @@
         </h1>
 
         <!-- Payment Details Card -->
-        <div class="space-y-4">
+        <div class="space-y-6">
             <h2 class="text-xl font-semibold text-gray-700 border-b pb-2">Payment Details</h2>
+
+            <div class="mb-4">
+                <p class="text-sm font-medium text-gray-500">Course</p>
+                <p class="text-base text-gray-800 font-semibold">{{ course.course_name }}</p>
+            </div>
+
+            {% with price=payment.course_price %}
+            <table class="w-full text-sm text-gray-700 mb-6">
+                <tbody>
+                    <tr>
+                        <td>Partner Price</td>
+                        <td class="text-right">IDR {{ price.normal_price|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td>Diskon</td>
+                        <td class="text-right text-green-600">- IDR {{ price.discount_amount|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td>Harga Setelah Diskon</td>
+                        <td class="text-right font-semibold">IDR {{ price.price_after_discount|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td>Admin Fee / ICE Share</td>
+                        <td class="text-right">IDR {{ price.admin_fee|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td>Platform Fee</td>
+                        <td class="text-right">IDR {{ price.platform_fee|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td>Voucher</td>
+                        <td class="text-right text-red-600">- IDR {{ price.voucher_amount|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td>PPN / Pajak</td>
+                        <td class="text-right">IDR {{ price.ppn|intcomma }}</td>
+                    </tr>
+                    <tr class="border-t border-gray-300 font-bold">
+                        <td>Total Bayar (User Payment)</td>
+                        <td class="text-right">IDR {{ price.user_payment|intcomma }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            {% endwith %}
+
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <p class="text-sm font-medium text-gray-500">Course</p>
-                    <p class="text-base text-gray-800 font-semibold">{{ course.course_name }}</p>
-                </div>
-                <div>
-                    <p class="text-sm font-medium text-gray-500">Amount</p>
-                    <p class="text-base text-gray-800 font-semibold">IDR {{ payment.amount|intcomma }}</p>
-                </div>
                 <div>
                     <p class="text-sm font-medium text-gray-500">Payment Type</p>
                     <p class="text-base text-gray-800 font-semibold">

@@ -2,103 +2,207 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from decimal import Decimal
 from django.utils import timezone
+from django.conf import settings
 
 CustomUser = get_user_model()
 
 class Payment(models.Model):
-    PAYMENT_MODEL_CHOICES = [
-        ('buy_first', 'Buy first, then enroll'),
-        ('pay_for_exam', 'Enroll first, pay at exam'),
-        ('pay_for_certificate', 'Enroll & take exam first, pay at certificate claim'),
-        ('free', 'Free'),
-    ]
-
     STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('completed', 'Completed'),
         ('failed', 'Failed'),
-        ('refunded', 'Refunded'),
-        ('expired', 'Expired'),
+        ('cancelled', 'Cancelled'),
     ]
 
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='payments')
-    course = models.ForeignKey('courses.Course', on_delete=models.CASCADE, related_name='payments')
-    payment_model = models.CharField(max_length=30, choices=PAYMENT_MODEL_CHOICES)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    PAYMENT_MODEL_CHOICES = [
+        ('free', 'Free'),
+        ('buy_first', 'Buy First'),
+        ('subscription', 'Subscription'),
+        ('pay_for_exam', 'Pay for Exam'),
+        ('pay_for_certificate', 'Pay for Certificate'),
+    ]
 
-    amount = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal('0.00'))
-    currency = models.CharField(max_length=10, default='IDR')
-    transaction_id = models.CharField(max_length=100, blank=True, null=True, unique=True)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='payments',
+        verbose_name='User'
+    )
+    course = models.ForeignKey(
+        'courses.Course',
+        on_delete=models.CASCADE,
+        related_name='payments',
+        verbose_name='Course'
+    )
+    payment_model = models.CharField(
+        max_length=50,
+        choices=PAYMENT_MODEL_CHOICES,
+        default='buy_first',
+        verbose_name='Payment Model'
+    )
+    amount = models.DecimalField(
+        max_digits=15,
+        decimal_places=2,
+        default=Decimal('0.00'),
+        verbose_name='Amount Paid (IDR)'
+    )
+    payment_date = models.DateTimeField(
+        default=timezone.now,
+        verbose_name='Payment Date'
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='pending',
+        verbose_name='Payment Status'
+    )
+    transaction_id = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        unique=True,
+        help_text='Unique ID from payment gateway or transaction reference',
+        verbose_name='Transaction ID'
+    )
+    notes = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name='Additional Notes'
+    )
+
+    payment_method = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+        verbose_name='Payment Method'
+    )
+    payment_url = models.URLField(
+        blank=True,
+        null=True,
+        verbose_name='Payment URL'
+    )
+
+    access_granted = models.BooleanField(default=False)
+    access_granted_date = models.DateTimeField(null=True, blank=True)
+
+
+    # Snapshot fields
+    snapshot_price = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal('0.00'))
+    snapshot_discount = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal('0.00'))
+    snapshot_tax = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal('0.00'))
+    snapshot_ppn = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal('0.00'))
+    snapshot_user_payment = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal('0.00'))
+    snapshot_partner_earning = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal('0.00'))
+    snapshot_ice_earning = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal('0.00'))
+    snapshot_platform_fee = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal('0.00'))
+    snapshot_voucher = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal('0.00'))
+
+    # Tracking / meta info
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    user_agent = models.TextField(null=True, blank=True)
+    location = models.CharField(max_length=255, null=True, blank=True)
+    isp = models.CharField(max_length=255, null=True, blank=True)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+
+    # Course price snapshot object (optional serialization or JSON)
+    course_price = models.JSONField(null=True, blank=True)
+
+    # Link to Transaction
     linked_transaction = models.ForeignKey(
-        'Transaction',
+        'payments.Transaction',
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='payments'
+        related_name='payments',
+        verbose_name='Linked Transaction'
     )
-    
-    # Metode/gateway
-    payment_method = models.CharField(max_length=50, blank=True, null=True)
-    payment_gateway = models.CharField(max_length=50, blank=True, null=True)
 
-    # Relasi ke CoursePrice (boleh kosong)
-    course_price = models.ForeignKey('courses.CoursePrice', on_delete=models.SET_NULL, null=True, blank=True, related_name='payments')
 
-    # Snapshot harga pada saat transaksi
-    snapshot_price = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal('0.00'), verbose_name="Snapshot Normal Price")
-    snapshot_discount = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), verbose_name="Snapshot Discount")
-    snapshot_tax = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), verbose_name="Snapshot Tax (%)")
-    snapshot_ppn = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), verbose_name="Snapshot PPN Value")
-    snapshot_user_payment = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal('0.00'), verbose_name="Snapshot User Payment")
-    snapshot_partner_earning = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal('0.00'), verbose_name="Snapshot Partner Earning")
-    snapshot_ice_earning = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal('0.00'), verbose_name="Snapshot ICE Earning")
-
-    # Opsional
-    notes = models.TextField(blank=True, null=True)
-
-    # Timestamps
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    paid_at = models.DateTimeField(blank=True, null=True)
-
-    ip_address = models.GenericIPAddressField(blank=True, null=True)
-    user_agent = models.TextField(blank=True, null=True)
-    location = models.CharField(max_length=255, blank=True, null=True)
-    isp = models.CharField(max_length=255, blank=True, null=True)
-    latitude = models.FloatField(blank=True, null=True)
-    longitude = models.FloatField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Created At')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Updated At')
 
     class Meta:
-        unique_together = ('user', 'course', 'payment_model')
-        ordering = ['-created_at']
+        ordering = ['-payment_date']
+        indexes = [
+            models.Index(fields=['user', 'course', 'payment_model']),
+            models.Index(fields=['status']),
+        ]
+        verbose_name = 'Payment'
+        verbose_name_plural = 'Payments'
 
     def __str__(self):
-        return f"{self.user.username} - {self.course.course_name} - {self.payment_model} - {self.status}"
+        return f"Payment {self.transaction_id or self.id} - {self.user} - {self.course.course_name} ({self.amount:,.2f} IDR)"
 
-    def apply_course_price_snapshot(self):
-        """
-        Salin semua informasi harga dari CoursePrice saat ini ke snapshot.
-        """
-        if self.course_price:
-            cp = self.course_price
-            self.snapshot_price = cp.normal_price
-            self.snapshot_discount = cp.discount_amount
-            self.snapshot_tax = cp.tax
-            self.snapshot_ppn = cp.ppn
-            self.snapshot_user_payment = cp.user_payment
-            self.snapshot_partner_earning = cp.partner_earning
-            self.snapshot_ice_earning = cp.ice_earning
+    def is_successful(self):
+        return self.status == 'completed'
 
-            # Set amount ke harga aktual yang dibayar user
-            self.amount = cp.user_payment
+    def mark_completed(self, transaction_id=None):
+        self.status = 'completed'
+        if transaction_id:
+            self.transaction_id = transaction_id
+        self.payment_date = timezone.now()
+        self.save()
 
-    def save(self, *args, **kwargs):
-        if self.course_price:
-            self.apply_course_price_snapshot()
-        # Auto isi paid_at jika status jadi completed
-        if self.status == 'completed' and not self.paid_at:
-            self.paid_at = timezone.now()
-        super().save(*args, **kwargs)
+    def mark_failed(self, transaction_id=None):
+        self.status = 'failed'
+        if transaction_id:
+            self.transaction_id = transaction_id
+        self.save()
+
+
+class Voucher(models.Model):
+    code = models.CharField(max_length=50, unique=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    is_active = models.BooleanField(default=True)
+
+    # Masa berlaku
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+
+    usage_limit = models.PositiveIntegerField(
+        null=True, blank=True,
+        help_text="Maksimal jumlah penggunaan (kosong = tidak terbatas)"
+    )
+    used_count = models.PositiveIntegerField(default=0)
+    one_time_per_user = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.code} - Rp {self.amount:,.0f}"
+
+    def is_valid_for_user(self, user):
+        now = timezone.now().date()
+
+        if not self.is_active:
+            return False, "Voucher tidak aktif."
+
+        if self.start_date and now < self.start_date:
+            return False, "Voucher belum aktif."
+
+        if self.end_date and now > self.end_date:
+            return False, "Voucher sudah kadaluarsa."
+
+        if self.usage_limit is not None and self.used_count >= self.usage_limit:
+            return False, "Voucher sudah mencapai batas penggunaan."
+
+        if self.one_time_per_user and VoucherUsage.objects.filter(user=user, voucher=self).exists():
+            return False, "Voucher hanya bisa digunakan satu kali per pengguna."
+
+        return True, ""
+
+
+class VoucherUsage(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    voucher = models.ForeignKey(Voucher, on_delete=models.CASCADE)
+    used_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'voucher')  # untuk one_time_per_user
+
+
+
 
 class CartItem(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
@@ -118,4 +222,6 @@ class Transaction(models.Model):
     total_amount = models.DecimalField(max_digits=12, decimal_places=2)
     status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('paid', 'Paid')])
     description = models.TextField(blank=True, null=True)
+    platform_fee = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
+    voucher = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
     created_at = models.DateTimeField(auto_now_add=True)

@@ -193,6 +193,7 @@ class CourseRerunForm(forms.ModelForm):
     level = forms.ChoiceField(choices=[('basic', 'Basic'), ('middle', 'Middle'), ('advanced', 'Advanced')], widget=forms.Select(attrs={'class': 'form-control', 'style': 'width: 100%'}))
 
 
+
 class CoursePriceForm(forms.ModelForm):
     class Meta:
         model = CoursePrice
@@ -201,111 +202,54 @@ class CoursePriceForm(forms.ModelForm):
         widgets = {
             'partner_price': forms.NumberInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Masukkan harga...',
+                'placeholder': 'Enter price...',
                 'min': '0',
-                'step': '0.01'
+                'step': '0.01',
             }),
             'discount_percent': forms.NumberInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Masukkan diskon...',
+                'placeholder': 'Enter discount...',
                 'min': '0',
                 'max': '100',
-                'step': '0.01'
+                'step': '0.01',
             }),
         }
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
-        self.course = kwargs.pop('course', None)
         super().__init__(*args, **kwargs)
+        self.fields['price_type'].widget.attrs.update({'class': 'form-control'})
+        # Hanya partner yang bisa input harga dan diskon
+        if not getattr(self.user, 'is_partner', False):
+            self.fields['partner_price'].disabled = True
+            self.fields['discount_percent'].disabled = True
+            
 
-        if self.user:
-            price_type_queryset = PricingType.objects.filter(name__in=[
-                'free', 'pay_for_certificate', 'pay_for_exam', 'buy_first'
-            ])
 
-            if self.user.is_superuser:
-                self.fields['price_type'] = forms.ModelChoiceField(
-                    queryset=PricingType.objects.all(),
-                    widget=forms.Select(attrs={'class': 'form-control'}),
-                    empty_label="Pilih Jenis Harga"
-                )
-                self.fields['start_date'] = forms.DateField(
-                    widget=forms.DateInput(attrs={
-                        'class': 'form-control',
-                        'type': 'date'
-                    }),
-                    required=False
-                )
-                self.fields['duration_days'] = forms.IntegerField(
-                    widget=forms.NumberInput(attrs={
-                        'class': 'form-control',
-                        'placeholder': 'Durasi dalam hari',
-                        'min': '1'
-                    }),
-                    required=False
-                )
-                self.fields['end_date'] = forms.DateField(
-                    widget=forms.DateInput(attrs={
-                        'class': 'form-control',
-                        'type': 'date'
-                    }),
-                    required=False
-                )
-            elif hasattr(self.user, 'is_partner') and self.user.is_partner:
-                self.fields['price_type'] = forms.ModelChoiceField(
-                    queryset=price_type_queryset,
-                    widget=forms.Select(attrs={'class': 'form-control'}),
-                    empty_label="Pilih Jenis Harga"
-                )
+        price_type_queryset = PricingType.objects.all()
+        self.fields['price_type'].queryset = price_type_queryset
 
     def clean(self):
         cleaned_data = super().clean()
         price_type = cleaned_data.get('price_type')
         partner_price = cleaned_data.get('partner_price')
-        discount_percent = cleaned_data.get('discount_percent')
+        discount = cleaned_data.get('discount_percent')
 
-        if hasattr(self.user, 'is_partner') and self.user.is_partner:
-            if not price_type:
-                raise forms.ValidationError("Jenis harga harus dipilih.")
+        if price_type and price_type.code == 'free':
+            cleaned_data['partner_price'] = 0
+            cleaned_data['discount_percent'] = 0
+        else:
+            if partner_price is None or partner_price <= 0:
+                self.add_error('partner_price', 'Partner price wajib diisi dan lebih dari 0 untuk harga non-free.')
 
-            if price_type and price_type.name == 'free':
-                cleaned_data['partner_price'] = 0
+            # Diskon boleh 0 tapi tidak boleh negatif atau lebih dari 100
+            if discount is None:
+                # Kalau diskon kosong, bisa diisi 0 otomatis atau boleh kosong sesuai kebutuhan
                 cleaned_data['discount_percent'] = 0
-            else:
-                if partner_price is None or partner_price <= 0:
-                    raise forms.ValidationError("Harga harus diisi dengan nilai lebih dari 0 untuk jenis harga berbayar.")
-                if discount_percent is None:
-                    cleaned_data['discount_percent'] = 0
-
-            existing_price = CoursePrice.objects.filter(course=self.course, price_type=price_type).first()
-            if existing_price and existing_price.pk != self.instance.pk:
-                raise forms.ValidationError(
-                    f"❌ Anda sudah memiliki harga untuk kursus ini dengan jenis harga '{price_type.name}'."
-                )
+            elif discount < 0 or discount > 100:
+                self.add_error('discount_percent', 'Discount harus antara 0 dan 100.')
 
         return cleaned_data
-
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-
-        if hasattr(self.user, 'is_partner') and self.user.is_partner:
-            if not instance.partner_id:
-                instance.partner = self.user.partner_user
-            instance.start_date = date.today()
-            instance.duration_days = None
-            if self.course:
-                instance.end_date = self.course.end_date
-
-            if instance.price_type.name == 'free':
-                instance.partner_price = 0
-                instance.discount_percent = 0
-
-        instance.calculate_prices()
-
-        if commit:
-            instance.save()
-        return instance
 
 
 class CourseInstructorForm(forms.ModelForm):
@@ -635,7 +579,6 @@ class CourseForm(forms.ModelForm):
 
 
 class PartnerForm(forms.ModelForm):
-    #description = forms.CharField(widget=CKEditor5Widget())
     user = forms.ModelChoiceField(
         queryset=CustomUser.objects.none(),
         widget=autocomplete.ModelSelect2(
@@ -656,14 +599,12 @@ class PartnerForm(forms.ModelForm):
         model = Partner
         fields = ['name', 'user', 'phone', 'tax', 'iceiprice', 'logo', 'address', 'description']
         widgets = {
-            
             "phone": forms.TextInput(attrs={"placeholder": "Phone Number", "class": "form-control"}),
             "address": forms.Textarea(attrs={"placeholder": "Address", "class": "form-control"}),
             "description": CKEditor5Widget(
                 attrs={"class": "django_ckeditor_5"},
                 config_name="extends",
             ),
-            #"description": forms.Textarea(attrs={"placeholder": "Description", "class": "form-control"}),
             "tax": forms.NumberInput(attrs={"placeholder": "Tax Number", "class": "form-control"}),
             "iceiprice": forms.NumberInput(attrs={"placeholder": "Ice Price %", "class": "form-control"}),
             "logo": forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
@@ -671,50 +612,47 @@ class PartnerForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Set nilai awal untuk Select2 dari instance
+
         if self.instance.pk:
+            # Jika edit, batasi queryset supaya hanya bisa memilih instance yang terkait
             if self.instance.user:
                 self.fields['user'].queryset = CustomUser.objects.filter(pk=self.instance.user.pk)
             if self.instance.name:
                 self.fields['name'].queryset = Universiti.objects.filter(pk=self.instance.name.pk)
-
-       
+        else:
+            # Jika create baru, isi queryset penuh agar pilihan valid
+            self.fields['user'].queryset = CustomUser.objects.all()
+            self.fields['name'].queryset = Universiti.objects.all()
 
     def clean_user(self):
         user_value = self.cleaned_data.get('user')
         
-        # Jika user tidak dipilih, beri error
         if not user_value:
             raise forms.ValidationError("This field is required.")
         
-        # Jika partner dengan user yang sama sudah ada, beri error
         if Partner.objects.filter(user=user_value).exists() and (not self.instance.pk or self.instance.user != user_value):
             raise forms.ValidationError("This user already exists as a partner. Please choose another.")
         
         return user_value
 
     def save(self, commit=True):
-        # Simpan instance partner terlebih dahulu
         partner = super().save(commit=False)
 
-        # Cek apakah ada perubahan user
         if self.instance.pk and self.instance.user != partner.user:
-            # Jika ada perubahan user, update user lama
             old_user = self.instance.user
-            if old_user:  # Pastikan old_user ada
+            if old_user:
                 old_user.is_partner = False
-                old_user.save()  # Simpan perubahan status old_user menjadi False
+                old_user.save()
 
-        # Pastikan user baru mendapatkan status is_partner=True
         if partner.user:
             partner.user.is_partner = True
-            partner.user.save()  # Simpan perubahan status user baru menjadi True
+            partner.user.save()
 
-        # Simpan partner jika commit=True
         if commit:
             partner.save()
 
         return partner
+
     
 
 #selfupdatepartner

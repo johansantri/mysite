@@ -1,0 +1,113 @@
+{% extends "home/base.html" %}
+{% block content %}
+
+<section class="max-w-3xl mx-auto px-6 py-12 bg-white rounded-lg shadow-lg">
+  <h1 class="text-3xl font-bold text-gray-900 mb-8 text-center drop-shadow-sm">
+    🔒 Privacy Policy
+  </h1>
+
+  <p class="text-gray-500 mb-12 text-sm text-center uppercase tracking-wide font-semibold">
+    Last updated: October 3, 2025
+  </p>
+
+  <div class="space-y-12 text-gray-700 text-base leading-relaxed tracking-wide">
+
+    <p class="text-lg mb-8">
+      At <strong class="text-red-600">MyICE</strong>, we respect your privacy and are committed to protecting your personal information. This Privacy Policy explains how we collect, use, and safeguard your data when you use our platform.
+    </p>
+
+    <div class="mb-10">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4 border-l-4 border-red-500 pl-3 pb-1">
+        1. Information We Collect
+      </h2>
+      <p class="mb-4">We may collect the following types of information:</p>
+      <ul class="list-disc list-inside ml-6 space-y-2 text-gray-700">
+        <li>Personal details (e.g., name, email address, phone number)</li>
+        <li>Login credentials</li>
+        <li>Payment information (processed securely through third-party providers)</li>
+        <li>Usage data (pages visited, time spent, device/browser info)</li>
+      </ul>
+    </div>
+
+    <div class="mb-10">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4 border-l-4 border-red-500 pl-3 pb-1">
+        2. How We Use Your Information
+      </h2>
+      <p class="mb-4">We use your information to:</p>
+      <ul class="list-disc list-inside ml-6 space-y-2 text-gray-700">
+        <li>Provide access to courses and services</li>
+        <li>Process payments and issue invoices</li>
+        <li>Send transactional or promotional emails</li>
+        <li>Improve platform performance and user experience</li>
+      </ul>
+    </div>
+
+    <div class="mb-10">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4 border-l-4 border-red-500 pl-3 pb-1">
+        3. Cookies and Tracking Technologies
+      </h2>
+      <p class="mb-6">
+        We use cookies and similar technologies to personalize your experience, analyze traffic, and improve our services. You can manage cookie preferences in your browser settings. See our 
+        <a href="{% url 'authentication:cookie_policy' %}" class="text-red-600 underline hover:text-red-700 transition">Cookie Policy</a> for details.
+      </p>
+    </div>
+
+    <div class="mb-10">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4 border-l-4 border-red-500 pl-3 pb-1">
+        4. Data Sharing and Security
+      </h2>
+      <p class="mb-6">
+        We do not sell or rent your data. We may share it with trusted third-party providers (e.g., payment processors) only when necessary. We implement industry-standard security measures to protect your data.
+      </p>
+    </div>
+
+    <div class="mb-10">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4 border-l-4 border-red-500 pl-3 pb-1">
+        5. Your Rights
+      </h2>
+      <p class="mb-6">
+        You have the right to access, correct, or delete your personal data. You may also opt out of promotional communications at any time.
+      </p>
+    </div>
+
+    <div class="mb-10">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4 border-l-4 border-red-500 pl-3 pb-1">
+        6. Data Retention
+      </h2>
+      <p class="mb-6">
+        We retain your information as long as your account is active or as needed to provide services. Afterward, we securely delete or anonymize your data.
+      </p>
+    </div>
+
+    <div class="mb-10">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4 border-l-4 border-red-500 pl-3 pb-1">
+        7. Children's Privacy
+      </h2>
+      <p class="mb-6">
+        Our platform is not intended for children under 13. We do not knowingly collect personal data from children.
+      </p>
+    </div>
+
+    <div class="mb-10">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4 border-l-4 border-red-500 pl-3 pb-1">
+        8. Changes to This Policy
+      </h2>
+      <p class="mb-6">
+        We may update this Privacy Policy periodically. If we make significant changes, we will notify you via email or a notice on our website.
+      </p>
+    </div>
+
+    <div class="mb-10">
+      <h2 class="text-xl font-semibold text-gray-900 mb-4 border-l-4 border-red-500 pl-3 pb-1">
+        9. Contact Us
+      </h2>
+      <p class="mb-6">
+        For questions about this policy or your personal data, contact us at  
+        <a href="mailto:support@ini.icei.ac.id" class="text-red-600 underline hover:text-red-700 transition">support@ini.icei.ac.id</a>.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

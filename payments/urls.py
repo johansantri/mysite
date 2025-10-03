@@ -13,4 +13,6 @@ urlpatterns = [
     path('course/<int:course_id>/payment/<str:payment_type>/', views.process_payment, name='process_payment'),
     path('payment-report/', views.payment_report_view, name='payment_report'),
     path('report/<int:pk>/detail', views.payment_detail_view, name='payment_detail'),
+    path('payments/tripay-callback/', views.tripay_webhook, name='tripay_webhook'),
+    path('payments/return/', views.payment_return, name='payment_return'),
 ]

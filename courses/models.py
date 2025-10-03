@@ -214,6 +214,26 @@ class CourseStatusHistory(models.Model):
     class Meta:
         ordering = ['-changed_at']  # Urutkan berdasarkan waktu perubahan terbaru
 
+class PricingType(models.Model):
+    code = models.SlugField(
+        max_length=50,
+        unique=True,
+        null=True,
+        help_text="Kode unik sistem. Contoh: 'free', 'buy_first', 'subscription'"
+    )
+    name = models.CharField(
+        max_length=50,
+        unique=True,
+        help_text="Nama tampilan. Contoh: 'Free', 'Buy First'"
+    )
+    description = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['name']
 
 class Course(models.Model):
     choice_language = [
@@ -242,12 +262,7 @@ class Course(models.Model):
         ('tr', 'Turkish'), ('uk', 'Ukrainian'), ('ur', 'Urdu'), ('uz', 'Uzbek'), ('vi', 'Vietnamese'),
         ('cy', 'Welsh'), ('xh', 'Xhosa'), ('yi', 'Yiddish'), ('zu', 'Zulu'),
     ]
-    PAYMENT_MODEL_CHOICES = [
-        ('buy_first', 'Buy first, then enroll'),
-        ('pay_for_exam', 'Enroll first, pay at exam'),
-        ('pay_for_certificate', 'Enroll & take exam first, pay at certificate claim'),
-        ('free', 'Free'),
-    ]
+    
 
     course_name = models.CharField(max_length=250)
     course_number = models.CharField(max_length=250, blank=True)
@@ -271,7 +286,16 @@ class Course(models.Model):
     end_date = models.DateField(null=True)
     start_enrol = models.DateField(null=True)
     end_enrol = models.DateField(null=True)
-    payment_model = models.CharField(max_length=20, choices=PAYMENT_MODEL_CHOICES, default='buy_first')
+    payment_model = models.ForeignKey(
+        PricingType,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='courses_with_payment_model'
+    )
+
+    
+
     view_count = models.PositiveIntegerField(default=0)  # total view
 
     class Meta:
@@ -295,14 +319,13 @@ class Course(models.Model):
 
         if price_type:
             course_price = course_price.filter(price_type=price_type)
+        elif self.payment_model:
+            course_price = course_price.filter(price_type=self.payment_model)
         else:
-            try:
-                tipe_harga_default = PricingType.objects.get(name=self.payment_model)
-                course_price = course_price.filter(price_type=tipe_harga_default)
-            except PricingType.DoesNotExist:
-                return None
+            return None
 
         return course_price.first()
+
 
 
     
@@ -366,9 +389,9 @@ class Course(models.Model):
             logger.error(f"No course price found for course {self.course_name}, partner {partner}, price_type {price_type}")
             return {"status": "error", "message": "Harga kursus tidak ditemukan untuk mitra atau tipe harga ini."}
 
-        if self.payment_model == 'buy_first':
+        if self.payment_model == 'buy first':
             payment = Payment.objects.filter(
-                user=user, course=self, status='completed', payment_model='buy_first'
+                user=user, course=self, status='completed', payment_model='buy first'
             ).first()
             if not payment:
                 logger.error(f"No completed payment found for user {user.email} in course {self.course_name}")
@@ -380,7 +403,7 @@ class Course(models.Model):
             logger.info(f"User {user.email} already enrolled in paid course {self.course_name}")
             return {"status": "info", "message": "Anda sudah terdaftar di kursus ini."}
 
-        else:  # pay_for_exam, pay_for_certificate, atau subscription
+        else:  # pay for exam, pay_for_certificate, atau subscription
             enrollment, created = Enrollment.objects.get_or_create(user=user, course=self)
             if created:
                 logger.info(f"User {user.email} enrolled in course {self.course_name} with model {self.payment_model}")
@@ -397,12 +420,12 @@ class Course(models.Model):
         if not course_price:
             return {"status": "error", "message": "Harga kursus tidak ditemukan untuk mitra atau tipe harga ini."}
 
-        if self.payment_model in ['free', 'buy_first', 'pay_for_certificate']:
+        if self.payment_model in ['free', 'buy first', 'pay_for_certificate']:
             return {"status": "success", "message": "Anda dapat mengakses ujian."}
 
-        elif self.payment_model == 'pay_for_exam':
+        elif self.payment_model == 'pay for exam':
             payment = Payment.objects.filter(
-                user=user, course=self, status='completed', payment_model='pay_for_exam'
+                user=user, course=self, status='completed', payment_model='pay for exam'
             ).first()
             if not payment:
                 return {"status": "error", "message": "Pembayaran diperlukan untuk mengakses ujian."}
@@ -426,7 +449,7 @@ class Course(models.Model):
         if not course_price:
             return {"status": "error", "message": "Harga kursus tidak ditemukan untuk mitra atau tipe harga ini."}
 
-        if self.payment_model in ['free', 'buy_first', 'pay_for_exam']:
+        if self.payment_model in ['free', 'buy first', 'pay for exam']:
             enrollment.certificate_issued = True
             enrollment.save()
             return {"status": "success", "message": "Sertifikat berhasil diterbitkan."}
@@ -556,13 +579,7 @@ class UserActivityLog(models.Model):
     def __str__(self):
         return f'{self.user} - {self.activity_type} - {self.timestamp}'
             
-class PricingType(models.Model):
-    name = models.CharField(max_length=50, unique=True)  # Nama pricing type (contoh: 'Regular Price', 'Discount')
-    description = models.TextField(blank=True, null=True)  # Deskripsi opsional
-    created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return self.name
 class CalculateAdminPrice(models.Model):
     name = models.CharField(max_length=50, unique=True, verbose_name="Pricing Type")  
     amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Amount (IDR)")
@@ -576,112 +593,57 @@ class CoursePrice(models.Model):
     price_type = models.ForeignKey(PricingType, on_delete=models.CASCADE, related_name="course_prices")
     partner = models.ForeignKey(Partner, on_delete=models.CASCADE, related_name="course_prices")
 
-    # Harga dari Partner
-    partner_price = models.DecimalField(max_digits=15, decimal_places=2, verbose_name="Partner Price", default=Decimal('0.00'))
+    partner_price = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal('0.00'))
+    discount_percent = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('0.00'))
+    discount_amount = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal('0.00'))
 
-    # Diskon dari Partner
-    discount_percent = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('0.00'), verbose_name="Discount (%)")
-    discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), verbose_name="Discount Amount")  
+    admin_fee = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal('0.00'))
+    ppn = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal('0.00'))
 
-    # Admin Fee / ICE Share
-    ice_share_rate = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('20.00'), verbose_name="ICE Share (%)")  # Nama lebih jelas
-    admin_fee = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), verbose_name="Admin Fee")
-    ice_share_value = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), verbose_name="ICE Share Value")  # Untuk nilai final
+    sub_total = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal('0.00'))
+    portal_price = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal('0.00'))
+    normal_price = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal('0.00'))
 
-    # Pajak & PPN
-    tax = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), verbose_name="Tax (%)")
-    ppn_rate = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('11.00'), verbose_name="PPN Rate (%)")  # Nama lebih jelas
-    ppn = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), verbose_name="PPN")  # Nilai PPN setelah dihitung
-
-    # Perhitungan Harga
-    sub_total = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), verbose_name="Sub Total")  
-    portal_price = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), verbose_name="Portal Price")  
-    normal_price = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), verbose_name="Normal Price")  
-
-    # Biaya Platform & Voucher dari CalculateAdminPrice
-    calculate_admin_price = models.ForeignKey(CalculateAdminPrice, on_delete=models.SET_NULL, null=True, blank=True, related_name="course_prices")
-    platform_fee = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), verbose_name="Platform Fee")  
-    voucher = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), verbose_name="Voucher")
-
-    # Total yang dibayar user
-    user_payment = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), verbose_name="User Payment")  
-    
-    # Pendapatan Partner & ICE
-    partner_earning = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), verbose_name="Partner Earning")  
-    ice_earning = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'), verbose_name="ICE Earning")  
-
-    # Timestamp untuk audit
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['course', 'price_type', 'partner'], name='unique_course_price')
+        ]
+
+
     def calculate_prices(self):
-        """
-        Menghitung semua harga berdasarkan rumus yang diberikan.
-        """
+        price = self.partner_price
+        discount_pct = self.discount_percent / Decimal('100')
+        admin_fee_pct = self.partner.iceiprice / Decimal('100')
+        tax_pct = self.partner.tax / Decimal('100') if self.partner.is_pkp else Decimal('0.00')
 
-        # ✅ 1. Pastikan `ice_share_rate` dan `ppn_rate` otomatis dari Partner
-        if self.partner:
-            self.ice_share_rate = self.partner.iceiprice  # ✅ Ambil otomatis dari Partner
-            self.ppn_rate = self.partner.tax  # ✅ Ambil otomatis dari Partner
+        # Diskon
+        self.discount_amount = price * discount_pct
+        net_price = price - self.discount_amount
 
-        normal_price = Decimal(self.partner_price)  # Harga awal dari partner
-        discount_percent = Decimal(self.discount_percent) / Decimal('100')
-        ice_share_percent = Decimal(self.ice_share_rate) / Decimal('100')  # Sekarang otomatis dari Partner
-        ppn_percent = Decimal(self.ppn_rate) / Decimal('100')  # Sekarang otomatis dari Partner
+        # Admin fee (ICE Share)
+        self.admin_fee = net_price * admin_fee_pct
 
-        # ✅ 2. Hitung Diskon (Nilai dalam angka)
-        self.discount_amount = normal_price * discount_percent
-
-        # ✅ 3. Hitung Net Price (Harga setelah Diskon)
-        net_price = normal_price - self.discount_amount  
-
-        # ✅ 4. Hitung Admin Fee (ICE Share % dari Net Price)
-        self.admin_fee = net_price * ice_share_percent
-
-        # ✅ 5. Hitung Sub Total
+        # Sub total (net price + admin fee)
         self.sub_total = net_price + self.admin_fee
 
-        # ✅ 6. Hitung PPN
-        self.ppn = self.sub_total * ppn_percent
+        # PPN (hanya jika partner PKP)
+        self.ppn = self.sub_total * tax_pct
 
-        # ✅ 7. Hitung Portal Price
+        # Portal price (yang dilihat user)
         self.portal_price = self.sub_total + self.ppn
 
-        # ✅ 8. Hitung Normal Price (Diperbarui dengan Diskon)
-        self.normal_price = self.portal_price + (normal_price * discount_percent)
-
-        # ✅ 9. Hitung Partner Earning
-        self.partner_earning = self.partner_price - self.discount_amount
-
-        # ✅ 10. Hitung ICE Earning
-        self.ice_earning = self.admin_fee - self.voucher
-
-        # ✅ 11. Ambil `platform_fee` & `voucher` dari `CalculateAdminPrice`
-        platform_fee_entry = CalculateAdminPrice.objects.filter(name__iexact="Platform Fee").first()
-        voucher_entry = CalculateAdminPrice.objects.filter(name__iexact="Voucher").first()
-
-        self.platform_fee = platform_fee_entry.amount if platform_fee_entry else Decimal('0.00')
-        self.voucher = voucher_entry.amount if voucher_entry else Decimal('0.00')
-
-        # ✅ 12. Hitung User Payment
-        self.user_payment = self.portal_price - self.voucher + self.platform_fee
-
-
-
+        # Normal price (harga asal sebelum diskon)
+        self.normal_price = price
 
     def save(self, *args, **kwargs):
-        """
-        Pastikan `ice_share_rate` dan `ppn_rate` otomatis dari Partner sebelum menyimpan.
-        """
-        if self.partner:
-            self.ice_share_rate = self.partner.iceiprice  # Ambil ICE Share dari Partner
-            self.ppn_rate = self.partner.tax  # Ambil PPN dari Partner
-
-        self.calculate_prices()  # Pastikan harga dihitung sebelum disimpan
-        super().save(*args, **kwargs)  # Simpan ke database
+        self.calculate_prices()
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.course} - {self.price_type.name} - {self.partner_price}"
-    
+        return f"{self.course.course_name} | {self.price_type.name} | Rp {self.portal_price:,.2f}"
+      
 class Subscription(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     start_date = models.DateTimeField(auto_now_add=True)

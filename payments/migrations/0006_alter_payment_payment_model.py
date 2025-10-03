@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='payment',
             name='payment_model',
-            field=models.CharField(choices=[('buy_first', 'Buy first, then enroll'), ('pay_for_exam', 'Enroll first, pay at exam'), ('pay_for_certificate', 'Enroll & take exam first, pay at certificate claim'), ('free', 'Free')], max_length=20),
+            field=models.CharField(choices=[('buy first', 'Buy first, then enroll'), ('pay for exam', 'Enroll first, pay at exam'), ('pay for certificate', 'Enroll & take exam first, pay at certificate claim'), ('free', 'Free')], max_length=20),
         ),
     ]

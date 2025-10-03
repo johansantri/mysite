@@ -2,7 +2,7 @@
 
 import requests
 import logging
-
+from payments.models import Voucher
 logger = logging.getLogger(__name__)
 
 def get_client_ip(request):
@@ -34,3 +34,13 @@ def get_geo_from_ip(ip):
     except Exception as e:
         logger.exception(f"GeoIP lookup failed for IP {ip}")
     return None
+def validate_voucher(voucher_code, user):
+    if not voucher_code:
+        return None, None
+    voucher_obj = Voucher.objects.filter(code__iexact=voucher_code).first()
+    if not voucher_obj:
+        return None, "Kode voucher tidak valid."
+    is_valid, error_msg = voucher_obj.is_valid_for_user(user)
+    if not is_valid:
+        return None, error_msg
+    return voucher_obj, None

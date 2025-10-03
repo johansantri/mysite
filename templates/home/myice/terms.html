@@ -1,0 +1,96 @@
+{% extends "home/base.html" %}
+{% block content %}
+
+<section class="max-w-3xl mx-auto px-6 py-12 bg-white rounded-lg shadow-lg">
+  <h1 class="text-3xl font-extrabold text-gray-900 mb-8 text-center drop-shadow-sm">
+    📜 Terms and Conditions
+  </h1>
+
+  <p class="text-gray-500 mb-10 text-sm text-center uppercase tracking-wide font-semibold">
+    Last updated: October 3, 2025
+  </p>
+
+  <div class="space-y-8 text-gray-700 text-base leading-relaxed tracking-wide">
+
+    <p class="text-lg">
+      Welcome to <strong class="text-indigo-600">MyICE</strong>. By accessing or using our platform, you agree to be bound by the following terms and conditions. If you do not agree with any part of these terms, please do not use our services.
+    </p>
+
+    <div>
+      <h2 class="text-xl font-semibold text-gray-900 mb-2 border-l-4 border-indigo-600 pl-3">
+        1. Acceptance of Terms
+      </h2>
+      <p>
+        By registering for an account or using any services provided by MyICE, you acknowledge that you have read, understood, and agreed to be bound by these Terms and Conditions.
+      </p>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-semibold text-gray-900 mb-2 border-l-4 border-indigo-600 pl-3">
+        2. Use of the Platform
+      </h2>
+      <p>
+        You agree to use MyICE for lawful purposes only. You must not use the platform to post or share any content that is abusive, offensive, or violates any law.
+      </p>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-semibold text-gray-900 mb-2 border-l-4 border-indigo-600 pl-3">
+        3. Account Responsibilities
+      </h2>
+      <p>
+        You are responsible for maintaining the confidentiality of your account credentials. MyICE is not liable for any loss or damage arising from unauthorized use of your account.
+      </p>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-semibold text-gray-900 mb-2 border-l-4 border-indigo-600 pl-3">
+        4. Course Access
+      </h2>
+      <p>
+        Upon enrollment, you will gain access to the course materials for the duration specified (e.g., lifetime or limited time). Redistribution or resale of course materials is strictly prohibited.
+      </p>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-semibold text-gray-900 mb-2 border-l-4 border-indigo-600 pl-3">
+        5. Payments and Refunds
+      </h2>
+      <p>
+        All payments made on the platform are final, except in cases where a refund is applicable under our 
+        <a href="{% url 'authentication:refund_policy' %}" class="text-indigo-600 underline hover:text-indigo-700 transition">Refund Policy</a>.
+      </p>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-semibold text-gray-900 mb-2 border-l-4 border-indigo-600 pl-3">
+        6. Intellectual Property
+      </h2>
+      <p>
+        All content provided on MyICE, including text, videos, and graphics, is the property of MyICE or its instructors. Unauthorized reproduction or distribution is prohibited.
+      </p>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-semibold text-gray-900 mb-2 border-l-4 border-indigo-600 pl-3">
+        7. Modifications to the Terms
+      </h2>
+      <p>
+        MyICE reserves the right to update or modify these terms at any time. Continued use of the platform after such changes constitutes your acceptance of the new terms.
+      </p>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-semibold text-gray-900 mb-2 border-l-4 border-indigo-600 pl-3">
+        8. Contact Information
+      </h2>
+      <p>
+        If you have any questions about these Terms and Conditions, please contact us at 
+        <a href="mailto:support@ini.icei.ac.id" class="text-indigo-600 underline hover:text-indigo-700 transition">support@ini.icei.ac.id</a>.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

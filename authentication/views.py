@@ -496,7 +496,7 @@ def course_list(request):
                 # Fetch CoursePrice for the course
                 course_obj = Course.objects.filter(id=course['id']).prefetch_related('prices').first()
                 course_price = course_obj.prices.first() if course_obj else None
-                price = course_price.user_payment if course_price else Decimal('0.00')
+                price = course_price.portal_price if course_price else Decimal('0.00')
                 is_free = price == Decimal('0.00')
                 discount_amount = course_price.discount_amount if course_price else Decimal('0.00')
                 normal_price = course_price.normal_price if course_price else Decimal('0.00')
@@ -1310,7 +1310,7 @@ def popular_courses(request):
 
         # Ambil harga user (jika ada)
         course_price = course.get_course_price()
-        user_payment = float(course_price.user_payment) if course_price else 0.0
+        portal_price = float(course_price.portal_price) if course_price else 0.0
 
         courses_list.append({
             'id': course.id,
@@ -1330,7 +1330,7 @@ def popular_courses(request):
             'half_star': half_star,
             'empty_stars': empty_stars,
             'language': language_label,
-            'user_payment': user_payment,
+            'user_payment': portal_price,
         })
 
     return JsonResponse({'courses': courses_list})
@@ -1748,3 +1748,31 @@ def custom_password_reset_confirm(request, uidb64, token):
 # Custom Password Reset Complete View
 def custom_password_reset_complete(request):
     return render(request, 'authentication/password_reset_complete.html')
+
+
+def faq(request):
+    return render(request, 'home/myice/faq.html')
+
+def contact(request):
+    return render(request, 'home/myice/contact.html')
+
+def terms(request):
+    return render(request, 'home/myice/terms.html')
+
+def privacy(request):
+    return render(request, 'home/myice/privacy.html')
+
+def instructor_agreement(request):
+    return render(request, 'home/myice/instructor_agreement.html')
+
+def partnership_agreement(request):
+    return render(request, 'home/myice/partnership_agreement.html')
+
+def cookie_policy(request):
+    return render(request, 'home/myice/cookie_policy.html')
+
+def refund_policy(request):
+    return render(request, 'home/myice/refund_policy.html')
+
+def security(request):
+    return render(request, 'home/myice/security.html')

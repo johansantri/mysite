@@ -1300,9 +1300,9 @@ def load_content(request, username, id, slug, content_type, content_id):
         context['lti_tool'] = lti_tool
         context['is_lti'] = bool(lti_tool)
 
-        if course.payment_model == 'pay_for_exam':
+        if course.payment_model.code == 'buy_take_exam':
             payment = Payment.objects.filter(
-                user=request.user, course=course, status='completed', payment_model='pay_for_exam'
+                user=request.user, course=course, status='completed', payment_model='buy_take_exam'
             ).first()
             if not payment:
                 context['assessment_locked'] = True
@@ -1410,9 +1410,9 @@ def start_assessment_courses(request, assessment_id):
     current_index = next((i for i, c in enumerate(combined_content) if c[0] == 'assessment' and c[1].id == assessment_id), 0)
     context['previous_url'], context['next_url'] = _get_navigation_urls(request.user.username, course.id, course.slug, combined_content, current_index)
 
-    if course.payment_model == 'pay_for_exam':
+    if course.payment_model.code == 'buy_take_exam':
         has_paid = Payment.objects.filter(
-            user=request.user, course=course, status='completed', payment_model='pay_for_exam'
+            user=request.user, course=course, status='completed', payment_model='buy_take_exam'
         ).exists()
         if not has_paid:
             context['assessment_locked'] = True

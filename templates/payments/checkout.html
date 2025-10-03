@@ -1,37 +1,64 @@
 {% extends 'home/base.html' %}
 {% load humanize %}
+
 {% block content %}
-<div class="max-w-3xl mx-auto px-4 py-8">
-    <h2 class="text-2xl font-bold mb-6 text-gray-800">Checkout</h2>
+<div class="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-md">
+  <h2 class="text-2xl font-bold mb-4">Checkout</h2>
 
-    {% if cart_items %}
-        <ul class="divide-y divide-gray-200 border border-gray-200 rounded-xl mb-6 bg-white shadow-sm">
-            {% for item in cart_items %}
-                <li class="flex justify-between items-center px-4 py-3">
-                    <span class="text-gray-700">{{ item.course.course_name }}</span>
-                    <strong class="text-gray-900">IDR {{ item.course.get_course_price.user_payment|intcomma }}</strong>
-                </li>
-            {% endfor %}
-        </ul>
+  {% if messages %}
+    <ul>
+      {% for message in messages %}
+        <li class="mb-2 px-4 py-2 rounded
+          {% if message.tags == 'warning' %}bg-yellow-200 text-yellow-800
+          {% elif message.tags == 'success' %}bg-green-200 text-green-800
+          {% else %}bg-gray-200 text-gray-800
+          {% endif %}">
+          {{ message }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
 
-        <h4 class="text-xl font-semibold text-gray-800 mb-4">Total: IDR {{ total_price|intcomma }}</h4>
+  {% if cart_items %}
+    <table class="w-full mb-4 border-collapse border border-gray-300">
+      <thead>
+        <tr class="bg-gray-100">
+          <th class="border border-gray-300 p-2 text-left">Course</th>
+          <th class="border border-gray-300 p-2 text-right">Harga (Rp)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in cart_items %}
+          <tr>
+            <td class="border border-gray-300 p-2">{{ item.course.course_name }}</td>
+            <td class="border border-gray-300 p-2 text-right">{{ item.course.get_course_price.portal_price|intcomma }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
 
-        <form method="POST" novalidate class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-            {% csrf_token %}
-            <button type="submit" class="bg-green-600 text-white px-5 py-2 rounded-md hover:bg-green-700 transition text-sm font-medium">
-                Pay Now
-            </button>
-            <a href="{% url 'payments:view_cart' %}" class="bg-gray-200 text-gray-800 px-5 py-2 rounded-md hover:bg-gray-300 transition text-sm font-medium">
-                Back to Cart
-            </a>
-        </form>
-    {% else %}
-        <div class="bg-yellow-50 border-l-4 border-yellow-400 text-yellow-700 p-4 rounded-lg">
-            <p class="mb-2">Your cart is empty. Please add courses before proceeding to checkout.</p>
-            <a href="{% url 'authentication:course_list' %}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded-md mt-2 hover:bg-blue-700 transition">
-                Browse Courses
-            </a>
-        </div>
+    <p class="mb-2"><strong>Total Harga Kursus:</strong> Rp {{ total_course_price|intcomma }}</p>
+    <p class="mb-4"><strong>Platform Fee:</strong> Rp {{ platform_fee|intcomma }}</p>
+
+    <form method="post" action="">
+      {% csrf_token %}
+      <input type="text" name="voucher" id="voucher" value="{{ voucher_code }}" placeholder="Masukkan kode voucher" class="border rounded px-3 py-2 w-full mb-2">
+      
+      <div class="flex gap-2">
+        <button type="submit" name="apply_voucher" value="1" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Gunakan Voucher</button>
+        <button type="submit" name="checkout" value="1" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">Checkout Sekarang</button>
+      </div>
+    </form>
+
+    {% if voucher %}
+      <p class="mt-4 text-green-700"><strong>Diskon Voucher:</strong> - Rp {{ voucher|intcomma }}</p>
     {% endif %}
+
+    <hr class="my-4">
+    <p class="mb-4 text-lg font-semibold"><strong>Total Pembayaran:</strong> Rp {{ total_price|intcomma }}</p>
+
+  {% else %}
+    <p>Keranjang kamu kosong.</p>
+  {% endif %}
 </div>
 {% endblock %}

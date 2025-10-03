@@ -74,29 +74,38 @@
                 </thead>
                 <tbody>
                     {% for entry in status_history %}
-                    <tr {% if "Rejected" in action %}class="table-danger"{% elif "Published" in action %}class="table-success"{% endif %}>
+                        <tr
+                        {% if entry.status == 'draft' and entry.changed_by.is_partner %}
+                            class="table-danger"
+                        {% elif entry.status == 'published' %}
+                            class="table-success"
+                        {% elif entry.status == 'curation' and entry.changed_by.is_superuser %}
+                            class="table-danger"
+                        {% endif %}
+                        >
                         <td>{{ entry.get_status_display }}</td>
                         <td>
                             {% if entry.status == 'curation' and entry.changed_by.is_instructor %}
-                                <span class="badge bg-primary">Submitted for Curation</span>
+                            <span class="badge bg-primary">Submitted by Instructor</span>
                             {% elif entry.status == 'curation' and entry.changed_by.is_partner %}
-                                <span class="badge bg-info">Accepted by Partner</span>
+                            <span class="badge bg-info">Accepted by Partner</span>
                             {% elif entry.status == 'draft' and entry.changed_by.is_partner %}
-                                <span class="badge bg-danger">Rejected by Partner</span>
+                            <span class="badge bg-danger">Rejected by Partner</span>
                             {% elif entry.status == 'published' and entry.changed_by.is_superuser %}
-                                <span class="badge bg-success">Published by Superuser</span>
+                            <span class="badge bg-success">Published by Admin</span>
                             {% elif entry.status == 'curation' and entry.changed_by.is_superuser %}
-                                <span class="badge bg-danger">Rejected by Superuser</span>
+                            <span class="badge bg-danger">Rejected by Admin</span>
                             {% else %}
-                                <span class="badge bg-secondary">Updated</span>
+                            <span class="badge bg-secondary">Updated</span>
                             {% endif %}
                         </td>
                         <td>{{ entry.manual_message|default:"No message" }}</td>
                         <td>{{ entry.changed_by.username }}</td>
                         <td>{{ entry.changed_at|date:"Y-m-d H:i:s" }}</td>
-                    </tr>
+                        </tr>
                     {% endfor %}
-                </tbody>
+                    </tbody>
+
             </table>
             {% else %}
             <p>No status history available.</p>

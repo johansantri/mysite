@@ -45,5 +45,13 @@ urlpatterns = [
     path('mycourse/',views.mycourse, name='mycourse'),
     path('reply-comment/<int:comment_id>/', views.reply_comment, name='reply_comment'),
     path('comment/<int:comment_id>/delete/', views.delete_comment, name='delete_comment'),
-    
+    path('faq/', views.faq, name='faq'),
+    path('contact/', views.contact, name='contact'),
+    path('terms/', views.terms, name='terms'),
+    path('privacy/', views.privacy, name='privacy'),
+    path('instructor-agreement/', views.instructor_agreement, name='instructor_agreement'),
+    path('partnership-agreement/', views.partnership_agreement, name='partnership_agreement'),
+    path('cookie-policy/', views.cookie_policy, name='cookie_policy'),
+    path('refund-policy/', views.refund_policy, name='refund_policy'),
+    path('security/', views.security, name='security'),
 ]

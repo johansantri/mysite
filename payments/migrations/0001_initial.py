@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
             name='Payment',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('payment_model', models.CharField(choices=[('buy_first', 'Beli dulu baru enrol'), ('pay_for_exam', 'Enrol dulu, bayar saat mau ujian'), ('pay_for_certificate', 'Enrol & ujian dulu, bayar saat klaim sertifikat'), ('free', 'Gratis: Enrol, Ujian, Sertifikat')], max_length=20)),
+                ('payment_model', models.CharField(choices=[('buy first', 'Beli dulu baru enrol'), ('pay for exam', 'Enrol dulu, bayar saat mau ujian'), ('pay for certificate', 'Enrol & ujian dulu, bayar saat klaim sertifikat'), ('free', 'Gratis: Enrol, Ujian, Sertifikat')], max_length=20)),
                 ('amount', models.DecimalField(decimal_places=2, max_digits=10)),
                 ('status', models.CharField(choices=[('pending', 'Pending'), ('completed', 'Completed'), ('failed', 'Failed')], default='pending', max_length=20)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),

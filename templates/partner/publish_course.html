@@ -25,6 +25,8 @@
                             <dd class="col-sm-8">{{ price_info.partner_price|intcomma }}</dd>
                             <dt class="col-sm-4">Discount (%):</dt>
                             <dd class="col-sm-8">{{ price_info.discount_percent|floatformat:2 }}</dd>
+                            <dt class="col-sm-4">Catalog Price </dt>
+                            <dd class="col-sm-8">{{ price_info.portal_price|floatformat:2 }}</dd>
                         </dl>
                     </div>
                 </div>
@@ -36,19 +38,22 @@
                         <h5 class="mb-0">Payment Model</h5>
                     </div>
                     <div class="card-body">
-                        <form method="post">
+                       <form method="post">
                             {% csrf_token %}
                             <input type="hidden" name="action" value="update_payment_model">
                             <label for="payment_model" class="form-label">Select Payment Model:</label>
                             <div class="input-group">
-                                <select name="payment_model" id="payment_model" class="form-select">
-                                    {% for value, label in payment_model_choices %}
-                                    <option value="{{ value }}" {% if value == current_payment_model %}selected{% endif %}>{{ label }}</option>
+                                <select name="payment_model" id="payment_model" class="form-select" required>
+                                    {% for payment_model in payment_model_choices %}
+                                        <option value="{{ payment_model.id }}" {% if payment_model == current_payment_model %}selected{% endif %}>
+                                            {{ payment_model.name }}
+                                        </option>
                                     {% endfor %}
                                 </select>
                                 <button type="submit" class="btn btn-primary" onclick="return confirm('Are you sure you want to update the payment model?')">Update</button>
                             </div>
                         </form>
+
                     </div>
                 </div>
             </div>
