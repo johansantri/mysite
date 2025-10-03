@@ -730,20 +730,25 @@
                                         {# ✅ USER SUDAH TERDAFTAR — tampilkan tombol Resume/Get Started/Completed #}
                                         {% if course_status == 'completed' %}
                                             <button onclick="window.location.href='{% url 'courses:generate_certificate' course_id=course.id %}'" 
-                                                    class="block w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors text-center"
+                                                    class="block w-full border border-green-500 text-green-600 px-4 py-2 rounded-lg 
+                                                        hover:bg-green-100 transition-colors text-center"
                                                     aria-label="Download certificate for completed course">
                                                 ✅ Completed
                                             </button>
+
+
                                         {% elif course_status == 'resume' %}
                                             <a href="{% url 'learner:course_learn' request.user.username course.id course.slug %}"
-                                            class="block w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
-                                                ▶️ Resume Course
+                                            class="flex justify-center items-center w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
+                                            ▶️ Resume Course
                                             </a>
+
                                         {% elif course_status == 'get_started' %}
                                             <a href="{% url 'learner:course_learn' request.user.username course.id course.slug %}"
-                                            class="block w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
-                                                🚀 Get Started
+                                            class="block w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors text-center">
+                                            🚀 Get Started
                                             </a>
+
                                         {% endif %}
 
                                     {% else %}
