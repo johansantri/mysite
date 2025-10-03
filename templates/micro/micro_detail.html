@@ -175,11 +175,24 @@
                 <div class="mt-4">
                     {% for comment in page_obj_comments %}
                         <div class="bg-white border border-gray-200 rounded-lg p-3 mb-3 shadow-sm hover:shadow-lg transition-all duration-300">
-                            <p class="mb-1">
-                                <strong class="text-gray-900">{{ comment.user.username }}</strong>
-                                <small class="text-gray-500">{{ comment.created_at|date:"F j, Y, g:i a" }}</small>
-                            </p>
-                            <p class="text-gray-500 mb-2">{{ comment.content }}</p>
+                            <div class="flex items-start space-x-3 mb-2">
+                                <!-- Foto user -->
+                                {% if comment.user.photo %}
+                                    <img src="{{ comment.user.photo.url }}" class="w-10 h-10 rounded-full" alt="{{ comment.user.username }}">
+                                {% else %}
+                                    <img src="{% static 'default-avatar.png' %}" class="w-10 h-10 rounded-full" alt="Default Avatar">
+                                {% endif %}
+
+                                <!-- Info dan konten komentar -->
+                                <div>
+                                    <p class="mb-1">
+                                        <strong class="text-gray-900">{{ comment.user.username }}</strong>
+                                        <small class="text-gray-500 ml-2">{{ comment.created_at|date:"F j, Y, g:i a" }}</small>
+                                    </p>
+                                    <p class="text-gray-700">{{ comment.content }}</p>
+                                </div>
+                            </div>
+
                             <!-- Reply Link for Main Comment -->
                             <div class="text-right">
                                 <span class="cursor-pointer text-red-600 hover:text-red-700 font-bold text-sm" 

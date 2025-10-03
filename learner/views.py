@@ -1300,7 +1300,9 @@ def load_content(request, username, id, slug, content_type, content_id):
         context['lti_tool'] = lti_tool
         context['is_lti'] = bool(lti_tool)
 
-        if course.payment_model.code == 'buy_take_exam':
+        if course.payment_model and course.payment_model.code == 'buy_take_exam':
+   
+
             payment = Payment.objects.filter(
                 user=request.user, course=course, status='completed', payment_model='buy_take_exam'
             ).first()
