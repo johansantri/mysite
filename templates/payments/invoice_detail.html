@@ -7,8 +7,6 @@
 {% endblock %}
 
 {% block content %}
-
-
   <div class="card shadow-sm">
     <div class="card-body p-4">
 
@@ -18,23 +16,24 @@
           Invoice <span class="text-primary">#INV{{ transaction.created_at|date:"Ymd" }}{{ transaction.id }}</span>
         </h2>
         
-
+        <!-- Status Badge → Ubah ke 'completed', tambah 'cancelled' -->
         <span class="badge
-          {% if transaction.status == 'paid' %}bg-success
+          {% if transaction.status == 'completed' %}bg-success
           {% elif transaction.status == 'pending' %}bg-warning text-dark
+          {% elif transaction.status == 'cancelled' %}bg-secondary
           {% else %}bg-danger{% endif %}
-          fs-6 text-uppercase py-2 px-3">
-          {{ transaction.status }}
-
-          <a href="?download=pdf" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-          Download PDF
-      </a>
+          fs-6 text-uppercase py-2 px-3 me-2">
+          {{ transaction.status|title }}
         </span>
+        
+        <!-- Download PDF Link → Pindah ke tombol terpisah -->
+        <a href="?download=pdf" class="btn btn-primary">
+          <i class="bi bi-download me-1"></i>Download PDF
+        </a>
       </div>
 
-      <!-- Seller & Buyer Info -->
+      <!-- Seller & Buyer Info (tetap sama, bagus) -->
       <div class="row g-3 mb-4">
-
         <!-- Issued By -->
         <div class="col-md-6">
           <div class="p-3 bg-light rounded shadow-sm h-100">
@@ -86,7 +85,7 @@
         </div>
       </div>
 
-      <!-- Transaction Details -->
+      <!-- Transaction Details (tetap sama) -->
       <div class="border-top pt-3 mb-4">
         <h6 class="text-muted fw-semibold mb-3"><i class="bi bi-receipt-cutoff"></i> Transaction Details</h6>
         <div class="row">
@@ -105,54 +104,47 @@
         </div>
       </div>
 
-      <!-- Course List -->
+      <!-- Course List → Ubah loop ke transaction.payments.all untuk snapshot pricing akurat -->
       <h5 class="mb-3 fw-semibold">Course List with Pricing</h5>
       <div class="table-responsive">
-       <table class="table table-bordered align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>#</th>
-            <th>Course</th>
-            <th>Original Price</th>
-            <th>Discount</th>
-            <th>Admin Fee</th>
-            <th>VAT</th>
-            <th>Total Payment</th>
-
-          </tr>
-        </thead>
-        <tbody>
-          {% for course in transaction.courses.all %}
-            {% with course_price=course.prices.first %}
+        <table class="table table-bordered align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>#</th>
+              <th>Course</th>
+              <th>Original Price</th>
+              <th>Discount</th>
+              <th>Admin Fee</th>
+              <th>VAT</th>
+              <th>Total Payment</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for payment in transaction.payments.all %}
               <tr>
                 <td>{{ forloop.counter }}</td>
-                <td>{{ course.course_name }}</td>
-                <td>Rp {{ course_price.partner_price|intcomma }}</td>
-                <td>- Rp {{ course_price.discount_amount|intcomma }} ({{ course_price.discount_percent }}%)</td>
-                <td>+ Rp {{ course_price.admin_fee|intcomma }} ({{ course_price.ice_share_rate }}%)</td>
-                <td>+ Rp {{ course_price.ppn|intcomma }} ({{ course_price.ppn_rate }}%)</td>
-                <td><strong>Rp {{ course_price.user_payment|intcomma }}</strong></td>
+                <td>{{ payment.course.course_name }}</td>
+                <td>Rp {{ payment.snapshot_price|intcomma }}</td>
+                <td>- Rp {{ payment.snapshot_discount|intcomma }} ({{ payment.course_price.discount_percent|default:0 }}%)</td>
+                <td>+ Rp {{ payment.snapshot_ice_earning|intcomma }} ({{ payment.course_price.ice_share_rate|default:0 }}%)</td>
+                <td>+ Rp {{ payment.snapshot_ppn|intcomma }} ({{ payment.course_price.ppn_rate|default:0 }}%)</td>
+                <td><strong>Rp {{ payment.amount|intcomma }}</strong></td>
               </tr>
-            {% endwith %}
-          {% endfor %}
-        </tbody>
-      </table>
+            {% endfor %}
+          </tbody>
+        </table>
 
-      <div class="small text-muted fst-italic mt-2">
-        <p><strong>Notes:</strong></p>
-        <ul class="mb-0">
-          <li>The listed price includes admin fees and VAT.</li>
-          <li>Discounts are provided by the course partner.</li>
-          <li>Total payment is the final amount paid by the user.</li>
-        </ul>
+        <div class="small text-muted fst-italic mt-2">
+          <p><strong>Notes:</strong></p>
+          <ul class="mb-0">
+            <li>The listed price includes admin fees and VAT.</li>
+            <li>Discounts are provided by the course partner.</li>
+            <li>Total payment is the final amount paid by the user.</li>
+          </ul>
+        </div>
       </div>
 
-
-      </div>
-
-
-      <!-- Total -->
-      <!-- Total -->
+      <!-- Total (tetap sama) -->
       <div class="d-flex justify-content-end mb-4">
         <h4 class="fw-bold fs-4 fs-sm-5 text-end">
           Total Paid:
@@ -162,28 +154,24 @@
         </h4>
       </div>
 
-      <!-- Notes -->
-        <div class="mt-4 border-top pt-3">
+      <!-- Notes & Footer (tetap sama) -->
+      <div class="mt-4 border-top pt-3">
         <div class="text-center text-muted fst-italic small w-75 mx-auto">
-            <p class="mb-2">
+          <p class="mb-2">
             This invoice is an <strong>official proof of payment</strong> and may be used for personal records, administrative reporting, reimbursement, or financial documentation purposes.
-            </p>
-            <p>
+          </p>
+          <p>
             Please keep this invoice for your records. If you have any questions regarding this document, feel free to contact us at
             <a href="mailto:info@yourcompany.com" class="text-decoration-none">info@yourcompany.com</a>.
-            </p>
+          </p>
         </div>
-        </div>
+      </div>
 
-
-        <!-- Footer -->
-        <div class="text-center text-muted fst-italic fs-7 mt-3">
+      <!-- Footer -->
+      <div class="text-center text-muted fst-italic fs-7 mt-3">
         Thank you for your purchase and trust.
-        </div>
-
+      </div>
 
     </div>
   </div>
-
-
 {% endblock %}

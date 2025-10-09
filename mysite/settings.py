@@ -538,7 +538,8 @@ CONTENT_SECURITY_POLICY = {
         # Izinkan permintaan (AJAX, WebSocket, fetch, dsb) hanya ke domain sendiri dan ke Moodle
         'connect-src': (
             "'self'",  # domain aplikasi ini sendiri
-            "https://scholldecodewp.h5p.com",  # domain Moodle untuk integrasi LTI
+            "https://scholldecodewp.h5p.com",
+            'https://tripay.co.id',  # domain Moodle untuk integrasi LTI
         ),
 
         # Default untuk semua jenis resource, kecuali yang punya aturan khusus di bawah
@@ -674,6 +675,6 @@ CELERY_BEAT_SCHEDULE = {
 
 
 # payments
-TRIPAY_API_KEY = 'WYGHIwtKAOohNt42gi2CRb16LIktOZFeRcSJw1B1'
-TRIPAY_PRIVATE_KEY = 'D23tM-AJ7Xu-oMgRN-g4gYi-9ERCN'
-TRIPAY_MERCHANT_CODE = 'T45832'
+TRIPAY_API_KEY = 'DEV-9LNxBDbi3MwSsdZIo02f3OlBGdbtOhfdbgq0nB9l'
+TRIPAY_PRIVATE_KEY = 'YH4OY-BxeZO-FluxT-ejtto-Ug9GU'
+TRIPAY_MERCHANT_CODE = 'T45436'

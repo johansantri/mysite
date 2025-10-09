@@ -50,11 +50,15 @@
       font-weight: 600;
       text-transform: uppercase;
       margin-top: -10px;
-      background-color: #74b9ff;
       color: white;
       letter-spacing: 0.05em;
-      box-shadow: 0 2px 6px rgba(116, 185, 255, 0.5);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
+    /* Dinamis status colors */
+    .status-completed { background-color: #00b894; box-shadow: 0 2px 6px rgba(0, 184, 148, 0.5); }
+    .status-pending { background-color: #fdcb6e; color: #2c3e50; box-shadow: 0 2px 6px rgba(253, 203, 110, 0.5); }
+    .status-cancelled { background-color: #636e72; box-shadow: 0 2px 6px rgba(99, 110, 114, 0.5); }
+    .status-failed { background-color: #e17055; box-shadow: 0 2px 6px rgba(225, 112, 85, 0.5); }
     .row {
       display: flex;
       flex-wrap: wrap;
@@ -148,7 +152,10 @@
   <div class="container">
     <div class="header">
       <h2>Invoice <span>#INV{{ transaction.created_at|date:"Ymd" }}{{ transaction.id }}</span></h2>
-      <div class="status">{{ transaction.status }}</div>
+      <!-- Status dengan class dinamis berdasarkan transaction.status -->
+      <div class="status status-{{ transaction.status|lower }}">
+        {{ transaction.status|title }}
+      </div>
     </div>
 
     <div class="row">
@@ -194,34 +201,32 @@
     </div>
 
     <h4>Course List</h4>
-     <table class="table table-bordered align-middle">
-        <thead class="table-light">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Course</th>
+          <th>Original Price</th>
+          <th>Discount</th>
+          <th>Admin Fee</th>
+          <th>VAT</th>
+          <th>Total Payment</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for payment in transaction.payments.all %}
           <tr>
-            <th>#</th>
-            <th>Course</th>
-            <th>Harga Awal</th>
-            <th>Diskon</th>
-            <th>Admin Fee</th>
-            <th>PPN</th>
-            <th>Total Bayar</th>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ payment.course.course_name }}</td>
+            <td>Rp {{ payment.snapshot_price|intcomma }}</td>
+            <td>- Rp {{ payment.snapshot_discount|intcomma }} ({{ payment.course_price.discount_percent|default:0 }}%)</td>
+            <td>+ Rp {{ payment.snapshot_ice_earning|intcomma }} ({{ payment.course_price.ice_share_rate|default:0 }}%)</td>
+            <td>+ Rp {{ payment.snapshot_ppn|intcomma }} ({{ payment.course_price.ppn_rate|default:0 }}%)</td>
+            <td><strong>Rp {{ payment.amount|intcomma }}</strong></td>
           </tr>
-        </thead>
-        <tbody>
-          {% for course in transaction.courses.all %}
-            {% with course_price=course.prices.first %}
-              <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ course.course_name }}</td>
-                <td>Rp {{ course_price.partner_price|intcomma }}</td>
-                <td>- Rp {{ course_price.discount_amount|intcomma }} ({{ course_price.discount_percent }}%)</td>
-                <td>+ Rp {{ course_price.admin_fee|intcomma }} ({{ course_price.ice_share_rate }}%)</td>
-                <td>+ Rp {{ course_price.ppn|intcomma }} ({{ course_price.ppn_rate }}%)</td>
-                <td><strong>Rp {{ course_price.user_payment|intcomma }}</strong></td>
-              </tr>
-            {% endwith %}
-          {% endfor %}
-        </tbody>
-      </table>
+        {% endfor %}
+      </tbody>
+    </table>
 
     <div class="total">
       Total Paid: Rp {{ transaction.total_amount|intcomma }}
@@ -233,7 +238,7 @@
     </div>
 
     <div class="footer">
-      &copy; {{ now|date:"Y" }} Your Company Name
+      &copy; {% now "Y" %} Your Company Name
     </div>
   </div>
 

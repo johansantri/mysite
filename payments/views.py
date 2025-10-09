@@ -18,11 +18,12 @@ from django.core.paginator import Paginator
 from django.utils.http import urlencode
 from django.db.models import Q
 from django.utils import timezone
+import json, time
 from datetime import timedelta
 from weasyprint import HTML
 from django.http import HttpResponse
 from django.template.loader import render_to_string
-from .utils import get_client_ip, get_geo_from_ip, validate_voucher
+from .utils import get_client_ip, get_geo_from_ip, validate_voucher, get_tripay_payment_channels,create_tripay_transaction
 from decimal import Decimal
 from django.db import transaction as db_transaction
 import uuid
@@ -31,106 +32,35 @@ from django.views.decorators.csrf import csrf_exempt
 import hmac
 import hashlib
 import json
+from payments.utils import create_tripay_transaction
 
-TRIPAY_API_KEY = settings.TRIPAY_API_KEY
-TRIPAY_PRIVATE_KEY = settings.TRIPAY_PRIVATE_KEY
-TRIPAY_MERCHANT_CODE = settings.TRIPAY_MERCHANT_CODE
-TRIPAY_API_URL = 'https://tripay.co.id/api-sandbox/transaction/create'  # Ubah ke production jika sudah live
-
-def create_tripay_transaction(request, course_id):
-    course = get_object_or_404(Course, pk=course_id)
-
-    # Buat reference unik untuk transaksi
-    merchant_ref = f"COURSE-{uuid.uuid4().hex[:10]}"
-
-    # Total harga kursus (bisa ambil dari course.price atau logic lain)
-    amount = int(course.get_course_price.portal_price)  # contoh konversi ke integer rupiah
-
-    # Payload untuk API Tripay
-    payload = {
-        "method": "bank_transfer",  # contoh metode, bisa dinamis dari user input
-        "merchant_ref": merchant_ref,
-        "amount": amount,
-        "customer_name": request.user.get_full_name() or request.user.username,
-        "customer_email": request.user.email,
-        "customer_phone": request.user.phone,  # ganti dengan data user asli jika ada
-        "order_items": [
-            {
-                "name": course.course_name,
-                "price": amount,
-                "quantity": 1
-            }
-        ],
-        "callback_url": request.build_absolute_uri('/payments/tripay-callback/'),  # endpoint webhook
-        "return_url": request.build_absolute_uri('/payments/return/'),  # halaman setelah pembayaran
-        "expired_time": 60 * 60 * 24,  # 24 jam
-        "signature": "",  # nanti isi signature (lihat cara di bawah)
-    }
-
-    # Buat signature
-    import hashlib
-    sign_str = f"{TRIPAY_MERCHANT_CODE}{merchant_ref}{amount}{TRIPAY_API_KEY}"
-    signature = hashlib.sha256(sign_str.encode('utf-8')).hexdigest()
-    payload['signature'] = signature
-
-    headers = {
-        'Authorization': f'Bearer {TRIPAY_API_KEY}',
-        'Content-Type': 'application/json'
-    }
-
-    response = requests.post(TRIPAY_API_URL, json=payload, headers=headers)
-    data = response.json()
-
-    if data['success']:
-        payment_url = data['data']['checkout_url']
-
-        # Simpan ke model Payment
-        payment = Payment.objects.create(
-            user=request.user,
-            course=course,
-            payment_model='buy_first',
-            amount=Decimal(amount),
-            status='pending',
-            transaction_id=merchant_ref,
-            payment_method=payload['method'],
-            payment_url=payment_url,
-        )
-        return redirect(payment_url)
-
-    else:
-        return render(request, 'payments/error.html', {'message': data.get('message', 'Gagal membuat transaksi Tripay')})
 
 @csrf_exempt
 def tripay_webhook(request):
     if request.method != 'POST':
         return HttpResponseBadRequest('Invalid method')
 
-    # Ambil raw body dari request (byte literal)
     raw_body = request.body
 
-    # Ambil signature dari header
-    signature_header = request.headers.get('x-signature')
+    # Pastikan header signature sesuai dengan header Tripay yang kamu dapat
+    signature_header = request.headers.get('X-Callback-Signature')
     if not signature_header:
         return HttpResponseBadRequest('Missing signature header')
 
-    # Hitung ulang signature dari payload (raw_body) dengan HMAC-SHA256
     computed_signature = hmac.new(
-        key=bytes(settings.TRIPAY_PRIVATE_KEY, 'latin-1'),  # Tripay pakai latin-1
+        key=settings.TRIPAY_PRIVATE_KEY.encode('latin-1'),
         msg=raw_body,
         digestmod=hashlib.sha256
     ).hexdigest()
 
-    # Bandingkan
     if not hmac.compare_digest(computed_signature, signature_header):
         return HttpResponseBadRequest('Invalid signature')
 
-    # Parse JSON
     try:
         data = json.loads(raw_body)
     except json.JSONDecodeError:
         return HttpResponseBadRequest('Invalid JSON payload')
 
-    # Lanjutkan proses update payment
     merchant_ref = data.get('merchant_ref')
     status = data.get('status')
 
@@ -138,9 +68,9 @@ def tripay_webhook(request):
         return HttpResponseBadRequest('Missing required fields')
 
     try:
-        payment = Payment.objects.get(transaction_id=merchant_ref)
-    except Payment.DoesNotExist:
-        return HttpResponseBadRequest('Payment not found')
+        transaction = Transaction.objects.get(merchant_ref=merchant_ref)
+    except Transaction.DoesNotExist:
+        return HttpResponseBadRequest('Transaction not found')
 
     status_map = {
         'PAID': 'completed',
@@ -148,18 +78,26 @@ def tripay_webhook(request):
         'FAILED': 'failed',
     }
 
-    mapped_status = status_map.get(status, 'pending')
-    payment.status = mapped_status
+    mapped_status = status_map.get(status.upper(), 'pending')
+    transaction.status = mapped_status
+    transaction.save()
 
+    # Update semua Payment terkait
+    payments = transaction.payments.all()
+    payments.update(status=mapped_status)
+
+    # Jalankan method status spesifik jika perlu
     if mapped_status == 'completed':
-        payment.mark_completed()
+        for payment in payments:
+            payment.mark_completed()
     elif mapped_status in ['failed', 'cancelled']:
-        payment.mark_failed()
+        for payment in payments:
+            payment.mark_failed()
     else:
-        payment.save()
+        for payment in payments:
+            payment.save()
 
     return JsonResponse({'success': True})
-
 def payment_return(request):
     return render(request, 'payments/return.html')
 
@@ -464,7 +402,6 @@ def view_cart(request):
 
 
 
-
 @login_required
 def checkout(request):
     cart_items = CartItem.objects.select_related('course').filter(user=request.user)
@@ -479,7 +416,6 @@ def checkout(request):
     voucher_amount = Decimal('0.00')
     voucher_obj = None
 
-    # Validasi voucher jika ada
     if voucher_code:
         voucher_obj, error_msg = validate_voucher(voucher_code, request.user)
         if error_msg:
@@ -495,18 +431,29 @@ def checkout(request):
     if total_payment < 0:
         total_payment = Decimal('0.00')
 
-    # Cek tombol yang diklik
+    va_number = ''
+    payment_url = ''
+    merchant_ref = ''
+    selected_payment_method = ''
+    bank_name = ''
+
     if request.method == 'POST':
         if 'apply_voucher' in request.POST:
-            # Hanya ingin apply voucher
             return redirect(f"{request.path}?voucher={voucher_code}")
 
         elif 'checkout' in request.POST:
+            payment_method = request.POST.get('payment_method')
+            if not payment_method:
+                messages.error(request, "Pilih metode pembayaran terlebih dahulu.")
+                return redirect('payments:checkout')
+
             ip = get_client_ip(request)
             geo = get_geo_from_ip(ip)
             user_agent = request.META.get('HTTP_USER_AGENT', '')
 
             with db_transaction.atomic():
+                merchant_ref = f"user-{request.user.id}-{int(time.time())}"
+
                 transaction = Transaction.objects.create(
                     user=request.user,
                     total_amount=total_payment,
@@ -514,6 +461,7 @@ def checkout(request):
                     description='Course purchase',
                     platform_fee=PLATFORM_FEE,
                     voucher=voucher_amount,
+                    merchant_ref=merchant_ref
                 )
 
                 for item in cart_items:
@@ -561,8 +509,21 @@ def checkout(request):
 
                 cart_items.delete()
 
-            messages.success(request, "Transaksi diproses. Silakan selesaikan pembayaran.")
-            return redirect('authentication:dashbord')
+                # Panggil Tripay untuk buat VA langsung
+                response = create_tripay_transaction(transaction, payment_method, request.user)
+
+                try:
+                    va_number, bank_name, payment_url = create_tripay_transaction(transaction, payment_method, request.user)
+                except Exception as e:
+                    messages.warning(request, f"Gagal membuat VA: {str(e)}")
+                    va_number = ""
+                    payment_url = ""
+                    bank_name =""
+
+
+                selected_payment_method = payment_method
+
+    payment_channels = get_tripay_payment_channels()
 
     return render(request, 'payments/checkout.html', {
         'cart_items': cart_items,
@@ -571,8 +532,13 @@ def checkout(request):
         'voucher': voucher_amount,
         'voucher_code': voucher_code or '',
         'total_price': total_payment,
+        'payment_channels': payment_channels,
+        'bank_name':bank_name,
+        'va_number': va_number,
+        'payment_url': payment_url,
+        'selected_payment_method': selected_payment_method,
+        'merchant_ref': merchant_ref,
     })
-
 
 
 @login_required
@@ -610,14 +576,14 @@ def transaction_history(request):
         )
         return redirect('authentication:edit-profile', pk=user.pk)
     
-    # 1️⃣ Update status pending yang sudah kadaluarsa
+    # 1️⃣ Update status pending yang sudah kadaluarsa → Ubah ke 'cancelled' untuk konsistensi
     expire_limit = timezone.now() - timedelta(hours=1)
-    Payment.objects.filter(status='pending', created_at__lt=expire_limit).update(status='expired')
-    Transaction.objects.filter(status='pending', created_at__lt=expire_limit).update(status='expired')
+    Payment.objects.filter(status='pending', created_at__lt=expire_limit).update(status='cancelled')
+    Transaction.objects.filter(status='pending', created_at__lt=expire_limit).update(status='cancelled')
 
-    # 2️⃣ Ambil filter status
+    # 2️⃣ Ambil filter status → Ubah 'paid' ke 'completed', dan 'expired' ke 'cancelled'
     status_filter = request.GET.get('status', 'all')
-    VALID_STATUSES = ['paid', 'pending', 'failed', 'expired']
+    VALID_STATUSES = ['completed', 'pending', 'failed', 'cancelled']  # Konsisten dengan webhook
 
     # 3️⃣ Ambil transaksi user
     transactions = Transaction.objects.filter(user=request.user)
@@ -627,19 +593,18 @@ def transaction_history(request):
         messages.warning(request, "Status filter tidak dikenali. Menampilkan semua transaksi.")
         status_filter = 'all'
 
-    # 4️⃣ Hitung total
-    total_paid = transactions.filter(status='paid').aggregate(total=Sum('total_amount'))['total'] or 0
+    # 4️⃣ Hitung total → Ubah 'paid' ke 'completed'
+    total_completed = transactions.filter(status='completed').aggregate(total=Sum('total_amount'))['total'] or 0
     total_pending = transactions.filter(status='pending').aggregate(total=Sum('total_amount'))['total'] or 0
 
     context = {
         'transactions': transactions.order_by('-created_at'),
         'total_transactions': transactions.count(),
-        'total_paid': total_paid,
+        'total_completed': total_completed,  # Ubah nama variabel untuk clarity
         'total_pending': total_pending,
         'selected_status': status_filter,
     }
     return render(request, 'payments/transaction_history.html', context)
-
 
 @login_required
 def transaction_invoice_detail(request, pk):
@@ -649,11 +614,24 @@ def transaction_invoice_detail(request, pk):
         user=request.user
     )
 
+    # ✅ Validasi status: Hanya izinkan untuk 'completed' (konsisten dengan webhook & history)
+    if transaction.status != 'completed':
+        messages.warning(
+            request,
+            f"Invoice hanya tersedia untuk transaksi yang sudah completed. Status saat ini: {transaction.status.title()}."
+        )
+        return redirect('payments:transaction_history')  # Atau halaman history
+
+    # Ambil unique partners (handle multiple courses/partners)
+    partners = transaction.courses.values_list('org_partner', flat=True).distinct()
     partner = None
-    if transaction.courses.exists():
-        partner = transaction.courses.first().org_partner
+    if partners:
+        partner = Partner.objects.get(id=partners[0])  # Atau loop kalau multiple, tapi untuk sekarang ambil first
 
     if request.GET.get('download') == 'pdf':
+        # Tambah logger untuk debug
+        logger.info(f"Generating PDF for transaction {pk} (status: {transaction.status})")
+        
         html_string = render_to_string('payments/invoice_pdf.html', {
             'transaction': transaction,
             'partner': partner,

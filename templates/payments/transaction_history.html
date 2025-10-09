@@ -16,17 +16,18 @@
   </div>
 
   {% if transactions %}
-    <!-- Filter Status -->
+    <!-- Filter Status → Ubah ke status baru: completed, pending, failed, cancelled -->
     <div class="d-flex flex-wrap justify-content-center gap-2 mb-4" role="radiogroup" aria-label="Transaction status filters">
       <a href="?status=all" class="btn btn-outline-primary rounded-pill px-3 py-2 {% if selected_status == 'all' %}active{% endif %}" role="radio" aria-checked="{% if selected_status == 'all' %}true{% else %}false{% endif %}">All</a>
-      <a href="?status=paid" class="btn btn-outline-success rounded-pill px-3 py-2 {% if selected_status == 'paid' %}active{% endif %}" role="radio" aria-checked="{% if selected_status == 'paid' %}true{% else %}false{% endif %}">Paid</a>
+      <a href="?status=completed" class="btn btn-outline-success rounded-pill px-3 py-2 {% if selected_status == 'completed' %}active{% endif %}" role="radio" aria-checked="{% if selected_status == 'completed' %}true{% else %}false{% endif %}">Completed</a>
       <a href="?status=pending" class="btn btn-outline-warning text-dark rounded-pill px-3 py-2 {% if selected_status == 'pending' %}active{% endif %}" role="radio" aria-checked="{% if selected_status == 'pending' %}true{% else %}false{% endif %}">Pending</a>
       <a href="?status=failed" class="btn btn-outline-danger rounded-pill px-3 py-2 {% if selected_status == 'failed' %}active{% endif %}" role="radio" aria-checked="{% if selected_status == 'failed' %}true{% else %}false{% endif %}">Failed</a>
+      <a href="?status=cancelled" class="btn btn-outline-secondary rounded-pill px-3 py-2 {% if selected_status == 'cancelled' %}active{% endif %}" role="radio" aria-checked="{% if selected_status == 'cancelled' %}true{% else %}false{% endif %}">Cancelled</a>
     </div>
 
-    <!-- Summary Info -->
+    <!-- Summary Info → Ganti total_paid ke total_completed, tambah cancelled opsional -->
     <div class="row g-4 mb-5">
-      <div class="col-md-4">
+      <div class="col-md-3">
         <div class="card shadow border-0 rounded-3 bg-info bg-opacity-10 text-info-emphasis h-100 animate-card">
           <div class="card-body text-center">
             <i class="bi bi-list-check fs-1 mb-3"></i>
@@ -35,16 +36,16 @@
           </div>
         </div>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
         <div class="card shadow border-0 rounded-3 bg-success bg-opacity-10 text-success-emphasis h-100 animate-card">
           <div class="card-body text-center">
             <i class="bi bi-check-circle-fill fs-1 mb-3"></i>
-            <h5 class="card-title mb-1">Total Paid</h5>
-            <h3 class="fw-bold">IDR {{ total_paid|intcomma }}</h3>
+            <h5 class="card-title mb-1">Total Completed</h5>
+            <h3 class="fw-bold">IDR {{ total_completed|intcomma }}</h3>
           </div>
         </div>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
         <div class="card shadow border-0 rounded-3 bg-warning bg-opacity-10 text-warning-emphasis h-100 animate-card">
           <div class="card-body text-center">
             <i class="bi bi-hourglass-split fs-1 mb-3"></i>
@@ -53,14 +54,24 @@
           </div>
         </div>
       </div>
+      <div class="col-md-3">
+        <div class="card shadow border-0 rounded-3 bg-secondary bg-opacity-10 text-secondary-emphasis h-100 animate-card">
+          <div class="card-body text-center">
+            <i class="bi bi-x-circle fs-1 mb-3"></i>
+            <h5 class="card-title mb-1">Total Cancelled</h5>
+            <h3 class="fw-bold">IDR {{ total_cancelled|intcomma|default:"0" }}</h3>  <!-- Tambah ini di view kalau mau -->
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Transaction List -->
+    <!-- Transaction List → Ubah kondisi ke completed, pending, cancelled/failed -->
     <div class="accordion accordion-flush" id="transactionAccordion">
       {% for tx in transactions %}
         <div class="accordion-item shadow-sm rounded-3 mb-3
-          {% if tx.status == 'paid' %}border-start border-4 border-success
+          {% if tx.status == 'completed' %}border-start border-4 border-success
           {% elif tx.status == 'pending' %}border-start border-4 border-warning
+          {% elif tx.status == 'cancelled' %}border-start border-4 border-secondary
           {% else %}border-start border-4 border-danger{% endif %} animate-card">
           <h2 class="accordion-header">
             <button class="accordion-button collapsed bg-transparent" type="button" data-bs-toggle="collapse"
@@ -69,16 +80,18 @@
                 <div>
                   <h5 class="mb-0">
                     <i class="bi 
-                      {% if tx.status == 'paid' %}bi-check-circle-fill text-success
+                      {% if tx.status == 'completed' %}bi-check-circle-fill text-success
                       {% elif tx.status == 'pending' %}bi-hourglass-split text-warning
+                      {% elif tx.status == 'cancelled' %}bi-x-circle text-secondary
                       {% else %}bi-x-circle-fill text-danger{% endif %} me-2"></i>
                     TXN-{{ tx.id|stringformat:"05d" }}
                   </h5>
                   <p class="mb-0 text-muted small">IDR {{ tx.total_amount|intcomma }} • {{ tx.created_at|date:"d M Y, H:i" }}</p>
                 </div>
                 <span class="badge rounded-pill
-                  {% if tx.status == 'paid' %}bg-success
+                  {% if tx.status == 'completed' %}bg-success
                   {% elif tx.status == 'pending' %}bg-warning text-dark
+                  {% elif tx.status == 'cancelled' %}bg-secondary
                   {% else %}bg-danger{% endif %}">
                   {{ tx.status|title }}
                 </span>
@@ -101,9 +114,6 @@
                     <a href="{% url 'courses:course_lms_detail' course.id course.slug %}" class="text-decoration-none text-primary">
                       {{ course.course_name }}
                     </a>
-                    
-
-
                   </li>
                 {% endfor %}
               </ul>

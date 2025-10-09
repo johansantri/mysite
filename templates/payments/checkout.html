@@ -43,8 +43,22 @@
     <form method="post" action="">
       {% csrf_token %}
       <input type="text" name="voucher" id="voucher" value="{{ voucher_code }}" placeholder="Masukkan kode voucher" class="border rounded px-3 py-2 w-full mb-2">
-      
-      <div class="flex gap-2">
+
+      {% if payment_channels %}
+        <label for="payment_method" class="block mt-4 mb-2 font-semibold">Pilih Metode Pembayaran:</label>
+        <select name="payment_method" id="payment_method" required class="w-full border rounded px-3 py-2">
+          <option value="" disabled {% if not selected_payment_method %}selected{% endif %}>-- Pilih Metode Pembayaran --</option>
+          {% for channel in payment_channels %}
+            <option value="{{ channel.code }}" {% if selected_payment_method == channel.code %}selected{% endif %}>
+              {{ channel.name }} ({{ channel.code|upper }})
+            </option>
+          {% endfor %}
+        </select>
+      {% else %}
+        <p class="text-red-600 mt-4">Tidak dapat memuat metode pembayaran dari Tripay.</p>
+      {% endif %}
+
+      <div class="flex gap-2 mt-4">
         <button type="submit" name="apply_voucher" value="1" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Gunakan Voucher</button>
         <button type="submit" name="checkout" value="1" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">Checkout Sekarang</button>
       </div>
@@ -56,9 +70,29 @@
 
     <hr class="my-4">
     <p class="mb-4 text-lg font-semibold"><strong>Total Pembayaran:</strong> Rp {{ total_price|intcomma }}</p>
-
   {% else %}
     <p>Keranjang kamu kosong.</p>
   {% endif %}
+
+  {# ✅ Tampilkan info VA jika tersedia #}
+    {% if va_number %}
+      <div class="mt-6 p-4 bg-green-100 rounded border border-green-300">
+        <p class="text-green-800 mb-2"><strong>Transaksi berhasil dibuat.</strong></p>
+
+        {% if bank_name %}
+          <p>Metode Pembayaran: <strong>{{ bank_name }}</strong></p>
+        {% endif %}
+
+        <p>Silakan lakukan pembayaran ke nomor Virtual Account berikut:</p>
+        <p class="text-2xl font-bold mt-2 text-green-900">{{ va_number }}</p>
+
+        <p class="mt-4"><strong>Total yang harus dibayar:</strong> Rp {{ total_price|intcomma }}</p>
+
+        {% if payment_url %}
+          <a href="{{ payment_url }}" target="_blank" class="mt-4 inline-block bg-green-700 text-white px-5 py-2 rounded hover:bg-green-800">Bayar Sekarang</a>
+        {% endif %}
+      </div>
+    {% endif %}
+
 </div>
 {% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'home/base.html' %}
+{% load humanize %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-md">
+  <h2 class="text-2xl font-bold mb-4">Pembayaran Berhasil Dibuat</h2>
+
+  {% if messages %}
+    <ul>
+      {% for message in messages %}
+        <li class="mb-2 px-4 py-2 rounded bg-green-200 text-green-800">
+          {{ message }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <p><strong>Total yang harus dibayar:</strong> Rp {{ transaction.total_amount|intcomma }}</p>
+  <p><strong>Metode Pembayaran:</strong> {{ selected_payment_method|upper }}</p>
+  <p><strong>Kode Transaksi:</strong> {{ merchant_ref }}</p>
+
+  <p id="va_number_display" class="mt-4 text-lg font-bold text-blue-700">Mengambil nomor Virtual Account...</p>
+
+  <hr class="my-4">
+  <p class="text-sm text-gray-600">Silakan bayar sesuai nominal. Status akan diperbarui otomatis setelah pembayaran berhasil.</p>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const vaDisplay = document.getElementById('va_number_display');
+    const method = "{{ selected_payment_method|escapejs }}";
+    const merchantRef = "{{ merchant_ref|escapejs }}";
+
+    fetch("{% url 'payments:generate_va' %}", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': '{{ csrf_token }}',
+      },
+      body: JSON.stringify({
+        payment_method: method,
+        merchant_ref: merchantRef
+      }),
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        vaDisplay.textContent = `Nomor Virtual Account: ${data.va_number}`;
+      } else {
+        vaDisplay.textContent = `Gagal mengambil VA: ${data.message}`;
+      }
+    })
+    .catch(() => {
+      vaDisplay.textContent = 'Terjadi kesalahan saat menghubungi server.';
+    });
+  });
+</script>
+{% endblock %}

@@ -107,7 +107,7 @@ class Payment(models.Model):
 
     # Course price snapshot object (optional serialization or JSON)
     course_price = models.JSONField(null=True, blank=True)
-
+    
     # Link to Transaction
     linked_transaction = models.ForeignKey(
         'payments.Transaction',
@@ -224,4 +224,10 @@ class Transaction(models.Model):
     description = models.TextField(blank=True, null=True)
     platform_fee = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
     voucher = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
+    merchant_ref = models.CharField(max_length=100, unique=True, null=True, blank=True)
+    transaction_id = models.CharField(max_length=100, unique=True, null=True, blank=True, help_text='ID unik pembayaran dari gateway')
+    payment_method = models.CharField(max_length=50, null=True, blank=True)
+    payment_url = models.URLField(null=True, blank=True)
+    
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

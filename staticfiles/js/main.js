@@ -267,4 +267,8 @@ document.addEventListener('DOMContentLoaded', function () {
   setInterval(nextSlide, 6000);
 
 
+
+
+
+
   
