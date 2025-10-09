@@ -1,0 +1,187 @@
+{% extends "home/base.html" %}
+{% load humanize %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-6 py-12 bg-white rounded-xl shadow-xl">
+    <div class="space-y-10">
+
+        <!-- Title -->
+        <h2 class="text-3xl font-extrabold text-gray-900 text-center mb-8">💳 Payment Details</h2>
+
+                <!-- Main Info Section -->
+            <div class="max-w-3xl mx-auto px-6 py-8 bg-white rounded-xl shadow-xl space-y-8">
+
+            <!-- Grid for main details (2 columns on md+, 1 on mobile) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700 text-base">
+
+                <div class="space-y-4">
+                <div>
+                    <span class="block font-semibold text-gray-900">Transaction Code</span>
+                    <span class="block truncate">{{ merchant_ref }}</span>
+                </div>
+                <div>
+                    <span class="block font-semibold text-gray-900">Status</span>
+                    <span class="block text-yellow-600 font-semibold">Awaiting Payment</span>
+                </div>
+                <div>
+                    <span class="block font-semibold text-gray-900">Bank</span>
+                    <span class="block">{{ bank_name }}</span>
+                </div>
+                </div>
+
+                <div class="space-y-4">
+                <div>
+                    <span class="block font-semibold text-gray-900">Payment Method</span>
+                    <span class="block">{{ selected_payment_method }}</span>
+                </div>
+                <div>
+                    <span class="block font-semibold text-gray-900">Expires At</span>
+                    <span class="block">{{ expired_at|date:"d M Y, H:i" }}</span>
+                </div>
+                <div>
+                    <span class="block font-semibold text-gray-900">Total Payment</span>
+                    <span class="block text-green-700 font-bold text-lg">Rp{{ total_price|intcomma }}</span>
+                </div>
+                </div>
+
+            </div>
+
+           <!-- Virtual Account Number + Copy & Pay Now Button in one row -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center mt-6">
+                <!-- Virtual Account Number (left half) -->
+                <div>
+                    <span class="block font-semibold text-gray-900 mb-2">Virtual Account Number</span>
+                    <div class="relative bg-blue-50 rounded-md px-5 py-4 font-mono text-blue-700 select-text text-lg flex items-center justify-between shadow-inner">
+                    <span id="vaNumber" class="break-all">{{ va_number }}</span>
+                    <button
+                        onclick="copyVAToClipboard()"
+                        class="ml-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition duration-200 text-sm flex items-center"
+                        aria-label="Copy virtual account number">
+                        Copy
+                    </button>
+                    </div>
+                    <span id="tooltipCopy" class="text-sm text-green-600 mt-1 opacity-0 transition-opacity duration-300">Copied!</span>
+                </div>
+
+                <!-- Pay Now Button (right half) -->
+                <div>
+                    <a href="{{ payment_url }}" target="_blank" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-4 rounded-lg text-center transition duration-200 block">
+                    Pay Now
+                    </a>
+                </div>
+                </div>
+
+            </div>
+
+
+        <!-- Course Details -->
+        <div class="bg-gray-50 rounded-lg p-6 shadow-inner">
+            <h3 class="text-xl font-semibold text-gray-900 mb-5">📚 Course Details</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-700">
+                    <thead class="bg-white border-b border-gray-200 font-semibold text-gray-600">
+                        <tr>
+                            <th class="px-4 py-3">Course</th>
+                            <th class="px-4 py-3">Price</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        {% for item in cart_items %}
+                        <tr>
+                            <td class="px-4 py-3">{{ item.course.course_name }}</td>
+                            <td class="px-4 py-3 font-medium">Rp{{ item.price.portal_price|intcomma }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td class="px-4 py-3 font-medium">Platform Fee</td>
+                            <td class="px-4 py-3">Rp {{ platform_fee|intcomma }}</td>
+                        </tr>
+                        {% if voucher > 0 %}
+                        <tr class="text-green-700 font-semibold">
+                            <td class="px-4 py-3">Voucher</td>
+                            <td class="px-4 py-3">- Rp {{ voucher|intcomma }}</td>
+                        </tr>
+                        {% endif %}
+                        <tr class="bg-white font-bold text-gray-900">
+                            <td class="px-4 py-3">Total</td>
+                            <td class="px-4 py-3">Rp {{ total_price|intcomma }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Payment Instructions (collapsible) -->
+        <div class="mt-8">
+            <button 
+                type="button" 
+                id="toggleInstructionsBtn"
+                class="w-full text-left text-xl font-semibold text-gray-900 mb-4 bg-gray-100 px-5 py-3 rounded-lg hover:bg-gray-200 transition duration-200 flex justify-between items-center shadow-sm"
+                aria-expanded="false"
+                aria-controls="instructionsContent"
+                onclick="toggleInstructions()">
+                🧾 Payment Instructions
+                <svg id="iconArrow" class="w-6 h-6 transform transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" >
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+            </button>
+            <div id="instructionsContent" class="hidden bg-white rounded-lg border border-gray-300 shadow p-6 space-y-6 text-gray-700">
+                {% if instructions %}
+                    {% for step in instructions %}
+                        <div>
+                            <p class="font-semibold mb-2 text-gray-900">{{ step.title }}</p>
+                            <ol class="list-decimal list-inside space-y-1">
+                                {% for line in step.steps %}
+                                    <li>{{ line|safe }}</li>
+                                {% endfor %}
+                            </ol>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-gray-600">No payment instructions available.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Back Button -->
+        <div class="text-center mt-12">
+            <a href="/" class="inline-block bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3 px-8 rounded-lg transition duration-200 shadow-md">
+                ⬅ Back to Home
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyVAToClipboard() {
+    const vaText = document.getElementById('vaNumber').innerText;
+    navigator.clipboard.writeText(vaText).then(() => {
+        const tooltip = document.getElementById('tooltipCopy');
+        tooltip.classList.remove('opacity-0');
+        tooltip.classList.add('opacity-100');
+        setTimeout(() => {
+            tooltip.classList.remove('opacity-100');
+            tooltip.classList.add('opacity-0');
+        }, 2000);
+    }).catch(() => {
+        alert('Failed to copy the virtual account number, please copy manually.');
+    });
+}
+
+function toggleInstructions() {
+    const content = document.getElementById('instructionsContent');
+    const btn = document.getElementById('toggleInstructionsBtn');
+    const icon = document.getElementById('iconArrow');
+    const isHidden = content.classList.contains('hidden');
+    if (isHidden) {
+        content.classList.remove('hidden');
+        btn.setAttribute('aria-expanded', 'true');
+        icon.classList.add('rotate-180');
+    } else {
+        content.classList.add('hidden');
+        btn.setAttribute('aria-expanded', 'false');
+        icon.classList.remove('rotate-180');
+    }
+}
+</script>
+{% endblock %}

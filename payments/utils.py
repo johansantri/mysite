@@ -103,42 +103,44 @@ def create_tripay_transaction(transaction, payment_method, user):
     api_key = settings.TRIPAY_API_KEY
     expired_time = int(time.time()) + 3600  # 1 jam dari sekarang
 
-    amount = int(transaction.total_amount)
+    amount = int(transaction.total_amount * 100) / 100  # Pastikan integer rupiah, tapi Decimal OK
     merchant_ref = transaction.merchant_ref
 
-    # Generate signature
-    signature_str = merchant_code + merchant_ref + str(amount)
+    # Generate signature sesuai docs
+    signature_str = merchant_code + merchant_ref + str(int(amount))
     signature = hmac.new(
-        private_key.encode(),
-        signature_str.encode(),
+        private_key.encode('utf-8'),
+        signature_str.encode('utf-8'),
         hashlib.sha256
     ).hexdigest()
 
-    # Buat item pesanan
+    # Buat order_items
     order_items = []
     for payment in transaction.payments.all():
         order_items.append({
             "name": payment.course.course_name,
-            "price": int(payment.snapshot_user_payment),
+            "price": int(payment.amount),  # snapshot_user_payment atau amount
             "quantity": 1,
         })
 
-    # Tambahkan biaya platform sebagai item tambahan
-    order_items.append({
-        "name": "Platform Fee",
-        "price": int(transaction.platform_fee),
-        "quantity": 1,
-    })
+    # Tambahkan platform fee sebagai item
+    if transaction.platform_fee > 0:
+        order_items.append({
+            "name": "Platform Fee",
+            "price": int(transaction.platform_fee),
+            "quantity": 1,
+        })
 
-    # Payload yang akan dikirim ke Tripay
+    # Payload lengkap sesuai docs Tripay
     payload = {
         "method": payment_method,
         "merchant_ref": merchant_ref,
-        "amount": amount,
-        "customer_name": user.get_full_name(),
+        "amount": int(amount),
+        "customer_name": user.get_full_name() or "Pelanggan",
         "customer_email": user.email,
         "order_items": order_items,
-        "return_url": "https://yourdomain.com/payment/return/",  # <- Ganti dengan URL yang sesuai
+        "return_url": "https://ini.icei.ac.id/payments/return/",  # Ganti dengan domain real (redirect setelah bayar)
+        "callback_url": "https://ini.icei.ac.id/payments/tripay-callback/",  # Webhook untuk update status
         "expired_time": expired_time,
         "signature": signature,
     }
@@ -148,26 +150,41 @@ def create_tripay_transaction(transaction, payment_method, user):
         "Content-Type": "application/json",
     }
 
+    # API endpoint (sandbox; ganti ke production kalau live)
+    url = "https://tripay.co.id/api-sandbox/transaction/create"
+
     try:
-        resp = requests.post("https://tripay.co.id/api-sandbox/transaction/create", json=payload, headers=headers)
+        resp = requests.post(url, json=payload, headers=headers, timeout=30)
         result = resp.json()
+        logger.info(f"Tripay response: {result}")
     except requests.RequestException as e:
+        logger.error(f"Request error: {e}")
         raise Exception(f"Gagal terhubung ke Tripay: {str(e)}")
-    except ValueError:
+    except ValueError as e:
+        logger.error(f"JSON parse error: {e}")
         raise Exception("Respon dari Tripay tidak valid")
 
     if result.get('success'):
         data = result.get('data', {})
+        
         va_number = (
             data.get('pay_code') or
-            data.get('payment_no') or
             data.get('virtual_account') or
+            data.get('payment_no') or
             data.get('va_number') or
-            
             ""
         )
-        payment_url = data.get('checkout_url') or ""
-        bank_name = data.get('payment_name', '')  # ← tambahkan ini
-        return va_number, bank_name, payment_url
+        
+        bank_name = data.get('payment_name', '')
+        payment_url = data.get('checkout_url') or data.get('pay_url') or ""
+        tripay_transaction_id = data.get('reference', '')
+        instructions = data.get('instructions', [])
+        tripay_expired_time = data.get('expired_time', expired_time)  # Dari response, fallback ke payload
+        
+        logger.info(f"VA created: {va_number}, Bank: {bank_name}, Expired: {tripay_expired_time}")
+        
+        return va_number, bank_name, payment_url, tripay_transaction_id, instructions, tripay_expired_time  # Tambah expired_time
     else:
-        raise Exception(f"Tripay error: {result.get('message', 'Tidak diketahui')}")
+        error_msg = result.get('message', 'Tidak diketahui')
+        logger.error(f"Tripay API error: {error_msg}")
+        raise Exception(f"Tripay error: {error_msg}")

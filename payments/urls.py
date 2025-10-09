@@ -15,5 +15,6 @@ urlpatterns = [
     path('report/<int:pk>/detail', views.payment_detail_view, name='payment_detail'),
     path('payments/tripay-callback/', views.tripay_webhook, name='tripay_webhook'),
     path('payments/return/', views.payment_return, name='payment_return'),
+    path('transaction/<str:merchant_ref>/', views.transaction_detail, name='transaction_detail'),
     
 ]

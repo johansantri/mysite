@@ -105,7 +105,7 @@
                       <a href="{% url 'payments:transaction_invoice_detail' pk=tx.id %}">View Invoice</a>
                     {% else %}
                       <span class="text-muted">Invoice tidak tersedia</span>
-                    {% endif %}</p>
+                {% endif %}</p>
               {% endif %}
               <p class="mb-2"><strong>Courses:</strong></p>
               <ul class="list-group list-group-flush">

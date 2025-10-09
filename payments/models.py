@@ -2,7 +2,9 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from decimal import Decimal
 from django.utils import timezone
+import json
 from django.conf import settings
+
 
 CustomUser = get_user_model()
 
@@ -217,17 +219,45 @@ class CartItem(models.Model):
     
 
 class Transaction(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+        ('cancelled', 'Cancelled'),
+    ]
+
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     courses = models.ManyToManyField('courses.Course')
     total_amount = models.DecimalField(max_digits=12, decimal_places=2)
-    status = models.CharField(max_length=20, choices=[('pending', 'Pending'), ('paid', 'Paid')])
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     description = models.TextField(blank=True, null=True)
     platform_fee = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
     voucher = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
     merchant_ref = models.CharField(max_length=100, unique=True, null=True, blank=True)
-    transaction_id = models.CharField(max_length=100, unique=True, null=True, blank=True, help_text='ID unik pembayaran dari gateway')
+    transaction_id = models.CharField(max_length=100, unique=True, null=True, blank=True, help_text='ID unik dari Tripay (reference)')
     payment_method = models.CharField(max_length=50, null=True, blank=True)
     payment_url = models.URLField(null=True, blank=True)
+    va_number = models.CharField(max_length=50, null=True, blank=True, help_text='Nomor Virtual Account / Pay Code dari Tripay')
+    bank_name = models.CharField(max_length=100, null=True, blank=True, help_text='Nama Bank / Metode dari Tripay')
+    instructions_json = models.TextField(null=True, blank=True)  # JSON string untuk instructions
+    expired_at = models.DateTimeField(null=True, blank=True, help_text='Batas waktu pembayaran (1 jam dari created_at)')  # Tambah ini
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    @property
+    def instructions(self):
+        try:
+            return json.loads(self.instructions_json or "[]")
+        except (json.JSONDecodeError, TypeError):
+            return []
+
+    @instructions.setter
+    def instructions(self, value):
+        self.instructions_json = json.dumps(value)
+        
+    def __str__(self):
+        return f"Transaction {self.merchant_ref or self.id} - {self.status.title()}"
+
+    class Meta:
+        ordering = ['-created_at']
