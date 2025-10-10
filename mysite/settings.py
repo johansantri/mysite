@@ -583,7 +583,7 @@ CONTENT_SECURITY_POLICY = {
         'img-src': (
             "'self'",
             "data:",
-              "https://dreamslms.dreamstechnologies.com",  # misalnya untuk gambar yang di-embed sebagai base64
+              "https://images.unsplash.com/",  # misalnya untuk gambar yang di-embed sebagai base64
         ),
 
         # Blokir plugin seperti Flash, Java Applet, dll — demi keamanan

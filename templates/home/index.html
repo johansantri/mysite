@@ -71,131 +71,100 @@
 {% block content %}
 
 
-
-<!-- ✅ Hero Slider Section -->
-<section class="bg-red-50 py-12 md:py-20">
-  <div class="max-w-7xl mx-auto px-4 relative min-h-[500px]">
-    <!-- SLIDER WRAPPER -->
-    <div id="heroSlider" class="relative space-y-12">
-      <!-- ✅ Slide 1 -->
-      <div class="slider-item active flex flex-col lg:flex-row items-center gap-6 lg:gap-12 shadow-md overflow-hidden border">
-        <!-- Mobile: Judul -->
-        <div class="w-full text-center lg:hidden pt-6">
-          <h1 class="text-2xl sm:text-3xl font-bold mb-4">Upgrade Your Skills Today</h1>
-        </div>
-
-        <!-- Mobile: Deskripsi + Gambar -->
-        <div class="w-full flex flex-col sm:flex-row items-center justify-center gap-4 lg:hidden">
-          <div class="w-full sm:w-1/2 text-center sm:text-right px-2">
-            <p class="text-sm sm:text-base text-gray-600">
-              Learn from expert instructors. Get access to thousands of online courses for all levels.
-            </p>
-          </div>
-          <div class="w-full sm:w-1/2 px-2">
-            <img src="https://dreamslms.dreamstechnologies.com/html/template/assets/img/course/course-43.jpg"
-              alt="Slide 1" loading="lazy"
-              class="w-full h-auto max-h-48 object-cover rounded-lg shadow mx-auto" />
-          </div>
-        </div>
-
-        <!-- Mobile: Tombol -->
-       
-
-        <!-- Desktop -->
-        <div class="hidden lg:flex w-full lg:w-1/2 flex-col text-left p-6">
-          <h1 class="text-3xl md:text-4xl font-bold mb-4">Upgrade Your Skills Today</h1>
-          <p class="text-base md:text-lg text-gray-600 mb-6">
-            Learn from expert instructors. Get access to thousands of online courses for all levels.
-          </p>
-          
-        </div>
-        <div class="hidden lg:block w-full lg:w-1/2">
-          <img src="https://dreamslms.dreamstechnologies.com/html/template/assets/img/course/course-43.jpg"
-            alt="Slide 1" loading="lazy"
-            class="w-full h-auto max-h-96 object-cover rounded-lg shadow" />
+<section class="relative w-full overflow-hidden" style="height:50vh;">
+  <div id="slides" class="relative w-full h-full">
+    <!-- Slide 1 -->
+    <div class="absolute inset-0 transition-opacity duration-700 opacity-100" data-slide="0">
+      <img
+        src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80"
+        alt="Slide 1"
+        class="w-full h-full object-cover"
+      />
+      <div class="absolute inset-0 bg-black/50 flex items-center justify-center">
+        <div class="text-white text-center max-w-2xl px-6 py-4 border border-red-500/70 rounded-md">
+          <h1 class="text-4xl md:text-6xl font-bold mb-4"> Beautiful Nature</h1>
+          <p class="text-lg md:text-xl">Enjoy the calming beauty of nature.</p>
         </div>
       </div>
+    </div>
 
-      <!-- ✅ Slide 2 -->
-      <div class="slider-item flex flex-col lg:flex-row items-center gap-6 lg:gap-12 shadow-md overflow-hidden border">
-        <!-- Mobile: Judul -->
-        <div class="w-full text-center lg:hidden pt-6">
-          <h1 class="text-2xl sm:text-3xl font-bold mb-4">Learn Modern UI/UX Design</h1>
-        </div>
-
-        <!-- Mobile: Deskripsi + Gambar -->
-        <div class="w-full flex flex-col sm:flex-row items-center justify-center gap-4 lg:hidden">
-          <div class="w-full sm:w-1/2 text-center sm:text-right px-2">
-            <p class="text-sm sm:text-base text-gray-600">
-              Master the fundamentals and advanced techniques of user interface and experience design.
-            </p>
-          </div>
-          <div class="w-full sm:w-1/2 px-2">
-            <img src="https://dreamslms.dreamstechnologies.com/html/template/assets/img/course/course-42.jpg"
-              alt="Slide 2" loading="lazy"
-              class="w-full h-auto max-h-48 object-cover rounded-lg shadow mx-auto" />
-          </div>
-        </div>
-
-        
-
-        <!-- Desktop -->
-        <div class="hidden lg:flex w-full lg:w-1/2 flex-col text-left p-6">
-          <h1 class="text-3xl md:text-4xl font-bold mb-4">Learn Modern UI/UX Design</h1>
-          <p class="text-base md:text-lg text-gray-600 mb-6">
-            Master the fundamentals and advanced techniques of user interface and experience design.
-          </p>
-         
-        </div>
-        <div class="hidden lg:block w-full lg:w-1/2">
-          <img src="https://dreamslms.dreamstechnologies.com/html/template/assets/img/course/course-42.jpg"
-            alt="Slide 2" loading="lazy"
-            class="w-full h-auto max-h-96 object-cover rounded-lg shadow" />
+    <!-- Slide 2 -->
+    <div class="absolute inset-0 transition-opacity duration-700 opacity-0" data-slide="1">
+      <img
+        src="https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1600&q=80"
+        alt="Slide 2"
+        class="w-full h-full object-cover"
+      />
+      <div class="absolute inset-0 bg-black/50 flex items-center justify-center">
+        <div class="text-white text-center max-w-2xl px-6 py-4 border border-red-500/70 rounded-md">
+          <h1 class="text-4xl md:text-6xl font-bold mb-4"> City at Night</h1>
+          <p class="text-lg md:text-xl">Experience the vibrant and colorful city life.</p>
         </div>
       </div>
+    </div>
 
-      <!-- ✅ Slide 3 -->
-      <div class="slider-item flex flex-col lg:flex-row items-center gap-6 lg:gap-12 shadow-md overflow-hidden border">
-        <!-- Mobile: Judul -->
-        <div class="w-full text-center lg:hidden pt-6">
-          <h1 class="text-2xl sm:text-3xl font-bold mb-4">Master Data Science & Python</h1>
-        </div>
-
-        <!-- Mobile: Deskripsi + Gambar -->
-        <div class="w-full flex flex-col sm:flex-row items-center justify-center gap-4 lg:hidden">
-          <div class="w-full sm:w-1/2 text-center sm:text-right px-2">
-            <p class="text-sm sm:text-base text-gray-600">
-              Learn data analysis, visualization, and machine learning from scratch.
-            </p>
-          </div>
-          <div class="w-full sm:w-1/2 px-2">
-            <img src="https://dreamslms.dreamstechnologies.com/html/template/assets/img/course/course-40.jpg"
-              alt="Slide 3" loading="lazy"
-              class="w-full h-auto max-h-48 object-cover rounded-lg shadow mx-auto" />
-          </div>
-        </div>
-
-        
-
-        <!-- Desktop -->
-        <div class="hidden lg:flex w-full lg:w-1/2 flex-col text-left p-6">
-          <h1 class="text-3xl md:text-4xl font-bold mb-4">Master Data Science & Python</h1>
-          <p class="text-base md:text-lg text-gray-600 mb-6">
-            Learn data analysis, visualization, and machine learning from scratch.
-          </p>
-         
-        </div>
-        <div class="hidden lg:block w-full lg:w-1/2">
-          <img src="https://dreamslms.dreamstechnologies.com/html/template/assets/img/course/course-40.jpg"
-            alt="Slide 3" loading="lazy"
-            class="w-full h-auto max-h-96 object-cover rounded-lg shadow" />
+    <!-- Slide 3 -->
+    <div class="absolute inset-0 transition-opacity duration-700 opacity-0" data-slide="2">
+      <img
+        src="https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1600&q=80"
+        alt="Slide 3"
+        class="w-full h-full object-cover"
+      />
+      <div class="absolute inset-0 bg-black/50 flex items-center justify-center">
+        <div class="text-white text-center max-w-2xl px-6 py-4 border border-red-500/70 rounded-md">
+          <h1 class="text-4xl md:text-6xl font-bold mb-4">Mountain at Dawn</h1>
+          <p class="text-lg md:text-xl">Welcome the morning with stunning views.</p>
         </div>
       </div>
     </div>
   </div>
+
+  <button
+    id="prev"
+    aria-label="Previous slide"
+    class="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black/50 text-white p-3 rounded-full hover:bg-black/70 transition"
+  >
+    &#10094;
+  </button>
+  <button
+    id="next"
+    aria-label="Next slide"
+    class="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black/50 text-white p-3 rounded-full hover:bg-black/70 transition"
+  >
+    &#10095;
+  </button>
 </section>
 
- 
+<script>
+  const heroSlides = document.querySelectorAll("[data-slide]");
+  const totalSlides = heroSlides.length;
+  let currentIndex = 0;
+
+  const showSlide = (index) => {
+    heroSlides.forEach((slide, i) => {
+      slide.style.opacity = i === index ? "1" : "0";
+      slide.style.pointerEvents = i === index ? "auto" : "none";
+    });
+  };
+
+  document.getElementById("prev").addEventListener("click", () => {
+    currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+    showSlide(currentIndex);
+  });
+
+  document.getElementById("next").addEventListener("click", () => {
+    currentIndex = (currentIndex + 1) % totalSlides;
+    showSlide(currentIndex);
+  });
+
+  setInterval(() => {
+    currentIndex = (currentIndex + 1) % totalSlides;
+    showSlide(currentIndex);
+  }, 5000);
+
+  showSlide(currentIndex);
+</script>
+
 
 
     

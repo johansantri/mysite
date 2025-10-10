@@ -243,28 +243,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
- const slides = document.querySelectorAll('.slider-item');
-  let current = 0;
-
-  function showSlide(index) {
-    slides.forEach((slide, i) => {
-      slide.classList.remove('active');
-      if (i === index) {
-        slide.classList.add('active');
-      }
-    });
-  }
-
-  function nextSlide() {
-    current = (current + 1) % slides.length;
-    showSlide(current);
-  }
-
-  // Tampilkan slide pertama
-  showSlide(current);
-
-  // Ganti slide otomatis setiap 6 detik
-  setInterval(nextSlide, 6000);
+ 
 
 
 
