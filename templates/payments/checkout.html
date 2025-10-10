@@ -44,37 +44,58 @@
       {% csrf_token %}
 
       {# Voucher input and apply voucher button side by side #}
-      <div class="flex items-center gap-2 mb-4">
+      <div class="flex flex-col md:flex-row md:items-center gap-2 mb-4">
         <input
           type="text"
           name="voucher"
           id="voucher"
           value="{% if voucher_code %}{{ voucher_code }}{% else %}{% endif %}"
           placeholder="Enter voucher code"
-          class="border rounded px-3 py-2 flex-1"
+          class="border rounded px-3 py-2 w-full md:flex-1"
         />
-        <button type="submit" name="apply_voucher" value="1" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 whitespace-nowrap">Apply Voucher</button>
+        <button
+          type="submit"
+          name="apply_voucher"
+          value="1"
+          class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full md:w-auto whitespace-nowrap"
+        >
+          Apply Voucher
+        </button>
       </div>
 
       {% if payment_channels %}
         <label for="payment_method" class="block mb-2 font-semibold">Select Payment Method:</label>
-        
+
         {# Payment method select and checkout button side by side #}
-        <div class="flex items-center gap-2">
-          <select name="payment_method" id="payment_method" required class="border rounded px-3 py-2 flex-1">
-            <option value="" disabled {% if not selected_payment_method %}selected{% endif %}>-- Select Payment Method --</option>
+        <div class="flex flex-col md:flex-row md:items-center gap-2">
+          <select
+            name="payment_method"
+            id="payment_method"
+            required
+            class="border rounded px-3 py-2 w-full md:flex-1"
+          >
+            <option value="" disabled {% if not selected_payment_method %}selected{% endif %}>
+              -- Select Payment Method --
+            </option>
             {% for channel in payment_channels %}
               <option value="{{ channel.code }}" {% if selected_payment_method == channel.code %}selected{% endif %}>
                 {{ channel.name }} ({{ channel.code|upper }})
               </option>
             {% endfor %}
           </select>
-          <button type="submit" name="checkout" value="1" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 whitespace-nowrap">Checkout Now</button>
+          <button
+            type="submit"
+            name="checkout"
+            value="1"
+            class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 w-full md:w-auto whitespace-nowrap"
+          >
+            Checkout Now
+          </button>
         </div>
-
       {% else %}
         <p class="text-red-600 mt-4">Unable to load payment methods from Tripay.</p>
       {% endif %}
+
 
     </form>
 
