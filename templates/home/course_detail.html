@@ -502,86 +502,121 @@
                 </div>
 
                 <!-- Comments -->
+                <!-- Comments Section -->
                 <div class="mt-6">
                     {% for comment in comments %}
-                        <div class="bg-white border border-gray-200 rounded-xl p-4 mb-3 shadow-sm hover:shadow-md transition-shadow">
-                            <p class="mb-1">
-                                <strong class="text-gray-900">{{ comment.user.username }}</strong>
-                                <small class="text-gray-600">{{ comment.created_at|date:"F j, Y, g:i a" }}</small>
-                            </p>
-                            <p class="text-gray-600 mb-2">{{ comment.content }}</p>
-                            <div class="text-right">
-                                <button class="text-red-500 hover:text-red-600 font-bold text-sm underline" onclick="toggleReplyForm('comment-reply-form-{{ comment.id }}')">
-                                    <i class="bi bi-reply-fill mr-1"></i>Reply
-                                </button>
-                            </div>
-                            <div id="comment-reply-form-{{ comment.id }}" class="hidden mt-3">
-                                <form method="POST" action="{% url 'courses:add_comment_course' course_id=course.id %}">
-                                    {% csrf_token %}
-                                    <div class="flex gap-2 mb-2">
-                                        <textarea name="content" class="w-full border border-gray-200 rounded-xl shadow-sm p-3 focus:border-red-500 focus:ring focus:ring-red-100 transition-colors" rows="2" placeholder="Reply to this comment..." required></textarea>
-                                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
-                                        <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">Reply</button>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="ml-6">
-                                {% for reply in comment.replies.all %}
-                                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 mt-3 shadow-sm">
-                                        <p class="mb-1">
-                                            <strong class="text-gray-900">{{ reply.user.username }}</strong>
-                                            <small class="text-gray-600">{{ reply.created_at|date:"F j, Y, g:i a" }}</small>
-                                        </p>
-                                        <p class="text-gray-600 mb-2">{{ reply.content }}</p>
-                                        <div class="text-right">
-                                            <button class="text-red-500 hover:text-red-600 font-bold text-sm underline" onclick="toggleReplyForm('reply-form-{{ reply.id }}')">
-                                                <i class="bi bi-reply-fill mr-1"></i>Reply
-                                            </button>
+                        <!-- Komentar Utama -->
+                        <div class="bg-white border border-gray-200 rounded-xl p-4 mb-3 shadow-sm hover:shadow-md transition-shadow flex gap-4 items-start">
+                            <!-- Foto User -->
+                            <img src="{{ comment.user.photo.url }}" alt="{{ comment.user.username }}"
+                                class="w-10 h-10 rounded-full object-cover border"
+                                onerror="this.src='/static/images/default-avatar.png'">
+
+                            <!-- Isi Komentar -->
+                            <div class="flex-1">
+                                <p class="mb-1">
+                                    <strong class="text-gray-900">{{ comment.user.username }}</strong>
+                                    <small class="text-gray-600">{{ comment.created_at|date:"F j, Y, g:i a" }}</small>
+                                </p>
+                                <p class="text-gray-600 mb-2">{{ comment.content }}</p>
+
+                                <div class="text-right">
+                                    <button class="text-red-500 hover:text-red-600 font-bold text-sm underline"
+                                            onclick="toggleReplyForm('comment-reply-form-{{ comment.id }}')">
+                                        <i class="bi bi-reply-fill mr-1"></i>Reply
+                                    </button>
+                                </div>
+
+                                <!-- Form Balasan -->
+                                <div id="comment-reply-form-{{ comment.id }}" class="hidden mt-3">
+                                    <form method="POST" action="{% url 'courses:add_comment_course' course_id=course.id %}">
+                                        {% csrf_token %}
+                                        <div class="flex gap-2 mb-2">
+                                            <textarea name="content" class="w-full border border-gray-200 rounded-xl shadow-sm p-3 focus:border-red-500 focus:ring focus:ring-red-100 transition-colors" rows="2" placeholder="Reply to this comment..." required></textarea>
+                                            <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">Reply</button>
                                         </div>
-                                        <div id="reply-form-{{ reply.id }}" class="hidden mt-3">
-                                            <form method="POST" action="{% url 'courses:add_comment_course' course_id=course.id %}">
-                                                {% csrf_token %}
-                                                <div class="flex gap-2 mb-2">
-                                                    <textarea name="content" class="w-full border border-gray-200 rounded-xl shadow-sm p-3 focus:border-red-500 focus:ring focus:ring-red-100 transition-colors" rows="2" placeholder="Reply to this comment..." required></textarea>
-                                                    <input type="hidden" name="parent_id" value="{{ reply.id }}">
-                                                    <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">Reply</button>
+                                    </form>
+                                </div>
+
+                                <!-- Replies -->
+                                <div class="ml-6 mt-4">
+                                    {% for reply in comment.replies.all %}
+                                        <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 mt-3 shadow-sm flex gap-4 items-start">
+                                            <img src="{{ reply.user.photo.url }}" alt="{{ reply.user.username }}"
+                                                class="w-9 h-9 rounded-full object-cover border"
+                                                onerror="this.src='/static/images/default-avatar.png'">
+                                            <div class="flex-1">
+                                                <p class="mb-1">
+                                                    <strong class="text-gray-900">{{ reply.user.username }}</strong>
+                                                    <small class="text-gray-600">{{ reply.created_at|date:"F j, Y, g:i a" }}</small>
+                                                </p>
+                                                <p class="text-gray-600 mb-2">{{ reply.content }}</p>
+                                                <div class="text-right">
+                                                    <button class="text-red-500 hover:text-red-600 font-bold text-sm underline"
+                                                            onclick="toggleReplyForm('reply-form-{{ reply.id }}')">
+                                                        <i class="bi bi-reply-fill mr-1"></i>Reply
+                                                    </button>
                                                 </div>
-                                            </form>
-                                        </div>
-                                        <div class="ml-6">
-                                            {% for sub_reply in reply.replies.all %}
-                                                <div class="bg-gray-100 border border-gray-200 rounded-xl p-4 mt-3 shadow-sm">
-                                                    <p class="mb-1">
-                                                        <strong class="text-gray-900">{{ sub_reply.user.username }}</strong>
-                                                        <small class="text-gray-600">{{ sub_reply.created_at|date:"F j, Y, g:i a" }}</small>
-                                                    </p>
-                                                    <p class="text-gray-600 mb-2">{{ sub_reply.content }}</p>
-                                                    <div class="text-right">
-                                                        <button class="text-red-500 hover:text-red-600 font-bold text-sm underline" onclick="toggleReplyForm('sub-reply-form-{{ sub_reply.id }}')">
-                                                            <i class="bi bi-reply-fill mr-1"></i>Reply
-                                                        </button>
-                                                    </div>
-                                                    <div id="sub-reply-form-{{ sub_reply.id }}" class="hidden mt-3">
-                                                        <form method="POST" action="{% url 'courses:add_comment_course' course_id=course.id %}">
-                                                            {% csrf_token %}
-                                                            <div class="flex gap-2 mb-2">
-                                                                <textarea name="content" class="w-full border border-gray-200 rounded-xl shadow-sm p-3 focus:border-red-500 focus:ring focus:ring-red-100 transition-colors" rows="2" placeholder="Reply to this sub-reply..." required></textarea>
-                                                                <input type="hidden" name="parent_id" value="{{ sub_reply.id }}">
-                                                                <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">Reply</button>
+
+                                                <!-- Form Balas Sub-Reply -->
+                                                <div id="reply-form-{{ reply.id }}" class="hidden mt-3">
+                                                    <form method="POST" action="{% url 'courses:add_comment_course' course_id=course.id %}">
+                                                        {% csrf_token %}
+                                                        <div class="flex gap-2 mb-2">
+                                                            <textarea name="content" class="w-full border border-gray-200 rounded-xl shadow-sm p-3 focus:border-red-500 focus:ring focus:ring-red-100 transition-colors" rows="2" placeholder="Reply to this reply..." required></textarea>
+                                                            <input type="hidden" name="parent_id" value="{{ reply.id }}">
+                                                            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">Reply</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+
+                                                <!-- Sub-Reply -->
+                                                <div class="ml-6 mt-4">
+                                                    {% for sub_reply in reply.replies.all %}
+                                                        <div class="bg-gray-100 border border-gray-200 rounded-xl p-4 mt-3 shadow-sm flex gap-4 items-start">
+                                                            <img src="{{ sub_reply.user.photo.url }}" alt="{{ sub_reply.user.username }}"
+                                                                class="w-8 h-8 rounded-full object-cover border"
+                                                                onerror="this.src='/static/images/default-avatar.png'">
+                                                            <div class="flex-1">
+                                                                <p class="mb-1">
+                                                                    <strong class="text-gray-900">{{ sub_reply.user.username }}</strong>
+                                                                    <small class="text-gray-600">{{ sub_reply.created_at|date:"F j, Y, g:i a" }}</small>
+                                                                </p>
+                                                                <p class="text-gray-600 mb-2">{{ sub_reply.content }}</p>
+                                                                <div class="text-right">
+                                                                    <button class="text-red-500 hover:text-red-600 font-bold text-sm underline"
+                                                                            onclick="toggleReplyForm('sub-reply-form-{{ sub_reply.id }}')">
+                                                                        <i class="bi bi-reply-fill mr-1"></i>Reply
+                                                                    </button>
+                                                                </div>
+
+                                                                <!-- Form Sub-Sub-Reply -->
+                                                                <div id="sub-reply-form-{{ sub_reply.id }}" class="hidden mt-3">
+                                                                    <form method="POST" action="{% url 'courses:add_comment_course' course_id=course.id %}">
+                                                                        {% csrf_token %}
+                                                                        <div class="flex gap-2 mb-2">
+                                                                            <textarea name="content" class="w-full border border-gray-200 rounded-xl shadow-sm p-3 focus:border-red-500 focus:ring focus:ring-red-100 transition-colors" rows="2" placeholder="Reply to this sub-reply..." required></textarea>
+                                                                            <input type="hidden" name="parent_id" value="{{ sub_reply.id }}">
+                                                                            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">Reply</button>
+                                                                        </div>
+                                                                    </form>
+                                                                </div>
                                                             </div>
-                                                        </form>
-                                                    </div>
+                                                        </div>
+                                                    {% endfor %}
                                                 </div>
-                                            {% endfor %}
+                                            </div>
                                         </div>
-                                    </div>
-                                {% endfor %}
+                                    {% endfor %}
+                                </div>
                             </div>
                         </div>
                     {% empty %}
                         <p class="text-gray-600">No comments yet. Be the first to comment!</p>
                     {% endfor %}
                 </div>
+
             </div>
 
             <!-- Sidebar -->
