@@ -40,18 +40,18 @@
     <p class="mb-2"><strong>Total Course Price:</strong> IDR {{ total_course_price|intcomma }}</p>
     <p class="mb-4"><strong>Platform Fee:</strong> IDR {{ platform_fee|intcomma }}</p>
 
-    <form method="post" action="">
+    {# Form 1: Apply Voucher (terpisah, tanpa required payment method) #}
+    <form method="post" action="" class="mb-4">
       {% csrf_token %}
-
-      {# Voucher input and apply voucher button side by side #}
-      <div class="flex flex-col md:flex-row md:items-center gap-2 mb-4">
+      <div class="flex flex-col md:flex-row md:items-center gap-2">
         <input
           type="text"
           name="voucher"
           id="voucher"
-          value="{% if voucher_code %}{{ voucher_code }}{% else %}{% endif %}"
+          value="{% if voucher_code %}{{ voucher_code }}{% endif %}"
           placeholder="Enter voucher code"
           class="border rounded px-3 py-2 w-full md:flex-1"
+          required
         />
         <button
           type="submit"
@@ -62,12 +62,20 @@
           Apply Voucher
         </button>
       </div>
+    </form>
 
-      {% if payment_channels %}
+    {# Form 2: Select Payment Method & Checkout (terpisah, dengan required payment method) #}
+    {% if payment_channels %}
+      <form method="post" action="">
+        {% csrf_token %}
+        {# Hidden input untuk voucher_code agar tetap terbawa saat checkout #}
+        {% if voucher_code %}
+          <input type="hidden" name="voucher_code" value="{{ voucher_code }}">
+        {% endif %}
+
         <label for="payment_method" class="block mb-2 font-semibold">Select Payment Method:</label>
 
-        {# Payment method select and checkout button side by side #}
-        <div class="flex flex-col md:flex-row md:items-center gap-2">
+        <div class="flex flex-col md:flex-row md:items-center gap-2 mb-4">
           <select
             name="payment_method"
             id="payment_method"
@@ -92,12 +100,10 @@
             Checkout Now
           </button>
         </div>
-      {% else %}
-        <p class="text-red-600 mt-4">Unable to load payment methods from Tripay.</p>
-      {% endif %}
-
-
-    </form>
+      </form>
+    {% else %}
+      <p class="text-red-600 mt-4">Unable to load payment methods from Tripay.</p>
+    {% endif %}
 
     {% if voucher %}
       <p class="mt-4 text-green-700"><strong>Voucher Discount:</strong> - IDR {{ voucher|intcomma }}</p>
@@ -130,7 +136,7 @@
   {% endif %}
 
   {% if is_resume %}
-    <a href="{% url 'payments:transaction_detail' merchant_ref %}" class="btn btn-info">View Transaction Details</a>
+    <a href="{% url 'payments:transaction_detail' merchant_ref=merchant_ref %}" class="btn btn-info">View Transaction Details</a>
   {% endif %}
 
 </div>

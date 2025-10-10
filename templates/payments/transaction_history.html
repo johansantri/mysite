@@ -66,6 +66,7 @@
     </div>
 
     <!-- Transaction List → Ubah kondisi ke completed, pending, cancelled/failed -->
+  <!-- Transaction List → Ubah kondisi ke completed, pending, cancelled/failed -->
     <div class="accordion accordion-flush" id="transactionAccordion">
       {% for tx in transactions %}
         <div class="accordion-item shadow-sm rounded-3 mb-3
@@ -101,11 +102,9 @@
           <div id="collapse-{{ tx.id }}" class="accordion-collapse collapse" data-bs-parent="#transactionAccordion">
             <div class="accordion-body">
               {% if tx.description %}
-                <p class="mb-2"><strong>Description:</strong> {{ tx.description }} {% if tx.id %}
-                      <a href="{% url 'payments:transaction_invoice_detail' pk=tx.id %}">View Invoice</a>
-                    {% else %}
-                      <span class="text-muted">Invoice tidak tersedia</span>
-                {% endif %}</p>
+                <p class="mb-2"><strong>Description:</strong> {{ tx.description }} 
+                  
+                </p>
               {% endif %}
               <p class="mb-2"><strong>Courses:</strong></p>
               <ul class="list-group list-group-flush">
@@ -117,6 +116,35 @@
                   </li>
                 {% endfor %}
               </ul>
+
+              {# ✅ Untuk pending: Link ke transaction_detail via merchant_ref (jika belum expired) #}
+              {% if tx.status == 'pending' %}
+                {% now "Y-m-d H:i:s" as current_time %}
+                {% if tx.expired_at|date:"Y-m-d H:i:s" > current_time %}
+                  <div class="mt-3">
+                    <a href="{% url 'payments:transaction_detail' merchant_ref=tx.merchant_ref %}" 
+                      class="btn btn-warning btn-sm w-100">
+                      <i class="bi bi-credit-card me-1"></i> Resume Payment
+                    </a>
+                    <p class="text-muted small mt-1 mb-0">Expired in: {{ tx.expired_at|timeuntil }}</p>
+                  </div>
+                {% else %}
+                  <div class="mt-3 p-3 bg-danger bg-opacity-10 border border-danger rounded">
+                    <p class="text-danger small mb-0">Payment expired. Please checkout again.</p>
+                  </div>
+                {% endif %}
+              {% endif %}
+
+              {# ✅ Untuk completed: Link ke invoice detail (mirip desain pending) #}
+              {% if tx.status == 'completed' %}
+                <div class="mt-3">
+                  <a href="{% url 'payments:transaction_invoice_detail' pk=tx.id %}" 
+                    class="btn btn-success btn-sm w-100">
+                    <i class="bi bi-file-earmark-text me-1"></i> View Invoice
+                  </a>
+                  <p class="text-muted small mt-1 mb-0">Completed on: {{ tx.updated_at|date:"d M Y, H:i" }}</p>
+                </div>
+              {% endif %}
             </div>
           </div>
         </div>
