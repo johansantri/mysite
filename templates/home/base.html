@@ -95,6 +95,56 @@
                     {% endif %}
 
 
+                    <style>
+                        @keyframes slideInRight {
+                          from {
+                            opacity: 0;
+                            transform: translateX(100%);
+                          }
+                          to {
+                            opacity: 1;
+                            transform: translateX(0);
+                          }
+                        }
+
+                        .animate-slideInRight {
+                          animation: slideInRight 0.3s ease-out;
+                        }
+                      </style>
+
+                      <!-- Container untuk alert toast -->
+                      <div id="alert-container" class="fixed top-4 right-4 z-50 space-y-3">
+                        {% for message in messages %}
+                          <div
+                            class="
+                              flex items-center justify-between max-w-sm w-full px-4 py-3 rounded shadow text-sm animate-slideInRight transition-opacity duration-300
+                              {% if message.tags == 'success' %} bg-green-600 text-white
+                              {% elif message.tags == 'error' %} bg-red-600 text-white
+                              {% elif message.tags == 'warning' %} bg-yellow-500 text-black
+                              {% else %} bg-blue-600 text-white
+                              {% endif %}
+                            "
+                            data-auto-dismiss="true"
+                          >
+                            <span>{{ message }}</span>
+                            <button type="button" class="ml-4 text-xl leading-none focus:outline-none" onclick="this.parentElement.remove()">×</button>
+                          </div>
+                        {% endfor %}
+                      </div>
+                      <script>
+                        document.addEventListener('DOMContentLoaded', () => {
+                          // Select semua alert dengan atribut data-auto-dismiss
+                          const alerts = document.querySelectorAll('[data-auto-dismiss]');
+                          alerts.forEach((alert) => {
+                            setTimeout(() => {
+                              alert.classList.add('opacity-0');
+                              setTimeout(() => alert.remove(), 300); // Biarkan animasi selesai dulu
+                            }, 9000); // 9 detik
+                          });
+                        });
+                      </script>
+
+
                 </div>
             </div>
         </div>

@@ -2606,7 +2606,8 @@ def add_comment_course(request, course_id):
 
         # Redirect aman dengan validasi referer
         referer = request.META.get('HTTP_REFERER')
-        if referer and course_id in referer:
+        if referer and str(course_id) in referer:
+
             return redirect(referer)
         return redirect('courses:course_lms_detail', id=course.id, slug=course.slug)
 
