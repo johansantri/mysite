@@ -1560,6 +1560,7 @@ def search(request):
 # Logout view
 def logout_view(request):
     logout(request)
+    messages.error(request, 'You have been logged out.')
     return redirect('authentication:home')  # Redirect to home page after logout
 
 #login view
