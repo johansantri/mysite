@@ -1,261 +1,498 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sertifikat Instruktur</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instructor Certificate</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
 
-    body {
-      font-family: 'Open Sans', sans-serif;
-      background: #f5f7fa;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 20px;
-    }
+        * {
+            box-sizing: border-box;
+        }
 
-    .certificate-container {
-      max-width: 900px;
-      background: #ffffff;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      padding: 40px;
-      position: relative;
-      overflow: hidden;
-      border: 2px solid #d4a017;
-    }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #1a1a2e;
+        }
 
-    .certificate-container::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 5px;
-      background: linear-gradient(90deg, #1a2b4b, #d4a017);
-    }
+        .certificate-container {
+            width: 100%;
+            max-width: 900px;
+            min-height: 297mm;
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 40px;
+            position: relative;
+            text-align: center;
+            box-shadow: 0 25px 80px rgba(0, 86, 210, 0.15);
+            overflow: hidden;
+        }
 
-    .header {
-      text-align: center;
-      margin-bottom: 20px;
-      position: relative;
-    }
+        .certificate-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(90deg, #0056D2 0%, #00A676 50%, #0056D2 100%);
+        }
 
-    .header img.logo {
-      width: 80px;
-      margin-bottom: 10px;
-    }
+        .header {
+            margin-bottom: 32px;
+            position: relative;
+        }
 
-    .header h1 {
-      font-family: 'Poppins', sans-serif;
-      font-size: 36px;
-      font-weight: 700;
-      color: #1a2b4b;
-      margin: 0;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
+        .header img.logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+            margin-bottom: 16px;
+        }
 
-    .header h3 {
-      font-family: 'Poppins', sans-serif;
-      font-size: 24px;
-      font-weight: 600;
-      color: #d4a017;
-      margin: 10px 0;
-    }
+        .header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: clamp(28px, 6vw, 40px);
+            font-weight: 800;
+            color: #1a1a2e;
+            margin: 0 0 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+        }
 
-    .header p {
-      font-size: 14px;
-      color: #6b7280;
-      margin: 5px 0;
-    }
+        .header h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(20px, 4.5vw, 28px);
+            font-weight: 700;
+            color: #0056D2;
+            margin: 8px 0;
+        }
 
-    .narrative {
-      text-align: center;
-      margin: 30px 0;
-      font-size: 16px;
-      color: #444;
-      line-height: 1.8;
-      padding: 0 20px;
-    }
+        .header p {
+            font-size: clamp(13px, 3vw, 15px);
+            color: #6b7280;
+            margin: 4px 0;
+            font-weight: 500;
+        }
 
-    .narrative strong {
-      color: #1a2b4b;
-      font-weight: 600;
-    }
+        .narrative {
+            text-align: center;
+            margin: 32px auto;
+            font-size: clamp(14px, 3.5vw, 16px);
+            color: #374151;
+            line-height: 1.7;
+            padding: 0 20px;
+            max-width: 85%;
+            background: linear-gradient(white, #f8f9ff);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 32px rgba(0, 86, 210, 0.05);
+        }
 
-    h2 {
-      font-family: 'Poppins', sans-serif;
-      font-size: 22px;
-      color: #1a2b4b;
-      text-align: center;
-      margin: 30px 0 20px;
-      border-bottom: 2px solid #d4a017;
-      padding-bottom: 10px;
-    }
+        .narrative strong {
+            color: #1a1a2e;
+            font-weight: 600;
+        }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      font-size: 14px;
-      background: #fff;
-    }
+        h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: clamp(20px, 4vw, 24px);
+            color: #1a1a2e;
+            text-align: center;
+            margin: 40px 0 24px;
+            border-bottom: 2px solid transparent;
+            border-image: linear-gradient(90deg, #0056D2, #00A676) 1;
+            padding-bottom: 12px;
+            font-weight: 700;
+        }
 
-    thead {
-      background: #1a2b4b;
-      color: #fff;
-      font-family: 'Poppins', sans-serif;
-    }
+        .table-wrapper {
+            width: 100%;
+            max-width: 90%;
+            margin: 0 auto 32px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 86, 210, 0.06);
+        }
 
-    th, td {
-      padding: 12px 15px;
-      text-align: center;
-      border: 1px solid #e5e7eb;
-    }
+        table {
+            width: 100%;
+            min-width: 500px;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(12px, 2.8vw, 14px);
+        }
 
-    th {
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
+        thead {
+            background: linear-gradient(135deg, #0056D2 0%, #00A676 100%);
+            color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
 
-    tbody tr {
-      transition: background 0.3s ease;
-    }
+        th, td {
+            padding: 12px 14px;
+            vertical-align: middle;
+            border-bottom: 1px solid #e5e7eb;
+            transition: background-color 0.2s ease;
+        }
 
-    tbody tr:hover {
-      background-color: #f1f5f9;
-    }
+        th {
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+            font-size: clamp(11px, 2.5vw, 13px);
+        }
 
-    tbody tr:nth-child(even) {
-      background-color: #f9fafb;
-    }
+        th:first-child {
+            border-radius: 14px 0 0 0;
+            text-align: left;
+        }
 
-    .note {
-      text-align: center;
-      font-size: 13px;
-      margin-top: 20px;
-      color: #6b7280;
-    }
+        th:last-child {
+            border-radius: 0 14px 0 0;
+        }
 
-    .footer {
-      text-align: center;
-      font-size: 12px;
-      color: #6b7280;
-      margin-top: 40px;
-      padding-top: 15px;
-      border-top: 1px solid #e5e7eb;
-      font-style: italic;
-    }
+        td:first-child {
+            text-align: left;
+            font-weight: 500;
+            max-width: 180px;
+            word-wrap: break-word;
+        }
 
-    @media print {
-      body {
-        background: #fff;
-        margin: 0;
-      }
-      .certificate-container {
-        box-shadow: none;
-        border: none;
-      }
-    }
+        td {
+            text-align: center;
+        }
 
-    @media (max-width: 600px) {
-      .certificate-container {
-        padding: 20px;
-      }
-      .header h1 {
-        font-size: 28px;
-      }
-      .header h3 {
-        font-size: 20px;
-      }
-      table {
-        font-size: 12px;
-      }
-      th, td {
-        padding: 8px;
-      }
-    }
-  </style>
+        td:nth-child(3), td:nth-child(4), td:nth-child(5), td:nth-child(6), td:nth-child(7) {
+            font-weight: 600;
+            color: #00A676;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr {
+            transition: background-color 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background-color: #e3f2fd;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f8f9ff;
+        }
+
+        .note {
+            text-align: center;
+            font-size: clamp(12px, 2.5vw, 13px);
+            margin: 32px auto;
+            color: #6b7280;
+            font-style: italic;
+            max-width: 85%;
+            padding: 12px;
+            background: #f8f9ff;
+            border-radius: 12px;
+            border-left: 4px solid #0056D2;
+        }
+
+        .qr-list {
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .qr-item {
+            text-align: center;
+            background: #f8f9ff;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 16px rgba(0, 86, 210, 0.05);
+            border: 1px solid #e5e7eb;
+        }
+
+        .qr-item p:first-child {
+            font-weight: 600;
+            font-size: clamp(13px, 3vw, 14px);
+            color: #1a1a2e;
+            margin-bottom: 12px;
+        }
+
+        .qr-item img {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 86, 210, 0.1);
+            margin: 10px auto;
+        }
+
+        .qr-item p:last-child {
+            font-size: 11px;
+            color: #0056D2;
+            margin-top: 8px;
+        }
+
+        .qr-item a {
+            color: #0056D2;
+            text-decoration: none;
+            word-break: break-all;
+        }
+
+        .qr-item a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: clamp(11px, 2.5vw, 12px);
+            color: #6b7280;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 12px;
+            }
+
+            .certificate-container {
+                padding: 24px;
+                border-radius: 20px;
+                min-height: auto;
+            }
+
+            .header {
+                margin-bottom: 24px;
+            }
+
+            .header img.logo {
+                width: 60px;
+                height: 60px;
+            }
+
+            .narrative {
+                padding: 16px;
+                margin: 24px auto;
+            }
+
+            h2 {
+                margin: 32px 0 20px;
+            }
+
+            .table-wrapper {
+                border-radius: 12px;
+                box-shadow: 0 4px 16px rgba(0, 86, 210, 0.08);
+            }
+
+            table {
+                min-width: 450px;
+                font-size: 11px;
+            }
+
+            th, td {
+                padding: 8px 10px;
+            }
+
+            th {
+                font-size: 10px;
+            }
+
+            td:first-child {
+                min-width: 120px;
+            }
+
+            .qr-list {
+                gap: 20px;
+            }
+
+            .qr-item {
+                padding: 16px;
+            }
+
+            .qr-item img {
+                width: 70px;
+                height: 70px;
+            }
+
+            .note {
+                margin: 24px auto;
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            table {
+                min-width: 400px;
+            }
+
+            th, td {
+                padding: 6px 8px;
+                font-size: 10px;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .certificate-container {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                max-width: none;
+                width: 100%;
+                height: 100%;
+                border-radius: 0;
+                padding: 20px;
+            }
+            .certificate-container::before {
+                display: none;
+            }
+            table tr:hover {
+                background-color: inherit;
+            }
+            .qr-item a {
+                color: #000;
+            }
+            .table-wrapper {
+                overflow: visible;
+                box-shadow: none;
+                border-radius: 0;
+            }
+            table {
+                min-width: auto;
+                width: 100%;
+                font-size: 10px;
+            }
+            th, td {
+                padding: 6px 8px;
+                border: 1px solid #ddd;
+            }
+            th {
+                font-size: 9px;
+            }
+            .header {
+                margin-bottom: 16px;
+            }
+            .narrative {
+                margin: 16px auto;
+                padding: 12px;
+            }
+            h2 {
+                margin: 20px 0 12px;
+                font-size: 18px;
+            }
+            .note {
+                margin: 16px auto;
+                padding: 8px;
+            }
+            .qr-list {
+                gap: 16px;
+            }
+            .qr-item {
+                padding: 12px;
+                margin: 8px 0;
+            }
+            .qr-item img {
+                width: 60px;
+                height: 60px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="certificate-container">
-    <div class="header">
-      <!-- Tambahkan logo (ganti dengan path logo Anda) -->
-      <img src="https://ini.icei.ac.id/static/assets/img/icon/badge.svg" alt="Logo" class="logo">
-      <h1>Sertifikat Instruktur</h1>
-      <h3>{{ instructor.user.get_full_name }}</h3>
-      <p>Email: {{ instructor.user.email }}</p>
-      <p>Diterbitkan pada: {{ generated_at|date:"d F Y, H:i" }}</p>
-    </div>
-
-    <div class="narrative">
-      <p>
-        Sertifikat ini diberikan sebagai bentuk apresiasi atas dedikasi dan kontribusi luar biasa dari 
-        <strong>{{ instructor.user.get_full_name }}</strong> dalam menyukseskan proses pembelajaran.
-        Terima kasih telah berbagi ilmu, waktu, dan semangat untuk membimbing peserta dengan penuh komitmen dan profesionalisme.
-      </p>
-    </div>
-
-    <h2>Daftar Kursus yang Diselesaikan</h2>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Nama Kursus</th>
-          <th>Partner</th>
-          <th>Tanggal Selesai</th>
-          <th>Peserta</th>
-          <th>Lulus</th>
-          <th>Rata-rata Nilai</th>
-          <th>Rata-rata Progress</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for cert in certificates %}
-        <tr>
-          <td>{{ cert.course.course_name }}</td>
-          <td>{{ cert.partner.name }}</td>
-          <td>{{ cert.course.end_date|date:"d M Y" }}</td>
-          <td>{{ cert.total_enrolled }}</td>
-          <td>{{ cert.total_passed }}</td>
-          <td>{{ cert.average_score }}%</td>
-          <td>{{ cert.average_progress }}%</td>
-        </tr>
-
-       
-        {% empty %}
-        {% endfor %}
-      </tbody>
-    </table>
-
-    <div class="note">
-      Hanya kursus dengan minimal 40% peserta lulus yang tercantum dalam sertifikat ini.
-    </div>
-    <!-- Tambahkan bagian QR code per kursus -->
-      <div class="qr-list" style="margin-top: 40px;">
-        {% for cert in certificates %}
-        <div class="qr-item" style="margin-bottom: 30px; text-align: center;">
-          <p style="font-weight: 600; font-size: 14px; color: #1a2b4b;">
-            Verifikasi untuk: {{ cert.course.course_name }}
-          </p>
-          <img src="{{ cert.qr_code_data_uri }}" alt="QR Code {{ cert.course.course_name }}" style="width: 80px; height: 80px; margin: 10px auto;" />
-          <p style="font-size: 12px;">
-            <a href="{{ cert.qr_url }}" target="_blank">{{ cert.qr_url }}</a>
-          </p>
+    <div class="certificate-container">
+        <div class="header">
+            <!-- Add logo (replace with your logo path) -->
+            <img src="https://ini.icei.ac.id/static/assets/img/icon/badge.svg" alt="Logo" class="logo">
+            <h1>Instructor Certificate</h1>
+            <h3>{{ instructor.user.get_full_name }}</h3>
+            <p>Email: {{ instructor.user.email }}</p>
+            <p>Issued on: {{ generated_at|date:"d F Y, H:i" }}</p>
         </div>
-        {% endfor %}
-      </div>
+
+        <div class="narrative">
+            <p>
+                This certificate is awarded in recognition of the outstanding dedication and exceptional contributions of 
+                <strong>{{ instructor.user.get_full_name }}</strong> in successfully facilitating the learning process.
+                Thank you for sharing your knowledge, time, and enthusiasm to guide participants with full commitment and professionalism.
+            </p>
+        </div>
+
+        <h2>List of Completed Courses</h2>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Course</th>
+                        <th>Partner</th>
+                        <th>Date</th>
+                        <th>Participants</th>
+                        <th>Passed</th>
+                        <th>Score</th>
+                        <th>Progress</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cert in certificates %}
+                    <tr>
+                        <td>{{ cert.course.course_name }}</td>
+                        <td>{{ cert.partner.name }}</td>
+                        <td>{{ cert.course.end_date|date:"d M Y" }}</td>
+                        <td>{{ cert.total_enrolled }}</td>
+                        <td>{{ cert.total_passed }}</td>
+                        <td>{{ cert.average_score }}%</td>
+                        <td>{{ cert.average_progress }}%</td>
+                    </tr>
+                    {% empty %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="note">
+            Only courses with at least 40% of participants passing are listed in this certificate.
+        </div>
+
+        <!-- Add QR code section per course -->
+        <div class="qr-list">
+            {% for cert in certificates %}
+            <div class="qr-item">
+                <p>Verification for: {{ cert.course.course_name }}</p>
+                <img src="{{ cert.qr_code_data_uri }}" alt="QR Code {{ cert.course.course_name }}" />
+                <p><a href="{{ cert.qr_url }}" target="_blank">{{ cert.qr_url }}</a></p>
+            </div>
+            {% endfor %}
+        </div>
     </div>
-  </div>
 </body>
 </html>

@@ -27,9 +27,22 @@
                             <i class="bi bi-house-door me-1 me-md-2"></i>Back to Dashboard
                         </a>
                         {% if certificate_url %}
-                        <a href="{{ certificate_url }}" class="btn btn-outline-success btn-sm btn-md-lg" target="_blank">
-                            <i class="bi bi-award me-1 me-md-2"></i>Get Certificate
-                        </a>
+                        <button type="button"
+                                class="btn btn-outline-success btn-sm btn-md-lg open-cert-btn"
+                                data-url="{{ certificate_url|escape }}">
+                        <i class="bi bi-award me-1 me-md-2"></i> Get Certificate
+                        </button>
+
+                        <script>
+                        document.addEventListener('click', function(e){
+                        const btn = e.target.closest('.open-cert-btn');
+                        if (!btn) return;
+                        const url = btn.dataset.url;
+                        if (!url) return;
+                        window.open(url, '_blank', 'noopener,noreferrer');
+                        });
+                        </script>
+
                         {% endif %}
                         <button class="btn btn-secondary btn-sm btn-md-lg"
                                 onclick="document.getElementById('completion-overlay').style.display='none';"
