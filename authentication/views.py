@@ -33,7 +33,7 @@ from django.http import HttpResponse,JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponseForbidden
 from django.core.cache import cache
-
+from .utils import get_client_ip, get_geo_from_ip
 from django.db.models import Avg, Count,Q,FloatField,Case, When, CharField, Value
 from django.core import serializers
 import random
@@ -1615,9 +1615,9 @@ def logout_view(request):
 #login view
 @ratelimit(key='ip', rate='5/m', block=False)
 def login_view(request):
-    # Cek apakah user sudah login
     if request.user.is_authenticated:
-        return redirect('authentication:home')  # Ganti dengan nama URL home-mu
+        return redirect('authentication:home')
+
     was_limited = getattr(request, 'limited', False)
 
     if request.method == 'POST':
@@ -1639,15 +1639,23 @@ def login_view(request):
 
                 login(request, user)
 
+                # Ambil IP, Geo, User Agent
+                ip = get_client_ip(request)
+                geo = get_geo_from_ip(ip)
+                user_agent = request.META.get('HTTP_USER_AGENT', '')
+
                 UserActivityLog.objects.create(
                     user=user,
-                    activity_type='login_view'
+                    activity_type='login_view',
+                    ip_address=ip,
+                    location=f"{geo.get('city', '')}, {geo.get('country', '')}" if geo else None,
+                    user_agent=user_agent,
                 )
 
                 next_url = request.POST.get('next') or request.GET.get('next')
                 messages.success(request, 'Login successful.')
                 return redirect(next_url or 'authentication:home')
-            
+
             else:
                 messages.error(request, 'Email or password is incorrect.')
                 return render(request, 'authentication/login.html', {'form': form})

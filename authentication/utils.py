@@ -6,6 +6,8 @@ from courses.models import (
 from django.core.cache import cache
 import datetime
 
+import requests
+
 def calculate_course_status(user, course):
     total_score = Decimal('0')
     total_max_score = Decimal('0')
@@ -106,3 +108,29 @@ def get_total_online_users(users):
         if is_user_online(user):
             total_online += 1
     return total_online
+
+
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0].strip()
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
+def get_geo_from_ip(ip):
+    try:
+        response = requests.get(f"https://ipinfo.io/{ip}/json")
+        if response.status_code == 200:
+            data = response.json()
+            return {
+                "city": data.get("city"),
+                "country": data.get("country"),
+                "isp": data.get("org"),
+                "lat": None,  # Kalau ada data latitude, bisa kamu parse juga
+                "lon": None,
+            }
+    except Exception:
+        pass
+    return None

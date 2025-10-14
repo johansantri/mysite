@@ -1,8 +1,26 @@
 from django.contrib import admin
 from . import models 
-from .models import  CourseSessionLog,InstructorCertificate,LTIResult,LastAccessCourse,LTIExternalTool1,MicroClaim,UserMicroProgress,MicroCredentialComment,Certificate,Submission,CourseRating,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
+from .models import  UserActivityLog,CourseSessionLog,InstructorCertificate,LTIResult,LastAccessCourse,LTIExternalTool1,MicroClaim,UserMicroProgress,MicroCredentialComment,Certificate,Submission,CourseRating,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
 from import_export.admin import ImportExportModelAdmin
 from django.utils.html import format_html
+
+@admin.register(UserActivityLog)
+class UserActivityLogAdmin(admin.ModelAdmin):
+    list_display = ('user', 'activity_type', 'timestamp', 'ip_address', 'location')
+    list_filter = ('activity_type', 'timestamp')
+    search_fields = ('user__email', 'ip_address', 'location', 'user_agent')
+    readonly_fields = ('timestamp',)  # Karena timestamp auto_now_add
+
+    # Optional: agar user_agent tampil lebih ringkas di list detail
+    def short_user_agent(self, obj):
+        return (obj.user_agent[:75] + '...') if obj.user_agent and len(obj.user_agent) > 75 else obj.user_agent
+    short_user_agent.short_description = 'User Agent'
+
+    # Kalau mau tampilkan user_agent di detail admin, bisa ditambahkan di fields
+    fields = ('user', 'activity_type', 'timestamp', 'ip_address', 'location', 'user_agent')
+
+
+
 
 @admin.register(CourseSessionLog)
 class CourseSessionLogAdmin(admin.ModelAdmin):

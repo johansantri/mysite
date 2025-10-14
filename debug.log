@@ -7,3 +7,103 @@
 [INFO] 2025-10-14 15:28:53,490 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [INFO] 2025-10-14 15:28:53,507 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [INFO] 2025-10-14 15:28:53,607 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[ERROR] 2025-10-14 15:30:47,407 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-14 15:30:47,410 [django.request] Bad Request: /
+[DEBUG] 2025-10-14 15:38:42,812 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-10-14 15:38:42,814 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-10-14 15:38:42,815 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-10-14 07:38:42.812931+00:00
+[INFO] 2025-10-14 15:38:43,781 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36", path_info: "/kuruk/login/"}.
+[INFO] 2025-10-14 15:38:43,783 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-14 07:38:42.812931+00:00
+[ERROR] 2025-10-14 15:39:52,287 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-14 15:39:52,288 [django.request] Bad Request: /.git/config
+[INFO] 2025-10-14 15:45:05,575 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:45:05,643 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:45:05,672 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[DEBUG] 2025-10-14 15:45:09,532 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-10-14 15:45:09,535 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-14 07:45:09.532584+00:00
+[INFO] 2025-10-14 15:45:09,536 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36", path_info: "/kuruk/logout/"}.
+[INFO] 2025-10-14 15:47:47,565 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:47:47,604 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:47:47,625 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:51:39,767 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:51:39,840 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:51:39,981 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:56:27,189 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:56:27,244 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:56:27,332 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:58:26,952 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:58:27,192 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:58:27,212 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:59:27,738 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:59:27,942 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:59:27,961 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 16:01:01,203 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 16:01:01,223 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 16:01:01,339 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[DEBUG] 2025-10-14 16:01:11,570 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-10-14 16:01:11,571 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-10-14 16:01:11,572 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-10-14 08:01:11.570659+00:00
+[INFO] 2025-10-14 16:01:12,496 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0", path_info: "/kuruk/login/"}.
+[INFO] 2025-10-14 16:01:12,498 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-14 08:01:11.570659+00:00
+[INFO] 2025-10-14 16:07:23,686 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 16:07:32,987 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 16:10:34,184 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 16:10:42,335 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 16:10:49,501 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 16:11:03,090 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 16:11:03,130 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 16:11:03,231 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[DEBUG] 2025-10-14 16:11:07,161 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-10-14 16:11:07,164 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-14 08:11:07.161543+00:00
+[INFO] 2025-10-14 16:11:07,164 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0", path_info: "/logout/"}.
+[DEBUG] 2025-10-14 16:11:15,269 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-10-14 16:11:15,269 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-10-14 16:11:15,269 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-10-14 08:11:15.269091+00:00
+[INFO] 2025-10-14 16:11:16,193 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0", path_info: "/login/"}.
+[INFO] 2025-10-14 16:11:16,194 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-14 08:11:15.269091+00:00
+[DEBUG] 2025-10-14 16:11:16,209 [urllib3.connectionpool] Starting new HTTPS connection (1): ipinfo.io:443
+[DEBUG] 2025-10-14 16:11:16,586 [urllib3.connectionpool] https://ipinfo.io:443 "GET /203.217.140.215/json HTTP/1.1" 200 None
+[DEBUG] 2025-10-14 16:11:32,790 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-10-14 16:11:32,790 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-10-14 16:11:32,792 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-10-14 08:11:32.790150+00:00
+[INFO] 2025-10-14 16:11:33,741 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36", path_info: "/login/"}.
+[INFO] 2025-10-14 16:11:33,743 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-14 08:11:32.790150+00:00
+[DEBUG] 2025-10-14 16:11:33,757 [urllib3.connectionpool] Starting new HTTPS connection (1): ipinfo.io:443
+[DEBUG] 2025-10-14 16:11:34,026 [urllib3.connectionpool] https://ipinfo.io:443 "GET /203.217.140.215/json HTTP/1.1" 200 None
+[INFO] 2025-10-14 16:11:41,362 [learner.views] Redirecting to load_content: /admin/16/kursus-uiux-design-dari-nol-hingga-mahir/assessment/80/
+[WARNING] 2025-10-14 16:11:41,477 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-14 16:11:41,511 [learner.views] Closed previous CourseSessionLog for user 1, course 16
+[DEBUG] 2025-10-14 16:11:41,539 [learner.views] Created CourseSessionLog for user 1, course 16, assessment 80
+[DEBUG] 2025-10-14 16:11:41,576 [learner.views] Updated LastAccessCourse for user 1, course 16, assessment 80
+[INFO] 2025-10-14 16:11:41,695 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna admin, assessment 80
+[INFO] 2025-10-14 16:13:45,007 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 16:13:45,126 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 16:13:45,140 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[DEBUG] 2025-10-14 16:15:51,646 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-10-14 16:15:51,650 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-14 08:15:51.646936+00:00
+[INFO] 2025-10-14 16:15:51,650 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36", path_info: "/logout/"}.
+[DEBUG] 2025-10-14 16:16:00,650 [urllib3.connectionpool] Starting new HTTPS connection (1): oauth2.googleapis.com:443
+[DEBUG] 2025-10-14 16:16:01,155 [urllib3.connectionpool] https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+[DEBUG] 2025-10-14 16:16:01,298 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-10-14 16:16:01,299 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36", path_info: "/accounts/google/login/callback/"}.
+[INFO] 2025-10-14 16:16:01,301 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-14 08:16:01.297933+00:00

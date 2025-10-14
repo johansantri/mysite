@@ -577,7 +577,11 @@ class UserActivityLog(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     activity_type = models.CharField(max_length=100)  # ex: "view_course", "login", etc.
     timestamp = models.DateTimeField(auto_now_add=True)
-
+    # Tambahkan fields baru untuk tracking login info
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    location = models.CharField(max_length=255, null=True, blank=True)
+    user_agent = models.TextField(null=True, blank=True)
+    
     def __str__(self):
         return f'{self.user} - {self.activity_type} - {self.timestamp}'
             
