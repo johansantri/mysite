@@ -553,6 +553,8 @@ class Course(models.Model):
     def has_been_rated_by(self, user):
         return self.ratings.filter(user=user).exists()
 
+
+
 class CourseViewLog(models.Model):
     course = models.ForeignKey('Course', on_delete=models.CASCADE, related_name='view_logs')
     date = models.DateField(default=timezone.now)

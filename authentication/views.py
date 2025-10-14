@@ -1118,6 +1118,8 @@ def dashbord(request):
         # Check if the user has reviewed the course
         has_reviewed = CourseRating.objects.filter(user=user, course=course).exists()
 
+
+
         enrollments_data.append({
             'enrollment': enrollment,
             'progress': float(progress),
@@ -1138,7 +1140,19 @@ def dashbord(request):
         lic.is_active = lic.start_date <= today <= lic.expiry_date
     
 
+    # Ambil semua course yang belum diambil user sebagai rekomendasi
+    enrolled_course_ids = enrollments.values_list('course__id', flat=True)
 
+    recommended_courses = Course.objects.filter(
+        status_course__status='published',
+        start_enrol__lte=timezone.now(),
+        end_enrol__gte=timezone.now()
+    ).exclude(id__in=enrolled_course_ids).order_by('-view_count')[:5]  # top 5 populer
+
+    # Alternatif logika lain:
+    # - berdasarkan kategori user sering ambil
+    # - berdasarkan level
+    # - random pilihan terbaru
     
 
     return render(request, 'learner/dashbord.html', {
@@ -1149,6 +1163,7 @@ def dashbord(request):
         'active_courses': active_courses,
         'completed_courses': completed_courses,
         'user_licenses': user_licenses,
+        'recommended_courses': recommended_courses, 
         'user': user,  # Ensure user is passed to template
         
     })
