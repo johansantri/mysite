@@ -105,6 +105,51 @@ from django.db.models import DecimalField
 from dal import autocomplete
 
 
+def custom_ratelimit(view_func):
+    def wrapper(request, *args, **kwargs):
+        key = request.user.username if request.user.is_authenticated else request.META.get('REMOTE_ADDR', 'anonymous')
+        cache_key = f'ratelimit_{key}'
+        timestamp_key = f'{cache_key}_timestamp'
+        limit = 500
+        window = 3600  # 1 hour in seconds
+
+        request_count = cache.get(cache_key, 0)
+        first_request_time = cache.get(timestamp_key)
+
+        if request_count >= limit:
+            if first_request_time:
+                time_passed = int(time.time()) - first_request_time
+                time_remaining = window - time_passed
+            else:
+                time_remaining = window
+
+            logger.warning(f"Rate limit exceeded for {cache_key}: {request_count} requests")
+
+            if request.user.is_authenticated:
+                user_info = f" ⚠️ You have exceeded the limit of {limit} requests per hour."
+            else:
+                user_info = f" ⚠️ Too many requests from your IP address. The limit is {limit} requests per hour."
+
+            response_content = (
+                f"{user_info}\n"
+                f"You have made {request_count} requests.\n"
+                f"Please try again in {time_remaining} seconds."
+            )
+            return HttpResponse(response_content, status=429)
+
+        if request_count == 0:
+            cache.set(cache_key, 1, window)
+            cache.set(timestamp_key, int(time.time()), window)
+        else:
+            try:
+                cache.incr(cache_key)
+            except ValueError as e:
+                logger.error(f"Cache increment failed for {cache_key}: {str(e)}")
+                cache.set(cache_key, request_count + 1, window)
+
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
 
 @login_required
 def microcredential_report_view(request, microcredential_id):
@@ -1979,14 +2024,13 @@ def microcredential_detail(request, slug):
 
     return render(request, 'learner/microcredential_detail.html', context)
 
-
-# Configure weasyprint logging
-logger = logging.getLogger(__name__)
-logging.getLogger('weasyprint').setLevel(logging.DEBUG)
-
+@custom_ratelimit
 def generate_microcredential_certificate(request, id):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
+
+    # Pindahkan definisi base_url ke sini agar selalu tersedia
+    base_url = request.build_absolute_uri('/')
 
     microcredential = get_object_or_404(MicroCredential, id=id)
     required_courses = microcredential.required_courses.all()
@@ -2071,14 +2115,13 @@ def generate_microcredential_certificate(request, id):
                 'user': request.user,
                 'microcredential': microcredential,
                 'certificate_id': certificate_id,
-                'verification_url': f"{request.build_absolute_uri('/').rstrip('/')}/verify-micro/{certificate_uuid}/",
+                'verification_url': f"{base_url.rstrip('/')}/verify-micro/{certificate_uuid}/",
                 'congratulatory_message': f"Congratulations, {request.user.get_full_name() or request.user.username}! You have successfully earned the {microcredential.title} MicroCredential!",
             }
             email_subject = f"Congratulations! Your {microcredential.title} Certificate"
             email_body = render_to_string('email/certificate_email_micro.html', email_context)
 
             # Generate PDF for attachment
-            base_url = request.build_absolute_uri('/')
             html_content = render_to_string('learner/microcredential_certificate.html', {
                 'microcredential': microcredential,
                 'user': request.user,
@@ -2158,7 +2201,6 @@ def generate_microcredential_certificate(request, id):
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
     return response
-
 
 def verify_certificate_micro(request, certificate_id):
     # Ambil MicroClaim berdasarkan certificate_uuid yang diberikan
@@ -3293,7 +3335,7 @@ def build_verifiable_credential(certificate, passing_threshold):
         }
     }
 
-
+@custom_ratelimit
 def generate_certificate(request, course_id):
     if not request.user.is_authenticated:
         logger.info(f"Unauthenticated user attempted to claim certificate for course {course_id}")
