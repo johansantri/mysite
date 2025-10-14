@@ -1022,6 +1022,44 @@ def delete_comment(request, comment_id):
 
 
 
+def get_recommended_courses(user):
+    now = timezone.now()
+
+    # Kursus yang sudah diambil user
+    enrolled_courses = Enrollment.objects.filter(user=user).values_list('course_id', flat=True)
+
+    # Kategori dari kursus yang sudah diambil
+    enrolled_categories = Course.objects.filter(id__in=enrolled_courses).values_list('category_id', flat=True)
+
+    # Kursus yang sesuai kategori + belum diambil + enrolment masih aktif
+    category_courses = Course.objects.annotate(
+        avg_rating=Avg('ratings__rating')
+    ).filter(
+        category_id__in=enrolled_categories,
+        status_course__status='published',
+        start_enrol__lte=now,
+        end_enrol__gte=now
+    ).exclude(id__in=enrolled_courses)
+
+    # Kursus populer dan berkualitas (tidak tergantung kategori)
+    popular_courses = Course.objects.annotate(
+        avg_rating=Avg('ratings__rating')
+    ).filter(
+        status_course__status='published',
+        start_enrol__lte=now,
+        end_enrol__gte=now,
+        avg_rating__gte=4.0
+    ).exclude(id__in=enrolled_courses)
+
+    # Gabungkan dua sumber rekomendasi (tanpa error union)
+    combined_courses = (category_courses | popular_courses).distinct()
+
+    # Urutkan berdasarkan kombinasi popularitas dan waktu terbaru
+    recommended_courses = combined_courses.order_by('-view_count', '-avg_rating', '-start_enrol')[:10]
+
+    return recommended_courses
+
+
 @custom_ratelimit
 @login_required
 @ratelimit(key='ip', rate='100/h')
@@ -1143,11 +1181,7 @@ def dashbord(request):
     # Ambil semua course yang belum diambil user sebagai rekomendasi
     enrolled_course_ids = enrollments.values_list('course__id', flat=True)
 
-    recommended_courses = Course.objects.filter(
-        status_course__status='published',
-        start_enrol__lte=timezone.now(),
-        end_enrol__gte=timezone.now()
-    ).exclude(id__in=enrolled_course_ids).order_by('-view_count')[:5]  # top 5 populer
+    recommended_courses = get_recommended_courses(user)
 
     # Alternatif logika lain:
     # - berdasarkan kategori user sering ambil

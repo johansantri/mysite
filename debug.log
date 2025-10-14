@@ -19653,3 +19653,164 @@ django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'
 [INFO] 2025-10-14 15:11:09,508 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [INFO] 2025-10-14 15:11:09,597 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [INFO] 2025-10-14 15:11:09,666 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:15:07,984 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:15:08,073 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:15:08,288 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[ERROR] 2025-10-14 15:15:09,355 [django.request] Internal Server Error: /dashbord/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/authentication/views.py", line 114, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django_ratelimit/decorators.py", line 27, in _wrapped
+    return fn(request, *args, **kw)
+  File "/home/TIM/mysite/authentication/views.py", line 1174, in dashbord
+    recommended_courses = recommended_courses
+UnboundLocalError: local variable 'recommended_courses' referenced before assignment
+[WARNING] 2025-10-14 15:15:09,638 [django.request] Not Found: /favicon.ico
+[INFO] 2025-10-14 15:16:53,105 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:16:53,201 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:16:53,322 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:19:05,645 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:19:05,761 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:19:05,794 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[ERROR] 2025-10-14 15:19:06,942 [django.request] Internal Server Error: /dashbord/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/authentication/views.py", line 114, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django_ratelimit/decorators.py", line 27, in _wrapped
+    return fn(request, *args, **kw)
+  File "/home/TIM/mysite/authentication/views.py", line 1177, in dashbord
+    recommended_courses = get_recommended_courses(user)
+  File "/home/TIM/mysite/authentication/views.py", line 1041, in get_recommended_courses
+    popular_high_rating = Course.objects.filter(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1491, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1509, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1516, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1643, in add_q
+    clause, _ = self._add_q(q_object, can_reuse)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1675, in _add_q
+    child_clause, needed_inner = self.build_filter(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1523, in build_filter
+    lookups, parts, reffed_expression = self.solve_lookup_type(arg, summarize)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1330, in solve_lookup_type
+    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/query.py", line 1802, in names_to_path
+    raise FieldError(
+django.core.exceptions.FieldError: Cannot resolve keyword 'avg_rating' into field. Choices are: attempted_questions, author, author_id, cartitem, category, category_id, certificates, course_name, course_number, course_run, coursecomment, courseprogress, coursesessionlog, courseviewip, created_at, description, edited_on, end_date, end_enrol, enrollments, grade_ranges, hour, id, image, instructor, instructor_id, instructorcertificate, language, lastaccesscourse, level, link_video, microcredentials, org_partner, org_partner_id, payment_model, payment_model_id, payments, prices, ratings, related_posts, scores, sections, slug, sort_description, start_date, start_enrol, status_course, status_course_id, status_history, team_members, transaction, user_progress, view_count, view_logs
+[ERROR] 2025-10-14 15:20:00,788 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-14 15:20:00,790 [django.request] Bad Request: /
+[INFO] 2025-10-14 15:21:07,882 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:21:08,117 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:21:08,119 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[ERROR] 2025-10-14 15:21:09,333 [django.request] Internal Server Error: /dashbord/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+sqlite3.OperationalError: SELECTs to the left and right of UNION do not have the same number of result columns
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/authentication/views.py", line 114, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django_ratelimit/decorators.py", line 27, in _wrapped
+    return fn(request, *args, **kw)
+  File "/home/TIM/mysite/authentication/views.py", line 1184, in dashbord
+    return render(request, 'learner/dashbord.html', {
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 326, in render
+    if match:
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 398, in __bool__
+    self._fetch_all()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1945, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+django.db.utils.OperationalError: SELECTs to the left and right of UNION do not have the same number of result columns
+[INFO] 2025-10-14 15:22:07,483 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:22:07,529 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:22:07,610 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:24:03,553 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:24:03,714 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-14 15:24:03,822 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
