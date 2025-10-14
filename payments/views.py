@@ -349,7 +349,7 @@ def add_to_cart(request, course_id):
 
     # Cegah jika course gratis, langsung arahkan ke enroll
     if course.payment_model == 'free':
-        messages.info(request, "Kursus ini gratis, silakan langsung daftar.")
+        messages.info(request, "This course is free, please register directly.")
         return redirect('courses:enroll', course_id=course.id)
 
     # Cek apakah sudah ada di cart
@@ -360,9 +360,9 @@ def add_to_cart(request, course_id):
     )
 
     if created:
-        messages.success(request, f"{course.course_name} berhasil ditambahkan ke keranjang.")
+        messages.success(request, f"{course.course_name} has been successfully added to your cart.")
     else:
-        messages.info(request, f"{course.course_name} sudah ada di keranjang Anda.")
+        messages.info(request, f"{course.course_name} is already in your cart.")
 
     return redirect('payments:view_cart')  # pastikan URL ini ada
 
