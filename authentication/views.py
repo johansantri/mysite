@@ -366,8 +366,13 @@ def validate_category_ids(category_ids):
 logger = logging.getLogger(__name__)
 
 
-@custom_ratelimit
+def validate_level(level):
+    valid_levels = [choice[0] for choice in Course._meta.get_field('level').choices]
+    if level in valid_levels:
+        return level
+    raise ValidationError(f"Invalid level: {level}")
 
+@custom_ratelimit
 def course_list(request):
     try:
         if request.method != 'GET':
@@ -446,9 +451,9 @@ def course_list(request):
         if level_filter:
             courses = courses.filter(level=level_filter)
         if price_filter == 'free':
-            courses = courses.filter(prices__user_payment=0)
+            courses = courses.filter(prices__portal_price=0)
         elif price_filter == 'paid':
-            courses = courses.filter(prices__user_payment__gt=0)
+            courses = courses.filter(prices__portal_price__gt=0)
 
         courses = courses.annotate(
             avg_rating=Avg('ratings__rating', default=0),
@@ -488,6 +493,15 @@ def course_list(request):
         language_codes = sorted(set(c['language'] for c in courses if c['language']))[:50]
         all_languages = dict(Course.choice_language)
         language_options = [{'code': code, 'name': all_languages.get(code, code)} for code in language_codes]
+
+        # Get level options from model choices
+        LEVEL_CHOICES = [
+            ('basic', 'Basic'),
+            ('middle', 'Middle'),
+            ('advanced', 'Advanced'),
+        ]
+        all_levels = dict(LEVEL_CHOICES)
+        level_options = [{'code': k, 'name': v} for k, v in all_levels.items()]
 
         # Process courses_data with price information
         courses_data = []
@@ -555,6 +569,7 @@ def course_list(request):
             'price_filter': price_filter,
             'categories': categories,
             'language_options': language_options,
+            'level_options': level_options,  # <-- level options here
         }
 
         return render(request, 'home/course_list.html', context)
@@ -571,6 +586,8 @@ def course_list(request):
     except Exception as e:
         logger.exception(f"Unexpected error in course_list: {str(e)}")
         return HttpResponseServerError("Terjadi kesalahan yang tidak terduga.")
+
+
 
 @custom_ratelimit
 @login_required
