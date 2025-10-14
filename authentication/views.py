@@ -1574,7 +1574,7 @@ def login_view(request):
         form = LoginForm(request.POST)
 
         if was_limited:
-            messages.error(request, 'Terlalu banyak percobaan login. Coba lagi nanti.')
+            messages.error(request, 'Too many login attempts. Please try again later.')
             return render(request, 'authentication/login.html', {'form': form})
 
         if form.is_valid():
@@ -1584,7 +1584,7 @@ def login_view(request):
 
             if user is not None:
                 if not user.is_active:
-                    messages.error(request, 'Akun Anda belum diaktivasi. Silakan cek email Anda untuk aktivasi.')
+                    messages.error(request, 'Your account has not been activated. Please check your email for activation.')
                     return render(request, 'authentication/login.html', {'form': form})
 
                 login(request, user)
@@ -1595,9 +1595,11 @@ def login_view(request):
                 )
 
                 next_url = request.POST.get('next') or request.GET.get('next')
+                messages.success(request, 'Login successful.')
                 return redirect(next_url or 'authentication:home')
+            
             else:
-                messages.error(request, 'Email atau kata sandi salah.')
+                messages.error(request, 'Email or password is incorrect.')
                 return render(request, 'authentication/login.html', {'form': form})
     else:
         form = LoginForm()

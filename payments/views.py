@@ -683,6 +683,7 @@ def cart_item_delete(request, pk):
         return redirect("/login/?next=%s" % request.path)
     item = get_object_or_404(CartItem, pk=pk, user=request.user)
     item.delete()
+    messages.success(request, 'The item was successfully removed from the cart.')
     return redirect('payments:view_cart')
 
 @login_required
