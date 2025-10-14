@@ -3,12 +3,19 @@
 <div id="comment-{{ comment.id }}" class="comment-wrapper mb-3 {% if level > 0 %}ms-{{ level|mul:4 }} ps-2 border-start border-2 border-primary-subtle{% endif %}">
     <div class="d-flex">
         <!-- Avatar dari huruf awal username -->
-        <div class="flex-shrink-0">
-            <div class="rounded-circle bg-secondary text-white d-flex justify-content-center align-items-center"
-                 style="width: 40px; height: 40px;">
-                {{ comment.user.username|slice:":1"|upper }}
-            </div>
+       <div class="flex-shrink-0">
+            {% if comment.user.photo %}
+                <img src="{{ comment.user.photo.url }}" alt="{{ comment.user.username }}"
+                    class="rounded-circle"
+                    style="width: 40px; height: 40px; object-fit: cover;">
+            {% else %}
+                <div class="rounded-circle bg-secondary text-white d-flex justify-content-center align-items-center"
+                    style="width: 40px; height: 40px;">
+                    {{ comment.user.username|slice:":1"|upper }}
+                </div>
+            {% endif %}
         </div>
+
 
         <!-- Konten Komentar -->
         <div class="flex-grow-1 ms-3">
