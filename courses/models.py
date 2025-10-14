@@ -592,7 +592,7 @@ class CoursePrice(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="prices")
     price_type = models.ForeignKey(PricingType, on_delete=models.CASCADE, related_name="course_prices")
     partner = models.ForeignKey(Partner, on_delete=models.CASCADE, related_name="course_prices")
-
+    ice_share_rate = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('0.00'))
     partner_price = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal('0.00'))
     discount_percent = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('0.00'))
     discount_amount = models.DecimalField(max_digits=15, decimal_places=2, default=Decimal('0.00'))

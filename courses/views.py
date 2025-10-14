@@ -3342,32 +3342,50 @@ def generate_certificate(request, course_id):
 
     for assessment in assessments:
         score_value = Decimal(0)
-        total_correct_answers = 0
-        total_questions = assessment.questions.count()
 
-        if total_questions > 0:  # Multiple choice
-            answers_exist = False
-            for question in assessment.questions.all():
-                answers = QuestionAnswer.objects.filter(question=question, user=request.user)
-                if answers.exists():
-                    answers_exist = True
-                total_correct_answers += answers.filter(choice__is_correct=True).count()
-            if not answers_exist:
-                all_assessments_submitted = False
-            score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight) if total_questions > 0 else 0
-        else:  # AskOra
-            askora_submissions = Submission.objects.filter(askora__assessment=assessment, user=request.user)
-            if not askora_submissions.exists():
-                all_assessments_submitted = False
+        lti_result = LTIResult.objects.filter(user=request.user, assessment=assessment).first()
+        if lti_result and lti_result.score is not None:
+            lti_score = Decimal(lti_result.score)
+            if lti_score > 1.0:
+                logger.warning(f'LTI score {lti_score} > 1.0, normalizing...')
+                lti_score = lti_score / 100
+            score_value = lti_score * Decimal(assessment.weight)
+        else:
+            # MCQ
+            total_questions = assessment.questions.count()
+            if total_questions > 0:
+                total_correct_answers = 0
+                answers_exist = False
+                for question in assessment.questions.all():
+                    answers = QuestionAnswer.objects.filter(question=question, user=request.user)
+                    if answers.exists():
+                        answers_exist = True
+                    total_correct_answers += answers.filter(choice__is_correct=True).count()
+                if not answers_exist:
+                    all_assessments_submitted = False
+                score_value = (Decimal(total_correct_answers) / Decimal(total_questions)) * Decimal(assessment.weight)
             else:
-                latest_submission = askora_submissions.order_by('-submitted_at').first()
-                assessment_score = AssessmentScore.objects.filter(submission=latest_submission).first()
-                if assessment_score:
-                    score_value = Decimal(assessment_score.final_score)
+                # AskOra
+                askora_submissions = Submission.objects.filter(askora__assessment=assessment, user=request.user)
+                if not askora_submissions.exists():
+                    all_assessments_submitted = False
+                else:
+                    latest_submission = askora_submissions.order_by('-submitted_at').first()
+                    assessment_score = AssessmentScore.objects.filter(submission=latest_submission).first()
+                    if assessment_score:
+                        score_value = Decimal(assessment_score.final_score)
+                    else:
+                        all_assessments_submitted = False
 
+        # Batasi ke bobot maksimum
         score_value = min(score_value, Decimal(assessment.weight))
-        assessment_scores.append({'assessment': assessment, 'score': score_value, 'weight': assessment.weight})
-        total_max_score += assessment.weight
+
+        assessment_scores.append({
+            'assessment': assessment,
+            'score': score_value,
+            'weight': assessment.weight,
+        })
+        total_max_score += Decimal(assessment.weight)
         total_score += score_value
 
     total_score = min(total_score, total_max_score)
@@ -3748,6 +3766,7 @@ def course_reruns(request, id):
 
     return render(request, 'courses/course_reruns.html', {'form': form, 'course': course})
 
+
 def add_course_price(request, id):
     if not request.user.is_authenticated:
         return redirect(f"/login/?next={request.path}")
@@ -3770,7 +3789,8 @@ def add_course_price(request, id):
             course_price.partner = partner
             course_price.save()
             messages.success(request, "✅ Harga kursus berhasil disimpan!")
-            return redirect(reverse('courses:add_course_price', args=[course.id]))
+            # Redirect ke detail kursus atau halaman lain yang sesuai
+            return redirect(reverse('courses:studio', args=[course.id]))
         else:
             messages.error(request, "Terdapat kesalahan pada form, silakan cek kembali.")
     else:
@@ -3925,7 +3945,7 @@ def enroll_course(request, course_id):
             return redirect('payments:process_payment', course_id=course.id)
 
         # pay for exam atau pay for certificate: boleh lanjut, bayar nanti
-        messages.info(request, "Anda bisa mendaftar sekarang, tetapi pembayaran akan diperlukan nanti.")
+        messages.info(request, "")
 
     # Tentukan tipe harga sesuai payment model
     # Optional alias if needed

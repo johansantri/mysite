@@ -24,6 +24,8 @@ import xml.etree.ElementTree as ET
 import hashlib
 from django_select2.forms import ModelSelect2MultipleWidget
 from dal import autocomplete
+from decimal import Decimal
+
 logger = logging.getLogger(__name__)
 
 
@@ -202,32 +204,28 @@ class CoursePriceForm(forms.ModelForm):
         widgets = {
             'partner_price': forms.NumberInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Enter price...',
+                'placeholder': 'Masukkan harga...',
                 'min': '0',
                 'step': '0.01',
             }),
             'discount_percent': forms.NumberInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Enter discount...',
+                'placeholder': 'Masukkan diskon...',
                 'min': '0',
                 'max': '100',
                 'step': '0.01',
             }),
+            'price_type': forms.Select(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        self.fields['price_type'].widget.attrs.update({'class': 'form-control'})
-        # Hanya partner yang bisa input harga dan diskon
+
+        # Misal, non-partner tidak boleh edit harga & diskon
         if not getattr(self.user, 'is_partner', False):
             self.fields['partner_price'].disabled = True
             self.fields['discount_percent'].disabled = True
-            
-
-
-        price_type_queryset = PricingType.objects.all()
-        self.fields['price_type'].queryset = price_type_queryset
 
     def clean(self):
         cleaned_data = super().clean()
@@ -236,18 +234,17 @@ class CoursePriceForm(forms.ModelForm):
         discount = cleaned_data.get('discount_percent')
 
         if price_type and price_type.code == 'free':
-            cleaned_data['partner_price'] = 0
-            cleaned_data['discount_percent'] = 0
+            # Jika harga free, harga dan diskon otomatis 0
+            cleaned_data['partner_price'] = Decimal('0.00')
+            cleaned_data['discount_percent'] = Decimal('0.00')
         else:
             if partner_price is None or partner_price <= 0:
-                self.add_error('partner_price', 'Partner price wajib diisi dan lebih dari 0 untuk harga non-free.')
+                self.add_error('partner_price', 'Harga wajib diisi dan harus lebih dari 0 untuk harga non-free.')
 
-            # Diskon boleh 0 tapi tidak boleh negatif atau lebih dari 100
             if discount is None:
-                # Kalau diskon kosong, bisa diisi 0 otomatis atau boleh kosong sesuai kebutuhan
-                cleaned_data['discount_percent'] = 0
+                cleaned_data['discount_percent'] = Decimal('0.00')
             elif discount < 0 or discount > 100:
-                self.add_error('discount_percent', 'Discount harus antara 0 dan 100.')
+                self.add_error('discount_percent', 'Diskon harus antara 0 dan 100.')
 
         return cleaned_data
 
