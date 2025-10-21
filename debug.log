@@ -3,3 +3,163 @@
 [INFO] 2025-10-21 14:01:14,421 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [WARNING] 2025-10-21 14:01:15,747 [django.request] Not Found: /partner/ping-session/
 [WARNING] 2025-10-21 14:01:16,195 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 14:01:40,012 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 14:01:41,250 [courses.views] LTI score 100 > 1.0 untuk user 4, normalisasi ke 1
+[WARNING] 2025-10-21 14:01:41,270 [courses.views] LTI score 100 > 1.0 untuk user 36869, normalisasi ke 1
+[WARNING] 2025-10-21 14:01:41,289 [courses.views] LTI score 100 > 1.0 untuk user 1, normalisasi ke 1
+[WARNING] 2025-10-21 14:01:41,308 [courses.views] LTI score 100 > 1.0 untuk user 56, normalisasi ke 1
+[WARNING] 2025-10-21 14:02:07,727 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 14:03:08,744 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 14:03:27,818 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-21 14:03:27,819 [django.request] Forbidden: /search/
+[WARNING] 2025-10-21 14:04:09,725 [django.request] Not Found: /partner/ping-session/
+[ERROR] 2025-10-21 14:04:22,568 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-21 14:04:22,571 [django.request] Bad Request: /.env
+[WARNING] 2025-10-21 14:05:10,727 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 14:06:11,725 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-10-21 14:07:05,997 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 14:07:06,182 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 14:07:06,270 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-21 14:07:12,725 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 14:07:49,566 [django.request] Not Found: /robots.txt
+[WARNING] 2025-10-21 14:07:50,101 [django.request] Not Found: /robots.txt
+[WARNING] 2025-10-21 14:08:13,730 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-10-21 14:08:22,469 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 14:08:22,687 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 14:08:22,698 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 14:08:55,918 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 14:08:56,159 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 14:08:56,172 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-21 14:09:14,727 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 14:10:15,725 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-10-21 14:10:31,471 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 14:10:31,558 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 14:10:31,799 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[ERROR] 2025-10-21 14:10:32,631 [django.request] Internal Server Error: /sosial/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 1524, in create_and_list_sos_posts
+    return render(request, 'home/sosial.html', context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 243, in render
+    nodelist.append(node.render_annotated(context))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 327, in render
+    return nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 199, in render
+    template = context.template.engine.select_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 208, in select_template
+    return self.get_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 976, in do_if
+    nodelist = parser.parse(("endif",))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 1540, in do_with
+    nodelist = parser.parse(("endwith",))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 489, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 487, in parse
+    filter_expression = self.compile_filter(token.contents)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 705, in __init__
+    filter_func = parser.find_filter(filter_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 615, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'hash_color'
+[INFO] 2025-10-21 14:10:43,620 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 14:10:44,021 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 14:10:44,156 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-21 14:11:17,674 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 14:11:28,973 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-21 14:11:28,974 [django.request] Forbidden: /search/
+[INFO] 2025-10-21 14:11:56,959 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 14:11:57,075 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 14:11:57,130 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-21 14:12:17,728 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 14:12:49,405 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-21 14:12:49,405 [django.request] Forbidden: /search/
+[WARNING] 2025-10-21 14:13:18,731 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 14:14:19,726 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-10-21 14:14:28,227 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 14:14:28,450 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 14:14:28,489 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-21 14:15:20,727 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-10-21 14:15:35,433 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 14:15:35,484 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 14:15:35,500 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 14:16:11,762 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 14:16:11,967 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 14:16:11,974 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-21 14:16:22,656 [django.request] Not Found: /partner/ping-session/
