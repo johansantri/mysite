@@ -1,10 +1,14 @@
 {% extends 'home/tes.html' %}
 {% block content %}
-<h3>Score Summary - {{ course.course_name }}</h3>
+<h3>Score Summary - 
+  <a href="{% url 'learner:course_learn' username=user.username id=course.id slug=course.slug %}">
+    {{ course.course_name }}
+  </a>
+</h3>
 
-<button type="button" class="btn btn-secondary mb-3" onclick="window.history.back();">
-  ← Back
-</button>
+
+
+
 
 <div class="table-responsive mb-4">
   <table class="table table-bordered">
@@ -92,9 +96,39 @@
       {% if status == 'Pass' %}
         <svg class="bi me-1" width="16" height="16" fill="currentColor"><use xlink:href="#check-circle"/></svg> You’re currently passing this course
       {% else %}
-        <svg class="bi me-1" width="16" height="16" fill="currentColor"><use xlink:href="#x-circle"/></svg> You’re currently not passing this course
+        <svg class="bi me-1" width="16" height="16" fill="currentColor"><use xlink:href="#x-circle"/></svg>
+          <span data-bs-toggle="tooltip" 
+                data-bs-placement="top" 
+                data-bs-html="true" 
+                title="
+                <div class='text-start'>
+                  <strong>Graduation Threshold Criteria</strong><br><br>
+                  To pass this course, you must meet <strong>all</strong> of the following:<br>
+                  <ul class='mb-0'>
+                    <li><strong>Overall Score:</strong> ≥ {{ passing_threshold }}% (your current: {{ overall_percentage }}%)</li>
+                    <li><strong>Course Progress:</strong> Exactly 100% (your current: {{ progress_percentage }}%)</li>
+                    <li><strong>All Assessments Submitted:</strong> Yes (your status: {{ all_submitted|yesno:'Yes,No' }})</li>
+                    <li><strong>Grade Range:</strong> Within 'Pass' range from course settings</li>
+                  </ul>
+                  <br><small>Tip: Complete remaining materials and assessments to improve!</small>
+                </div>
+                ">
+            You’re currently not passing this course
+          </span>
+
+          <script>
+          document.addEventListener('DOMContentLoaded', function () {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+              return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+          });
+          </script>
       {% endif %}
     </div>
+
+
+
   </div>
 </div>
 

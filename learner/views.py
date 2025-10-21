@@ -57,7 +57,7 @@ from geoip2.database import Reader as GeoIP2Reader
 import geoip2.errors
 from django.utils.decorators import method_decorator
 from django.views.decorators.http import require_POST
-
+from decimal import Decimal, ROUND_HALF_UP
 logger = logging.getLogger(__name__)
 
 
@@ -234,11 +234,15 @@ def score_summary_view(request, username, course_id):
         # Periksa apakah Assessment memiliki LTIResult
         lti_result = LTIResult.objects.filter(user=user, assessment=assessment).first()
         if lti_result and lti_result.score is not None:
-            # Gunakan skor dari LTIResult (konversi dari skala 0.0-1.0 ke bobot assessment)
-            score_value = Decimal(lti_result.score) * Decimal(assessment.weight)
-            logger.debug(f"LTI score for assessment {assessment.id}: {lti_result.score}, converted: {score_value}")
+            # Normalisasi skor LTI ke rentang 0.0-1.0
+            lti_score = Decimal(lti_result.score)
+            if lti_score > 1.0:
+                logger.warning(f'LTI score {lti_score} exceeds 1.0 for user {user.id}, normalizing to {lti_score / 100}')
+                lti_score = lti_score / 100
+            score_value = lti_score * Decimal(assessment.weight)
+            logger.debug(f"LTI score for assessment {assessment.id}: {lti_score}, converted: {score_value}")
         else:
-            # Logika existing untuk non-LTI assessments
+            # Logika untuk non-LTI assessments
             total_questions = assessment.questions.count()
             if total_questions > 0:
                 total_correct_answers = 0
@@ -256,18 +260,9 @@ def score_summary_view(request, username, course_id):
                     if total_questions > 0 else Decimal('0')
                 )
             else:
-                askora_submissions = Submission.objects.filter(askora__assessment=assessment, user=user)
-                if not askora_submissions.exists():
-                    is_submitted = False
-                    all_assessments_submitted = False
-                else:
-                    latest_submission = askora_submissions.order_by('-submitted_at').first()
-                    assessment_score = AssessmentScore.objects.filter(submission=latest_submission).first()
-                    if assessment_score:
-                        score_value = Decimal(assessment_score.final_score)
-                    else:
-                        is_submitted = False
-                        all_assessments_submitted = False
+                # Tidak ada soal multiple choice, dianggap tidak submit
+                is_submitted = False
+                all_assessments_submitted = False
 
         # Batasi skor agar tidak melebihi bobot
         score_value = min(score_value, Decimal(assessment.weight))
@@ -280,12 +275,22 @@ def score_summary_view(request, username, course_id):
         total_max_score += Decimal(assessment.weight)
         total_score += score_value
 
-    # Hitung persentase keseluruhan
+    # Batasi total score agar <= total_max_score
     total_score = min(total_score, total_max_score)
+
+    # Hitung persentase keseluruhan
     overall_percentage = (total_score / total_max_score * 100) if total_max_score > 0 else Decimal('0')
 
-    # Tentukan status berdasarkan passing threshold dan submission
-    passing_criteria_met = overall_percentage >= passing_threshold
+    # Bulatkan nilai-nilai
+    total_score = total_score.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    total_max_score = total_max_score.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    overall_percentage = overall_percentage.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    # Tentukan status berdasarkan passing threshold, submission, dan progress
+    course_progress = CourseProgress.objects.filter(user=user, course=course).first()
+    progress_percentage = Decimal(course_progress.progress_percentage) if course_progress else Decimal('0')
+    progress_percentage = progress_percentage.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    passing_criteria_met = overall_percentage >= passing_threshold and progress_percentage == 100
     status = "Pass" if all_assessments_submitted and passing_criteria_met else "Fail"
 
     # Cari grade huruf dari GradeRange
@@ -304,13 +309,18 @@ def score_summary_view(request, username, course_id):
 
     context = {
         'course': course,
+        'username': request.user.username,
         'assessment_results': assessment_results,
-        'overall_percentage': round(overall_percentage, 2),
+        'overall_percentage': overall_percentage,
         'status': status,
         'grade': grade_range.name if grade_range else "N/A",
-        'passing_threshold': passing_threshold
+        'passing_threshold': passing_threshold,
+        'progress_percentage': progress_percentage,
     }
     return render(request, 'learner/score_summary.html', context)
+
+
+
 
 def percent_encode(s):
     return quote(str(s), safe='~')
