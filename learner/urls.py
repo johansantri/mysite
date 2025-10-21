@@ -21,6 +21,8 @@ urlpatterns = [
     path('lti/grade-callback/', views.lti_grade_callback, name='lti_grade_callback'),
     path('learner/<str:username>/<int:course_id>/score-summary/', views.score_summary_view, name='score_summary'),
     path('course/<int:course_id>/scores/detail/', views.score_summary_view_detail, name='score_summary_detail'),
+    path('mark-progress/', views.mark_progress, name='mark_progress'),
+
 
   
 ]

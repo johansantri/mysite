@@ -597,6 +597,7 @@ CONTENT_SECURITY_POLICY = {
             "'unsafe-inline'",  # mengizinkan <script> inline — sebaiknya dihindari untuk keamanan
             "'unsafe-eval'",
             'https://scholldecodewp.h5p.com', 
+            'https://unpkg.com',
         ),
 
         # Izinkan file CSS dari domain sendiri dan CDN berikut

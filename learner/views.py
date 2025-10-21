@@ -55,6 +55,8 @@ from oauthlib.oauth1 import Client
 from .lti_utils import verify_oauth_signature, parse_lti_grade_xml
 from geoip2.database import Reader as GeoIP2Reader
 import geoip2.errors
+from django.utils.decorators import method_decorator
+from django.views.decorators.http import require_POST
 
 logger = logging.getLogger(__name__)
 
@@ -1343,6 +1345,69 @@ def load_content(request, username, id, slug, content_type, content_id):
     response = render(request, template, context)
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     return response
+
+
+
+logger = logging.getLogger(__name__)
+
+@csrf_exempt
+@login_required
+@require_POST
+def mark_progress(request):
+    try:
+        if not request.body:
+            logger.warning("Empty request body in mark_progress")
+            return JsonResponse({'error': 'Empty request body'}, status=400)
+
+        try:
+            data = json.loads(request.body)
+            logger.debug(f"Parsed JSON data: {data}")  # For debugging
+        except json.JSONDecodeError as e:
+            logger.warning(f"Invalid JSON in mark_progress: {e}")
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+        content_type = data.get('content_type')
+        content_id = data.get('content_id')
+
+        if not content_type or not content_id:
+            logger.warning(f"Missing content_type or content_id: {data}")
+            return JsonResponse({'error': 'Missing content_type or content_id'}, status=400)
+
+        user = request.user
+        course = None
+
+        with transaction.atomic():  # Ensures atomicity for progress calc
+            if content_type == 'material':
+                material = Material.objects.filter(id=content_id).select_related('section').first()
+                if not material:
+                    return JsonResponse({'error': 'Material not found'}, status=404)
+                MaterialRead.objects.get_or_create(user=user, material=material)
+                if hasattr(material, 'section') and material.section:
+                    course = getattr(material.section, 'course', None)  # Assuming one course per section; adjust if M2M
+
+            elif content_type == 'assessment':
+                assessment = Assessment.objects.filter(id=content_id).select_related('section').first()
+                if not assessment:
+                    return JsonResponse({'error': 'Assessment not found'}, status=404)
+                AssessmentRead.objects.get_or_create(user=user, assessment=assessment)
+                if hasattr(assessment, 'section') and assessment.section:
+                    course = getattr(assessment.section, 'course', None)  # Same as above
+
+            else:
+                return JsonResponse({'error': 'Invalid content_type'}, status=400)
+
+            if course:
+                progress, created = CourseProgress.objects.get_or_create(user=user, course=course)
+                if not created:  # Only recalc if existing
+                    progress.progress_percentage = calculate_course_progress(user, course)
+                    progress.save(update_fields=['progress_percentage'])
+                logger.info(f"Updated progress for user {user.id} in course {course.id}: {progress.progress_percentage}%")
+
+        return JsonResponse({'status': 'success'})
+
+    except Exception as e:
+        logger.exception("Unexpected error in mark_progress")
+        return JsonResponse({'error': 'Internal server error'}, status=500)
 
 @login_required
 def start_assessment_courses(request, assessment_id):

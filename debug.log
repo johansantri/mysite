@@ -1,13 +1,268 @@
-[INFO] 2025-10-14 15:26:40,914 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 15:26:41,010 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 15:26:41,018 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[DEBUG] 2025-10-14 15:26:47,021 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
-[INFO] 2025-10-14 15:26:47,025 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-14 07:26:47.021124+00:00
-[INFO] 2025-10-14 15:26:47,025 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0", path_info: "/logout/"}.
-[INFO] 2025-10-14 15:28:53,490 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 15:28:53,507 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 15:28:53,607 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[ERROR] 2025-10-14 15:30:47,407 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[INFO] 2025-10-21 11:14:11,416 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 11:14:11,461 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 11:14:11,500 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-21 11:14:14,316 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:14:16,091 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:14:16,894 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:14:16,942 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:14:16,971 [learner.views] Created CourseSessionLog for user 56, course 18, material 97
+[DEBUG] 2025-10-21 11:14:17,010 [learner.views] Updated LastAccessCourse for user 56, course 18, material 97
+[INFO] 2025-10-21 11:14:17,018 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 97
+[WARNING] 2025-10-21 11:14:20,867 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:14:20,910 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:14:20,937 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 86
+[DEBUG] 2025-10-21 11:14:20,971 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 86
+[INFO] 2025-10-21 11:14:21,003 [learner.views] Progress updated for user learn1 on course Audit of Information System: 75.0%
+[INFO] 2025-10-21 11:14:21,011 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, assessment 86
+[ERROR] 2025-10-21 11:14:21,354 [django.request] Internal Server Error: /mark-progress/
+[WARNING] 2025-10-21 11:14:24,602 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:14:34,234 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:14:39,062 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:14:39,944 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:14:42,083 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:14:44,205 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:14:44,542 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:14:49,014 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:14:50,747 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:14:52,524 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:14:53,251 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:14:55,252 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:14:56,853 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:14:57,387 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:14:58,436 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:15:13,381 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:15:15,183 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:15:17,591 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:15:21,365 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:15:24,824 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:15:34,441 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:15:38,137 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:15:40,140 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:15:42,281 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:15:44,410 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:15:44,546 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:15:49,217 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:15:50,765 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:15:52,566 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:15:53,436 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:15:55,262 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:15:56,856 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:15:57,387 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:15:58,449 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-10-21 11:16:08,198 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 11:16:08,300 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 11:16:08,355 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-21 11:16:10,390 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:16:10,431 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:16:10,457 [learner.views] Created CourseSessionLog for user 56, course 18, material 97
+[DEBUG] 2025-10-21 11:16:10,491 [learner.views] Updated LastAccessCourse for user 56, course 18, material 97
+[INFO] 2025-10-21 11:16:10,597 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 97
+[WARNING] 2025-10-21 11:16:13,420 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:16:14,248 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:16:14,294 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:16:14,332 [learner.views] Created CourseSessionLog for user 56, course 18, material 97
+[DEBUG] 2025-10-21 11:16:14,373 [learner.views] Updated LastAccessCourse for user 56, course 18, material 97
+[INFO] 2025-10-21 11:16:14,475 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn1, material 97
+[WARNING] 2025-10-21 11:16:15,222 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:16:18,254 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:16:18,289 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:16:18,320 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 86
+[DEBUG] 2025-10-21 11:16:18,356 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 86
+[INFO] 2025-10-21 11:16:18,395 [learner.views] Progress updated for user learn1 on course Audit of Information System: 75.0%
+[INFO] 2025-10-21 11:16:18,401 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, assessment 86
+[ERROR] 2025-10-21 11:16:18,649 [learner.views] Error in mark_progress
+Traceback (most recent call last):
+  File "/home/TIM/mysite/learner/views.py", line 1357, in mark_progress
+    data = json.loads(request.body)
+  File "/usr/lib/python3.10/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.10/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.10/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+[ERROR] 2025-10-21 11:16:18,653 [django.request] Internal Server Error: /mark-progress/
+[WARNING] 2025-10-21 11:16:24,860 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:16:44,557 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:16:49,259 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:16:50,751 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:16:52,552 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:16:55,261 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:16:56,856 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:16:58,571 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:17:13,594 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:17:15,095 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:17:15,198 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:17:18,745 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:17:25,055 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:17:26,525 [django.request] Not Found: /cgi-bin/luci/;stok=/locale
+[WARNING] 2025-10-21 11:17:42,694 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-21 11:17:42,695 [django.request] Forbidden: /search/
+[WARNING] 2025-10-21 11:17:44,648 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:17:49,455 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:17:50,751 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:17:52,555 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:17:55,505 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:17:56,856 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:17:58,571 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:18:13,815 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:18:15,203 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:18:15,204 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:18:18,742 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:18:25,254 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:18:44,792 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-10-21 11:18:53,751 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 11:18:53,902 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 11:18:53,977 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-21 11:18:56,221 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:18:56,238 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:18:56,318 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:18:56,356 [learner.views] Created CourseSessionLog for user 56, course 18, material 97
+[WARNING] 2025-10-21 11:18:56,416 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-10-21 11:18:56,428 [learner.views] Updated LastAccessCourse for user 56, course 18, material 97
+[WARNING] 2025-10-21 11:18:56,454 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:18:56,460 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-10-21 11:18:56,464 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 97
+[WARNING] 2025-10-21 11:18:56,873 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:18:58,632 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:18:58,989 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:18:59,032 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:18:59,071 [learner.views] Created CourseSessionLog for user 56, course 18, material 97
+[DEBUG] 2025-10-21 11:18:59,109 [learner.views] Updated LastAccessCourse for user 56, course 18, material 97
+[INFO] 2025-10-21 11:18:59,120 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn1, material 97
+[WARNING] 2025-10-21 11:19:03,685 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:19:03,728 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:19:03,754 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 86
+[DEBUG] 2025-10-21 11:19:03,802 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 86
+[INFO] 2025-10-21 11:19:03,831 [learner.views] Progress updated for user learn1 on course Audit of Information System: 75.0%
+[INFO] 2025-10-21 11:19:03,836 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, assessment 86
+[WARNING] 2025-10-21 11:19:04,084 [django.request] Bad Request: /mark-progress/
+[WARNING] 2025-10-21 11:19:14,031 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:19:15,203 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:19:25,252 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:19:44,784 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:19:49,691 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:19:50,765 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:19:52,557 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:19:55,603 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:19:56,876 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:19:58,816 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:19:59,722 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:20:04,232 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:20:14,020 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:20:15,200 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:20:25,254 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:20:44,809 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:20:49,688 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:20:50,752 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:20:52,642 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:20:55,604 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:20:56,877 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:20:58,930 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:20:59,839 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:21:04,369 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:21:14,018 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:21:15,200 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:21:25,451 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-10-21 11:21:43,652 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 11:21:43,864 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 11:21:43,891 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-21 11:21:45,782 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:21:47,479 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:21:47,529 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:21:47,554 [learner.views] Created CourseSessionLog for user 56, course 18, material 97
+[DEBUG] 2025-10-21 11:21:47,595 [learner.views] Updated LastAccessCourse for user 56, course 18, material 97
+[INFO] 2025-10-21 11:21:47,706 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn1, material 97
+[WARNING] 2025-10-21 11:21:51,043 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:21:51,090 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:21:51,118 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 86
+[DEBUG] 2025-10-21 11:21:51,167 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 86
+[INFO] 2025-10-21 11:21:51,208 [learner.views] Progress updated for user learn1 on course Audit of Information System: 75.0%
+[INFO] 2025-10-21 11:21:51,214 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, assessment 86
+[WARNING] 2025-10-21 11:21:51,461 [django.request] Bad Request: /mark-progress/
+[WARNING] 2025-10-21 11:22:00,762 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:22:04,368 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:22:08,408 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:22:08,439 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:22:08,496 [learner.views] Created CourseSessionLog for user 56, course 18, material 97
+[DEBUG] 2025-10-21 11:22:08,540 [learner.views] Updated LastAccessCourse for user 56, course 18, material 97
+[INFO] 2025-10-21 11:22:08,546 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 97
+[WARNING] 2025-10-21 11:22:10,756 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:22:10,809 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:22:10,844 [learner.views] Created CourseSessionLog for user 56, course 18, material 97
+[DEBUG] 2025-10-21 11:22:10,889 [learner.views] Updated LastAccessCourse for user 56, course 18, material 97
+[INFO] 2025-10-21 11:22:10,897 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn1, material 97
+[WARNING] 2025-10-21 11:22:16,973 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:22:17,022 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:22:17,088 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 86
+[DEBUG] 2025-10-21 11:22:17,133 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 86
+[INFO] 2025-10-21 11:22:17,165 [learner.views] Progress updated for user learn1 on course Audit of Information System: 75.0%
+[INFO] 2025-10-21 11:22:17,171 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, assessment 86
+[WARNING] 2025-10-21 11:22:17,511 [django.request] Bad Request: /mark-progress/
+[WARNING] 2025-10-21 11:22:59,879 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:23:04,423 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:23:11,359 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:23:17,700 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:24:00,063 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:24:04,415 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:24:11,369 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:24:17,830 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-10-21 11:24:39,889 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 11:24:39,895 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 11:24:40,021 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-21 11:24:44,046 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:24:44,097 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:24:44,128 [learner.views] Created CourseSessionLog for user 56, course 18, material 97
+[DEBUG] 2025-10-21 11:24:44,168 [learner.views] Updated LastAccessCourse for user 56, course 18, material 97
+[INFO] 2025-10-21 11:24:44,278 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 97
+[WARNING] 2025-10-21 11:24:46,104 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:24:46,143 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:24:46,171 [learner.views] Created CourseSessionLog for user 56, course 18, material 97
+[DEBUG] 2025-10-21 11:24:46,210 [learner.views] Updated LastAccessCourse for user 56, course 18, material 97
+[INFO] 2025-10-21 11:24:46,218 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn1, material 97
+[WARNING] 2025-10-21 11:24:49,628 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:24:49,672 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:24:49,710 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 86
+[DEBUG] 2025-10-21 11:24:49,749 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 86
+[INFO] 2025-10-21 11:24:49,781 [learner.views] Progress updated for user learn1 on course Audit of Information System: 75.0%
+[INFO] 2025-10-21 11:24:49,787 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, assessment 86
+[WARNING] 2025-10-21 11:24:50,241 [django.request] Bad Request: /mark-progress/
+[WARNING] 2025-10-21 11:25:01,144 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:25:04,452 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:25:46,828 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:25:50,132 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:26:01,391 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:26:04,587 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-10-21 11:26:35,896 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 11:26:35,994 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 11:26:36,050 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-21 11:26:38,352 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:26:38,392 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:26:38,418 [learner.views] Created CourseSessionLog for user 56, course 18, material 97
+[DEBUG] 2025-10-21 11:26:38,453 [learner.views] Updated LastAccessCourse for user 56, course 18, material 97
+[INFO] 2025-10-21 11:26:38,569 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 97
+[WARNING] 2025-10-21 11:26:40,511 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:26:40,545 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:26:40,571 [learner.views] Created CourseSessionLog for user 56, course 18, material 97
+[DEBUG] 2025-10-21 11:26:40,606 [learner.views] Updated LastAccessCourse for user 56, course 18, material 97
+[INFO] 2025-10-21 11:26:40,613 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn1, material 97
+[WARNING] 2025-10-21 11:26:45,512 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:26:45,553 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:26:45,585 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 86
+[DEBUG] 2025-10-21 11:26:45,636 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 86
+[INFO] 2025-10-21 11:26:45,666 [learner.views] Progress updated for user learn1 on course Audit of Information System: 75.0%
+[INFO] 2025-10-21 11:26:45,767 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, assessment 86
+[WARNING] 2025-10-21 11:26:46,027 [django.request] Bad Request: /mark-progress/
+[WARNING] 2025-10-21 11:27:00,537 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:27:04,647 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:27:41,101 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:27:45,535 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:27:45,587 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:27:45,615 [learner.views] Created CourseSessionLog for user 56, course 18, material 97
+[DEBUG] 2025-10-21 11:27:45,650 [learner.views] Updated LastAccessCourse for user 56, course 18, material 97
+[INFO] 2025-10-21 11:27:45,660 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 97
+[WARNING] 2025-10-21 11:27:46,120 [django.request] Not Found: /partner/ping-session/
+[ERROR] 2025-10-21 11:27:46,871 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
 Traceback (most recent call last):
   File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
     response = get_response(request)
@@ -18,13 +273,8 @@ Traceback (most recent call last):
   File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
     raise DisallowedHost(msg)
 django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
-[WARNING] 2025-10-14 15:30:47,410 [django.request] Bad Request: /
-[DEBUG] 2025-10-14 15:38:42,812 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
-[DEBUG] 2025-10-14 15:38:42,814 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
-[DEBUG] 2025-10-14 15:38:42,815 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-10-14 07:38:42.812931+00:00
-[INFO] 2025-10-14 15:38:43,781 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36", path_info: "/kuruk/login/"}.
-[INFO] 2025-10-14 15:38:43,783 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-14 07:38:42.812931+00:00
-[ERROR] 2025-10-14 15:39:52,287 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-21 11:27:46,873 [django.request] Bad Request: /
+[ERROR] 2025-10-21 11:27:48,222 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
 Traceback (most recent call last):
   File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
     response = get_response(request)
@@ -35,75 +285,697 @@ Traceback (most recent call last):
   File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
     raise DisallowedHost(msg)
 django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
-[WARNING] 2025-10-14 15:39:52,288 [django.request] Bad Request: /.git/config
-[INFO] 2025-10-14 15:45:05,575 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 15:45:05,643 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 15:45:05,672 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[DEBUG] 2025-10-14 15:45:09,532 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
-[INFO] 2025-10-14 15:45:09,535 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-14 07:45:09.532584+00:00
-[INFO] 2025-10-14 15:45:09,536 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36", path_info: "/kuruk/logout/"}.
-[INFO] 2025-10-14 15:47:47,565 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 15:47:47,604 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 15:47:47,625 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 15:51:39,767 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 15:51:39,840 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 15:51:39,981 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 15:56:27,189 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 15:56:27,244 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 15:56:27,332 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 15:58:26,952 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 15:58:27,192 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 15:58:27,212 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 15:59:27,738 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 15:59:27,942 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 15:59:27,961 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 16:01:01,203 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 16:01:01,223 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 16:01:01,339 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[DEBUG] 2025-10-14 16:01:11,570 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
-[DEBUG] 2025-10-14 16:01:11,571 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
-[DEBUG] 2025-10-14 16:01:11,572 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-10-14 08:01:11.570659+00:00
-[INFO] 2025-10-14 16:01:12,496 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0", path_info: "/kuruk/login/"}.
-[INFO] 2025-10-14 16:01:12,498 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-14 08:01:11.570659+00:00
-[INFO] 2025-10-14 16:07:23,686 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 16:07:32,987 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 16:10:34,184 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 16:10:42,335 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 16:10:49,501 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 16:11:03,090 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 16:11:03,130 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 16:11:03,231 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[DEBUG] 2025-10-14 16:11:07,161 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
-[INFO] 2025-10-14 16:11:07,164 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-14 08:11:07.161543+00:00
-[INFO] 2025-10-14 16:11:07,164 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0", path_info: "/logout/"}.
-[DEBUG] 2025-10-14 16:11:15,269 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
-[DEBUG] 2025-10-14 16:11:15,269 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
-[DEBUG] 2025-10-14 16:11:15,269 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-10-14 08:11:15.269091+00:00
-[INFO] 2025-10-14 16:11:16,193 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0", path_info: "/login/"}.
-[INFO] 2025-10-14 16:11:16,194 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-14 08:11:15.269091+00:00
-[DEBUG] 2025-10-14 16:11:16,209 [urllib3.connectionpool] Starting new HTTPS connection (1): ipinfo.io:443
-[DEBUG] 2025-10-14 16:11:16,586 [urllib3.connectionpool] https://ipinfo.io:443 "GET /203.217.140.215/json HTTP/1.1" 200 None
-[DEBUG] 2025-10-14 16:11:32,790 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
-[DEBUG] 2025-10-14 16:11:32,790 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
-[DEBUG] 2025-10-14 16:11:32,792 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-10-14 08:11:32.790150+00:00
-[INFO] 2025-10-14 16:11:33,741 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36", path_info: "/login/"}.
-[INFO] 2025-10-14 16:11:33,743 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-14 08:11:32.790150+00:00
-[DEBUG] 2025-10-14 16:11:33,757 [urllib3.connectionpool] Starting new HTTPS connection (1): ipinfo.io:443
-[DEBUG] 2025-10-14 16:11:34,026 [urllib3.connectionpool] https://ipinfo.io:443 "GET /203.217.140.215/json HTTP/1.1" 200 None
-[INFO] 2025-10-14 16:11:41,362 [learner.views] Redirecting to load_content: /admin/16/kursus-uiux-design-dari-nol-hingga-mahir/assessment/80/
-[WARNING] 2025-10-14 16:11:41,477 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
-[DEBUG] 2025-10-14 16:11:41,511 [learner.views] Closed previous CourseSessionLog for user 1, course 16
-[DEBUG] 2025-10-14 16:11:41,539 [learner.views] Created CourseSessionLog for user 1, course 16, assessment 80
-[DEBUG] 2025-10-14 16:11:41,576 [learner.views] Updated LastAccessCourse for user 1, course 16, assessment 80
-[INFO] 2025-10-14 16:11:41,695 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna admin, assessment 80
-[INFO] 2025-10-14 16:13:45,007 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 16:13:45,126 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[INFO] 2025-10-14 16:13:45,140 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
-[DEBUG] 2025-10-14 16:15:51,646 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
-[INFO] 2025-10-14 16:15:51,650 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-14 08:15:51.646936+00:00
-[INFO] 2025-10-14 16:15:51,650 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36", path_info: "/logout/"}.
-[DEBUG] 2025-10-14 16:16:00,650 [urllib3.connectionpool] Starting new HTTPS connection (1): oauth2.googleapis.com:443
-[DEBUG] 2025-10-14 16:16:01,155 [urllib3.connectionpool] https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
-[DEBUG] 2025-10-14 16:16:01,298 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
-[INFO] 2025-10-14 16:16:01,299 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36", path_info: "/accounts/google/login/callback/"}.
-[INFO] 2025-10-14 16:16:01,301 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-14 08:16:01.297933+00:00
+[WARNING] 2025-10-21 11:27:48,224 [django.request] Bad Request: /favicon.ico
+[WARNING] 2025-10-21 11:27:48,900 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:27:48,933 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:27:48,960 [learner.views] Created CourseSessionLog for user 56, course 18, material 97
+[DEBUG] 2025-10-21 11:27:48,998 [learner.views] Updated LastAccessCourse for user 56, course 18, material 97
+[INFO] 2025-10-21 11:27:49,006 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn1, material 97
+[WARNING] 2025-10-21 11:27:52,372 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:27:52,409 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:27:52,438 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 86
+[DEBUG] 2025-10-21 11:27:52,472 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 86
+[INFO] 2025-10-21 11:27:52,502 [learner.views] Progress updated for user learn1 on course Audit of Information System: 75.0%
+[INFO] 2025-10-21 11:27:52,508 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, assessment 86
+[WARNING] 2025-10-21 11:27:52,749 [django.request] Bad Request: /mark-progress/
+[WARNING] 2025-10-21 11:28:00,558 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:28:04,646 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:28:11,994 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:28:12,026 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:28:12,050 [learner.views] Created CourseSessionLog for user 56, course 18, material 97
+[DEBUG] 2025-10-21 11:28:12,088 [learner.views] Updated LastAccessCourse for user 56, course 18, material 97
+[INFO] 2025-10-21 11:28:12,101 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 97
+[WARNING] 2025-10-21 11:28:14,749 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:28:14,794 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:28:14,829 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 86
+[DEBUG] 2025-10-21 11:28:14,868 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 86
+[INFO] 2025-10-21 11:28:14,898 [learner.views] Progress updated for user learn1 on course Audit of Information System: 75.0%
+[INFO] 2025-10-21 11:28:14,903 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, assessment 86
+[WARNING] 2025-10-21 11:28:15,164 [django.request] Bad Request: /mark-progress/
+[WARNING] 2025-10-21 11:28:49,616 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:28:52,830 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:29:00,758 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-10-21 11:29:06,175 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 11:29:06,204 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 11:29:06,288 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-21 11:29:07,499 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:29:09,353 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:29:09,392 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:29:09,417 [learner.views] Created CourseSessionLog for user 56, course 18, material 97
+[DEBUG] 2025-10-21 11:29:09,472 [learner.views] Updated LastAccessCourse for user 56, course 18, material 97
+[INFO] 2025-10-21 11:29:09,576 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 97
+[WARNING] 2025-10-21 11:29:12,580 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:29:13,739 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:29:13,785 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:29:13,834 [learner.views] Created CourseSessionLog for user 56, course 18, material 97
+[DEBUG] 2025-10-21 11:29:13,870 [learner.views] Updated LastAccessCourse for user 56, course 18, material 97
+[INFO] 2025-10-21 11:29:13,877 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn1, material 97
+[WARNING] 2025-10-21 11:29:15,373 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:29:16,713 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:29:16,746 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:29:16,779 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 86
+[DEBUG] 2025-10-21 11:29:16,826 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 86
+[INFO] 2025-10-21 11:29:16,856 [learner.views] Progress updated for user learn1 on course Audit of Information System: 75.0%
+[INFO] 2025-10-21 11:29:16,861 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, assessment 86
+[WARNING] 2025-10-21 11:29:17,185 [django.request] Bad Request: /mark-progress/
+[WARNING] 2025-10-21 11:29:33,517 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-21 11:29:33,517 [django.request] Forbidden: /search/
+[INFO] 2025-10-21 11:29:50,316 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 11:29:50,777 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 11:29:50,877 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-21 11:29:51,648 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:29:53,731 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:30:12,641 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:30:14,445 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:30:15,373 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:30:17,200 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:30:49,990 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:30:53,938 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:31:12,852 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:31:14,699 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:31:15,570 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:31:17,193 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:31:49,982 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:31:53,136 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:32:12,950 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:32:14,750 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:32:15,563 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:32:17,197 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:32:50,108 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:32:53,122 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:33:13,036 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:33:14,841 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:33:15,562 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:33:17,199 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:33:50,290 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:33:53,298 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:34:13,130 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:34:14,937 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:34:15,556 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:34:17,200 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:34:50,411 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:34:53,297 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:35:13,268 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:35:15,069 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:35:15,560 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:35:17,192 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:35:50,417 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:35:53,297 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:36:13,376 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:36:15,183 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:36:15,564 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:36:17,199 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:36:50,412 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:36:53,303 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:37:13,465 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:37:15,271 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:37:15,568 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:37:17,278 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:37:50,430 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:37:53,435 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:38:13,605 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:38:15,387 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:38:15,580 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:38:17,478 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-10-21 11:38:25,279 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 11:38:25,355 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 11:38:25,361 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-21 11:38:29,829 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:38:29,871 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:38:29,897 [learner.views] Created CourseSessionLog for user 56, course 18, material 97
+[DEBUG] 2025-10-21 11:38:29,935 [learner.views] Updated LastAccessCourse for user 56, course 18, material 97
+[INFO] 2025-10-21 11:38:30,045 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 97
+[WARNING] 2025-10-21 11:38:31,717 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:38:31,760 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:38:31,788 [learner.views] Created CourseSessionLog for user 56, course 18, material 97
+[DEBUG] 2025-10-21 11:38:31,822 [learner.views] Updated LastAccessCourse for user 56, course 18, material 97
+[INFO] 2025-10-21 11:38:31,925 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn1, material 97
+[WARNING] 2025-10-21 11:38:33,935 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-21 11:38:33,936 [django.request] Forbidden: /search/
+[WARNING] 2025-10-21 11:38:36,080 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:38:36,117 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:38:36,157 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 86
+[DEBUG] 2025-10-21 11:38:36,203 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 86
+[INFO] 2025-10-21 11:38:36,232 [learner.views] Progress updated for user learn1 on course Audit of Information System: 75.0%
+[INFO] 2025-10-21 11:38:36,238 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, assessment 86
+[DEBUG] 2025-10-21 11:38:36,558 [learner.views] Parsed JSON data: {'content_type': 'assessment', 'content_id': '86'}
+[WARNING] 2025-10-21 11:38:50,441 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:38:53,446 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:39:13,658 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:39:15,854 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:39:24,687 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-21 11:39:24,688 [django.request] Forbidden: /search/
+[WARNING] 2025-10-21 11:39:27,875 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:39:27,915 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:39:27,942 [learner.views] Created CourseSessionLog for user 56, course 18, material 97
+[DEBUG] 2025-10-21 11:39:27,976 [learner.views] Updated LastAccessCourse for user 56, course 18, material 97
+[INFO] 2025-10-21 11:39:27,982 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 97
+[WARNING] 2025-10-21 11:39:30,451 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:39:30,488 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:39:30,514 [learner.views] Created CourseSessionLog for user 56, course 18, material 97
+[DEBUG] 2025-10-21 11:39:30,548 [learner.views] Updated LastAccessCourse for user 56, course 18, material 97
+[INFO] 2025-10-21 11:39:30,554 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn1, material 97
+[WARNING] 2025-10-21 11:39:38,334 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:39:38,369 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:39:38,394 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 86
+[DEBUG] 2025-10-21 11:39:38,433 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 86
+[INFO] 2025-10-21 11:39:38,482 [learner.views] Progress updated for user learn1 on course Audit of Information System: 100.0%
+[INFO] 2025-10-21 11:39:38,487 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, assessment 86
+[DEBUG] 2025-10-21 11:39:38,820 [learner.views] Parsed JSON data: {'content_type': 'assessment', 'content_id': '86'}
+[WARNING] 2025-10-21 11:39:50,462 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:39:53,480 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:40:13,992 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:40:15,766 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:40:31,037 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:40:38,911 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:40:50,518 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:40:53,580 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-10-21 11:41:06,463 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-10-21 11:41:06,466 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-10-21 11:41:06,467 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-10-21 03:41:06.463755+00:00
+[INFO] 2025-10-21 11:41:07,491 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36", path_info: "/login/"}.
+[INFO] 2025-10-21 11:41:07,493 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-21 03:41:06.463755+00:00
+[DEBUG] 2025-10-21 11:41:07,512 [urllib3.connectionpool] Starting new HTTPS connection (1): ipinfo.io:443
+[DEBUG] 2025-10-21 11:41:07,872 [urllib3.connectionpool] https://ipinfo.io:443 "GET /203.217.140.215/json HTTP/1.1" 200 None
+[WARNING] 2025-10-21 11:41:13,954 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:41:14,253 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-21 11:41:15,771 [django.request] Not Found: /partner/ping-session/
+[ERROR] 2025-10-21 11:41:30,303 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-21 11:41:30,306 [django.request] Bad Request: /
+[WARNING] 2025-10-21 11:41:31,096 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:41:34,626 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-21 11:41:34,627 [django.request] Forbidden: /search/
+[WARNING] 2025-10-21 11:41:38,909 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:41:50,522 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:41:53,636 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:42:14,068 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:42:15,778 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-10-21 11:42:31,490 [learner.views] Menampilkan pesan sapaan untuk pengguna learn1 pada kursus Audit of Information System
+[DEBUG] 2025-10-21 11:42:31,505 [learner.views] Created LastAccessCourse for user 56, course 18, material 92
+[INFO] 2025-10-21 11:42:31,505 [learner.views] Redirecting to load_content: /learn1/18/audit-of-information-system/material/92/
+[WARNING] 2025-10-21 11:42:31,637 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:42:31,677 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:42:31,705 [learner.views] Created CourseSessionLog for user 56, course 18, material 92
+[DEBUG] 2025-10-21 11:42:31,736 [learner.views] Updated LastAccessCourse for user 56, course 18, material 92
+[INFO] 2025-10-21 11:42:31,743 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn1, material 92
+[WARNING] 2025-10-21 11:42:39,198 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:42:39,234 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:42:39,262 [learner.views] Created CourseSessionLog for user 56, course 18, material 93
+[DEBUG] 2025-10-21 11:42:39,302 [learner.views] Updated LastAccessCourse for user 56, course 18, material 93
+[INFO] 2025-10-21 11:42:39,372 [learner.views] Progress updated for user learn1 on course Audit of Information System: 58.33333333333333%
+[INFO] 2025-10-21 11:42:39,373 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 93
+[WARNING] 2025-10-21 11:42:44,119 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:42:44,168 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:42:44,195 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 86
+[DEBUG] 2025-10-21 11:42:44,233 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 86
+[INFO] 2025-10-21 11:42:44,244 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, assessment 86
+[DEBUG] 2025-10-21 11:42:44,498 [learner.views] Parsed JSON data: {'content_type': 'assessment', 'content_id': '86'}
+[WARNING] 2025-10-21 11:42:50,213 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-21 11:42:50,214 [django.request] Forbidden: /search/
+[WARNING] 2025-10-21 11:42:50,525 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-10-21 11:42:51,914 [learner.views] Base URL: https://moodle.icei.ac.id/enrol/lti/tool.php
+[DEBUG] 2025-10-21 11:42:51,914 [learner.views] Base String: POST&https%3A%2F%2Fmoodle.icei.ac.id%2Fenrol%2Flti%2Ftool.php&context_id%3Dcourse-86%26context_title%3DCourse%26id%3D8%26launch_presentation_document_target%3Diframe%26launch_presentation_locale%3Den-US%26lis_outcome_service_url%3Dhttps%253A%252F%252Fini.icei.ac.id%252Flti%252Fgrade-callback%26lis_person_contact_email_primary%3Dlearn1%2540learn.com%26lis_person_name_full%3DLearn%2520More%26lis_result_sourcedid%3Dlti-86-56%26lti_message_type%3Dbasic-lti-launch-request%26lti_version%3DLTI-1p0%26oauth_consumer_key%3D123%26oauth_nonce%3Dbeb448a00a824bdaae0a582b42eec6bf%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1761021771%26oauth_version%3D1.0%26resource_link_id%3Dres-86%26roles%3DLearner%26tool_consumer_info_product_family_code%3Ddjango-lms%26tool_consumer_info_version%3D1.0%26user_id%3D56
+[DEBUG] 2025-10-21 11:42:51,915 [learner.views] Signing Key: Y9KczXcAmfgPJcHjwE7gmrRE25AE2i9W&
+[DEBUG] 2025-10-21 11:42:51,915 [learner.views] OAuth Signature: vtkfY6zJMbEPhb93jtJb2h03lUk=
+[DEBUG] 2025-10-21 11:42:51,915 [learner.views] Sending LTI Launch to https://moodle.icei.ac.id/enrol/lti/tool.php?id=8 with params: {'oauth_consumer_key': '123', 'oauth_signature_method': 'HMAC-SHA1', 'oauth_version': '1.0', 'oauth_nonce': 'beb448a00a824bdaae0a582b42eec6bf', 'oauth_timestamp': '1761021771', 'resource_link_id': 'res-86', 'user_id': '56', 'roles': 'Learner', 'lis_person_name_full': 'Learn More', 'lis_person_contact_email_primary': 'learn1@learn.com', 'context_id': 'course-86', 'context_title': 'Course', 'launch_presentation_locale': 'en-US', 'lti_version': 'LTI-1p0', 'lti_message_type': 'basic-lti-launch-request', 'tool_consumer_info_product_family_code': 'django-lms', 'tool_consumer_info_version': '1.0', 'launch_presentation_document_target': 'iframe', 'lis_outcome_service_url': 'https://ini.icei.ac.id/lti/grade-callback', 'lis_result_sourcedid': 'lti-86-56', 'oauth_signature': 'vtkfY6zJMbEPhb93jtJb2h03lUk='}
+[INFO] 2025-10-21 11:42:51,931 [learner.views] Initialized LTIResult for user 56, assessment 86
+[WARNING] 2025-10-21 11:42:53,671 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:43:14,130 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:43:15,826 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:43:32,196 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:43:39,738 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:43:44,763 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:43:50,545 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:43:53,774 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-10-21 11:44:02,273 [learner.views] Received LTI callback body: <?xml version="1.0" encoding="UTF-8"?>
+            <imsx_POXEnvelopeRequest xmlns="http://www.imsglobal.org/services/ltiv1p1/xsd/imsoms_v1p0">
+              <imsx_POXHeader>
+                <imsx_POXRequestHeaderInfo>
+                  <imsx_version>V1.0</imsx_version>
+                  <imsx_messageIdentifier>1761021842</imsx_messageIdentifier>
+                </imsx_POXRequestHeaderInfo>
+              </imsx_POXHeader>
+              <imsx_POXBody>
+                <replaceResultRequest>
+                  <resultRecord>
+                    <sourcedGUID>
+                      <sourcedId>lti-86-56</sourcedId>
+                    </sourcedGUID>
+                    <result>
+                      <resultScore>
+                        <language>en-us</language>
+                        <textString>1</textString>
+                      </resultScore>
+                    </result>
+                  </resultRecord>
+                </replaceResultRequest>
+              </imsx_POXBody>
+            </imsx_POXEnvelopeRequest>
+[WARNING] 2025-10-21 11:44:02,280 [learner.views] OAuth verification skipped or failed: 'Client' object has no attribute 'verify_request'
+[INFO] 2025-10-21 11:44:02,292 [learner.views] Score 1.0 saved for LTIResult lti-86-56
+[DEBUG] 2025-10-21 11:44:13,534 [learner.views] LTI score for assessment 86: 100.0, converted: 5000.00
+[WARNING] 2025-10-21 11:44:14,194 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:44:15,829 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:44:19,469 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:44:19,524 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:44:19,555 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 86
+[DEBUG] 2025-10-21 11:44:19,594 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 86
+[INFO] 2025-10-21 11:44:19,604 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn1, assessment 86
+[DEBUG] 2025-10-21 11:44:20,051 [learner.views] Parsed JSON data: {'content_type': 'assessment', 'content_id': '86'}
+[WARNING] 2025-10-21 11:44:20,653 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-21 11:44:20,654 [django.request] Forbidden: /search/
+[WARNING] 2025-10-21 11:44:23,190 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:44:23,223 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:44:23,259 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 86
+[DEBUG] 2025-10-21 11:44:23,298 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 86
+[INFO] 2025-10-21 11:44:23,308 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn1, assessment 86
+[DEBUG] 2025-10-21 11:44:23,664 [learner.views] Parsed JSON data: {'content_type': 'assessment', 'content_id': '86'}
+[INFO] 2025-10-21 11:44:30,810 [learner.views] Redirecting to load_content: /learn1/18/audit-of-information-system/assessment/86/
+[WARNING] 2025-10-21 11:44:30,940 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:44:30,984 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:44:31,013 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 86
+[DEBUG] 2025-10-21 11:44:31,058 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 86
+[INFO] 2025-10-21 11:44:31,068 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn1, assessment 86
+[DEBUG] 2025-10-21 11:44:31,462 [learner.views] Parsed JSON data: {'content_type': 'assessment', 'content_id': '86'}
+[WARNING] 2025-10-21 11:44:34,393 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:44:34,432 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:44:34,466 [learner.views] Created CourseSessionLog for user 56, course 18, material 97
+[DEBUG] 2025-10-21 11:44:34,501 [learner.views] Updated LastAccessCourse for user 56, course 18, material 97
+[INFO] 2025-10-21 11:44:34,508 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 97
+[WARNING] 2025-10-21 11:44:38,366 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:44:38,409 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:44:38,434 [learner.views] Created CourseSessionLog for user 56, course 18, material 93
+[DEBUG] 2025-10-21 11:44:38,466 [learner.views] Updated LastAccessCourse for user 56, course 18, material 93
+[INFO] 2025-10-21 11:44:38,473 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 93
+[WARNING] 2025-10-21 11:44:42,598 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:44:42,636 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:44:42,666 [learner.views] Created CourseSessionLog for user 56, course 18, material 94
+[DEBUG] 2025-10-21 11:44:42,703 [learner.views] Updated LastAccessCourse for user 56, course 18, material 94
+[INFO] 2025-10-21 11:44:42,760 [learner.views] Progress updated for user learn1 on course Audit of Information System: 66.66666666666666%
+[INFO] 2025-10-21 11:44:42,765 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 94
+[WARNING] 2025-10-21 11:44:45,496 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:44:45,536 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:44:45,562 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 85
+[DEBUG] 2025-10-21 11:44:45,597 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 85
+[INFO] 2025-10-21 11:44:45,655 [learner.views] Progress updated for user learn1 on course Audit of Information System: 75.0%
+[INFO] 2025-10-21 11:44:45,665 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, assessment 85
+[WARNING] 2025-10-21 11:44:50,766 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:44:51,479 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:44:51,515 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:44:51,541 [learner.views] Created CourseSessionLog for user 56, course 18, material 95
+[DEBUG] 2025-10-21 11:44:51,587 [learner.views] Updated LastAccessCourse for user 56, course 18, material 95
+[INFO] 2025-10-21 11:44:51,615 [learner.views] Progress updated for user learn1 on course Audit of Information System: 75.0%
+[INFO] 2025-10-21 11:44:51,617 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 95
+[WARNING] 2025-10-21 11:44:53,811 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:44:53,850 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:44:53,886 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:44:53,914 [learner.views] Created CourseSessionLog for user 56, course 18, material 96
+[DEBUG] 2025-10-21 11:44:53,953 [learner.views] Updated LastAccessCourse for user 56, course 18, material 96
+[INFO] 2025-10-21 11:44:54,010 [learner.views] Progress updated for user learn1 on course Audit of Information System: 83.33333333333333%
+[INFO] 2025-10-21 11:44:54,012 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 96
+[WARNING] 2025-10-21 11:44:55,606 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:44:55,640 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:44:55,666 [learner.views] Created CourseSessionLog for user 56, course 18, material 97
+[DEBUG] 2025-10-21 11:44:55,701 [learner.views] Updated LastAccessCourse for user 56, course 18, material 97
+[INFO] 2025-10-21 11:44:55,758 [learner.views] Progress updated for user learn1 on course Audit of Information System: 91.66666666666667%
+[INFO] 2025-10-21 11:44:55,761 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 97
+[WARNING] 2025-10-21 11:44:57,803 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:44:57,838 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:44:57,864 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 86
+[DEBUG] 2025-10-21 11:44:57,898 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 86
+[INFO] 2025-10-21 11:44:57,951 [learner.views] Progress updated for user learn1 on course Audit of Information System: 100.0%
+[INFO] 2025-10-21 11:44:57,956 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, assessment 86
+[DEBUG] 2025-10-21 11:44:58,174 [learner.views] Parsed JSON data: {'content_type': 'assessment', 'content_id': '86'}
+[WARNING] 2025-10-21 11:45:14,266 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:45:15,853 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:45:31,473 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:45:34,832 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:45:38,791 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:45:43,091 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:45:45,974 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:45:49,171 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:45:50,767 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:45:51,906 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:45:53,850 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:45:54,420 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:45:56,418 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:45:58,477 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:46:14,312 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:46:15,856 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:46:31,476 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:46:34,830 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:46:38,797 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:46:43,087 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:46:45,991 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:46:49,159 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:46:50,966 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:46:51,913 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:46:53,864 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:46:54,425 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:46:56,426 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:46:58,482 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:47:14,309 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:47:15,866 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:47:31,548 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:47:35,656 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:47:39,662 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:47:43,868 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:47:46,870 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:47:50,073 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:47:51,076 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:47:52,175 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:47:54,077 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:47:55,278 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:47:57,386 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:47:58,486 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:48:14,528 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:48:15,872 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-10-21 11:48:24,150 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 11:48:24,322 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 11:48:24,366 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-21 11:48:27,926 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:48:27,970 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:48:28,001 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 86
+[DEBUG] 2025-10-21 11:48:28,041 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 86
+[INFO] 2025-10-21 11:48:28,080 [learner.views] Progress updated for user learn1 on course Audit of Information System: 100.0%
+[INFO] 2025-10-21 11:48:28,204 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn1, assessment 86
+[DEBUG] 2025-10-21 11:48:28,728 [learner.views] Parsed JSON data: {'content_type': 'assessment', 'content_id': '86'}
+[WARNING] 2025-10-21 11:48:52,126 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:48:54,088 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:49:05,589 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-21 11:49:05,589 [django.request] Forbidden: /search/
+[WARNING] 2025-10-21 11:49:14,590 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:49:15,891 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-10-21 11:49:28,082 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 11:49:28,118 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 11:49:28,260 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-21 11:49:29,636 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:49:30,439 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:49:30,490 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:49:30,518 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 86
+[DEBUG] 2025-10-21 11:49:30,558 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 86
+[INFO] 2025-10-21 11:49:30,594 [learner.views] Progress updated for user learn1 on course Audit of Information System: 100.0%
+[INFO] 2025-10-21 11:49:30,601 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn1, assessment 86
+[DEBUG] 2025-10-21 11:49:31,867 [learner.views] Parsed JSON data: {'content_type': 'assessment', 'content_id': '86'}
+[WARNING] 2025-10-21 11:49:37,636 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:49:37,677 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:49:37,704 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 86
+[DEBUG] 2025-10-21 11:49:37,743 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 86
+[INFO] 2025-10-21 11:49:37,776 [learner.views] Progress updated for user learn1 on course Audit of Information System: 100.0%
+[INFO] 2025-10-21 11:49:37,876 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn1, assessment 86
+[DEBUG] 2025-10-21 11:49:38,184 [learner.views] Parsed JSON data: {'content_type': 'assessment', 'content_id': '86'}
+[WARNING] 2025-10-21 11:49:51,377 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:49:54,087 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-10-21 11:50:02,487 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 11:50:02,610 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 11:50:02,739 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-21 11:50:03,563 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:50:03,605 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:50:03,633 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 86
+[DEBUG] 2025-10-21 11:50:03,669 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 86
+[INFO] 2025-10-21 11:50:03,706 [learner.views] Progress updated for user learn1 on course Audit of Information System: 100.0%
+[INFO] 2025-10-21 11:50:03,815 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn1, assessment 86
+[DEBUG] 2025-10-21 11:50:04,976 [learner.views] Parsed JSON data: {'content_type': 'assessment', 'content_id': '86'}
+[WARNING] 2025-10-21 11:50:14,592 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:50:16,011 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:50:51,392 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:50:54,200 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:51:05,227 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:51:14,594 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:51:16,014 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-10-21 11:51:43,512 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 11:51:43,578 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-21 11:51:43,706 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-21 11:51:47,122 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:51:47,178 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:51:47,207 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 86
+[DEBUG] 2025-10-21 11:51:47,244 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 86
+[INFO] 2025-10-21 11:51:47,274 [learner.views] Progress updated for user learn1 on course Audit of Information System: 100.0%
+[INFO] 2025-10-21 11:51:47,371 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn1, assessment 86
+[DEBUG] 2025-10-21 11:51:48,543 [learner.views] Parsed JSON data: {'content_type': 'assessment', 'content_id': '86'}
+[WARNING] 2025-10-21 11:51:51,694 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:51:55,033 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-10-21 11:51:56,111 [learner.views] Base URL: https://moodle.icei.ac.id/enrol/lti/tool.php
+[DEBUG] 2025-10-21 11:51:56,112 [learner.views] Base String: POST&https%3A%2F%2Fmoodle.icei.ac.id%2Fenrol%2Flti%2Ftool.php&context_id%3Dcourse-86%26context_title%3DCourse%26id%3D8%26launch_presentation_document_target%3Diframe%26launch_presentation_locale%3Den-US%26lis_outcome_service_url%3Dhttps%253A%252F%252Fini.icei.ac.id%252Flti%252Fgrade-callback%26lis_person_contact_email_primary%3Dlearn1%2540learn.com%26lis_person_name_full%3DLearn%2520More%26lis_result_sourcedid%3Dlti-86-56%26lti_message_type%3Dbasic-lti-launch-request%26lti_version%3DLTI-1p0%26oauth_consumer_key%3D123%26oauth_nonce%3D770b4c09d07044688792aa5ace8ecf78%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1761022316%26oauth_version%3D1.0%26resource_link_id%3Dres-86%26roles%3DLearner%26tool_consumer_info_product_family_code%3Ddjango-lms%26tool_consumer_info_version%3D1.0%26user_id%3D56
+[DEBUG] 2025-10-21 11:51:56,112 [learner.views] Signing Key: Y9KczXcAmfgPJcHjwE7gmrRE25AE2i9W&
+[DEBUG] 2025-10-21 11:51:56,112 [learner.views] OAuth Signature: bvofQUJQg9TdpyQAsbF9CLaHiFI=
+[DEBUG] 2025-10-21 11:51:56,112 [learner.views] Sending LTI Launch to https://moodle.icei.ac.id/enrol/lti/tool.php?id=8 with params: {'oauth_consumer_key': '123', 'oauth_signature_method': 'HMAC-SHA1', 'oauth_version': '1.0', 'oauth_nonce': '770b4c09d07044688792aa5ace8ecf78', 'oauth_timestamp': '1761022316', 'resource_link_id': 'res-86', 'user_id': '56', 'roles': 'Learner', 'lis_person_name_full': 'Learn More', 'lis_person_contact_email_primary': 'learn1@learn.com', 'context_id': 'course-86', 'context_title': 'Course', 'launch_presentation_locale': 'en-US', 'lti_version': 'LTI-1p0', 'lti_message_type': 'basic-lti-launch-request', 'tool_consumer_info_product_family_code': 'django-lms', 'tool_consumer_info_version': '1.0', 'launch_presentation_document_target': 'iframe', 'lis_outcome_service_url': 'https://ini.icei.ac.id/lti/grade-callback', 'lis_result_sourcedid': 'lti-86-56', 'oauth_signature': 'bvofQUJQg9TdpyQAsbF9CLaHiFI='}
+[INFO] 2025-10-21 11:51:56,147 [learner.views] Initialized LTIResult for user 56, assessment 86
+[INFO] 2025-10-21 11:52:10,207 [learner.views] Redirecting to load_content: /learn1/18/audit-of-information-system/assessment/86/
+[WARNING] 2025-10-21 11:52:10,332 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:52:10,372 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:52:10,404 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 86
+[DEBUG] 2025-10-21 11:52:10,441 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 86
+[INFO] 2025-10-21 11:52:10,458 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn1, assessment 86
+[DEBUG] 2025-10-21 11:52:11,017 [learner.views] Parsed JSON data: {'content_type': 'assessment', 'content_id': '86'}
+[WARNING] 2025-10-21 11:52:15,376 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:52:16,374 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-10-21 11:52:17,955 [learner.views] Base URL: https://moodle.icei.ac.id/enrol/lti/tool.php
+[DEBUG] 2025-10-21 11:52:17,956 [learner.views] Base String: POST&https%3A%2F%2Fmoodle.icei.ac.id%2Fenrol%2Flti%2Ftool.php&context_id%3Dcourse-86%26context_title%3DCourse%26id%3D8%26launch_presentation_document_target%3Diframe%26launch_presentation_locale%3Den-US%26lis_outcome_service_url%3Dhttps%253A%252F%252Fini.icei.ac.id%252Flti%252Fgrade-callback%26lis_person_contact_email_primary%3Dlearn1%2540learn.com%26lis_person_name_full%3DLearn%2520More%26lis_result_sourcedid%3Dlti-86-56%26lti_message_type%3Dbasic-lti-launch-request%26lti_version%3DLTI-1p0%26oauth_consumer_key%3D123%26oauth_nonce%3Ddc97029751da4e7090da67c2fe024315%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1761022337%26oauth_version%3D1.0%26resource_link_id%3Dres-86%26roles%3DLearner%26tool_consumer_info_product_family_code%3Ddjango-lms%26tool_consumer_info_version%3D1.0%26user_id%3D56
+[DEBUG] 2025-10-21 11:52:17,956 [learner.views] Signing Key: Y9KczXcAmfgPJcHjwE7gmrRE25AE2i9W&
+[DEBUG] 2025-10-21 11:52:17,956 [learner.views] OAuth Signature: Y998daSjiSLHzfxt51/vt5FbONA=
+[DEBUG] 2025-10-21 11:52:17,956 [learner.views] Sending LTI Launch to https://moodle.icei.ac.id/enrol/lti/tool.php?id=8 with params: {'oauth_consumer_key': '123', 'oauth_signature_method': 'HMAC-SHA1', 'oauth_version': '1.0', 'oauth_nonce': 'dc97029751da4e7090da67c2fe024315', 'oauth_timestamp': '1761022337', 'resource_link_id': 'res-86', 'user_id': '56', 'roles': 'Learner', 'lis_person_name_full': 'Learn More', 'lis_person_contact_email_primary': 'learn1@learn.com', 'context_id': 'course-86', 'context_title': 'Course', 'launch_presentation_locale': 'en-US', 'lti_version': 'LTI-1p0', 'lti_message_type': 'basic-lti-launch-request', 'tool_consumer_info_product_family_code': 'django-lms', 'tool_consumer_info_version': '1.0', 'launch_presentation_document_target': 'iframe', 'lis_outcome_service_url': 'https://ini.icei.ac.id/lti/grade-callback', 'lis_result_sourcedid': 'lti-86-56', 'oauth_signature': 'Y998daSjiSLHzfxt51/vt5FbONA='}
+[INFO] 2025-10-21 11:52:17,984 [learner.views] Initialized LTIResult for user 56, assessment 86
+[WARNING] 2025-10-21 11:52:44,781 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:52:44,823 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:52:44,850 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 86
+[DEBUG] 2025-10-21 11:52:44,884 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 86
+[INFO] 2025-10-21 11:52:44,895 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn1, assessment 86
+[DEBUG] 2025-10-21 11:52:45,368 [learner.views] Parsed JSON data: {'content_type': 'assessment', 'content_id': '86'}
+[WARNING] 2025-10-21 11:52:47,691 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:52:51,623 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:52:54,092 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-10-21 11:53:07,996 [learner.views] Base URL: https://moodle.icei.ac.id/enrol/lti/tool.php
+[DEBUG] 2025-10-21 11:53:07,997 [learner.views] Base String: POST&https%3A%2F%2Fmoodle.icei.ac.id%2Fenrol%2Flti%2Ftool.php&context_id%3Dcourse-86%26context_title%3DCourse%26id%3D8%26launch_presentation_document_target%3Diframe%26launch_presentation_locale%3Den-US%26lis_outcome_service_url%3Dhttps%253A%252F%252Fini.icei.ac.id%252Flti%252Fgrade-callback%26lis_person_contact_email_primary%3Dlearn1%2540learn.com%26lis_person_name_full%3DLearn%2520More%26lis_result_sourcedid%3Dlti-86-56%26lti_message_type%3Dbasic-lti-launch-request%26lti_version%3DLTI-1p0%26oauth_consumer_key%3D123%26oauth_nonce%3D051b8ce8b119467f96355296ed148551%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1761022387%26oauth_version%3D1.0%26resource_link_id%3Dres-86%26roles%3DLearner%26tool_consumer_info_product_family_code%3Ddjango-lms%26tool_consumer_info_version%3D1.0%26user_id%3D56
+[DEBUG] 2025-10-21 11:53:07,997 [learner.views] Signing Key: Y9KczXcAmfgPJcHjwE7gmrRE25AE2i9W&
+[DEBUG] 2025-10-21 11:53:07,997 [learner.views] OAuth Signature: 5ZBeG3tzr9eNNpPM1r/8nc3FE4o=
+[DEBUG] 2025-10-21 11:53:07,997 [learner.views] Sending LTI Launch to https://moodle.icei.ac.id/enrol/lti/tool.php?id=8 with params: {'oauth_consumer_key': '123', 'oauth_signature_method': 'HMAC-SHA1', 'oauth_version': '1.0', 'oauth_nonce': '051b8ce8b119467f96355296ed148551', 'oauth_timestamp': '1761022387', 'resource_link_id': 'res-86', 'user_id': '56', 'roles': 'Learner', 'lis_person_name_full': 'Learn More', 'lis_person_contact_email_primary': 'learn1@learn.com', 'context_id': 'course-86', 'context_title': 'Course', 'launch_presentation_locale': 'en-US', 'lti_version': 'LTI-1p0', 'lti_message_type': 'basic-lti-launch-request', 'tool_consumer_info_product_family_code': 'django-lms', 'tool_consumer_info_version': '1.0', 'launch_presentation_document_target': 'iframe', 'lis_outcome_service_url': 'https://ini.icei.ac.id/lti/grade-callback', 'lis_result_sourcedid': 'lti-86-56', 'oauth_signature': '5ZBeG3tzr9eNNpPM1r/8nc3FE4o='}
+[INFO] 2025-10-21 11:53:08,017 [learner.views] Initialized LTIResult for user 56, assessment 86
+[WARNING] 2025-10-21 11:53:15,382 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:53:16,410 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:53:27,842 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:53:27,879 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:53:27,909 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 86
+[DEBUG] 2025-10-21 11:53:27,946 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 86
+[INFO] 2025-10-21 11:53:27,956 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn1, assessment 86
+[DEBUG] 2025-10-21 11:53:28,418 [learner.views] Parsed JSON data: {'content_type': 'assessment', 'content_id': '86'}
+[WARNING] 2025-10-21 11:53:47,693 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:53:51,716 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:53:54,117 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:54:15,471 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:54:16,465 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:54:28,417 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:54:47,951 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:54:51,719 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:54:54,123 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:55:15,596 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:55:16,668 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:55:28,537 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:55:42,072 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-21 11:55:42,072 [django.request] Forbidden: /search/
+[WARNING] 2025-10-21 11:55:48,085 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:55:51,717 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:55:54,123 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:56:15,602 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:56:16,668 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:56:28,713 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:56:48,309 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-10-21 11:56:48,480 [learner.views] Menampilkan pesan sapaan untuk pengguna learn1 pada kursus Audit of Information System
+[DEBUG] 2025-10-21 11:56:48,498 [learner.views] Created LastAccessCourse for user 56, course 18, material 92
+[INFO] 2025-10-21 11:56:48,499 [learner.views] Redirecting to load_content: /learn1/18/audit-of-information-system/material/92/
+[WARNING] 2025-10-21 11:56:48,632 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:56:48,668 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:56:48,702 [learner.views] Created CourseSessionLog for user 56, course 18, material 92
+[DEBUG] 2025-10-21 11:56:48,735 [learner.views] Updated LastAccessCourse for user 56, course 18, material 92
+[INFO] 2025-10-21 11:56:48,742 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn1, material 92
+[WARNING] 2025-10-21 11:56:51,946 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:56:54,227 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:57:14,560 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:57:14,610 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:57:14,647 [learner.views] Created CourseSessionLog for user 56, course 18, material 93
+[DEBUG] 2025-10-21 11:57:14,686 [learner.views] Updated LastAccessCourse for user 56, course 18, material 93
+[INFO] 2025-10-21 11:57:14,758 [learner.views] Progress updated for user learn1 on course Audit of Information System: 8.333333333333332%
+[INFO] 2025-10-21 11:57:14,760 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 93
+[WARNING] 2025-10-21 11:57:15,594 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:57:16,764 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:57:17,416 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:57:17,458 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:57:17,486 [learner.views] Created CourseSessionLog for user 56, course 18, material 94
+[DEBUG] 2025-10-21 11:57:17,529 [learner.views] Updated LastAccessCourse for user 56, course 18, material 94
+[INFO] 2025-10-21 11:57:17,595 [learner.views] Progress updated for user learn1 on course Audit of Information System: 16.666666666666664%
+[INFO] 2025-10-21 11:57:17,598 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 94
+[WARNING] 2025-10-21 11:57:19,168 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:57:19,219 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:57:19,251 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 85
+[DEBUG] 2025-10-21 11:57:19,299 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 85
+[INFO] 2025-10-21 11:57:19,365 [learner.views] Progress updated for user learn1 on course Audit of Information System: 25.0%
+[INFO] 2025-10-21 11:57:19,377 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, assessment 85
+[WARNING] 2025-10-21 11:57:22,908 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:57:22,948 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:57:22,982 [learner.views] Created CourseSessionLog for user 56, course 18, material 95
+[DEBUG] 2025-10-21 11:57:23,017 [learner.views] Updated LastAccessCourse for user 56, course 18, material 95
+[INFO] 2025-10-21 11:57:23,105 [learner.views] Progress updated for user learn1 on course Audit of Information System: 50.0%
+[INFO] 2025-10-21 11:57:23,107 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 95
+[WARNING] 2025-10-21 11:57:24,867 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:57:24,914 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:57:24,945 [learner.views] Created CourseSessionLog for user 56, course 18, material 96
+[DEBUG] 2025-10-21 11:57:24,984 [learner.views] Updated LastAccessCourse for user 56, course 18, material 96
+[INFO] 2025-10-21 11:57:25,051 [learner.views] Progress updated for user learn1 on course Audit of Information System: 58.33333333333333%
+[INFO] 2025-10-21 11:57:25,053 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 96
+[WARNING] 2025-10-21 11:57:26,402 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:57:26,438 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:57:26,473 [learner.views] Created CourseSessionLog for user 56, course 18, material 97
+[DEBUG] 2025-10-21 11:57:26,508 [learner.views] Updated LastAccessCourse for user 56, course 18, material 97
+[INFO] 2025-10-21 11:57:26,576 [learner.views] Progress updated for user learn1 on course Audit of Information System: 66.66666666666667%
+[INFO] 2025-10-21 11:57:26,577 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 97
+[WARNING] 2025-10-21 11:57:28,816 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:57:31,969 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:57:32,014 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:57:32,042 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 86
+[DEBUG] 2025-10-21 11:57:32,083 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 86
+[INFO] 2025-10-21 11:57:32,152 [learner.views] Progress updated for user learn1 on course Audit of Information System: 75.0%
+[INFO] 2025-10-21 11:57:32,157 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, assessment 86
+[DEBUG] 2025-10-21 11:57:32,492 [learner.views] Parsed JSON data: {'content_type': 'assessment', 'content_id': '86'}
+[WARNING] 2025-10-21 11:57:40,164 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:57:40,201 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:57:40,236 [learner.views] Created CourseSessionLog for user 56, course 18, material 92
+[DEBUG] 2025-10-21 11:57:40,274 [learner.views] Updated LastAccessCourse for user 56, course 18, material 92
+[INFO] 2025-10-21 11:57:40,280 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 92
+[WARNING] 2025-10-21 11:57:42,756 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:57:42,790 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:57:42,828 [learner.views] Created CourseSessionLog for user 56, course 18, material 93
+[DEBUG] 2025-10-21 11:57:42,863 [learner.views] Updated LastAccessCourse for user 56, course 18, material 93
+[INFO] 2025-10-21 11:57:42,911 [learner.views] Progress updated for user learn1 on course Audit of Information System: 100.0%
+[INFO] 2025-10-21 11:57:42,913 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 93
+[WARNING] 2025-10-21 11:57:48,367 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:57:49,333 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:57:49,709 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:57:49,743 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:57:49,776 [learner.views] Created CourseSessionLog for user 56, course 18, material 94
+[DEBUG] 2025-10-21 11:57:49,811 [learner.views] Updated LastAccessCourse for user 56, course 18, material 94
+[INFO] 2025-10-21 11:57:49,838 [learner.views] Progress updated for user learn1 on course Audit of Information System: 100.0%
+[INFO] 2025-10-21 11:57:49,839 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 94
+[WARNING] 2025-10-21 11:57:51,319 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:57:51,352 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:57:51,377 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 85
+[DEBUG] 2025-10-21 11:57:51,409 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 85
+[INFO] 2025-10-21 11:57:51,440 [learner.views] Progress updated for user learn1 on course Audit of Information System: 100.0%
+[INFO] 2025-10-21 11:57:51,453 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, assessment 85
+[WARNING] 2025-10-21 11:57:51,970 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:57:52,691 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:57:52,730 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:57:52,760 [learner.views] Created CourseSessionLog for user 56, course 18, material 95
+[DEBUG] 2025-10-21 11:57:52,803 [learner.views] Updated LastAccessCourse for user 56, course 18, material 95
+[INFO] 2025-10-21 11:57:52,831 [learner.views] Progress updated for user learn1 on course Audit of Information System: 100.0%
+[INFO] 2025-10-21 11:57:52,833 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 95
+[WARNING] 2025-10-21 11:57:54,282 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:57:55,036 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:57:55,076 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:57:55,108 [learner.views] Created CourseSessionLog for user 56, course 18, material 96
+[DEBUG] 2025-10-21 11:57:55,143 [learner.views] Updated LastAccessCourse for user 56, course 18, material 96
+[INFO] 2025-10-21 11:57:55,172 [learner.views] Progress updated for user learn1 on course Audit of Information System: 100.0%
+[INFO] 2025-10-21 11:57:55,174 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 96
+[WARNING] 2025-10-21 11:57:57,080 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:57:57,118 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:57:57,152 [learner.views] Created CourseSessionLog for user 56, course 18, material 97
+[DEBUG] 2025-10-21 11:57:57,188 [learner.views] Updated LastAccessCourse for user 56, course 18, material 97
+[INFO] 2025-10-21 11:57:57,216 [learner.views] Progress updated for user learn1 on course Audit of Information System: 100.0%
+[INFO] 2025-10-21 11:57:57,217 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, material 97
+[WARNING] 2025-10-21 11:57:59,766 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:57:59,804 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:57:59,830 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 86
+[DEBUG] 2025-10-21 11:57:59,869 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 86
+[INFO] 2025-10-21 11:57:59,897 [learner.views] Progress updated for user learn1 on course Audit of Information System: 100.0%
+[INFO] 2025-10-21 11:57:59,902 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna learn1, assessment 86
+[DEBUG] 2025-10-21 11:58:00,133 [learner.views] Parsed JSON data: {'content_type': 'assessment', 'content_id': '86'}
+[WARNING] 2025-10-21 11:58:04,262 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:58:04,296 [learner.views] Closed previous CourseSessionLog for user 56, course 18
+[DEBUG] 2025-10-21 11:58:04,333 [learner.views] Created CourseSessionLog for user 56, course 18, assessment 86
+[DEBUG] 2025-10-21 11:58:04,365 [learner.views] Updated LastAccessCourse for user 56, course 18, assessment 86
+[INFO] 2025-10-21 11:58:04,392 [learner.views] Progress updated for user learn1 on course Audit of Information System: 100.0%
+[INFO] 2025-10-21 11:58:04,396 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna learn1, assessment 86
+[DEBUG] 2025-10-21 11:58:04,767 [learner.views] Parsed JSON data: {'content_type': 'assessment', 'content_id': '86'}
+[WARNING] 2025-10-21 11:58:15,607 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:58:16,834 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-10-21 11:58:27,827 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-10-21 11:58:27,829 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-21 03:58:27.827187+00:00
+[INFO] 2025-10-21 11:58:27,829 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:144.0) Gecko/20100101 Firefox/144.0", path_info: "/logout/"}.
+[WARNING] 2025-10-21 11:58:28,839 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-10-21 11:58:38,486 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-10-21 11:58:38,486 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-10-21 11:58:38,487 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-10-21 03:58:38.486004+00:00
+[INFO] 2025-10-21 11:58:39,508 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:144.0) Gecko/20100101 Firefox/144.0", path_info: "/login/"}.
+[INFO] 2025-10-21 11:58:39,510 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-21 03:58:38.486004+00:00
+[DEBUG] 2025-10-21 11:58:39,525 [urllib3.connectionpool] Starting new HTTPS connection (1): ipinfo.io:443
+[DEBUG] 2025-10-21 11:58:39,894 [urllib3.connectionpool] https://ipinfo.io:443 "GET /203.217.140.215/json HTTP/1.1" 200 None
+[WARNING] 2025-10-21 11:58:48,368 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-10-21 11:58:49,061 [learner.views] Redirecting to load_content: /@learn/18/audit-of-information-system/material/97/
+[WARNING] 2025-10-21 11:58:49,199 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:58:49,232 [learner.views] Closed previous CourseSessionLog for user 4, course 18
+[DEBUG] 2025-10-21 11:58:49,256 [learner.views] Created CourseSessionLog for user 4, course 18, material 97
+[DEBUG] 2025-10-21 11:58:49,289 [learner.views] Updated LastAccessCourse for user 4, course 18, material 97
+[INFO] 2025-10-21 11:58:49,296 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna @learn, material 97
+[WARNING] 2025-10-21 11:58:52,020 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:58:52,275 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 11:58:52,311 [learner.views] Closed previous CourseSessionLog for user 4, course 18
+[DEBUG] 2025-10-21 11:58:52,351 [learner.views] Created CourseSessionLog for user 4, course 18, assessment 86
+[DEBUG] 2025-10-21 11:58:52,389 [learner.views] Updated LastAccessCourse for user 4, course 18, assessment 86
+[INFO] 2025-10-21 11:58:52,421 [learner.views] Progress updated for user @learn on course Audit of Information System: 100.0%
+[INFO] 2025-10-21 11:58:52,426 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna @learn, assessment 86
+[DEBUG] 2025-10-21 11:58:52,668 [learner.views] Parsed JSON data: {'content_type': 'assessment', 'content_id': '86'}
+[WARNING] 2025-10-21 11:58:54,272 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-10-21 11:59:03,427 [learner.views] LTI score for assessment 86: 100.0, converted: 5000.00
+[WARNING] 2025-10-21 11:59:15,607 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:59:16,837 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:59:28,936 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:59:39,932 [learner.views] Upaya akses tidak sah oleh @learn untuk learn1
+[WARNING] 2025-10-21 11:59:39,933 [django.request] Forbidden: /learn1/18/audit-of-information-system/material/92/
+[WARNING] 2025-10-21 11:59:40,062 [learner.views] Unauthorized access attempt by @learn for learn1
+[WARNING] 2025-10-21 11:59:40,063 [django.request] Forbidden: /learn1/audit-of-information-system/progress/
+[WARNING] 2025-10-21 11:59:43,687 [learner.views] Upaya akses tidak sah oleh @learn untuk learn1
+[WARNING] 2025-10-21 11:59:43,688 [django.request] Forbidden: /learn1/18/audit-of-information-system/material/92/
+[WARNING] 2025-10-21 11:59:43,814 [learner.views] Unauthorized access attempt by @learn for learn1
+[WARNING] 2025-10-21 11:59:43,815 [django.request] Forbidden: /learn1/audit-of-information-system/progress/
+[WARNING] 2025-10-21 11:59:44,496 [learner.views] Upaya akses tidak sah oleh @learn untuk learn1
+[WARNING] 2025-10-21 11:59:44,497 [django.request] Forbidden: /learn1/18/audit-of-information-system/material/92/
+[WARNING] 2025-10-21 11:59:44,624 [learner.views] Unauthorized access attempt by @learn for learn1
+[WARNING] 2025-10-21 11:59:44,624 [django.request] Forbidden: /learn1/audit-of-information-system/progress/
+[WARNING] 2025-10-21 11:59:48,368 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:59:49,783 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:59:50,440 [learner.views] Upaya akses tidak sah oleh @learn untuk learn1
+[WARNING] 2025-10-21 11:59:50,440 [django.request] Forbidden: /learn1/18/audit-of-information-system/material/93/
+[WARNING] 2025-10-21 11:59:50,613 [learner.views] Unauthorized access attempt by @learn for learn1
+[WARNING] 2025-10-21 11:59:50,613 [django.request] Forbidden: /learn1/audit-of-information-system/progress/
+[WARNING] 2025-10-21 11:59:52,003 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:59:52,748 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 11:59:54,276 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 12:00:02,848 [learner.views] Upaya akses tidak sah oleh @learn untuk learn1
+[WARNING] 2025-10-21 12:00:02,849 [django.request] Forbidden: /learn1/18/audit-of-information-system/assessment/86/
+[WARNING] 2025-10-21 12:00:15,697 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 12:00:16,835 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-21 12:00:18,839 [learner.views] Upaya akses tidak sah oleh @learn untuk learn1
+[WARNING] 2025-10-21 12:00:18,840 [django.request] Forbidden: /learn1/18/audit-of-information-system/material/92/
+[WARNING] 2025-10-21 12:00:18,972 [learner.views] Unauthorized access attempt by @learn for learn1
+[WARNING] 2025-10-21 12:00:18,972 [django.request] Forbidden: /learn1/audit-of-information-system/progress/
+[INFO] 2025-10-21 12:00:26,938 [learner.views] Redirecting to load_content: /@learn/18/audit-of-information-system/assessment/86/
+[WARNING] 2025-10-21 12:00:27,069 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 12:00:27,104 [learner.views] Closed previous CourseSessionLog for user 4, course 18
+[DEBUG] 2025-10-21 12:00:27,136 [learner.views] Created CourseSessionLog for user 4, course 18, assessment 86
+[DEBUG] 2025-10-21 12:00:27,173 [learner.views] Updated LastAccessCourse for user 4, course 18, assessment 86
+[INFO] 2025-10-21 12:00:27,183 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna @learn, assessment 86
+[DEBUG] 2025-10-21 12:00:27,778 [learner.views] Parsed JSON data: {'content_type': 'assessment', 'content_id': '86'}
+[WARNING] 2025-10-21 12:00:30,791 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-21 12:00:30,825 [learner.views] Closed previous CourseSessionLog for user 4, course 18
+[DEBUG] 2025-10-21 12:00:30,851 [learner.views] Created CourseSessionLog for user 4, course 18, material 93
+[DEBUG] 2025-10-21 12:00:30,889 [learner.views] Updated LastAccessCourse for user 4, course 18, material 93
+[INFO] 2025-10-21 12:00:30,896 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna @learn, material 93

@@ -54,17 +54,52 @@
             </div>
 
         {% elif course_progress >= 100 and not is_completed %}
-            <div class="mt-4">
-                <div class="alert alert-warning text-center p-4 mx-auto" style="max-width: 800px;" role="alert" aria-label="Peringatan: Persyaratan kelulusan belum terpenuhi">
-                    <i class="bi bi-exclamation-triangle me-2 fs-4"></i>
-                    {% if overall_percentage < passing_threshold %}
-                        Hello <span class="text-danger">  {{ request.user.get_full_name|default:request.user.username }} </span>, your score (<strong>{{ overall_percentage }}%</strong>) has not reached the passing threshold (<strong>{{ passing_threshold }}%</strong>). Please try to improve your score.
-                    {% else %}
-                        Hello <span class="text-danger"> {{ request.user.get_full_name|default:request.user.username }}</span>, you have not completed all assessments. Please complete them to pass this course.
-                    {% endif %}
-
+            <!-- Modal Warning Otomatis -->
+            <div class="modal fade" id="completionWarningModal" tabindex="-1" aria-labelledby="completionWarningModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-warning text-dark border-warning">
+                            <h5 class="modal-title" id="completionWarningModalLabel">
+                                <i class="bi bi-exclamation-triangle me-2"></i>
+                                Course Completion Alert
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-center p-4">
+                            <i class="bi bi-exclamation-triangle me-2 fs-1 text-warning"></i>
+                            {% if overall_percentage < passing_threshold %}
+                                <p class="mb-0 fs-5">
+                                    Hello <span class="text-danger fw-bold">{{ request.user.get_full_name|default:request.user.username }}</span>,<br>
+                                    your score (<strong>{{ overall_percentage }}%</strong>) has not reached the passing threshold (<strong>{{ passing_threshold }}%</strong>).<br>
+                                    <span class="text-muted">Please try to improve your score.</span>
+                                </p>
+                            {% else %}
+                                <p class="mb-0 fs-5">
+                                    Hello <span class="text-danger fw-bold">{{ request.user.get_full_name|default:request.user.username }}</span>,<br>
+                                    you have not completed all assessments.<br>
+                                    <span class="text-muted">Please complete them to pass this course.</span>
+                                </p>
+                            {% endif %}
+                        </div>
+                        <div class="modal-footer justify-content-center">
+                            <button type="button" class="btn btn-warning" data-bs-dismiss="modal">
+                                <i class="bi bi-check-circle me-1"></i> Got It, I'll Improve!
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <!-- JavaScript untuk Auto-Show Modal -->
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    var warningModal = new bootstrap.Modal(document.getElementById('completionWarningModal'), {
+                        backdrop: 'static',  // Nggak bisa close dengan klik background (opsional, biar user baca dulu)
+                        keyboard: true       // Bisa close dengan ESC
+                    });
+                    warningModal.show();  // Trigger otomatis pas load
+                });
+            </script>
         {% endif %}
     {% endif %}
 
@@ -100,6 +135,24 @@
             <button class="btn btn-danger" disabled>Next<i class="bi bi-chevron-right ms-2"></i></button>
         {% endif %}
     </div>
+
+
+        {% if not next_url %}
+        
+        <div
+            hx-post="{% url 'learner:mark_progress' %}"
+            hx-trigger="load"
+            hx-ext="json-enc"
+            hx-encoding="json"
+            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+            hx-vals='{
+                "content_type": "{{ current_content.0 }}",
+                "content_id": "{{ current_content.1.id }}"
+            }'
+            style="display:none"
+        ></div>
+        {% endif %}
+
 {% endwith %}
 
 <!-- Animasi CSS -->

@@ -203,7 +203,15 @@ def get_course_completion_status(context):
         min(float((total_score / total_max_score) * 100), 100.0) if total_max_score > 0 else 0
     )
 
-    is_completed = all_assessments_submitted and overall_percentage >= passing_threshold
+    # Ambil course progress dari context
+    course_progress = float(context.get('course_progress', 0))
+
+    # Evaluasi apakah user lulus
+    is_completed = (
+        all_assessments_submitted and
+        overall_percentage >= passing_threshold and
+        course_progress >= 100
+    )
 
     certificate_url = (
         reverse('courses:generate_certificate', kwargs={'course_id': course.id})
