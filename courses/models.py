@@ -367,8 +367,9 @@ class Course(models.Model):
                 return {
                     "status": "error",
                     "message": (
-                        f"Lisensi Anda \"{license_name}\" sudah tidak aktif sejak {expired_since}. "
-                        f"Silakan hubungi admin {admin_contact} untuk perpanjangan."
+                        f"Your license \"{license_name}\" has been inactive since {expired_since}. "
+                        f"Please contact the administrator at {admin_contact} to renew it."
+
                     )
                 }
 

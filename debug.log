@@ -6348,3 +6348,889 @@ django.core.exceptions.FieldError: Unsupported lookup 'icontains' for ForeignKey
 [INFO] 2025-10-22 15:28:44,796 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [INFO] 2025-10-22 15:28:45,157 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [INFO] 2025-10-22 15:28:45,185 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[ERROR] 2025-10-22 15:30:13,211 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-22 15:30:13,213 [django.request] Bad Request: /
+[WARNING] 2025-10-22 15:31:47,387 [django.request] Not Found: /robots.txt
+[WARNING] 2025-10-22 15:31:48,128 [django.request] Not Found: /robots.txt
+[WARNING] 2025-10-22 15:37:06,440 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-22 15:37:06,441 [django.request] Forbidden: /search/
+[WARNING] 2025-10-22 15:40:33,549 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-22 15:40:33,696 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-22 15:40:33,697 [django.request] Forbidden: /search/
+[WARNING] 2025-10-22 15:40:33,942 [django.request] Not Found: /sitemap.xml
+[WARNING] 2025-10-22 15:40:33,946 [django.request] Not Found: /robots.txt
+[WARNING] 2025-10-22 15:40:37,294 [django.request] Not Found: /robots.txt
+[WARNING] 2025-10-22 15:40:37,297 [django.request] Not Found: /sitemap.xml
+[WARNING] 2025-10-22 15:42:07,000 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-22 15:42:07,001 [django.request] Forbidden: /search/
+[WARNING] 2025-10-22 15:44:33,015 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-22 15:44:33,016 [django.request] Forbidden: /search/
+[INFO] 2025-10-22 15:45:19,782 [courses.views] [Enroll] User: johansantri@gmail.com, Course: Audit of Information System, Free: False, Has License: False
+[WARNING] 2025-10-22 15:45:19,782 [courses.views] [Enroll Blocked] johansantri@gmail.com tidak punya lisensi aktif untuk course Audit of Information System yang berbayar
+[INFO] 2025-10-22 15:45:19,783 [courses.views] [Enroll] Price type found: Free
+[DEBUG] 2025-10-22 15:45:19,783 [courses.models] Enrolling user johansantri@gmail.com (ID: 6) for course Audit of Information System (ID: 18) with payment_model Free
+[INFO] 2025-10-22 15:45:19,786 [courses.models] License check for user johansantri@gmail.com in course Audit of Information System: <QuerySet []>
+[ERROR] 2025-10-22 15:45:19,788 [courses.models] User johansantri@gmail.com tidak memiliki lisensi aktif untuk Audit of Information System. Lisensi terakhir: PT Karya Maju Bersama, Admin: official khusus, Expired sejak: 16 September 2025
+[INFO] 2025-10-22 15:45:19,789 [courses.views] [Enroll Result] {'status': 'error', 'message': 'Lisensi Anda "PT Karya Maju Bersama" sudah tidak aktif sejak 16 September 2025. Silakan hubungi admin official khusus untuk perpanjangan.'}
+[INFO] 2025-10-22 15:45:28,798 [courses.views] [Enroll] User: johansantri@gmail.com, Course: Audit of Information System, Free: False, Has License: False
+[WARNING] 2025-10-22 15:45:28,798 [courses.views] [Enroll Blocked] johansantri@gmail.com tidak punya lisensi aktif untuk course Audit of Information System yang berbayar
+[INFO] 2025-10-22 15:45:28,799 [courses.views] [Enroll] Price type found: Free
+[DEBUG] 2025-10-22 15:45:28,799 [courses.models] Enrolling user johansantri@gmail.com (ID: 6) for course Audit of Information System (ID: 18) with payment_model Free
+[INFO] 2025-10-22 15:45:28,801 [courses.models] License check for user johansantri@gmail.com in course Audit of Information System: <QuerySet []>
+[ERROR] 2025-10-22 15:45:28,804 [courses.models] User johansantri@gmail.com tidak memiliki lisensi aktif untuk Audit of Information System. Lisensi terakhir: PT Karya Maju Bersama, Admin: official khusus, Expired sejak: 16 September 2025
+[INFO] 2025-10-22 15:45:28,804 [courses.views] [Enroll Result] {'status': 'error', 'message': 'Lisensi Anda "PT Karya Maju Bersama" sudah tidak aktif sejak 16 September 2025. Silakan hubungi admin official khusus untuk perpanjangan.'}
+[INFO] 2025-10-22 15:45:52,380 [courses.views] [Enroll] User: johansantri@gmail.com, Course: Audit of Information System, Free: False, Has License: False
+[WARNING] 2025-10-22 15:45:52,380 [courses.views] [Enroll Blocked] johansantri@gmail.com tidak punya lisensi aktif untuk course Audit of Information System yang berbayar
+[INFO] 2025-10-22 15:45:52,381 [courses.views] [Enroll] Price type found: Free
+[DEBUG] 2025-10-22 15:45:52,381 [courses.models] Enrolling user johansantri@gmail.com (ID: 6) for course Audit of Information System (ID: 18) with payment_model Free
+[INFO] 2025-10-22 15:45:52,383 [courses.models] License check for user johansantri@gmail.com in course Audit of Information System: <QuerySet []>
+[ERROR] 2025-10-22 15:45:52,386 [courses.models] User johansantri@gmail.com tidak memiliki lisensi aktif untuk Audit of Information System. Lisensi terakhir: PT Karya Maju Bersama, Admin: official khusus, Expired sejak: 16 September 2025
+[INFO] 2025-10-22 15:45:52,387 [courses.views] [Enroll Result] {'status': 'error', 'message': 'Lisensi Anda "PT Karya Maju Bersama" sudah tidak aktif sejak 16 September 2025. Silakan hubungi admin official khusus untuk perpanjangan.'}
+[INFO] 2025-10-22 15:46:03,508 [courses.views] [Enroll] User: johansantri@gmail.com, Course: Audit of Information System, Free: False, Has License: False
+[WARNING] 2025-10-22 15:46:03,509 [courses.views] [Enroll Blocked] johansantri@gmail.com tidak punya lisensi aktif untuk course Audit of Information System yang berbayar
+[INFO] 2025-10-22 15:46:03,510 [courses.views] [Enroll] Price type found: Free
+[DEBUG] 2025-10-22 15:46:03,510 [courses.models] Enrolling user johansantri@gmail.com (ID: 6) for course Audit of Information System (ID: 18) with payment_model Free
+[INFO] 2025-10-22 15:46:03,512 [courses.models] License check for user johansantri@gmail.com in course Audit of Information System: <QuerySet []>
+[ERROR] 2025-10-22 15:46:03,515 [courses.models] User johansantri@gmail.com tidak memiliki lisensi aktif untuk Audit of Information System. Lisensi terakhir: PT Karya Maju Bersama, Admin: official khusus, Expired sejak: 16 September 2025
+[INFO] 2025-10-22 15:46:03,515 [courses.views] [Enroll Result] {'status': 'error', 'message': 'Lisensi Anda "PT Karya Maju Bersama" sudah tidak aktif sejak 16 September 2025. Silakan hubungi admin official khusus untuk perpanjangan.'}
+[INFO] 2025-10-22 15:47:56,272 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-22 15:47:56,291 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-22 15:47:56,354 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-22 15:47:57,691 [courses.views] [Enroll] User: johansantri@gmail.com, Course: Audit of Information System, Free: False, Has License: False
+[WARNING] 2025-10-22 15:47:57,691 [courses.views] [Enroll Blocked] johansantri@gmail.com tidak punya lisensi aktif untuk course Audit of Information System yang berbayar
+[INFO] 2025-10-22 15:47:57,692 [courses.views] [Enroll] Price type found: Free
+[DEBUG] 2025-10-22 15:47:57,694 [courses.models] Enrolling user johansantri@gmail.com (ID: 6) for course Audit of Information System (ID: 18) with payment_model Free
+[INFO] 2025-10-22 15:47:57,698 [courses.models] License check for user johansantri@gmail.com in course Audit of Information System: <QuerySet []>
+[ERROR] 2025-10-22 15:47:57,705 [courses.models] User johansantri@gmail.com tidak memiliki lisensi aktif untuk Audit of Information System. Lisensi terakhir: PT Karya Maju Bersama, Admin: official khusus, Expired sejak: 16 September 2025
+[INFO] 2025-10-22 15:47:57,705 [courses.views] [Enroll Result] {'status': 'error', 'message': 'Your license "PT Karya Maju Bersama" has been inactive since 16 September 2025. Please contact the administrator at official khusus to renew it.'}
+[INFO] 2025-10-22 15:48:30,213 [courses.views] Partner logo found: https://ini.icei.ac.id/media/logos/logo_AuYlFX8.webp
+[INFO] 2025-10-22 15:48:30,215 [courses.views] Certificate cf10d8b6-39a3-4885-ba82-74c694229f60 already exists for user johan
+[INFO] 2025-10-22 15:48:30,219 [courses.views] VC JSON regenerated for existing certificate: /home/TIM/mysite/media/credentials/vc_cf10d8b6-39a3-4885-ba82-74c694229f60.json
+[WARNING] 2025-10-22 15:48:33,504 [weasyprint] Ignored `min-height: 100vh` at 21:13, invalid value.
+[WARNING] 2025-10-22 15:48:33,505 [weasyprint] Ignored `box-shadow: 0 25px 80px rgba(0, 86, 210, 0.15)` at 34:13, unknown property.
+[WARNING] 2025-10-22 15:48:33,506 [weasyprint] Ignored `font-size: clamp(28px, 6vw, 40px)` at 54:13, invalid value.
+[WARNING] 2025-10-22 15:48:33,506 [weasyprint] Ignored `box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2)` at 76:13, unknown property.
+[WARNING] 2025-10-22 15:48:33,507 [weasyprint] Ignored `font-size: clamp(32px, 7vw, 48px)` at 82:13, invalid value.
+[WARNING] 2025-10-22 15:48:33,507 [weasyprint] Ignored `background-clip: text` at 87:13, invalid value.
+[WARNING] 2025-10-22 15:48:33,508 [weasyprint] Ignored `text-shadow: 0 2px 4px rgba(0, 86, 210, 0.1)` at 91:13, unknown property.
+[WARNING] 2025-10-22 15:48:33,509 [weasyprint] Ignored `box-shadow: 0 12px 40px rgba(0, 86, 210, 0.08)` at 102:13, unknown property.
+[WARNING] 2025-10-22 15:48:33,510 [weasyprint] Ignored `font-size: clamp(28px, 6vw, 36px)` at 107:13, invalid value.
+[WARNING] 2025-10-22 15:48:33,510 [weasyprint] Ignored `font-size: clamp(20px, 4.5vw, 26px)` at 115:13, invalid value.
+[WARNING] 2025-10-22 15:48:33,511 [weasyprint] Ignored `font-size: clamp(15px, 3.5vw, 18px)` at 123:13, invalid value.
+[WARNING] 2025-10-22 15:48:33,512 [weasyprint] Ignored `box-shadow: 0 8px 32px rgba(0, 86, 210, 0.06)` at 172:13, unknown property.
+[WARNING] 2025-10-22 15:48:33,516 [weasyprint] Ignored `font-size: clamp(13px, 3vw, 15px)` at 231:13, invalid value.
+[WARNING] 2025-10-22 15:48:33,518 [weasyprint] Ignored `box-shadow: 0 6px 20px rgba(0, 86, 210, 0.1)` at 263:13, unknown property.
+[WARNING] 2025-10-22 15:48:33,519 [weasyprint] Ignored `font-size: clamp(40px, 10vw, 60px)` at 279:13, invalid value.
+[WARNING] 2025-10-22 15:48:33,520 [weasyprint] Expected a media type, got '(max-width: 768px)'
+[WARNING] 2025-10-22 15:48:33,520 [weasyprint] Invalid media type ' (max-width: 768px) ' the whole @media rule was ignored at 305:9.
+[WARNING] 2025-10-22 15:48:33,521 [weasyprint] Ignored `box-shadow: none` at 387:17, unknown property.
+[DEBUG] 2025-10-22 15:48:33,970 [PIL.PngImagePlugin] STREAM b'IHDR' 16 13
+[DEBUG] 2025-10-22 15:48:33,970 [PIL.PngImagePlugin] STREAM b'IDAT' 41 911
+[DEBUG] 2025-10-22 15:48:34,178 [PIL.Image] Importing BlpImagePlugin
+[DEBUG] 2025-10-22 15:48:34,181 [PIL.Image] Importing BmpImagePlugin
+[DEBUG] 2025-10-22 15:48:34,181 [PIL.Image] Importing BufrStubImagePlugin
+[DEBUG] 2025-10-22 15:48:34,182 [PIL.Image] Importing CurImagePlugin
+[DEBUG] 2025-10-22 15:48:34,183 [PIL.Image] Importing DcxImagePlugin
+[DEBUG] 2025-10-22 15:48:34,185 [PIL.Image] Importing DdsImagePlugin
+[DEBUG] 2025-10-22 15:48:34,192 [PIL.Image] Importing EpsImagePlugin
+[DEBUG] 2025-10-22 15:48:34,193 [PIL.Image] Importing FitsImagePlugin
+[DEBUG] 2025-10-22 15:48:34,194 [PIL.Image] Importing FliImagePlugin
+[DEBUG] 2025-10-22 15:48:34,195 [PIL.Image] Importing FpxImagePlugin
+[DEBUG] 2025-10-22 15:48:34,196 [PIL.Image] Image: failed to import FpxImagePlugin: No module named 'olefile'
+[DEBUG] 2025-10-22 15:48:34,197 [PIL.Image] Importing FtexImagePlugin
+[DEBUG] 2025-10-22 15:48:34,197 [PIL.Image] Importing GbrImagePlugin
+[DEBUG] 2025-10-22 15:48:34,198 [PIL.Image] Importing GifImagePlugin
+[DEBUG] 2025-10-22 15:48:34,198 [PIL.Image] Importing GribStubImagePlugin
+[DEBUG] 2025-10-22 15:48:34,198 [PIL.Image] Importing Hdf5StubImagePlugin
+[DEBUG] 2025-10-22 15:48:34,199 [PIL.Image] Importing IcnsImagePlugin
+[DEBUG] 2025-10-22 15:48:34,200 [PIL.Image] Importing IcoImagePlugin
+[DEBUG] 2025-10-22 15:48:34,201 [PIL.Image] Importing ImImagePlugin
+[DEBUG] 2025-10-22 15:48:34,202 [PIL.Image] Importing ImtImagePlugin
+[DEBUG] 2025-10-22 15:48:34,202 [PIL.Image] Importing IptcImagePlugin
+[DEBUG] 2025-10-22 15:48:34,203 [PIL.Image] Importing JpegImagePlugin
+[DEBUG] 2025-10-22 15:48:34,203 [PIL.Image] Importing Jpeg2KImagePlugin
+[DEBUG] 2025-10-22 15:48:34,203 [PIL.Image] Importing McIdasImagePlugin
+[DEBUG] 2025-10-22 15:48:34,204 [PIL.Image] Importing MicImagePlugin
+[DEBUG] 2025-10-22 15:48:34,204 [PIL.Image] Image: failed to import MicImagePlugin: No module named 'olefile'
+[DEBUG] 2025-10-22 15:48:34,204 [PIL.Image] Importing MpegImagePlugin
+[DEBUG] 2025-10-22 15:48:34,205 [PIL.Image] Importing MpoImagePlugin
+[DEBUG] 2025-10-22 15:48:34,206 [PIL.Image] Importing MspImagePlugin
+[DEBUG] 2025-10-22 15:48:34,207 [PIL.Image] Importing PalmImagePlugin
+[DEBUG] 2025-10-22 15:48:34,208 [PIL.Image] Importing PcdImagePlugin
+[DEBUG] 2025-10-22 15:48:34,208 [PIL.Image] Importing PcxImagePlugin
+[DEBUG] 2025-10-22 15:48:34,209 [PIL.Image] Importing PdfImagePlugin
+[DEBUG] 2025-10-22 15:48:34,215 [PIL.Image] Importing PixarImagePlugin
+[DEBUG] 2025-10-22 15:48:34,216 [PIL.Image] Importing PngImagePlugin
+[DEBUG] 2025-10-22 15:48:34,216 [PIL.Image] Importing PpmImagePlugin
+[DEBUG] 2025-10-22 15:48:34,216 [PIL.Image] Importing PsdImagePlugin
+[DEBUG] 2025-10-22 15:48:34,216 [PIL.Image] Importing QoiImagePlugin
+[DEBUG] 2025-10-22 15:48:34,217 [PIL.Image] Importing SgiImagePlugin
+[DEBUG] 2025-10-22 15:48:34,217 [PIL.Image] Importing SpiderImagePlugin
+[DEBUG] 2025-10-22 15:48:34,218 [PIL.Image] Importing SunImagePlugin
+[DEBUG] 2025-10-22 15:48:34,218 [PIL.Image] Importing TgaImagePlugin
+[DEBUG] 2025-10-22 15:48:34,219 [PIL.Image] Importing TiffImagePlugin
+[DEBUG] 2025-10-22 15:48:34,219 [PIL.Image] Importing WebPImagePlugin
+[DEBUG] 2025-10-22 15:48:34,221 [PIL.Image] Importing WmfImagePlugin
+[DEBUG] 2025-10-22 15:48:34,221 [PIL.Image] Importing XbmImagePlugin
+[DEBUG] 2025-10-22 15:48:34,222 [PIL.Image] Importing XpmImagePlugin
+[DEBUG] 2025-10-22 15:48:34,223 [PIL.Image] Importing XVThumbImagePlugin
+[DEBUG] 2025-10-22 15:48:34,321 [fontTools.ttLib.ttFont] Reading 'maxp' table from disk
+[DEBUG] 2025-10-22 15:48:34,322 [fontTools.ttLib.ttFont] Decompiling 'maxp' table
+[DEBUG] 2025-10-22 15:48:34,322 [fontTools.subset.timer] Took 0.001s to load 'maxp'
+[DEBUG] 2025-10-22 15:48:34,322 [fontTools.subset.timer] Took 0.000s to prune 'maxp'
+[INFO] 2025-10-22 15:48:34,322 [fontTools.subset] maxp pruned
+[DEBUG] 2025-10-22 15:48:34,323 [fontTools.ttLib.ttFont] Reading 'cmap' table from disk
+[DEBUG] 2025-10-22 15:48:34,324 [fontTools.ttLib.ttFont] Decompiling 'cmap' table
+[DEBUG] 2025-10-22 15:48:34,324 [fontTools.ttLib.ttFont] Reading 'post' table from disk
+[DEBUG] 2025-10-22 15:48:34,324 [fontTools.ttLib.ttFont] Decompiling 'post' table
+[DEBUG] 2025-10-22 15:48:34,326 [fontTools.subset.timer] Took 0.003s to load 'cmap'
+[DEBUG] 2025-10-22 15:48:34,326 [fontTools.subset.timer] Took 0.000s to prune 'cmap'
+[INFO] 2025-10-22 15:48:34,326 [fontTools.subset] cmap pruned
+[INFO] 2025-10-22 15:48:34,326 [fontTools.subset] prep dropped
+[DEBUG] 2025-10-22 15:48:34,327 [fontTools.subset.timer] Took 0.000s to load 'post'
+[DEBUG] 2025-10-22 15:48:34,327 [fontTools.subset.timer] Took 0.000s to prune 'post'
+[INFO] 2025-10-22 15:48:34,327 [fontTools.subset] post pruned
+[INFO] 2025-10-22 15:48:34,328 [fontTools.subset] GPOS dropped
+[INFO] 2025-10-22 15:48:34,328 [fontTools.subset] GSUB dropped
+[DEBUG] 2025-10-22 15:48:34,328 [fontTools.ttLib.ttFont] Reading 'glyf' table from disk
+[DEBUG] 2025-10-22 15:48:34,328 [fontTools.ttLib.ttFont] Decompiling 'glyf' table
+[DEBUG] 2025-10-22 15:48:34,329 [fontTools.ttLib.ttFont] Reading 'loca' table from disk
+[DEBUG] 2025-10-22 15:48:34,329 [fontTools.ttLib.ttFont] Decompiling 'loca' table
+[DEBUG] 2025-10-22 15:48:34,329 [fontTools.ttLib.ttFont] Reading 'head' table from disk
+[DEBUG] 2025-10-22 15:48:34,329 [fontTools.ttLib.ttFont] Decompiling 'head' table
+[DEBUG] 2025-10-22 15:48:34,332 [fontTools.subset.timer] Took 0.004s to load 'glyf'
+[DEBUG] 2025-10-22 15:48:34,332 [fontTools.subset.timer] Took 0.000s to prune 'glyf'
+[INFO] 2025-10-22 15:48:34,332 [fontTools.subset] glyf pruned
+[DEBUG] 2025-10-22 15:48:34,333 [fontTools.subset.timer] Took 0.000s to close glyph list over 'cmap'
+[INFO] 2025-10-22 15:48:34,333 [fontTools.subset] Added gid0 to subset
+[INFO] 2025-10-22 15:48:34,333 [fontTools.subset] Closing glyph list over 'glyf': 20 glyphs before
+[INFO] 2025-10-22 15:48:34,333 [fontTools.subset] Glyph names: ['.notdef', 'A', 'C', 'E', 'F', 'I', 'L', 'M', 'N', 'O', 'P', 'R', 'T', 'd', 'e', 'f', 'i', 'r', 'space', 't']
+[INFO] 2025-10-22 15:48:34,334 [fontTools.subset] Glyph IDs:   [0, 1, 26, 36, 56, 69, 87, 93, 94, 100, 125, 128, 140, 221, 225, 246, 259, 322, 334, 633]
+[INFO] 2025-10-22 15:48:34,334 [fontTools.subset] Closed glyph list over 'glyf': 22 glyphs after
+[INFO] 2025-10-22 15:48:34,334 [fontTools.subset] Glyph names: ['.notdef', 'A', 'C', 'E', 'F', 'I', 'L', 'M', 'N', 'O', 'P', 'R', 'T', 'd', 'dotlessi', 'e', 'f', 'i', 'r', 'space', 't', 'uni0307']
+[INFO] 2025-10-22 15:48:34,334 [fontTools.subset] Glyph IDs:   [0, 1, 26, 36, 56, 69, 87, 93, 94, 100, 125, 128, 140, 221, 225, 246, 259, 260, 322, 334, 633, 700]
+[DEBUG] 2025-10-22 15:48:34,334 [fontTools.subset.timer] Took 0.002s to close glyph list over 'glyf'
+[INFO] 2025-10-22 15:48:34,335 [fontTools.subset] Retaining 22 glyphs
+[INFO] 2025-10-22 15:48:34,336 [fontTools.subset] head subsetting not needed
+[INFO] 2025-10-22 15:48:34,336 [fontTools.subset] hhea subsetting not needed
+[INFO] 2025-10-22 15:48:34,336 [fontTools.subset] maxp subsetting not needed
+[INFO] 2025-10-22 15:48:34,337 [fontTools.subset] OS/2 subsetting not needed
+[DEBUG] 2025-10-22 15:48:34,337 [fontTools.ttLib.ttFont] Reading 'hmtx' table from disk
+[DEBUG] 2025-10-22 15:48:34,337 [fontTools.ttLib.ttFont] Decompiling 'hmtx' table
+[DEBUG] 2025-10-22 15:48:34,337 [fontTools.ttLib.ttFont] Reading 'hhea' table from disk
+[DEBUG] 2025-10-22 15:48:34,337 [fontTools.ttLib.ttFont] Decompiling 'hhea' table
+[DEBUG] 2025-10-22 15:48:34,338 [fontTools.subset.timer] Took 0.002s to subset 'hmtx'
+[INFO] 2025-10-22 15:48:34,339 [fontTools.subset] hmtx subsetted
+[DEBUG] 2025-10-22 15:48:34,339 [fontTools.subset.timer] Took 0.000s to subset 'cmap'
+[INFO] 2025-10-22 15:48:34,339 [fontTools.subset] cmap subsetted
+[INFO] 2025-10-22 15:48:34,340 [fontTools.subset] loca subsetting not needed
+[DEBUG] 2025-10-22 15:48:34,340 [fontTools.subset.timer] Took 0.000s to subset 'post'
+[INFO] 2025-10-22 15:48:34,340 [fontTools.subset] post subsetted
+[INFO] 2025-10-22 15:48:34,340 [fontTools.subset] gasp subsetting not needed
+[INFO] 2025-10-22 15:48:34,340 [fontTools.subset] STAT subsetting not needed
+[DEBUG] 2025-10-22 15:48:34,341 [fontTools.ttLib.ttFont] Reading 'GDEF' table from disk
+[DEBUG] 2025-10-22 15:48:34,341 [fontTools.ttLib.ttFont] Decompiling 'GDEF' table
+[DEBUG] 2025-10-22 15:48:34,344 [fontTools.subset.timer] Took 0.003s to subset 'GDEF'
+[INFO] 2025-10-22 15:48:34,344 [fontTools.subset] GDEF subsetted
+[INFO] 2025-10-22 15:48:34,345 [fontTools.subset] name subsetting not needed
+[DEBUG] 2025-10-22 15:48:34,346 [fontTools.subset.timer] Took 0.001s to subset 'glyf'
+[INFO] 2025-10-22 15:48:34,346 [fontTools.subset] glyf subsetted
+[DEBUG] 2025-10-22 15:48:34,346 [fontTools.subset.timer] Took 0.000s to subset GlyphOrder
+[DEBUG] 2025-10-22 15:48:34,346 [fontTools.subset.timer] Took 0.000s to prune 'head'
+[INFO] 2025-10-22 15:48:34,347 [fontTools.subset] head pruned
+[DEBUG] 2025-10-22 15:48:34,347 [fontTools.ttLib.ttFont] Reading 'OS/2' table from disk
+[DEBUG] 2025-10-22 15:48:34,347 [fontTools.ttLib.ttFont] Decompiling 'OS/2' table
+[INFO] 2025-10-22 15:48:34,348 [fontTools.subset] OS/2 Unicode ranges pruned: [0]
+[INFO] 2025-10-22 15:48:34,348 [fontTools.subset] OS/2 CodePage ranges pruned: [0]
+[DEBUG] 2025-10-22 15:48:34,350 [fontTools.subset.timer] Took 0.001s to prune 'glyf'
+[INFO] 2025-10-22 15:48:34,350 [fontTools.subset] glyf pruned
+[DEBUG] 2025-10-22 15:48:34,350 [fontTools.subset.timer] Took 0.000s to prune 'GDEF'
+[INFO] 2025-10-22 15:48:34,350 [fontTools.subset] GDEF pruned
+[DEBUG] 2025-10-22 15:48:34,351 [fontTools.ttLib.ttFont] Reading 'name' table from disk
+[DEBUG] 2025-10-22 15:48:34,351 [fontTools.ttLib.ttFont] Decompiling 'name' table
+[DEBUG] 2025-10-22 15:48:34,351 [fontTools.ttLib.ttFont] Reading 'gasp' table from disk
+[DEBUG] 2025-10-22 15:48:34,353 [fontTools.ttLib.ttFont] Decompiling 'gasp' table
+[DEBUG] 2025-10-22 15:48:34,353 [fontTools.ttLib.ttFont] Reading 'STAT' table from disk
+[DEBUG] 2025-10-22 15:48:34,353 [fontTools.ttLib.ttFont] Decompiling 'STAT' table
+[DEBUG] 2025-10-22 15:48:34,354 [fontTools.subset.timer] Took 0.003s to prune 'name'
+[INFO] 2025-10-22 15:48:34,354 [fontTools.subset] name pruned
+[DEBUG] 2025-10-22 15:48:34,355 [fontTools.ttLib.ttFont] Compiling 'glyf' table
+[DEBUG] 2025-10-22 15:48:34,362 [fontTools.ttLib.ttFont] Writing 'glyf' table to disk
+[DEBUG] 2025-10-22 15:48:34,362 [fontTools.ttLib.ttFont] Compiling 'maxp' table
+[DEBUG] 2025-10-22 15:48:34,363 [fontTools.ttLib.ttFont] Writing 'maxp' table to disk
+[DEBUG] 2025-10-22 15:48:34,363 [fontTools.ttLib.ttFont] Compiling 'loca' table
+[DEBUG] 2025-10-22 15:48:34,364 [fontTools.ttLib.ttFont] Writing 'loca' table to disk
+[DEBUG] 2025-10-22 15:48:34,364 [fontTools.ttLib.ttFont] Compiling 'head' table
+[DEBUG] 2025-10-22 15:48:34,364 [fontTools.ttLib.ttFont] Writing 'head' table to disk
+[DEBUG] 2025-10-22 15:48:34,364 [fontTools.ttLib.ttFont] Compiling 'hmtx' table
+[DEBUG] 2025-10-22 15:48:34,365 [fontTools.ttLib.ttFont] Writing 'hmtx' table to disk
+[DEBUG] 2025-10-22 15:48:34,366 [fontTools.ttLib.ttFont] Compiling 'hhea' table
+[DEBUG] 2025-10-22 15:48:34,366 [fontTools.ttLib.ttFont] Writing 'hhea' table to disk
+[DEBUG] 2025-10-22 15:48:34,366 [fontTools.ttLib.ttFont] Compiling 'OS/2' table
+[DEBUG] 2025-10-22 15:48:34,367 [fontTools.ttLib.ttFont] Writing 'OS/2' table to disk
+[DEBUG] 2025-10-22 15:48:34,367 [fontTools.ttLib.ttFont] Compiling 'cmap' table
+[DEBUG] 2025-10-22 15:48:34,367 [fontTools.ttLib.ttFont] Writing 'cmap' table to disk
+[DEBUG] 2025-10-22 15:48:34,368 [fontTools.ttLib.ttFont] Compiling 'name' table
+[DEBUG] 2025-10-22 15:48:34,368 [fontTools.ttLib.ttFont] Writing 'name' table to disk
+[DEBUG] 2025-10-22 15:48:34,368 [fontTools.ttLib.ttFont] Compiling 'post' table
+[DEBUG] 2025-10-22 15:48:34,369 [fontTools.ttLib.ttFont] Writing 'post' table to disk
+[DEBUG] 2025-10-22 15:48:34,369 [fontTools.ttLib.ttFont] Compiling 'gasp' table
+[DEBUG] 2025-10-22 15:48:34,369 [fontTools.ttLib.ttFont] Writing 'gasp' table to disk
+[DEBUG] 2025-10-22 15:48:34,369 [fontTools.ttLib.ttFont] Compiling 'GDEF' table
+[DEBUG] 2025-10-22 15:48:34,370 [fontTools.ttLib.ttFont] Writing 'GDEF' table to disk
+[DEBUG] 2025-10-22 15:48:34,371 [fontTools.ttLib.ttFont] Compiling 'STAT' table
+[DEBUG] 2025-10-22 15:48:34,371 [fontTools.ttLib.ttFont] Writing 'STAT' table to disk
+[DEBUG] 2025-10-22 15:48:34,373 [fontTools.ttLib.ttFont] Reading 'maxp' table from disk
+[DEBUG] 2025-10-22 15:48:34,373 [fontTools.ttLib.ttFont] Decompiling 'maxp' table
+[DEBUG] 2025-10-22 15:48:34,374 [fontTools.subset.timer] Took 0.000s to load 'maxp'
+[DEBUG] 2025-10-22 15:48:34,374 [fontTools.subset.timer] Took 0.000s to prune 'maxp'
+[INFO] 2025-10-22 15:48:34,374 [fontTools.subset] maxp pruned
+[DEBUG] 2025-10-22 15:48:34,374 [fontTools.ttLib.ttFont] Reading 'cmap' table from disk
+[DEBUG] 2025-10-22 15:48:34,375 [fontTools.ttLib.ttFont] Decompiling 'cmap' table
+[DEBUG] 2025-10-22 15:48:34,377 [fontTools.ttLib.ttFont] Reading 'post' table from disk
+[DEBUG] 2025-10-22 15:48:34,377 [fontTools.ttLib.ttFont] Decompiling 'post' table
+[DEBUG] 2025-10-22 15:48:34,386 [fontTools.subset.timer] Took 0.011s to load 'cmap'
+[DEBUG] 2025-10-22 15:48:34,386 [fontTools.subset.timer] Took 0.000s to prune 'cmap'
+[INFO] 2025-10-22 15:48:34,386 [fontTools.subset] cmap pruned
+[INFO] 2025-10-22 15:48:34,386 [fontTools.subset] prep dropped
+[DEBUG] 2025-10-22 15:48:34,386 [fontTools.subset.timer] Took 0.000s to load 'post'
+[DEBUG] 2025-10-22 15:48:34,386 [fontTools.subset.timer] Took 0.000s to prune 'post'
+[INFO] 2025-10-22 15:48:34,387 [fontTools.subset] post pruned
+[INFO] 2025-10-22 15:48:34,387 [fontTools.subset] GPOS dropped
+[INFO] 2025-10-22 15:48:34,387 [fontTools.subset] GSUB dropped
+[DEBUG] 2025-10-22 15:48:34,387 [fontTools.ttLib.ttFont] Reading 'glyf' table from disk
+[DEBUG] 2025-10-22 15:48:34,388 [fontTools.ttLib.ttFont] Decompiling 'glyf' table
+[DEBUG] 2025-10-22 15:48:34,388 [fontTools.ttLib.ttFont] Reading 'loca' table from disk
+[DEBUG] 2025-10-22 15:48:34,388 [fontTools.ttLib.ttFont] Decompiling 'loca' table
+[DEBUG] 2025-10-22 15:48:34,388 [fontTools.ttLib.ttFont] Reading 'head' table from disk
+[DEBUG] 2025-10-22 15:48:34,388 [fontTools.ttLib.ttFont] Decompiling 'head' table
+[DEBUG] 2025-10-22 15:48:34,393 [fontTools.subset.timer] Took 0.006s to load 'glyf'
+[DEBUG] 2025-10-22 15:48:34,394 [fontTools.subset.timer] Took 0.000s to prune 'glyf'
+[INFO] 2025-10-22 15:48:34,394 [fontTools.subset] glyf pruned
+[DEBUG] 2025-10-22 15:48:34,395 [fontTools.subset.timer] Took 0.001s to close glyph list over 'cmap'
+[INFO] 2025-10-22 15:48:34,395 [fontTools.subset] Added gid0 to subset
+[INFO] 2025-10-22 15:48:34,395 [fontTools.subset] Closing glyph list over 'glyf': 27 glyphs before
+[INFO] 2025-10-22 15:48:34,396 [fontTools.subset] Glyph names: ['.notdef', 'A', 'I', 'P', 'S', 'T', 'a', 'b', 'c', 'colon', 'd', 'e', 'f', 'g', 'h', 'i', 'l', 'n', 'o', 'r', 's', 'space', 't', 'u', 'w', 'x', 'y']
+[INFO] 2025-10-22 15:48:34,397 [fontTools.subset] Glyph IDs:   [0, 2, 197, 375, 397, 411, 507, 578, 586, 597, 614, 647, 658, 670, 689, 736, 773, 790, 852, 871, 888, 913, 982, 991, 996, 1503, 1747]
+[INFO] 2025-10-22 15:48:34,397 [fontTools.subset] Closed glyph list over 'glyf': 30 glyphs after
+[INFO] 2025-10-22 15:48:34,397 [fontTools.subset] Glyph names: ['.notdef', 'A', 'I', 'P', 'S', 'T', 'a', 'b', 'c', 'colon', 'd', 'dotlessi', 'e', 'f', 'g', 'h', 'i', 'l', 'n', 'o', 'period', 'r', 's', 'space', 't', 'u', 'uni0307', 'w', 'x', 'y']
+[INFO] 2025-10-22 15:48:34,397 [fontTools.subset] Glyph IDs:   [0, 2, 197, 375, 397, 411, 507, 578, 586, 597, 614, 647, 658, 670, 689, 690, 736, 773, 790, 852, 871, 888, 913, 982, 991, 996, 1500, 1503, 1747, 2645]
+[DEBUG] 2025-10-22 15:48:34,397 [fontTools.subset.timer] Took 0.002s to close glyph list over 'glyf'
+[INFO] 2025-10-22 15:48:34,400 [fontTools.subset] Retaining 30 glyphs
+[INFO] 2025-10-22 15:48:34,401 [fontTools.subset] head subsetting not needed
+[INFO] 2025-10-22 15:48:34,401 [fontTools.subset] hhea subsetting not needed
+[INFO] 2025-10-22 15:48:34,401 [fontTools.subset] maxp subsetting not needed
+[INFO] 2025-10-22 15:48:34,402 [fontTools.subset] OS/2 subsetting not needed
+[DEBUG] 2025-10-22 15:48:34,402 [fontTools.ttLib.ttFont] Reading 'hmtx' table from disk
+[DEBUG] 2025-10-22 15:48:34,402 [fontTools.ttLib.ttFont] Decompiling 'hmtx' table
+[DEBUG] 2025-10-22 15:48:34,402 [fontTools.ttLib.ttFont] Reading 'hhea' table from disk
+[DEBUG] 2025-10-22 15:48:34,402 [fontTools.ttLib.ttFont] Decompiling 'hhea' table
+[DEBUG] 2025-10-22 15:48:34,406 [fontTools.subset.timer] Took 0.004s to subset 'hmtx'
+[INFO] 2025-10-22 15:48:34,406 [fontTools.subset] hmtx subsetted
+[DEBUG] 2025-10-22 15:48:34,408 [fontTools.subset.timer] Took 0.002s to subset 'cmap'
+[INFO] 2025-10-22 15:48:34,408 [fontTools.subset] cmap subsetted
+[INFO] 2025-10-22 15:48:34,409 [fontTools.subset] loca subsetting not needed
+[DEBUG] 2025-10-22 15:48:34,409 [fontTools.subset.timer] Took 0.000s to subset 'post'
+[INFO] 2025-10-22 15:48:34,409 [fontTools.subset] post subsetted
+[INFO] 2025-10-22 15:48:34,409 [fontTools.subset] gasp subsetting not needed
+[INFO] 2025-10-22 15:48:34,409 [fontTools.subset] STAT subsetting not needed
+[DEBUG] 2025-10-22 15:48:34,410 [fontTools.ttLib.ttFont] Reading 'GDEF' table from disk
+[DEBUG] 2025-10-22 15:48:34,410 [fontTools.ttLib.ttFont] Decompiling 'GDEF' table
+[DEBUG] 2025-10-22 15:48:34,412 [fontTools.subset.timer] Took 0.003s to subset 'GDEF'
+[INFO] 2025-10-22 15:48:34,412 [fontTools.subset] GDEF subsetted
+[INFO] 2025-10-22 15:48:34,413 [fontTools.subset] name subsetting not needed
+[DEBUG] 2025-10-22 15:48:34,416 [fontTools.subset.timer] Took 0.003s to subset 'glyf'
+[INFO] 2025-10-22 15:48:34,416 [fontTools.subset] glyf subsetted
+[DEBUG] 2025-10-22 15:48:34,416 [fontTools.subset.timer] Took 0.000s to subset GlyphOrder
+[DEBUG] 2025-10-22 15:48:34,416 [fontTools.subset.timer] Took 0.000s to prune 'head'
+[INFO] 2025-10-22 15:48:34,417 [fontTools.subset] head pruned
+[DEBUG] 2025-10-22 15:48:34,417 [fontTools.ttLib.ttFont] Reading 'OS/2' table from disk
+[DEBUG] 2025-10-22 15:48:34,417 [fontTools.ttLib.ttFont] Decompiling 'OS/2' table
+[INFO] 2025-10-22 15:48:34,417 [fontTools.subset] OS/2 Unicode ranges pruned: [0]
+[INFO] 2025-10-22 15:48:34,418 [fontTools.subset] OS/2 CodePage ranges pruned: [0]
+[DEBUG] 2025-10-22 15:48:34,419 [fontTools.subset.timer] Took 0.001s to prune 'glyf'
+[INFO] 2025-10-22 15:48:34,419 [fontTools.subset] glyf pruned
+[DEBUG] 2025-10-22 15:48:34,420 [fontTools.subset.timer] Took 0.000s to prune 'GDEF'
+[INFO] 2025-10-22 15:48:34,420 [fontTools.subset] GDEF pruned
+[DEBUG] 2025-10-22 15:48:34,420 [fontTools.ttLib.ttFont] Reading 'name' table from disk
+[DEBUG] 2025-10-22 15:48:34,420 [fontTools.ttLib.ttFont] Decompiling 'name' table
+[DEBUG] 2025-10-22 15:48:34,421 [fontTools.ttLib.ttFont] Reading 'gasp' table from disk
+[DEBUG] 2025-10-22 15:48:34,421 [fontTools.ttLib.ttFont] Decompiling 'gasp' table
+[DEBUG] 2025-10-22 15:48:34,421 [fontTools.ttLib.ttFont] Reading 'STAT' table from disk
+[DEBUG] 2025-10-22 15:48:34,422 [fontTools.ttLib.ttFont] Decompiling 'STAT' table
+[DEBUG] 2025-10-22 15:48:34,422 [fontTools.subset.timer] Took 0.002s to prune 'name'
+[INFO] 2025-10-22 15:48:34,422 [fontTools.subset] name pruned
+[DEBUG] 2025-10-22 15:48:34,423 [fontTools.ttLib.ttFont] Compiling 'glyf' table
+[DEBUG] 2025-10-22 15:48:34,433 [fontTools.ttLib.ttFont] Writing 'glyf' table to disk
+[DEBUG] 2025-10-22 15:48:34,434 [fontTools.ttLib.ttFont] Compiling 'maxp' table
+[DEBUG] 2025-10-22 15:48:34,435 [fontTools.ttLib.ttFont] Writing 'maxp' table to disk
+[DEBUG] 2025-10-22 15:48:34,436 [fontTools.ttLib.ttFont] Compiling 'loca' table
+[DEBUG] 2025-10-22 15:48:34,437 [fontTools.ttLib.ttFont] Writing 'loca' table to disk
+[DEBUG] 2025-10-22 15:48:34,437 [fontTools.ttLib.ttFont] Compiling 'head' table
+[DEBUG] 2025-10-22 15:48:34,438 [fontTools.ttLib.ttFont] Writing 'head' table to disk
+[DEBUG] 2025-10-22 15:48:34,438 [fontTools.ttLib.ttFont] Compiling 'hmtx' table
+[DEBUG] 2025-10-22 15:48:34,541 [fontTools.ttLib.ttFont] Writing 'hmtx' table to disk
+[DEBUG] 2025-10-22 15:48:34,542 [fontTools.ttLib.ttFont] Compiling 'hhea' table
+[DEBUG] 2025-10-22 15:48:34,544 [fontTools.ttLib.ttFont] Writing 'hhea' table to disk
+[DEBUG] 2025-10-22 15:48:34,544 [fontTools.ttLib.ttFont] Compiling 'OS/2' table
+[DEBUG] 2025-10-22 15:48:34,544 [fontTools.ttLib.ttFont] Writing 'OS/2' table to disk
+[DEBUG] 2025-10-22 15:48:34,545 [fontTools.ttLib.ttFont] Compiling 'cmap' table
+[DEBUG] 2025-10-22 15:48:34,545 [fontTools.ttLib.ttFont] Writing 'cmap' table to disk
+[DEBUG] 2025-10-22 15:48:34,546 [fontTools.ttLib.ttFont] Compiling 'name' table
+[DEBUG] 2025-10-22 15:48:34,546 [fontTools.ttLib.ttFont] Writing 'name' table to disk
+[DEBUG] 2025-10-22 15:48:34,546 [fontTools.ttLib.ttFont] Compiling 'post' table
+[DEBUG] 2025-10-22 15:48:34,546 [fontTools.ttLib.ttFont] Writing 'post' table to disk
+[DEBUG] 2025-10-22 15:48:34,547 [fontTools.ttLib.ttFont] Compiling 'gasp' table
+[DEBUG] 2025-10-22 15:48:34,547 [fontTools.ttLib.ttFont] Writing 'gasp' table to disk
+[DEBUG] 2025-10-22 15:48:34,547 [fontTools.ttLib.ttFont] Compiling 'GDEF' table
+[DEBUG] 2025-10-22 15:48:34,548 [fontTools.ttLib.ttFont] Writing 'GDEF' table to disk
+[DEBUG] 2025-10-22 15:48:34,548 [fontTools.ttLib.ttFont] Compiling 'STAT' table
+[DEBUG] 2025-10-22 15:48:34,548 [fontTools.ttLib.ttFont] Writing 'STAT' table to disk
+[DEBUG] 2025-10-22 15:48:34,550 [fontTools.ttLib.ttFont] Reading 'maxp' table from disk
+[DEBUG] 2025-10-22 15:48:34,551 [fontTools.ttLib.ttFont] Decompiling 'maxp' table
+[DEBUG] 2025-10-22 15:48:34,551 [fontTools.subset.timer] Took 0.000s to load 'maxp'
+[DEBUG] 2025-10-22 15:48:34,551 [fontTools.subset.timer] Took 0.000s to prune 'maxp'
+[INFO] 2025-10-22 15:48:34,551 [fontTools.subset] maxp pruned
+[DEBUG] 2025-10-22 15:48:34,552 [fontTools.ttLib.ttFont] Reading 'cmap' table from disk
+[DEBUG] 2025-10-22 15:48:34,552 [fontTools.ttLib.ttFont] Decompiling 'cmap' table
+[DEBUG] 2025-10-22 15:48:34,553 [fontTools.ttLib.ttFont] Reading 'post' table from disk
+[DEBUG] 2025-10-22 15:48:34,553 [fontTools.ttLib.ttFont] Decompiling 'post' table
+[DEBUG] 2025-10-22 15:48:34,556 [fontTools.subset.timer] Took 0.004s to load 'cmap'
+[DEBUG] 2025-10-22 15:48:34,556 [fontTools.subset.timer] Took 0.000s to prune 'cmap'
+[INFO] 2025-10-22 15:48:34,556 [fontTools.subset] cmap pruned
+[INFO] 2025-10-22 15:48:34,556 [fontTools.subset] fpgm dropped
+[INFO] 2025-10-22 15:48:34,556 [fontTools.subset] prep dropped
+[INFO] 2025-10-22 15:48:34,556 [fontTools.subset] cvt  dropped
+[DEBUG] 2025-10-22 15:48:34,557 [fontTools.subset.timer] Took 0.000s to load 'post'
+[DEBUG] 2025-10-22 15:48:34,557 [fontTools.subset.timer] Took 0.000s to prune 'post'
+[INFO] 2025-10-22 15:48:34,557 [fontTools.subset] post pruned
+[INFO] 2025-10-22 15:48:34,557 [fontTools.subset] GPOS dropped
+[INFO] 2025-10-22 15:48:34,557 [fontTools.subset] GSUB dropped
+[DEBUG] 2025-10-22 15:48:34,558 [fontTools.ttLib.ttFont] Reading 'glyf' table from disk
+[DEBUG] 2025-10-22 15:48:34,558 [fontTools.ttLib.ttFont] Decompiling 'glyf' table
+[DEBUG] 2025-10-22 15:48:34,558 [fontTools.ttLib.ttFont] Reading 'loca' table from disk
+[DEBUG] 2025-10-22 15:48:34,558 [fontTools.ttLib.ttFont] Decompiling 'loca' table
+[DEBUG] 2025-10-22 15:48:34,558 [fontTools.ttLib.ttFont] Reading 'head' table from disk
+[DEBUG] 2025-10-22 15:48:34,559 [fontTools.ttLib.ttFont] Decompiling 'head' table
+[DEBUG] 2025-10-22 15:48:34,561 [fontTools.subset.timer] Took 0.003s to load 'glyf'
+[DEBUG] 2025-10-22 15:48:34,561 [fontTools.subset.timer] Took 0.000s to prune 'glyf'
+[INFO] 2025-10-22 15:48:34,561 [fontTools.subset] glyf pruned
+[DEBUG] 2025-10-22 15:48:34,562 [fontTools.subset.timer] Took 0.000s to close glyph list over 'cmap'
+[INFO] 2025-10-22 15:48:34,562 [fontTools.subset] Added gid0 to subset
+[INFO] 2025-10-22 15:48:34,562 [fontTools.subset] Closing glyph list over 'glyf': 18 glyphs before
+[INFO] 2025-10-22 15:48:34,562 [fontTools.subset] Glyph names: ['.notdef', 'A', 'C', 'J', 'S', 'a', 'c', 'e', 'f', 'h', 'i', 'm', 'n', 'o', 'r', 'space', 't', 'v']
+[INFO] 2025-10-22 15:48:34,563 [fontTools.subset] Glyph IDs:   [0, 1, 45, 155, 266, 381, 427, 454, 490, 507, 520, 575, 581, 596, 646, 674, 721, 1154]
+[INFO] 2025-10-22 15:48:34,563 [fontTools.subset] Closed glyph list over 'glyf': 20 glyphs after
+[INFO] 2025-10-22 15:48:34,563 [fontTools.subset] Glyph names: ['.notdef', 'A', 'C', 'J', 'S', 'a', 'c', 'dotlessi', 'e', 'f', 'h', 'i', 'm', 'n', 'o', 'r', 'space', 't', 'uni0307.i', 'v']
+[INFO] 2025-10-22 15:48:34,563 [fontTools.subset] Glyph IDs:   [0, 1, 45, 155, 266, 381, 427, 454, 490, 507, 520, 521, 575, 581, 596, 646, 674, 721, 1154, 1462]
+[DEBUG] 2025-10-22 15:48:34,564 [fontTools.subset.timer] Took 0.002s to close glyph list over 'glyf'
+[INFO] 2025-10-22 15:48:34,567 [fontTools.subset] Retaining 20 glyphs
+[INFO] 2025-10-22 15:48:34,568 [fontTools.subset] head subsetting not needed
+[INFO] 2025-10-22 15:48:34,568 [fontTools.subset] hhea subsetting not needed
+[INFO] 2025-10-22 15:48:34,568 [fontTools.subset] maxp subsetting not needed
+[INFO] 2025-10-22 15:48:34,569 [fontTools.subset] OS/2 subsetting not needed
+[DEBUG] 2025-10-22 15:48:34,569 [fontTools.ttLib.ttFont] Reading 'hmtx' table from disk
+[DEBUG] 2025-10-22 15:48:34,569 [fontTools.ttLib.ttFont] Decompiling 'hmtx' table
+[DEBUG] 2025-10-22 15:48:34,569 [fontTools.ttLib.ttFont] Reading 'hhea' table from disk
+[DEBUG] 2025-10-22 15:48:34,570 [fontTools.ttLib.ttFont] Decompiling 'hhea' table
+[DEBUG] 2025-10-22 15:48:34,571 [fontTools.subset.timer] Took 0.002s to subset 'hmtx'
+[INFO] 2025-10-22 15:48:34,571 [fontTools.subset] hmtx subsetted
+[DEBUG] 2025-10-22 15:48:34,572 [fontTools.subset.timer] Took 0.001s to subset 'cmap'
+[INFO] 2025-10-22 15:48:34,572 [fontTools.subset] cmap subsetted
+[INFO] 2025-10-22 15:48:34,572 [fontTools.subset] loca subsetting not needed
+[DEBUG] 2025-10-22 15:48:34,573 [fontTools.subset.timer] Took 0.000s to subset 'post'
+[INFO] 2025-10-22 15:48:34,573 [fontTools.subset] post subsetted
+[INFO] 2025-10-22 15:48:34,573 [fontTools.subset] gasp subsetting not needed
+[INFO] 2025-10-22 15:48:34,573 [fontTools.subset] STAT subsetting not needed
+[DEBUG] 2025-10-22 15:48:34,573 [fontTools.ttLib.ttFont] Reading 'GDEF' table from disk
+[DEBUG] 2025-10-22 15:48:34,574 [fontTools.ttLib.ttFont] Decompiling 'GDEF' table
+[DEBUG] 2025-10-22 15:48:34,576 [fontTools.subset.timer] Took 0.002s to subset 'GDEF'
+[INFO] 2025-10-22 15:48:34,576 [fontTools.subset] GDEF subsetted
+[INFO] 2025-10-22 15:48:34,576 [fontTools.subset] name subsetting not needed
+[DEBUG] 2025-10-22 15:48:34,578 [fontTools.subset.timer] Took 0.002s to subset 'glyf'
+[INFO] 2025-10-22 15:48:34,578 [fontTools.subset] glyf subsetted
+[DEBUG] 2025-10-22 15:48:34,579 [fontTools.subset.timer] Took 0.000s to subset GlyphOrder
+[DEBUG] 2025-10-22 15:48:34,579 [fontTools.subset.timer] Took 0.000s to prune 'head'
+[INFO] 2025-10-22 15:48:34,579 [fontTools.subset] head pruned
+[DEBUG] 2025-10-22 15:48:34,579 [fontTools.ttLib.ttFont] Reading 'OS/2' table from disk
+[DEBUG] 2025-10-22 15:48:34,580 [fontTools.ttLib.ttFont] Decompiling 'OS/2' table
+[INFO] 2025-10-22 15:48:34,580 [fontTools.subset] OS/2 Unicode ranges pruned: [0]
+[INFO] 2025-10-22 15:48:34,580 [fontTools.subset] OS/2 CodePage ranges pruned: [0]
+[DEBUG] 2025-10-22 15:48:34,581 [fontTools.subset.timer] Took 0.001s to prune 'glyf'
+[INFO] 2025-10-22 15:48:34,582 [fontTools.subset] glyf pruned
+[DEBUG] 2025-10-22 15:48:34,582 [fontTools.subset.timer] Took 0.000s to prune 'GDEF'
+[INFO] 2025-10-22 15:48:34,582 [fontTools.subset] GDEF pruned
+[DEBUG] 2025-10-22 15:48:34,582 [fontTools.ttLib.ttFont] Reading 'name' table from disk
+[DEBUG] 2025-10-22 15:48:34,583 [fontTools.ttLib.ttFont] Decompiling 'name' table
+[DEBUG] 2025-10-22 15:48:34,583 [fontTools.ttLib.ttFont] Reading 'gasp' table from disk
+[DEBUG] 2025-10-22 15:48:34,583 [fontTools.ttLib.ttFont] Decompiling 'gasp' table
+[DEBUG] 2025-10-22 15:48:34,583 [fontTools.ttLib.ttFont] Reading 'STAT' table from disk
+[DEBUG] 2025-10-22 15:48:34,584 [fontTools.ttLib.ttFont] Decompiling 'STAT' table
+[DEBUG] 2025-10-22 15:48:34,584 [fontTools.subset.timer] Took 0.002s to prune 'name'
+[INFO] 2025-10-22 15:48:34,584 [fontTools.subset] name pruned
+[DEBUG] 2025-10-22 15:48:34,585 [fontTools.ttLib.ttFont] Compiling 'glyf' table
+[DEBUG] 2025-10-22 15:48:34,591 [fontTools.ttLib.ttFont] Writing 'glyf' table to disk
+[DEBUG] 2025-10-22 15:48:34,591 [fontTools.ttLib.ttFont] Compiling 'maxp' table
+[DEBUG] 2025-10-22 15:48:34,592 [fontTools.ttLib.ttFont] Writing 'maxp' table to disk
+[DEBUG] 2025-10-22 15:48:34,592 [fontTools.ttLib.ttFont] Compiling 'loca' table
+[DEBUG] 2025-10-22 15:48:34,593 [fontTools.ttLib.ttFont] Writing 'loca' table to disk
+[DEBUG] 2025-10-22 15:48:34,593 [fontTools.ttLib.ttFont] Compiling 'head' table
+[DEBUG] 2025-10-22 15:48:34,593 [fontTools.ttLib.ttFont] Writing 'head' table to disk
+[DEBUG] 2025-10-22 15:48:34,593 [fontTools.ttLib.ttFont] Compiling 'hmtx' table
+[DEBUG] 2025-10-22 15:48:34,595 [fontTools.ttLib.ttFont] Writing 'hmtx' table to disk
+[DEBUG] 2025-10-22 15:48:34,596 [fontTools.ttLib.ttFont] Compiling 'hhea' table
+[DEBUG] 2025-10-22 15:48:34,597 [fontTools.ttLib.ttFont] Writing 'hhea' table to disk
+[DEBUG] 2025-10-22 15:48:34,597 [fontTools.ttLib.ttFont] Compiling 'OS/2' table
+[DEBUG] 2025-10-22 15:48:34,598 [fontTools.ttLib.ttFont] Writing 'OS/2' table to disk
+[DEBUG] 2025-10-22 15:48:34,598 [fontTools.ttLib.ttFont] Compiling 'cmap' table
+[DEBUG] 2025-10-22 15:48:34,598 [fontTools.ttLib.ttFont] Writing 'cmap' table to disk
+[DEBUG] 2025-10-22 15:48:34,598 [fontTools.ttLib.ttFont] Compiling 'name' table
+[DEBUG] 2025-10-22 15:48:34,599 [fontTools.ttLib.ttFont] Writing 'name' table to disk
+[DEBUG] 2025-10-22 15:48:34,599 [fontTools.ttLib.ttFont] Compiling 'post' table
+[DEBUG] 2025-10-22 15:48:34,599 [fontTools.ttLib.ttFont] Writing 'post' table to disk
+[DEBUG] 2025-10-22 15:48:34,599 [fontTools.ttLib.ttFont] Compiling 'gasp' table
+[DEBUG] 2025-10-22 15:48:34,599 [fontTools.ttLib.ttFont] Writing 'gasp' table to disk
+[DEBUG] 2025-10-22 15:48:34,600 [fontTools.ttLib.ttFont] Compiling 'GDEF' table
+[DEBUG] 2025-10-22 15:48:34,600 [fontTools.ttLib.ttFont] Writing 'GDEF' table to disk
+[DEBUG] 2025-10-22 15:48:34,601 [fontTools.ttLib.ttFont] Compiling 'STAT' table
+[DEBUG] 2025-10-22 15:48:34,601 [fontTools.ttLib.ttFont] Writing 'STAT' table to disk
+[DEBUG] 2025-10-22 15:48:34,603 [fontTools.ttLib.ttFont] Reading 'maxp' table from disk
+[DEBUG] 2025-10-22 15:48:34,603 [fontTools.ttLib.ttFont] Decompiling 'maxp' table
+[DEBUG] 2025-10-22 15:48:34,603 [fontTools.subset.timer] Took 0.000s to load 'maxp'
+[DEBUG] 2025-10-22 15:48:34,603 [fontTools.subset.timer] Took 0.000s to prune 'maxp'
+[INFO] 2025-10-22 15:48:34,604 [fontTools.subset] maxp pruned
+[DEBUG] 2025-10-22 15:48:34,604 [fontTools.ttLib.ttFont] Reading 'cmap' table from disk
+[DEBUG] 2025-10-22 15:48:34,604 [fontTools.ttLib.ttFont] Decompiling 'cmap' table
+[DEBUG] 2025-10-22 15:48:34,605 [fontTools.ttLib.ttFont] Reading 'post' table from disk
+[DEBUG] 2025-10-22 15:48:34,606 [fontTools.ttLib.ttFont] Decompiling 'post' table
+[DEBUG] 2025-10-22 15:48:34,614 [fontTools.subset.timer] Took 0.010s to load 'cmap'
+[DEBUG] 2025-10-22 15:48:34,614 [fontTools.subset.timer] Took 0.000s to prune 'cmap'
+[INFO] 2025-10-22 15:48:34,614 [fontTools.subset] cmap pruned
+[INFO] 2025-10-22 15:48:34,615 [fontTools.subset] prep dropped
+[DEBUG] 2025-10-22 15:48:34,615 [fontTools.subset.timer] Took 0.000s to load 'post'
+[DEBUG] 2025-10-22 15:48:34,615 [fontTools.subset.timer] Took 0.000s to prune 'post'
+[INFO] 2025-10-22 15:48:34,615 [fontTools.subset] post pruned
+[INFO] 2025-10-22 15:48:34,616 [fontTools.subset] GPOS dropped
+[INFO] 2025-10-22 15:48:34,616 [fontTools.subset] GSUB dropped
+[DEBUG] 2025-10-22 15:48:34,616 [fontTools.ttLib.ttFont] Reading 'glyf' table from disk
+[DEBUG] 2025-10-22 15:48:34,616 [fontTools.ttLib.ttFont] Decompiling 'glyf' table
+[DEBUG] 2025-10-22 15:48:34,617 [fontTools.ttLib.ttFont] Reading 'loca' table from disk
+[DEBUG] 2025-10-22 15:48:34,617 [fontTools.ttLib.ttFont] Decompiling 'loca' table
+[DEBUG] 2025-10-22 15:48:34,617 [fontTools.ttLib.ttFont] Reading 'head' table from disk
+[DEBUG] 2025-10-22 15:48:34,617 [fontTools.ttLib.ttFont] Decompiling 'head' table
+[DEBUG] 2025-10-22 15:48:34,622 [fontTools.subset.timer] Took 0.006s to load 'glyf'
+[DEBUG] 2025-10-22 15:48:34,622 [fontTools.subset.timer] Took 0.000s to prune 'glyf'
+[INFO] 2025-10-22 15:48:34,622 [fontTools.subset] glyf pruned
+[DEBUG] 2025-10-22 15:48:34,623 [fontTools.subset.timer] Took 0.000s to close glyph list over 'cmap'
+[INFO] 2025-10-22 15:48:34,623 [fontTools.subset] Added gid0 to subset
+[INFO] 2025-10-22 15:48:34,623 [fontTools.subset] Closing glyph list over 'glyf': 32 glyphs before
+[INFO] 2025-10-22 15:48:34,624 [fontTools.subset] Glyph names: ['.notdef', 'D', 'M', 'O', 'P', 'U', 'a', 'at', 'c', 'd', 'e', 'eight', 'f', 'g', 'i', 'k', 'l', 'm', 'n', 'nine', 'o', 'period', 'r', 's', 'six', 'space', 't', 'u', 'v', 'x', 'y', 'zero']
+[INFO] 2025-10-22 15:48:34,624 [fontTools.subset] Glyph IDs:   [0, 84, 292, 321, 375, 424, 507, 586, 597, 614, 647, 658, 689, 727, 736, 766, 773, 790, 852, 871, 888, 913, 978, 991, 996, 1339, 1347, 1349, 1350, 1443, 1500, 1747]
+[INFO] 2025-10-22 15:48:34,624 [fontTools.subset] Closed glyph list over 'glyf': 34 glyphs after
+[INFO] 2025-10-22 15:48:34,625 [fontTools.subset] Glyph names: ['.notdef', 'D', 'M', 'O', 'P', 'U', 'a', 'at', 'c', 'd', 'dotlessi', 'e', 'eight', 'f', 'g', 'i', 'k', 'l', 'm', 'n', 'nine', 'o', 'period', 'r', 's', 'six', 'space', 't', 'u', 'uni0307', 'v', 'x', 'y', 'zero']
+[INFO] 2025-10-22 15:48:34,625 [fontTools.subset] Glyph IDs:   [0, 84, 292, 321, 375, 424, 507, 586, 597, 614, 647, 658, 689, 690, 727, 736, 766, 773, 790, 852, 871, 888, 913, 978, 991, 996, 1339, 1347, 1349, 1350, 1443, 1500, 1747, 2645]
+[DEBUG] 2025-10-22 15:48:34,625 [fontTools.subset.timer] Took 0.002s to close glyph list over 'glyf'
+[INFO] 2025-10-22 15:48:34,628 [fontTools.subset] Retaining 34 glyphs
+[INFO] 2025-10-22 15:48:34,629 [fontTools.subset] head subsetting not needed
+[INFO] 2025-10-22 15:48:34,629 [fontTools.subset] hhea subsetting not needed
+[INFO] 2025-10-22 15:48:34,629 [fontTools.subset] maxp subsetting not needed
+[INFO] 2025-10-22 15:48:34,629 [fontTools.subset] OS/2 subsetting not needed
+[DEBUG] 2025-10-22 15:48:34,630 [fontTools.ttLib.ttFont] Reading 'hmtx' table from disk
+[DEBUG] 2025-10-22 15:48:34,630 [fontTools.ttLib.ttFont] Decompiling 'hmtx' table
+[DEBUG] 2025-10-22 15:48:34,630 [fontTools.ttLib.ttFont] Reading 'hhea' table from disk
+[DEBUG] 2025-10-22 15:48:34,630 [fontTools.ttLib.ttFont] Decompiling 'hhea' table
+[DEBUG] 2025-10-22 15:48:34,633 [fontTools.subset.timer] Took 0.003s to subset 'hmtx'
+[INFO] 2025-10-22 15:48:34,633 [fontTools.subset] hmtx subsetted
+[DEBUG] 2025-10-22 15:48:34,635 [fontTools.subset.timer] Took 0.002s to subset 'cmap'
+[INFO] 2025-10-22 15:48:34,635 [fontTools.subset] cmap subsetted
+[INFO] 2025-10-22 15:48:34,635 [fontTools.subset] loca subsetting not needed
+[DEBUG] 2025-10-22 15:48:34,635 [fontTools.subset.timer] Took 0.000s to subset 'post'
+[INFO] 2025-10-22 15:48:34,635 [fontTools.subset] post subsetted
+[INFO] 2025-10-22 15:48:34,635 [fontTools.subset] gasp subsetting not needed
+[INFO] 2025-10-22 15:48:34,636 [fontTools.subset] STAT subsetting not needed
+[DEBUG] 2025-10-22 15:48:34,636 [fontTools.ttLib.ttFont] Reading 'GDEF' table from disk
+[DEBUG] 2025-10-22 15:48:34,636 [fontTools.ttLib.ttFont] Decompiling 'GDEF' table
+[DEBUG] 2025-10-22 15:48:34,639 [fontTools.subset.timer] Took 0.003s to subset 'GDEF'
+[INFO] 2025-10-22 15:48:34,639 [fontTools.subset] GDEF subsetted
+[INFO] 2025-10-22 15:48:34,639 [fontTools.subset] name subsetting not needed
+[DEBUG] 2025-10-22 15:48:34,641 [fontTools.subset.timer] Took 0.002s to subset 'glyf'
+[INFO] 2025-10-22 15:48:34,642 [fontTools.subset] glyf subsetted
+[DEBUG] 2025-10-22 15:48:34,642 [fontTools.subset.timer] Took 0.000s to subset GlyphOrder
+[DEBUG] 2025-10-22 15:48:34,642 [fontTools.subset.timer] Took 0.000s to prune 'head'
+[INFO] 2025-10-22 15:48:34,642 [fontTools.subset] head pruned
+[DEBUG] 2025-10-22 15:48:34,643 [fontTools.ttLib.ttFont] Reading 'OS/2' table from disk
+[DEBUG] 2025-10-22 15:48:34,643 [fontTools.ttLib.ttFont] Decompiling 'OS/2' table
+[INFO] 2025-10-22 15:48:34,643 [fontTools.subset] OS/2 Unicode ranges pruned: [0]
+[INFO] 2025-10-22 15:48:34,643 [fontTools.subset] OS/2 CodePage ranges pruned: [0]
+[DEBUG] 2025-10-22 15:48:34,645 [fontTools.subset.timer] Took 0.001s to prune 'glyf'
+[INFO] 2025-10-22 15:48:34,645 [fontTools.subset] glyf pruned
+[DEBUG] 2025-10-22 15:48:34,646 [fontTools.subset.timer] Took 0.000s to prune 'GDEF'
+[INFO] 2025-10-22 15:48:34,646 [fontTools.subset] GDEF pruned
+[DEBUG] 2025-10-22 15:48:34,646 [fontTools.ttLib.ttFont] Reading 'name' table from disk
+[DEBUG] 2025-10-22 15:48:34,646 [fontTools.ttLib.ttFont] Decompiling 'name' table
+[DEBUG] 2025-10-22 15:48:34,647 [fontTools.ttLib.ttFont] Reading 'gasp' table from disk
+[DEBUG] 2025-10-22 15:48:34,647 [fontTools.ttLib.ttFont] Decompiling 'gasp' table
+[DEBUG] 2025-10-22 15:48:34,647 [fontTools.ttLib.ttFont] Reading 'STAT' table from disk
+[DEBUG] 2025-10-22 15:48:34,647 [fontTools.ttLib.ttFont] Decompiling 'STAT' table
+[DEBUG] 2025-10-22 15:48:34,648 [fontTools.subset.timer] Took 0.002s to prune 'name'
+[INFO] 2025-10-22 15:48:34,648 [fontTools.subset] name pruned
+[DEBUG] 2025-10-22 15:48:34,649 [fontTools.ttLib.ttFont] Compiling 'glyf' table
+[DEBUG] 2025-10-22 15:48:34,661 [fontTools.ttLib.ttFont] Writing 'glyf' table to disk
+[DEBUG] 2025-10-22 15:48:34,661 [fontTools.ttLib.ttFont] Compiling 'maxp' table
+[DEBUG] 2025-10-22 15:48:34,663 [fontTools.ttLib.ttFont] Writing 'maxp' table to disk
+[DEBUG] 2025-10-22 15:48:34,663 [fontTools.ttLib.ttFont] Compiling 'loca' table
+[DEBUG] 2025-10-22 15:48:34,664 [fontTools.ttLib.ttFont] Writing 'loca' table to disk
+[DEBUG] 2025-10-22 15:48:34,665 [fontTools.ttLib.ttFont] Compiling 'head' table
+[DEBUG] 2025-10-22 15:48:34,665 [fontTools.ttLib.ttFont] Writing 'head' table to disk
+[DEBUG] 2025-10-22 15:48:34,665 [fontTools.ttLib.ttFont] Compiling 'hmtx' table
+[DEBUG] 2025-10-22 15:48:34,670 [fontTools.ttLib.ttFont] Writing 'hmtx' table to disk
+[DEBUG] 2025-10-22 15:48:34,670 [fontTools.ttLib.ttFont] Compiling 'hhea' table
+[DEBUG] 2025-10-22 15:48:34,673 [fontTools.ttLib.ttFont] Writing 'hhea' table to disk
+[DEBUG] 2025-10-22 15:48:34,673 [fontTools.ttLib.ttFont] Compiling 'OS/2' table
+[DEBUG] 2025-10-22 15:48:34,674 [fontTools.ttLib.ttFont] Writing 'OS/2' table to disk
+[DEBUG] 2025-10-22 15:48:34,674 [fontTools.ttLib.ttFont] Compiling 'cmap' table
+[DEBUG] 2025-10-22 15:48:34,674 [fontTools.ttLib.ttFont] Writing 'cmap' table to disk
+[DEBUG] 2025-10-22 15:48:34,675 [fontTools.ttLib.ttFont] Compiling 'name' table
+[DEBUG] 2025-10-22 15:48:34,675 [fontTools.ttLib.ttFont] Writing 'name' table to disk
+[DEBUG] 2025-10-22 15:48:34,676 [fontTools.ttLib.ttFont] Compiling 'post' table
+[DEBUG] 2025-10-22 15:48:34,676 [fontTools.ttLib.ttFont] Writing 'post' table to disk
+[DEBUG] 2025-10-22 15:48:34,676 [fontTools.ttLib.ttFont] Compiling 'gasp' table
+[DEBUG] 2025-10-22 15:48:34,677 [fontTools.ttLib.ttFont] Writing 'gasp' table to disk
+[DEBUG] 2025-10-22 15:48:34,677 [fontTools.ttLib.ttFont] Compiling 'GDEF' table
+[DEBUG] 2025-10-22 15:48:34,678 [fontTools.ttLib.ttFont] Writing 'GDEF' table to disk
+[DEBUG] 2025-10-22 15:48:34,679 [fontTools.ttLib.ttFont] Compiling 'STAT' table
+[DEBUG] 2025-10-22 15:48:34,679 [fontTools.ttLib.ttFont] Writing 'STAT' table to disk
+[DEBUG] 2025-10-22 15:48:34,682 [fontTools.ttLib.ttFont] Reading 'maxp' table from disk
+[DEBUG] 2025-10-22 15:48:34,682 [fontTools.ttLib.ttFont] Decompiling 'maxp' table
+[DEBUG] 2025-10-22 15:48:34,682 [fontTools.subset.timer] Took 0.000s to load 'maxp'
+[DEBUG] 2025-10-22 15:48:34,683 [fontTools.subset.timer] Took 0.000s to prune 'maxp'
+[INFO] 2025-10-22 15:48:34,683 [fontTools.subset] maxp pruned
+[DEBUG] 2025-10-22 15:48:34,683 [fontTools.ttLib.ttFont] Reading 'cmap' table from disk
+[DEBUG] 2025-10-22 15:48:34,683 [fontTools.ttLib.ttFont] Decompiling 'cmap' table
+[DEBUG] 2025-10-22 15:48:34,684 [fontTools.ttLib.ttFont] Reading 'post' table from disk
+[DEBUG] 2025-10-22 15:48:34,685 [fontTools.ttLib.ttFont] Decompiling 'post' table
+[DEBUG] 2025-10-22 15:48:34,687 [fontTools.subset.timer] Took 0.004s to load 'cmap'
+[DEBUG] 2025-10-22 15:48:34,688 [fontTools.subset.timer] Took 0.000s to prune 'cmap'
+[INFO] 2025-10-22 15:48:34,688 [fontTools.subset] cmap pruned
+[INFO] 2025-10-22 15:48:34,688 [fontTools.subset] fpgm dropped
+[INFO] 2025-10-22 15:48:34,688 [fontTools.subset] prep dropped
+[INFO] 2025-10-22 15:48:34,688 [fontTools.subset] cvt  dropped
+[DEBUG] 2025-10-22 15:48:34,689 [fontTools.subset.timer] Took 0.000s to load 'post'
+[DEBUG] 2025-10-22 15:48:34,689 [fontTools.subset.timer] Took 0.000s to prune 'post'
+[INFO] 2025-10-22 15:48:34,689 [fontTools.subset] post pruned
+[INFO] 2025-10-22 15:48:34,689 [fontTools.subset] GPOS dropped
+[INFO] 2025-10-22 15:48:34,689 [fontTools.subset] GSUB dropped
+[DEBUG] 2025-10-22 15:48:34,690 [fontTools.ttLib.ttFont] Reading 'glyf' table from disk
+[DEBUG] 2025-10-22 15:48:34,690 [fontTools.ttLib.ttFont] Decompiling 'glyf' table
+[DEBUG] 2025-10-22 15:48:34,690 [fontTools.ttLib.ttFont] Reading 'loca' table from disk
+[DEBUG] 2025-10-22 15:48:34,690 [fontTools.ttLib.ttFont] Decompiling 'loca' table
+[DEBUG] 2025-10-22 15:48:34,691 [fontTools.ttLib.ttFont] Reading 'head' table from disk
+[DEBUG] 2025-10-22 15:48:34,691 [fontTools.ttLib.ttFont] Decompiling 'head' table
+[DEBUG] 2025-10-22 15:48:34,694 [fontTools.subset.timer] Took 0.004s to load 'glyf'
+[DEBUG] 2025-10-22 15:48:34,694 [fontTools.subset.timer] Took 0.000s to prune 'glyf'
+[INFO] 2025-10-22 15:48:34,694 [fontTools.subset] glyf pruned
+[DEBUG] 2025-10-22 15:48:34,695 [fontTools.subset.timer] Took 0.000s to close glyph list over 'cmap'
+[INFO] 2025-10-22 15:48:34,695 [fontTools.subset] Added gid0 to subset
+[INFO] 2025-10-22 15:48:34,695 [fontTools.subset] Closing glyph list over 'glyf': 16 glyphs before
+[INFO] 2025-10-22 15:48:34,695 [fontTools.subset] Glyph names: ['.notdef', 'A', 'C', 'D', 'E', 'H', 'I', 'M', 'N', 'O', 'R', 'S', 'T', 'U', 'V', 'X']
+[INFO] 2025-10-22 15:48:34,696 [fontTools.subset] Glyph IDs:   [0, 1, 45, 56, 72, 122, 134, 183, 189, 204, 254, 266, 279, 292, 325, 339]
+[INFO] 2025-10-22 15:48:34,696 [fontTools.subset] Closed glyph list over 'glyf': 16 glyphs after
+[INFO] 2025-10-22 15:48:34,696 [fontTools.subset] Glyph names: ['.notdef', 'A', 'C', 'D', 'E', 'H', 'I', 'M', 'N', 'O', 'R', 'S', 'T', 'U', 'V', 'X']
+[INFO] 2025-10-22 15:48:34,696 [fontTools.subset] Glyph IDs:   [0, 1, 45, 56, 72, 122, 134, 183, 189, 204, 254, 266, 279, 292, 325, 339]
+[DEBUG] 2025-10-22 15:48:34,697 [fontTools.subset.timer] Took 0.002s to close glyph list over 'glyf'
+[INFO] 2025-10-22 15:48:34,698 [fontTools.subset] Retaining 16 glyphs
+[INFO] 2025-10-22 15:48:34,698 [fontTools.subset] head subsetting not needed
+[INFO] 2025-10-22 15:48:34,699 [fontTools.subset] hhea subsetting not needed
+[INFO] 2025-10-22 15:48:34,699 [fontTools.subset] maxp subsetting not needed
+[INFO] 2025-10-22 15:48:34,699 [fontTools.subset] OS/2 subsetting not needed
+[DEBUG] 2025-10-22 15:48:34,700 [fontTools.ttLib.ttFont] Reading 'hmtx' table from disk
+[DEBUG] 2025-10-22 15:48:34,700 [fontTools.ttLib.ttFont] Decompiling 'hmtx' table
+[DEBUG] 2025-10-22 15:48:34,700 [fontTools.ttLib.ttFont] Reading 'hhea' table from disk
+[DEBUG] 2025-10-22 15:48:34,700 [fontTools.ttLib.ttFont] Decompiling 'hhea' table
+[DEBUG] 2025-10-22 15:48:34,701 [fontTools.subset.timer] Took 0.002s to subset 'hmtx'
+[INFO] 2025-10-22 15:48:34,701 [fontTools.subset] hmtx subsetted
+[DEBUG] 2025-10-22 15:48:34,702 [fontTools.subset.timer] Took 0.000s to subset 'cmap'
+[INFO] 2025-10-22 15:48:34,702 [fontTools.subset] cmap subsetted
+[INFO] 2025-10-22 15:48:34,703 [fontTools.subset] loca subsetting not needed
+[DEBUG] 2025-10-22 15:48:34,703 [fontTools.subset.timer] Took 0.000s to subset 'post'
+[INFO] 2025-10-22 15:48:34,703 [fontTools.subset] post subsetted
+[INFO] 2025-10-22 15:48:34,703 [fontTools.subset] gasp subsetting not needed
+[INFO] 2025-10-22 15:48:34,703 [fontTools.subset] STAT subsetting not needed
+[DEBUG] 2025-10-22 15:48:34,704 [fontTools.ttLib.ttFont] Reading 'GDEF' table from disk
+[DEBUG] 2025-10-22 15:48:34,704 [fontTools.ttLib.ttFont] Decompiling 'GDEF' table
+[DEBUG] 2025-10-22 15:48:34,706 [fontTools.subset.timer] Took 0.002s to subset 'GDEF'
+[INFO] 2025-10-22 15:48:34,706 [fontTools.subset] GDEF subsetted
+[INFO] 2025-10-22 15:48:34,706 [fontTools.subset] name subsetting not needed
+[DEBUG] 2025-10-22 15:48:34,707 [fontTools.subset.timer] Took 0.001s to subset 'glyf'
+[INFO] 2025-10-22 15:48:34,707 [fontTools.subset] glyf subsetted
+[DEBUG] 2025-10-22 15:48:34,707 [fontTools.subset.timer] Took 0.000s to subset GlyphOrder
+[DEBUG] 2025-10-22 15:48:34,708 [fontTools.subset.timer] Took 0.000s to prune 'head'
+[INFO] 2025-10-22 15:48:34,708 [fontTools.subset] head pruned
+[DEBUG] 2025-10-22 15:48:34,708 [fontTools.ttLib.ttFont] Reading 'OS/2' table from disk
+[DEBUG] 2025-10-22 15:48:34,709 [fontTools.ttLib.ttFont] Decompiling 'OS/2' table
+[INFO] 2025-10-22 15:48:34,709 [fontTools.subset] OS/2 Unicode ranges pruned: [0]
+[INFO] 2025-10-22 15:48:34,709 [fontTools.subset] OS/2 CodePage ranges pruned: [0]
+[DEBUG] 2025-10-22 15:48:34,710 [fontTools.subset.timer] Took 0.000s to prune 'glyf'
+[INFO] 2025-10-22 15:48:34,710 [fontTools.subset] glyf pruned
+[DEBUG] 2025-10-22 15:48:34,710 [fontTools.subset.timer] Took 0.000s to prune 'GDEF'
+[INFO] 2025-10-22 15:48:34,710 [fontTools.subset] GDEF pruned
+[DEBUG] 2025-10-22 15:48:34,711 [fontTools.ttLib.ttFont] Reading 'name' table from disk
+[DEBUG] 2025-10-22 15:48:34,711 [fontTools.ttLib.ttFont] Decompiling 'name' table
+[DEBUG] 2025-10-22 15:48:34,712 [fontTools.ttLib.ttFont] Reading 'gasp' table from disk
+[DEBUG] 2025-10-22 15:48:34,712 [fontTools.ttLib.ttFont] Decompiling 'gasp' table
+[DEBUG] 2025-10-22 15:48:34,712 [fontTools.ttLib.ttFont] Reading 'STAT' table from disk
+[DEBUG] 2025-10-22 15:48:34,712 [fontTools.ttLib.ttFont] Decompiling 'STAT' table
+[DEBUG] 2025-10-22 15:48:34,713 [fontTools.subset.timer] Took 0.002s to prune 'name'
+[INFO] 2025-10-22 15:48:34,713 [fontTools.subset] name pruned
+[DEBUG] 2025-10-22 15:48:34,714 [fontTools.ttLib.ttFont] Compiling 'glyf' table
+[DEBUG] 2025-10-22 15:48:34,717 [fontTools.ttLib.ttFont] Writing 'glyf' table to disk
+[DEBUG] 2025-10-22 15:48:34,718 [fontTools.ttLib.ttFont] Compiling 'maxp' table
+[DEBUG] 2025-10-22 15:48:34,718 [fontTools.ttLib.ttFont] Writing 'maxp' table to disk
+[DEBUG] 2025-10-22 15:48:34,718 [fontTools.ttLib.ttFont] Compiling 'loca' table
+[DEBUG] 2025-10-22 15:48:34,719 [fontTools.ttLib.ttFont] Writing 'loca' table to disk
+[DEBUG] 2025-10-22 15:48:34,719 [fontTools.ttLib.ttFont] Compiling 'head' table
+[DEBUG] 2025-10-22 15:48:34,719 [fontTools.ttLib.ttFont] Writing 'head' table to disk
+[DEBUG] 2025-10-22 15:48:34,719 [fontTools.ttLib.ttFont] Compiling 'hmtx' table
+[DEBUG] 2025-10-22 15:48:34,720 [fontTools.ttLib.ttFont] Writing 'hmtx' table to disk
+[DEBUG] 2025-10-22 15:48:34,720 [fontTools.ttLib.ttFont] Compiling 'hhea' table
+[DEBUG] 2025-10-22 15:48:34,721 [fontTools.ttLib.ttFont] Writing 'hhea' table to disk
+[DEBUG] 2025-10-22 15:48:34,721 [fontTools.ttLib.ttFont] Compiling 'OS/2' table
+[DEBUG] 2025-10-22 15:48:34,721 [fontTools.ttLib.ttFont] Writing 'OS/2' table to disk
+[DEBUG] 2025-10-22 15:48:34,722 [fontTools.ttLib.ttFont] Compiling 'cmap' table
+[DEBUG] 2025-10-22 15:48:34,722 [fontTools.ttLib.ttFont] Writing 'cmap' table to disk
+[DEBUG] 2025-10-22 15:48:34,722 [fontTools.ttLib.ttFont] Compiling 'name' table
+[DEBUG] 2025-10-22 15:48:34,722 [fontTools.ttLib.ttFont] Writing 'name' table to disk
+[DEBUG] 2025-10-22 15:48:34,723 [fontTools.ttLib.ttFont] Compiling 'post' table
+[DEBUG] 2025-10-22 15:48:34,723 [fontTools.ttLib.ttFont] Writing 'post' table to disk
+[DEBUG] 2025-10-22 15:48:34,723 [fontTools.ttLib.ttFont] Compiling 'gasp' table
+[DEBUG] 2025-10-22 15:48:34,723 [fontTools.ttLib.ttFont] Writing 'gasp' table to disk
+[DEBUG] 2025-10-22 15:48:34,724 [fontTools.ttLib.ttFont] Compiling 'GDEF' table
+[DEBUG] 2025-10-22 15:48:34,724 [fontTools.ttLib.ttFont] Writing 'GDEF' table to disk
+[DEBUG] 2025-10-22 15:48:34,725 [fontTools.ttLib.ttFont] Compiling 'STAT' table
+[DEBUG] 2025-10-22 15:48:34,725 [fontTools.ttLib.ttFont] Writing 'STAT' table to disk
+[DEBUG] 2025-10-22 15:48:34,727 [fontTools.ttLib.ttFont] Reading 'maxp' table from disk
+[DEBUG] 2025-10-22 15:48:34,727 [fontTools.ttLib.ttFont] Decompiling 'maxp' table
+[DEBUG] 2025-10-22 15:48:34,727 [fontTools.subset.timer] Took 0.000s to load 'maxp'
+[DEBUG] 2025-10-22 15:48:34,727 [fontTools.subset.timer] Took 0.000s to prune 'maxp'
+[INFO] 2025-10-22 15:48:34,727 [fontTools.subset] maxp pruned
+[DEBUG] 2025-10-22 15:48:34,728 [fontTools.ttLib.ttFont] Reading 'cmap' table from disk
+[DEBUG] 2025-10-22 15:48:34,728 [fontTools.ttLib.ttFont] Decompiling 'cmap' table
+[DEBUG] 2025-10-22 15:48:34,729 [fontTools.ttLib.ttFont] Reading 'post' table from disk
+[DEBUG] 2025-10-22 15:48:34,729 [fontTools.ttLib.ttFont] Decompiling 'post' table
+[DEBUG] 2025-10-22 15:48:34,738 [fontTools.subset.timer] Took 0.010s to load 'cmap'
+[DEBUG] 2025-10-22 15:48:34,738 [fontTools.subset.timer] Took 0.000s to prune 'cmap'
+[INFO] 2025-10-22 15:48:34,738 [fontTools.subset] cmap pruned
+[INFO] 2025-10-22 15:48:34,738 [fontTools.subset] prep dropped
+[DEBUG] 2025-10-22 15:48:34,739 [fontTools.subset.timer] Took 0.000s to load 'post'
+[DEBUG] 2025-10-22 15:48:34,739 [fontTools.subset.timer] Took 0.000s to prune 'post'
+[INFO] 2025-10-22 15:48:34,739 [fontTools.subset] post pruned
+[INFO] 2025-10-22 15:48:34,739 [fontTools.subset] GPOS dropped
+[INFO] 2025-10-22 15:48:34,739 [fontTools.subset] GSUB dropped
+[DEBUG] 2025-10-22 15:48:34,740 [fontTools.ttLib.ttFont] Reading 'glyf' table from disk
+[DEBUG] 2025-10-22 15:48:34,740 [fontTools.ttLib.ttFont] Decompiling 'glyf' table
+[DEBUG] 2025-10-22 15:48:34,741 [fontTools.ttLib.ttFont] Reading 'loca' table from disk
+[DEBUG] 2025-10-22 15:48:34,741 [fontTools.ttLib.ttFont] Decompiling 'loca' table
+[DEBUG] 2025-10-22 15:48:34,741 [fontTools.ttLib.ttFont] Reading 'head' table from disk
+[DEBUG] 2025-10-22 15:48:34,741 [fontTools.ttLib.ttFont] Decompiling 'head' table
+[DEBUG] 2025-10-22 15:48:34,746 [fontTools.subset.timer] Took 0.006s to load 'glyf'
+[DEBUG] 2025-10-22 15:48:34,746 [fontTools.subset.timer] Took 0.000s to prune 'glyf'
+[INFO] 2025-10-22 15:48:34,746 [fontTools.subset] glyf pruned
+[DEBUG] 2025-10-22 15:48:34,747 [fontTools.subset.timer] Took 0.001s to close glyph list over 'cmap'
+[INFO] 2025-10-22 15:48:34,748 [fontTools.subset] Added gid0 to subset
+[INFO] 2025-10-22 15:48:34,748 [fontTools.subset] Closing glyph list over 'glyf': 52 glyphs before
+[INFO] 2025-10-22 15:48:34,748 [fontTools.subset] Glyph names: ['.notdef', 'A', 'C', 'D', 'E', 'F', 'I', 'L', 'M', 'O', 'P', 'S', 'T', 'U', 'a', 'ampersand', 'b', 'c', 'colon', 'comma', 'd', 'e', 'f', 'five', 'g', 'h', 'hyphen', 'hyphen.case', 'i', 'k', 'l', 'm', 'n', 'o', 'one', 'p', 'parenleft.case', 'parenright', 'parenright.case', 'period', 'r', 's', 'space', 't', 'three', 'two', 'u', 'v', 'x', 'y', 'z', 'zero']
+[INFO] 2025-10-22 15:48:34,749 [fontTools.subset] Glyph IDs:   [0, 2, 73, 84, 95, 137, 197, 281, 292, 321, 375, 397, 411, 424, 507, 578, 586, 597, 614, 647, 658, 670, 689, 727, 736, 766, 773, 790, 843, 852, 871, 888, 913, 978, 991, 996, 1020, 1339, 1340, 1341, 1343, 1345, 1423, 1436, 1444, 1445, 1457, 1469, 1499, 1500, 1503, 1747]
+[INFO] 2025-10-22 15:48:34,749 [fontTools.subset] Closed glyph list over 'glyf': 56 glyphs after
+[INFO] 2025-10-22 15:48:34,749 [fontTools.subset] Glyph names: ['.notdef', 'A', 'C', 'D', 'E', 'F', 'I', 'L', 'M', 'O', 'P', 'S', 'T', 'U', 'a', 'ampersand', 'b', 'c', 'colon', 'comma', 'd', 'dotlessi', 'e', 'f', 'five', 'g', 'h', 'hyphen', 'hyphen.case', 'i', 'k', 'l', 'm', 'n', 'o', 'one', 'p', 'parenleft', 'parenleft.case', 'parenright', 'parenright.case', 'period', 'quoteright', 'r', 's', 'space', 't', 'three', 'two', 'u', 'uni0307', 'v', 'x', 'y', 'z', 'zero']
+[INFO] 2025-10-22 15:48:34,750 [fontTools.subset] Glyph IDs:   [0, 2, 73, 84, 95, 137, 197, 281, 292, 321, 375, 397, 411, 424, 507, 578, 586, 597, 614, 647, 658, 670, 689, 690, 727, 736, 766, 773, 790, 843, 852, 871, 888, 913, 978, 991, 996, 1020, 1339, 1340, 1341, 1343, 1345, 1423, 1435, 1436, 1444, 1445, 1457, 1469, 1481, 1499, 1500, 1503, 1747, 2645]
+[DEBUG] 2025-10-22 15:48:34,750 [fontTools.subset.timer] Took 0.002s to close glyph list over 'glyf'
+[INFO] 2025-10-22 15:48:34,753 [fontTools.subset] Retaining 56 glyphs
+[INFO] 2025-10-22 15:48:34,754 [fontTools.subset] head subsetting not needed
+[INFO] 2025-10-22 15:48:34,754 [fontTools.subset] hhea subsetting not needed
+[INFO] 2025-10-22 15:48:34,754 [fontTools.subset] maxp subsetting not needed
+[INFO] 2025-10-22 15:48:34,754 [fontTools.subset] OS/2 subsetting not needed
+[DEBUG] 2025-10-22 15:48:34,755 [fontTools.ttLib.ttFont] Reading 'hmtx' table from disk
+[DEBUG] 2025-10-22 15:48:34,755 [fontTools.ttLib.ttFont] Decompiling 'hmtx' table
+[DEBUG] 2025-10-22 15:48:34,755 [fontTools.ttLib.ttFont] Reading 'hhea' table from disk
+[DEBUG] 2025-10-22 15:48:34,755 [fontTools.ttLib.ttFont] Decompiling 'hhea' table
+[DEBUG] 2025-10-22 15:48:34,758 [fontTools.subset.timer] Took 0.004s to subset 'hmtx'
+[INFO] 2025-10-22 15:48:34,758 [fontTools.subset] hmtx subsetted
+[DEBUG] 2025-10-22 15:48:34,761 [fontTools.subset.timer] Took 0.002s to subset 'cmap'
+[INFO] 2025-10-22 15:48:34,761 [fontTools.subset] cmap subsetted
+[INFO] 2025-10-22 15:48:34,761 [fontTools.subset] loca subsetting not needed
+[DEBUG] 2025-10-22 15:48:34,761 [fontTools.subset.timer] Took 0.000s to subset 'post'
+[INFO] 2025-10-22 15:48:34,762 [fontTools.subset] post subsetted
+[INFO] 2025-10-22 15:48:34,762 [fontTools.subset] gasp subsetting not needed
+[INFO] 2025-10-22 15:48:34,762 [fontTools.subset] STAT subsetting not needed
+[DEBUG] 2025-10-22 15:48:34,762 [fontTools.ttLib.ttFont] Reading 'GDEF' table from disk
+[DEBUG] 2025-10-22 15:48:34,763 [fontTools.ttLib.ttFont] Decompiling 'GDEF' table
+[DEBUG] 2025-10-22 15:48:34,765 [fontTools.subset.timer] Took 0.003s to subset 'GDEF'
+[INFO] 2025-10-22 15:48:34,765 [fontTools.subset] GDEF subsetted
+[INFO] 2025-10-22 15:48:34,766 [fontTools.subset] name subsetting not needed
+[DEBUG] 2025-10-22 15:48:34,771 [fontTools.subset.timer] Took 0.005s to subset 'glyf'
+[INFO] 2025-10-22 15:48:34,772 [fontTools.subset] glyf subsetted
+[DEBUG] 2025-10-22 15:48:34,772 [fontTools.subset.timer] Took 0.000s to subset GlyphOrder
+[DEBUG] 2025-10-22 15:48:34,772 [fontTools.subset.timer] Took 0.000s to prune 'head'
+[INFO] 2025-10-22 15:48:34,772 [fontTools.subset] head pruned
+[DEBUG] 2025-10-22 15:48:34,773 [fontTools.ttLib.ttFont] Reading 'OS/2' table from disk
+[DEBUG] 2025-10-22 15:48:34,773 [fontTools.ttLib.ttFont] Decompiling 'OS/2' table
+[INFO] 2025-10-22 15:48:34,773 [fontTools.subset] OS/2 Unicode ranges pruned: [0, 60]
+[INFO] 2025-10-22 15:48:34,774 [fontTools.subset] OS/2 CodePage ranges pruned: [0]
+[DEBUG] 2025-10-22 15:48:34,776 [fontTools.subset.timer] Took 0.002s to prune 'glyf'
+[INFO] 2025-10-22 15:48:34,777 [fontTools.subset] glyf pruned
+[DEBUG] 2025-10-22 15:48:34,779 [fontTools.subset.timer] Took 0.000s to prune 'GDEF'
+[INFO] 2025-10-22 15:48:34,780 [fontTools.subset] GDEF pruned
+[DEBUG] 2025-10-22 15:48:34,781 [fontTools.ttLib.ttFont] Reading 'name' table from disk
+[DEBUG] 2025-10-22 15:48:34,782 [fontTools.ttLib.ttFont] Decompiling 'name' table
+[DEBUG] 2025-10-22 15:48:34,783 [fontTools.ttLib.ttFont] Reading 'gasp' table from disk
+[DEBUG] 2025-10-22 15:48:34,783 [fontTools.ttLib.ttFont] Decompiling 'gasp' table
+[DEBUG] 2025-10-22 15:48:34,783 [fontTools.ttLib.ttFont] Reading 'STAT' table from disk
+[DEBUG] 2025-10-22 15:48:34,784 [fontTools.ttLib.ttFont] Decompiling 'STAT' table
+[DEBUG] 2025-10-22 15:48:34,784 [fontTools.subset.timer] Took 0.003s to prune 'name'
+[INFO] 2025-10-22 15:48:34,785 [fontTools.subset] name pruned
+[DEBUG] 2025-10-22 15:48:34,785 [fontTools.ttLib.ttFont] Compiling 'glyf' table
+[DEBUG] 2025-10-22 15:48:34,812 [fontTools.ttLib.ttFont] Writing 'glyf' table to disk
+[DEBUG] 2025-10-22 15:48:34,812 [fontTools.ttLib.ttFont] Compiling 'maxp' table
+[DEBUG] 2025-10-22 15:48:34,816 [fontTools.ttLib.ttFont] Writing 'maxp' table to disk
+[DEBUG] 2025-10-22 15:48:34,816 [fontTools.ttLib.ttFont] Compiling 'loca' table
+[DEBUG] 2025-10-22 15:48:34,818 [fontTools.ttLib.ttFont] Writing 'loca' table to disk
+[DEBUG] 2025-10-22 15:48:34,819 [fontTools.ttLib.ttFont] Compiling 'head' table
+[DEBUG] 2025-10-22 15:48:34,819 [fontTools.ttLib.ttFont] Writing 'head' table to disk
+[DEBUG] 2025-10-22 15:48:34,820 [fontTools.ttLib.ttFont] Compiling 'hmtx' table
+[DEBUG] 2025-10-22 15:48:34,826 [fontTools.ttLib.ttFont] Writing 'hmtx' table to disk
+[DEBUG] 2025-10-22 15:48:34,826 [fontTools.ttLib.ttFont] Compiling 'hhea' table
+[DEBUG] 2025-10-22 15:48:34,830 [fontTools.ttLib.ttFont] Writing 'hhea' table to disk
+[DEBUG] 2025-10-22 15:48:34,831 [fontTools.ttLib.ttFont] Compiling 'OS/2' table
+[DEBUG] 2025-10-22 15:48:34,831 [fontTools.ttLib.ttFont] Writing 'OS/2' table to disk
+[DEBUG] 2025-10-22 15:48:34,831 [fontTools.ttLib.ttFont] Compiling 'cmap' table
+[DEBUG] 2025-10-22 15:48:34,833 [fontTools.ttLib.ttFont] Writing 'cmap' table to disk
+[DEBUG] 2025-10-22 15:48:34,833 [fontTools.ttLib.ttFont] Compiling 'name' table
+[DEBUG] 2025-10-22 15:48:34,833 [fontTools.ttLib.ttFont] Writing 'name' table to disk
+[DEBUG] 2025-10-22 15:48:34,834 [fontTools.ttLib.ttFont] Compiling 'post' table
+[DEBUG] 2025-10-22 15:48:34,834 [fontTools.ttLib.ttFont] Writing 'post' table to disk
+[DEBUG] 2025-10-22 15:48:34,834 [fontTools.ttLib.ttFont] Compiling 'gasp' table
+[DEBUG] 2025-10-22 15:48:34,834 [fontTools.ttLib.ttFont] Writing 'gasp' table to disk
+[DEBUG] 2025-10-22 15:48:34,835 [fontTools.ttLib.ttFont] Compiling 'GDEF' table
+[DEBUG] 2025-10-22 15:48:34,836 [fontTools.ttLib.ttFont] Writing 'GDEF' table to disk
+[DEBUG] 2025-10-22 15:48:34,837 [fontTools.ttLib.ttFont] Compiling 'STAT' table
+[DEBUG] 2025-10-22 15:48:34,837 [fontTools.ttLib.ttFont] Writing 'STAT' table to disk
+[DEBUG] 2025-10-22 15:48:34,841 [fontTools.ttLib.ttFont] Reading 'maxp' table from disk
+[DEBUG] 2025-10-22 15:48:34,842 [fontTools.ttLib.ttFont] Decompiling 'maxp' table
+[DEBUG] 2025-10-22 15:48:34,842 [fontTools.subset.timer] Took 0.001s to load 'maxp'
+[DEBUG] 2025-10-22 15:48:34,842 [fontTools.subset.timer] Took 0.000s to prune 'maxp'
+[INFO] 2025-10-22 15:48:34,842 [fontTools.subset] maxp pruned
+[DEBUG] 2025-10-22 15:48:34,843 [fontTools.ttLib.ttFont] Reading 'cmap' table from disk
+[DEBUG] 2025-10-22 15:48:34,843 [fontTools.ttLib.ttFont] Decompiling 'cmap' table
+[DEBUG] 2025-10-22 15:48:34,845 [fontTools.ttLib.ttFont] Reading 'post' table from disk
+[DEBUG] 2025-10-22 15:48:34,845 [fontTools.ttLib.ttFont] Decompiling 'post' table
+[DEBUG] 2025-10-22 15:48:34,864 [fontTools.subset.timer] Took 0.021s to load 'cmap'
+[DEBUG] 2025-10-22 15:48:34,864 [fontTools.subset.timer] Took 0.000s to prune 'cmap'
+[INFO] 2025-10-22 15:48:34,864 [fontTools.subset] cmap pruned
+[INFO] 2025-10-22 15:48:34,864 [fontTools.subset] prep dropped
+[DEBUG] 2025-10-22 15:48:34,865 [fontTools.subset.timer] Took 0.000s to load 'post'
+[DEBUG] 2025-10-22 15:48:34,865 [fontTools.subset.timer] Took 0.000s to prune 'post'
+[INFO] 2025-10-22 15:48:34,865 [fontTools.subset] post pruned
+[INFO] 2025-10-22 15:48:34,865 [fontTools.subset] GPOS dropped
+[INFO] 2025-10-22 15:48:34,866 [fontTools.subset] GSUB dropped
+[DEBUG] 2025-10-22 15:48:34,866 [fontTools.ttLib.ttFont] Reading 'glyf' table from disk
+[DEBUG] 2025-10-22 15:48:34,866 [fontTools.ttLib.ttFont] Decompiling 'glyf' table
+[DEBUG] 2025-10-22 15:48:34,866 [fontTools.ttLib.ttFont] Reading 'loca' table from disk
+[DEBUG] 2025-10-22 15:48:34,867 [fontTools.ttLib.ttFont] Decompiling 'loca' table
+[DEBUG] 2025-10-22 15:48:34,867 [fontTools.ttLib.ttFont] Reading 'head' table from disk
+[DEBUG] 2025-10-22 15:48:34,867 [fontTools.ttLib.ttFont] Decompiling 'head' table
+[DEBUG] 2025-10-22 15:48:34,875 [fontTools.subset.timer] Took 0.009s to load 'glyf'
+[DEBUG] 2025-10-22 15:48:34,876 [fontTools.subset.timer] Took 0.000s to prune 'glyf'
+[INFO] 2025-10-22 15:48:34,876 [fontTools.subset] glyf pruned
+[DEBUG] 2025-10-22 15:48:34,877 [fontTools.subset.timer] Took 0.001s to close glyph list over 'cmap'
+[INFO] 2025-10-22 15:48:34,877 [fontTools.subset] Added gid0 to subset
+[INFO] 2025-10-22 15:48:34,878 [fontTools.subset] Closing glyph list over 'glyf': 18 glyphs before
+[INFO] 2025-10-22 15:48:34,878 [fontTools.subset] Glyph names: ['.notdef', 'O', 'V', 'e', 'eight', 'f', 'i', 'l', 'n', 'nine', 'one', 'period', 'r', 'six', 'space', 'two', 'y', 'zero']
+[INFO] 2025-10-22 15:48:34,879 [fontTools.subset] Glyph IDs:   [0, 321, 456, 614, 647, 689, 736, 773, 852, 996, 1339, 1340, 1341, 1347, 1349, 1350, 1500, 1747]
+[INFO] 2025-10-22 15:48:34,879 [fontTools.subset] Closed glyph list over 'glyf': 20 glyphs after
+[INFO] 2025-10-22 15:48:34,879 [fontTools.subset] Glyph names: ['.notdef', 'O', 'V', 'dotlessi', 'e', 'eight', 'f', 'i', 'l', 'n', 'nine', 'one', 'period', 'r', 'six', 'space', 'two', 'uni0307', 'y', 'zero']
+[INFO] 2025-10-22 15:48:34,879 [fontTools.subset] Glyph IDs:   [0, 321, 456, 614, 647, 689, 690, 736, 773, 852, 996, 1339, 1340, 1341, 1347, 1349, 1350, 1500, 1747, 2645]
+[DEBUG] 2025-10-22 15:48:34,879 [fontTools.subset.timer] Took 0.002s to close glyph list over 'glyf'
+[INFO] 2025-10-22 15:48:34,887 [fontTools.subset] Retaining 20 glyphs
+[INFO] 2025-10-22 15:48:34,889 [fontTools.subset] head subsetting not needed
+[INFO] 2025-10-22 15:48:34,890 [fontTools.subset] hhea subsetting not needed
+[INFO] 2025-10-22 15:48:34,890 [fontTools.subset] maxp subsetting not needed
+[INFO] 2025-10-22 15:48:34,890 [fontTools.subset] OS/2 subsetting not needed
+[DEBUG] 2025-10-22 15:48:34,890 [fontTools.ttLib.ttFont] Reading 'hmtx' table from disk
+[DEBUG] 2025-10-22 15:48:34,891 [fontTools.ttLib.ttFont] Decompiling 'hmtx' table
+[DEBUG] 2025-10-22 15:48:34,892 [fontTools.ttLib.ttFont] Reading 'hhea' table from disk
+[DEBUG] 2025-10-22 15:48:34,892 [fontTools.ttLib.ttFont] Decompiling 'hhea' table
+[DEBUG] 2025-10-22 15:48:34,896 [fontTools.subset.timer] Took 0.006s to subset 'hmtx'
+[INFO] 2025-10-22 15:48:34,897 [fontTools.subset] hmtx subsetted
+[DEBUG] 2025-10-22 15:48:34,901 [fontTools.subset.timer] Took 0.004s to subset 'cmap'
+[INFO] 2025-10-22 15:48:34,901 [fontTools.subset] cmap subsetted
+[INFO] 2025-10-22 15:48:34,901 [fontTools.subset] loca subsetting not needed
+[DEBUG] 2025-10-22 15:48:34,901 [fontTools.subset.timer] Took 0.000s to subset 'post'
+[INFO] 2025-10-22 15:48:34,902 [fontTools.subset] post subsetted
+[INFO] 2025-10-22 15:48:34,902 [fontTools.subset] gasp subsetting not needed
+[INFO] 2025-10-22 15:48:34,902 [fontTools.subset] STAT subsetting not needed
+[DEBUG] 2025-10-22 15:48:34,903 [fontTools.ttLib.ttFont] Reading 'GDEF' table from disk
+[DEBUG] 2025-10-22 15:48:34,903 [fontTools.ttLib.ttFont] Decompiling 'GDEF' table
+[DEBUG] 2025-10-22 15:48:34,907 [fontTools.subset.timer] Took 0.005s to subset 'GDEF'
+[INFO] 2025-10-22 15:48:34,908 [fontTools.subset] GDEF subsetted
+[INFO] 2025-10-22 15:48:34,908 [fontTools.subset] name subsetting not needed
+[DEBUG] 2025-10-22 15:48:34,913 [fontTools.subset.timer] Took 0.005s to subset 'glyf'
+[INFO] 2025-10-22 15:48:34,913 [fontTools.subset] glyf subsetted
+[DEBUG] 2025-10-22 15:48:34,914 [fontTools.subset.timer] Took 0.000s to subset GlyphOrder
+[DEBUG] 2025-10-22 15:48:34,915 [fontTools.subset.timer] Took 0.000s to prune 'head'
+[INFO] 2025-10-22 15:48:34,915 [fontTools.subset] head pruned
+[DEBUG] 2025-10-22 15:48:34,916 [fontTools.ttLib.ttFont] Reading 'OS/2' table from disk
+[DEBUG] 2025-10-22 15:48:34,916 [fontTools.ttLib.ttFont] Decompiling 'OS/2' table
+[INFO] 2025-10-22 15:48:34,917 [fontTools.subset] OS/2 Unicode ranges pruned: [0]
+[INFO] 2025-10-22 15:48:34,917 [fontTools.subset] OS/2 CodePage ranges pruned: [0]
+[DEBUG] 2025-10-22 15:48:34,920 [fontTools.subset.timer] Took 0.002s to prune 'glyf'
+[INFO] 2025-10-22 15:48:34,920 [fontTools.subset] glyf pruned
+[DEBUG] 2025-10-22 15:48:34,920 [fontTools.subset.timer] Took 0.000s to prune 'GDEF'
+[INFO] 2025-10-22 15:48:34,920 [fontTools.subset] GDEF pruned
+[DEBUG] 2025-10-22 15:48:34,921 [fontTools.ttLib.ttFont] Reading 'name' table from disk
+[DEBUG] 2025-10-22 15:48:34,921 [fontTools.ttLib.ttFont] Decompiling 'name' table
+[DEBUG] 2025-10-22 15:48:34,922 [fontTools.ttLib.ttFont] Reading 'gasp' table from disk
+[DEBUG] 2025-10-22 15:48:34,922 [fontTools.ttLib.ttFont] Decompiling 'gasp' table
+[DEBUG] 2025-10-22 15:48:34,923 [fontTools.ttLib.ttFont] Reading 'STAT' table from disk
+[DEBUG] 2025-10-22 15:48:34,923 [fontTools.ttLib.ttFont] Decompiling 'STAT' table
+[DEBUG] 2025-10-22 15:48:34,925 [fontTools.subset.timer] Took 0.004s to prune 'name'
+[INFO] 2025-10-22 15:48:34,925 [fontTools.subset] name pruned
+[DEBUG] 2025-10-22 15:48:34,926 [fontTools.ttLib.ttFont] Compiling 'glyf' table
+[DEBUG] 2025-10-22 15:48:34,945 [fontTools.ttLib.ttFont] Writing 'glyf' table to disk
+[DEBUG] 2025-10-22 15:48:34,946 [fontTools.ttLib.ttFont] Compiling 'maxp' table
+[DEBUG] 2025-10-22 15:48:34,949 [fontTools.ttLib.ttFont] Writing 'maxp' table to disk
+[DEBUG] 2025-10-22 15:48:34,949 [fontTools.ttLib.ttFont] Compiling 'loca' table
+[DEBUG] 2025-10-22 15:48:34,952 [fontTools.ttLib.ttFont] Writing 'loca' table to disk
+[DEBUG] 2025-10-22 15:48:34,952 [fontTools.ttLib.ttFont] Compiling 'head' table
+[DEBUG] 2025-10-22 15:48:34,952 [fontTools.ttLib.ttFont] Writing 'head' table to disk
+[DEBUG] 2025-10-22 15:48:34,953 [fontTools.ttLib.ttFont] Compiling 'hmtx' table
+[DEBUG] 2025-10-22 15:48:34,959 [fontTools.ttLib.ttFont] Writing 'hmtx' table to disk
+[DEBUG] 2025-10-22 15:48:34,959 [fontTools.ttLib.ttFont] Compiling 'hhea' table
+[DEBUG] 2025-10-22 15:48:34,963 [fontTools.ttLib.ttFont] Writing 'hhea' table to disk
+[DEBUG] 2025-10-22 15:48:34,963 [fontTools.ttLib.ttFont] Compiling 'OS/2' table
+[DEBUG] 2025-10-22 15:48:34,963 [fontTools.ttLib.ttFont] Writing 'OS/2' table to disk
+[DEBUG] 2025-10-22 15:48:34,964 [fontTools.ttLib.ttFont] Compiling 'cmap' table
+[DEBUG] 2025-10-22 15:48:34,965 [fontTools.ttLib.ttFont] Writing 'cmap' table to disk
+[DEBUG] 2025-10-22 15:48:34,965 [fontTools.ttLib.ttFont] Compiling 'name' table
+[DEBUG] 2025-10-22 15:48:34,965 [fontTools.ttLib.ttFont] Writing 'name' table to disk
+[DEBUG] 2025-10-22 15:48:34,966 [fontTools.ttLib.ttFont] Compiling 'post' table
+[DEBUG] 2025-10-22 15:48:34,966 [fontTools.ttLib.ttFont] Writing 'post' table to disk
+[DEBUG] 2025-10-22 15:48:34,966 [fontTools.ttLib.ttFont] Compiling 'gasp' table
+[DEBUG] 2025-10-22 15:48:34,967 [fontTools.ttLib.ttFont] Writing 'gasp' table to disk
+[DEBUG] 2025-10-22 15:48:34,967 [fontTools.ttLib.ttFont] Compiling 'GDEF' table
+[DEBUG] 2025-10-22 15:48:34,968 [fontTools.ttLib.ttFont] Writing 'GDEF' table to disk
+[DEBUG] 2025-10-22 15:48:34,968 [fontTools.ttLib.ttFont] Compiling 'STAT' table
+[DEBUG] 2025-10-22 15:48:34,969 [fontTools.ttLib.ttFont] Writing 'STAT' table to disk
+[DEBUG] 2025-10-22 15:48:34,973 [PIL.PngImagePlugin] STREAM b'IHDR' 16 13
+[DEBUG] 2025-10-22 15:48:34,973 [PIL.PngImagePlugin] STREAM b'IDAT' 41 11750
+[DEBUG] 2025-10-22 15:48:34,986 [PIL.PngImagePlugin] STREAM b'IHDR' 16 13
+[DEBUG] 2025-10-22 15:48:34,986 [PIL.PngImagePlugin] STREAM b'IDAT' 41 2431
