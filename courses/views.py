@@ -5061,6 +5061,20 @@ def become_instructor(request):
 
     return render(request, 'home/become_instructor.html', {'form': form})
 
+
+class PartnerAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        if not self.request.user.is_authenticated:
+            return Partner.objects.none()
+
+        qs = Partner.objects.all()
+
+        if self.q:
+            qs = qs.filter(name__icontains=self.q)  # atau sesuaikan dengan field nama di Partner
+
+        return qs
+
+
 #add course team
 #@login_required
 
