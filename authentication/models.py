@@ -263,7 +263,7 @@ class CustomUser(AbstractUser):
     is_audit = models.BooleanField(_("audit status"), default=False, help_text=_("Designates whether the user can log into this admin audit."))
     is_learner = models.BooleanField(_("learner status"), default=True, help_text=_("Designates whether the user can log into this admin learner."))
     is_note = models.BooleanField(_("note status"), default=False, help_text=_("Designates whether the user can log into this admin note."))
-
+    is_curation = models.BooleanField(_("curation status"), default=False,  help_text=_("Designates whether the user can log into this admin curation."))
     # Authentication Fields
     EMAIL_FIELD = "email"
     USERNAME_FIELD = "email"

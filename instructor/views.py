@@ -309,8 +309,9 @@ def superuser_publish_course(request, course_id):
     course = get_object_or_404(Course, id=course_id)
 
     # Pastikan user superuser
-    if not request.user.is_superuser:
+    if not (request.user.is_superuser or getattr(request.user, 'is_curation', False)):
         raise PermissionDenied("You do not have permission to publish this course.")
+
 
     # Ambil harga kursus terbaru dengan price_type yang valid
     course_price = CoursePrice.objects.filter(course=course, price_type__isnull=False).order_by('-id').first()
