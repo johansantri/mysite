@@ -14132,3 +14132,137 @@ django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'
 [INFO] 2025-10-23 11:35:33,715 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [INFO] 2025-10-23 11:35:33,772 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [INFO] 2025-10-23 11:35:33,828 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-23 11:36:30,096 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 11:37:30,096 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 11:38:30,100 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 11:39:30,105 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 11:40:30,094 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 11:41:30,094 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 11:42:30,095 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 11:43:30,096 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 11:44:30,097 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 11:45:30,094 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 11:46:30,095 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 11:47:30,093 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 11:48:30,099 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 11:49:30,094 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 11:50:30,094 [django.request] Not Found: /partner/ping-session/
+[ERROR] 2025-10-23 11:50:52,911 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-23 11:50:52,912 [django.request] Bad Request: /
+[ERROR] 2025-10-23 11:51:02,896 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-23 11:51:02,898 [django.request] Bad Request: /favicon.ico
+[WARNING] 2025-10-23 11:51:30,095 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 11:51:41,200 [django.request] Not Found: /robots.txt
+[WARNING] 2025-10-23 11:51:43,078 [django.request] Not Found: /robots.txt
+[ERROR] 2025-10-23 11:51:45,062 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-23 11:51:45,064 [django.request] Bad Request: /wiki
+[ERROR] 2025-10-23 11:51:50,724 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-23 11:51:50,725 [django.request] Bad Request: /favicon.ico
+[WARNING] 2025-10-23 11:52:30,094 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 11:52:30,138 [django.request] Not Found: /robots.txt
+[WARNING] 2025-10-23 11:52:31,701 [django.request] Not Found: /robots.txt
+[WARNING] 2025-10-23 11:53:30,093 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 11:54:30,093 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 11:55:30,093 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 11:56:26,685 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-23 11:56:26,685 [django.request] Forbidden: /search/
+[WARNING] 2025-10-23 11:56:30,094 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 11:57:30,096 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 11:58:30,094 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 11:59:30,099 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 12:00:30,094 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 12:01:30,094 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 12:02:30,094 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 12:03:30,094 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 12:04:30,093 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 12:05:30,095 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 12:05:36,102 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-23 12:05:36,102 [django.request] Forbidden: /search/
+[WARNING] 2025-10-23 12:06:30,096 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 12:07:30,095 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 12:08:30,096 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 12:09:30,096 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 12:10:30,102 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 12:11:30,097 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 12:12:30,101 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-10-23 12:13:08,262 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 12:13:08,334 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 12:13:08,562 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-23 12:13:31,029 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 12:14:30,099 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 12:15:30,102 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 12:16:30,100 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 12:17:30,099 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 12:18:30,100 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 12:19:30,101 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-10-23 12:20:28,023 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 12:20:28,057 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 12:20:28,129 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-23 12:20:31,762 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 12:21:30,103 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 12:22:30,104 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-10-23 12:22:43,341 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 12:22:43,701 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 12:22:43,863 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-23 12:22:44,488 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-23 12:22:44,489 [django.request] Forbidden: /search/
+[WARNING] 2025-10-23 12:23:30,104 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 12:24:31,043 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-10-23 12:24:55,020 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 12:24:55,076 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 12:24:55,116 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-23 12:25:31,035 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-10-23 12:26:28,966 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 12:26:29,207 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 12:26:29,283 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-23 12:26:31,017 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 12:27:31,016 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 12:28:30,107 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-10-23 12:29:05,564 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 12:29:05,666 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 12:29:05,821 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-23 12:29:31,068 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-23 12:30:31,235 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-10-23 12:30:35,137 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 12:30:35,285 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 12:30:35,520 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
