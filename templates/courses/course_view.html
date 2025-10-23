@@ -111,7 +111,7 @@
                               <a href="{% url 'instructor:partner_review_curation' course_id=course.id %}">
                                   {{ course.status_course.get_status_display }}
                               </a>
-                          {% elif request.user.is_superuser %}
+                          {% elif request.user.is_superuser or request.user.is_curation %}
                               <a href="{% url 'instructor:superuser_publish_course' course_id=course.id %}">
                                   {{ course.status_course.get_status_display }}
                               </a>

@@ -5507,7 +5507,7 @@ def courseView(request):
         pass
 
     # Filter courses based on the user's role and selected filter
-    if user.is_superuser:
+    if user.is_superuser or user.is_curation:
         courses = Course.objects.all()
     elif user.is_partner:
         courses = Course.objects.filter(org_partner__user=user)
@@ -5748,7 +5748,7 @@ def studio(request, id):
 
   
     # Determine the course based on the user's role
-    if request.user.is_superuser:
+    if user.is_superuser or user.is_curation:
         course = get_object_or_404(Course, id=id)
     elif user.is_partner:
         #course = Course.objects.filter(id=id, org_partner_id=request.user.id).first()
