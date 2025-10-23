@@ -70,14 +70,17 @@ def score_summary_view_detail(request, course_id):
     user = request.user
     course = get_object_or_404(Course, id=course_id)
 
-    # Validasi akses: hanya is_superuser, is_partner, atau instructor
+    # Access validation: only is_superuser, is_partner, is_curation, or instructor
     is_privileged = (
         user.is_superuser or
         getattr(user, 'is_partner', False) or
+        getattr(user, 'is_curation', False) or
         (course.instructor and course.instructor.user == user)
     )
     if not is_privileged:
-        return HttpResponseForbidden("Access denied: only admins, partners, or instructors allowed.")
+        messages.error(request, "Access denied. You do not have permission to view the participants of this course.")
+        return redirect('authentication:home')
+
 
     # Ambil semua peserta dari enrollments
     enrollments = course.enrollments.all()

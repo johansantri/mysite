@@ -1000,11 +1000,13 @@ def partner_analytics_view(request):
         messages.warning(request, f"Please complete the following information: {', '.join(missing_fields)}")
         return redirect('authentication:edit-profile', pk=user.pk)
     # Cek apakah user superuser atau partner
-    if not (user.is_superuser or getattr(user, 'is_partner', False)):
-        raise Http404("You are not authorized to access this page.")
+    if not (user.is_superuser or getattr(user, 'is_partner', False) or getattr(user, 'is_curation', False)):
+        messages.error(request, "Access denied. You do not have permission to view the participants of this course.")
+        return redirect('authentication:home')
 
     # Jika superuser → bisa akses semua course
-    if user.is_superuser:
+    if user.is_superuser or getattr(user, 'is_curation', False):
+   
         courses = Course.objects.all().only('id', 'course_name')
     else:
         # Jika partner → hanya course milik partner

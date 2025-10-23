@@ -839,7 +839,9 @@ def dasbord(request):
             publish_status = None
 
     # ========== SUPERUSER ==========
-    if user.is_superuser:
+    if user.is_superuser or getattr(user, 'is_curation', False):
+    
+
         total_enrollments = cache.get('total_enrollments') or Enrollment.objects.count()
         cache.set('total_enrollments', total_enrollments, 300)
 

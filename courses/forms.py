@@ -541,7 +541,7 @@ class CourseForm(forms.ModelForm):
 
         if user:
 
-            if user.is_superuser:
+            if user.is_superuser or getattr(user, 'is_curation', False):
 
                 # Admin: Show all partners in the dropdown
 

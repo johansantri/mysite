@@ -788,6 +788,38 @@
                         </a>
                         </li>
 
+                    {% elif user.is_curation %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'dasbord' %}active{% endif %}" href="{% url 'authentication:dasbord' %}" aria-current="page">
+                            <i class="bi bi-speedometer me-2"></i> Dashboard
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'course_view' %}active{% endif %}" href="{% url 'courses:course_view' %}">
+                            <i class="bi bi-book me-2"></i> Course
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'microcredential-list' %}active{% endif %}" href="{% url 'courses:microcredential-list' %}">
+                            <i class="bi bi-award me-2"></i> Micro
+                        </a>
+                    </li>
+                    
+                        <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'partner_analytics' %}active{% endif %}" href="{% url 'partner:partner_analytics' %}">
+                            <i class="bi bi-graph-up-arrow me-2"></i> Analytics
+                        </a>
+                    </li>
+                   
+                    <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'dashbord' %}active{% endif %}" 
+                        href="{% url 'authentication:dashbord' %}">
+                        <i class="bi bi-journal-bookmark-fill me-2"></i>My Courses
+                    </a>
+                    </li>
+
                     {% else %}
                         <!-- Learner Menu -->
                         <li class="nav-item">

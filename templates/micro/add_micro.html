@@ -4,14 +4,14 @@
 {% block content %}
 
 
-    <h1>Tambah Microcredential</h1>
+    <h1>add new microcredential</h1>
 
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
 
         {{ form.as_p }}
 
-        <button type="submit" class="btn btn-primary">Simpan</button>
+        <button type="submit" class="btn btn-primary">save</button>
     </form>
 
 <script>

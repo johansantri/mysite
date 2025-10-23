@@ -153,8 +153,9 @@ def custom_ratelimit(view_func):
 
 @login_required
 def microcredential_report_view(request, microcredential_id):
-    if not request.user.is_staff:
-        raise PermissionDenied("You do not have permission to access this report.")
+    user = request.user
+    if not (user.is_superuser or getattr(user, 'is_curation', False)):
+        return HttpResponseForbidden("You do not have permission to access this page.")
 
     micro = get_object_or_404(MicroCredential, id=microcredential_id)
     enrollments = MicroCredentialEnrollment.objects.filter(microcredential=micro)
@@ -1025,10 +1026,13 @@ def course_list_enroll(request, id):
     if not (
         request.user.is_staff or
         (course.instructor and course.instructor.user == request.user) or
-        getattr(request.user, 'is_partner', False)
+        getattr(request.user, 'is_partner', False) or
+        getattr(request.user, 'is_curation', False)
     ):
-        messages.error(request, "Akses ditolak. Anda tidak memiliki izin untuk melihat data peserta kursus ini.")
+
+        messages.error(request, "Access denied. You do not have permission to view the participants of this course.")
         return redirect('authentication:home')
+
 
     # --- Ambil enrollments ---
     enrollments = course.enrollments.all()
@@ -2296,7 +2300,9 @@ class CourseAutocomplete(autocomplete.Select2QuerySetView):
 def addmic(request):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
-    if not request.user.is_superuser:
+    if not (request.user.is_superuser or getattr(request.user, 'is_curation', False)):
+   
+
         # Jika pengguna bukan superuser, beri pesan dan arahkan ke halaman lain (misalnya halaman utama)
         messages.error(request, "You do not have permission to add this microcredential.")
         return redirect('courses:microcredential-list')
@@ -2326,7 +2332,7 @@ def listmic(request):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
 
-    if not (request.user.is_staff or request.user.is_superuser):
+    if not (request.user.is_staff or request.user.is_superuser or request.user.is_curation):
         messages.error(request, "You do not have permission to add this microcredential.")
         return redirect('authentication:dasbord')
 
@@ -5692,7 +5698,7 @@ def course_create_view(request):
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
 
-    if request.user.is_partner or request.user.is_superuser or request.user.is_instructor:
+    if request.user.is_partner or request.user.is_superuser or request.user.is_instructor or request.user.is_curation:
         if request.method == 'POST':
             form = CourseForm(request.POST, user=request.user)  # Pass the logged-in user to the form
 
@@ -5703,7 +5709,7 @@ def course_create_view(request):
                 course.author = request.user
                 
                 # If the user is a partner or superuser, set the org_partner
-                if request.user.is_superuser or request.user.is_partner:
+                if request.user.is_superuser or request.user.is_partner or request.user.is_curation:
                     partner = form.cleaned_data['org_partner']  # Get the selected partner from the form
                     course.org_partner = partner  # Set the partner for the course
 

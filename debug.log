@@ -13706,3 +13706,148 @@ django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'
 [INFO] 2025-10-23 09:05:42,204 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [INFO] 2025-10-23 09:05:42,235 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [INFO] 2025-10-23 09:05:42,278 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-23 09:23:59,887 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-23 09:23:59,888 [django.request] Forbidden: /search/
+[INFO] 2025-10-23 09:31:22,805 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:31:22,981 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:31:23,174 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-23 09:31:42,977 [django.request] Forbidden: /message_comment/
+[INFO] 2025-10-23 09:32:54,864 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:32:55,026 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:32:55,055 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-23 09:32:58,087 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-23 09:32:58,088 [django.request] Forbidden: /search/
+[WARNING] 2025-10-23 09:33:39,320 [django.request] Forbidden: /message_comment/
+[WARNING] 2025-10-23 09:33:41,868 [django.request] Forbidden: /message_comment/
+[WARNING] 2025-10-23 09:33:45,535 [django.request] Forbidden: /message_comment/
+[INFO] 2025-10-23 09:34:14,574 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:34:14,662 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:34:14,662 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:35:42,981 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:35:42,983 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:35:43,109 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-23 09:35:47,962 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-23 09:35:47,963 [django.request] Forbidden: /search/
+[WARNING] 2025-10-23 09:37:07,213 [django.request] Forbidden (Permission denied): /microcredential/2/report/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 157, in microcredential_report_view
+    raise PermissionDenied("You do not have permission to access this report.")
+django.core.exceptions.PermissionDenied: You do not have permission to access this report.
+[WARNING] 2025-10-23 09:37:10,557 [django.request] Forbidden (Permission denied): /microcredential/1/report/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 157, in microcredential_report_view
+    raise PermissionDenied("You do not have permission to access this report.")
+django.core.exceptions.PermissionDenied: You do not have permission to access this report.
+[WARNING] 2025-10-23 09:37:14,292 [django.request] Forbidden (Permission denied): /microcredential/1/report/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 157, in microcredential_report_view
+    raise PermissionDenied("You do not have permission to access this report.")
+django.core.exceptions.PermissionDenied: You do not have permission to access this report.
+[INFO] 2025-10-23 09:39:23,813 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:39:23,837 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:39:24,033 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[ERROR] 2025-10-23 09:40:39,188 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-23 09:40:39,190 [django.request] Bad Request: /
+[ERROR] 2025-10-23 09:40:44,708 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-23 09:40:44,710 [django.request] Bad Request: /favicon.ico
+[WARNING] 2025-10-23 09:41:39,382 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-23 09:41:39,383 [django.request] Forbidden: /search/
+[INFO] 2025-10-23 09:43:21,883 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:43:22,042 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:43:22,080 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:44:04,378 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:44:04,507 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:44:04,610 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:44:17,816 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:44:17,820 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:44:17,914 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-23 09:44:30,665 [django.request] Forbidden: /course/4/scores/detail/
+[INFO] 2025-10-23 09:46:17,035 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:46:17,096 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:46:17,258 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-23 09:46:45,101 [django.request] Not Found: /analytics/
+[WARNING] 2025-10-23 09:46:49,065 [django.request] Not Found: /analytics/
+[INFO] 2025-10-23 09:48:55,892 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:48:56,128 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:48:56,187 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-23 09:48:58,809 [django.request] Not Found: /analytics/
+[INFO] 2025-10-23 09:49:11,074 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:49:11,247 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:49:11,275 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-23 09:49:17,406 [django.request] Not Found: /analytics/
+[WARNING] 2025-10-23 09:49:53,537 [django.request] Not Found: /analytics/
+[INFO] 2025-10-23 09:50:51,513 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:50:51,686 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:50:51,803 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:54:16,661 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:54:16,721 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:54:16,852 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:56:13,837 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:56:13,872 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:56:14,128 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:57:28,862 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:57:29,019 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:57:29,085 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-23 09:58:13,409 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-23 09:58:13,411 [django.request] Forbidden: /search/
+[INFO] 2025-10-23 09:58:53,147 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:58:53,231 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:58:53,279 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:58:59,720 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:58:59,789 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 09:59:00,166 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-23 09:59:40,557 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-23 10:00:07,036 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-23 10:00:07,037 [django.request] Forbidden: /search/
+[INFO] 2025-10-23 10:00:14,594 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 10:00:14,757 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 10:00:14,877 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 10:01:10,610 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 10:01:10,894 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 10:01:11,159 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-23 10:01:13,941 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-23 10:01:13,942 [django.request] Forbidden: /search/
+[INFO] 2025-10-23 10:03:00,949 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 10:03:01,255 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 10:03:01,485 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 10:04:19,952 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 10:04:20,043 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-23 10:04:20,308 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address

@@ -32,7 +32,7 @@
         
             <!-- New Button (Visible for superuser, partner, instructor) -->
             <div class="d-flex align-items-center ms-2">
-              {% if user.is_superuser or user.is_partner or user.is_instructor %}
+              {% if user.is_superuser or user.is_partner or user.is_instructor or user.is_curation %}
                 <a href="{% url 'courses:course_create_view' %}" class="btn btn-success">New Course</a>
               {% endif %}
             </div>
