@@ -20,10 +20,20 @@
             </div>
 
             <div>
-                <p><strong>{{ comment.user.username }}</strong> pada <em>{{ comment.created_at|date:"d M Y H:i" }}</em></p>
+                <div class="d-flex justify-content-between align-items-center">
+                <p class="mb-0">
+                    <strong>{{ comment.user.username }}</strong> pada <em>{{ comment.created_at|date:"d M Y H:i" }}</em>
+                </p>
+                
+                <form method="POST" action="{% url 'partner:delete_comment' comment.id %}" onsubmit="return confirm('Delete this comment?');">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-link btn-sm text-danger p-0"><i class="bi bi-trash"></i></button>
+                </form>
+                </div>
+
                 <p><strong>Course: </strong>{{ comment.course.course_name }}</p>
                 <p>{{ comment.content }}</p>
-
+                
                 <!-- Replies -->
                 {% with replies=comment.get_replies|slice:":3" %}
                     {% for reply in replies %}
@@ -40,7 +50,16 @@
                                 </div>
                                 <div>
                                     <p><strong>{{ reply.user.username }}</strong> reply:</p>
-                                    <p>{{ reply.content }}</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                    <p class="mb-0">{{ reply.content }}</p>
+                                    <form method="POST" action="{% url 'partner:delete_comment' reply.id %}" onsubmit="return confirm('Delete this reply?');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-link btn-sm text-danger p-0" title="Delete reply">
+                                        <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>

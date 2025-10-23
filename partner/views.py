@@ -38,7 +38,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 import pprint
 from decimal import Decimal, ROUND_HALF_UP
 from django.db.models.functions import Coalesce
-
+from django.views.decorators.http import require_POST
 
 @cache_page(60 * 5)
 def partner_analytics_admin(request):
@@ -1102,6 +1102,25 @@ def partner_course_comments(request):
         'comments': comments_page
     }
     return render(request, 'partner/partner_course_comments.html', context)
+
+
+@login_required
+@require_POST
+def delete_comment(request, comment_id):
+    # Ambil komentar, pastikan comment_id valid dan terkait kursus milik user
+    comment = get_object_or_404(CourseComment, id=comment_id)
+
+    # Cek akses: superuser atau curation boleh hapus, atau partner yang memiliki kursus
+    if not (request.user.is_superuser or request.user.is_curation):
+        if not (hasattr(request.user, 'partner_user') and comment.course.org_partner == request.user.partner_user):
+            return HttpResponseForbidden("You are not authorized to delete this comment.")
+
+    # Hapus komentar
+    comment.delete()
+    messages.success(request, "Komentar berhasil dihapus.")
+    # Redirect ke halaman komentar partner (bisa juga tambah pesan sukses kalau perlu)
+    return redirect('partner:partner_course_comments')
+
 
 @login_required
 def post_comment_reply(request, course_id, comment_id=None):
