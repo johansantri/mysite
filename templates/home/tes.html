@@ -891,6 +891,28 @@
     <div class="main-content">
        <div class="d-flex align-items-center fixed-mobile">
         <span class="text-black fs-4 fw-bold">LMSKu</span>
+        &nbsp;&nbsp;&nbsp;
+
+         <!-- Inline Messages (no box, with color tags) -->
+            {% if messages %}
+            
+            <div class="d-flex flex-column gap-1 small">
+            
+                {% for message in messages %}
+                <div class="alert alert-dismissible fade show d-flex align-items-center gap-2 p-1" role="alert" style="background: transparent; line-height: 1.2;">
+                    <span class="fw-normal
+                    {% if message.tags == 'success' %}text-success
+                    {% elif message.tags == 'error' or message.tags == 'danger' %}text-danger
+                    {% elif message.tags == 'warning' %}text-warning
+                    {% elif message.tags == 'info' %}text-info
+                    {% else %}text-muted{% endif %}" style="line-height: 1.2; font-size: 0.875rem;">
+                    {{ message }}
+                    </span>
+                    <button type="button" class="btn-close btn-sm ms-auto" data-bs-dismiss="alert" aria-label="Close" style="float:none; position:static; padding: 0.2rem;"></button>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
         
         <button 
             class="btn btn-outline-danger btn-sm d-lg-none d-flex align-items-center gap-1 ms-auto shadow-sm"
