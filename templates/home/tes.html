@@ -836,6 +836,54 @@
                     </a>
                     </li>
 
+                    {% elif user.is_finance %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'dasbord' %}active{% endif %}" href="{% url 'authentication:dasbord' %}" aria-current="page">
+                            <i class="bi bi-speedometer me-2"></i> Dashboard
+                        </a>
+                    </li>
+                    
+                   <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'payment_report' %}active{% endif %}" href="{% url 'payments:payment_report' %}">
+                            <i class="bi bi-credit-card me-2"></i> Transaction Reports
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'invoice_receipt' %}active{% endif %}" href="{% url 'payments:invoice_receipt' %}">
+                            <i class="bi bi-receipt me-2"></i> Invoice & Receipt
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'partner_commission' %}active{% endif %}" href="{% url 'payments:partner_commission' %}">
+                            <i class="bi bi-people-fill me-2"></i> Partner Commission
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'financial_export' %}active{% endif %}" href="{% url 'courses:course_view' %}">
+                            <i class="bi bi-file-earmark-arrow-down me-2"></i> Financial Data Export
+                        </a>
+                    </li>
+
+
+
+                    
+                    
+                        <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'partner_analytics' %}active{% endif %}" href="{% url 'partner:partner_analytics' %}">
+                            <i class="bi bi-graph-up-arrow me-2"></i> Analytics
+                        </a>
+                    </li>
+                   
+                    <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'dashbord' %}active{% endif %}" 
+                        href="{% url 'authentication:dashbord' %}">
+                        <i class="bi bi-journal-bookmark-fill me-2"></i>My Courses
+                    </a>
+                    </li>
+
                     {% else %}
                         <!-- Learner Menu -->
                         <li class="nav-item">

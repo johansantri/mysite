@@ -11,7 +11,11 @@ urlpatterns = [
     path('transactions/', views.transaction_history, name='transaction_history'),
     path('transactions/<int:pk>/invoice/detail', views.transaction_invoice_detail, name='transaction_invoice_detail'),
     path('course/<int:course_id>/payment/<str:payment_type>/', views.process_payment, name='process_payment'),
-    path('payment-report/', views.payment_report_view, name='payment_report'),
+    path('transactions/', views.transaction_report_view, name='payment_report'),
+    path('invoices/', views.invoice_receipt_view, name='invoice_receipt'),
+    path('commissions/', views.partner_commission_view, name='partner_commission'),
+    path('export/', views.financial_export_view, name='financial_export'),
+  
     path('report/<int:pk>/detail', views.payment_detail_view, name='payment_detail'),
     path('payments/tripay-callback/', views.tripay_webhook, name='tripay_webhook'),
     path('payments/return/', views.payment_return, name='payment_return'),

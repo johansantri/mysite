@@ -1,0 +1,89 @@
+{% extends "home/tes.html" %}
+{% load humanize %}
+{% block content %}
+<div class="container mt-4">
+    <h4><i class="bi bi-cash-stack me-2"></i>Transaction Reports</h4>
+    <hr>
+
+    <form method="get" class="row g-2 mb-3">
+        <div class="col-md-3">
+            <input type="date" name="start_date" value="{{ request.GET.start_date }}" class="form-control" placeholder="Start Date">
+        </div>
+        <div class="col-md-3">
+            <input type="date" name="end_date" value="{{ request.GET.end_date }}" class="form-control" placeholder="End Date">
+        </div>
+        <div class="col-md-4">
+            <input type="text" name="search" value="{{ request.GET.search }}" class="form-control" placeholder="Search Transaction ID">
+        </div>
+        <div class="col-md-2 text-end">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="bi bi-search"></i> Filter
+            </button>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>User</th>
+                    <th>Course</th>
+                    <th>Partner</th>
+                    <th>Payment Model</th>
+                    <th>Status</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in page_obj %}
+                <tr>
+                    <td>{{ p.linked_transaction.id|default:"-" }}</td>
+                    <td>{{ p.user.username }}</td>
+                    <td>{{ p.course.course_name }}</td>
+                    <td>{{ p.course.org_partner.name }}</td>
+                    <td>{{ p.payment_model }}</td>
+                    <td>
+                        {% if p.status == 'completed' %}
+                            <span class="badge bg-success">Completed</span>
+                        {% elif p.status == 'pending' %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        {% elif p.status == 'cancelled' %}
+                            <span class="badge bg-danger">Cancelled</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ p.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td>Rp {{ p.amount|floatformat:2|intcomma }}</td>
+                    <td>{{ p.created_at|date:"Y-m-d H:i" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center text-muted">No transactions found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <nav>
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">Previous</a>
+            </li>
+            {% endif %}
+
+            <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">Next</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endblock %}

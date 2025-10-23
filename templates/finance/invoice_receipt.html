@@ -1,0 +1,99 @@
+{% extends "home/tes.html" %}
+{% load humanize %}
+{% block content %}
+<div class="mt-4">
+    <h3><i class="bi bi-receipt-cutoff me-2"></i> Invoice & Receipt</h3>
+    <hr>
+
+    <form method="get" class="row mb-3">
+        <div class="col-md-3">
+            <input type="date" name="start_date" value="{{ request.GET.start_date }}" class="form-control" placeholder="Start date">
+        </div>
+        <div class="col-md-3">
+            <input type="date" name="end_date" value="{{ request.GET.end_date }}" class="form-control" placeholder="End date">
+        </div>
+        <div class="col-md-3">
+            <select name="status" class="form-select">
+                <option value="">All Status</option>
+                <option value="completed" {% if request.GET.status == 'completed' %}selected{% endif %}>Completed</option>
+                <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>Pending</option>
+                <option value="cancelled" {% if request.GET.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="bi bi-search me-1"></i> Filter
+            </button>
+        </div>
+    </form>
+
+    <table class="table table-striped align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>User</th>
+                <th>Course</th>
+                <th>Partner</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th class="text-end">Invoice</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in page_obj %}
+                <tr>
+                    <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
+                    <td>{{ payment.user.username }}</td>
+                    <td>{{ payment.course.course_name }}</td>
+                    <td>{{ payment.course.org_partner.name }}</td>
+                    <td>Rp {{ payment.amount|floatformat:2|intcomma }}</td>
+                    <td>
+                        {% if payment.status == 'completed' %}
+                            <span class="badge bg-success">Completed</span>
+                        {% elif payment.status == 'pending' %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        {% else %}
+                            <span class="badge bg-danger">{{ payment.status|title }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ payment.payment_date|date:"Y-m-d H:i" }}</td>
+                    <td class="text-end">
+                        <a href="{% url 'payments:payment_detail' payment.id %}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-info-circle"></i> detail
+                        </a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="8" class="text-center">No payment data available.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <nav>
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">Previous</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">Previous</span></li>
+            {% endif %}
+
+            {% for i in page_range %}
+                <li class="page-item {% if i == page_obj.number %}active{% endif %}">
+                    <a class="page-link" href="?page={{ i }}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">{{ i }}</a>
+                </li>
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.start_date %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date %}&end_date={{ request.GET.end_date }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}">Next</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">Next</span></li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endblock %}

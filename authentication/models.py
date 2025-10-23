@@ -26,7 +26,11 @@ class Universiti(models.Model):
 
     def __str__(self):
         return self.name or ""
-    
+
+
+
+
+
 class CustomUser(AbstractUser):
     gen = {
         "male":"male",
@@ -264,6 +268,9 @@ class CustomUser(AbstractUser):
     is_learner = models.BooleanField(_("learner status"), default=True, help_text=_("Designates whether the user can log into this admin learner."))
     is_note = models.BooleanField(_("note status"), default=False, help_text=_("Designates whether the user can log into this admin note."))
     is_curation = models.BooleanField(_("curation status"), default=False,  help_text=_("Designates whether the user can log into this admin curation."))
+    is_finance = models.BooleanField(_("finance status"), default=False, help_text=_("Designates whether the user can log into this admin finance."))
+    is_marketing = models.BooleanField(_("marketing status"), default=False, help_text=_("Designates whether the user can log into this admin marketing."))
+    is_support = models.BooleanField(_("support status"), default=False, help_text=_("Designates whether the user can log into this admin support."))
     # Authentication Fields
     EMAIL_FIELD = "email"
     USERNAME_FIELD = "email"
