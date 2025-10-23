@@ -8,6 +8,8 @@
         <tr>
             <th>#</th>
             <th>Course</th>
+            <th>Course Run</th>  {# Tambah kolom ini #}
+            <th>Status</th>      {# Tambah kolom ini #}
             <th>Average</th>
             <th>Count</th>
             <th>Comments</th>
@@ -17,10 +19,19 @@
         {% for course in course_rating_data %}
         <tr>
             <td>{{ forloop.counter }}</td>
-            <td> <a href="{% url 'courses:course_lms_detail' id=course.id slug=course.slug %}" target="_blank">
+            <td> 
+                <a href="{% url 'courses:course_lms_detail' id=course.id slug=course.slug %}" target="_blank">
                     {{ course.course_name }}
                 </a>
             </td>
+            <td>{{ course.course_run|default:"-" }}</td>  {# Tampilkan course_run #}
+            <td>
+            {{ course.status_course.get_status_display }}
+            {% if course.status_course.manual_message %}
+                <br><small class="text-muted">{{ course.status_course.manual_message }}</small>
+            {% endif %}
+            </td>
+
             <td>{{ course.avg_rating|floatformat:1|default:"-" }} ⭐</td>
             <td>{{ course.rating_count }}</td>
             <td>
@@ -51,4 +62,47 @@
         {% endfor %}
     </tbody>
 </table>
+
+{# Pagination controls #}
+{% if course_rating_data.has_other_pages %}
+<nav aria-label="Page navigation">
+  <ul class="pagination justify-content-center">
+    {% if course_rating_data.has_previous %}
+    <li class="page-item">
+      <a class="page-link" href="?page={{ course_rating_data.previous_page_number }}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+      <span class="page-link" aria-hidden="true">&laquo;</span>
+    </li>
+    {% endif %}
+
+    {# Show page numbers (simple version) #}
+    {% for num in course_rating_data.paginator.page_range %}
+      {% if num == course_rating_data.number %}
+      <li class="page-item active" aria-current="page">
+        <span class="page-link">{{ num }}</span>
+      </li>
+      {% else %}
+      <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+      {% endif %}
+    {% endfor %}
+
+    {% if course_rating_data.has_next %}
+    <li class="page-item">
+      <a class="page-link" href="?page={{ course_rating_data.next_page_number }}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+      <span class="page-link" aria-hidden="true">&raquo;</span>
+    </li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
+
 {% endblock %}

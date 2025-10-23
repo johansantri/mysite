@@ -761,6 +761,12 @@
                                 <i class="bi bi-book me-2"></i> Comments
                             </a>
                         </li>
+                       
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'partner_course_ratings' %}active{% endif %}" href="{% url 'partner:partner_course_ratings' %}">
+                                <i class="bi bi-tags me-2"></i> Ratings
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link {% if request.resolver_match.url_name == 'microcredential-list' %}active{% endif %}" href="{% url 'courses:microcredential-list' %}">
                                 <i class="bi bi-award me-2"></i> Micro
@@ -800,7 +806,17 @@
                             <i class="bi bi-book me-2"></i> Course
                         </a>
                     </li>
-                    
+                    <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'partner_course_ratings' %}active{% endif %}" href="{% url 'partner:partner_course_ratings' %}">
+                                <i class="bi bi-tags me-2"></i> Ratings
+                            </a>
+                        </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'partner_course_comments' %}active{% endif %}" href="{% url 'partner:partner_course_comments' %}">
+                            <i class="bi bi-person-lines-fill me-2"></i> Comments
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link {% if request.resolver_match.url_name == 'microcredential-list' %}active{% endif %}" href="{% url 'courses:microcredential-list' %}">
                             <i class="bi bi-award me-2"></i> Micro

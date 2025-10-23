@@ -1053,7 +1053,7 @@ def partner_analytics_view(request):
 @login_required
 def partner_course_comments(request):
     # Jika superuser, ambil semua course dan komentar
-    if request.user.is_superuser:
+    if request.user.is_superuser or request.user.is_curation:
         owned_courses = Course.objects.all()
     elif hasattr(request.user, 'partner_user'):
         # Jika partner, ambil hanya kursus miliknya
@@ -1141,27 +1141,41 @@ def post_comment_reply(request, course_id, comment_id=None):
 
 @login_required
 def partner_course_ratings(request):
-    if not request.user.is_partner:
+    user = request.user
+
+    if not (user.is_partner or user.is_curation or user.is_superuser):
         return HttpResponseForbidden("You are not authorized to view this page.")
 
-    # Ambil semua course milik partner
-    partner_courses = Course.objects.filter(org_partner__user=request.user)
+    if user.is_curation or user.is_superuser:
+        courses = Course.objects.all()
+    else:
+        courses = Course.objects.filter(org_partner__user=user)
 
-    # Annotate dengan rata-rata dan jumlah rating, serta komentar
-    course_rating_data = partner_courses.annotate(
+    # Annotate rating info
+    courses = courses.annotate(
         avg_rating=Avg('ratings__rating'),
         rating_count=Count('ratings')
-    ).order_by('-avg_rating')  # Urutkan berdasarkan rating tertinggi
+    ).order_by('-avg_rating')
 
-    # Ambil komentar terkait untuk setiap course
-    course_ratings_details = {
-        course.id: CourseRating.objects.filter(course=course)
-        for course in partner_courses
-    }
+    # Pagination, 10 course per page
+    paginator = Paginator(courses, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # Ambil course IDs yang ada di halaman sekarang
+    course_ids = [course.id for course in page_obj.object_list]
+
+    # Ambil semua rating terkait course di halaman ini sekaligus (prefetch_related juga bisa)
+    ratings_qs = CourseRating.objects.filter(course_id__in=course_ids).select_related('user')
+
+    # Group rating per course ID
+    ratings_by_course = defaultdict(list)
+    for rating in ratings_qs:
+        ratings_by_course[rating.course_id].append(rating)
 
     context = {
-        'course_rating_data': course_rating_data,
-        'course_ratings_details': course_ratings_details,
+        'course_rating_data': page_obj,  # ini sudah paginated
+        'course_ratings_details': ratings_by_course,
     }
 
     return render(request, 'partner/partner_course_ratings.html', context)

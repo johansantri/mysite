@@ -4,37 +4,68 @@
 {% block content %}
 
 
-    <h2>Komentar pada Kursus Anda</h2>
+    <h2>Comments on Your Courses</h2>
     
     {% for comment in comments %}
-        <div class="card shadow-sm mb-3">
-            <div class="card-body">
-                <!-- Menampilkan Nama Kursus yang Dikomentari -->
+    <div class="card shadow-sm mb-3">
+        <div class="card-body d-flex align-items-start">
+            <div class="me-3" style="width:50px; height:50px;">
+                {% if comment.user.photo %}
+                    <img src="{{ comment.user.photo.url }}" alt="{{ comment.user.username }}'s photo" class="rounded-circle" width="50" height="50">
+                {% else %}
+                    <div class="rounded-circle bg-secondary text-white d-flex justify-content-center align-items-center" style="width:50px; height:50px; font-weight:bold; font-size:18px;">
+                        {{ comment.user.username|slice:":1"|upper }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div>
                 <p><strong>{{ comment.user.username }}</strong> pada <em>{{ comment.created_at|date:"d M Y H:i" }}</em></p>
-                <p><strong>Kursus: </strong>{{ comment.course.course_name }}</p> <!-- Menambahkan nama kursus -->
+                <p><strong>Course: </strong>{{ comment.course.course_name }}</p>
                 <p>{{ comment.content }}</p>
 
-                <!-- List balasan -->
+                <!-- Replies -->
                 {% with replies=comment.get_replies|slice:":3" %}
                     {% for reply in replies %}
-                        <div class="card mt-3 ms-4">
-                            <div class="card-body">
-                                <p><strong>{{ reply.user.username }}</strong> balas:</p>
-                                <p>{{ reply.content }}</p>
+                        <div class="card mt-3 ms-4 d-flex align-items-start">
+                            <div class="card-body d-flex align-items-start">
+                                <div class="me-3" style="width:40px; height:40px;">
+                                    {% if reply.user.photo %}
+                                        <img src="{{ reply.user.photo.url }}" alt="{{ reply.user.username }}'s photo" class="rounded-circle" width="40" height="40">
+                                    {% else %}
+                                        <div class="rounded-circle bg-secondary text-white d-flex justify-content-center align-items-center" style="width:40px; height:40px; font-weight:bold; font-size:14px;">
+                                            {{ reply.user.username|slice:":1"|upper }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <p><strong>{{ reply.user.username }}</strong> reply:</p>
+                                    <p>{{ reply.content }}</p>
+                                </div>
                             </div>
                         </div>
                     {% endfor %}
-                    
                     {% if comment.get_replies|length > 3 %}
                         <button class="btn btn-link mt-2" data-bs-toggle="collapse" data-bs-target="#replies-{{ comment.id }}" aria-expanded="false" aria-controls="replies-{{ comment.id }}">
-                            Lihat lebih banyak balasan
+                            See more replies
                         </button>
                         <div class="collapse" id="replies-{{ comment.id }}">
                             {% for reply in comment.get_replies|slice:"3:" %}
-                                <div class="card mt-3 ms-4">
-                                    <div class="card-body">
-                                        <p><strong>{{ reply.user.username }}</strong> balas:</p>
-                                        <p>{{ reply.content }}</p>
+                                <div class="card mt-3 ms-4 d-flex align-items-start">
+                                    <div class="card-body d-flex align-items-start">
+                                        <div class="me-3" style="width:40px; height:40px;">
+                                            {% if reply.user.photo %}
+                                                <img src="{{ reply.user.photo.url }}" alt="{{ reply.user.username }}'s photo" class="rounded-circle" width="40" height="40">
+                                            {% else %}
+                                                <div class="rounded-circle bg-secondary text-white d-flex justify-content-center align-items-center" style="width:40px; height:40px; font-weight:bold; font-size:14px;">
+                                                    {{ reply.user.username|slice:":1"|upper }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        <div>
+                                            <p><strong>{{ reply.user.username }}</strong> reply:</p>
+                                            <p>{{ reply.content }}</p>
+                                        </div>
                                     </div>
                                 </div>
                             {% endfor %}
@@ -42,31 +73,33 @@
                     {% endif %}
                 {% endwith %}
 
-                <!-- Form balasan -->
+                <!-- Reply form -->
                 <form method="post" class="mt-3">
                     {% csrf_token %}
                     <input type="hidden" name="parent_id" value="{{ comment.id }}">
                     <div class="mb-3">
-                        <textarea name="content" rows="2" class="form-control" required placeholder="Tulis balasan..."></textarea>
+                        <textarea name="content" rows="2" class="form-control" required placeholder="Write a reply..."></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-sm">Balas</button>
+                    <button type="submit" class="btn btn-primary btn-sm">Reply</button>
                 </form>
             </div>
         </div>
-    {% empty %}
-        <p>Tidak ada komentar untuk kursus Anda.</p>
-    {% endfor %}
+    </div>
+{% empty %}
+    <p>No comments for your courses.</p>
+{% endfor %}
 
-    <!-- Paginasi untuk Komentar -->
+
+    <!-- Pagination for Comments -->
     <div class="d-flex justify-content-center mt-4">
         {% if comments.has_previous %}
-            <a href="?page=1" class="btn btn-outline-secondary btn-sm">Pertama</a>
-            <a href="?page={{ comments.previous_page_number }}" class="btn btn-outline-secondary btn-sm ms-2">Sebelumnya</a>
+            <a href="?page=1" class="btn btn-outline-secondary btn-sm">First</a>
+            <a href="?page={{ comments.previous_page_number }}" class="btn btn-outline-secondary btn-sm ms-2">Previous</a>
         {% endif %}
 
         {% if comments.has_next %}
-            <a href="?page={{ comments.next_page_number }}" class="btn btn-outline-secondary btn-sm ms-2">Selanjutnya</a>
-            <a href="?page={{ comments.paginator.num_pages }}" class="btn btn-outline-secondary btn-sm ms-2">Terakhir</a>
+            <a href="?page={{ comments.next_page_number }}" class="btn btn-outline-secondary btn-sm ms-2">Next</a>
+            <a href="?page={{ comments.paginator.num_pages }}" class="btn btn-outline-secondary btn-sm ms-2">Last</a>
         {% endif %}
     </div>
 
