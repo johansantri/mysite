@@ -38,6 +38,7 @@ from datetime import datetime, timezone as dt_timezone
 from payments.utils import create_tripay_transaction
 from django.db.models import F, Sum, Count
 from django.db.models.functions import Coalesce
+from django.db import models 
 
 @csrf_exempt
 def tripay_webhook(request):
@@ -109,7 +110,7 @@ def payment_return(request):
 logger = logging.getLogger(__name__)
 
 @login_required
-@user_passes_test(lambda u: u.is_authenticated and (u.is_superuser or getattr(u, 'is_finance', False)))
+@user_passes_test(lambda u: u.is_superuser or getattr(u, 'is_partner', False) or getattr(u, 'is_finance', False))
 def payment_detail_view(request, pk):
     payment = get_object_or_404(Payment.objects.select_related('user', 'course__org_partner'), pk=pk)
     return render(request, 'payments/payment_detail.html', {'payment': payment})
@@ -185,53 +186,112 @@ def invoice_receipt_view(request):
 
 
 
-# Set up logger
-logger = logging.getLogger(__name__)
-
 @login_required
 @user_passes_test(lambda u: u.is_superuser or getattr(u, 'is_finance', False) or getattr(u, 'is_partner', False))
 def partner_commission_view(request):
-    # Ambil data payments dengan join ke course, org_partner, dan name (Universiti)
-    payments = Payment.objects.select_related(
-        'course', 'course__org_partner', 'course__org_partner__name'
-    ).filter(status='completed')
+    user = request.user
+    
+    # Skip missing fields check untuk superuser/finance
+    if not (user.is_superuser or getattr(user, 'is_finance', False)):
+        required_fields = {
+            'first_name': 'First Name',
+            'last_name': 'Last Name',
+            'email': 'Email',
+            'phone': 'Phone Number',
+            'gender': 'Gender',
+            'birth': 'Date of Birth',
+        }
+        missing_fields = [label for field, label in required_fields.items() if not getattr(user, field)]
+        if missing_fields:
+            messages.warning(request, f"Please complete the following information: {', '.join(missing_fields)}")
+            return redirect('authentication:edit-profile', pk=user.pk)
+    
+    # Debug print (hapus setelah test)
+    print(f"DEBUG: User {user.username} - is_superuser: {user.is_superuser}, is_finance: {getattr(user, 'is_finance', False)}")
+    
+    payments = Payment.objects.select_related('user', 'course__org_partner').all()
 
-    # Log untuk melihat apakah data payments sudah benar
-    logger.info(f"Partner payments data: {list(payments)}")
-
-    # Kalau user adalah partner, batasi data hanya untuk partner tersebut
+    # Filter berdasarkan role
     if getattr(request.user, 'is_partner', False):
         payments = payments.filter(course__org_partner__user=request.user)
+        partner_id = None
+    else:
+        try:
+            partner_id = int(request.GET.get('partner_id')) if request.GET.get('partner_id') else None
+        except ValueError:
+            partner_id = None
+        if partner_id:
+            payments = payments.filter(course__org_partner__id=partner_id)
 
-    # Filter hanya data yang memiliki partner dan universitas (name)
-    payments = payments.filter(course__org_partner__isnull=False, course__org_partner__name__isnull=False)
+    # Filter tanggal
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+    if start_date:
+        payments = payments.filter(created_at__date__gte=start_date)
+    if end_date:
+        payments = payments.filter(created_at__date__lte=end_date)
 
-    # Pagination 10 per halaman
-    paginator = Paginator(payments, 10)
+    # Filter berdasarkan ID Transaksi
+    search_query = request.GET.get('search', '').strip()
+    if search_query.isdigit():
+        payments = payments.filter(linked_transaction__id=search_query)
+
+    # Ringkasan
+    summary = payments.values('payment_model', 'status').annotate(
+        total_amount=Sum('amount'),
+        count=Count('id')
+    ).order_by('payment_model', 'status')
+
+    # Pendapatan kotor (total yang dibayar user)
+    total_paid = payments.filter(status='completed').aggregate(
+        total=Sum('amount')
+    )['total'] or 0
+
+    # Pendapatan bersih untuk Partner & ICE Admin
+    net_income_partner = payments.filter(status='completed').aggregate(
+        total=Sum('snapshot_partner_earning')
+    )['total'] or 0
+
+    net_income_admin = payments.filter(status='completed').aggregate(
+        total=Sum('snapshot_ice_earning')
+    )['total'] or 0
+
+    partner_courses = None
+    if request.user.is_superuser or getattr(request.user, 'is_finance', False):
+        partner_courses = Course.objects.values(
+            'id', 'course_name', 'org_partner__name'
+        ).annotate(
+            total_amount=Sum('payments__amount')
+        ).filter(
+            payments__status='completed'
+        )
+        if partner_id:
+            partner_courses = partner_courses.filter(org_partner__id=partner_id)
+
+    # Pagination
+    paginator = Paginator(payments.order_by('-created_at'), 25)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    # Hitung komisi per partner
-    commissions = page_obj.object_list.values(
-        partner_name=F('course__org_partner__name__name')  # Mengambil nama Universitas melalui relasi
-    ).annotate(
-        total_commission=Sum('snapshot_partner_earning'),
-        total_course=Count('course', distinct=True)
-    ).order_by('partner_name')
+    # Buat querystring tanpa parameter "page"
+    get_params = request.GET.copy()
+    if 'page' in get_params:
+        del get_params['page']
+    querystring = get_params.urlencode()
 
-    # Debug print untuk melihat data komisi
-    logger.debug("DEBUG commissions: %s", list(commissions))
-
-    # Context untuk render template
     context = {
-        'commissions': commissions,
+        'summary': summary,
+        'total_paid': total_paid,
+        'net_income_partner': net_income_partner,
+        'net_income_admin': net_income_admin,
         'page_obj': page_obj,
-        'paginator': paginator,
+        'partners': Partner.objects.all() if request.user.is_superuser or getattr(request.user, 'is_finance', False) else None,  # Fix: tambah is_finance
+        'partner_courses': partner_courses,
+        'search_query': search_query,
+        'querystring': querystring,
     }
-
-    # Render ke template
+    
     return render(request, 'finance/partner_commission.html', context)
-
 
 
 
@@ -253,16 +313,7 @@ def financial_export_view(request):
 
     return render(request, 'finance/financial_export.html')
 
-@login_required
-@user_passes_test(lambda u: u.is_superuser or getattr(u, 'is_finance', False))
-def partner_commission_view(request):
-    commissions = Payment.objects.filter(status='completed').values(
-        'course__org_partner__name'
-    ).annotate(
-        total_commission=Sum('snapshot_partner_earning'),
-        total_course=Count('course', distinct=True)
-    )
-    return render(request, 'finance/partner_commission.html', {'commissions': commissions})
+
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser or getattr(u, 'is_finance', False) or getattr(u, 'is_partner', False))
@@ -720,7 +771,6 @@ def transaction_detail(request, merchant_ref):
     # Ambil transaksi user yang sesuai merchant_ref
     transaction = get_object_or_404(
         Transaction.objects.prefetch_related('courses'),
-        user=request.user,
         merchant_ref=merchant_ref
     )
 
@@ -741,6 +791,7 @@ def transaction_detail(request, merchant_ref):
     )
 
     context = {
+        'transaction': transaction,  # kirim object lengkap
         'cart_items': cart_items,
         'total_course_price': total_course_price,
         'platform_fee': transaction.platform_fee or Decimal('0.00'),
@@ -823,6 +874,9 @@ def transaction_history(request):
     }
     return render(request, 'payments/transaction_history.html', context)
 
+
+
+#untuk user mengunduh invoice pdf
 @login_required
 def transaction_invoice_detail(request, pk):
     transaction = get_object_or_404(

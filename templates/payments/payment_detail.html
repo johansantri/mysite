@@ -23,6 +23,9 @@
           </div>
         </div>
       </div>
+<pre>
+
+</pre>
 
       <div class="card-body">
         <div class="row gy-4">
@@ -47,7 +50,23 @@
               <li><strong>ID Kursus:</strong> {{ payment.course.id }}</li>
               <li><strong>Partner:</strong> {{ payment.course.org_partner.name }}</li>
               <li><strong>Model Pembayaran:</strong> {{ payment.get_payment_model_display }}</li>
-              <li><strong>Metode:</strong> {{ payment.get_method_display|default:"-" }}</li>
+              {% if transaction.payment_method %}
+                <p><strong>Payment Method:</strong> {{ transaction.payment_method }}</p>
+              {% endif %}
+
+              {% if transaction.bank_name %}
+                <p><strong>Bank:</strong> {{ transaction.bank_name }}</p>
+              {% endif %}
+
+              {% if transaction.va_number %}
+                <p><strong>VA Number:</strong> {{ transaction.va_number }}</p>
+              {% endif %}
+
+
+
+
+              
+
             </ul>
           </div>
         </div>
@@ -118,7 +137,7 @@
 
       <!-- Tombol Kembali -->
       <div class="card-footer bg-white text-end">
-        <a href="{% url 'payments:payment_report' %}" class="btn btn-outline-secondary btn-sm">← Kembali ke Laporan</a>
+        <a href="{% url 'payments:partner_commission' %}" class="btn btn-outline-secondary btn-sm">← Kembali ke Laporan</a>
       </div>
     </div>
   {% else %}

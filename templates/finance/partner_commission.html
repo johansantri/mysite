@@ -1,38 +1,205 @@
-{% extends "home/tes.html" %}
+{% extends 'home/tes.html' %}
 {% load humanize %}
+
 {% block content %}
-<h1>Partner Commissions</h1>
+<h2 class="mb-4">Payment Transaction Report</h2>
 
-<table>
-<thead>
-  <tr>
-    <th>Partner Name</th>
-    <th>Total Commission</th>
-    <th>Total Courses</th>
-  </tr>
-</thead>
-<tbody>
-  {% for commission in commissions %}
-     <pre>{{ commissions }}</pre>
-{% endfor %}
+<!-- Filter Form -->
+<form method="get" class="row g-3 mb-4">
+  <div class="col-md-3">
+    <label class="form-label">Start Date:</label>
+    <input type="date" class="form-control" name="start_date" value="{{ request.GET.start_date }}">
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">End Date:</label>
+    <input type="date" class="form-control" name="end_date" value="{{ request.GET.end_date }}">
+  </div>
 
-</tbody>
-</table>
+  {% if request.user.is_superuser or request.user.is_finance %}
+    <div class="col-md-3">
+      <label class="form-label">Partner Organization:</label>
+      <select class="form-control" name="partner_id">
+        <option value="">All</option>
+        {% for partner in partners %}
+          <option value="{{ partner.id }}" {% if request.GET.partner_id == partner.id|stringformat:"s" %}selected{% endif %}>
+            {{ partner.name }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+  {% endif %}
 
+  <div class="col-md-3">
+    <label class="form-label">Search Transaction ID:</label>
+    <input type="text" class="form-control" name="search" value="{{ search_query }}" placeholder="e.g. 12345">
+  </div>
 
-<!-- Pagination controls -->
-<div>
-    {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
-    {% endif %}
+  <div class="col-md-12">
+    <button type="submit" class="btn btn-primary">Apply Filter</button>
+  </div>
+</form>
 
-    <span>Page {{ page_obj.number }} of {{ paginator.num_pages }}</span>
+<!-- Summary -->
+<div class="card-group">
 
-    {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}">Next</a>
-    {% endif %}
+  <!-- Gross Revenue -->
+  <div class="card text-center">
+    <div class="card-body">
+      <h5 class="card-title text-muted">Gross Revenue</h5>
+      <p class="card-text fs-4 fw-bold">{{ total_paid|floatformat:2|intcomma }}</p>
+    </div>
+  </div>
+
+  <!-- Net Revenue (ICE Partner) -->
+  <div class="card text-center">
+    <div class="card-body">
+      <h5 class="card-title text-muted">Net Revenue</h5>
+      <p class="card-text fs-4 fw-bold text-success">{{ net_income_partner|floatformat:2|intcomma }}</p>
+    </div>
+  </div>
+
+  {% if user.is_superuser %}
+  <!-- ICE Admin Revenue -->
+  <div class="card text-center">
+    <div class="card-body">
+      <h5 class="card-title text-muted">ICE Revenue</h5>
+      <p class="card-text fs-4 fw-bold text-primary">{{ net_income_admin|floatformat:2|intcomma }}</p>
+    </div>
+  </div>
+  {% endif %}
+
 </div>
 
 
 
+
+
+
+
+
+
+<!-- Payment Model Summary Table -->
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>Payment Model</th>
+      <th>Status</th>
+      <th>Total Amount</th>
+      <th>Transaction Count</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in summary %}
+      <tr>
+        <td>{{ item.payment_model }}</td>
+        <td>{{ item.status|capfirst }}</td>
+        <td>Rp {{ item.total_amount|floatformat:0|intcomma }}</td>
+        <td>{{ item.count }}</td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="4">No data available.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<!-- Transaction Table -->
+<h4 class="mt-5">Recent Transactions</h4>
+<div class="table-responsive">
+  <table class="table table-hover table-sm align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>ID | Transaction ID</th>
+        <th>User</th>
+        <th>Course</th>
+        <th>Partner Organization</th>
+        <th>Payment Model</th>
+        <th>Status</th>
+        <th>Amount</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in page_obj %}
+        <tr>
+          <td>{{ p.id }} | {{ p.linked_transaction.id|default:"-" }}</td>
+          <td>
+            <a href="{% url 'payments:payment_detail' p.id %}" class="text-decoration-none">
+              {{ p.user.username }}
+            </a>
+          </td>
+          <td>{{ p.course.course_name }}</td>
+          <td>{{ p.course.org_partner.name }}</td>
+          <td>{{ p.get_payment_model_display }}</td>
+          <td>
+            <span class="badge 
+              {% if p.status == 'completed' %} bg-success
+              {% elif p.status == 'pending' %} bg-warning text-dark
+              {% else %} bg-danger {% endif %}">
+              {{ p.status|capfirst }}
+            </span>
+          </td>
+          <td>Rp {{ p.amount|floatformat:0|intcomma }}</td>
+          <td>{{ p.created_at|date:"Y-m-d H:i" }}</td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="8" class="text-center text-muted">No transactions found.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+
+<!-- Pagination -->
+{% if page_obj.has_other_pages %}
+<nav aria-label="Pagination">
+  <ul class="pagination justify-content-center">
+    {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page=1&{{ querystring }}">« First</a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.previous_page_number }}&{{ querystring }}">‹ Prev</a>
+      </li>
+    {% endif %}
+
+    <li class="page-item active">
+      <span class="page-link">{{ page_obj.number }}</span>
+    </li>
+
+    {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.next_page_number }}&{{ querystring }}">Next ›</a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&{{ querystring }}">Last »</a>
+      </li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
+
+<!-- Superuser Course Summary -->
+{% if partner_courses %}
+  <h4 class="mt-5">Total Payment per Course (Superuser)</h4>
+  <table class="table table-bordered table-sm">
+    <thead>
+      <tr>
+        <th>Course Name</th>
+        <th>Partner</th>
+        <th>Total Payment</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in partner_courses %}
+        <tr>
+          <td>{{ c.course_name }}</td>
+          <td>{{ c.org_partner__name }}</td>
+          <td>Rp {{ c.total_amount|floatformat:0|intcomma }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
 {% endblock %}
