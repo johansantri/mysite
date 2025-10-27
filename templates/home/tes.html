@@ -795,59 +795,55 @@
                         </li>
 
                     {% elif user.is_curation %}
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'dasbord' %}active{% endif %}" href="{% url 'authentication:dasbord' %}" aria-current="page">
-                            <i class="bi bi-speedometer me-2"></i> Dashboard
-                        </a>
-                    </li>
-                    
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'course_view' %}active{% endif %}" href="{% url 'courses:course_view' %}">
-                            <i class="bi bi-book me-2"></i> Course
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.url_name == 'partner_course_ratings' %}active{% endif %}" href="{% url 'partner:partner_course_ratings' %}">
-                                <i class="bi bi-tags me-2"></i> Ratings
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'dasbord' %}active{% endif %}" href="{% url 'authentication:dasbord' %}" aria-current="page">
+                                <i class="bi bi-speedometer me-2"></i> Dashboard
                             </a>
                         </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'course_view' %}active{% endif %}" href="{% url 'courses:course_view' %}">
+                                <i class="bi bi-book me-2"></i> Course
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                                <a class="nav-link {% if request.resolver_match.url_name == 'partner_course_ratings' %}active{% endif %}" href="{% url 'partner:partner_course_ratings' %}">
+                                    <i class="bi bi-tags me-2"></i> Ratings
+                                </a>
+                            </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'partner_course_comments' %}active{% endif %}" href="{% url 'partner:partner_course_comments' %}">
-                            <i class="bi bi-person-lines-fill me-2"></i> Comments
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'microcredential-list' %}active{% endif %}" href="{% url 'courses:microcredential-list' %}">
-                            <i class="bi bi-award me-2"></i> Micro
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'partner_course_comments' %}active{% endif %}" href="{% url 'partner:partner_course_comments' %}">
+                                <i class="bi bi-person-lines-fill me-2"></i> Comments
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'microcredential-list' %}active{% endif %}" href="{% url 'courses:microcredential-list' %}">
+                                <i class="bi bi-award me-2"></i> Micro
+                            </a>
+                        </li>
+                        
+                            <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'partner_analytics' %}active{% endif %}" href="{% url 'partner:partner_analytics' %}">
+                                <i class="bi bi-graph-up-arrow me-2"></i> Analytics
+                            </a>
+                        </li>
                     
                         <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'partner_analytics' %}active{% endif %}" href="{% url 'partner:partner_analytics' %}">
-                            <i class="bi bi-graph-up-arrow me-2"></i> Analytics
+                        <a class="nav-link {% if request.resolver_match.url_name == 'dashbord' %}active{% endif %}" 
+                            href="{% url 'authentication:dashbord' %}">
+                            <i class="bi bi-journal-bookmark-fill me-2"></i>My Courses
                         </a>
-                    </li>
-                   
-                    <li class="nav-item">
-                    <a class="nav-link {% if request.resolver_match.url_name == 'dashbord' %}active{% endif %}" 
-                        href="{% url 'authentication:dashbord' %}">
-                        <i class="bi bi-journal-bookmark-fill me-2"></i>My Courses
-                    </a>
-                    </li>
+                        </li>
 
                     {% elif user.is_finance %}
                     <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'dasbord' %}active{% endif %}" href="{% url 'authentication:dasbord' %}" aria-current="page">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'dasbord' %}active{% endif %}" href="{% url 'payments:dashboard' %}" aria-current="page">
                             <i class="bi bi-speedometer me-2"></i> Dashboard
                         </a>
                     </li>
                     
-                   <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'payment_report' %}active{% endif %}" href="{% url 'payments:payment_report' %}">
-                            <i class="bi bi-credit-card me-2"></i> Transaction Reports
-                        </a>
-                    </li>
+                   
 
                     <li class="nav-item">
                         <a class="nav-link {% if request.resolver_match.url_name == 'invoice_receipt' %}active{% endif %}" href="{% url 'payments:invoice_receipt' %}">
@@ -861,11 +857,7 @@
                         </a>
                     </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'financial_export' %}active{% endif %}" href="{% url 'courses:course_view' %}">
-                            <i class="bi bi-file-earmark-arrow-down me-2"></i> Financial Data Export
-                        </a>
-                    </li>
+                   
 
 
 

@@ -1,0 +1,174 @@
+{% extends 'home/tes.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<div class=" py-5">
+
+  <!-- Total Cards -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-3">
+      <div class="card text-white bg-info shadow-sm">
+        <div class="card-body">
+          <h6>Total Completed Transactions</h6>
+          <p class="fs-4">{{ total_completed_transactions }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-white bg-primary shadow-sm">
+        <div class="card-body">
+          <h6>Total Revenue</h6>
+          <p class="fs-4">Rp {{ total_revenue|intcomma }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-white bg-success shadow-sm">
+        <div class="card-body">
+          <h6>Total Partner Revenue</h6>
+          <p class="fs-4">Rp {{ total_partner_revenue|intcomma }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-white bg-warning shadow-sm">
+        <div class="card-body">
+          <h6>Total ICE Revenue</h6>
+          <p class="fs-4">Rp {{ total_ice_revenue|intcomma }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Revenue Chart -->
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h6 class="card-title">Revenue Trend (Last 30 Days)</h6>
+          <canvas id="revenueChart" height="100"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Transactions -->
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h6 class="card-title">Recent Transactions</h6>
+          <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+              <thead class="thead-light">
+                <tr>
+                  <th>No</th>
+                  <th>Transaction ID</th>
+                  <th>User</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Payment Model</th>
+                  <th>Payment Method</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for tx in recent_transactions %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ tx.transaction_id|default:tx.linked_transaction.transaction_id|default:"-" }}</td>
+                  <td>{{ tx.user.get_full_name|default:tx.user.username }}</td>
+                  <td>Rp {{ tx.amount|intcomma }}</td>
+                  <td>
+                    <span class="badge 
+                      {% if tx.status == 'completed' %} bg-success
+                      {% elif tx.status == 'pending' %} bg-warning text-dark
+                      {% else %} bg-danger {% endif %}">
+                      {{ tx.get_status_display }}
+                    </span>
+                  </td>
+                  <td>{{ tx.get_payment_model_display }}</td>
+                  <td>{{ tx.payment_method|default:tx.linked_transaction.payment_method|default:"-" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="7" class="text-center">No recent transactions</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Items -->
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h6 class="card-title">Cart Items</h6>
+          <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+              <thead class="thead-light">
+                <tr>
+                  <th>No</th>
+                  <th>User</th>
+                  <th>Course</th>
+                  <th>Added At</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in cart_items %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ item.user.get_full_name|default:item.user.username }}</td>
+                  <td>{{ item.course.course_name }}</td>
+                  <td>{{ item.added_at|date:"d M Y H:i" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="4" class="text-center">No cart items</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Chart.js -->
+<script src="{% static 'js/chart.umd.min.js' %}"></script>
+<script>
+  const ctx = document.getElementById('revenueChart').getContext('2d');
+  const revenueChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+          labels: {{ revenue_chart.labels|safe }},
+          datasets: [{
+              label: 'Revenue',
+              data: {{ revenue_chart.data|safe }},
+              backgroundColor: 'rgba(54, 162, 235, 0.2)',
+              borderColor: 'rgba(54, 162, 235, 1)',
+              borderWidth: 2,
+              fill: true,
+              tension: 0.3
+          }]
+      },
+      options: {
+          responsive: true,
+          plugins: {
+              legend: { display: true },
+          },
+          scales: {
+              y: { beginAtZero: true }
+          }
+      }
+  });
+</script>
+{% endblock %}

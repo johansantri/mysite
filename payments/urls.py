@@ -20,6 +20,9 @@ urlpatterns = [
     path('report/<int:pk>/detail', views.payment_detail_view, name='payment_detail'),
     path('payments/tripay-callback/', views.tripay_webhook, name='tripay_webhook'),
     path('payments/return/', views.payment_return, name='payment_return'),
+    path('finance/export/', views.finance_data_export, name='finance_data_export'),
+    path('dashboard/finance', views.finance_dashboard, name='dashboard'),
+    path('export-csv/', views.export_finance_csv, name='export_csv'),
     #path('transaction/<str:merchant_ref>/', views.transaction_detail, name='transaction_detail'),
     
 ]

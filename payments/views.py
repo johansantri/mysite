@@ -39,6 +39,164 @@ from payments.utils import create_tripay_transaction
 from django.db.models import F, Sum, Count,Value,DecimalField
 from django.db.models.functions import Coalesce
 from django.db import models 
+from datetime import timedelta, date
+from django.core.cache import cache
+from django.db.models.functions import TruncDate
+import logging
+CACHE_TIMEOUT_AGGREGATES = 300   # 5 menit
+CACHE_TIMEOUT_CHART = 300        # 5 menit
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or getattr(u, 'is_finance', False))
+def finance_dashboard(request):
+    # --- Aggregates (satu query) ---
+    aggregates = cache.get('finance_aggregates_v1')
+    if aggregates is None:
+        aggregates = Payment.objects.filter(status='completed').aggregate(
+            total_completed_transactions=Count('id'),
+            total_revenue=Sum('amount'),
+            total_partner_revenue=Sum('snapshot_partner_earning'),
+            total_ice_revenue=Sum('snapshot_ice_earning'),
+        )
+        cache.set('finance_aggregates_v1', aggregates, CACHE_TIMEOUT_AGGREGATES)
+
+    # safe defaults
+    total_completed_transactions = aggregates.get('total_completed_transactions') or 0
+    total_revenue = aggregates.get('total_revenue') or 0
+    total_partner_revenue = aggregates.get('total_partner_revenue') or 0
+    total_ice_revenue = aggregates.get('total_ice_revenue') or 0
+
+    # --- Revenue chart (last 30 days) in single query using TruncDate ---
+    chart_cache_key = 'finance_revenue_last30_v1'
+    chart_data = cache.get(chart_cache_key)
+    if chart_data is None:
+        end_date = timezone.localdate()  # use localdate to match payment_date__date
+        start_date = end_date - timedelta(days=29)  # 30 days including today
+        qs = (
+            Payment.objects
+            .filter(status='completed', payment_date__date__gte=start_date)
+            .annotate(day=TruncDate('payment_date'))
+            .values('day')
+            .annotate(total=Sum('amount'))
+            .order_by('day')
+        )
+        # build map day -> total
+        day_map = {r['day']: float(r['total'] or 0) for r in qs}
+        labels = []
+        data = []
+        for i in range(29, -1, -1):  # from 29 days ago ... today
+            d = end_date - timedelta(days=i)
+            labels.append(d.strftime('%d %b'))
+            data.append(day_map.get(d, 0.0))
+        chart_data = {'labels': labels, 'data': data}
+        cache.set(chart_cache_key, chart_data, CACHE_TIMEOUT_CHART)
+
+    # --- Recent transactions (limited + select_related + only columns we need) ---
+    recent_transactions = (
+        Payment.objects
+        .select_related('user', 'course', 'linked_transaction')
+        .only(
+            'id', 'amount', 'status', 'payment_date',
+            'transaction_id', 'payment_method',
+            'linked_transaction__transaction_id', 'linked_transaction__payment_method',
+            'user__first_name', 'user__last_name', 'user__username',
+            'course__course_name',
+        )
+        .order_by('-payment_date')[:10]
+    )
+
+    # --- Cart items: LIMIT! (don't fetch all) ---
+    cart_items = (
+        CartItem.objects
+        .select_related('user', 'course')
+        .order_by('-added_at')[:50]
+    )
+
+    context = {
+        'total_completed_transactions': total_completed_transactions,
+        'total_revenue': total_revenue,
+        'total_partner_revenue': total_partner_revenue,
+        'total_ice_revenue': total_ice_revenue,
+        'revenue_chart': chart_data,
+        'recent_transactions': recent_transactions,
+        'cart_items': cart_items,
+    }
+    return render(request, 'finance/dashboard.html', context)
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or getattr(u, 'is_finance', False))
+def export_finance_csv(request):
+    # Buat response CSV
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="finance_export.csv"'
+
+    writer = csv.writer(response)
+    # Header CSV
+    writer.writerow([
+        'Transaction ID', 'User', 'Course', 'Partner', 'Payment Model', 
+        'Amount', 'Status', 'Payment Method', 'Created At'
+    ])
+
+    payments = Payment.objects.select_related('user', 'course__org_partner').all()
+
+    for p in payments:
+        writer.writerow([
+            p.transaction_id or p.id,
+            p.user.get_full_name() or p.user.username,
+            p.course.course_name,
+            p.course.org_partner.name,
+            p.get_payment_model_display(),
+            p.amount,
+            p.get_status_display(),
+            p.payment_method or '-',
+            p.created_at.strftime('%Y-%m-%d %H:%M'),
+        ])
+
+    return response
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser or getattr(u, 'is_finance', False))
+def finance_data_export(request):
+    # Ambil semua pembayaran atau filter sesuai kebutuhan
+    payments = Payment.objects.select_related('user', 'course', 'linked_transaction').all()
+
+    # Buat response CSV
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="finance_data_export.csv"'
+
+    writer = csv.writer(response)
+    
+    # Header CSV
+    writer.writerow([
+        'Payment ID', 'Transaction ID', 'Merchant Ref', 'User', 'Email', 
+        'Course Name', 'Course ID', 'Partner', 'Payment Model',
+        'Amount', 'Status', 'Payment Method', 'Bank / VA', 'Created At', 'Updated At'
+    ])
+
+    # Isi CSV
+    for p in payments:
+        transaction = p.linked_transaction
+        writer.writerow([
+            p.id,
+            transaction.transaction_id if transaction else '-',
+            transaction.merchant_ref if transaction else '-',
+            p.user.get_full_name() or p.user.username,
+            p.user.email,
+            p.course.course_name,
+            p.course.id,
+            p.course.org_partner.name.name if p.course.org_partner else '-',
+            p.get_payment_model_display(),
+            float(p.amount),
+            p.get_status_display(),
+            transaction.payment_method if transaction else '-',
+            f"{transaction.bank_name} ({transaction.va_number})" if transaction else '-',
+            p.created_at.strftime('%Y-%m-%d %H:%M'),
+            p.updated_at.strftime('%Y-%m-%d %H:%M'),
+        ])
+
+    return response
+
 
 @csrf_exempt
 def tripay_webhook(request):
@@ -368,7 +526,7 @@ def invoice_receipt_view(request):
     return render(request, 'finance/invoice_receipt.html', context)
 
 
-
+logger = logging.getLogger(__name__)
 def process_payment(request, course_id, payment_type='enrollment'):
     from decimal import Decimal
     course = get_object_or_404(Course, id=course_id)
