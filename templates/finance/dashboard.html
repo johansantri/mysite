@@ -6,52 +6,52 @@
 <div class=" py-5">
 
   <!-- Total Cards -->
-  <div class="row g-3 mb-4">
-    <div class="col-md-3">
-      <div class="card text-white bg-info shadow-sm">
+    <div class="row g-3 mb-4">
+    <div class="col-12 col-sm-6 col-md-3">
+        <div class="card text-white bg-info shadow-sm">
         <div class="card-body">
-          <h6>Total Completed Transactions</h6>
-          <p class="fs-4">{{ total_completed_transactions }}</p>
+            <h6 class="card-title">Total Completed Transactions</h6>
+            <p class="fs-3 fw-bold mb-0">{{ total_completed_transactions }}</p>
         </div>
-      </div>
+        </div>
     </div>
-    <div class="col-md-3">
-      <div class="card text-white bg-primary shadow-sm">
+    <div class="col-12 col-sm-6 col-md-3">
+        <div class="card text-white bg-primary shadow-sm">
         <div class="card-body">
-          <h6>Total Revenue</h6>
-          <p class="fs-4">Rp {{ total_revenue|intcomma }}</p>
+            <h6 class="card-title">Total Revenue</h6>
+            <p class="fs-3 fw-bold mb-0">Rp {{ total_revenue|intcomma }}</p>
         </div>
-      </div>
+        </div>
     </div>
-    <div class="col-md-3">
-      <div class="card text-white bg-success shadow-sm">
+    <div class="col-12 col-sm-6 col-md-3">
+        <div class="card text-white bg-success shadow-sm">
         <div class="card-body">
-          <h6>Total Partner Revenue</h6>
-          <p class="fs-4">Rp {{ total_partner_revenue|intcomma }}</p>
+            <h6 class="card-title">Total Partner Revenue</h6>
+            <p class="fs-3 fw-bold mb-0">Rp {{ total_partner_revenue|intcomma }}</p>
         </div>
-      </div>
+        </div>
     </div>
-    <div class="col-md-3">
-      <div class="card text-white bg-warning shadow-sm">
+    <div class="col-12 col-sm-6 col-md-3">
+        <div class="card text-white bg-warning shadow-sm">
         <div class="card-body">
-          <h6>Total ICE Revenue</h6>
-          <p class="fs-4">Rp {{ total_ice_revenue|intcomma }}</p>
+            <h6 class="card-title">Total ICE Revenue</h6>
+            <p class="fs-3 fw-bold mb-0">Rp {{ total_ice_revenue|intcomma }}</p>
         </div>
-      </div>
+        </div>
     </div>
-  </div>
+    </div>
 
-  <!-- Revenue Chart -->
-  <div class="row mb-4">
-    <div class="col-md-12">
-      <div class="card shadow-sm">
+    <!-- Revenue Chart -->
+    <div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow-sm">
         <div class="card-body">
-          <h6 class="card-title">Revenue Trend (Last 30 Days)</h6>
-          <canvas id="revenueChart" height="100"></canvas>
+            <h6 class="card-title">Revenue Trend (Last 30 Days)</h6>
+            <canvas id="revenueChart" height="100"></canvas>
         </div>
-      </div>
+        </div>
     </div>
-  </div>
+    </div>
 
   <!-- Recent Transactions -->
   <div class="row mb-4">
