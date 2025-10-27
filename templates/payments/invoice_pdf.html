@@ -111,13 +111,7 @@
     tbody tr:nth-child(even) {
       background: #f0f4f8;
     }
-    .total {
-      text-align: right;
-      font-size: 18px;
-      font-weight: 700;
-      margin-top: 20px;
-      color: #0984e3;
-    }
+   
     .note {
       margin-top: 40px;
       font-size: 12px;
@@ -206,11 +200,11 @@
         <tr>
           <th>#</th>
           <th>Course</th>
-          <th>Original Price</th>
+          <th>Price</th>
           <th>Discount</th>
-          <th>Admin Fee</th>
+          <th>Fee</th>
           <th>VAT</th>
-          <th>Total Payment</th>
+          <th>Payment</th>
         </tr>
       </thead>
       <tbody>
@@ -218,19 +212,17 @@
           <tr>
             <td>{{ forloop.counter }}</td>
             <td>{{ payment.course.course_name }}</td>
-            <td>Rp {{ payment.snapshot_price|intcomma }}</td>
-            <td>- Rp {{ payment.snapshot_discount|intcomma }} ({{ payment.course_price.discount_percent|default:0 }}%)</td>
-            <td>+ Rp {{ payment.snapshot_ice_earning|intcomma }} ({{ payment.course_price.ice_share_rate|default:0 }}%)</td>
-            <td>+ Rp {{ payment.snapshot_ppn|intcomma }} ({{ payment.course_price.ppn_rate|default:0 }}%)</td>
-            <td><strong>Rp {{ payment.amount|intcomma }}</strong></td>
+            <td> {{ payment.snapshot_price|intcomma }}</td>
+            <td> {{ payment.snapshot_discount|intcomma }} ({{ payment.course_price.discount_percent|default:0 }}%)</td>
+            <td> {{ payment.snapshot_ice_earning|intcomma }} ({{ payment.course_price.ice_share_rate|default:0 }}%)</td>
+            <td> {{ payment.snapshot_ppn|intcomma }} ({{ payment.course_price.ppn_rate|default:0 }}%)</td>
+            <td><strong> {{ payment.amount|intcomma }}</strong></td>
           </tr>
         {% endfor %}
       </tbody>
     </table>
 
-    <div class="total">
-      Total Paid: Rp {{ transaction.total_amount|intcomma }}
-    </div>
+   
 
     <div class="note">
       <p>This invoice is an <strong>official proof of payment</strong> and may be used for personal records, administrative reporting, reimbursement, or financial documentation purposes.</p>

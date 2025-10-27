@@ -92,7 +92,7 @@
                 <table class="table table-hover table-striped align-middle table-sm mb-0">
                     <thead class="table-dark text-center">
                         <tr>
-                            <th scope="col">Username</th>
+                           
                             <th scope="col">Email</th>
                             <th scope="col">Gender</th>
                             <th scope="col">Organization</th>
@@ -111,12 +111,12 @@
                     <tbody>
                         {% for user in users %}
                         <tr>
+                            
                             <td>
                                 <a href="{% url 'authentication:user_detail' user.id %}" class="text-primary text-decoration-none">
-                                    {{ user.username }}
+                                    {{ user.email|default:"-" }}
                                 </a>
                             </td>
-                            <td>{{ user.email|default:"-" }}</td>
                             <td>{{ user.gender|default:"-" }}</td>
                             <td>{{ user.university__name|default:"-" }}</td>
 

@@ -15,10 +15,11 @@ urlpatterns = [
     path('invoices/', views.invoice_receipt_view, name='invoice_receipt'),
     path('commissions/', views.partner_commission_view, name='partner_commission'),
     path('export/', views.financial_export_view, name='financial_export'),
-  
+    path('transaction/<int:pk>/user', views.cek_transaction_detail, name='cek_transaction_detail'),
+
     path('report/<int:pk>/detail', views.payment_detail_view, name='payment_detail'),
     path('payments/tripay-callback/', views.tripay_webhook, name='tripay_webhook'),
     path('payments/return/', views.payment_return, name='payment_return'),
-    path('transaction/<str:merchant_ref>/', views.transaction_detail, name='transaction_detail'),
+    #path('transaction/<str:merchant_ref>/', views.transaction_detail, name='transaction_detail'),
     
 ]

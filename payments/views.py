@@ -36,7 +36,7 @@ import time
 import csv
 from datetime import datetime, timezone as dt_timezone
 from payments.utils import create_tripay_transaction
-from django.db.models import F, Sum, Count
+from django.db.models import F, Sum, Count,Value,DecimalField
 from django.db.models.functions import Coalesce
 from django.db import models 
 
@@ -107,13 +107,27 @@ def payment_return(request):
     return render(request, 'payments/return.html')
 
 
-logger = logging.getLogger(__name__)
-
 @login_required
 @user_passes_test(lambda u: u.is_superuser or getattr(u, 'is_partner', False) or getattr(u, 'is_finance', False))
 def payment_detail_view(request, pk):
-    payment = get_object_or_404(Payment.objects.select_related('user', 'course__org_partner'), pk=pk)
-    return render(request, 'payments/payment_detail.html', {'payment': payment})
+    # ambil payment + user + course + partner + transaction
+    payment = get_object_or_404(
+        Payment.objects.select_related(
+            'user',
+            'course__org_partner__name',
+            'linked_transaction'
+        ),
+        pk=pk
+    )
+
+    transaction = payment.linked_transaction  # bisa None kalau belum ada
+
+    context = {
+        'payment': payment,
+        'transaction': transaction,
+    }
+
+    return render(request, 'payments/payment_detail.html', context)
 
 
 @login_required
@@ -258,13 +272,20 @@ def partner_commission_view(request):
 
     partner_courses = None
     if request.user.is_superuser or getattr(request.user, 'is_finance', False):
-        partner_courses = Course.objects.values(
-            'id', 'course_name', 'org_partner__name'
-        ).annotate(
-            total_amount=Sum('payments__amount')
-        ).filter(
-            payments__status='completed'
+        partner_courses = (
+            Course.objects.values(
+                'id', 'course_name', 'org_partner__name__name'
+            )
+            .annotate(
+                total_amount=Coalesce(
+                    Sum('payments__amount', filter=Q(payments__status='completed')),
+                    Value(0, output_field=DecimalField()),
+                    output_field=DecimalField()
+                )
+            )
+            .filter(total_amount__gt=0)  # hanya course yang punya pembayaran completed
         )
+
         if partner_id:
             partner_courses = partner_courses.filter(org_partner__id=partner_id)
 
@@ -767,46 +788,43 @@ def checkout(request):
 
 
 @login_required
-def transaction_detail(request, merchant_ref):
-    # Ambil transaksi user yang sesuai merchant_ref
+@user_passes_test(lambda u: u.is_superuser or getattr(u, 'is_finance', False) or getattr(u, 'is_partner', False))
+def cek_transaction_detail(request, pk):
+    # Ambil transaksi berdasarkan PK (tanpa filter user)
     transaction = get_object_or_404(
-        Transaction.objects.prefetch_related('courses'),
-        merchant_ref=merchant_ref
+        Transaction.objects.prefetch_related('courses__org_partner'),
+        pk=pk
     )
 
-    # Bangun cart_items dummy dengan method get_course_price
-    cart_items = []
-    for course in transaction.courses.all():
-        price = course.get_course_price()
-        dummy_item = type('DummyCartItem', (object,), {
-            'course': course,
-            'price': price
-        })()
-        cart_items.append(dummy_item)
+    # Ambil unique partners
+    partners = transaction.courses.values_list('org_partner', flat=True).distinct()
+    partner = None
+    if partners:
+        partner = Partner.objects.get(id=partners[0])
+    # ✅ Hitung total pembayaran real-time dari snapshot Payment
+    total_paid = transaction.payments.aggregate(total=models.Sum('amount'))['total'] or 0
+    if request.GET.get('download') == 'pdf':
+        logger.info(f"[ADMIN] Generating PDF for transaction {pk} (status: {transaction.status})")
+        
+        html_string = render_to_string('payments/invoice_pdf.html', {
+            'transaction': transaction,
+            'partner': partner,
+            'request': request,
+            'admin_view': True,  # Bisa digunakan di template kalau mau tampilkan info tambahan
+        })
+        html = HTML(string=html_string, base_url=request.build_absolute_uri())
+        pdf = html.write_pdf()
 
-    # Hitung total course price, safety check kalau get_course_price bisa None
-    total_course_price = sum(
-        (course.get_course_price().portal_price if course.get_course_price() else Decimal('0.00'))
-        for course in transaction.courses.all()
-    )
-
-    context = {
-        'transaction': transaction,  # kirim object lengkap
-        'cart_items': cart_items,
-        'total_course_price': total_course_price,
-        'platform_fee': transaction.platform_fee or Decimal('0.00'),
-        'voucher': transaction.voucher or Decimal('0.00'),
-        'total_price': transaction.total_amount or Decimal('0.00'),
-        'bank_name': transaction.bank_name or '',
-        'va_number': transaction.va_number or '',
-        'payment_url': transaction.payment_url or '',
-        'selected_payment_method': transaction.payment_method or '',
-        'merchant_ref': transaction.merchant_ref,
-        'instructions': transaction.instructions or [],  # asumsi sudah dalam bentuk list/dict siap render
-        'expired_at': transaction.expired_at,
-        'is_resume': True,
-    }
-    return render(request, 'payments/transaction_detail.html', context)
+        invoice_number = f"INV{transaction.created_at.strftime('%Y%m%d')}{transaction.id}"
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="{invoice_number}.pdf"'
+        return response
+    
+    return render(request, 'payments/admin_transaction_detail.html', {
+        'transaction': transaction,
+        'partner': partner,
+        'total_paid': total_paid,
+    })
 
 @login_required
 def cart_item_delete(request, pk):

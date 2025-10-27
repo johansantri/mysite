@@ -670,47 +670,51 @@ def all_user(request):
     partners = cache.get(cache_key_partners)
 
     if users is None:
-        # 1. Ambil queryset dasar sesuai role
-        if request.user.is_superuser:
-            users_qs = CustomUser.objects.select_related('university').only(
-                'id', 'username', 'email', 'first_name', 'gender', 'date_joined',
-                'last_login', 'is_active', 'is_staff', 'is_superuser',
-                'is_partner', 'is_instructor', 'is_subscription',
-                'university__name'
-            )
+        # ========== 1️⃣ Base Query ==============
+        base_qs = CustomUser.objects.select_related('university').only(
+            'id', 'username', 'email', 'first_name', 'gender', 'date_joined',
+            'last_login', 'is_active', 'is_staff', 'is_superuser',
+            'is_partner', 'is_instructor', 'is_subscription',
+            'university__name'
+        )
 
+        # ========== 2️⃣ Role Logic ==============
+        if request.user.is_superuser:
+            # Superuser bisa lihat semua data
+            users_qs = base_qs
+
+            # Cache daftar partner
             if partners is None:
-                partners = list(Partner.objects.select_related('name').values('id', 'name__name'))
+                partners = list(Partner.objects.values('id', 'name'))
                 safe_cache_set(cache_key_partners, partners, timeout=300)
 
-
         elif request.user.is_partner and request.user.university:
-            users_qs = CustomUser.objects.select_related('university').filter(
+            # Partner: hanya lihat learner di universitasnya sendiri
+            users_qs = base_qs.filter(
                 university=request.user.university,
                 is_superuser=False,
+                is_staff=False,      # tidak boleh lihat staff/admin
                 is_learner=True
-            ).only(
-                'id', 'username', 'email', 'first_name', 'gender', 'date_joined',
-                'last_login', 'is_active', 'university__name'
-            )
-            partners = None
-        else:
-            users_qs = CustomUser.objects.select_related('university').filter(
-                id=request.user.id
-            ).only(
-                'id', 'username', 'email', 'first_name', 'gender', 'date_joined',
-                'last_login', 'is_active', 'university__name'
             )
             partners = None
 
-        # 2. Filter dinamis
+        else:
+            # Role lain: hanya lihat dirinya sendiri
+            users_qs = base_qs.filter(
+                id=request.user.id,
+                is_superuser=False,
+                is_staff=False
+            )
+            partners = None
+
+        # ========== 3️⃣ Filter Dinamis ==============
         q = Q()
         search_query = request.GET.get('search', '').strip()
         if search_query:
             q &= (
-                Q(username__icontains=search_query) |
-                Q(email__icontains=search_query) |
-                Q(first_name__icontains=search_query)
+                Q(username__icontains=search_query)
+                | Q(email__icontains=search_query)
+                | Q(first_name__icontains=search_query)
             )
 
         status_filter = request.GET.get('status')
@@ -738,10 +742,9 @@ def all_user(request):
 
         users_qs = users_qs.filter(q)
 
-        # ✅ 3. Selalu annotate total_courses
+        # ========== 4️⃣ Annotate dan Sorting ==============
         users_qs = users_qs.annotate(total_courses=Count('enrollments'))
 
-        # 4. Sorting berdasarkan permintaan
         sort_courses = request.GET.get('sort_courses')
         if sort_courses == 'most':
             users_qs = users_qs.order_by('-total_courses')
@@ -750,19 +753,19 @@ def all_user(request):
         else:
             users_qs = users_qs.order_by('-date_joined')
 
-        # 5. Total count
+        # ========== 5️⃣ Cache + Pagination ==============
         if total_user_count is None:
             total_user_count = users_qs.count()
             safe_cache_set(cache_key_count, total_user_count, timeout=300)
 
-        # 6. Paginate dan ambil data
         paginator = Paginator(users_qs, PAGE_SIZE)
         page_obj = paginator.get_page(page_number)
 
         users = list(page_obj.object_list.values(
-            'id', 'username', 'email', 'first_name', 'gender',
+            'id', 'email', 'first_name', 'gender',
             'date_joined', 'last_login', 'is_active',
-            'university__name', 'total_courses'  # ✅ pastikan ini ada
+            'is_staff', 'is_superuser', 'is_partner', 'is_instructor', 'is_subscription',
+            'university__name', 'total_courses'
         ))
 
         safe_cache_set(cache_key_page, users, timeout=300)
@@ -771,7 +774,7 @@ def all_user(request):
         paginator = Paginator(range(total_user_count), PAGE_SIZE)
         page_obj = paginator.get_page(page_number)
 
-    # 7. Render
+    # ========== 6️⃣ Render ==============
     context = {
         'users': users,
         'page_obj': page_obj,
@@ -787,7 +790,6 @@ def all_user(request):
     }
 
     return render(request, 'authentication/all_user.html', context)
-
 
 
 @custom_ratelimit
