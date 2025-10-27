@@ -124,11 +124,11 @@
               <tr>
                 <td>{{ forloop.counter }}</td>
                 <td>{{ payment.course.course_name }}</td>
-                <td>Rp {{ payment.snapshot_price|intcomma }}</td>
-                <td>- Rp {{ payment.snapshot_discount|intcomma }} ({{ payment.course_price.discount_percent|default:0 }}%)</td>
-                <td>+ Rp {{ payment.snapshot_ice_earning|intcomma }} ({{ payment.course_price.ice_share_rate|default:0 }}%)</td>
-                <td>+ Rp {{ payment.snapshot_ppn|intcomma }} ({{ payment.course_price.ppn_rate|default:0 }}%)</td>
-                <td><strong>Rp {{ payment.amount|intcomma }}</strong></td>
+                <td> {{ payment.snapshot_price|intcomma }}</td>
+                <td> {{ payment.snapshot_discount|intcomma }} ({{ payment.course_price.discount_percent|default:0 }}%)</td>
+                <td> {{ payment.snapshot_ice_earning|intcomma }} ({{ payment.course_price.ice_share_rate|default:0 }}%)</td>
+                <td>{{ payment.snapshot_ppn|intcomma }} ({{ payment.course_price.ppn_rate|default:0 }}%)</td>
+                <td><strong> {{ payment.amount|intcomma }}</strong></td>
               </tr>
             {% endfor %}
           </tbody>
@@ -144,15 +144,7 @@
         </div>
       </div>
 
-      <!-- Total (tetap sama) -->
-      <div class="d-flex justify-content-end mb-4">
-        <h4 class="fw-bold fs-4 fs-sm-5 text-end">
-          Total Paid:
-          <span class="text-primary border border-primary rounded px-2 px-sm-3 py-1 d-inline-block">
-            Rp {{ transaction.total_amount|intcomma }}
-          </span>
-        </h4>
-      </div>
+     
 
       <!-- Notes & Footer (tetap sama) -->
       <div class="mt-4 border-top pt-3">

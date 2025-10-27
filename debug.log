@@ -16391,3 +16391,432 @@ django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'
 [INFO] 2025-10-27 15:42:30,425 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [INFO] 2025-10-27 15:42:30,512 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [INFO] 2025-10-27 15:42:30,725 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[DEBUG] 2025-10-27 15:43:20,635 [authentication.views] Course 18 (Audit of Information System): progress=100%, last_access_material=None, last_access_assessment=86
+[DEBUG] 2025-10-27 15:43:20,657 [authentication.views] Course 17 (Personal Branding Mastery): progress=100%, last_access_material=89, last_access_assessment=None
+[DEBUG] 2025-10-27 15:43:20,722 [authentication.views] Course 10 (Digital Marketing): progress=100%, last_access_material=37, last_access_assessment=None
+[DEBUG] 2025-10-27 15:43:20,757 [authentication.views] Course 16 (Kursus UI/UX Design: Dari Nol Hingga Mahir): progress=50%, last_access_material=78, last_access_assessment=None
+[DEBUG] 2025-10-27 15:43:20,782 [authentication.views] Course 15 (Front End Developer): progress=25.00000000000000000000000000%, last_access_material=74, last_access_assessment=None
+[DEBUG] 2025-10-27 15:43:20,817 [authentication.views] Course 12 (Build Powerful Web Applications with Django): progress=100%, last_access_material=None, last_access_assessment=55
+[DEBUG] 2025-10-27 15:43:20,857 [authentication.views] Course 11 (Big Data Developer): progress=90.0%, last_access_material=None, last_access_assessment=49
+[DEBUG] 2025-10-27 15:43:20,886 [authentication.views] Course 5 (Front End Developer): progress=100%, last_access_material=21, last_access_assessment=None
+[DEBUG] 2025-10-27 15:43:20,927 [authentication.views] Course 4 (Build Powerful Web Applications with Django): progress=100%, last_access_material=17, last_access_assessment=None
+[DEBUG] 2025-10-27 15:43:20,947 [authentication.views] Course 1 (Backend development): progress=100%, last_access_material=1, last_access_assessment=None
+[DEBUG] 2025-10-27 15:43:20,951 [authentication.views] User 4 (@learn) accessed mycourse: 10 enrollments, 10 last accesses, last_access_map=[(1, 1, None), (5, 21, None), (4, 17, None), (10, 37, None), (11, None, 49), (12, None, 55), (15, 74, None), (16, 78, None), (17, 89, None), (18, None, 86)]
+[DEBUG] 2025-10-27 15:43:24,231 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-10-27 15:43:24,234 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-27 07:43:24.231951+00:00
+[INFO] 2025-10-27 15:43:24,234 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:144.0) Gecko/20100101 Firefox/144.0", path_info: "/logout/"}.
+[ERROR] 2025-10-27 15:44:45,545 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 15:44:45,547 [django.request] Bad Request: /
+[WARNING] 2025-10-27 15:45:06,992 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 15:45:06,993 [django.request] Forbidden: /search/
+[ERROR] 2025-10-27 15:45:11,563 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 15:45:11,566 [django.request] Bad Request: //cdn.js
+[ERROR] 2025-10-27 15:45:35,373 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 15:45:35,376 [django.request] Bad Request: //cdn.js
+[ERROR] 2025-10-27 15:45:59,154 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 15:45:59,155 [django.request] Bad Request: //cdn.js
+[WARNING] 2025-10-27 15:46:08,356 [django.request] Not Found: /webalizer/
+[ERROR] 2025-10-27 15:46:33,570 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 15:46:33,571 [django.request] Bad Request: //cdn.js
+[WARNING] 2025-10-27 15:46:52,652 [django.request] Not Found: /fuel/pages/select/
+[WARNING] 2025-10-27 15:46:52,658 [django.request] Not Found: /ws/rest/v1/xxxxxx
+[WARNING] 2025-10-27 15:46:52,661 [django.request] Not Found: /wp-admin/admin-ajax.php
+[WARNING] 2025-10-27 15:46:52,662 [django.request] Not Found: /openmrs/ws/rest/v1/xxxxxx
+[WARNING] 2025-10-27 15:46:52,668 [django.request] Not Found: /filemanager/upload.php
+[WARNING] 2025-10-27 15:46:52,671 [django.request] Not Found: /plugins/editors/jckeditor/plugins/jtreelink/dialogs/links.php
+[WARNING] 2025-10-27 15:46:52,673 [django.request] Not Found: /installer-backup.php
+[WARNING] 2025-10-27 15:46:52,676 [django.request] Not Found: /upload
+[WARNING] 2025-10-27 15:46:52,679 [django.request] Not Found: /web/google_analytics.php
+[WARNING] 2025-10-27 15:46:52,683 [django.request] Not Found: /XMLCHART
+[WARNING] 2025-10-27 15:46:52,683 [django.request] Not Found: /wp-content/plugins/wp-payeezy-pay/donate.php
+[WARNING] 2025-10-27 15:46:52,685 [django.request] Not Found: /public/login.htm
+[WARNING] 2025-10-27 15:46:54,629 [django.request] Not Found: /oputilsServlet
+[WARNING] 2025-10-27 15:46:55,612 [django.request] Not Found: /php/upload.php
+[WARNING] 2025-10-27 15:46:56,624 [django.request] Not Found: /manage/webshell/u
+[WARNING] 2025-10-27 15:46:56,627 [django.request] Not Found: /cs/Satellite
+[WARNING] 2025-10-27 15:46:56,638 [django.request] Not Found: /type.php
+[WARNING] 2025-10-27 15:46:56,642 [django.request] Not Found: /cf_scripts/scripts/ajax/ckeditor/plugins/filemanager/upload.cfm
+[WARNING] 2025-10-27 15:46:57,606 [django.request] Not Found: /Uploads/34UvD5fagsJvkod2whroyR0oHKb.php7
+[WARNING] 2025-10-27 15:46:58,648 [django.request] Not Found: /data/cache_template/rss.tpl.php
+[WARNING] 2025-10-27 15:46:58,650 [django.request] Not Found: /manage/webshell/u
+[WARNING] 2025-10-27 15:46:58,651 [django.request] Not Found: /cs/Satellite
+[WARNING] 2025-10-27 15:46:58,656 [django.request] Not Found: /cf_scripts/scripts/ajax/ckeditor/plugins/filemanager/uploadedFiles/34UvCvCOx029oBx9cc4GDFoCUTy.jsp
+[WARNING] 2025-10-27 15:47:20,543 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 15:47:20,544 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 15:48:14,125 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 15:48:14,125 [django.request] Forbidden: /search/
+[DEBUG] 2025-10-27 15:52:43,099 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-10-27 15:52:43,101 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-10-27 15:52:43,101 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-10-27 07:52:43.099724+00:00
+[INFO] 2025-10-27 15:52:44,011 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:144.0) Gecko/20100101 Firefox/144.0", path_info: "/login/"}.
+[INFO] 2025-10-27 15:52:44,013 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-27 07:52:43.099724+00:00
+[DEBUG] 2025-10-27 15:52:44,027 [urllib3.connectionpool] Starting new HTTPS connection (1): ipinfo.io:443
+[DEBUG] 2025-10-27 15:52:44,321 [urllib3.connectionpool] https://ipinfo.io:443 "GET /203.217.140.215/json HTTP/1.1" 200 None
+[DEBUG] 2025-10-27 15:53:01,582 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-10-27 15:53:01,583 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-27 07:53:01.582208+00:00
+[INFO] 2025-10-27 15:53:01,583 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:144.0) Gecko/20100101 Firefox/144.0", path_info: "/logout/"}.
+[WARNING] 2025-10-27 15:54:11,839 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 15:54:11,840 [django.request] Forbidden: /search/
+[DEBUG] 2025-10-27 15:54:21,296 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-10-27 15:54:21,296 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-10-27 15:54:21,297 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-10-27 07:54:21.296478+00:00
+[INFO] 2025-10-27 15:54:22,229 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:144.0) Gecko/20100101 Firefox/144.0", path_info: "/login/"}.
+[INFO] 2025-10-27 15:54:22,230 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-27 07:54:21.296478+00:00
+[DEBUG] 2025-10-27 15:54:22,245 [urllib3.connectionpool] Starting new HTTPS connection (1): ipinfo.io:443
+[DEBUG] 2025-10-27 15:54:22,524 [urllib3.connectionpool] https://ipinfo.io:443 "GET /203.217.140.215/json HTTP/1.1" 200 None
+[WARNING] 2025-10-27 15:55:26,705 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 15:55:26,705 [django.request] Forbidden: /search/
+[DEBUG] 2025-10-27 15:56:01,076 [authentication.views] Course 18 (Audit of Information System): progress=100%, last_access_material=None, last_access_assessment=86
+[DEBUG] 2025-10-27 15:56:01,137 [authentication.views] Course 10 (Digital Marketing): progress=25.00%, last_access_material=None, last_access_assessment=37
+[DEBUG] 2025-10-27 15:56:01,173 [authentication.views] Updated progress for user 56, course 17: 8.333333333333333333333333335%
+[DEBUG] 2025-10-27 15:56:01,188 [authentication.views] Course 17 (Personal Branding Mastery): progress=8.333333333333333333333333335%, last_access_material=None, last_access_assessment=None
+[DEBUG] 2025-10-27 15:56:01,221 [authentication.views] Course 16 (Kursus UI/UX Design: Dari Nol Hingga Mahir): progress=100%, last_access_material=None, last_access_assessment=80
+[DEBUG] 2025-10-27 15:56:01,224 [authentication.views] User 56 (learn1) accessed mycourse: 4 enrollments, 5 last accesses, last_access_map=[(16, None, 80), (11, 49, None), (12, 55, None), (10, None, 37), (18, None, 86)]
+[WARNING] 2025-10-27 15:57:47,632 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 15:57:47,633 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 15:58:07,022 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 15:58:07,023 [django.request] Forbidden: /search/
+[INFO] 2025-10-27 15:58:17,461 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-27 15:58:17,815 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-27 15:58:17,899 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-27 15:58:25,270 [payments.views] Generating PDF for transaction 85 (status: completed)
+[WARNING] 2025-10-27 15:58:25,314 [weasyprint] Ignored `box-shadow: 0 4px 10px rgba(0,0,0,0.05)` at 25:7, unknown property.
+[WARNING] 2025-10-27 15:58:25,316 [weasyprint] Ignored `box-shadow: 0 2px 6px rgba(0,0,0,0.1)` at 48:7, unknown property.
+[WARNING] 2025-10-27 15:58:25,316 [weasyprint] Ignored `box-shadow: 0 2px 6px rgba(0, 184, 148, 0.5)` at 51:52, unknown property.
+[WARNING] 2025-10-27 15:58:25,316 [weasyprint] Ignored `box-shadow: 0 2px 6px rgba(253, 203, 110, 0.5)` at 52:66, unknown property.
+[WARNING] 2025-10-27 15:58:25,317 [weasyprint] Ignored `box-shadow: 0 2px 6px rgba(99, 110, 114, 0.5)` at 53:52, unknown property.
+[WARNING] 2025-10-27 15:58:25,317 [weasyprint] Ignored `box-shadow: 0 2px 6px rgba(225, 112, 85, 0.5)` at 54:49, unknown property.
+[WARNING] 2025-10-27 15:58:25,319 [weasyprint] Ignored `box-shadow: 0 0 15px rgba(0,0,0,0.05)` at 93:7, unknown property.
+[WARNING] 2025-10-27 15:58:25,321 [weasyprint] Ignored `box-shadow: none` at 121:9, unknown property.
+[DEBUG] 2025-10-27 15:58:25,557 [PIL.Image] Importing BlpImagePlugin
+[DEBUG] 2025-10-27 15:58:25,559 [PIL.Image] Importing BmpImagePlugin
+[DEBUG] 2025-10-27 15:58:25,559 [PIL.Image] Importing BufrStubImagePlugin
+[DEBUG] 2025-10-27 15:58:25,559 [PIL.Image] Importing CurImagePlugin
+[DEBUG] 2025-10-27 15:58:25,560 [PIL.Image] Importing DcxImagePlugin
+[DEBUG] 2025-10-27 15:58:25,561 [PIL.Image] Importing DdsImagePlugin
+[DEBUG] 2025-10-27 15:58:25,664 [PIL.Image] Importing EpsImagePlugin
+[DEBUG] 2025-10-27 15:58:25,666 [PIL.Image] Importing FitsImagePlugin
+[DEBUG] 2025-10-27 15:58:25,666 [PIL.Image] Importing FliImagePlugin
+[DEBUG] 2025-10-27 15:58:25,667 [PIL.Image] Importing FpxImagePlugin
+[DEBUG] 2025-10-27 15:58:25,667 [PIL.Image] Image: failed to import FpxImagePlugin: No module named 'olefile'
+[DEBUG] 2025-10-27 15:58:25,668 [PIL.Image] Importing FtexImagePlugin
+[DEBUG] 2025-10-27 15:58:25,668 [PIL.Image] Importing GbrImagePlugin
+[DEBUG] 2025-10-27 15:58:25,669 [PIL.Image] Importing GifImagePlugin
+[DEBUG] 2025-10-27 15:58:25,669 [PIL.Image] Importing GribStubImagePlugin
+[DEBUG] 2025-10-27 15:58:25,669 [PIL.Image] Importing Hdf5StubImagePlugin
+[DEBUG] 2025-10-27 15:58:25,670 [PIL.Image] Importing IcnsImagePlugin
+[DEBUG] 2025-10-27 15:58:25,671 [PIL.Image] Importing IcoImagePlugin
+[DEBUG] 2025-10-27 15:58:25,672 [PIL.Image] Importing ImImagePlugin
+[DEBUG] 2025-10-27 15:58:25,673 [PIL.Image] Importing ImtImagePlugin
+[DEBUG] 2025-10-27 15:58:25,674 [PIL.Image] Importing IptcImagePlugin
+[DEBUG] 2025-10-27 15:58:25,674 [PIL.Image] Importing JpegImagePlugin
+[DEBUG] 2025-10-27 15:58:25,675 [PIL.Image] Importing Jpeg2KImagePlugin
+[DEBUG] 2025-10-27 15:58:25,675 [PIL.Image] Importing McIdasImagePlugin
+[DEBUG] 2025-10-27 15:58:25,675 [PIL.Image] Importing MicImagePlugin
+[DEBUG] 2025-10-27 15:58:25,676 [PIL.Image] Image: failed to import MicImagePlugin: No module named 'olefile'
+[DEBUG] 2025-10-27 15:58:25,676 [PIL.Image] Importing MpegImagePlugin
+[DEBUG] 2025-10-27 15:58:25,677 [PIL.Image] Importing MpoImagePlugin
+[DEBUG] 2025-10-27 15:58:25,679 [PIL.Image] Importing MspImagePlugin
+[DEBUG] 2025-10-27 15:58:25,680 [PIL.Image] Importing PalmImagePlugin
+[DEBUG] 2025-10-27 15:58:25,681 [PIL.Image] Importing PcdImagePlugin
+[DEBUG] 2025-10-27 15:58:25,681 [PIL.Image] Importing PcxImagePlugin
+[DEBUG] 2025-10-27 15:58:25,681 [PIL.Image] Importing PdfImagePlugin
+[DEBUG] 2025-10-27 15:58:25,689 [PIL.Image] Importing PixarImagePlugin
+[DEBUG] 2025-10-27 15:58:25,690 [PIL.Image] Importing PngImagePlugin
+[DEBUG] 2025-10-27 15:58:25,690 [PIL.Image] Importing PpmImagePlugin
+[DEBUG] 2025-10-27 15:58:25,690 [PIL.Image] Importing PsdImagePlugin
+[DEBUG] 2025-10-27 15:58:25,691 [PIL.Image] Importing QoiImagePlugin
+[DEBUG] 2025-10-27 15:58:25,691 [PIL.Image] Importing SgiImagePlugin
+[DEBUG] 2025-10-27 15:58:25,691 [PIL.Image] Importing SpiderImagePlugin
+[DEBUG] 2025-10-27 15:58:25,692 [PIL.Image] Importing SunImagePlugin
+[DEBUG] 2025-10-27 15:58:25,693 [PIL.Image] Importing TgaImagePlugin
+[DEBUG] 2025-10-27 15:58:25,694 [PIL.Image] Importing TiffImagePlugin
+[DEBUG] 2025-10-27 15:58:25,694 [PIL.Image] Importing WebPImagePlugin
+[DEBUG] 2025-10-27 15:58:25,696 [PIL.Image] Importing WmfImagePlugin
+[DEBUG] 2025-10-27 15:58:25,696 [PIL.Image] Importing XbmImagePlugin
+[DEBUG] 2025-10-27 15:58:25,697 [PIL.Image] Importing XpmImagePlugin
+[DEBUG] 2025-10-27 15:58:25,698 [PIL.Image] Importing XVThumbImagePlugin
+[DEBUG] 2025-10-27 15:58:25,873 [fontTools.ttLib.ttFont] Reading 'maxp' table from disk
+[DEBUG] 2025-10-27 15:58:25,874 [fontTools.ttLib.ttFont] Decompiling 'maxp' table
+[DEBUG] 2025-10-27 15:58:25,874 [fontTools.subset.timer] Took 0.001s to load 'maxp'
+[DEBUG] 2025-10-27 15:58:25,874 [fontTools.subset.timer] Took 0.000s to prune 'maxp'
+[INFO] 2025-10-27 15:58:25,874 [fontTools.subset] maxp pruned
+[DEBUG] 2025-10-27 15:58:25,876 [fontTools.ttLib.ttFont] Reading 'cmap' table from disk
+[DEBUG] 2025-10-27 15:58:25,876 [fontTools.ttLib.ttFont] Decompiling 'cmap' table
+[DEBUG] 2025-10-27 15:58:25,878 [fontTools.ttLib.ttFont] Reading 'post' table from disk
+[DEBUG] 2025-10-27 15:58:25,878 [fontTools.ttLib.ttFont] Decompiling 'post' table
+[DEBUG] 2025-10-27 15:58:25,891 [fontTools.subset.timer] Took 0.015s to load 'cmap'
+[DEBUG] 2025-10-27 15:58:25,891 [fontTools.subset.timer] Took 0.000s to prune 'cmap'
+[INFO] 2025-10-27 15:58:25,891 [fontTools.subset] cmap pruned
+[INFO] 2025-10-27 15:58:25,891 [fontTools.subset] fpgm dropped
+[INFO] 2025-10-27 15:58:25,892 [fontTools.subset] prep dropped
+[INFO] 2025-10-27 15:58:25,892 [fontTools.subset] cvt  dropped
+[INFO] 2025-10-27 15:58:25,892 [fontTools.subset] kern dropped
+[DEBUG] 2025-10-27 15:58:25,892 [fontTools.subset.timer] Took 0.000s to load 'post'
+[DEBUG] 2025-10-27 15:58:25,893 [fontTools.subset.timer] Took 0.000s to prune 'post'
+[INFO] 2025-10-27 15:58:25,893 [fontTools.subset] post pruned
+[INFO] 2025-10-27 15:58:25,894 [fontTools.subset] GPOS dropped
+[INFO] 2025-10-27 15:58:25,894 [fontTools.subset] GSUB dropped
+[DEBUG] 2025-10-27 15:58:25,894 [fontTools.ttLib.ttFont] Reading 'glyf' table from disk
+[DEBUG] 2025-10-27 15:58:25,895 [fontTools.ttLib.ttFont] Decompiling 'glyf' table
+[DEBUG] 2025-10-27 15:58:25,895 [fontTools.ttLib.ttFont] Reading 'loca' table from disk
+[DEBUG] 2025-10-27 15:58:25,895 [fontTools.ttLib.ttFont] Decompiling 'loca' table
+[DEBUG] 2025-10-27 15:58:25,895 [fontTools.ttLib.ttFont] Reading 'head' table from disk
+[DEBUG] 2025-10-27 15:58:25,896 [fontTools.ttLib.ttFont] Decompiling 'head' table
+[DEBUG] 2025-10-27 15:58:25,906 [fontTools.subset.timer] Took 0.012s to load 'glyf'
+[DEBUG] 2025-10-27 15:58:25,907 [fontTools.subset.timer] Took 0.000s to prune 'glyf'
+[INFO] 2025-10-27 15:58:25,907 [fontTools.subset] glyf pruned
+[DEBUG] 2025-10-27 15:58:25,909 [fontTools.subset.timer] Took 0.001s to close glyph list over 'cmap'
+[INFO] 2025-10-27 15:58:25,909 [fontTools.subset] Added gid0 to subset
+[INFO] 2025-10-27 15:58:25,909 [fontTools.subset] Closing glyph list over 'glyf': 49 glyphs before
+[INFO] 2025-10-27 15:58:25,910 [fontTools.subset] Glyph names: ['.notdef', 'A', 'B', 'C', 'D', 'E', 'F', 'I', 'L', 'M', 'N', 'O', 'P', 'T', 'U', 'V', 'a', 'c', 'colon', 'comma', 'd', 'e', 'eight', 'f', 'five', 'four', 'h', 'i', 'l', 'm', 'n', 'nine', 'numbersign', 'o', 'one', 'p', 'period', 'r', 's', 'space', 't', 'three', 'two', 'u', 'uniFB03', 'v', 'x', 'y', 'zero']
+[INFO] 2025-10-27 15:58:25,911 [fontTools.subset] Glyph IDs:   [0, 3, 6, 15, 17, 19, 20, 21, 22, 23, 24, 27, 28, 29, 36, 37, 38, 39, 40, 41, 44, 47, 48, 49, 50, 51, 55, 56, 57, 68, 70, 71, 72, 73, 75, 76, 79, 80, 81, 82, 83, 85, 86, 87, 88, 89, 91, 92, 5040]
+[INFO] 2025-10-27 15:58:25,911 [fontTools.subset] Closed glyph list over 'glyf': 49 glyphs after
+[INFO] 2025-10-27 15:58:25,911 [fontTools.subset] Glyph names: ['.notdef', 'A', 'B', 'C', 'D', 'E', 'F', 'I', 'L', 'M', 'N', 'O', 'P', 'T', 'U', 'V', 'a', 'c', 'colon', 'comma', 'd', 'e', 'eight', 'f', 'five', 'four', 'h', 'i', 'l', 'm', 'n', 'nine', 'numbersign', 'o', 'one', 'p', 'period', 'r', 's', 'space', 't', 'three', 'two', 'u', 'uniFB03', 'v', 'x', 'y', 'zero']
+[INFO] 2025-10-27 15:58:25,912 [fontTools.subset] Glyph IDs:   [0, 3, 6, 15, 17, 19, 20, 21, 22, 23, 24, 27, 28, 29, 36, 37, 38, 39, 40, 41, 44, 47, 48, 49, 50, 51, 55, 56, 57, 68, 70, 71, 72, 73, 75, 76, 79, 80, 81, 82, 83, 85, 86, 87, 88, 89, 91, 92, 5040]
+[DEBUG] 2025-10-27 15:58:25,912 [fontTools.subset.timer] Took 0.003s to close glyph list over 'glyf'
+[INFO] 2025-10-27 15:58:25,919 [fontTools.subset] Retaining 49 glyphs
+[INFO] 2025-10-27 15:58:25,919 [fontTools.subset] head subsetting not needed
+[INFO] 2025-10-27 15:58:25,919 [fontTools.subset] hhea subsetting not needed
+[INFO] 2025-10-27 15:58:25,920 [fontTools.subset] maxp subsetting not needed
+[INFO] 2025-10-27 15:58:25,920 [fontTools.subset] OS/2 subsetting not needed
+[DEBUG] 2025-10-27 15:58:25,920 [fontTools.ttLib.ttFont] Reading 'hmtx' table from disk
+[DEBUG] 2025-10-27 15:58:25,920 [fontTools.ttLib.ttFont] Decompiling 'hmtx' table
+[DEBUG] 2025-10-27 15:58:25,920 [fontTools.ttLib.ttFont] Reading 'hhea' table from disk
+[DEBUG] 2025-10-27 15:58:25,921 [fontTools.ttLib.ttFont] Decompiling 'hhea' table
+[DEBUG] 2025-10-27 15:58:25,927 [fontTools.subset.timer] Took 0.007s to subset 'hmtx'
+[INFO] 2025-10-27 15:58:25,927 [fontTools.subset] hmtx subsetted
+[DEBUG] 2025-10-27 15:58:25,931 [fontTools.subset.timer] Took 0.003s to subset 'cmap'
+[INFO] 2025-10-27 15:58:25,931 [fontTools.subset] cmap subsetted
+[INFO] 2025-10-27 15:58:25,932 [fontTools.subset] loca subsetting not needed
+[DEBUG] 2025-10-27 15:58:25,932 [fontTools.subset.timer] Took 0.000s to subset 'post'
+[INFO] 2025-10-27 15:58:25,932 [fontTools.subset] post subsetted
+[INFO] 2025-10-27 15:58:25,932 [fontTools.subset] gasp subsetting not needed
+[INFO] 2025-10-27 15:58:25,932 [fontTools.subset] FFTM NOT subset; don't know how to subset
+[DEBUG] 2025-10-27 15:58:25,933 [fontTools.ttLib.ttFont] Reading 'GDEF' table from disk
+[DEBUG] 2025-10-27 15:58:25,933 [fontTools.ttLib.ttFont] Decompiling 'GDEF' table
+[DEBUG] 2025-10-27 15:58:25,935 [fontTools.subset.timer] Took 0.003s to subset 'GDEF'
+[INFO] 2025-10-27 15:58:25,936 [fontTools.subset] GDEF subsetted
+[INFO] 2025-10-27 15:58:25,936 [fontTools.subset] name subsetting not needed
+[DEBUG] 2025-10-27 15:58:25,941 [fontTools.subset.timer] Took 0.005s to subset 'glyf'
+[INFO] 2025-10-27 15:58:25,941 [fontTools.subset] glyf subsetted
+[DEBUG] 2025-10-27 15:58:25,941 [fontTools.subset.timer] Took 0.000s to subset GlyphOrder
+[DEBUG] 2025-10-27 15:58:25,942 [fontTools.subset.timer] Took 0.000s to prune 'head'
+[INFO] 2025-10-27 15:58:25,942 [fontTools.subset] head pruned
+[DEBUG] 2025-10-27 15:58:25,942 [fontTools.ttLib.ttFont] Reading 'OS/2' table from disk
+[DEBUG] 2025-10-27 15:58:25,943 [fontTools.ttLib.ttFont] Decompiling 'OS/2' table
+[INFO] 2025-10-27 15:58:25,943 [fontTools.subset] OS/2 Unicode ranges pruned: [0, 62]
+[INFO] 2025-10-27 15:58:25,944 [fontTools.subset] OS/2 CodePage ranges pruned: [0]
+[DEBUG] 2025-10-27 15:58:25,946 [fontTools.subset.timer] Took 0.002s to prune 'glyf'
+[INFO] 2025-10-27 15:58:25,947 [fontTools.subset] glyf pruned
+[DEBUG] 2025-10-27 15:58:25,947 [fontTools.subset.timer] Took 0.000s to prune 'GDEF'
+[INFO] 2025-10-27 15:58:25,947 [fontTools.subset] GDEF pruned
+[DEBUG] 2025-10-27 15:58:25,947 [fontTools.ttLib.ttFont] Reading 'name' table from disk
+[DEBUG] 2025-10-27 15:58:25,948 [fontTools.ttLib.ttFont] Decompiling 'name' table
+[DEBUG] 2025-10-27 15:58:25,948 [fontTools.ttLib.ttFont] Reading 'gasp' table from disk
+[DEBUG] 2025-10-27 15:58:25,948 [fontTools.ttLib.ttFont] Decompiling 'gasp' table
+[DEBUG] 2025-10-27 15:58:25,949 [fontTools.ttLib.ttFont] Reading 'FFTM' table from disk
+[DEBUG] 2025-10-27 15:58:25,949 [fontTools.ttLib.ttFont] Decompiling 'FFTM' table
+[DEBUG] 2025-10-27 15:58:25,949 [fontTools.subset.timer] Took 0.002s to prune 'name'
+[INFO] 2025-10-27 15:58:25,949 [fontTools.subset] name pruned
+[DEBUG] 2025-10-27 15:58:25,950 [fontTools.ttLib.ttFont] Compiling 'glyf' table
+[DEBUG] 2025-10-27 15:58:25,970 [fontTools.ttLib.ttFont] Writing 'glyf' table to disk
+[DEBUG] 2025-10-27 15:58:25,970 [fontTools.ttLib.ttFont] Compiling 'maxp' table
+[DEBUG] 2025-10-27 15:58:25,973 [fontTools.ttLib.ttFont] Writing 'maxp' table to disk
+[DEBUG] 2025-10-27 15:58:25,974 [fontTools.ttLib.ttFont] Compiling 'loca' table
+[DEBUG] 2025-10-27 15:58:25,976 [fontTools.ttLib.ttFont] Writing 'loca' table to disk
+[DEBUG] 2025-10-27 15:58:25,976 [fontTools.ttLib.ttFont] Compiling 'head' table
+[DEBUG] 2025-10-27 15:58:25,976 [fontTools.ttLib.ttFont] Writing 'head' table to disk
+[DEBUG] 2025-10-27 15:58:25,976 [fontTools.ttLib.ttFont] Compiling 'hmtx' table
+[DEBUG] 2025-10-27 15:58:25,983 [fontTools.ttLib.ttFont] Writing 'hmtx' table to disk
+[DEBUG] 2025-10-27 15:58:25,983 [fontTools.ttLib.ttFont] Compiling 'hhea' table
+[DEBUG] 2025-10-27 15:58:25,986 [fontTools.ttLib.ttFont] Writing 'hhea' table to disk
+[DEBUG] 2025-10-27 15:58:25,987 [fontTools.ttLib.ttFont] Compiling 'OS/2' table
+[DEBUG] 2025-10-27 15:58:25,987 [fontTools.ttLib.ttFont] Writing 'OS/2' table to disk
+[DEBUG] 2025-10-27 15:58:25,987 [fontTools.ttLib.ttFont] Compiling 'cmap' table
+[DEBUG] 2025-10-27 15:58:25,989 [fontTools.ttLib.ttFont] Writing 'cmap' table to disk
+[DEBUG] 2025-10-27 15:58:25,989 [fontTools.ttLib.ttFont] Compiling 'name' table
+[DEBUG] 2025-10-27 15:58:25,989 [fontTools.ttLib.ttFont] Writing 'name' table to disk
+[DEBUG] 2025-10-27 15:58:25,990 [fontTools.ttLib.ttFont] Compiling 'post' table
+[DEBUG] 2025-10-27 15:58:25,990 [fontTools.ttLib.ttFont] Writing 'post' table to disk
+[DEBUG] 2025-10-27 15:58:25,990 [fontTools.ttLib.ttFont] Compiling 'gasp' table
+[DEBUG] 2025-10-27 15:58:25,990 [fontTools.ttLib.ttFont] Writing 'gasp' table to disk
+[DEBUG] 2025-10-27 15:58:25,991 [fontTools.ttLib.ttFont] Compiling 'FFTM' table
+[DEBUG] 2025-10-27 15:58:25,991 [fontTools.ttLib.ttFont] Writing 'FFTM' table to disk
+[DEBUG] 2025-10-27 15:58:25,991 [fontTools.ttLib.ttFont] Compiling 'GDEF' table
+[DEBUG] 2025-10-27 15:58:25,992 [fontTools.ttLib.ttFont] Writing 'GDEF' table to disk
+[DEBUG] 2025-10-27 15:58:25,995 [fontTools.ttLib.ttFont] Reading 'maxp' table from disk
+[DEBUG] 2025-10-27 15:58:25,995 [fontTools.ttLib.ttFont] Decompiling 'maxp' table
+[DEBUG] 2025-10-27 15:58:25,996 [fontTools.subset.timer] Took 0.000s to load 'maxp'
+[DEBUG] 2025-10-27 15:58:25,996 [fontTools.subset.timer] Took 0.000s to prune 'maxp'
+[INFO] 2025-10-27 15:58:25,996 [fontTools.subset] maxp pruned
+[DEBUG] 2025-10-27 15:58:25,996 [fontTools.ttLib.ttFont] Reading 'cmap' table from disk
+[DEBUG] 2025-10-27 15:58:25,996 [fontTools.ttLib.ttFont] Decompiling 'cmap' table
+[DEBUG] 2025-10-27 15:58:25,998 [fontTools.ttLib.ttFont] Reading 'post' table from disk
+[DEBUG] 2025-10-27 15:58:25,998 [fontTools.ttLib.ttFont] Decompiling 'post' table
+[DEBUG] 2025-10-27 15:58:26,009 [fontTools.subset.timer] Took 0.013s to load 'cmap'
+[DEBUG] 2025-10-27 15:58:26,010 [fontTools.subset.timer] Took 0.000s to prune 'cmap'
+[INFO] 2025-10-27 15:58:26,010 [fontTools.subset] cmap pruned
+[INFO] 2025-10-27 15:58:26,010 [fontTools.subset] fpgm dropped
+[INFO] 2025-10-27 15:58:26,010 [fontTools.subset] prep dropped
+[INFO] 2025-10-27 15:58:26,010 [fontTools.subset] cvt  dropped
+[INFO] 2025-10-27 15:58:26,011 [fontTools.subset] kern dropped
+[DEBUG] 2025-10-27 15:58:26,011 [fontTools.subset.timer] Took 0.000s to load 'post'
+[DEBUG] 2025-10-27 15:58:26,011 [fontTools.subset.timer] Took 0.000s to prune 'post'
+[INFO] 2025-10-27 15:58:26,011 [fontTools.subset] post pruned
+[INFO] 2025-10-27 15:58:26,012 [fontTools.subset] GPOS dropped
+[INFO] 2025-10-27 15:58:26,012 [fontTools.subset] GSUB dropped
+[DEBUG] 2025-10-27 15:58:26,012 [fontTools.ttLib.ttFont] Reading 'glyf' table from disk
+[DEBUG] 2025-10-27 15:58:26,014 [fontTools.ttLib.ttFont] Decompiling 'glyf' table
+[DEBUG] 2025-10-27 15:58:26,015 [fontTools.ttLib.ttFont] Reading 'loca' table from disk
+[DEBUG] 2025-10-27 15:58:26,015 [fontTools.ttLib.ttFont] Decompiling 'loca' table
+[DEBUG] 2025-10-27 15:58:26,015 [fontTools.ttLib.ttFont] Reading 'head' table from disk
+[DEBUG] 2025-10-27 15:58:26,015 [fontTools.ttLib.ttFont] Decompiling 'head' table
+[DEBUG] 2025-10-27 15:58:26,025 [fontTools.subset.timer] Took 0.013s to load 'glyf'
+[DEBUG] 2025-10-27 15:58:26,025 [fontTools.subset.timer] Took 0.000s to prune 'glyf'
+[INFO] 2025-10-27 15:58:26,026 [fontTools.subset] glyf pruned
+[DEBUG] 2025-10-27 15:58:26,027 [fontTools.subset.timer] Took 0.001s to close glyph list over 'cmap'
+[INFO] 2025-10-27 15:58:26,027 [fontTools.subset] Added gid0 to subset
+[INFO] 2025-10-27 15:58:26,028 [fontTools.subset] Closing glyph list over 'MATH': 67 glyphs before
+[INFO] 2025-10-27 15:58:26,028 [fontTools.subset] Glyph names: ['.notdef', 'A', 'B', 'C', 'D', 'E', 'I', 'J', 'K', 'M', 'N', 'O', 'P', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'a', 'at', 'b', 'c', 'colon', 'comma', 'copyright', 'd', 'e', 'eight', 'f', 'fi', 'five', 'four', 'g', 'h', 'i', 'k', 'l', 'm', 'n', 'nine', 'o', 'one', 'p', 'parenleft', 'parenright', 'percent', 'period', 'plus', 'q', 'r', 's', 'seven', 'six', 'slash', 'space', 't', 'three', 'two', 'u', 'uniFB03', 'v', 'w', 'x', 'y', 'zero']
+[INFO] 2025-10-27 15:58:26,029 [fontTools.subset] Glyph IDs:   [0, 3, 8, 11, 12, 14, 15, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 35, 36, 37, 38, 39, 40, 44, 45, 46, 48, 49, 50, 51, 54, 55, 56, 57, 58, 59, 60, 68, 69, 70, 71, 72, 73, 74, 75, 76, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 107, 5042, 5044]
+[DEBUG] 2025-10-27 15:58:26,029 [fontTools.ttLib.ttFont] Reading 'MATH' table from disk
+[DEBUG] 2025-10-27 15:58:26,030 [fontTools.ttLib.ttFont] Decompiling 'MATH' table
+[INFO] 2025-10-27 15:58:26,032 [fontTools.subset] Closed glyph list over 'MATH': 73 glyphs after
+[INFO] 2025-10-27 15:58:26,032 [fontTools.subset] Glyph names: ['.notdef', 'A', 'B', 'C', 'D', 'E', 'I', 'J', 'K', 'M', 'N', 'O', 'P', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'a', 'at', 'b', 'c', 'colon', 'comma', 'copyright', 'd', 'e', 'eight', 'f', 'fi', 'five', 'four', 'g', 'h', 'i', 'k', 'l', 'm', 'n', 'nine', 'o', 'one', 'p', 'parenleft', 'parenright', 'percent', 'period', 'plus', 'q', 'r', 's', 'seven', 'six', 'slash', 'space', 't', 'three', 'two', 'u', 'uni239B', 'uni239C', 'uni239D', 'uni239E', 'uni239F', 'uni23A0', 'uniFB03', 'v', 'w', 'x', 'y', 'zero']
+[INFO] 2025-10-27 15:58:26,033 [fontTools.subset] Glyph IDs:   [0, 3, 8, 11, 12, 14, 15, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 35, 36, 37, 38, 39, 40, 44, 45, 46, 48, 49, 50, 51, 54, 55, 56, 57, 58, 59, 60, 68, 69, 70, 71, 72, 73, 74, 75, 76, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 107, 3507, 3508, 3509, 3510, 3511, 3512, 5042, 5044]
+[DEBUG] 2025-10-27 15:58:26,033 [fontTools.subset.timer] Took 0.005s to close glyph list over 'MATH'
+[INFO] 2025-10-27 15:58:26,033 [fontTools.subset] Closing glyph list over 'glyf': 73 glyphs before
+[INFO] 2025-10-27 15:58:26,033 [fontTools.subset] Glyph names: ['.notdef', 'A', 'B', 'C', 'D', 'E', 'I', 'J', 'K', 'M', 'N', 'O', 'P', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'a', 'at', 'b', 'c', 'colon', 'comma', 'copyright', 'd', 'e', 'eight', 'f', 'fi', 'five', 'four', 'g', 'h', 'i', 'k', 'l', 'm', 'n', 'nine', 'o', 'one', 'p', 'parenleft', 'parenright', 'percent', 'period', 'plus', 'q', 'r', 's', 'seven', 'six', 'slash', 'space', 't', 'three', 'two', 'u', 'uni239B', 'uni239C', 'uni239D', 'uni239E', 'uni239F', 'uni23A0', 'uniFB03', 'v', 'w', 'x', 'y', 'zero']
+[INFO] 2025-10-27 15:58:26,034 [fontTools.subset] Glyph IDs:   [0, 3, 8, 11, 12, 14, 15, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 35, 36, 37, 38, 39, 40, 44, 45, 46, 48, 49, 50, 51, 54, 55, 56, 57, 58, 59, 60, 68, 69, 70, 71, 72, 73, 74, 75, 76, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 107, 3507, 3508, 3509, 3510, 3511, 3512, 5042, 5044]
+[INFO] 2025-10-27 15:58:26,034 [fontTools.subset] Closed glyph list over 'glyf': 73 glyphs after
+[INFO] 2025-10-27 15:58:26,034 [fontTools.subset] Glyph names: ['.notdef', 'A', 'B', 'C', 'D', 'E', 'I', 'J', 'K', 'M', 'N', 'O', 'P', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'a', 'at', 'b', 'c', 'colon', 'comma', 'copyright', 'd', 'e', 'eight', 'f', 'fi', 'five', 'four', 'g', 'h', 'i', 'k', 'l', 'm', 'n', 'nine', 'o', 'one', 'p', 'parenleft', 'parenright', 'percent', 'period', 'plus', 'q', 'r', 's', 'seven', 'six', 'slash', 'space', 't', 'three', 'two', 'u', 'uni239B', 'uni239C', 'uni239D', 'uni239E', 'uni239F', 'uni23A0', 'uniFB03', 'v', 'w', 'x', 'y', 'zero']
+[INFO] 2025-10-27 15:58:26,035 [fontTools.subset] Glyph IDs:   [0, 3, 8, 11, 12, 14, 15, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 35, 36, 37, 38, 39, 40, 44, 45, 46, 48, 49, 50, 51, 54, 55, 56, 57, 58, 59, 60, 68, 69, 70, 71, 72, 73, 74, 75, 76, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 107, 3507, 3508, 3509, 3510, 3511, 3512, 5042, 5044]
+[DEBUG] 2025-10-27 15:58:26,035 [fontTools.subset.timer] Took 0.002s to close glyph list over 'glyf'
+[INFO] 2025-10-27 15:58:26,041 [fontTools.subset] Retaining 73 glyphs
+[INFO] 2025-10-27 15:58:26,041 [fontTools.subset] head subsetting not needed
+[INFO] 2025-10-27 15:58:26,042 [fontTools.subset] hhea subsetting not needed
+[INFO] 2025-10-27 15:58:26,042 [fontTools.subset] maxp subsetting not needed
+[INFO] 2025-10-27 15:58:26,042 [fontTools.subset] OS/2 subsetting not needed
+[DEBUG] 2025-10-27 15:58:26,042 [fontTools.ttLib.ttFont] Reading 'hmtx' table from disk
+[DEBUG] 2025-10-27 15:58:26,042 [fontTools.ttLib.ttFont] Decompiling 'hmtx' table
+[DEBUG] 2025-10-27 15:58:26,042 [fontTools.ttLib.ttFont] Reading 'hhea' table from disk
+[DEBUG] 2025-10-27 15:58:26,043 [fontTools.ttLib.ttFont] Decompiling 'hhea' table
+[DEBUG] 2025-10-27 15:58:26,048 [fontTools.subset.timer] Took 0.006s to subset 'hmtx'
+[INFO] 2025-10-27 15:58:26,048 [fontTools.subset] hmtx subsetted
+[DEBUG] 2025-10-27 15:58:26,051 [fontTools.subset.timer] Took 0.003s to subset 'cmap'
+[INFO] 2025-10-27 15:58:26,052 [fontTools.subset] cmap subsetted
+[INFO] 2025-10-27 15:58:26,052 [fontTools.subset] loca subsetting not needed
+[DEBUG] 2025-10-27 15:58:26,052 [fontTools.subset.timer] Took 0.000s to subset 'post'
+[INFO] 2025-10-27 15:58:26,052 [fontTools.subset] post subsetted
+[INFO] 2025-10-27 15:58:26,052 [fontTools.subset] gasp subsetting not needed
+[INFO] 2025-10-27 15:58:26,053 [fontTools.subset] FFTM NOT subset; don't know how to subset
+[DEBUG] 2025-10-27 15:58:26,053 [fontTools.subset.timer] Took 0.000s to subset 'MATH'
+[INFO] 2025-10-27 15:58:26,053 [fontTools.subset] MATH subsetted
+[DEBUG] 2025-10-27 15:58:26,053 [fontTools.ttLib.ttFont] Reading 'GDEF' table from disk
+[DEBUG] 2025-10-27 15:58:26,054 [fontTools.ttLib.ttFont] Decompiling 'GDEF' table
+[DEBUG] 2025-10-27 15:58:26,057 [fontTools.subset.timer] Took 0.004s to subset 'GDEF'
+[INFO] 2025-10-27 15:58:26,057 [fontTools.subset] GDEF subsetted
+[INFO] 2025-10-27 15:58:26,057 [fontTools.subset] name subsetting not needed
+[DEBUG] 2025-10-27 15:58:26,063 [fontTools.subset.timer] Took 0.005s to subset 'glyf'
+[INFO] 2025-10-27 15:58:26,063 [fontTools.subset] glyf subsetted
+[DEBUG] 2025-10-27 15:58:26,064 [fontTools.subset.timer] Took 0.000s to subset GlyphOrder
+[DEBUG] 2025-10-27 15:58:26,064 [fontTools.subset.timer] Took 0.000s to prune 'head'
+[INFO] 2025-10-27 15:58:26,064 [fontTools.subset] head pruned
+[DEBUG] 2025-10-27 15:58:26,065 [fontTools.ttLib.ttFont] Reading 'OS/2' table from disk
+[DEBUG] 2025-10-27 15:58:26,065 [fontTools.ttLib.ttFont] Decompiling 'OS/2' table
+[INFO] 2025-10-27 15:58:26,066 [fontTools.subset] OS/2 Unicode ranges pruned: [0, 1, 62]
+[INFO] 2025-10-27 15:58:26,067 [fontTools.subset] OS/2 CodePage ranges pruned: [0]
+[DEBUG] 2025-10-27 15:58:26,069 [fontTools.subset.timer] Took 0.002s to prune 'glyf'
+[INFO] 2025-10-27 15:58:26,069 [fontTools.subset] glyf pruned
+[DEBUG] 2025-10-27 15:58:26,070 [fontTools.subset.timer] Took 0.000s to prune 'GDEF'
+[INFO] 2025-10-27 15:58:26,070 [fontTools.subset] GDEF pruned
+[DEBUG] 2025-10-27 15:58:26,070 [fontTools.ttLib.ttFont] Reading 'name' table from disk
+[DEBUG] 2025-10-27 15:58:26,071 [fontTools.ttLib.ttFont] Decompiling 'name' table
+[DEBUG] 2025-10-27 15:58:26,071 [fontTools.ttLib.ttFont] Reading 'gasp' table from disk
+[DEBUG] 2025-10-27 15:58:26,072 [fontTools.ttLib.ttFont] Decompiling 'gasp' table
+[DEBUG] 2025-10-27 15:58:26,072 [fontTools.ttLib.ttFont] Reading 'FFTM' table from disk
+[DEBUG] 2025-10-27 15:58:26,072 [fontTools.ttLib.ttFont] Decompiling 'FFTM' table
+[DEBUG] 2025-10-27 15:58:26,073 [fontTools.subset.timer] Took 0.002s to prune 'name'
+[INFO] 2025-10-27 15:58:26,073 [fontTools.subset] name pruned
+[DEBUG] 2025-10-27 15:58:26,073 [fontTools.ttLib.ttFont] Compiling 'glyf' table
+[DEBUG] 2025-10-27 15:58:26,095 [fontTools.ttLib.ttFont] Writing 'glyf' table to disk
+[DEBUG] 2025-10-27 15:58:26,095 [fontTools.ttLib.ttFont] Compiling 'maxp' table
+[DEBUG] 2025-10-27 15:58:26,098 [fontTools.ttLib.ttFont] Writing 'maxp' table to disk
+[DEBUG] 2025-10-27 15:58:26,098 [fontTools.ttLib.ttFont] Compiling 'loca' table
+[DEBUG] 2025-10-27 15:58:26,100 [fontTools.ttLib.ttFont] Writing 'loca' table to disk
+[DEBUG] 2025-10-27 15:58:26,100 [fontTools.ttLib.ttFont] Compiling 'head' table
+[DEBUG] 2025-10-27 15:58:26,101 [fontTools.ttLib.ttFont] Writing 'head' table to disk
+[DEBUG] 2025-10-27 15:58:26,101 [fontTools.ttLib.ttFont] Compiling 'hmtx' table
+[DEBUG] 2025-10-27 15:58:26,107 [fontTools.ttLib.ttFont] Writing 'hmtx' table to disk
+[DEBUG] 2025-10-27 15:58:26,107 [fontTools.ttLib.ttFont] Compiling 'hhea' table
+[DEBUG] 2025-10-27 15:58:26,111 [fontTools.ttLib.ttFont] Writing 'hhea' table to disk
+[DEBUG] 2025-10-27 15:58:26,111 [fontTools.ttLib.ttFont] Compiling 'OS/2' table
+[DEBUG] 2025-10-27 15:58:26,111 [fontTools.ttLib.ttFont] Writing 'OS/2' table to disk
+[DEBUG] 2025-10-27 15:58:26,111 [fontTools.ttLib.ttFont] Compiling 'cmap' table
+[DEBUG] 2025-10-27 15:58:26,112 [fontTools.ttLib.ttFont] Writing 'cmap' table to disk
+[DEBUG] 2025-10-27 15:58:26,112 [fontTools.ttLib.ttFont] Compiling 'name' table
+[DEBUG] 2025-10-27 15:58:26,113 [fontTools.ttLib.ttFont] Writing 'name' table to disk
+[DEBUG] 2025-10-27 15:58:26,113 [fontTools.ttLib.ttFont] Compiling 'post' table
+[DEBUG] 2025-10-27 15:58:26,113 [fontTools.ttLib.ttFont] Writing 'post' table to disk
+[DEBUG] 2025-10-27 15:58:26,113 [fontTools.ttLib.ttFont] Compiling 'gasp' table
+[DEBUG] 2025-10-27 15:58:26,113 [fontTools.ttLib.ttFont] Writing 'gasp' table to disk
+[DEBUG] 2025-10-27 15:58:26,114 [fontTools.ttLib.ttFont] Compiling 'FFTM' table
+[DEBUG] 2025-10-27 15:58:26,114 [fontTools.ttLib.ttFont] Writing 'FFTM' table to disk
+[DEBUG] 2025-10-27 15:58:26,114 [fontTools.ttLib.ttFont] Compiling 'GDEF' table
+[DEBUG] 2025-10-27 15:58:26,115 [fontTools.ttLib.ttFont] Writing 'GDEF' table to disk
+[DEBUG] 2025-10-27 15:58:26,115 [fontTools.ttLib.ttFont] Compiling 'MATH' table
+[DEBUG] 2025-10-27 15:58:26,116 [fontTools.ttLib.ttFont] Writing 'MATH' table to disk
+[DEBUG] 2025-10-27 15:58:26,118 [PIL.PngImagePlugin] STREAM b'IHDR' 16 13
+[DEBUG] 2025-10-27 15:58:26,119 [PIL.PngImagePlugin] STREAM b'IDAT' 41 11750
+[WARNING] 2025-10-27 15:58:47,205 [django.request] Not Found: /favicon.ico
