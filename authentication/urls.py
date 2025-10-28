@@ -54,4 +54,5 @@ urlpatterns = [
     path('cookie-policy/', views.cookie_policy, name='cookie_policy'),
     path('refund-policy/', views.refund_policy, name='refund_policy'),
     path('security/', views.security, name='security'),
+    path('partner-info/', views.partner_info, name='partner_info'),
 ]

@@ -1,0 +1,101 @@
+{% extends 'home/base.html' %}
+{% load static %}
+{% block meta %}
+    <!-- Standard Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="description" content="Join MyICE as a partner and enjoy exclusive benefits. Learn how to become a partner, your rights & obligations, and the support we provide.">
+    <meta name="keywords" content="MyICE partner, partnership program, become a partner, partner benefits, business collaboration, rights and obligations">
+    <meta name="author" content="MyICE Team">
+    <title>Partner with MyICE - Benefits, Rights & Responsibilities</title>
+{% endblock meta %}
+
+{% block content %}
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-12">
+     <section class="bg-indigo-50 py-20">
+    <div class="max-w-4xl mx-auto text-center px-6">
+        <h1 class="text-5xl font-extrabold text-gray-900 mb-6 drop-shadow-sm">Become a Partner</h1>
+        <p class="text-gray-800 text-xl max-w-3xl mx-auto">
+            Join our network of partners and enjoy exclusive benefits, support, and growth opportunities.
+        </p>
+    </div>
+    </section>
+
+<br>
+    <!-- How to Become a Partner -->
+    <section class="mb-16">
+        <h2 class="text-3xl font-semibold text-gray-900 mb-8 text-center">How to Become a Partner</h2>
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="bg-white shadow-lg rounded-xl p-6 hover:shadow-xl transition">
+                <h3 class="text-xl font-semibold mb-3 text-indigo-600">Step 1: Submit Request</h3>
+                <p class="text-gray-700">Fill out the partnership request form on our website with your business details.</p>
+            </div>
+            <div class="bg-white shadow-lg rounded-xl p-6 hover:shadow-xl transition">
+                <h3 class="text-xl font-semibold mb-3 text-indigo-600">Step 2: Document Submission</h3>
+                <p class="text-gray-700">Submit required documents such as business registration, tax info, and any certifications.</p>
+            </div>
+            <div class="bg-white shadow-lg rounded-xl p-6 hover:shadow-xl transition">
+                <h3 class="text-xl font-semibold mb-3 text-indigo-600">Step 3: Review & Approval</h3>
+                <p class="text-gray-700">Our team will review your application within 5 business days and notify you of approval.</p>
+            </div>
+            <div class="bg-white shadow-lg rounded-xl p-6 hover:shadow-xl transition">
+                <h3 class="text-xl font-semibold mb-3 text-indigo-600">Step 4: Welcome</h3>
+                <p class="text-gray-700">Once approved, receive your partner welcome package and access credentials.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits -->
+    <section class="mb-16 bg-indigo-50 py-12 px-6 rounded-xl">
+        <h2 class="text-3xl font-semibold text-gray-900 mb-8 text-center">Benefits of Being a Partner</h2>
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="bg-white rounded-lg shadow p-6 text-center hover:shadow-xl transition">
+                <h3 class="font-semibold text-xl mb-3">Exclusive Tools</h3>
+                <p class="text-gray-700">Access to resources and tools to help grow your business.</p>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6 text-center hover:shadow-xl transition">
+                <h3 class="font-semibold text-xl mb-3">Priority Support</h3>
+                <p class="text-gray-700">Get expert consultation and priority assistance whenever you need it.</p>
+            </div>
+            <div class="bg-white rounded-lg shadow p-6 text-center hover:shadow-xl transition">
+                <h3 class="font-semibold text-xl mb-3">Marketing Boost</h3>
+                <p class="text-gray-700">Promotional support and opportunities to increase visibility.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rights & Obligations -->
+    <section class="mb-16">
+        <h2 class="text-3xl font-semibold text-gray-900 mb-8 text-center">Rights & Obligations</h2>
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="bg-indigo-50 p-6 rounded-xl shadow hover:shadow-lg transition">
+                <h3 class="text-xl font-semibold mb-3 text-indigo-600">Rights</h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-2">
+                    <li>Receive timely payments and commission reports.</li>
+                    <li>Access to training materials and partner portals.</li>
+                    <li>Provide feedback for partnership improvement.</li>
+                </ul>
+            </div>
+            <div class="bg-indigo-50 p-6 rounded-xl shadow hover:shadow-lg transition">
+                <h3 class="text-xl font-semibold mb-3 text-indigo-600">Obligations</h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-2">
+                    <li>Maintain confidentiality of all shared information.</li>
+                    <li>Comply with partnership terms.</li>
+                    <li>Provide accurate business info.</li>
+                    <li>Communicate and collaborate timely.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+ 
+   <!-- Call to Action -->
+    <div class="text-center">
+        <a href="{% url 'partner:request_partner' %}" class="inline-block bg-red-600 text-white font-semibold px-8 py-4 rounded-lg shadow hover:bg-red-700 transition">
+            Join Us Today
+        </a>
+    </div>
+
+</div>
+{% endblock %}

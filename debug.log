@@ -18410,3 +18410,1731 @@ django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'
 [INFO] 2025-10-28 09:05:36,535 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [INFO] 2025-10-28 09:05:36,775 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [WARNING] 2025-10-28 09:05:47,077 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 09:15:10,972 [django.request] Not Found: /request-partner/
+[INFO] 2025-10-28 09:19:04,900 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 09:19:04,989 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 09:19:05,184 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[ERROR] 2025-10-28 09:19:10,583 [django.request] Internal Server Error: /request-partner/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 510, in parse
+    compile_func = self.tags[command]
+KeyError: 'endblock'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/partner/views.py", line 66, in request_partner
+    return render(request, 'partner/request_partner.html', {'form': form})
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 577, in invalid_block_tag
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 14: 'endblock'. Did you forget to register or load this tag?
+[INFO] 2025-10-28 09:20:01,734 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 09:20:01,817 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 09:20:01,875 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-28 09:20:24,006 [django.request] Not Found: /favicon.ico
+[INFO] 2025-10-28 09:22:42,066 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 09:22:42,298 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 09:22:42,301 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[ERROR] 2025-10-28 09:31:13,775 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 09:31:14,578 [django.request] Bad Request: /
+[ERROR] 2025-10-28 09:31:19,832 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 09:31:19,833 [django.request] Bad Request: /favicon.ico
+[WARNING] 2025-10-28 09:32:36,290 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 09:32:36,291 [django.request] Forbidden: /search/
+[ERROR] 2025-10-28 09:34:44,290 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 09:34:44,294 [django.request] Bad Request: /.git/index
+[WARNING] 2025-10-28 09:35:46,994 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 09:35:46,995 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 09:43:57,346 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 09:43:57,347 [django.request] Forbidden: /search/
+[ERROR] 2025-10-28 09:47:28,405 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 09:47:28,406 [django.request] Bad Request: /developmentserver/metadatauploader
+[WARNING] 2025-10-28 09:53:33,616 [django.request] Not Found: /webadmin/script
+[WARNING] 2025-10-28 09:53:33,622 [django.request] Not Found: /index.action
+[WARNING] 2025-10-28 09:53:33,624 [django.request] Not Found: /boardDataWW.php
+[WARNING] 2025-10-28 09:53:33,629 [django.request] Not Found: /wp-content/plugins/wsecure/wsecure-config.php
+[WARNING] 2025-10-28 09:53:33,634 [django.request] Not Found: /RPC2
+[WARNING] 2025-10-28 09:53:33,638 [django.request] Not Found: /_users/org.couchdb.user:poc
+[WARNING] 2025-10-28 09:53:33,648 [django.request] Not Found: /wp-content/plugins/delightful-downloads/assets/vendor/jqueryFileTree/connectors/jqueryFileTree.php
+[WARNING] 2025-10-28 09:53:33,658 [django.request] Not Found: /javax.faces.resource/dynamiccontent.properties.xhtml
+[WARNING] 2025-10-28 09:53:33,823 [django.request] Not Found: /BSW_cxttongr.htm
+[WARNING] 2025-10-28 09:53:41,566 [django.request] Not Found: /solr/admin/cores
+[WARNING] 2025-10-28 09:53:42,573 [django.request] Not Found: /__debugging_center_utils___.php
+[WARNING] 2025-10-28 09:53:42,650 [django.request] Not Found: /wls-wsat/CoordinatorPortType
+[WARNING] 2025-10-28 09:53:43,580 [django.request] Not Found: /fileserver/34dnLtbSaXeQqur92Ww0SIen6Ty.txt
+[WARNING] 2025-10-28 09:53:43,582 [django.request] Not Found: /34dnLwj7LEqKxDITl4PyZyoeM7N.jsp/
+[WARNING] 2025-10-28 09:53:43,582 [django.request] Not Found: /poc.jsp/
+[WARNING] 2025-10-28 09:53:45,611 [django.request] Not Found: /34dnLwj7LEqKxDITl4PyZyoeM7N.jsp
+[WARNING] 2025-10-28 09:53:45,617 [django.request] Not Found: /fileserver/34dnLtbSaXeQqur92Ww0SIen6Ty.txt
+[WARNING] 2025-10-28 09:53:45,620 [django.request] Not Found: /wls-wsat/CoordinatorPortType
+[WARNING] 2025-10-28 09:53:45,623 [django.request] Not Found: /poc.jsp
+[WARNING] 2025-10-28 09:53:45,624 [django.request] Not Found: /__debugging_center_utils___.php
+[WARNING] 2025-10-28 09:56:58,308 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 09:56:58,308 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 09:57:25,203 [django.request] Not Found: /robots.txt
+[INFO] 2025-10-28 10:00:00,797 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:00:00,896 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:00:01,031 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[DEBUG] 2025-10-28 10:00:12,394 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-10-28 10:00:12,397 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-28 02:00:12.394490+00:00
+[INFO] 2025-10-28 10:00:12,397 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36", path_info: "/logout/"}.
+[DEBUG] 2025-10-28 10:00:22,690 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-10-28 10:00:22,691 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-10-28 10:00:22,692 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-10-28 02:00:22.690219+00:00
+[INFO] 2025-10-28 10:00:23,640 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36", path_info: "/login/"}.
+[INFO] 2025-10-28 10:00:23,642 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-28 02:00:22.690219+00:00
+[DEBUG] 2025-10-28 10:00:23,661 [urllib3.connectionpool] Starting new HTTPS connection (1): ipinfo.io:443
+[DEBUG] 2025-10-28 10:00:24,031 [urllib3.connectionpool] https://ipinfo.io:443 "GET /203.217.140.215/json HTTP/1.1" 200 None
+[ERROR] 2025-10-28 10:00:26,405 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 10:00:26,430 [django.request] Bad Request: /
+[INFO] 2025-10-28 10:01:37,436 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:01:37,476 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:01:37,601 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[ERROR] 2025-10-28 10:02:14,162 [django.request] Internal Server Error: /request-partner/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/partner/views.py", line 60, in request_partner
+    return render(request, 'partner/already_requested.html', {'partner': partner})
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: partner/already_requested.html
+[WARNING] 2025-10-28 10:02:29,658 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 10:02:29,659 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 10:03:15,523 [django.request] Not Found: /favicon.ico
+[DEBUG] 2025-10-28 10:03:17,854 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-10-28 10:03:17,856 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-10-28 10:03:17,856 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-10-28 02:03:17.854792+00:00
+[INFO] 2025-10-28 10:03:19,039 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:144.0) Gecko/20100101 Firefox/144.0", path_info: "/kuruk/login/"}.
+[INFO] 2025-10-28 10:03:19,044 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-28 02:03:17.854792+00:00
+[WARNING] 2025-10-28 10:03:20,700 [django.request] Not Found: /favicon.ico
+[ERROR] 2025-10-28 10:04:15,836 [django.request] Internal Server Error: /request-partner/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/partner/views.py", line 57, in request_partner
+    return redirect('authentication:dashboard')
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 51, in redirect
+    resolve_url(to, *args, **kwargs),
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 184, in resolve_url
+    return reverse(to, args=args, kwargs=kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'dashboard' not found. 'dashboard' is not a valid view function or pattern name.
+[ERROR] 2025-10-28 10:04:17,136 [django.request] Internal Server Error: /request-partner/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/partner/views.py", line 57, in request_partner
+    return redirect('authentication:dashboard')
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 51, in redirect
+    resolve_url(to, *args, **kwargs),
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 184, in resolve_url
+    return reverse(to, args=args, kwargs=kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'dashboard' not found. 'dashboard' is not a valid view function or pattern name.
+[INFO] 2025-10-28 10:05:00,815 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:05:01,002 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:05:01,086 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:06:07,373 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:06:07,505 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:06:07,529 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[ERROR] 2025-10-28 10:06:40,805 [django.request] Internal Server Error: /request-partner/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/partner/views.py", line 60, in request_partner
+    return render(request, 'partner/already_requested.html', {'partner': partner})
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'dashboard' not found. 'dashboard' is not a valid view function or pattern name.
+[INFO] 2025-10-28 10:06:59,992 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:07:00,024 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:07:00,190 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[ERROR] 2025-10-28 10:07:03,411 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 10:07:03,414 [django.request] Bad Request: /.env
+[INFO] 2025-10-28 10:07:34,996 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:07:35,095 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:07:35,117 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[ERROR] 2025-10-28 10:10:03,344 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 10:10:04,144 [django.request] Bad Request: /.env
+[INFO] 2025-10-28 10:17:37,026 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:17:37,080 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:17:37,119 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[DEBUG] 2025-10-28 10:18:09,868 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-10-28 10:18:09,872 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-28 02:18:09.868367+00:00
+[INFO] 2025-10-28 10:18:09,872 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36", path_info: "/logout/"}.
+[ERROR] 2025-10-28 10:19:19,069 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 10:19:19,072 [django.request] Bad Request: /
+[DEBUG] 2025-10-28 10:19:56,042 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-10-28 10:19:56,043 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-10-28 10:19:56,044 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-10-28 02:19:56.041962+00:00
+[INFO] 2025-10-28 10:19:57,038 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36", path_info: "/login/"}.
+[INFO] 2025-10-28 10:19:57,040 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-28 02:19:56.041962+00:00
+[DEBUG] 2025-10-28 10:19:57,055 [urllib3.connectionpool] Starting new HTTPS connection (1): ipinfo.io:443
+[DEBUG] 2025-10-28 10:19:57,339 [urllib3.connectionpool] https://ipinfo.io:443 "GET /203.217.140.215/json HTTP/1.1" 200 None
+[INFO] 2025-10-28 10:21:35,770 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:21:35,941 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:21:35,953 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-28 10:22:00,459 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 10:22:00,459 [django.request] Forbidden: /search/
+[INFO] 2025-10-28 10:22:20,154 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:22:20,190 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:22:20,219 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[ERROR] 2025-10-28 10:22:22,312 [django.request] Internal Server Error: /request-partner/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/partner/views.py", line 76, in request_partner
+    return render(request, 'partner/request_partner.html', {'form': form})
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 489, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 487, in parse
+    filter_expression = self.compile_filter(token.contents)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 705, in __init__
+    filter_func = parser.find_filter(filter_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 615, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'add_class'
+[WARNING] 2025-10-28 10:22:30,968 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 10:22:30,969 [django.request] Forbidden: /search/
+[INFO] 2025-10-28 10:24:04,854 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:24:04,979 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:24:05,006 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:25:55,558 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:25:55,789 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:25:55,907 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[ERROR] 2025-10-28 10:25:58,229 [django.request] Internal Server Error: /request-partner/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/partner/views.py", line 76, in request_partner
+    return render(request, 'partner/request_partner.html', {'form': form})
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 489, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 487, in parse
+    filter_expression = self.compile_filter(token.contents)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 705, in __init__
+    filter_func = parser.find_filter(filter_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 615, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'add_class'
+[WARNING] 2025-10-28 10:26:51,782 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 10:26:51,783 [django.request] Forbidden: /search/
+[INFO] 2025-10-28 10:27:33,537 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:27:33,556 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:27:33,628 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:28:28,430 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:28:28,454 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:28:28,511 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:28:41,237 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[ERROR] 2025-10-28 10:28:41,272 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[INFO] 2025-10-28 10:28:41,278 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:28:41,462 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-28 10:28:43,352 [django.request] Bad Request: /_profiler/phpinfo
+[INFO] 2025-10-28 10:29:20,037 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:29:20,060 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:29:20,096 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:30:53,949 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:30:54,082 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:30:54,133 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:31:51,543 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:31:51,562 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:31:51,596 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:32:56,312 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:32:56,536 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:32:56,588 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[ERROR] 2025-10-28 10:32:58,570 [django.request] Internal Server Error: /request-partner/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/partner/views.py", line 76, in request_partner
+    return render(request, 'partner/request_partner.html', {'form': form})
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 970, in do_if
+    nodelist = parser.parse(("elif", "else", "endif"))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 489, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 487, in parse
+    filter_expression = self.compile_filter(token.contents)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 710, in __init__
+    raise TemplateSyntaxError(
+django.template.exceptions.TemplateSyntaxError: Could not parse the remainder: '(attrs={"class":"w-full text-gray-700"})' from 'field.as_widget(attrs={"class":"w-full text-gray-700"})'
+[WARNING] 2025-10-28 10:33:02,437 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 10:33:02,439 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 10:33:12,144 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 10:33:12,145 [django.request] Forbidden: /search/
+[INFO] 2025-10-28 10:34:25,211 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:34:25,366 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:34:25,450 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:38:17,294 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:38:17,419 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:38:17,494 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-28 10:39:56,178 [django.request] Not Found: /shell.php
+[WARNING] 2025-10-28 10:39:57,308 [django.request] Not Found: /wso.php
+[WARNING] 2025-10-28 10:39:58,332 [django.request] Not Found: /xleet.php
+[WARNING] 2025-10-28 10:39:58,632 [django.request] Not Found: /admin.php
+[WARNING] 2025-10-28 10:39:58,849 [django.request] Not Found: /xleet-shell.php
+[WARNING] 2025-10-28 10:39:58,865 [django.request] Not Found: /admin-header.php
+[WARNING] 2025-10-28 10:39:59,078 [django.request] Not Found: /profile.php
+[WARNING] 2025-10-28 10:39:59,110 [django.request] Not Found: /options-reading.php
+[WARNING] 2025-10-28 10:40:02,499 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 10:40:02,500 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 10:40:39,865 [django.request] Not Found: /robots.txt
+[INFO] 2025-10-28 10:40:45,542 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:40:45,601 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:40:45,630 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:42:13,494 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:42:13,553 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:42:13,627 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:42:36,597 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:42:36,660 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:42:36,752 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:42:37,604 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 10:42:37,608 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 10:42:37,608 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 10:42:37,610 [partner.views] Rendering request_partner.html
+[ERROR] 2025-10-28 10:42:45,091 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 10:42:45,094 [django.request] Bad Request: /owa/auth/x.js
+[INFO] 2025-10-28 10:43:11,428 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:43:12,009 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:43:12,103 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:43:12,633 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 10:43:12,636 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 10:43:12,636 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 10:43:12,638 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 10:43:15,592 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 10:43:15,596 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 10:43:15,597 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 10:43:15,597 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 10:43:17,285 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 10:43:17,287 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 10:43:17,287 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 10:43:17,288 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 10:43:45,307 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:43:45,456 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:43:45,617 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:43:46,376 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 10:43:46,378 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 10:43:46,378 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 10:43:46,379 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 10:45:10,046 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:45:10,206 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:45:10,209 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:45:10,972 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 10:45:10,974 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 10:45:10,975 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 10:45:10,976 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 10:47:21,899 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 10:47:21,900 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 10:47:21,900 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 10:47:21,902 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 10:48:35,657 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:48:35,865 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:48:35,879 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:48:46,017 [partner.views] Request method: GET, User: AnonymousUser, Authenticated: False
+[INFO] 2025-10-28 10:48:46,017 [partner.views] User not authenticated, redirecting to login
+[INFO] 2025-10-28 10:50:42,834 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:50:43,114 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:50:43,132 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:50:46,416 [partner.views] Request method: GET, User: admin, Authenticated: True
+[INFO] 2025-10-28 10:50:46,417 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 10:50:46,418 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 10:50:46,419 [partner.views] Rendering request_partner.html
+[ERROR] 2025-10-28 10:51:11,325 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 10:51:11,328 [django.request] Bad Request: /
+[INFO] 2025-10-28 10:51:49,745 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:51:49,926 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:51:49,961 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:51:50,665 [partner.views] Request method: GET, User: admin, Authenticated: True
+[INFO] 2025-10-28 10:51:50,667 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 10:51:50,668 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 10:51:50,669 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 10:52:39,220 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:52:39,352 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:52:39,372 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:52:40,151 [partner.views] Request method: GET, User: admin, Authenticated: True
+[INFO] 2025-10-28 10:52:40,154 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 10:52:40,155 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 10:52:40,156 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 10:52:51,337 [partner.views] Request method: GET, User: admin, Authenticated: True
+[INFO] 2025-10-28 10:52:51,340 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 10:52:51,340 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 10:52:51,342 [partner.views] Rendering request_partner.html
+[WARNING] 2025-10-28 10:54:21,406 [django.request] Not Found: /oai
+[WARNING] 2025-10-28 10:54:36,595 [django.request] Not Found: /index.php/oai
+[WARNING] 2025-10-28 10:54:48,207 [django.request] Not Found: /index.php/index/oai
+[WARNING] 2025-10-28 10:55:18,584 [django.request] Not Found: /oai
+[WARNING] 2025-10-28 10:55:43,514 [django.request] Not Found: /index.php/oai
+[WARNING] 2025-10-28 10:56:08,540 [django.request] Not Found: /index.php/index/oai
+[WARNING] 2025-10-28 10:56:16,599 [django.request] Not Found: /invoker/JMXInvokerServlet/
+[WARNING] 2025-10-28 10:56:18,592 [django.request] Not Found: /invoker/EJBInvokerServlet/
+[WARNING] 2025-10-28 10:56:20,573 [django.request] Not Found: /invoker/readonly
+[WARNING] 2025-10-28 10:56:20,607 [django.request] Not Found: /wp-admin/admin-ajax.php
+[WARNING] 2025-10-28 10:56:22,603 [django.request] Not Found: /wp-content/uploads/post_files/34dnlyug4uiitbtczvx5iiegmh9.php
+[WARNING] 2025-10-28 10:56:24,574 [django.request] Not Found: /wp-admin/admin-ajax.php
+[WARNING] 2025-10-28 10:56:26,609 [django.request] Not Found: /wp-content/uploads/user_uploads/34dnlyug4uiitbtczvx5iiegmh9.php
+[ERROR] 2025-10-28 10:56:51,230 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 10:56:51,233 [django.request] Bad Request: /dqgqoeCXckuwPtxov
+[ERROR] 2025-10-28 10:56:51,623 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 10:56:51,625 [django.request] Bad Request: /dqgqoeCXckuwPtxov
+[INFO] 2025-10-28 10:58:12,782 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:58:23,891 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:58:33,323 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:58:33,613 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 10:58:33,647 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 11:04:51,890 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 11:04:52,184 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 11:04:52,197 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 11:04:54,170 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 11:04:54,172 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 11:04:54,175 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 11:04:54,176 [partner.views] Rendering request_partner.html
+[ERROR] 2025-10-28 11:05:08,782 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 11:05:09,537 [django.request] Bad Request: /favicon.ico
+[INFO] 2025-10-28 11:05:37,687 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 11:05:37,689 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 11:05:37,689 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 11:05:37,690 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 11:06:27,186 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 11:06:27,278 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 11:06:27,296 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 11:06:28,052 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 11:06:28,055 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 11:06:28,055 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 11:06:28,056 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 11:06:39,536 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 11:06:39,538 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 11:06:39,538 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 11:06:39,539 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 11:06:49,387 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 11:06:49,390 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 11:06:49,390 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 11:06:49,391 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 11:07:09,929 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 11:07:10,123 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 11:07:10,247 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 11:07:11,015 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 11:07:11,017 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 11:07:11,017 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 11:07:11,019 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 11:09:18,830 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 11:09:18,975 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 11:09:19,008 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 11:09:19,795 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 11:09:19,798 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 11:09:19,798 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 11:09:19,800 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 11:10:36,304 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 11:10:36,383 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 11:10:36,441 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 11:10:43,151 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 11:10:43,154 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 11:10:43,154 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 11:10:43,155 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 11:11:45,794 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 11:11:45,804 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 11:11:45,947 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 11:11:46,755 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 11:11:46,757 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 11:11:46,758 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 11:11:46,759 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 11:12:11,377 [partner.views] Request method: GET, User: AnonymousUser, Authenticated: False
+[INFO] 2025-10-28 11:12:11,377 [partner.views] User not authenticated, redirecting to login
+[INFO] 2025-10-28 11:13:33,606 [partner.views] Request method: POST, User: learn1, Authenticated: True
+[INFO] 2025-10-28 11:13:33,608 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 11:13:33,608 [partner.views] POST request, validating form
+[INFO] 2025-10-28 11:15:30,744 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 11:15:30,863 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 11:15:30,955 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 11:15:35,005 [partner.views] Request method: POST, User: learn1, Authenticated: True
+[INFO] 2025-10-28 11:15:35,008 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 11:15:35,008 [partner.views] POST request, validating form
+[INFO] 2025-10-28 11:15:35,034 [partner.views] Form invalid: <ul class="errorlist"><li>name<ul class="errorlist" id="id_name_error"><li>Select a valid choice. That choice is not one of the available choices.</li></ul></li><li>logo<ul class="errorlist" id="id_logo_error"><li>Ensure this filename has at most 100 characters (it has 104).</li></ul></li></ul>
+[INFO] 2025-10-28 11:15:35,034 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 11:15:56,432 [partner.views] Request method: POST, User: learn1, Authenticated: True
+[INFO] 2025-10-28 11:15:56,434 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 11:15:56,434 [partner.views] POST request, validating form
+[DEBUG] 2025-10-28 11:15:56,443 [PIL.PngImagePlugin] STREAM b'IHDR' 16 13
+[DEBUG] 2025-10-28 11:15:56,443 [PIL.PngImagePlugin] STREAM b'gAMA' 41 4
+[DEBUG] 2025-10-28 11:15:56,443 [PIL.PngImagePlugin] STREAM b'cHRM' 57 32
+[DEBUG] 2025-10-28 11:15:56,444 [PIL.PngImagePlugin] STREAM b'bKGD' 101 6
+[DEBUG] 2025-10-28 11:15:56,444 [PIL.PngImagePlugin] b'bKGD' 101 6 (unknown)
+[DEBUG] 2025-10-28 11:15:56,444 [PIL.PngImagePlugin] STREAM b'tIME' 119 7
+[DEBUG] 2025-10-28 11:15:56,446 [PIL.PngImagePlugin] b'tIME' 119 7 (unknown)
+[DEBUG] 2025-10-28 11:15:56,446 [PIL.PngImagePlugin] STREAM b'IDAT' 138 32768
+[DEBUG] 2025-10-28 11:15:56,450 [PIL.Image] Importing BlpImagePlugin
+[DEBUG] 2025-10-28 11:15:56,451 [PIL.Image] Importing BmpImagePlugin
+[DEBUG] 2025-10-28 11:15:56,451 [PIL.Image] Importing BufrStubImagePlugin
+[DEBUG] 2025-10-28 11:15:56,452 [PIL.Image] Importing CurImagePlugin
+[DEBUG] 2025-10-28 11:15:56,452 [PIL.Image] Importing DcxImagePlugin
+[DEBUG] 2025-10-28 11:15:56,453 [PIL.Image] Importing DdsImagePlugin
+[DEBUG] 2025-10-28 11:15:56,458 [PIL.Image] Importing EpsImagePlugin
+[DEBUG] 2025-10-28 11:15:56,460 [PIL.Image] Importing FitsImagePlugin
+[DEBUG] 2025-10-28 11:15:56,461 [PIL.Image] Importing FliImagePlugin
+[DEBUG] 2025-10-28 11:15:56,461 [PIL.Image] Importing FpxImagePlugin
+[DEBUG] 2025-10-28 11:15:56,464 [PIL.Image] Image: failed to import FpxImagePlugin: No module named 'olefile'
+[DEBUG] 2025-10-28 11:15:56,464 [PIL.Image] Importing FtexImagePlugin
+[DEBUG] 2025-10-28 11:15:56,465 [PIL.Image] Importing GbrImagePlugin
+[DEBUG] 2025-10-28 11:15:56,465 [PIL.Image] Importing GifImagePlugin
+[DEBUG] 2025-10-28 11:15:56,466 [PIL.Image] Importing GribStubImagePlugin
+[DEBUG] 2025-10-28 11:15:56,466 [PIL.Image] Importing Hdf5StubImagePlugin
+[DEBUG] 2025-10-28 11:15:56,467 [PIL.Image] Importing IcnsImagePlugin
+[DEBUG] 2025-10-28 11:15:56,469 [PIL.Image] Importing IcoImagePlugin
+[DEBUG] 2025-10-28 11:15:56,470 [PIL.Image] Importing ImImagePlugin
+[DEBUG] 2025-10-28 11:15:56,471 [PIL.Image] Importing ImtImagePlugin
+[DEBUG] 2025-10-28 11:15:56,472 [PIL.Image] Importing IptcImagePlugin
+[DEBUG] 2025-10-28 11:15:56,472 [PIL.Image] Importing JpegImagePlugin
+[DEBUG] 2025-10-28 11:15:56,472 [PIL.Image] Importing Jpeg2KImagePlugin
+[DEBUG] 2025-10-28 11:15:56,473 [PIL.Image] Importing McIdasImagePlugin
+[DEBUG] 2025-10-28 11:15:56,473 [PIL.Image] Importing MicImagePlugin
+[DEBUG] 2025-10-28 11:15:56,474 [PIL.Image] Image: failed to import MicImagePlugin: No module named 'olefile'
+[DEBUG] 2025-10-28 11:15:56,474 [PIL.Image] Importing MpegImagePlugin
+[DEBUG] 2025-10-28 11:15:56,474 [PIL.Image] Importing MpoImagePlugin
+[DEBUG] 2025-10-28 11:15:56,476 [PIL.Image] Importing MspImagePlugin
+[DEBUG] 2025-10-28 11:15:56,476 [PIL.Image] Importing PalmImagePlugin
+[DEBUG] 2025-10-28 11:15:56,478 [PIL.Image] Importing PcdImagePlugin
+[DEBUG] 2025-10-28 11:15:56,478 [PIL.Image] Importing PcxImagePlugin
+[DEBUG] 2025-10-28 11:15:56,479 [PIL.Image] Importing PdfImagePlugin
+[DEBUG] 2025-10-28 11:15:56,487 [PIL.Image] Importing PixarImagePlugin
+[DEBUG] 2025-10-28 11:15:56,487 [PIL.Image] Importing PngImagePlugin
+[DEBUG] 2025-10-28 11:15:56,487 [PIL.Image] Importing PpmImagePlugin
+[DEBUG] 2025-10-28 11:15:56,488 [PIL.Image] Importing PsdImagePlugin
+[DEBUG] 2025-10-28 11:15:56,488 [PIL.Image] Importing QoiImagePlugin
+[DEBUG] 2025-10-28 11:15:56,489 [PIL.Image] Importing SgiImagePlugin
+[DEBUG] 2025-10-28 11:15:56,489 [PIL.Image] Importing SpiderImagePlugin
+[DEBUG] 2025-10-28 11:15:56,490 [PIL.Image] Importing SunImagePlugin
+[DEBUG] 2025-10-28 11:15:56,490 [PIL.Image] Importing TgaImagePlugin
+[DEBUG] 2025-10-28 11:15:56,491 [PIL.Image] Importing TiffImagePlugin
+[DEBUG] 2025-10-28 11:15:56,491 [PIL.Image] Importing WebPImagePlugin
+[DEBUG] 2025-10-28 11:15:56,493 [PIL.Image] Importing WmfImagePlugin
+[DEBUG] 2025-10-28 11:15:56,493 [PIL.Image] Importing XbmImagePlugin
+[DEBUG] 2025-10-28 11:15:56,497 [PIL.Image] Importing XpmImagePlugin
+[DEBUG] 2025-10-28 11:15:56,498 [PIL.Image] Importing XVThumbImagePlugin
+[INFO] 2025-10-28 11:15:56,500 [partner.views] Form invalid: <ul class="errorlist"><li>name<ul class="errorlist" id="id_name_error"><li>Select a valid choice. That choice is not one of the available choices.</li></ul></li></ul>
+[INFO] 2025-10-28 11:15:56,500 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 11:16:33,306 [partner.views] Request method: POST, User: learn1, Authenticated: True
+[INFO] 2025-10-28 11:16:33,308 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 11:16:33,308 [partner.views] POST request, validating form
+[INFO] 2025-10-28 11:16:33,310 [partner.views] Form invalid: <ul class="errorlist"><li>name<ul class="errorlist" id="id_name_error"><li>Select a valid choice. That choice is not one of the available choices.</li></ul></li></ul>
+[INFO] 2025-10-28 11:16:33,310 [partner.views] Rendering request_partner.html
+[WARNING] 2025-10-28 11:16:36,603 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 11:16:36,604 [django.request] Forbidden: /search/
+[INFO] 2025-10-28 11:29:30,645 [partner.views] Request method: GET, User: AnonymousUser, Authenticated: False
+[INFO] 2025-10-28 11:29:30,645 [partner.views] User not authenticated, redirecting to login
+[WARNING] 2025-10-28 11:33:17,451 [django.request] Not Found: /maint/modules/home/index.php
+[WARNING] 2025-10-28 11:40:19,909 [django.request] Not Found: /solr/admin/cores
+[WARNING] 2025-10-28 11:40:19,913 [django.request] Not Found: /wp-admin/admin-post.php
+[WARNING] 2025-10-28 11:40:19,915 [django.request] Not Found: /crowd/admin/uploadplugin.action
+[WARNING] 2025-10-28 11:40:19,917 [django.request] Not Found: /webtools/control/xmlrpc
+[WARNING] 2025-10-28 11:40:19,922 [django.request] Not Found: /solr/admin/cores
+[WARNING] 2025-10-28 11:40:19,928 [django.request] Not Found: /user/register
+[WARNING] 2025-10-28 11:40:19,936 [django.request] Not Found: /umotion/modules/reporting/track_import_export.php
+[WARNING] 2025-10-28 11:40:19,938 [django.request] Not Found: /checkValid
+[WARNING] 2025-10-28 11:40:19,947 [django.request] Not Found: /CMSPages/Staging/SyncServer.asmx/ProcessSynchronizationTaskData
+[WARNING] 2025-10-28 11:40:20,381 [django.request] Not Found: /wp-login.php
+[WARNING] 2025-10-28 11:40:20,388 [django.request] Not Found: /crowd/plugins/servlet/exp
+[WARNING] 2025-10-28 11:40:21,208 [django.request] Not Found: /Collector/diagnostics/trace_route
+[WARNING] 2025-10-28 11:40:21,807 [django.request] Not Found: /Collector/diagnostics/ping
+[INFO] 2025-10-28 11:41:02,352 [partner.views] Request method: GET, User: AnonymousUser, Authenticated: False
+[INFO] 2025-10-28 11:41:02,352 [partner.views] User not authenticated, redirecting to login
+[WARNING] 2025-10-28 11:42:48,595 [django.request] Not Found: /rest
+[ERROR] 2025-10-28 11:44:47,296 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 11:44:47,298 [django.request] Bad Request: /odinhttpcall1761626686
+[ERROR] 2025-10-28 11:44:47,310 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 11:44:47,311 [django.request] Bad Request: /sdk
+[ERROR] 2025-10-28 11:44:48,275 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 11:44:48,276 [django.request] Bad Request: /HNAP1
+[ERROR] 2025-10-28 11:44:48,327 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 11:44:48,328 [django.request] Bad Request: /evox/about
+[ERROR] 2025-10-28 11:44:50,595 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 11:44:50,596 [django.request] Bad Request: /
+[ERROR] 2025-10-28 11:44:51,374 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 11:44:51,375 [django.request] Bad Request: /
+[ERROR] 2025-10-28 11:44:52,125 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 11:44:52,126 [django.request] Bad Request: /
+[ERROR] 2025-10-28 11:44:52,760 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 11:44:52,761 [django.request] Bad Request: /favicon.ico
+[ERROR] 2025-10-28 11:44:53,433 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 11:44:53,434 [django.request] Bad Request: /
+[ERROR] 2025-10-28 11:54:08,512 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 11:54:08,513 [django.request] Bad Request: /actuator/gateway/routes
+[ERROR] 2025-10-28 11:54:50,689 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 11:54:50,690 [django.request] Bad Request: /
+[WARNING] 2025-10-28 11:57:30,007 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 11:57:30,008 [django.request] Forbidden: /search/
+[INFO] 2025-10-28 12:07:24,378 [partner.views] Request method: GET, User: AnonymousUser, Authenticated: False
+[INFO] 2025-10-28 12:07:24,379 [partner.views] User not authenticated, redirecting to login
+[ERROR] 2025-10-28 12:12:48,706 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 12:12:48,707 [django.request] Bad Request: /.git/config
+[ERROR] 2025-10-28 12:14:59,653 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 12:14:59,653 [django.request] Bad Request: /.git/config
+[ERROR] 2025-10-28 12:16:07,804 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 12:16:07,805 [django.request] Bad Request: /.git/config
+[WARNING] 2025-10-28 12:18:00,280 [django.request] Not Found: /wp-admin/admin-ajax.php
+[WARNING] 2025-10-28 12:18:00,285 [django.request] Not Found: /wp-admin/options-general.php
+[WARNING] 2025-10-28 12:18:24,265 [django.request] Not Found: /wp-content/plugins/showbizpro/temp/update_extract/69uXl.php
+[INFO] 2025-10-28 12:21:19,016 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:21:19,162 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:21:19,214 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:21:21,920 [partner.views] Request method: POST, User: learn1, Authenticated: True
+[INFO] 2025-10-28 12:21:21,923 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 12:21:21,923 [partner.views] POST request, validating form
+[INFO] 2025-10-28 12:21:21,951 [partner.views] Form invalid: <ul class="errorlist"><li>name<ul class="errorlist" id="id_name_error"><li>Select a valid choice. That choice is not one of the available choices.</li></ul></li></ul>
+[INFO] 2025-10-28 12:21:21,951 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 12:21:33,142 [partner.views] Request method: POST, User: learn1, Authenticated: True
+[INFO] 2025-10-28 12:21:33,143 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 12:21:33,144 [partner.views] POST request, validating form
+[INFO] 2025-10-28 12:21:33,147 [partner.views] Form valid, saving...
+[INFO] 2025-10-28 12:21:33,179 [partner.views] Partner saved: 15
+[INFO] 2025-10-28 12:21:49,355 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 12:21:49,359 [partner.views] Partner found: 15, Verified: False
+[INFO] 2025-10-28 12:21:49,359 [partner.views] Rendering already_requested.html
+[INFO] 2025-10-28 12:22:04,301 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 12:22:04,302 [partner.views] Partner found: 15, Verified: False
+[INFO] 2025-10-28 12:22:04,302 [partner.views] Rendering already_requested.html
+[DEBUG] 2025-10-28 12:22:34,520 [courses.views] Total instructors for partner 15: 0
+[WARNING] 2025-10-28 12:22:55,827 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 12:23:09,859 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 12:23:18,740 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 12:23:33,471 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 12:23:36,678 [django.request] Not Found: /favicon.ico
+[INFO] 2025-10-28 12:23:39,774 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 12:23:39,775 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 12:23:39,775 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 12:23:39,776 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 12:24:23,875 [partner.views] Request method: POST, User: learn1, Authenticated: True
+[INFO] 2025-10-28 12:24:23,877 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 12:24:23,877 [partner.views] POST request, validating form
+[DEBUG] 2025-10-28 12:24:23,887 [PIL.PngImagePlugin] STREAM b'IHDR' 16 13
+[DEBUG] 2025-10-28 12:24:23,887 [PIL.PngImagePlugin] STREAM b'gAMA' 41 4
+[DEBUG] 2025-10-28 12:24:23,887 [PIL.PngImagePlugin] STREAM b'cHRM' 57 32
+[DEBUG] 2025-10-28 12:24:23,888 [PIL.PngImagePlugin] STREAM b'bKGD' 101 6
+[DEBUG] 2025-10-28 12:24:23,888 [PIL.PngImagePlugin] b'bKGD' 101 6 (unknown)
+[DEBUG] 2025-10-28 12:24:23,888 [PIL.PngImagePlugin] STREAM b'tIME' 119 7
+[DEBUG] 2025-10-28 12:24:23,889 [PIL.PngImagePlugin] b'tIME' 119 7 (unknown)
+[DEBUG] 2025-10-28 12:24:23,889 [PIL.PngImagePlugin] STREAM b'IDAT' 138 32768
+[DEBUG] 2025-10-28 12:24:23,894 [PIL.Image] Importing BlpImagePlugin
+[DEBUG] 2025-10-28 12:24:23,895 [PIL.Image] Importing BmpImagePlugin
+[DEBUG] 2025-10-28 12:24:23,895 [PIL.Image] Importing BufrStubImagePlugin
+[DEBUG] 2025-10-28 12:24:23,896 [PIL.Image] Importing CurImagePlugin
+[DEBUG] 2025-10-28 12:24:23,896 [PIL.Image] Importing DcxImagePlugin
+[DEBUG] 2025-10-28 12:24:23,897 [PIL.Image] Importing DdsImagePlugin
+[DEBUG] 2025-10-28 12:24:23,904 [PIL.Image] Importing EpsImagePlugin
+[DEBUG] 2025-10-28 12:24:23,905 [PIL.Image] Importing FitsImagePlugin
+[DEBUG] 2025-10-28 12:24:23,905 [PIL.Image] Importing FliImagePlugin
+[DEBUG] 2025-10-28 12:24:23,906 [PIL.Image] Importing FpxImagePlugin
+[DEBUG] 2025-10-28 12:24:23,907 [PIL.Image] Image: failed to import FpxImagePlugin: No module named 'olefile'
+[DEBUG] 2025-10-28 12:24:23,907 [PIL.Image] Importing FtexImagePlugin
+[DEBUG] 2025-10-28 12:24:23,908 [PIL.Image] Importing GbrImagePlugin
+[DEBUG] 2025-10-28 12:24:23,908 [PIL.Image] Importing GifImagePlugin
+[DEBUG] 2025-10-28 12:24:23,909 [PIL.Image] Importing GribStubImagePlugin
+[DEBUG] 2025-10-28 12:24:23,909 [PIL.Image] Importing Hdf5StubImagePlugin
+[DEBUG] 2025-10-28 12:24:23,910 [PIL.Image] Importing IcnsImagePlugin
+[DEBUG] 2025-10-28 12:24:23,911 [PIL.Image] Importing IcoImagePlugin
+[DEBUG] 2025-10-28 12:24:23,913 [PIL.Image] Importing ImImagePlugin
+[DEBUG] 2025-10-28 12:24:23,916 [PIL.Image] Importing ImtImagePlugin
+[DEBUG] 2025-10-28 12:24:23,917 [PIL.Image] Importing IptcImagePlugin
+[DEBUG] 2025-10-28 12:24:23,917 [PIL.Image] Importing JpegImagePlugin
+[DEBUG] 2025-10-28 12:24:23,917 [PIL.Image] Importing Jpeg2KImagePlugin
+[DEBUG] 2025-10-28 12:24:23,918 [PIL.Image] Importing McIdasImagePlugin
+[DEBUG] 2025-10-28 12:24:23,918 [PIL.Image] Importing MicImagePlugin
+[DEBUG] 2025-10-28 12:24:23,919 [PIL.Image] Image: failed to import MicImagePlugin: No module named 'olefile'
+[DEBUG] 2025-10-28 12:24:23,919 [PIL.Image] Importing MpegImagePlugin
+[DEBUG] 2025-10-28 12:24:23,919 [PIL.Image] Importing MpoImagePlugin
+[DEBUG] 2025-10-28 12:24:23,922 [PIL.Image] Importing MspImagePlugin
+[DEBUG] 2025-10-28 12:24:23,923 [PIL.Image] Importing PalmImagePlugin
+[DEBUG] 2025-10-28 12:24:23,924 [PIL.Image] Importing PcdImagePlugin
+[DEBUG] 2025-10-28 12:24:23,924 [PIL.Image] Importing PcxImagePlugin
+[DEBUG] 2025-10-28 12:24:23,925 [PIL.Image] Importing PdfImagePlugin
+[DEBUG] 2025-10-28 12:24:23,937 [PIL.Image] Importing PixarImagePlugin
+[DEBUG] 2025-10-28 12:24:23,937 [PIL.Image] Importing PngImagePlugin
+[DEBUG] 2025-10-28 12:24:23,937 [PIL.Image] Importing PpmImagePlugin
+[DEBUG] 2025-10-28 12:24:23,938 [PIL.Image] Importing PsdImagePlugin
+[DEBUG] 2025-10-28 12:24:23,938 [PIL.Image] Importing QoiImagePlugin
+[DEBUG] 2025-10-28 12:24:23,939 [PIL.Image] Importing SgiImagePlugin
+[DEBUG] 2025-10-28 12:24:23,939 [PIL.Image] Importing SpiderImagePlugin
+[DEBUG] 2025-10-28 12:24:23,940 [PIL.Image] Importing SunImagePlugin
+[DEBUG] 2025-10-28 12:24:23,940 [PIL.Image] Importing TgaImagePlugin
+[DEBUG] 2025-10-28 12:24:23,941 [PIL.Image] Importing TiffImagePlugin
+[DEBUG] 2025-10-28 12:24:23,941 [PIL.Image] Importing WebPImagePlugin
+[DEBUG] 2025-10-28 12:24:23,943 [PIL.Image] Importing WmfImagePlugin
+[DEBUG] 2025-10-28 12:24:23,943 [PIL.Image] Importing XbmImagePlugin
+[DEBUG] 2025-10-28 12:24:23,944 [PIL.Image] Importing XpmImagePlugin
+[DEBUG] 2025-10-28 12:24:23,945 [PIL.Image] Importing XVThumbImagePlugin
+[INFO] 2025-10-28 12:24:23,948 [partner.views] Form valid, saving...
+[INFO] 2025-10-28 12:24:23,983 [partner.views] Partner saved: 16
+[WARNING] 2025-10-28 12:24:30,105 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 12:24:33,450 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 12:25:09,979 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 12:25:12,371 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 12:25:22,371 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 12:25:24,766 [django.request] Not Found: /favicon.ico
+[INFO] 2025-10-28 12:25:40,255 [partner.views] Request method: POST, User: learn1, Authenticated: True
+[INFO] 2025-10-28 12:25:40,257 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 12:25:40,257 [partner.views] POST request, validating form
+[DEBUG] 2025-10-28 12:25:40,260 [PIL.PngImagePlugin] STREAM b'IHDR' 16 13
+[DEBUG] 2025-10-28 12:25:40,261 [PIL.PngImagePlugin] STREAM b'gAMA' 41 4
+[DEBUG] 2025-10-28 12:25:40,261 [PIL.PngImagePlugin] STREAM b'cHRM' 57 32
+[DEBUG] 2025-10-28 12:25:40,261 [PIL.PngImagePlugin] STREAM b'bKGD' 101 6
+[DEBUG] 2025-10-28 12:25:40,261 [PIL.PngImagePlugin] b'bKGD' 101 6 (unknown)
+[DEBUG] 2025-10-28 12:25:40,261 [PIL.PngImagePlugin] STREAM b'tIME' 119 7
+[DEBUG] 2025-10-28 12:25:40,262 [PIL.PngImagePlugin] b'tIME' 119 7 (unknown)
+[DEBUG] 2025-10-28 12:25:40,262 [PIL.PngImagePlugin] STREAM b'IDAT' 138 32768
+[INFO] 2025-10-28 12:25:40,267 [partner.views] Form valid, saving...
+[INFO] 2025-10-28 12:25:40,301 [partner.views] Partner saved: 17
+[INFO] 2025-10-28 12:25:49,522 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 12:25:49,524 [partner.views] Partner found: 17, Verified: False
+[INFO] 2025-10-28 12:25:49,524 [partner.views] Rendering already_requested.html
+[WARNING] 2025-10-28 12:25:54,679 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 12:26:00,282 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 12:26:04,005 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 12:26:12,140 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 12:26:14,594 [django.request] Not Found: /favicon.ico
+[INFO] 2025-10-28 12:26:28,558 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 12:26:28,561 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 12:26:28,561 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 12:26:28,562 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 12:27:57,931 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:27:57,967 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:27:57,968 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:28:00,971 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 12:28:00,974 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 12:28:00,974 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 12:28:00,975 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 12:28:09,898 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 12:28:09,900 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 12:28:09,900 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 12:28:09,901 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 12:28:47,918 [partner.views] Request method: POST, User: learn1, Authenticated: True
+[INFO] 2025-10-28 12:28:47,919 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 12:28:47,919 [partner.views] POST request, validating form
+[DEBUG] 2025-10-28 12:28:47,931 [PIL.PngImagePlugin] STREAM b'IHDR' 16 13
+[DEBUG] 2025-10-28 12:28:47,931 [PIL.PngImagePlugin] STREAM b'gAMA' 41 4
+[DEBUG] 2025-10-28 12:28:47,931 [PIL.PngImagePlugin] STREAM b'cHRM' 57 32
+[DEBUG] 2025-10-28 12:28:47,932 [PIL.PngImagePlugin] STREAM b'bKGD' 101 6
+[DEBUG] 2025-10-28 12:28:47,932 [PIL.PngImagePlugin] b'bKGD' 101 6 (unknown)
+[DEBUG] 2025-10-28 12:28:47,932 [PIL.PngImagePlugin] STREAM b'tIME' 119 7
+[DEBUG] 2025-10-28 12:28:47,932 [PIL.PngImagePlugin] b'tIME' 119 7 (unknown)
+[DEBUG] 2025-10-28 12:28:47,932 [PIL.PngImagePlugin] STREAM b'IDAT' 138 32768
+[DEBUG] 2025-10-28 12:28:47,935 [PIL.Image] Importing BlpImagePlugin
+[DEBUG] 2025-10-28 12:28:47,936 [PIL.Image] Importing BmpImagePlugin
+[DEBUG] 2025-10-28 12:28:47,937 [PIL.Image] Importing BufrStubImagePlugin
+[DEBUG] 2025-10-28 12:28:47,937 [PIL.Image] Importing CurImagePlugin
+[DEBUG] 2025-10-28 12:28:47,938 [PIL.Image] Importing DcxImagePlugin
+[DEBUG] 2025-10-28 12:28:47,938 [PIL.Image] Importing DdsImagePlugin
+[DEBUG] 2025-10-28 12:28:47,943 [PIL.Image] Importing EpsImagePlugin
+[DEBUG] 2025-10-28 12:28:47,944 [PIL.Image] Importing FitsImagePlugin
+[DEBUG] 2025-10-28 12:28:47,944 [PIL.Image] Importing FliImagePlugin
+[DEBUG] 2025-10-28 12:28:47,944 [PIL.Image] Importing FpxImagePlugin
+[DEBUG] 2025-10-28 12:28:47,945 [PIL.Image] Image: failed to import FpxImagePlugin: No module named 'olefile'
+[DEBUG] 2025-10-28 12:28:47,945 [PIL.Image] Importing FtexImagePlugin
+[DEBUG] 2025-10-28 12:28:47,946 [PIL.Image] Importing GbrImagePlugin
+[DEBUG] 2025-10-28 12:28:47,946 [PIL.Image] Importing GifImagePlugin
+[DEBUG] 2025-10-28 12:28:47,947 [PIL.Image] Importing GribStubImagePlugin
+[DEBUG] 2025-10-28 12:28:47,947 [PIL.Image] Importing Hdf5StubImagePlugin
+[DEBUG] 2025-10-28 12:28:47,947 [PIL.Image] Importing IcnsImagePlugin
+[DEBUG] 2025-10-28 12:28:47,948 [PIL.Image] Importing IcoImagePlugin
+[DEBUG] 2025-10-28 12:28:47,949 [PIL.Image] Importing ImImagePlugin
+[DEBUG] 2025-10-28 12:28:47,950 [PIL.Image] Importing ImtImagePlugin
+[DEBUG] 2025-10-28 12:28:47,951 [PIL.Image] Importing IptcImagePlugin
+[DEBUG] 2025-10-28 12:28:47,951 [PIL.Image] Importing JpegImagePlugin
+[DEBUG] 2025-10-28 12:28:47,951 [PIL.Image] Importing Jpeg2KImagePlugin
+[DEBUG] 2025-10-28 12:28:47,952 [PIL.Image] Importing McIdasImagePlugin
+[DEBUG] 2025-10-28 12:28:47,952 [PIL.Image] Importing MicImagePlugin
+[DEBUG] 2025-10-28 12:28:47,952 [PIL.Image] Image: failed to import MicImagePlugin: No module named 'olefile'
+[DEBUG] 2025-10-28 12:28:47,953 [PIL.Image] Importing MpegImagePlugin
+[DEBUG] 2025-10-28 12:28:47,953 [PIL.Image] Importing MpoImagePlugin
+[DEBUG] 2025-10-28 12:28:47,955 [PIL.Image] Importing MspImagePlugin
+[DEBUG] 2025-10-28 12:28:47,956 [PIL.Image] Importing PalmImagePlugin
+[DEBUG] 2025-10-28 12:28:47,956 [PIL.Image] Importing PcdImagePlugin
+[DEBUG] 2025-10-28 12:28:47,957 [PIL.Image] Importing PcxImagePlugin
+[DEBUG] 2025-10-28 12:28:47,957 [PIL.Image] Importing PdfImagePlugin
+[DEBUG] 2025-10-28 12:28:47,964 [PIL.Image] Importing PixarImagePlugin
+[DEBUG] 2025-10-28 12:28:47,964 [PIL.Image] Importing PngImagePlugin
+[DEBUG] 2025-10-28 12:28:47,964 [PIL.Image] Importing PpmImagePlugin
+[DEBUG] 2025-10-28 12:28:47,964 [PIL.Image] Importing PsdImagePlugin
+[DEBUG] 2025-10-28 12:28:47,965 [PIL.Image] Importing QoiImagePlugin
+[DEBUG] 2025-10-28 12:28:47,965 [PIL.Image] Importing SgiImagePlugin
+[DEBUG] 2025-10-28 12:28:47,966 [PIL.Image] Importing SpiderImagePlugin
+[DEBUG] 2025-10-28 12:28:47,966 [PIL.Image] Importing SunImagePlugin
+[DEBUG] 2025-10-28 12:28:47,967 [PIL.Image] Importing TgaImagePlugin
+[DEBUG] 2025-10-28 12:28:47,967 [PIL.Image] Importing TiffImagePlugin
+[DEBUG] 2025-10-28 12:28:47,967 [PIL.Image] Importing WebPImagePlugin
+[DEBUG] 2025-10-28 12:28:47,969 [PIL.Image] Importing WmfImagePlugin
+[DEBUG] 2025-10-28 12:28:47,970 [PIL.Image] Importing XbmImagePlugin
+[DEBUG] 2025-10-28 12:28:47,971 [PIL.Image] Importing XpmImagePlugin
+[DEBUG] 2025-10-28 12:28:47,972 [PIL.Image] Importing XVThumbImagePlugin
+[INFO] 2025-10-28 12:28:47,976 [partner.views] Form invalid: <ul class="errorlist"><li>agreed_to_terms<ul class="errorlist" id="id_agreed_to_terms_error"><li>You must agree to the contract terms and applicable rules to proceed.</li></ul></li></ul>
+[INFO] 2025-10-28 12:28:47,976 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 12:28:59,150 [partner.views] Request method: POST, User: learn1, Authenticated: True
+[INFO] 2025-10-28 12:28:59,152 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 12:28:59,153 [partner.views] POST request, validating form
+[INFO] 2025-10-28 12:28:59,157 [partner.views] Form valid, saving...
+[INFO] 2025-10-28 12:28:59,195 [partner.views] Partner saved: 18
+[WARNING] 2025-10-28 12:29:05,731 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 12:29:09,126 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 12:29:24,277 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 12:29:26,724 [django.request] Not Found: /favicon.ico
+[INFO] 2025-10-28 12:30:53,052 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:30:53,145 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:30:53,250 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:30:56,537 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 12:30:56,540 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 12:30:56,540 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 12:30:56,541 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 12:32:26,026 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:32:26,059 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:32:26,105 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:32:27,602 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 12:32:27,605 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 12:32:27,605 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 12:32:27,606 [partner.views] Rendering request_partner.html
+[WARNING] 2025-10-28 12:33:22,704 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 12:33:22,705 [django.request] Forbidden: /search/
+[INFO] 2025-10-28 12:33:48,793 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:33:48,846 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:33:48,908 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:33:52,326 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 12:33:52,329 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 12:33:52,329 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 12:33:52,330 [partner.views] Rendering request_partner.html
+[ERROR] 2025-10-28 12:33:52,355 [django.request] Internal Server Error: /request-partner/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/partner/views.py", line 92, in request_partner
+    return render(request, 'partner/request_partner.html', {'form': form})
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 489, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 487, in parse
+    filter_expression = self.compile_filter(token.contents)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 705, in __init__
+    filter_func = parser.find_filter(filter_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 615, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'add_class'
+[WARNING] 2025-10-28 12:33:53,878 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 12:33:53,879 [django.request] Forbidden: /search/
+[INFO] 2025-10-28 12:35:26,991 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:35:27,136 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:35:27,152 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:35:31,736 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 12:35:31,738 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 12:35:31,738 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 12:35:31,740 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 12:37:03,297 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:37:03,401 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:37:03,454 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:37:04,932 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 12:37:04,937 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 12:37:04,937 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 12:37:04,939 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 12:37:33,229 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:37:33,318 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:37:33,635 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:37:34,322 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 12:37:34,325 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 12:37:34,325 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 12:37:34,326 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 12:38:48,449 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:38:48,586 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:38:48,610 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:38:50,864 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 12:38:50,866 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 12:38:50,867 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 12:38:50,867 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 12:39:11,187 [partner.views] Request method: POST, User: learn1, Authenticated: True
+[INFO] 2025-10-28 12:39:11,189 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 12:39:11,189 [partner.views] POST request, validating form
+[INFO] 2025-10-28 12:39:11,194 [partner.views] Form invalid: <ul class="errorlist"><li>agreed_to_terms<ul class="errorlist" id="id_agreed_to_terms_error"><li>You must agree to the contract terms and applicable rules to proceed.</li></ul></li></ul>
+[INFO] 2025-10-28 12:39:11,194 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 12:40:10,005 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:40:10,180 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:40:10,205 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:40:16,156 [partner.views] Request method: POST, User: learn1, Authenticated: True
+[INFO] 2025-10-28 12:40:16,158 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 12:40:16,158 [partner.views] POST request, validating form
+[INFO] 2025-10-28 12:40:16,188 [partner.views] Form invalid: <ul class="errorlist"><li>phone<ul class="errorlist" id="id_phone_error"><li>This field is required.</li></ul></li><li>address<ul class="errorlist" id="id_address_error"><li>This field is required.</li></ul></li><li>description<ul class="errorlist" id="id_description_error"><li>This field is required.</li></ul></li><li>npwp<ul class="errorlist" id="id_npwp_error"><li>This field is required.</li></ul></li><li>npwp_file<ul class="errorlist" id="id_npwp_file_error"><li>This field is required.</li></ul></li><li>business_type<ul class="errorlist" id="id_business_type_error"><li>This field is required.</li></ul></li><li>account_number<ul class="errorlist" id="id_account_number_error"><li>This field is required.</li></ul></li><li>account_holder_name<ul class="errorlist" id="id_account_holder_name_error"><li>This field is required.</li></ul></li><li>bank_name<ul class="errorlist" id="id_bank_name_error"><li>This field is required.</li></ul></li><li>logo<ul class="errorlist" id="id_logo_error"><li>This field is required.</li></ul></li><li>is_pkp<ul class="errorlist" id="id_is_pkp_error"><li>This field is required.</li></ul></li><li>agreed_to_terms<ul class="errorlist" id="id_agreed_to_terms_error"><li>This field is required.</li></ul></li></ul>
+[INFO] 2025-10-28 12:40:16,188 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 12:40:49,423 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:40:49,446 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:40:49,454 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:40:51,289 [partner.views] Request method: POST, User: learn1, Authenticated: True
+[INFO] 2025-10-28 12:40:51,292 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 12:40:51,292 [partner.views] POST request, validating form
+[INFO] 2025-10-28 12:40:51,324 [partner.views] Form invalid: <ul class="errorlist"><li>phone<ul class="errorlist" id="id_phone_error"><li>This field is required.</li></ul></li><li>address<ul class="errorlist" id="id_address_error"><li>This field is required.</li></ul></li><li>description<ul class="errorlist" id="id_description_error"><li>This field is required.</li></ul></li><li>npwp<ul class="errorlist" id="id_npwp_error"><li>This field is required.</li></ul></li><li>npwp_file<ul class="errorlist" id="id_npwp_file_error"><li>This field is required.</li></ul></li><li>business_type<ul class="errorlist" id="id_business_type_error"><li>This field is required.</li></ul></li><li>account_number<ul class="errorlist" id="id_account_number_error"><li>This field is required.</li></ul></li><li>account_holder_name<ul class="errorlist" id="id_account_holder_name_error"><li>This field is required.</li></ul></li><li>bank_name<ul class="errorlist" id="id_bank_name_error"><li>This field is required.</li></ul></li><li>logo<ul class="errorlist" id="id_logo_error"><li>This field is required.</li></ul></li><li>is_pkp<ul class="errorlist" id="id_is_pkp_error"><li>This field is required.</li></ul></li><li>agreed_to_terms<ul class="errorlist" id="id_agreed_to_terms_error"><li>This field is required.</li></ul></li></ul>
+[INFO] 2025-10-28 12:40:51,324 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 12:42:24,011 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:42:24,202 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:42:24,207 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:42:26,633 [partner.views] Request method: POST, User: learn1, Authenticated: True
+[INFO] 2025-10-28 12:42:26,636 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 12:42:26,636 [partner.views] POST request, validating form
+[INFO] 2025-10-28 12:42:26,662 [partner.views] Form invalid: <ul class="errorlist"><li>phone<ul class="errorlist" id="id_phone_error"><li>This field is required.</li></ul></li><li>address<ul class="errorlist" id="id_address_error"><li>This field is required.</li></ul></li><li>description<ul class="errorlist" id="id_description_error"><li>This field is required.</li></ul></li><li>npwp<ul class="errorlist" id="id_npwp_error"><li>This field is required.</li></ul></li><li>npwp_file<ul class="errorlist" id="id_npwp_file_error"><li>This field is required.</li></ul></li><li>business_type<ul class="errorlist" id="id_business_type_error"><li>This field is required.</li></ul></li><li>account_number<ul class="errorlist" id="id_account_number_error"><li>This field is required.</li></ul></li><li>account_holder_name<ul class="errorlist" id="id_account_holder_name_error"><li>This field is required.</li></ul></li><li>bank_name<ul class="errorlist" id="id_bank_name_error"><li>This field is required.</li></ul></li><li>logo<ul class="errorlist" id="id_logo_error"><li>This field is required.</li></ul></li><li>agreed_to_terms<ul class="errorlist" id="id_agreed_to_terms_error"><li>This field is required.</li></ul></li></ul>
+[INFO] 2025-10-28 12:42:26,663 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 12:46:41,571 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:46:41,684 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:46:41,778 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[ERROR] 2025-10-28 12:46:54,912 [django.request] Internal Server Error: /partner-info/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/authentication/views.py", line 1862, in partner_info
+    return render(request, 'home/myice/partner_info.html')
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 1016, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 977, in render_annotated
+    return self.render(context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'partner_request' not found. 'partner_request' is not a valid view function or pattern name.
+[INFO] 2025-10-28 12:47:45,862 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:47:45,880 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:47:45,940 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:48:38,217 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:48:38,397 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:48:38,618 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:48:55,743 [partner.views] Request method: GET, User: AnonymousUser, Authenticated: False
+[INFO] 2025-10-28 12:48:55,743 [partner.views] User not authenticated, redirecting to login
+[INFO] 2025-10-28 12:48:56,424 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 12:48:56,426 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 12:48:56,427 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 12:48:56,428 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 12:49:08,969 [partner.views] Request method: GET, User: AnonymousUser, Authenticated: False
+[INFO] 2025-10-28 12:49:08,969 [partner.views] User not authenticated, redirecting to login
+[INFO] 2025-10-28 12:49:39,141 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:49:39,199 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:49:39,337 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:49:44,815 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 12:49:44,820 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 12:49:44,820 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 12:49:44,823 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 12:51:38,726 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:51:38,746 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:51:38,797 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:51:41,072 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 12:51:41,075 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 12:51:41,075 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 12:51:41,076 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 12:54:12,583 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:54:12,701 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:54:12,731 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:55:08,793 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:55:08,972 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:55:09,010 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:56:15,143 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:56:15,221 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:56:15,316 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[ERROR] 2025-10-28 12:56:16,146 [django.request] Internal Server Error: /terms/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 510, in parse
+    compile_func = self.tags[command]
+KeyError: 'static'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/authentication/views.py", line 1841, in terms
+    return render(request, 'home/myice/terms.html')
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/backends/django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 518, in parse
+    raise self.error(token, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 512, in parse
+    self.invalid_block_tag(token, command, parse_until)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/base.py", line 567, in invalid_block_tag
+    raise self.error(
+django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 16: 'static', expected 'endblock'. Did you forget to register or load this tag?
+[INFO] 2025-10-28 12:56:33,534 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:56:33,614 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:56:33,680 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:57:18,715 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:57:18,801 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:57:18,900 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:58:41,992 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:58:42,261 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:58:42,527 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-28 12:58:46,302 [django.request] Not Found: //wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-28 12:58:46,394 [django.request] Not Found: //xmlrpc.php
+[WARNING] 2025-10-28 12:58:46,878 [django.request] Not Found: //blog/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-28 12:58:46,969 [django.request] Not Found: //web/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-28 12:58:47,096 [django.request] Not Found: //wordpress/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-28 12:58:47,250 [django.request] Not Found: //website/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-28 12:58:47,342 [django.request] Not Found: //wp/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-28 12:58:47,481 [django.request] Not Found: //news/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-28 12:58:47,572 [django.request] Not Found: //2020/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-28 12:58:47,663 [django.request] Not Found: //2019/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-28 12:58:47,754 [django.request] Not Found: //shop/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-28 12:58:47,844 [django.request] Not Found: //wp1/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-28 12:58:47,936 [django.request] Not Found: //test/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-28 12:58:48,027 [django.request] Not Found: //wp2/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-28 12:58:48,117 [django.request] Not Found: //site/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-28 12:58:48,207 [django.request] Not Found: //cms/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-28 12:58:48,299 [django.request] Not Found: //sito/wp-includes/wlwmanifest.xml
+[INFO] 2025-10-28 12:59:32,399 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:59:32,409 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 12:59:32,455 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:00:07,960 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:00:08,039 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:00:08,100 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-28 13:00:09,265 [django.request] Not Found: /cgi-bin/DownloadCfg/RouterCfm.cfg
+[WARNING] 2025-10-28 13:00:10,563 [django.security.csrf] Forbidden (Referer checking failed - no Referer.): /
+[WARNING] 2025-10-28 13:00:11,583 [django.request] Not Found: /34dnLzUHduu4B3z92kb0fKGahoF.php\x0A
+[INFO] 2025-10-28 13:00:59,728 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:00:59,774 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:00:59,846 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:01:08,533 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 13:01:08,535 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 13:01:08,535 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 13:01:08,536 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 13:02:03,775 [partner.views] Request method: POST, User: learn1, Authenticated: True
+[INFO] 2025-10-28 13:02:03,780 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 13:02:03,780 [partner.views] POST request, validating form
+[DEBUG] 2025-10-28 13:02:03,791 [PIL.PngImagePlugin] STREAM b'IHDR' 16 13
+[DEBUG] 2025-10-28 13:02:03,791 [PIL.PngImagePlugin] STREAM b'gAMA' 41 4
+[DEBUG] 2025-10-28 13:02:03,791 [PIL.PngImagePlugin] STREAM b'cHRM' 57 32
+[DEBUG] 2025-10-28 13:02:03,791 [PIL.PngImagePlugin] STREAM b'bKGD' 101 6
+[DEBUG] 2025-10-28 13:02:03,792 [PIL.PngImagePlugin] b'bKGD' 101 6 (unknown)
+[DEBUG] 2025-10-28 13:02:03,792 [PIL.PngImagePlugin] STREAM b'tIME' 119 7
+[DEBUG] 2025-10-28 13:02:03,792 [PIL.PngImagePlugin] b'tIME' 119 7 (unknown)
+[DEBUG] 2025-10-28 13:02:03,792 [PIL.PngImagePlugin] STREAM b'IDAT' 138 32768
+[DEBUG] 2025-10-28 13:02:03,796 [PIL.Image] Importing BlpImagePlugin
+[DEBUG] 2025-10-28 13:02:03,798 [PIL.Image] Importing BmpImagePlugin
+[DEBUG] 2025-10-28 13:02:03,798 [PIL.Image] Importing BufrStubImagePlugin
+[DEBUG] 2025-10-28 13:02:03,798 [PIL.Image] Importing CurImagePlugin
+[DEBUG] 2025-10-28 13:02:03,799 [PIL.Image] Importing DcxImagePlugin
+[DEBUG] 2025-10-28 13:02:03,800 [PIL.Image] Importing DdsImagePlugin
+[DEBUG] 2025-10-28 13:02:03,804 [PIL.Image] Importing EpsImagePlugin
+[DEBUG] 2025-10-28 13:02:03,805 [PIL.Image] Importing FitsImagePlugin
+[DEBUG] 2025-10-28 13:02:03,806 [PIL.Image] Importing FliImagePlugin
+[DEBUG] 2025-10-28 13:02:03,807 [PIL.Image] Importing FpxImagePlugin
+[DEBUG] 2025-10-28 13:02:03,807 [PIL.Image] Image: failed to import FpxImagePlugin: No module named 'olefile'
+[DEBUG] 2025-10-28 13:02:03,808 [PIL.Image] Importing FtexImagePlugin
+[DEBUG] 2025-10-28 13:02:03,808 [PIL.Image] Importing GbrImagePlugin
+[DEBUG] 2025-10-28 13:02:03,809 [PIL.Image] Importing GifImagePlugin
+[DEBUG] 2025-10-28 13:02:03,809 [PIL.Image] Importing GribStubImagePlugin
+[DEBUG] 2025-10-28 13:02:03,809 [PIL.Image] Importing Hdf5StubImagePlugin
+[DEBUG] 2025-10-28 13:02:03,810 [PIL.Image] Importing IcnsImagePlugin
+[DEBUG] 2025-10-28 13:02:03,811 [PIL.Image] Importing IcoImagePlugin
+[DEBUG] 2025-10-28 13:02:03,812 [PIL.Image] Importing ImImagePlugin
+[DEBUG] 2025-10-28 13:02:03,813 [PIL.Image] Importing ImtImagePlugin
+[DEBUG] 2025-10-28 13:02:03,814 [PIL.Image] Importing IptcImagePlugin
+[DEBUG] 2025-10-28 13:02:03,814 [PIL.Image] Importing JpegImagePlugin
+[DEBUG] 2025-10-28 13:02:03,814 [PIL.Image] Importing Jpeg2KImagePlugin
+[DEBUG] 2025-10-28 13:02:03,814 [PIL.Image] Importing McIdasImagePlugin
+[DEBUG] 2025-10-28 13:02:03,815 [PIL.Image] Importing MicImagePlugin
+[DEBUG] 2025-10-28 13:02:03,815 [PIL.Image] Image: failed to import MicImagePlugin: No module named 'olefile'
+[DEBUG] 2025-10-28 13:02:03,816 [PIL.Image] Importing MpegImagePlugin
+[DEBUG] 2025-10-28 13:02:03,816 [PIL.Image] Importing MpoImagePlugin
+[DEBUG] 2025-10-28 13:02:03,818 [PIL.Image] Importing MspImagePlugin
+[DEBUG] 2025-10-28 13:02:03,819 [PIL.Image] Importing PalmImagePlugin
+[DEBUG] 2025-10-28 13:02:03,820 [PIL.Image] Importing PcdImagePlugin
+[DEBUG] 2025-10-28 13:02:03,820 [PIL.Image] Importing PcxImagePlugin
+[DEBUG] 2025-10-28 13:02:03,820 [PIL.Image] Importing PdfImagePlugin
+[DEBUG] 2025-10-28 13:02:03,827 [PIL.Image] Importing PixarImagePlugin
+[DEBUG] 2025-10-28 13:02:03,828 [PIL.Image] Importing PngImagePlugin
+[DEBUG] 2025-10-28 13:02:03,828 [PIL.Image] Importing PpmImagePlugin
+[DEBUG] 2025-10-28 13:02:03,828 [PIL.Image] Importing PsdImagePlugin
+[DEBUG] 2025-10-28 13:02:03,829 [PIL.Image] Importing QoiImagePlugin
+[DEBUG] 2025-10-28 13:02:03,829 [PIL.Image] Importing SgiImagePlugin
+[DEBUG] 2025-10-28 13:02:03,830 [PIL.Image] Importing SpiderImagePlugin
+[DEBUG] 2025-10-28 13:02:03,830 [PIL.Image] Importing SunImagePlugin
+[DEBUG] 2025-10-28 13:02:03,831 [PIL.Image] Importing TgaImagePlugin
+[DEBUG] 2025-10-28 13:02:03,831 [PIL.Image] Importing TiffImagePlugin
+[DEBUG] 2025-10-28 13:02:03,831 [PIL.Image] Importing WebPImagePlugin
+[DEBUG] 2025-10-28 13:02:03,833 [PIL.Image] Importing WmfImagePlugin
+[DEBUG] 2025-10-28 13:02:03,833 [PIL.Image] Importing XbmImagePlugin
+[DEBUG] 2025-10-28 13:02:03,835 [PIL.Image] Importing XpmImagePlugin
+[DEBUG] 2025-10-28 13:02:03,836 [PIL.Image] Importing XVThumbImagePlugin
+[INFO] 2025-10-28 13:02:03,839 [partner.views] Form valid, saving...
+[INFO] 2025-10-28 13:02:03,891 [partner.views] Partner saved: 19
+[INFO] 2025-10-28 13:02:57,550 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:02:57,720 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:02:57,902 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-28 13:03:05,493 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 13:03:15,091 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 13:03:18,080 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 13:03:21,626 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 13:03:26,179 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 13:03:30,772 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 13:03:33,394 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 13:03:48,433 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 13:03:51,485 [django.request] Not Found: /favicon.ico
+[INFO] 2025-10-28 13:04:01,234 [partner.views] Request method: POST, User: learn1, Authenticated: True
+[INFO] 2025-10-28 13:04:01,236 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 13:04:01,236 [partner.views] POST request, validating form
+[DEBUG] 2025-10-28 13:04:01,247 [PIL.PngImagePlugin] STREAM b'IHDR' 16 13
+[DEBUG] 2025-10-28 13:04:01,247 [PIL.PngImagePlugin] STREAM b'gAMA' 41 4
+[DEBUG] 2025-10-28 13:04:01,247 [PIL.PngImagePlugin] STREAM b'cHRM' 57 32
+[DEBUG] 2025-10-28 13:04:01,247 [PIL.PngImagePlugin] STREAM b'bKGD' 101 6
+[DEBUG] 2025-10-28 13:04:01,248 [PIL.PngImagePlugin] b'bKGD' 101 6 (unknown)
+[DEBUG] 2025-10-28 13:04:01,248 [PIL.PngImagePlugin] STREAM b'tIME' 119 7
+[DEBUG] 2025-10-28 13:04:01,248 [PIL.PngImagePlugin] b'tIME' 119 7 (unknown)
+[DEBUG] 2025-10-28 13:04:01,248 [PIL.PngImagePlugin] STREAM b'IDAT' 138 32768
+[DEBUG] 2025-10-28 13:04:01,251 [PIL.Image] Importing BlpImagePlugin
+[DEBUG] 2025-10-28 13:04:01,252 [PIL.Image] Importing BmpImagePlugin
+[DEBUG] 2025-10-28 13:04:01,253 [PIL.Image] Importing BufrStubImagePlugin
+[DEBUG] 2025-10-28 13:04:01,253 [PIL.Image] Importing CurImagePlugin
+[DEBUG] 2025-10-28 13:04:01,254 [PIL.Image] Importing DcxImagePlugin
+[DEBUG] 2025-10-28 13:04:01,254 [PIL.Image] Importing DdsImagePlugin
+[DEBUG] 2025-10-28 13:04:01,259 [PIL.Image] Importing EpsImagePlugin
+[DEBUG] 2025-10-28 13:04:01,260 [PIL.Image] Importing FitsImagePlugin
+[DEBUG] 2025-10-28 13:04:01,260 [PIL.Image] Importing FliImagePlugin
+[DEBUG] 2025-10-28 13:04:01,261 [PIL.Image] Importing FpxImagePlugin
+[DEBUG] 2025-10-28 13:04:01,261 [PIL.Image] Image: failed to import FpxImagePlugin: No module named 'olefile'
+[DEBUG] 2025-10-28 13:04:01,261 [PIL.Image] Importing FtexImagePlugin
+[DEBUG] 2025-10-28 13:04:01,262 [PIL.Image] Importing GbrImagePlugin
+[DEBUG] 2025-10-28 13:04:01,262 [PIL.Image] Importing GifImagePlugin
+[DEBUG] 2025-10-28 13:04:01,263 [PIL.Image] Importing GribStubImagePlugin
+[DEBUG] 2025-10-28 13:04:01,263 [PIL.Image] Importing Hdf5StubImagePlugin
+[DEBUG] 2025-10-28 13:04:01,263 [PIL.Image] Importing IcnsImagePlugin
+[DEBUG] 2025-10-28 13:04:01,264 [PIL.Image] Importing IcoImagePlugin
+[DEBUG] 2025-10-28 13:04:01,265 [PIL.Image] Importing ImImagePlugin
+[DEBUG] 2025-10-28 13:04:01,266 [PIL.Image] Importing ImtImagePlugin
+[DEBUG] 2025-10-28 13:04:01,271 [PIL.Image] Importing IptcImagePlugin
+[DEBUG] 2025-10-28 13:04:01,272 [PIL.Image] Importing JpegImagePlugin
+[DEBUG] 2025-10-28 13:04:01,272 [PIL.Image] Importing Jpeg2KImagePlugin
+[DEBUG] 2025-10-28 13:04:01,272 [PIL.Image] Importing McIdasImagePlugin
+[DEBUG] 2025-10-28 13:04:01,272 [PIL.Image] Importing MicImagePlugin
+[DEBUG] 2025-10-28 13:04:01,273 [PIL.Image] Image: failed to import MicImagePlugin: No module named 'olefile'
+[DEBUG] 2025-10-28 13:04:01,273 [PIL.Image] Importing MpegImagePlugin
+[DEBUG] 2025-10-28 13:04:01,273 [PIL.Image] Importing MpoImagePlugin
+[DEBUG] 2025-10-28 13:04:01,276 [PIL.Image] Importing MspImagePlugin
+[DEBUG] 2025-10-28 13:04:01,278 [PIL.Image] Importing PalmImagePlugin
+[DEBUG] 2025-10-28 13:04:01,279 [PIL.Image] Importing PcdImagePlugin
+[DEBUG] 2025-10-28 13:04:01,279 [PIL.Image] Importing PcxImagePlugin
+[DEBUG] 2025-10-28 13:04:01,279 [PIL.Image] Importing PdfImagePlugin
+[DEBUG] 2025-10-28 13:04:01,287 [PIL.Image] Importing PixarImagePlugin
+[DEBUG] 2025-10-28 13:04:01,288 [PIL.Image] Importing PngImagePlugin
+[DEBUG] 2025-10-28 13:04:01,288 [PIL.Image] Importing PpmImagePlugin
+[DEBUG] 2025-10-28 13:04:01,288 [PIL.Image] Importing PsdImagePlugin
+[DEBUG] 2025-10-28 13:04:01,289 [PIL.Image] Importing QoiImagePlugin
+[DEBUG] 2025-10-28 13:04:01,289 [PIL.Image] Importing SgiImagePlugin
+[DEBUG] 2025-10-28 13:04:01,290 [PIL.Image] Importing SpiderImagePlugin
+[DEBUG] 2025-10-28 13:04:01,290 [PIL.Image] Importing SunImagePlugin
+[DEBUG] 2025-10-28 13:04:01,290 [PIL.Image] Importing TgaImagePlugin
+[DEBUG] 2025-10-28 13:04:01,291 [PIL.Image] Importing TiffImagePlugin
+[DEBUG] 2025-10-28 13:04:01,291 [PIL.Image] Importing WebPImagePlugin
+[DEBUG] 2025-10-28 13:04:01,293 [PIL.Image] Importing WmfImagePlugin
+[DEBUG] 2025-10-28 13:04:01,293 [PIL.Image] Importing XbmImagePlugin
+[DEBUG] 2025-10-28 13:04:01,296 [PIL.Image] Importing XpmImagePlugin
+[DEBUG] 2025-10-28 13:04:01,296 [PIL.Image] Importing XVThumbImagePlugin
+[INFO] 2025-10-28 13:04:01,300 [partner.views] Form valid, saving...
+[INFO] 2025-10-28 13:04:01,338 [partner.views] Partner saved: 20
+[WARNING] 2025-10-28 13:04:05,944 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 13:04:09,645 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 13:04:13,093 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 13:04:15,187 [django.request] Not Found: /favicon.ico
+[INFO] 2025-10-28 13:04:18,223 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 13:04:18,225 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 13:04:18,225 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 13:04:18,226 [partner.views] Rendering request_partner.html
+[INFO] 2025-10-28 13:05:49,266 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:05:49,572 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:05:49,658 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:05:52,003 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 13:05:52,006 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 13:05:52,006 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 13:05:52,007 [partner.views] Rendering request_partner.html
+[WARNING] 2025-10-28 13:06:26,667 [django.request] Not Found: /favicon.ico

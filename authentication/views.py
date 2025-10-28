@@ -1857,3 +1857,6 @@ def refund_policy(request):
 
 def security(request):
     return render(request, 'home/myice/security.html')
+
+def partner_info(request):
+    return render(request, 'home/myice/partner_info.html')

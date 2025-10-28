@@ -79,15 +79,16 @@ class Partner(models.Model):
     # NPWP dan dokumen pajak
     npwp = models.CharField(max_length=25, null=True, blank=True)
     npwp_file = models.FileField(upload_to='documents/npwp/', null=True, blank=True)
-    is_pkp = models.BooleanField(default=False, verbose_name="PKP (Pengusaha Kena Pajak)")
+    is_pkp = models.BooleanField(default=False, verbose_name="Taxable Entrepreneur (PKP)")
 
     # Jenis usaha
     BUSINESS_TYPE_CHOICES = [
-        ('perorangan', 'Perorangan'),
-        ('cv', 'CV'),
-        ('pt', 'PT'),
-        ('institusi', 'Institusi Pendidikan'),
+        ('individual', 'Individual'),
+        ('cv', 'Limited Partnership (CV)'),
+        ('pt', 'Limited Liability Company (PT)'),
+        ('institution', 'Educational Institution'),
     ]
+
     business_type = models.CharField(max_length=20, choices=BUSINESS_TYPE_CHOICES, null=True, blank=True)
 
     # Metode pembayaran
@@ -110,6 +111,11 @@ class Partner(models.Model):
 
     # Catatan internal keuangan
     finance_note = models.TextField(null=True, blank=True)
+    agreed_to_terms = models.BooleanField(
+        default=False,
+        verbose_name="Agree to Contract Terms and Applicable Rules",
+        help_text="User must check this box to indicate agreement."
+    )
 
     # Audit siapa terakhir edit
     updated_by = models.ForeignKey(CustomUser, null=True, blank=True, on_delete=models.SET_NULL, related_name="partner_updated_by")

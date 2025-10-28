@@ -39,6 +39,58 @@ import pprint
 from decimal import Decimal, ROUND_HALF_UP
 from django.db.models.functions import Coalesce
 from django.views.decorators.http import require_POST
+import logging
+
+from .forms import PartnerRequestForm
+
+logger = logging.getLogger(__name__)
+
+def request_partner(request):
+    logger.info(f"Request method: {request.method}, User: {request.user}, Authenticated: {request.user.is_authenticated}")
+    
+    # 1. Cek login
+    if not request.user.is_authenticated:
+        logger.info("User not authenticated, redirecting to login")
+        return redirect(f'/login/?next=/request-partner/')
+
+    # 2. Cek apakah user sudah jadi partner dan diverifikasi
+    try:
+        partner = Partner.objects.get(user=request.user)
+        logger.info(f"Partner found: {partner.id}, Verified: {partner.is_verified}")
+        if partner.is_verified:
+            # Jika sudah partner & diverifikasi, redirect ke dashboard
+            logger.info("Redirecting to dashboard")
+            return redirect('authentication:dashboard')  # Fix typo: 'dashbord' → 'dashboard'
+        else:
+            # Jika sudah request tapi belum diverifikasi
+            logger.info("Rendering already_requested.html")
+            return render(request, 'partner/already_requested.html', {'partner': partner})
+    except Partner.DoesNotExist:
+        logger.info("No partner found, proceeding to form")
+        partner = None
+
+    # 3. Jika belum request, tampilkan form
+    if request.method == 'POST':
+        logger.info("POST request, validating form")
+        form = PartnerRequestForm(request.POST, request.FILES)  # Selalu pass POST/FILES supaya sticky
+        if form.is_valid():
+            logger.info("Form valid, saving...")
+            new_partner = form.save(commit=False)
+            new_partner.user = request.user
+            new_partner.author = request.user
+            new_partner.save()
+            logger.info(f"Partner saved: {new_partner.id}")
+            return render(request, 'partner/request_success.html', {'partner': new_partner})
+        else:
+            logger.info(f"Form invalid: {form.errors}")  # Log errors untuk debug
+            # Nggak perlu buat form baru — gunakan yang sama (data terjaga + errors tampil)
+    else:
+        logger.info("GET request, creating empty form")
+        form = PartnerRequestForm()
+
+    logger.info("Rendering request_partner.html")
+    return render(request, 'partner/request_partner.html', {'form': form})
+
 
 @cache_page(60 * 5)
 def partner_analytics_admin(request):

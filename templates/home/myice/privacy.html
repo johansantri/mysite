@@ -1,4 +1,29 @@
 {% extends "home/base.html" %}
+{% load static %}
+{% block meta %}
+    <!-- Standard Meta Tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="description" content="Read MyICE's Privacy Policy to understand how we collect, use, and protect your personal information, your rights, and how we ensure data security.">
+    <meta name="keywords" content="MyICE, privacy policy, data protection, personal information, cookies, user rights, data security, children's privacy">
+    <meta name="author" content="MyICE Team">
+    <title>Privacy Policy - MyICE</title>
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:title" content="Privacy Policy - MyICE">
+    <meta property="og:description" content="Learn how MyICE protects your personal data, your rights as a user, and how we ensure security and privacy on our platform.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image" content="{% static 'images/privacy-og.png' %}">
+    <meta property="og:site_name" content="MyICE">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Privacy Policy - MyICE">
+    <meta name="twitter:description" content="Learn how MyICE protects your personal data, your rights as a user, and how we ensure security and privacy on our platform.">
+    <meta name="twitter:image" content="{% static 'images/privacy-og.png' %}">
+{% endblock meta %}
+
 {% block content %}
 
 <section class="max-w-3xl mx-auto px-6 py-12 bg-white rounded-lg shadow-lg">

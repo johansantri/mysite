@@ -1,0 +1,18 @@
+{% extends 'home/base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="max-w-xl mx-auto mt-16 p-6 bg-white rounded-lg shadow-md">
+    <h2 class="text-2xl font-semibold mb-4 text-gray-800">Partner Request</h2>
+
+    <p class="text-gray-700 mb-4">Hi {{ user.get_full_name }},</p>
+    <p class="text-gray-700 mb-6">
+        Anda sudah mengajukan request untuk menjadi partner. Saat ini permintaan Anda sedang diproses oleh admin.
+    </p>
+
+    <a href="{% url 'authentication:dashbord' %}" class="inline-block px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+        Kembali ke Dashboard
+    </a>
+</div>
+
+{% endblock %}
