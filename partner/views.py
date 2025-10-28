@@ -60,7 +60,7 @@ def request_partner(request):
         if partner.is_verified:
             # Jika sudah partner & diverifikasi, redirect ke dashboard
             logger.info("Redirecting to dashboard")
-            return redirect('authentication:dashboard')  # Fix typo: 'dashbord' → 'dashboard'
+            return redirect('authentication:dashbord')  # Fix typo: 'dashbord' → 'dashboard'
         else:
             # Jika sudah request tapi belum diverifikasi
             logger.info("Rendering already_requested.html")

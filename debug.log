@@ -20150,3 +20150,50 @@ Traceback (most recent call last):
     raise DisallowedHost(msg)
 django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
 [WARNING] 2025-10-28 13:07:00,937 [django.request] Bad Request: /
+[DEBUG] 2025-10-28 13:08:04,554 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-10-28 13:08:04,557 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-28 05:08:04.554065+00:00
+[INFO] 2025-10-28 13:08:04,557 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36", path_info: "/logout/"}.
+[DEBUG] 2025-10-28 13:08:13,777 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-10-28 13:08:13,778 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-10-28 13:08:13,779 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-10-28 05:08:13.777205+00:00
+[INFO] 2025-10-28 13:08:14,743 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36", path_info: "/login/"}.
+[INFO] 2025-10-28 13:08:14,745 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-28 05:08:13.777205+00:00
+[DEBUG] 2025-10-28 13:08:14,759 [urllib3.connectionpool] Starting new HTTPS connection (1): ipinfo.io:443
+[DEBUG] 2025-10-28 13:08:15,028 [urllib3.connectionpool] https://ipinfo.io:443 "GET /203.217.140.215/json HTTP/1.1" 200 None
+[INFO] 2025-10-28 13:08:22,531 [partner.views] Request method: GET, User: partner1, Authenticated: True
+[INFO] 2025-10-28 13:08:22,533 [partner.views] Partner found: 2, Verified: False
+[INFO] 2025-10-28 13:08:22,533 [partner.views] Rendering already_requested.html
+[WARNING] 2025-10-28 13:08:47,055 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 13:08:50,542 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 13:08:56,846 [django.request] Not Found: /favicon.ico
+[INFO] 2025-10-28 13:08:58,321 [partner.views] Request method: GET, User: partner1, Authenticated: True
+[INFO] 2025-10-28 13:08:58,325 [partner.views] Partner found: 2, Verified: True
+[INFO] 2025-10-28 13:08:58,325 [partner.views] Redirecting to dashboard
+[ERROR] 2025-10-28 13:08:58,326 [django.request] Internal Server Error: /request-partner/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/partner/views.py", line 63, in request_partner
+    return redirect('authentication:dashboard')  # Fix typo: 'dashbord' → 'dashboard'
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 51, in redirect
+    resolve_url(to, *args, **kwargs),
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 184, in resolve_url
+    return reverse(to, args=args, kwargs=kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/base.py", line 98, in reverse
+    resolved_url = resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'dashboard' not found. 'dashboard' is not a valid view function or pattern name.
+[INFO] 2025-10-28 13:10:07,437 [partner.views] Request method: GET, User: AnonymousUser, Authenticated: False
+[INFO] 2025-10-28 13:10:07,438 [partner.views] User not authenticated, redirecting to login
+[INFO] 2025-10-28 13:10:29,859 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:10:30,238 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:10:30,333 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:10:32,354 [partner.views] Request method: GET, User: partner1, Authenticated: True
+[INFO] 2025-10-28 13:10:32,359 [partner.views] Partner found: 2, Verified: True
+[INFO] 2025-10-28 13:10:32,359 [partner.views] Redirecting to dashboard
+[INFO] 2025-10-28 13:10:47,023 [partner.views] Request method: GET, User: partner1, Authenticated: True
+[INFO] 2025-10-28 13:10:47,024 [partner.views] Partner found: 2, Verified: True
+[INFO] 2025-10-28 13:10:47,025 [partner.views] Redirecting to dashboard
