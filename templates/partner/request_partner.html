@@ -1,162 +1,210 @@
 {% extends 'home/base.html' %}
-{% load static %}
 
 {% block content %}
-<br>
-<div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-10">
-    <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 mb-2">Partner Registration</h1>
-        <p class="text-gray-600">Fill out the form below to become a partner. All fields are required unless marked otherwise.</p>
-    </div>
-
-    <div class="bg-white shadow-xl rounded-xl p-6 sm:p-8 border border-gray-200">
-        <form method="post" enctype="multipart/form-data" class="space-y-6">
-            {% csrf_token %}
-
-            <!-- Company Information -->
-            <div class="space-y-4">
-                <h2 class="text-lg font-semibold text-gray-900 mb-2">Company Information</h2>
+ <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white shadow-xl rounded-lg p-6">
+            <h1 class="text-2xl font-bold text-gray-900 mb-6">Formulir Permintaan Partner</h1>
+            
+            <form method="post" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+                
+                <!-- Universitas Choice -->
                 <div>
-                    {{ form.name.label_tag }}
-                    {{ form.name }}
-                    {% for error in form.name.errors %}
-                        <p class="text-sm text-red-600">{{ error }}</p>
-                    {% endfor %}
-                </div>
-                <div>
-                    {{ form.phone.label_tag }}
-                    {{ form.phone }}
-                    {% for error in form.phone.errors %}
-                        <p class="text-sm text-red-600">{{ error }}</p>
-                    {% endfor %}
-                </div>
-                <div>
-                    {{ form.address.label_tag }}
-                    {{ form.address }}
-                    {% for error in form.address.errors %}
-                        <p class="text-sm text-red-600">{{ error }}</p>
-                    {% endfor %}
-                </div>
-                <div>
-                    {{ form.description.label_tag }}
-                    {{ form.description }}
-                    {% for error in form.description.errors %}
-                        <p class="text-sm text-red-600">{{ error }}</p>
-                    {% endfor %}
-                </div>
-            </div>
-
-            <!-- Tax & Legal -->
-            <div class="space-y-4">
-                <h2 class="text-lg font-semibold text-gray-900 mb-2">Tax & Legal Information</h2>
-                <div>
-                    {{ form.npwp.label_tag }}
-                    {{ form.npwp }}
-                    {% for error in form.npwp.errors %}
-                        <p class="text-sm text-red-600">{{ error }}</p>
-                    {% endfor %}
-                </div>
-                <div>
-                    {{ form.is_pkp.label_tag }}
-                    {{ form.is_pkp }}
-                    {% for error in form.is_pkp.errors %}
-                        <p class="text-sm text-red-600">{{ error }}</p>
-                    {% endfor %}
-                </div>
-                <div>
-                    {{ form.npwp_file.label_tag }}
-                    {{ form.npwp_file }}
-                    {% for error in form.npwp_file.errors %}
-                        <p class="text-sm text-red-600">{{ error }}</p>
-                    {% endfor %}
-                    <p class="text-sm text-gray-500">Upload your company logo (PDF, max 2MB)</p>
-                </div>
-                <div>
-                    {{ form.business_type.label_tag }}
-                    {{ form.business_type }}
-                    {% for error in form.business_type.errors %}
-                        <p class="text-sm text-red-600">{{ error }}</p>
-                    {% endfor %}
-                </div>
-            </div>
-
-            <!-- Bank Information -->
-            <div class="space-y-4">
-                <h2 class="text-lg font-semibold text-gray-900 mb-2">Bank Information</h2>
-                <div>
-                    {{ form.account_number.label_tag }}
-                    {{ form.account_number }}
-                    {% for error in form.account_number.errors %}
-                        <p class="text-sm text-red-600">{{ error }}</p>
-                    {% endfor %}
-                </div>
-                <div>
-                    {{ form.account_holder_name.label_tag }}
-                    {{ form.account_holder_name }}
-                    {% for error in form.account_holder_name.errors %}
-                        <p class="text-sm text-red-600">{{ error }}</p>
-                    {% endfor %}
-                </div>
-                <div>
-                    {{ form.bank_name.label_tag }}
-                    {{ form.bank_name }}
-                    {% for error in form.bank_name.errors %}
-                        <p class="text-sm text-red-600">{{ error }}</p>
-                    {% endfor %}
-                </div>
-            </div>
-
-            <!-- Branding -->
-            <div class="space-y-4">
-                <h2 class="text-lg font-semibold text-gray-900 mb-2">Branding</h2>
-                <div>
-                    {{ form.logo.label_tag }}
-                    {{ form.logo }}
-                    {% for error in form.logo.errors %}
-                        <p class="text-sm text-red-600">{{ error }}</p>
-                    {% endfor %}
-                    <p class="text-sm text-gray-500">Upload your company logo (PNG, JPG, max 2MB)</p>
-                </div>
-            </div>
-
-            <!-- Persetujuan Kontrak -->
-            <div class="space-y-2">
-                <h2 class="text-lg font-semibold text-gray-900 mb-2">Persetujuan Kontrak</h2>
-                <div class="flex items-start space-x-2">
-                    {{ form.agreed_to_terms }}
-                    <label for="{{ form.agreed_to_terms.id_for_label }}" class="text-sm text-gray-900">
-                        Saya telah membaca, memahami, dan setuju dengan 
-                        <a href="{% static 'documents/kontrak-partner.pdf' %}" target="_blank" class="text-indigo-600 hover:underline">Perjanjian Kontrak Mitra</a> dan 
-                        <a href="{% static 'documents/aturan-berlaku.pdf' %}" target="_blank" class="text-indigo-600 hover:underline">Aturan yang Berlaku</a>. <span class="text-red-500">*</span>
+                    <label for="{{ form.university_choice.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.university_choice.label }}
                     </label>
+                    {{ form.university_choice }}
+                    {% if form.university_choice.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.university_choice.errors|join:", " }}</p>
+                    {% endif %}
+                    <p class="mt-1 text-sm text-gray-500">{{ form.university_choice.help_text }}</p>
                 </div>
-                {% for error in form.agreed_to_terms.errors %}
-                    <p class="text-sm text-red-600">{{ error }}</p>
-                {% endfor %}
-            </div>
 
-            <!-- Submit -->
-            <div class="pt-4">
-                <button type="submit" class="w-full bg-red-600 text-white py-3 rounded font-semibold">
-                    Submit Partnership Request
-                </button>
-            </div>
-
-            {% if form.non_field_errors %}
-                <div class="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-                    <ul class="text-red-600">
-                        {% for error in form.non_field_errors %}
-                            <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
+                <!-- Nama Universitas Baru -->
+                <div id="new-university-section" style="display: none;">
+                    <label for="{{ form.new_university_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.new_university_name.label }}
+                    </label>
+                    {{ form.new_university_name }}
+                    {% if form.new_university_name.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.new_university_name.errors|join:", " }}</p>
+                    {% endif %}
+                    <p class="mt-1 text-sm text-gray-500">{{ form.new_university_name.help_text }}</p>
                 </div>
-            {% endif %}
-        </form>
+
+                <!-- Phone -->
+                <div>
+                    <label for="{{ form.phone.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.phone.label }}
+                    </label>
+                    {{ form.phone }}
+                    {% if form.phone.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.phone.errors|join:", " }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Address -->
+                <div>
+                    <label for="{{ form.address.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.address.label }}
+                    </label>
+                    {{ form.address }}
+                    {% if form.address.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.address.errors|join:", " }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.description.label }}
+                    </label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.description.errors|join:", " }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- NPWP -->
+                <div>
+                    <label for="{{ form.npwp.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.npwp.label }}
+                    </label>
+                    {{ form.npwp }}
+                    {% if form.npwp.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.npwp.errors|join:", " }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- NPWP File -->
+                <div>
+                    <label for="{{ form.npwp_file.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.npwp_file.label }}
+                    </label>
+                    {{ form.npwp_file }}
+                    {% if form.npwp_file.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.npwp_file.errors|join:", " }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Business Type -->
+                <div>
+                    <label for="{{ form.business_type.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.business_type.label }}
+                    </label>
+                    {{ form.business_type }}
+                    {% if form.business_type.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.business_type.errors|join:", " }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Account Number -->
+                <div>
+                    <label for="{{ form.account_number.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.account_number.label }}
+                    </label>
+                    {{ form.account_number }}
+                    {% if form.account_number.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.account_number.errors|join:", " }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Account Holder Name -->
+                <div>
+                    <label for="{{ form.account_holder_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.account_holder_name.label }}
+                    </label>
+                    {{ form.account_holder_name }}
+                    {% if form.account_holder_name.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.account_holder_name.errors|join:", " }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Bank Name -->
+                <div>
+                    <label for="{{ form.bank_name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.bank_name.label }}
+                    </label>
+                    {{ form.bank_name }}
+                    {% if form.bank_name.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.bank_name.errors|join:", " }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Logo -->
+                <div>
+                    <label for="{{ form.logo.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        {{ form.logo.label }}
+                    </label>
+                    {{ form.logo }}
+                    {% if form.logo.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ form.logo.errors|join:", " }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Is PKP -->
+                <div class="flex items-center">
+                    {{ form.is_pkp }}
+                    <label for="{{ form.is_pkp.id_for_label }}" class="ml-2 block text-sm text-gray-900">
+                        {{ form.is_pkp.label }}
+                    </label>
+                    {% if form.is_pkp.errors %}
+                        <p class="mt-1 text-sm text-red-600 ml-6">{{ form.is_pkp.errors|join:", " }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Agreed to Terms -->
+                <div class="flex items-center">
+                    {{ form.agreed_to_terms }}
+                    <label for="{{ form.agreed_to_terms.id_for_label }}" class="ml-2 block text-sm text-gray-900">
+                        {{ form.agreed_to_terms.label }}
+                    </label>
+                    {% if form.agreed_to_terms.errors %}
+                        <p class="mt-1 text-sm text-red-600 ml-6">{{ form.agreed_to_terms.errors|join:", " }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Non-Field Errors -->
+                {% if form.non_field_errors %}
+                    <div class="bg-red-50 border border-red-200 rounded-md p-4 mb-4">
+                        <ul class="text-sm text-red-600 list-disc pl-5">
+                            {% for error in form.non_field_errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <!-- Submit Button -->
+                <div class="pt-4">
+                    <button type="submit" class="w-full bg-primary hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition duration-200">
+                        Kirim Permintaan
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
-    <div class="text-center mt-6 text-sm text-gray-500">
-        <p>Need help? Contact us at <a href="mailto:support@ini.icei.ac.id" class="text-indigo-600 hover:underline">support@ini.icei.ac.id</a></p>
-    </div>
-</div>
-<br>
+    <!-- JavaScript untuk toggle field "Nama Universitas Baru" saat pilih "Lainnya" -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const univSelect = document.getElementById('{{ form.university_choice.id_for_label }}');
+            const newUnivSection = document.getElementById('new-university-section');
+            const newUnivInput = document.getElementById('{{ form.new_university_name.id_for_label }}');
+
+            function toggleNewUniv() {
+                if (univSelect.value === 'other') {
+                    newUnivSection.style.display = 'block';
+                    newUnivInput.required = true; // Buat wajib jika visible
+                } else {
+                    newUnivSection.style.display = 'none';
+                    newUnivInput.value = ''; // Clear value
+                    newUnivInput.required = false;
+                }
+            }
+
+            univSelect.addEventListener('change', toggleNewUniv);
+            toggleNewUniv(); // Initial check
+        });
+    </script>
 {% endblock %}
