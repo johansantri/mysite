@@ -20138,3 +20138,15 @@ django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 16: 's
 [INFO] 2025-10-28 13:05:52,006 [partner.views] GET request, creating empty form
 [INFO] 2025-10-28 13:05:52,007 [partner.views] Rendering request_partner.html
 [WARNING] 2025-10-28 13:06:26,667 [django.request] Not Found: /favicon.ico
+[ERROR] 2025-10-28 13:07:00,914 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 13:07:00,937 [django.request] Bad Request: /
