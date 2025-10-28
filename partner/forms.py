@@ -1,8 +1,13 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from courses.models import Partner, Universiti
-
+from authentication.models import Universiti
+from django_ckeditor_5.widgets import CKEditor5Widget
 class PartnerRequestForm(forms.ModelForm):
+
+    description = forms.CharField(
+        widget=CKEditor5Widget(attrs={'class': 'django_ckeditor_5'}, config_name='default')  # <-- Tambah config_name dan class wajib
+    )
     # Ubah ke ChoiceField biasa supaya bisa tambah 'other' tanpa error validasi model
     university_choice = forms.ChoiceField(
         choices=[],  # Akan diisi di __init__
@@ -58,8 +63,10 @@ class PartnerRequestForm(forms.ModelForm):
             'agreed_to_terms': 'h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded',
         }
 
+        
+
         for field_name, css_class in tailwind_attrs.items():
-            if field_name in self.fields:
+            if field_name in self.fields and field_name != 'description':  # <-- Tambah kondisi ini
                 self.fields[field_name].widget.attrs.update({'class': css_class})
 
     def clean(self):
