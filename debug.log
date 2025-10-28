@@ -18330,3 +18330,83 @@ django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'
 [INFO] 2025-10-28 08:37:21,907 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [INFO] 2025-10-28 08:37:21,987 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [INFO] 2025-10-28 08:37:22,080 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[DEBUG] 2025-10-28 08:42:06,159 [courses.views] Total instructors for partner 1: 1
+[ERROR] 2025-10-28 08:50:15,446 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 08:50:15,449 [django.request] Bad Request: /.env
+[ERROR] 2025-10-28 08:50:16,636 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 08:50:16,639 [django.request] Bad Request: /
+[WARNING] 2025-10-28 08:53:32,253 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 08:53:32,253 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 08:54:42,785 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 08:54:42,786 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 08:54:48,582 [django.request] Not Found: /wp-admin/admin-ajax.php
+[WARNING] 2025-10-28 08:54:49,560 [django.request] Not Found: /wp-content/plugins/showbizpro/temp/update_extract/e3z0r.php
+[DEBUG] 2025-10-28 08:57:58,199 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-10-28 08:57:58,201 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-28 00:57:58.199017+00:00
+[INFO] 2025-10-28 08:57:58,201 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:144.0) Gecko/20100101 Firefox/144.0", path_info: "/logout/"}.
+[DEBUG] 2025-10-28 08:58:13,698 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-10-28 08:58:13,699 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-10-28 08:58:13,699 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-10-28 00:58:13.697986+00:00
+[INFO] 2025-10-28 08:58:14,631 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:144.0) Gecko/20100101 Firefox/144.0", path_info: "/login/"}.
+[INFO] 2025-10-28 08:58:14,633 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-28 00:58:13.697986+00:00
+[DEBUG] 2025-10-28 08:58:14,650 [urllib3.connectionpool] Starting new HTTPS connection (1): ipinfo.io:443
+[DEBUG] 2025-10-28 08:58:14,935 [urllib3.connectionpool] https://ipinfo.io:443 "GET /203.217.140.215/json HTTP/1.1" 200 None
+[INFO] 2025-10-28 09:01:45,436 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 09:01:45,573 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 09:01:45,605 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-28 09:01:51,028 [django.request] Not Found: /report/83/detail
+[WARNING] 2025-10-28 09:01:51,189 [django.request] Not Found: /favicon.ico
+[INFO] 2025-10-28 09:02:41,775 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 09:02:41,891 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 09:02:42,039 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-28 09:02:43,060 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 09:02:48,698 [django.request] Not Found: /favicon.ico
+[INFO] 2025-10-28 09:03:08,912 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[ERROR] 2025-10-28 09:03:08,948 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[INFO] 2025-10-28 09:03:08,970 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 09:03:09,153 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-28 09:03:10,407 [django.request] Bad Request: /
+[WARNING] 2025-10-28 09:03:16,813 [django.request] Not Found: /favicon.ico
+[INFO] 2025-10-28 09:03:53,286 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 09:03:53,305 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 09:03:53,336 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 09:04:38,780 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 09:04:38,829 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 09:04:38,952 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 09:05:17,832 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 09:05:18,104 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 09:05:18,135 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 09:05:36,468 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 09:05:36,535 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 09:05:36,775 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-28 09:05:47,077 [django.request] Not Found: /favicon.ico

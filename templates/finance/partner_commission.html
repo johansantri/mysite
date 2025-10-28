@@ -121,10 +121,15 @@
     <tbody>
       {% for p in page_obj %}
         <tr>
-          <td>{{ p.id }} | {{ p.linked_transaction.id|default:"-" }}</td>
+          <td>{{ p.id }} | 
+             <a href="{% url 'payments:payment_detail' p.id %}" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-receipt"></i> {{ p.linked_transaction.id|default:"-" }}
+            </a>
+                        
+              </td>
           <td>
-            <a href="{% url 'payments:cek_transaction_detail' pk=p.linked_transaction.id %}" class="text-decoration-none">
-              {{ p.user.username }}
+            <a href="{% url 'payments:cek_transaction_detail' pk=p.linked_transaction.id %}" class="btn btn-sm btn-outline-warning">
+              <i class="bi bi-person"></i>{{ p.user.username }}
             </a>
           </td>
           <td>{{ p.course.course_name }}</td>
