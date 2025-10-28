@@ -5851,6 +5851,7 @@ def update_partner(request, partner_id):
 
 #partner view
 #@cache_page(60 * 5)  # Aktifkan cache kalau sudah siap
+
 def partnerView(request):
     if not request.user.is_authenticated:
         return redirect(f"/login/?next={request.path}")
@@ -5858,7 +5859,11 @@ def partnerView(request):
     query = request.GET.get('q', '')
 
     # Filter partners by user role
-    partners = Partner.objects.all() if request.user.is_superuser else Partner.objects.filter(user_id=request.user.id)
+    # Filter partners by user role
+    if request.user.is_superuser or getattr(request.user, 'is_finance', False):
+        partners = Partner.objects.all()
+    else:
+        partners = Partner.objects.filter(user_id=request.user.id)
 
     # Filter berdasarkan query pencarian
     if query:

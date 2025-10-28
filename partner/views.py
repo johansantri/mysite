@@ -93,10 +93,16 @@ def partner_analytics_admin(request):
         'datasets': [{'label': 'Partners', 'data': [u['total'] for u in univ], 'backgroundColor': '#10B981'}]
     }
 
-    # === 3. Balance Stats ===
-    balance_stats = floatify(partners.exclude(balance=None).aggregate(
-        avg=Avg('balance'), max=Max('balance'), min=Min('balance')
-    ))
+    # === 3. Balance Stats (from Payments) ===
+    balance_stats = Payment.objects.filter(status='completed').values('course__org_partner') \
+        .annotate(total=Sum('snapshot_partner_earning')) \
+        .aggregate(
+            avg=Avg('total'),
+            max=Max('total'),
+            min=Min('total')
+        )
+
+    balance_stats = floatify(balance_stats)
 
     # === 4. Tax Distribution ===
     tax_qs = partners.values('tax').annotate(total=Count('id')).order_by('tax')

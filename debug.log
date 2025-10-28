@@ -16820,3 +16820,1490 @@ django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'
 [DEBUG] 2025-10-27 15:58:26,118 [PIL.PngImagePlugin] STREAM b'IHDR' 16 13
 [DEBUG] 2025-10-27 15:58:26,119 [PIL.PngImagePlugin] STREAM b'IDAT' 41 11750
 [WARNING] 2025-10-27 15:58:47,205 [django.request] Not Found: /favicon.ico
+[DEBUG] 2025-10-27 15:59:53,186 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-10-27 15:59:53,189 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-27 07:59:53.186253+00:00
+[INFO] 2025-10-27 15:59:53,189 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:144.0) Gecko/20100101 Firefox/144.0", path_info: "/logout/"}.
+[WARNING] 2025-10-27 16:00:18,025 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 16:00:18,025 [django.request] Forbidden: /search/
+[DEBUG] 2025-10-27 16:00:42,027 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-10-27 16:00:42,028 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-10-27 16:00:42,028 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-10-27 08:00:42.027766+00:00
+[INFO] 2025-10-27 16:00:43,010 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:144.0) Gecko/20100101 Firefox/144.0", path_info: "/login/"}.
+[INFO] 2025-10-27 16:00:43,012 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-27 08:00:42.027766+00:00
+[DEBUG] 2025-10-27 16:00:43,028 [urllib3.connectionpool] Starting new HTTPS connection (1): ipinfo.io:443
+[DEBUG] 2025-10-27 16:00:43,493 [urllib3.connectionpool] https://ipinfo.io:443 "GET /203.217.140.215/json HTTP/1.1" 200 None
+[WARNING] 2025-10-27 16:00:56,996 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 16:00:56,997 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 16:19:13,950 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 16:19:13,951 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 16:20:23,948 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 16:20:23,949 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 16:21:38,844 [django.request] Not Found: /robots.txt
+[WARNING] 2025-10-27 16:21:44,243 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 16:21:44,244 [django.request] Forbidden: /search/
+[ERROR] 2025-10-27 16:23:44,830 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 16:23:44,832 [django.request] Bad Request: /
+[WARNING] 2025-10-27 16:25:19,808 [django.request] Not Found: /robots.txt
+[WARNING] 2025-10-27 16:25:20,338 [django.request] Not Found: /robots.txt
+[WARNING] 2025-10-27 16:26:24,598 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 16:26:24,599 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 16:31:42,420 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 16:31:42,420 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 16:32:11,027 [django.security.csrf] Forbidden (Referer checking failed - no Referer.): /
+[WARNING] 2025-10-27 16:32:11,035 [django.request] Not Found: /wp-content/plugins/woocommerce-abandoned-cart/readme.txt
+[WARNING] 2025-10-27 16:32:11,036 [django.request] Not Found: /wp-content/plugins/wp-payeezy-pay/donate.php
+[WARNING] 2025-10-27 16:32:11,035 [django.request] Not Found: /wp-content/plugins/total-donations/readme.txt
+[WARNING] 2025-10-27 16:32:11,041 [django.request] Not Found: /wp-content/plugins/wsecure/wsecure-config.php
+[WARNING] 2025-10-27 16:32:11,043 [django.request] Not Found: /installer-backup.php
+[WARNING] 2025-10-27 16:32:11,045 [django.request] Not Found: /graphql
+[WARNING] 2025-10-27 16:32:11,048 [django.request] Not Found: /wp-content/plugins/w3-total-cache/pub/sns.php
+[WARNING] 2025-10-27 16:32:11,050 [django.request] Not Found: /wp-json/rankmath/v1/updateMeta
+[WARNING] 2025-10-27 16:32:11,052 [django.request] Not Found: /wp-admin/admin-ajax.php
+[WARNING] 2025-10-27 16:32:12,015 [django.request] Not Found: /wp-content/plugins/delightful-downloads/assets/vendor/jqueryFileTree/connectors/jqueryFileTree.php
+[WARNING] 2025-10-27 16:32:34,007 [django.request] Not Found: /wp-admin/admin-ajax.php
+[WARNING] 2025-10-27 16:32:57,015 [django.request] Not Found: /wp-content/uploads/wp_dndcf7_uploads/wpcf7-files/34WklvCWO3pr9zkpxV1TQ2S0oZ6.txt
+[WARNING] 2025-10-27 16:33:01,017 [django.security.csrf] Forbidden (Referer checking failed - no Referer.): /
+[WARNING] 2025-10-27 16:33:04,016 [django.security.csrf] Forbidden (Referer checking failed - no Referer.): /
+[WARNING] 2025-10-27 16:34:24,878 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 16:34:24,878 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 16:52:12,954 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 16:52:12,955 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 16:53:07,216 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 16:53:07,217 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 16:55:33,483 [django.request] Not Found: //wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 16:55:33,582 [django.request] Not Found: //xmlrpc.php
+[WARNING] 2025-10-27 16:55:34,060 [django.request] Not Found: //blog/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 16:55:34,262 [django.request] Not Found: //web/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 16:55:34,512 [django.request] Not Found: //wordpress/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 16:55:34,734 [django.request] Not Found: //website/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 16:55:34,921 [django.request] Not Found: //wp/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 16:55:35,434 [django.request] Not Found: //news/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 16:55:35,526 [django.request] Not Found: //2020/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 16:55:35,620 [django.request] Not Found: //2019/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 16:55:35,773 [django.request] Not Found: //shop/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 16:55:35,862 [django.request] Not Found: //wp1/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 16:55:35,964 [django.request] Not Found: //test/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 16:55:36,063 [django.request] Not Found: //wp2/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 16:55:36,171 [django.request] Not Found: //site/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 16:55:36,261 [django.request] Not Found: //cms/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 16:55:36,368 [django.request] Not Found: //sito/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 16:56:07,106 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 16:56:07,107 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 16:58:43,995 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 16:58:43,995 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 17:01:09,190 [django.request] Not Found: /robots.txt
+[WARNING] 2025-10-27 17:05:13,842 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 17:05:13,843 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 17:17:08,607 [django.request] Not Found: /guest_auth/guestIsUp.php
+[WARNING] 2025-10-27 17:17:09,565 [django.request] Not Found: /public/index.php
+[WARNING] 2025-10-27 17:17:09,572 [django.request] Not Found: /bsh.servlet.BshServlet
+[WARNING] 2025-10-27 17:17:09,580 [django.request] Not Found: /upgrade/detail.jsp/login/LoginSSO.jsp
+[WARNING] 2025-10-27 17:17:09,580 [django.request] Not Found: /export/classroom-course-statistics
+[WARNING] 2025-10-27 17:17:09,588 [django.request] Not Found: /index.php/User/doLogin
+[WARNING] 2025-10-27 17:17:09,593 [django.request] Not Found: /weaver/org.apache.xmlrpc.webserver.XmlRpcServlet
+[WARNING] 2025-10-27 17:17:09,595 [django.request] Not Found: /vpn/user/download/client
+[WARNING] 2025-10-27 17:17:09,601 [django.request] Not Found: /tplus/ajaxpro/Ufida.T.CodeBehind._PriorityLevel,App_Code.ashx
+[WARNING] 2025-10-27 17:17:09,603 [django.request] Not Found: /service/~iufo/com.ufida.web.action.ActionServlet
+[WARNING] 2025-10-27 17:17:09,605 [django.request] Not Found: /dataSetParam/verification;swagger-ui/
+[WARNING] 2025-10-27 17:17:09,614 [django.request] Not Found: /mobile/plugin/browser.jsp
+[WARNING] 2025-10-27 17:17:09,616 [django.request] Not Found: /webadm/
+[WARNING] 2025-10-27 17:17:09,623 [django.request] Not Found: /zentao/user-login.html
+[WARNING] 2025-10-27 17:17:10,570 [django.request] Not Found: /servlet/codesettree
+[WARNING] 2025-10-27 17:17:14,583 [django.request] Not Found: /uapjs/jsinvoke/
+[WARNING] 2025-10-27 17:18:21,620 [django.request] Not Found: /cgi-bin/rpc
+[WARNING] 2025-10-27 17:18:37,583 [django.request] Not Found: /index.php
+[WARNING] 2025-10-27 17:20:39,685 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 17:20:39,685 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 17:21:39,677 [django.request] Not Found: /robots.txt
+[WARNING] 2025-10-27 17:21:41,348 [django.request] Not Found: /robots.txt
+[WARNING] 2025-10-27 17:25:35,722 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 17:25:35,722 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 17:27:44,613 [django.request] Not Found: /general/index/UploadFile.php
+[WARNING] 2025-10-27 17:27:44,615 [django.request] Not Found: /sys/ui/extend/varkind/custom.jsp
+[WARNING] 2025-10-27 17:27:47,577 [django.request] Not Found: /images/logo/logo-eoffice.php
+[WARNING] 2025-10-27 17:27:47,581 [django.request] Not Found: /sys/ui/extend/varkind/custom.jsp
+[WARNING] 2025-10-27 17:27:51,600 [django.request] Not Found: /seeyon/htmlofficeservlet
+[WARNING] 2025-10-27 17:27:55,555 [django.request] Not Found: /seeyon/test123456.jsp
+[WARNING] 2025-10-27 17:35:22,575 [django.request] Not Found: /servlet/~ic/bsh.servlet.BshServlet
+[WARNING] 2025-10-27 17:35:25,584 [django.request] Not Found: /servlet/~ic/bsh.servlet.BshServlet
+[WARNING] 2025-10-27 17:41:01,424 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 17:41:01,424 [django.request] Forbidden: /search/
+[ERROR] 2025-10-27 17:50:27,382 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 17:50:27,383 [django.request] Bad Request: /.env
+[WARNING] 2025-10-27 17:50:35,827 [django.request] Not Found: /robots.txt
+[WARNING] 2025-10-27 17:51:28,620 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 17:51:28,621 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 17:51:48,852 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 17:51:48,853 [django.request] Forbidden: /search/
+[ERROR] 2025-10-27 18:03:12,285 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 18:03:12,285 [django.request] Bad Request: /.env
+[ERROR] 2025-10-27 18:03:13,258 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 18:03:13,260 [django.request] Bad Request: /
+[WARNING] 2025-10-27 18:05:36,600 [django.request] Not Found: /public/index.php/material/Material/_download_imgage
+[WARNING] 2025-10-27 18:05:38,568 [django.request] Not Found: /public/index.php/home/file/user_pics
+[WARNING] 2025-10-27 18:09:33,700 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 18:09:33,701 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 18:18:55,398 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 18:18:55,399 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 18:20:24,762 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 18:20:24,763 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 18:21:41,441 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 18:21:41,442 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 18:25:34,819 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 18:25:34,820 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 18:25:45,643 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 18:25:45,643 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 18:32:32,592 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 18:32:32,593 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 18:43:23,516 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 18:43:23,516 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 18:43:28,388 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 18:43:28,389 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 18:48:43,446 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 18:48:43,447 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 18:49:09,678 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 18:49:09,679 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 18:51:39,943 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 18:51:39,943 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 18:56:51,126 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 18:56:51,127 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 19:02:41,946 [django.request] Not Found: /robots.txt
+[WARNING] 2025-10-27 19:07:42,739 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 19:07:42,740 [django.request] Forbidden: /search/
+[ERROR] 2025-10-27 19:10:35,672 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 19:10:35,673 [django.request] Bad Request: /.env
+[ERROR] 2025-10-27 19:10:36,626 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 19:10:36,627 [django.request] Bad Request: /
+[WARNING] 2025-10-27 19:15:13,626 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 19:15:13,627 [django.request] Forbidden: /search/
+[ERROR] 2025-10-27 19:20:46,142 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 19:20:46,143 [django.request] Bad Request: /.env
+[DEBUG] 2025-10-27 19:23:21,509 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-10-27 19:23:21,510 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-27 11:23:21.509843+00:00
+[INFO] 2025-10-27 19:23:21,511 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36", path_info: "/logout/"}.
+[WARNING] 2025-10-27 19:33:39,085 [django.request] Not Found: /robots.txt
+[WARNING] 2025-10-27 19:33:39,255 [django.request] Not Found: /course_list//course-detail/18/audit-of-information-system/
+[WARNING] 2025-10-27 19:33:47,898 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 19:33:47,899 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 19:38:38,469 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 19:38:38,470 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 19:46:49,976 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 19:46:49,977 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 19:53:59,690 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 19:53:59,692 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 19:55:19,974 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 19:55:19,975 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 20:16:03,063 [django.request] Not Found: /robots.txt
+[WARNING] 2025-10-27 20:16:15,220 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 20:16:15,221 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 20:17:32,505 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 20:17:32,506 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 20:17:46,054 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 20:17:46,055 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 20:21:16,275 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 20:21:16,275 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 20:23:46,286 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 20:23:46,286 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 20:26:06,782 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 20:26:06,782 [django.request] Forbidden: /search/
+[ERROR] 2025-10-27 20:27:32,272 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 20:27:32,274 [django.request] Bad Request: /.env
+[WARNING] 2025-10-27 20:33:17,397 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 20:33:17,397 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 20:34:57,918 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 20:34:57,919 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 20:36:37,447 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 20:36:37,448 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 20:52:05,313 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 20:52:05,313 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 21:17:37,877 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 21:17:37,877 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 21:21:04,722 [django.request] Not Found: /assets/file:///etc/passwd
+[WARNING] 2025-10-27 21:21:07,652 [django.request] Not Found: /ws_utc/resources/setting/options
+[WARNING] 2025-10-27 21:21:09,644 [django.request] Not Found: /ws_utc/resources/setting/keystore
+[ERROR] 2025-10-27 21:23:19,748 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 21:23:19,749 [django.request] Bad Request: /.git/config
+[WARNING] 2025-10-27 21:25:42,877 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 21:25:42,878 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 21:27:32,459 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 21:27:32,460 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 21:29:38,084 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 21:29:38,084 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 21:30:28,840 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 21:30:28,841 [django.request] Forbidden: /search/
+[ERROR] 2025-10-27 21:36:47,030 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 21:36:47,032 [django.request] Bad Request: /.env
+[WARNING] 2025-10-27 21:37:03,181 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 21:37:03,181 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 21:39:23,405 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 21:39:23,406 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 21:40:21,737 [django.request] Not Found: /phpMyAdmin3/index.php
+[WARNING] 2025-10-27 21:40:22,170 [django.request] Not Found: /phpMyAdmin-5.1.2/index.php
+[WARNING] 2025-10-27 21:40:22,606 [django.request] Not Found: /phpMyAdmin-4.9.10-all-languages/index.php
+[WARNING] 2025-10-27 21:40:23,041 [django.request] Not Found: /mysql-admin/index.php
+[WARNING] 2025-10-27 21:40:23,476 [django.request] Not Found: /phpMyAdmin2/index.php
+[WARNING] 2025-10-27 21:40:23,911 [django.request] Not Found: /phpmyadmin/index.php
+[WARNING] 2025-10-27 21:40:24,348 [django.request] Not Found: /admin/sysadmin/index.php
+[WARNING] 2025-10-27 21:40:24,782 [django.request] Not Found: /_phpmyadmin_/index.php
+[WARNING] 2025-10-27 21:40:25,219 [django.request] Not Found: /admin/phpmyadmin/index.php
+[WARNING] 2025-10-27 21:40:25,654 [django.request] Not Found: /admin/web/index.php
+[WARNING] 2025-10-27 21:40:26,087 [django.request] Not Found: /administrator/phpMyAdmin/index.php
+[WARNING] 2025-10-27 21:40:26,521 [django.request] Not Found: /phpMyAdmin-5.2/index.php
+[WARNING] 2025-10-27 21:40:26,956 [django.request] Not Found: /sql/phpmanager/index.php
+[WARNING] 2025-10-27 21:40:27,393 [django.request] Not Found: /mysql/sqlmanager/index.php
+[WARNING] 2025-10-27 21:40:27,829 [django.request] Not Found: /phpMyAdmin6/index.php
+[WARNING] 2025-10-27 21:40:28,265 [django.request] Not Found: /phpmyadmin3/index.php
+[WARNING] 2025-10-27 21:40:28,702 [django.request] Not Found: /db/phpmyadmin3/index.php
+[WARNING] 2025-10-27 21:40:29,136 [django.request] Not Found: /sql/phpmyadmin5/index.php
+[WARNING] 2025-10-27 21:40:29,567 [django.request] Not Found: /db/phpmyadmin/index.php
+[WARNING] 2025-10-27 21:40:30,007 [django.request] Not Found: /phpMyadmin/index.php
+[WARNING] 2025-10-27 21:40:30,441 [django.request] Not Found: /db/dbadmin/index.php
+[WARNING] 2025-10-27 21:40:30,876 [django.request] Not Found: /php-my-admin/index.php
+[WARNING] 2025-10-27 21:40:31,313 [django.request] Not Found: /sql/phpMyAdmin/index.php
+[WARNING] 2025-10-27 21:40:31,748 [django.request] Not Found: /MyAdmin/index.php
+[WARNING] 2025-10-27 21:40:32,186 [django.request] Not Found: /phpMyAdmin4/index.php
+[WARNING] 2025-10-27 21:40:32,623 [django.request] Not Found: /db/phpmyadmin5/index.php
+[WARNING] 2025-10-27 21:40:33,057 [django.request] Not Found: /db/phpMyAdmin/index.php
+[WARNING] 2025-10-27 21:40:33,429 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 21:40:33,430 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 21:40:33,492 [django.request] Not Found: /phpmyadmin4/index.php
+[WARNING] 2025-10-27 21:40:33,927 [django.request] Not Found: /phppma/index.php
+[WARNING] 2025-10-27 21:40:34,364 [django.request] Not Found: /phpmyadmin6/index.php
+[WARNING] 2025-10-27 21:40:34,799 [django.request] Not Found: /phpMyAdmin-4/index.php
+[WARNING] 2025-10-27 21:40:35,234 [django.request] Not Found: /admin/pma/index.php
+[WARNING] 2025-10-27 21:40:35,668 [django.request] Not Found: /phpMyAdmin-5.2.0-all-languages/index.php
+[WARNING] 2025-10-27 21:40:36,102 [django.request] Not Found: /phpMyAdmin-5.1.1/index.php
+[WARNING] 2025-10-27 21:40:36,537 [django.request] Not Found: /mysql/web/index.php
+[WARNING] 2025-10-27 21:40:36,975 [django.request] Not Found: /admin/phpMyAdmin/index.php
+[WARNING] 2025-10-27 21:40:37,411 [django.request] Not Found: /phpMyAdmin-5.1.0/index.php
+[WARNING] 2025-10-27 21:40:37,848 [django.request] Not Found: /1phpmyadmin/index.php
+[WARNING] 2025-10-27 21:40:38,284 [django.request] Not Found: /phpmyadmin5/index.php
+[WARNING] 2025-10-27 21:40:38,718 [django.request] Not Found: /sql/sqlweb/index.php
+[WARNING] 2025-10-27 21:40:39,152 [django.request] Not Found: /admin/db/index.php
+[WARNING] 2025-10-27 21:40:39,586 [django.request] Not Found: /mysql/db/index.php
+[WARNING] 2025-10-27 21:40:40,022 [django.request] Not Found: /database/index.php
+[WARNING] 2025-10-27 21:40:40,455 [django.request] Not Found: /phpMyAdmin-5.2.1/index.php
+[WARNING] 2025-10-27 21:40:40,890 [django.request] Not Found: /db/phpMyAdmin-3/index.php
+[WARNING] 2025-10-27 21:40:41,324 [django.request] Not Found: /sql/phpmyadmin3/index.php
+[WARNING] 2025-10-27 21:40:41,758 [django.request] Not Found: /phpMyAdmin-3/index.php
+[WARNING] 2025-10-27 21:40:42,194 [django.request] Not Found: /shopdb/index.php
+[WARNING] 2025-10-27 21:40:42,629 [django.request] Not Found: /myadmin/index.php
+[WARNING] 2025-10-27 21:40:43,062 [django.request] Not Found: /db/index.php
+[WARNING] 2025-10-27 21:40:43,500 [django.request] Not Found: /_phpMyAdmin/index.php
+[WARNING] 2025-10-27 21:40:43,935 [django.request] Not Found: /db/phpMyAdmin-4/index.php
+[WARNING] 2025-10-27 21:40:44,370 [django.request] Not Found: /php-myadmin/index.php
+[WARNING] 2025-10-27 21:40:44,804 [django.request] Not Found: /phpMyAdmin-5.2.0/index.php
+[WARNING] 2025-10-27 21:40:45,239 [django.request] Not Found: /db/db-admin/index.php
+[WARNING] 2025-10-27 21:40:45,673 [django.request] Not Found: /db/phpMyAdmin3/index.php
+[WARNING] 2025-10-27 21:40:46,107 [django.request] Not Found: /sql/sql/index.php
+[WARNING] 2025-10-27 21:40:46,541 [django.request] Not Found: /phpmyadmin2019/index.php
+[WARNING] 2025-10-27 21:40:46,977 [django.request] Not Found: /pma/index.php
+[WARNING] 2025-10-27 21:40:47,415 [django.request] Not Found: /db/webadmin/index.php
+[WARNING] 2025-10-27 21:40:47,852 [django.request] Not Found: /sql/phpmy-admin/index.php
+[WARNING] 2025-10-27 21:40:48,286 [django.request] Not Found: /db/myadmin/index.php
+[WARNING] 2025-10-27 21:40:48,721 [django.request] Not Found: /phpMyAdmin-5.1.3/index.php
+[WARNING] 2025-10-27 21:40:49,154 [django.request] Not Found: /administrator/db/index.php
+[WARNING] 2025-10-27 21:40:49,587 [django.request] Not Found: /db/dbweb/index.php
+[WARNING] 2025-10-27 21:40:50,028 [django.request] Not Found: /PMA/index.php
+[WARNING] 2025-10-27 21:40:50,467 [django.request] Not Found: /sql/php-myadmin/index.php
+[WARNING] 2025-10-27 21:40:50,900 [django.request] Not Found: /phpMyAdmin5/index.php
+[WARNING] 2025-10-27 21:40:51,334 [django.request] Not Found: /sql/phpmyadmin4/index.php
+[WARNING] 2025-10-27 21:40:51,769 [django.request] Not Found: /phpMyAdmin_/index.php
+[WARNING] 2025-10-27 21:40:52,205 [django.request] Not Found: /administrator/pma/index.php
+[WARNING] 2025-10-27 21:40:52,640 [django.request] Not Found: /_phpmyadmin/index.php
+[WARNING] 2025-10-27 21:40:53,077 [django.request] Not Found: /sql/phpMyAdmin2/index.php
+[WARNING] 2025-10-27 21:40:53,223 [django.request] Not Found: /robots.txt
+[WARNING] 2025-10-27 21:40:53,513 [django.request] Not Found: /2phpmyadmin/index.php
+[WARNING] 2025-10-27 21:40:53,948 [django.request] Not Found: /db/webdb/index.php
+[WARNING] 2025-10-27 21:40:54,383 [django.request] Not Found: /phpMyAdmin-5/index.php
+[WARNING] 2025-10-27 21:40:54,818 [django.request] Not Found: /db/phpmyadmin4/index.php
+[WARNING] 2025-10-27 21:40:55,250 [django.request] Not Found: /phpMyAdmin-latest-all-languages/index.php
+[WARNING] 2025-10-27 21:40:55,686 [django.request] Not Found: /phpMyAdmin-4.9.7/index.php
+[WARNING] 2025-10-27 21:40:56,121 [django.request] Not Found: /phpMyAdmin-latest-english/index.php
+[WARNING] 2025-10-27 21:40:56,555 [django.request] Not Found: /mysqladmin/index.php
+[WARNING] 2025-10-27 21:40:56,989 [django.request] Not Found: /mysql/dbadmin/index.php
+[WARNING] 2025-10-27 21:40:57,421 [django.request] Not Found: /administrator/phpmyadmin/index.php
+[WARNING] 2025-10-27 21:40:57,856 [django.request] Not Found: /phpMyAdmin-5.2.1-english/index.php
+[WARNING] 2025-10-27 21:40:58,289 [django.request] Not Found: /mysqlmanager/index.php
+[WARNING] 2025-10-27 21:40:58,726 [django.request] Not Found: /mysql/mysqlmanager/index.php
+[WARNING] 2025-10-27 21:40:59,161 [django.request] Not Found: /phpMyAdmin5.2/index.php
+[WARNING] 2025-10-27 21:40:59,596 [django.request] Not Found: /admin/index.php
+[WARNING] 2025-10-27 21:41:00,030 [django.request] Not Found: /phpMyAdmin5.1/index.php
+[WARNING] 2025-10-27 21:41:00,464 [django.request] Not Found: /administrator/PMA/index.php
+[WARNING] 2025-10-27 21:41:00,898 [django.request] Not Found: /__phpmyadmin/index.php
+[WARNING] 2025-10-27 21:41:01,332 [django.request] Not Found: /phpmyadmin2022/index.php
+[WARNING] 2025-10-27 21:41:01,769 [django.request] Not Found: /phpmy/index.php
+[WARNING] 2025-10-27 21:41:02,202 [django.request] Not Found: /phpmyadmin_/index.php
+[WARNING] 2025-10-27 21:41:02,639 [django.request] Not Found: /sql/sqladmin/index.php
+[WARNING] 2025-10-27 21:41:03,074 [django.request] Not Found: /sql/websql/index.php
+[WARNING] 2025-10-27 21:41:03,510 [django.request] Not Found: /index.php
+[WARNING] 2025-10-27 21:41:03,946 [django.request] Not Found: /mysql/admin/index.php
+[WARNING] 2025-10-27 21:41:04,382 [django.request] Not Found: /mysql/pma/index.php
+[WARNING] 2025-10-27 21:41:04,816 [django.request] Not Found: /sql/webadmin/index.php
+[WARNING] 2025-10-27 21:41:05,250 [django.request] Not Found: /phpMyAdmin/index.php
+[WARNING] 2025-10-27 21:41:05,686 [django.request] Not Found: /db/websql/index.php
+[WARNING] 2025-10-27 21:41:06,119 [django.request] Not Found: /phpmyAdmin/index.php
+[WARNING] 2025-10-27 21:41:06,553 [django.request] Not Found: /phpmyadmin2020/index.php
+[WARNING] 2025-10-27 21:41:06,988 [django.request] Not Found: /mysql/pMA/index.php
+[WARNING] 2025-10-27 21:41:07,423 [django.request] Not Found: /phpmyadmin2021/index.php
+[WARNING] 2025-10-27 21:41:07,857 [django.request] Not Found: /admin/sqladmin/index.php
+[WARNING] 2025-10-27 21:41:08,292 [django.request] Not Found: /phpMyAdmin-latest/index.php
+[WARNING] 2025-10-27 21:41:08,729 [django.request] Not Found: /dbadmin/index.php
+[WARNING] 2025-10-27 21:41:09,162 [django.request] Not Found: /phpmyadmin2018/index.php
+[WARNING] 2025-10-27 21:41:09,597 [django.request] Not Found: /phpmyadmin2017/index.php
+[WARNING] 2025-10-27 21:41:10,034 [django.request] Not Found: /wp-content/plugins/portable-phpmyadmin/wp-pma-mod/index.php
+[WARNING] 2025-10-27 21:41:10,468 [django.request] Not Found: /phpMyAdmin6.0/index.php
+[WARNING] 2025-10-27 21:41:10,904 [django.request] Not Found: /sqlmanager/index.php
+[WARNING] 2025-10-27 21:41:11,339 [django.request] Not Found: /administrator/web/index.php
+[WARNING] 2025-10-27 21:41:11,772 [django.request] Not Found: /administrator/admin/index.php
+[WARNING] 2025-10-27 21:41:12,206 [django.request] Not Found: /phpMyAdmin1/index.php
+[WARNING] 2025-10-27 21:41:12,642 [django.request] Not Found: /program/index.php
+[WARNING] 2025-10-27 21:41:13,076 [django.request] Not Found: /sql/webdb/index.php
+[WARNING] 2025-10-27 21:41:13,508 [django.request] Not Found: /sql/myadmin/index.php
+[WARNING] 2025-10-27 21:41:13,943 [django.request] Not Found: /db/phpMyAdmin-5/index.php
+[WARNING] 2025-10-27 21:41:14,377 [django.request] Not Found: /phpMyAdmin-5.2.1-all-languages/index.php
+[WARNING] 2025-10-27 21:41:14,811 [django.request] Not Found: /phpmyadmin1/index.php
+[WARNING] 2025-10-27 21:41:15,246 [django.request] Not Found: /phpmyadmin2/index.php
+[WARNING] 2025-10-27 21:41:15,680 [django.request] Not Found: /sql/sql-admin/index.php
+[WARNING] 2025-10-27 21:41:16,118 [django.request] Not Found: /mysql/index.php
+[WARNING] 2025-10-27 21:41:16,553 [django.request] Not Found: /phpmy-admin/index.php
+[WARNING] 2025-10-27 21:45:23,946 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 21:45:23,947 [django.request] Forbidden: /search/
+[ERROR] 2025-10-27 21:47:50,326 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 21:47:50,327 [django.request] Bad Request: /
+[WARNING] 2025-10-27 21:47:54,273 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 21:47:54,274 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 21:48:50,710 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 21:48:50,710 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 21:57:01,272 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 21:57:01,273 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 22:02:23,459 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 22:02:23,460 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 22:07:42,215 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 22:07:42,215 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 22:07:42,917 [django.request] Not Found: /robots.txt
+[WARNING] 2025-10-27 22:10:12,491 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 22:10:12,491 [django.request] Forbidden: /search/
+[ERROR] 2025-10-27 22:21:50,789 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 22:21:50,790 [django.request] Bad Request: /
+[ERROR] 2025-10-27 22:22:10,099 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 22:22:10,100 [django.request] Bad Request: /robots.txt
+[ERROR] 2025-10-27 22:25:26,070 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 22:25:26,071 [django.request] Bad Request: /favicon.ico
+[WARNING] 2025-10-27 22:25:51,921 [django.request] Not Found: /robots.txt
+[ERROR] 2025-10-27 22:27:43,284 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 22:27:43,285 [django.request] Bad Request: /.env
+[ERROR] 2025-10-27 22:27:45,691 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 22:27:45,692 [django.request] Bad Request: /.git/config
+[WARNING] 2025-10-27 22:31:34,069 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 22:31:34,069 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 22:36:29,154 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 22:36:29,154 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 22:38:54,960 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 22:38:54,960 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 22:40:17,110 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-27 22:40:18,405 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-27 22:51:33,010 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 22:51:33,011 [django.request] Forbidden: /search/
+[WARNING] 2025-10-27 23:00:26,720 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 23:00:26,720 [django.request] Forbidden: /search/
+[ERROR] 2025-10-27 23:02:50,024 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 23:02:50,025 [django.request] Bad Request: /.env
+[ERROR] 2025-10-27 23:02:51,035 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 23:02:51,036 [django.request] Bad Request: /
+[ERROR] 2025-10-27 23:03:25,151 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 23:03:25,152 [django.request] Bad Request: /
+[ERROR] 2025-10-27 23:03:25,750 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 23:03:25,752 [django.request] Bad Request: /favicon.ico
+[ERROR] 2025-10-27 23:04:52,588 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 23:04:52,589 [django.request] Bad Request: /.git/config
+[WARNING] 2025-10-27 23:40:40,931 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-27 23:40:40,932 [django.request] Forbidden: /search/
+[ERROR] 2025-10-27 23:43:19,408 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 23:43:19,409 [django.request] Bad Request: /swagger
+[ERROR] 2025-10-27 23:43:19,558 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 23:43:19,559 [django.request] Bad Request: /api/swagger
+[ERROR] 2025-10-27 23:43:19,709 [django.security.DisallowedHost] Invalid HTTP_HOST header: 'localhost'. You may need to add 'localhost' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'localhost'. You may need to add 'localhost' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 23:43:19,710 [django.request] Bad Request: /swagger
+[ERROR] 2025-10-27 23:43:19,860 [django.security.DisallowedHost] Invalid HTTP_HOST header: 'localhost'. You may need to add 'localhost' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'localhost'. You may need to add 'localhost' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 23:43:19,860 [django.request] Bad Request: /api/swagger
+[ERROR] 2025-10-27 23:43:20,011 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 23:43:20,012 [django.request] Bad Request: /swagger
+[ERROR] 2025-10-27 23:43:20,161 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-27 23:43:20,162 [django.request] Bad Request: /api/swagger
+[WARNING] 2025-10-27 23:43:20,313 [django.request] Not Found: /swagger
+[WARNING] 2025-10-27 23:43:20,465 [django.request] Not Found: /api/swagger
+[WARNING] 2025-10-27 23:49:55,536 [django.request] Not Found: //wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 23:49:55,626 [django.request] Not Found: //xmlrpc.php
+[WARNING] 2025-10-27 23:49:55,848 [django.request] Not Found: //blog/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 23:49:55,942 [django.request] Not Found: //web/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 23:49:56,033 [django.request] Not Found: //wordpress/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 23:49:56,123 [django.request] Not Found: //website/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 23:49:56,238 [django.request] Not Found: //wp/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 23:49:56,338 [django.request] Not Found: //news/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 23:49:56,428 [django.request] Not Found: //2020/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 23:49:56,522 [django.request] Not Found: //2019/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 23:49:56,612 [django.request] Not Found: //shop/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 23:49:56,721 [django.request] Not Found: //wp1/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 23:49:56,814 [django.request] Not Found: //test/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 23:49:56,905 [django.request] Not Found: //wp2/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 23:49:56,997 [django.request] Not Found: //site/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 23:49:57,088 [django.request] Not Found: //cms/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-27 23:49:57,187 [django.request] Not Found: //sito/wp-includes/wlwmanifest.xml
+[WARNING] 2025-10-28 00:11:33,459 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 00:11:33,459 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 00:11:45,906 [django.request] Not Found: /.env
+[WARNING] 2025-10-28 00:13:47,928 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 00:13:47,929 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 00:23:55,621 [django.request] Not Found: /robots.txt
+[WARNING] 2025-10-28 00:26:10,504 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 00:26:10,504 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 00:27:40,841 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 00:27:40,842 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 00:30:45,495 [django.request] Not Found: /robots.txt
+[ERROR] 2025-10-28 00:35:12,900 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 00:35:12,901 [django.request] Bad Request: /api/sonicos/is-sslvpn-enabled
+[ERROR] 2025-10-28 00:37:47,458 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 00:37:47,459 [django.request] Bad Request: /api/sonicos/is-sslvpn-enabled
+[WARNING] 2025-10-28 00:43:34,257 [django.request] Not Found: /wp-login.php
+[ERROR] 2025-10-28 00:47:45,539 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 00:47:45,541 [django.request] Bad Request: /api/sonicos/is-sslvpn-enabled
+[WARNING] 2025-10-28 00:49:27,383 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 00:49:27,383 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 00:50:31,815 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 00:50:31,815 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 01:02:09,564 [django.request] Not Found: /wp-admin/admin-ajax.php
+[WARNING] 2025-10-28 01:02:09,571 [django.request] Not Found: /wp-content/plugins/sexy-contact-form/includes/fileupload/index.php
+[WARNING] 2025-10-28 01:02:09,575 [django.request] Not Found: /scripts/setup.php
+[WARNING] 2025-10-28 01:02:09,576 [django.request] Not Found: /axis2/axis2-admin/login
+[WARNING] 2025-10-28 01:02:09,576 [django.request] Not Found: /axis2-admin/login
+[WARNING] 2025-10-28 01:02:09,582 [django.request] Not Found: /index.php
+[WARNING] 2025-10-28 01:02:09,584 [django.request] Not Found: /webadm/
+[WARNING] 2025-10-28 01:02:09,589 [django.request] Not Found: /webadmin/auth/verification.php
+[WARNING] 2025-10-28 01:02:09,593 [django.security.csrf] Forbidden (Referer checking failed - no Referer.): /
+[WARNING] 2025-10-28 01:02:09,596 [django.request] Not Found: /wp-admin/admin-ajax.php
+[WARNING] 2025-10-28 01:02:09,597 [django.request] Not Found: /cgibin/webproc
+[WARNING] 2025-10-28 01:02:09,598 [django.security.csrf] Forbidden (Referer checking failed - no Referer.): /
+[WARNING] 2025-10-28 01:02:09,602 [django.request] Not Found: /cgi-bin/stats
+[WARNING] 2025-10-28 01:02:09,608 [django.request] Not Found: /cgi-bin/status/status.cgi
+[WARNING] 2025-10-28 01:02:09,612 [django.request] Not Found: /cgi-bin/test
+[WARNING] 2025-10-28 01:02:09,613 [django.request] Not Found: /debug.cgi
+[WARNING] 2025-10-28 01:02:09,617 [django.request] Not Found: /cgi-bin/status
+[WARNING] 2025-10-28 01:02:09,621 [django.request] Not Found: /cgi-bin/test-cgi
+[WARNING] 2025-10-28 01:02:09,622 [django.request] Not Found: /test.cgi
+[WARNING] 2025-10-28 01:02:09,625 [django.request] Not Found: /cgi-bin/test.cgi
+[WARNING] 2025-10-28 01:02:10,555 [django.request] Not Found: /user.action
+[WARNING] 2025-10-28 01:02:10,583 [django.request] Not Found: /index.action
+[WARNING] 2025-10-28 01:02:10,596 [django.request] Not Found: /login.action
+[WARNING] 2025-10-28 01:02:11,553 [django.request] Not Found: /login.action
+[WARNING] 2025-10-28 01:02:11,558 [django.request] Not Found: /index.action
+[WARNING] 2025-10-28 01:02:11,564 [django.request] Not Found: /index.action
+[WARNING] 2025-10-28 01:02:11,567 [django.request] Not Found: /login.action
+[WARNING] 2025-10-28 01:02:11,567 [django.request] Not Found: /index.action
+[WARNING] 2025-10-28 01:02:11,568 [django.request] Not Found: /index.action
+[WARNING] 2025-10-28 01:02:11,572 [django.request] Not Found: /index.action
+[WARNING] 2025-10-28 01:03:21,561 [django.request] Not Found: /users/sign_in
+[WARNING] 2025-10-28 01:04:32,569 [django.request] Not Found: /backupmgt/localJob.php
+[WARNING] 2025-10-28 01:04:37,605 [django.request] Not Found: /backupmgt/pre_connect_check.php
+[WARNING] 2025-10-28 01:04:55,628 [django.security.csrf] Forbidden (Referer checking failed - no Referer.): /
+[WARNING] 2025-10-28 01:05:02,568 [django.request] Not Found: /website/blog/
+[WARNING] 2025-10-28 01:05:08,730 [django.request] Not Found: /_search
+[WARNING] 2025-10-28 01:05:49,559 [django.request] Not Found: /index.php
+[WARNING] 2025-10-28 01:05:54,590 [django.request] Not Found: /lcms/index.php
+[WARNING] 2025-10-28 01:08:49,998 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 01:08:49,999 [django.request] Forbidden: /search/
+[ERROR] 2025-10-28 01:10:29,823 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 01:10:29,823 [django.request] Bad Request: /mcp
+[ERROR] 2025-10-28 01:10:29,974 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 01:10:29,975 [django.request] Bad Request: /api/mcp
+[ERROR] 2025-10-28 01:10:30,127 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 01:10:30,128 [django.request] Bad Request: /v1/mcp
+[ERROR] 2025-10-28 01:10:30,279 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 01:10:30,280 [django.request] Bad Request: /jsonrpc
+[ERROR] 2025-10-28 01:10:30,432 [django.security.DisallowedHost] Invalid HTTP_HOST header: 'localhost'. You may need to add 'localhost' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'localhost'. You may need to add 'localhost' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 01:10:30,434 [django.request] Bad Request: /mcp
+[ERROR] 2025-10-28 01:10:30,585 [django.security.DisallowedHost] Invalid HTTP_HOST header: 'localhost'. You may need to add 'localhost' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'localhost'. You may need to add 'localhost' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 01:10:30,585 [django.request] Bad Request: /api/mcp
+[ERROR] 2025-10-28 01:10:30,737 [django.security.DisallowedHost] Invalid HTTP_HOST header: 'localhost'. You may need to add 'localhost' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'localhost'. You may need to add 'localhost' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 01:10:30,737 [django.request] Bad Request: /v1/mcp
+[ERROR] 2025-10-28 01:10:30,888 [django.security.DisallowedHost] Invalid HTTP_HOST header: 'localhost'. You may need to add 'localhost' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'localhost'. You may need to add 'localhost' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 01:10:30,889 [django.request] Bad Request: /jsonrpc
+[ERROR] 2025-10-28 01:10:31,040 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 01:10:31,041 [django.request] Bad Request: /mcp
+[ERROR] 2025-10-28 01:10:31,192 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 01:10:31,193 [django.request] Bad Request: /api/mcp
+[ERROR] 2025-10-28 01:10:31,344 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 01:10:31,344 [django.request] Bad Request: /v1/mcp
+[ERROR] 2025-10-28 01:10:31,495 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 01:10:31,496 [django.request] Bad Request: /jsonrpc
+[WARNING] 2025-10-28 01:10:31,649 [django.request] Not Found: /mcp
+[WARNING] 2025-10-28 01:10:31,802 [django.request] Not Found: /api/mcp
+[WARNING] 2025-10-28 01:10:31,955 [django.request] Not Found: /v1/mcp
+[WARNING] 2025-10-28 01:10:32,108 [django.request] Not Found: /jsonrpc
+[WARNING] 2025-10-28 01:14:20,811 [django.request] Not Found: /soap.cgi
+[WARNING] 2025-10-28 01:14:22,652 [django.request] Not Found: /wp-admin/options-general.php
+[WARNING] 2025-10-28 01:14:34,059 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 01:14:34,059 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 01:19:15,191 [django.request] Not Found: /wordpress/
+[ERROR] 2025-10-28 01:36:21,970 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 01:36:21,971 [django.request] Bad Request: /.env
+[ERROR] 2025-10-28 01:36:23,150 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 01:36:23,151 [django.request] Bad Request: /
+[WARNING] 2025-10-28 01:51:29,399 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 01:51:29,399 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 02:08:12,932 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 02:08:12,932 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 02:09:33,412 [django.request] Not Found: /robots.txt
+[WARNING] 2025-10-28 02:11:13,745 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 02:11:13,746 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 02:13:24,915 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 02:13:24,915 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 02:16:29,121 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 02:16:29,121 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 02:22:55,690 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 02:22:55,690 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 02:31:25,478 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 02:31:25,479 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 02:54:01,735 [django.request] Not Found: /robots.txt
+[ERROR] 2025-10-28 03:02:24,644 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 03:02:24,645 [django.request] Bad Request: /
+[WARNING] 2025-10-28 03:06:03,902 [django.request] Gone: /captcha/image/dbf6b8aeb35474f314198053bf72b378fc9bc5f8/
+[ERROR] 2025-10-28 03:17:37,519 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 03:17:37,520 [django.request] Bad Request: /logon/LogonPoint/index.html
+[ERROR] 2025-10-28 03:18:33,171 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 03:18:33,172 [django.request] Bad Request: /global-protect/login.esp
+[ERROR] 2025-10-28 03:19:29,183 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 03:19:29,184 [django.request] Bad Request: /sslvpn_logon.shtml
+[ERROR] 2025-10-28 03:20:24,044 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 03:20:24,045 [django.request] Bad Request: /auth1.html
+[ERROR] 2025-10-28 03:21:20,283 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 03:21:20,284 [django.request] Bad Request: /
+[ERROR] 2025-10-28 03:22:16,724 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 03:22:16,725 [django.request] Bad Request: /
+[ERROR] 2025-10-28 03:23:12,905 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 03:23:12,906 [django.request] Bad Request: /remote/login
+[ERROR] 2025-10-28 03:24:08,030 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 03:24:08,031 [django.request] Bad Request: /admin/login
+[ERROR] 2025-10-28 03:25:01,320 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 03:25:01,321 [django.request] Bad Request: /remote/login
+[ERROR] 2025-10-28 03:25:41,268 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 03:25:41,269 [django.request] Bad Request: /login
+[ERROR] 2025-10-28 03:26:23,187 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 03:26:23,188 [django.request] Bad Request: /+CSCOE+/logon.html
+[ERROR] 2025-10-28 03:27:00,913 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 03:27:00,914 [django.request] Bad Request: /api/sonicos/is-sslvpn-enabled
+[ERROR] 2025-10-28 03:27:41,416 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 03:27:41,417 [django.request] Bad Request: /sonicui/7/login/
+[ERROR] 2025-10-28 03:28:23,697 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 03:28:23,698 [django.request] Bad Request: /RDWeb/
+[ERROR] 2025-10-28 03:29:02,845 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 03:29:02,846 [django.request] Bad Request: /vpn/index.html
+[ERROR] 2025-10-28 03:29:43,588 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 03:29:43,589 [django.request] Bad Request: /RDWeb/webclient/index.html
+[ERROR] 2025-10-28 03:30:22,456 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 03:30:22,456 [django.request] Bad Request: /+CSCOE+/logon.html
+[WARNING] 2025-10-28 03:35:11,132 [django.request] Not Found: /actuator/gateway/routes
+[WARNING] 2025-10-28 03:35:13,418 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 03:35:13,419 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 03:41:42,521 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 03:41:42,522 [django.request] Forbidden: /search/
+[ERROR] 2025-10-28 03:42:04,295 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 03:42:04,296 [django.request] Bad Request: /.env
+[ERROR] 2025-10-28 03:42:05,253 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 03:42:05,254 [django.request] Bad Request: /
+[WARNING] 2025-10-28 04:03:20,804 [django.request] Not Found: /manager/media/script/mootools/mootools.js
+[WARNING] 2025-10-28 04:04:35,453 [django.request] Not Found: /wp-includes/js/jquery/jquery.js
+[WARNING] 2025-10-28 04:04:42,808 [django.request] Not Found: /administrator/help/en-GB/toc.json
+[WARNING] 2025-10-28 04:04:50,125 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 04:04:50,126 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 04:04:53,791 [django.request] Not Found: /administrator/language/en-GB/install.xml
+[WARNING] 2025-10-28 04:04:55,814 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 04:04:55,814 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 04:05:01,359 [django.request] Not Found: /plugins/system/debug/debug.xml
+[WARNING] 2025-10-28 04:18:20,602 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 04:18:20,602 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 04:30:27,634 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 04:30:27,635 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 04:41:43,204 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 04:41:43,205 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 04:44:03,336 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 04:44:03,336 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 04:52:32,625 [django.security.csrf] Forbidden (Referer checking failed - no Referer.): /
+[WARNING] 2025-10-28 05:39:24,044 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 05:39:24,044 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 05:50:24,656 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 05:50:24,656 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 06:04:17,642 [django.request] Not Found: /wp-content/plugins/bj-lazy-load/thumb.php
+[WARNING] 2025-10-28 06:04:20,567 [django.request] Not Found: /wp-content/plugins/bj-lazy-load/thumb.php
+[ERROR] 2025-10-28 06:04:34,935 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 06:04:34,935 [django.request] Bad Request: /
+[WARNING] 2025-10-28 06:09:21,067 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 06:09:21,068 [django.request] Forbidden: /search/
+[ERROR] 2025-10-28 06:13:20,234 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 06:13:20,235 [django.request] Bad Request: /
+[ERROR] 2025-10-28 06:15:55,376 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 06:15:55,376 [django.request] Bad Request: /.env
+[ERROR] 2025-10-28 06:22:14,625 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 06:22:14,627 [django.request] Bad Request: /favicon.ico
+[WARNING] 2025-10-28 06:31:10,993 [django.request] Not Found: /login.php
+[WARNING] 2025-10-28 06:31:11,347 [django.request] Not Found: /index.php
+[ERROR] 2025-10-28 07:17:34,363 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 07:17:34,364 [django.request] Bad Request: /sdk
+[ERROR] 2025-10-28 07:17:34,387 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 07:17:34,387 [django.request] Bad Request: /odinhttpcall1761610653
+[ERROR] 2025-10-28 07:17:35,348 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 07:17:35,349 [django.request] Bad Request: /evox/about
+[ERROR] 2025-10-28 07:17:35,427 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 07:17:35,428 [django.request] Bad Request: /HNAP1
+[ERROR] 2025-10-28 07:17:37,667 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 07:17:37,668 [django.request] Bad Request: /
+[ERROR] 2025-10-28 07:17:38,500 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 07:17:38,501 [django.request] Bad Request: /
+[ERROR] 2025-10-28 07:17:39,220 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 07:17:39,220 [django.request] Bad Request: /
+[ERROR] 2025-10-28 07:17:39,713 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 07:17:39,714 [django.request] Bad Request: /favicon.ico
+[ERROR] 2025-10-28 07:17:40,508 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 07:17:40,508 [django.request] Bad Request: /
+[WARNING] 2025-10-28 07:19:48,059 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 07:19:48,060 [django.request] Forbidden: /search/
+[ERROR] 2025-10-28 07:28:26,878 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 07:28:26,879 [django.request] Bad Request: /_profiler/phpinfo
+[WARNING] 2025-10-28 07:34:04,764 [django.request] Not Found: /cgi-bin/luci/;stok=/locale
+[ERROR] 2025-10-28 07:36:46,581 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 07:36:46,582 [django.request] Bad Request: /.env
+[ERROR] 2025-10-28 07:36:47,722 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-28 07:36:47,723 [django.request] Bad Request: /
+[WARNING] 2025-10-28 07:46:56,714 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 07:46:56,715 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 07:48:41,828 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 07:48:41,829 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 07:51:37,118 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 07:51:37,118 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 07:56:43,290 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 07:56:43,290 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 08:08:32,662 [django.request] Not Found: /admin/transaction/68/
+[WARNING] 2025-10-28 08:08:32,799 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 08:08:36,770 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 08:09:39,488 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 08:09:59,041 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 08:09:59,041 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 08:12:09,088 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 08:12:09,089 [django.request] Forbidden: /search/
+[INFO] 2025-10-28 08:13:44,553 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 08:13:44,623 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 08:13:44,634 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[DEBUG] 2025-10-28 08:14:00,613 [courses.views] Total instructors for partner 1: 1
+[INFO] 2025-10-28 08:16:18,853 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 08:16:18,911 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 08:16:18,937 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 08:16:50,984 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 08:16:51,129 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 08:16:51,173 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 08:21:54,979 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 08:21:55,111 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 08:21:55,295 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-28 08:22:19,376 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 08:22:19,377 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 08:24:38,845 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 08:24:38,846 [django.request] Forbidden: /search/

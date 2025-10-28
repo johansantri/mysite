@@ -842,6 +842,12 @@
                             <i class="bi bi-speedometer me-2"></i> Dashboard
                         </a>
                     </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'partner_view' %}active{% endif %}" href="{% url 'courses:partner_view' %}" aria-current="page">
+                            <i class="bi bi-people me-2"></i> Partner
+                        </a>
+                    </li>
                     
                    
 
