@@ -42,8 +42,28 @@ from django.views.decorators.http import require_POST
 import logging
 from django.utils import timezone
 from .forms import PartnerRequestForm
-
+from django.conf import settings
+from django.template.loader import render_to_string
+from django.core.mail import EmailMessage
 logger = logging.getLogger(__name__)
+
+# Utility function untuk email HTML
+def send_partner_email_html(user, subject, template_name, context):
+    """Kirim email HTML ke partner"""
+    if user.email:
+        html_content = render_to_string(template_name, context)
+        email = EmailMessage(
+            subject=subject,
+            body=html_content,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[user.email],
+        )
+        email.content_subtype = "html"
+        email.send(fail_silently=False)
+        logger.info(f"HTML email sent to {user.email}: {subject}")
+    else:
+        logger.warning(f"User {user.username} has no email, cannot send '{subject}'")
+
 
 def request_partner(request):
     logger.info(f"Request method: {request.method}, User: {request.user}, Authenticated: {request.user.is_authenticated}")
@@ -58,29 +78,38 @@ def request_partner(request):
         partner = Partner.objects.get(user=request.user)
         logger.info(f"Partner found: {partner.id}, Status: {partner.status}, Verified: {partner.is_verified}")
 
-        # Jika sudah disetujui → redirect ke dashboard
+        # Partner sudah disetujui
         if partner.is_verified or partner.status == 'approved':
             logger.info("Partner already approved — redirecting to dashboard")
             return redirect('authentication:dashboard')
 
-        # Jika masih pending → tampilkan halaman "menunggu"
+        # Status pending
         elif partner.status == 'pending':
-            logger.info("Partner request still pending — rendering waiting page")
+            logger.info("Partner request pending — showing waiting page")
             return render(request, 'partner/status_pending.html', {'partner': partner})
 
-        # Jika diminta revisi → tampilkan form revisi dengan data lama
+        # Status revisi
         elif partner.status == 'revision':
-            logger.info("Partner in revision mode — showing editable form")
+            logger.info("Partner in revision mode")
             if request.method == 'POST':
                 form = PartnerRequestForm(request.POST, request.FILES, instance=partner)
                 if form.is_valid():
                     updated_partner = form.save(commit=False)
-                    updated_partner.status = 'pending'  # kembali ke status pending
-                    updated_partner.revision_note = ''  # kosongkan catatan revisi
+                    updated_partner.status = 'pending'
+                    updated_partner.revision_note = ''
                     updated_partner.updated_by = request.user
                     updated_partner.updated_ad = timezone.now()
                     updated_partner.save()
                     logger.info(f"Partner revision resubmitted: {updated_partner.id}")
+
+                    # Kirim email notifikasi revisi
+                    send_partner_email_html(
+                        request.user,
+                        'Partner Request Resubmitted',
+                        'email/partner_request_resubmitted.html',
+                        {'user': request.user, 'partner': updated_partner}
+                    )
+
                     return render(request, 'partner/request_resubmitted.html', {'partner': updated_partner})
                 else:
                     logger.warning(f"Revision form invalid: {form.errors}")
@@ -88,9 +117,9 @@ def request_partner(request):
                 form = PartnerRequestForm(instance=partner)
             return render(request, 'partner/revision_form.html', {'form': form, 'partner': partner})
 
-        # Jika ditolak (rejected)
+        # Status rejected
         elif partner.status == 'rejected':
-            logger.info("Partner request rejected — rendering rejection page")
+            logger.info("Partner request rejected — showing page")
             return render(request, 'partner/status_rejected.html', {'partner': partner})
 
     except Partner.DoesNotExist:
@@ -107,6 +136,15 @@ def request_partner(request):
             new_partner.status = 'pending'
             new_partner.save()
             logger.info(f"New partner request submitted: {new_partner.id}")
+
+            # Kirim email notifikasi submit
+            send_partner_email_html(
+                request.user,
+                'Partner Request Submitted',
+                'email/partner_request_submitted.html',
+                {'user': request.user, 'partner': new_partner}
+            )
+
             return render(request, 'partner/request_success.html', {'partner': new_partner})
         else:
             logger.warning(f"Form invalid: {form.errors}")

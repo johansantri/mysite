@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background-color: #f5f7fa;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+    .email-container {
+      max-width: 600px;
+      margin: 40px auto;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 30px;
+    }
+    h2 {
+      color: #2F80ED;
+      margin-bottom: 20px;
+    }
+    p {
+      line-height: 1.6;
+    }
+    .details {
+      background-color: #f1f4f8;
+      padding: 15px;
+      border-radius: 6px;
+      margin: 20px 0;
+    }
+    .details p {
+      margin: 5px 0;
+    }
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #2F80ED;
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-top: 15px;
+    }
+    .footer {
+      font-size: 12px;
+      color: #888888;
+      text-align: center;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <h2>Partner Request Submitted</h2>
+    <p>Hi {{ user.first_name }},</p>
+    <p>Your partner request has been successfully submitted and is currently under review.</p>
+
+    <div class="details">
+      <p><strong>Partner Name:</strong> {{ partner.name }}</p>
+      <p><strong>Status:</strong> {{ partner.status }}</p>
+    </div>
+
+    <p>Thank you for your submission!</p>
+    <a href="{{ protocol }}://{{ domain }}/request-partner/" class="btn">View Request</a>
+
+    <div class="footer">
+      &copy; 2025 Your Company. All rights reserved.
+    </div>
+  </div>
+</body>
+</html>
