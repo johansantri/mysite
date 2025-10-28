@@ -47,6 +47,7 @@ from django.db.models import (
     Q, F, Sum, Count, Avg,
     OuterRef, Subquery, IntegerField, Prefetch
 )
+from django.db.models.functions import Round
 from django.core.cache import cache
 from django.core.files.base import ContentFile
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -5885,7 +5886,7 @@ def partnerView(request):
     partners = partners.annotate(
         total_courses=Count('courses', distinct=True),
         total_learners=Count('courses__enrollments__user', distinct=True),
-        average_rating=Avg('courses__ratings__rating'),
+        average_rating=Round(Avg('courses__ratings__rating'), 2),
         total_instructors=Count('instructors', distinct=True),
         balance_computed=Coalesce(
             Subquery(payments_subquery, output_field=DecimalField()),
