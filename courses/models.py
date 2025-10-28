@@ -88,7 +88,12 @@ class Partner(models.Model):
         ('pt', 'Limited Liability Company (PT)'),
         ('institution', 'Educational Institution'),
     ]
-
+    STATUS_CHOICES = [
+        ('pending', 'Pending Review'),
+        ('revision', 'Revision Required'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ]
     business_type = models.CharField(max_length=20, choices=BUSINESS_TYPE_CHOICES, null=True, blank=True)
 
     # Metode pembayaran
@@ -116,6 +121,15 @@ class Partner(models.Model):
         verbose_name="Agree to Contract Terms and Applicable Rules",
         help_text="User must check this box to indicate agreement."
     )
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='pending',
+        help_text="Current review status of the partner request."
+    )
+
+    admin_note = models.TextField(null=True, blank=True, help_text="Admin notes for revision or rejection.")
 
     # Audit siapa terakhir edit
     updated_by = models.ForeignKey(CustomUser, null=True, blank=True, on_delete=models.SET_NULL, related_name="partner_updated_by")

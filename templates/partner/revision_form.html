@@ -1,0 +1,40 @@
+{% extends "home/base.html" %}
+{% load static %}
+
+{% block meta %}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Revise your partner application with MyICE based on admin feedback. Update and resubmit your details easily.">
+<title>Revise Partner Application - MyICE</title>
+{% endblock meta %}
+
+{% block content %}
+
+<section class="max-w-3xl mx-auto px-6 py-16">
+  <div class="text-center mb-10">
+    <h1 class="text-3xl font-bold text-gray-900 mb-3">🔄 Revise Your Partner Application</h1>
+    <p class="text-gray-600 max-w-xl mx-auto">
+      Our team reviewed your submission and requires some updates. Please correct the information below and resubmit your application.
+    </p>
+  </div>
+
+  {% if partner.admin_note %}
+  <div class="bg-yellow-50 border border-yellow-300 text-yellow-800 rounded-md p-4 mb-6">
+    <h2 class="font-semibold mb-2">Admin Feedback:</h2>
+    <p class="whitespace-pre-line text-sm">{{ partner.admin_note }}</p>
+  </div>
+  {% endif %}
+
+  <form method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded-lg p-6 space-y-6">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="text-right">
+      <button type="submit"
+        class="bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-2 rounded-lg transition">
+        Submit Revisions
+      </button>
+    </div>
+  </form>
+</section>
+
+{% endblock %}

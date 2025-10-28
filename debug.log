@@ -20197,3 +20197,586 @@ django.urls.exceptions.NoReverseMatch: Reverse for 'dashboard' not found. 'dashb
 [INFO] 2025-10-28 13:10:47,023 [partner.views] Request method: GET, User: partner1, Authenticated: True
 [INFO] 2025-10-28 13:10:47,024 [partner.views] Partner found: 2, Verified: True
 [INFO] 2025-10-28 13:10:47,025 [partner.views] Redirecting to dashboard
+[WARNING] 2025-10-28 13:13:07,296 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 13:13:07,299 [django.request] Forbidden: /search/
+[INFO] 2025-10-28 13:14:56,405 [partner.views] Request method: GET, User: AnonymousUser, Authenticated: False
+[INFO] 2025-10-28 13:14:56,405 [partner.views] User not authenticated, redirecting to login
+[DEBUG] 2025-10-28 13:15:18,031 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-10-28 13:15:18,033 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-10-28 13:15:18,034 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-10-28 05:15:18.031814+00:00
+[INFO] 2025-10-28 13:15:18,997 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36", path_info: "/login/"}.
+[INFO] 2025-10-28 13:15:18,999 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-28 05:15:18.031814+00:00
+[DEBUG] 2025-10-28 13:15:19,015 [urllib3.connectionpool] Starting new HTTPS connection (1): ipinfo.io:443
+[DEBUG] 2025-10-28 13:15:19,299 [urllib3.connectionpool] https://ipinfo.io:443 "GET /114.10.114.11/json HTTP/1.1" 200 None
+[INFO] 2025-10-28 13:15:42,328 [partner.views] Request method: GET, User: @learn, Authenticated: True
+[INFO] 2025-10-28 13:15:42,330 [partner.views] No partner found, proceeding to form
+[INFO] 2025-10-28 13:15:42,330 [partner.views] GET request, creating empty form
+[INFO] 2025-10-28 13:15:42,331 [partner.views] Rendering request_partner.html
+[WARNING] 2025-10-28 13:23:30,876 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 13:23:30,877 [django.request] Forbidden: /search/
+[DEBUG] 2025-10-28 13:33:51,328 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-10-28 13:33:51,331 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-28 05:33:51.328889+00:00
+[INFO] 2025-10-28 13:33:51,331 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36", path_info: "/logout/"}.
+[INFO] 2025-10-28 13:38:23,117 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:38:32,991 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:40:36,033 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:40:36,131 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:40:36,183 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:41:13,341 [partner.views] Request method: GET, User: AnonymousUser, Authenticated: False
+[INFO] 2025-10-28 13:41:13,341 [partner.views] User not authenticated, redirecting to login
+[DEBUG] 2025-10-28 13:41:24,841 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-10-28 13:41:24,843 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-10-28 13:41:24,844 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-10-28 05:41:24.841651+00:00
+[INFO] 2025-10-28 13:41:25,791 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36", path_info: "/login/"}.
+[INFO] 2025-10-28 13:41:25,792 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-28 05:41:24.841651+00:00
+[DEBUG] 2025-10-28 13:41:25,809 [urllib3.connectionpool] Starting new HTTPS connection (1): ipinfo.io:443
+[DEBUG] 2025-10-28 13:41:26,109 [urllib3.connectionpool] https://ipinfo.io:443 "GET /203.217.140.215/json HTTP/1.1" 200 None
+[INFO] 2025-10-28 13:41:27,171 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 13:41:27,173 [partner.views] No partner found, showing new form
+[INFO] 2025-10-28 13:41:27,175 [partner.views] Rendering new partner request form
+[INFO] 2025-10-28 13:42:03,766 [partner.views] Request method: POST, User: learn1, Authenticated: True
+[INFO] 2025-10-28 13:42:03,769 [partner.views] No partner found, showing new form
+[DEBUG] 2025-10-28 13:42:03,771 [PIL.PngImagePlugin] STREAM b'IHDR' 16 13
+[DEBUG] 2025-10-28 13:42:03,771 [PIL.PngImagePlugin] STREAM b'gAMA' 41 4
+[DEBUG] 2025-10-28 13:42:03,772 [PIL.PngImagePlugin] STREAM b'cHRM' 57 32
+[DEBUG] 2025-10-28 13:42:03,772 [PIL.PngImagePlugin] STREAM b'bKGD' 101 6
+[DEBUG] 2025-10-28 13:42:03,772 [PIL.PngImagePlugin] b'bKGD' 101 6 (unknown)
+[DEBUG] 2025-10-28 13:42:03,772 [PIL.PngImagePlugin] STREAM b'tIME' 119 7
+[DEBUG] 2025-10-28 13:42:03,772 [PIL.PngImagePlugin] b'tIME' 119 7 (unknown)
+[DEBUG] 2025-10-28 13:42:03,772 [PIL.PngImagePlugin] STREAM b'IDAT' 138 32768
+[DEBUG] 2025-10-28 13:42:03,775 [PIL.Image] Importing BlpImagePlugin
+[DEBUG] 2025-10-28 13:42:03,777 [PIL.Image] Importing BmpImagePlugin
+[DEBUG] 2025-10-28 13:42:03,777 [PIL.Image] Importing BufrStubImagePlugin
+[DEBUG] 2025-10-28 13:42:03,778 [PIL.Image] Importing CurImagePlugin
+[DEBUG] 2025-10-28 13:42:03,778 [PIL.Image] Importing DcxImagePlugin
+[DEBUG] 2025-10-28 13:42:03,779 [PIL.Image] Importing DdsImagePlugin
+[DEBUG] 2025-10-28 13:42:03,783 [PIL.Image] Importing EpsImagePlugin
+[DEBUG] 2025-10-28 13:42:03,784 [PIL.Image] Importing FitsImagePlugin
+[DEBUG] 2025-10-28 13:42:03,785 [PIL.Image] Importing FliImagePlugin
+[DEBUG] 2025-10-28 13:42:03,785 [PIL.Image] Importing FpxImagePlugin
+[DEBUG] 2025-10-28 13:42:03,786 [PIL.Image] Image: failed to import FpxImagePlugin: No module named 'olefile'
+[DEBUG] 2025-10-28 13:42:03,786 [PIL.Image] Importing FtexImagePlugin
+[DEBUG] 2025-10-28 13:42:03,786 [PIL.Image] Importing GbrImagePlugin
+[DEBUG] 2025-10-28 13:42:03,787 [PIL.Image] Importing GifImagePlugin
+[DEBUG] 2025-10-28 13:42:03,787 [PIL.Image] Importing GribStubImagePlugin
+[DEBUG] 2025-10-28 13:42:03,787 [PIL.Image] Importing Hdf5StubImagePlugin
+[DEBUG] 2025-10-28 13:42:03,788 [PIL.Image] Importing IcnsImagePlugin
+[DEBUG] 2025-10-28 13:42:03,789 [PIL.Image] Importing IcoImagePlugin
+[DEBUG] 2025-10-28 13:42:03,790 [PIL.Image] Importing ImImagePlugin
+[DEBUG] 2025-10-28 13:42:03,791 [PIL.Image] Importing ImtImagePlugin
+[DEBUG] 2025-10-28 13:42:03,791 [PIL.Image] Importing IptcImagePlugin
+[DEBUG] 2025-10-28 13:42:03,792 [PIL.Image] Importing JpegImagePlugin
+[DEBUG] 2025-10-28 13:42:03,792 [PIL.Image] Importing Jpeg2KImagePlugin
+[DEBUG] 2025-10-28 13:42:03,792 [PIL.Image] Importing McIdasImagePlugin
+[DEBUG] 2025-10-28 13:42:03,792 [PIL.Image] Importing MicImagePlugin
+[DEBUG] 2025-10-28 13:42:03,793 [PIL.Image] Image: failed to import MicImagePlugin: No module named 'olefile'
+[DEBUG] 2025-10-28 13:42:03,793 [PIL.Image] Importing MpegImagePlugin
+[DEBUG] 2025-10-28 13:42:03,793 [PIL.Image] Importing MpoImagePlugin
+[DEBUG] 2025-10-28 13:42:03,797 [PIL.Image] Importing MspImagePlugin
+[DEBUG] 2025-10-28 13:42:03,798 [PIL.Image] Importing PalmImagePlugin
+[DEBUG] 2025-10-28 13:42:03,799 [PIL.Image] Importing PcdImagePlugin
+[DEBUG] 2025-10-28 13:42:03,799 [PIL.Image] Importing PcxImagePlugin
+[DEBUG] 2025-10-28 13:42:03,799 [PIL.Image] Importing PdfImagePlugin
+[DEBUG] 2025-10-28 13:42:03,809 [PIL.Image] Importing PixarImagePlugin
+[DEBUG] 2025-10-28 13:42:03,810 [PIL.Image] Importing PngImagePlugin
+[DEBUG] 2025-10-28 13:42:03,810 [PIL.Image] Importing PpmImagePlugin
+[DEBUG] 2025-10-28 13:42:03,810 [PIL.Image] Importing PsdImagePlugin
+[DEBUG] 2025-10-28 13:42:03,811 [PIL.Image] Importing QoiImagePlugin
+[DEBUG] 2025-10-28 13:42:03,811 [PIL.Image] Importing SgiImagePlugin
+[DEBUG] 2025-10-28 13:42:03,812 [PIL.Image] Importing SpiderImagePlugin
+[DEBUG] 2025-10-28 13:42:03,812 [PIL.Image] Importing SunImagePlugin
+[DEBUG] 2025-10-28 13:42:03,813 [PIL.Image] Importing TgaImagePlugin
+[DEBUG] 2025-10-28 13:42:03,814 [PIL.Image] Importing TiffImagePlugin
+[DEBUG] 2025-10-28 13:42:03,814 [PIL.Image] Importing WebPImagePlugin
+[DEBUG] 2025-10-28 13:42:03,815 [PIL.Image] Importing WmfImagePlugin
+[DEBUG] 2025-10-28 13:42:03,816 [PIL.Image] Importing XbmImagePlugin
+[DEBUG] 2025-10-28 13:42:03,817 [PIL.Image] Importing XpmImagePlugin
+[DEBUG] 2025-10-28 13:42:03,818 [PIL.Image] Importing XVThumbImagePlugin
+[INFO] 2025-10-28 13:42:03,858 [partner.views] New partner request submitted: 15
+[INFO] 2025-10-28 13:42:23,631 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 13:42:23,633 [partner.views] Partner found: 15, Status: pending, Verified: False
+[INFO] 2025-10-28 13:42:23,633 [partner.views] Partner request still pending — rendering waiting page
+[ERROR] 2025-10-28 13:42:23,635 [django.request] Internal Server Error: /request-partner/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/partner/views.py", line 69, in request_partner
+    return render(request, 'partner/status_pending.html', {'partner': partner})
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: partner/status_pending.html
+[INFO] 2025-10-28 13:43:37,745 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:43:37,861 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:43:38,032 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:43:38,720 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 13:43:38,724 [partner.views] Partner found: 15, Status: pending, Verified: False
+[INFO] 2025-10-28 13:43:38,724 [partner.views] Partner request still pending — rendering waiting page
+[INFO] 2025-10-28 13:45:18,616 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:45:18,718 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:45:18,804 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-28 13:45:25,580 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 13:45:29,525 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 13:45:32,491 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 13:45:44,672 [django.request] Not Found: /favicon.ico
+[INFO] 2025-10-28 13:45:48,619 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 13:45:48,621 [partner.views] Partner found: 15, Status: revision, Verified: False
+[INFO] 2025-10-28 13:45:48,621 [partner.views] Partner in revision mode — showing editable form
+[INFO] 2025-10-28 13:46:01,802 [partner.views] Request method: POST, User: learn1, Authenticated: True
+[INFO] 2025-10-28 13:46:01,804 [partner.views] Partner found: 15, Status: revision, Verified: False
+[INFO] 2025-10-28 13:46:01,804 [partner.views] Partner in revision mode — showing editable form
+[INFO] 2025-10-28 13:46:01,848 [partner.views] Partner revision resubmitted: 15
+[INFO] 2025-10-28 13:46:07,642 [partner.views] Request method: POST, User: learn1, Authenticated: True
+[INFO] 2025-10-28 13:46:07,643 [partner.views] Partner found: 15, Status: pending, Verified: False
+[INFO] 2025-10-28 13:46:07,644 [partner.views] Partner request still pending — rendering waiting page
+[WARNING] 2025-10-28 13:46:15,780 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 13:46:40,175 [django.request] Not Found: /favicon.ico
+[INFO] 2025-10-28 13:46:42,635 [partner.views] Request method: POST, User: learn1, Authenticated: True
+[INFO] 2025-10-28 13:46:42,636 [partner.views] Partner found: 15, Status: revision, Verified: False
+[INFO] 2025-10-28 13:46:42,636 [partner.views] Partner in revision mode — showing editable form
+[INFO] 2025-10-28 13:46:42,680 [partner.views] Partner revision resubmitted: 15
+[INFO] 2025-10-28 13:46:54,466 [partner.views] Request method: POST, User: learn1, Authenticated: True
+[INFO] 2025-10-28 13:46:54,468 [partner.views] Partner found: 15, Status: pending, Verified: False
+[INFO] 2025-10-28 13:46:54,469 [partner.views] Partner request still pending — rendering waiting page
+[WARNING] 2025-10-28 13:47:00,820 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 13:47:08,480 [django.request] Not Found: /favicon.ico
+[INFO] 2025-10-28 13:47:11,266 [partner.views] Request method: POST, User: learn1, Authenticated: True
+[INFO] 2025-10-28 13:47:11,268 [partner.views] Partner found: 15, Status: rejected, Verified: False
+[INFO] 2025-10-28 13:47:11,268 [partner.views] Partner request rejected — rendering rejection page
+[WARNING] 2025-10-28 13:47:27,058 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 13:47:43,058 [django.request] Not Found: /favicon.ico
+[INFO] 2025-10-28 13:47:45,693 [partner.views] Request method: POST, User: learn1, Authenticated: True
+[INFO] 2025-10-28 13:47:45,695 [partner.views] Partner found: 15, Status: revision, Verified: False
+[INFO] 2025-10-28 13:47:45,695 [partner.views] Partner in revision mode — showing editable form
+[INFO] 2025-10-28 13:47:45,743 [partner.views] Partner revision resubmitted: 15
+[WARNING] 2025-10-28 13:47:49,420 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 13:47:49,421 [django.request] Forbidden: /search/
+[INFO] 2025-10-28 13:47:51,757 [partner.views] Request method: POST, User: learn1, Authenticated: True
+[INFO] 2025-10-28 13:47:51,758 [partner.views] Partner found: 15, Status: pending, Verified: False
+[INFO] 2025-10-28 13:47:51,758 [partner.views] Partner request still pending — rendering waiting page
+[WARNING] 2025-10-28 13:52:21,722 [django.request] Not Found: /learner/learn/
+[INFO] 2025-10-28 13:53:03,491 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:53:03,515 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:53:03,540 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[ERROR] 2025-10-28 13:53:06,898 [django.request] Internal Server Error: /kuruk/courses/partner/15/change/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+sqlite3.OperationalError: no such column: courses_partner.admin_note
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/options.py", line 1987, in change_view
+    return self.changeform_view(request, object_id, form_url, extra_context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/options.py", line 1840, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/options.py", line 1863, in _changeform_view
+    obj = self.get_object(request, unquote(object_id), to_field)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/options.py", line 897, in get_object
+    return queryset.get(**{field.name: object_id})
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 629, in get
+    num = len(clone)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 366, in __len__
+    self._fetch_all()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1945, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+django.db.utils.OperationalError: no such column: courses_partner.admin_note
+[WARNING] 2025-10-28 13:53:08,026 [django.request] Not Found: /favicon.ico
+[ERROR] 2025-10-28 13:53:09,736 [django.request] Internal Server Error: /kuruk/courses/partner/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+sqlite3.OperationalError: no such column: courses_partner.admin_note
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/options.py", line 2163, in changelist_view
+    "selection_note": _("0 of %(cnt)s selected") % {"cnt": len(cl.result_list)},
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 366, in __len__
+    self._fetch_all()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1945, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+django.db.utils.OperationalError: no such column: courses_partner.admin_note
+[WARNING] 2025-10-28 13:53:09,895 [django.request] Not Found: /favicon.ico
+[ERROR] 2025-10-28 13:53:13,243 [django.request] Internal Server Error: /kuruk/courses/partner/15/change/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+sqlite3.OperationalError: no such column: courses_partner.admin_note
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/options.py", line 1987, in change_view
+    return self.changeform_view(request, object_id, form_url, extra_context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/options.py", line 1840, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/options.py", line 1863, in _changeform_view
+    obj = self.get_object(request, unquote(object_id), to_field)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/options.py", line 897, in get_object
+    return queryset.get(**{field.name: object_id})
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 629, in get
+    num = len(clone)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 366, in __len__
+    self._fetch_all()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1945, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+django.db.utils.OperationalError: no such column: courses_partner.admin_note
+[WARNING] 2025-10-28 13:53:13,390 [django.request] Not Found: /favicon.ico
+[ERROR] 2025-10-28 13:53:13,980 [django.request] Internal Server Error: /kuruk/courses/partner/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+sqlite3.OperationalError: no such column: courses_partner.admin_note
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/options.py", line 2163, in changelist_view
+    "selection_note": _("0 of %(cnt)s selected") % {"cnt": len(cl.result_list)},
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 366, in __len__
+    self._fetch_all()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1945, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+django.db.utils.OperationalError: no such column: courses_partner.admin_note
+[WARNING] 2025-10-28 13:53:14,128 [django.request] Not Found: /favicon.ico
+[ERROR] 2025-10-28 13:53:14,656 [django.request] Internal Server Error: /kuruk/courses/partner/15/change/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+sqlite3.OperationalError: no such column: courses_partner.admin_note
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/options.py", line 1987, in change_view
+    return self.changeform_view(request, object_id, form_url, extra_context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/options.py", line 1840, in changeform_view
+    return self._changeform_view(request, object_id, form_url, extra_context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/options.py", line 1863, in _changeform_view
+    obj = self.get_object(request, unquote(object_id), to_field)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/options.py", line 897, in get_object
+    return queryset.get(**{field.name: object_id})
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 629, in get
+    num = len(clone)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 366, in __len__
+    self._fetch_all()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1945, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+django.db.utils.OperationalError: no such column: courses_partner.admin_note
+[ERROR] 2025-10-28 13:53:15,452 [django.request] Internal Server Error: /kuruk/courses/partner/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+sqlite3.OperationalError: no such column: courses_partner.admin_note
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/options.py", line 719, in wrapper
+    return self.admin_site.admin_view(view)(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/views/decorators/cache.py", line 80, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/sites.py", line 246, in inner
+    return view(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 48, in _wrapper
+    return bound_method(*args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 192, in _view_wrapper
+    result = _process_exception(request, e)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/decorators.py", line 190, in _view_wrapper
+    response = view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/admin/options.py", line 2163, in changelist_view
+    "selection_note": _("0 of %(cnt)s selected") % {"cnt": len(cl.result_list)},
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 366, in __len__
+    self._fetch_all()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 1945, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/query.py", line 91, in __iter__
+    results = compiler.execute_sql(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/models/sql/compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/db/backends/sqlite3/base.py", line 360, in execute
+    return super().execute(query, params)
+django.db.utils.OperationalError: no such column: courses_partner.admin_note
+[WARNING] 2025-10-28 13:53:15,845 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 13:53:16,004 [django.request] Not Found: /favicon.ico
+[INFO] 2025-10-28 13:53:43,783 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:53:56,526 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:54:05,761 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:54:05,818 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:54:05,817 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-28 13:54:08,237 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 13:54:14,162 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 13:54:34,556 [django.request] Not Found: /favicon.ico
+[INFO] 2025-10-28 13:54:39,888 [partner.views] Request method: POST, User: learn1, Authenticated: True
+[INFO] 2025-10-28 13:54:39,889 [partner.views] Partner found: 15, Status: revision, Verified: False
+[INFO] 2025-10-28 13:54:39,890 [partner.views] Partner in revision mode — showing editable form
+[INFO] 2025-10-28 13:54:39,962 [partner.views] Partner revision resubmitted: 15
+[INFO] 2025-10-28 13:54:48,836 [partner.views] Request method: POST, User: learn1, Authenticated: True
+[INFO] 2025-10-28 13:54:48,838 [partner.views] Partner found: 15, Status: pending, Verified: False
+[INFO] 2025-10-28 13:54:48,838 [partner.views] Partner request still pending — rendering waiting page
+[INFO] 2025-10-28 13:54:56,334 [partner.views] Request method: POST, User: learn1, Authenticated: True
+[INFO] 2025-10-28 13:54:56,336 [partner.views] Partner found: 15, Status: pending, Verified: False
+[INFO] 2025-10-28 13:54:56,336 [partner.views] Partner request still pending — rendering waiting page
+[INFO] 2025-10-28 13:55:01,402 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 13:55:01,404 [partner.views] Partner found: 15, Status: pending, Verified: False
+[INFO] 2025-10-28 13:55:01,404 [partner.views] Partner request still pending — rendering waiting page
+[WARNING] 2025-10-28 13:55:06,314 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 13:55:13,234 [django.request] Not Found: /favicon.ico
+[INFO] 2025-10-28 13:55:16,534 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 13:55:16,536 [partner.views] Partner found: 15, Status: revision, Verified: False
+[INFO] 2025-10-28 13:55:16,536 [partner.views] Partner in revision mode — showing editable form
+[WARNING] 2025-10-28 13:55:28,764 [django.request] Not Found: /favicon.ico
+[INFO] 2025-10-28 13:55:52,588 [partner.views] Request method: POST, User: learn1, Authenticated: True
+[INFO] 2025-10-28 13:55:52,590 [partner.views] Partner found: 15, Status: revision, Verified: False
+[INFO] 2025-10-28 13:55:52,590 [partner.views] Partner in revision mode — showing editable form
+[INFO] 2025-10-28 13:55:52,629 [partner.views] Partner revision resubmitted: 15
+[WARNING] 2025-10-28 13:55:56,532 [django.request] Not Found: /favicon.ico
+[INFO] 2025-10-28 13:56:02,544 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 13:56:02,546 [partner.views] Partner found: 15, Status: pending, Verified: False
+[INFO] 2025-10-28 13:56:02,547 [partner.views] Partner request still pending — rendering waiting page
+[WARNING] 2025-10-28 13:56:54,034 [django.request] Not Found: /favicon.ico
+[INFO] 2025-10-28 13:56:55,010 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 13:56:55,013 [partner.views] Partner found: 15, Status: rejected, Verified: False
+[INFO] 2025-10-28 13:56:55,014 [partner.views] Partner request rejected — rendering rejection page
+[INFO] 2025-10-28 13:57:32,655 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:57:32,957 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:57:32,977 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-28 13:57:34,528 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 13:57:34,531 [partner.views] Partner found: 15, Status: rejected, Verified: False
+[INFO] 2025-10-28 13:57:34,531 [partner.views] Partner request rejected — rendering rejection page
+[WARNING] 2025-10-28 13:58:31,175 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 13:58:40,432 [django.request] Not Found: /favicon.ico
+[INFO] 2025-10-28 13:58:44,470 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 13:58:44,472 [partner.views] Partner found: 15, Status: pending, Verified: False
+[INFO] 2025-10-28 13:58:44,472 [partner.views] Partner request still pending — rendering waiting page
+[WARNING] 2025-10-28 13:59:21,528 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 13:59:21,528 [django.request] Forbidden: /search/
+[INFO] 2025-10-28 13:59:50,984 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 13:59:50,986 [partner.views] Partner found: 15, Status: pending, Verified: False
+[INFO] 2025-10-28 13:59:50,986 [partner.views] Partner request still pending — rendering waiting page
+[WARNING] 2025-10-28 14:02:02,422 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-28 14:02:02,423 [django.request] Forbidden: /search/
+[WARNING] 2025-10-28 14:03:08,713 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 14:03:13,183 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-28 14:03:15,607 [django.request] Not Found: /favicon.ico
+[INFO] 2025-10-28 14:03:28,701 [partner.views] Request method: GET, User: learn1, Authenticated: True
+[INFO] 2025-10-28 14:03:28,702 [partner.views] No partner found, showing new form
+[INFO] 2025-10-28 14:03:28,704 [partner.views] Rendering new partner request form

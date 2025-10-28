@@ -40,55 +40,80 @@ from decimal import Decimal, ROUND_HALF_UP
 from django.db.models.functions import Coalesce
 from django.views.decorators.http import require_POST
 import logging
-
+from django.utils import timezone
 from .forms import PartnerRequestForm
 
 logger = logging.getLogger(__name__)
 
 def request_partner(request):
     logger.info(f"Request method: {request.method}, User: {request.user}, Authenticated: {request.user.is_authenticated}")
-    
-    # 1. Cek login
+
+    # 1️⃣ Cek login
     if not request.user.is_authenticated:
         logger.info("User not authenticated, redirecting to login")
         return redirect(f'/login/?next=/request-partner/')
 
-    # 2. Cek apakah user sudah jadi partner dan diverifikasi
+    # 2️⃣ Cek apakah user sudah punya data Partner
     try:
         partner = Partner.objects.get(user=request.user)
-        logger.info(f"Partner found: {partner.id}, Verified: {partner.is_verified}")
-        if partner.is_verified:
-            # Jika sudah partner & diverifikasi, redirect ke dashboard
-            logger.info("Redirecting to dashboard")
-            return redirect('authentication:dashbord')  # Fix typo: 'dashbord' → 'dashboard'
-        else:
-            # Jika sudah request tapi belum diverifikasi
-            logger.info("Rendering already_requested.html")
-            return render(request, 'partner/already_requested.html', {'partner': partner})
+        logger.info(f"Partner found: {partner.id}, Status: {partner.status}, Verified: {partner.is_verified}")
+
+        # Jika sudah disetujui → redirect ke dashboard
+        if partner.is_verified or partner.status == 'approved':
+            logger.info("Partner already approved — redirecting to dashboard")
+            return redirect('authentication:dashboard')
+
+        # Jika masih pending → tampilkan halaman "menunggu"
+        elif partner.status == 'pending':
+            logger.info("Partner request still pending — rendering waiting page")
+            return render(request, 'partner/status_pending.html', {'partner': partner})
+
+        # Jika diminta revisi → tampilkan form revisi dengan data lama
+        elif partner.status == 'revision':
+            logger.info("Partner in revision mode — showing editable form")
+            if request.method == 'POST':
+                form = PartnerRequestForm(request.POST, request.FILES, instance=partner)
+                if form.is_valid():
+                    updated_partner = form.save(commit=False)
+                    updated_partner.status = 'pending'  # kembali ke status pending
+                    updated_partner.revision_note = ''  # kosongkan catatan revisi
+                    updated_partner.updated_by = request.user
+                    updated_partner.updated_ad = timezone.now()
+                    updated_partner.save()
+                    logger.info(f"Partner revision resubmitted: {updated_partner.id}")
+                    return render(request, 'partner/request_resubmitted.html', {'partner': updated_partner})
+                else:
+                    logger.warning(f"Revision form invalid: {form.errors}")
+            else:
+                form = PartnerRequestForm(instance=partner)
+            return render(request, 'partner/revision_form.html', {'form': form, 'partner': partner})
+
+        # Jika ditolak (rejected)
+        elif partner.status == 'rejected':
+            logger.info("Partner request rejected — rendering rejection page")
+            return render(request, 'partner/status_rejected.html', {'partner': partner})
+
     except Partner.DoesNotExist:
-        logger.info("No partner found, proceeding to form")
+        logger.info("No partner found, showing new form")
         partner = None
 
-    # 3. Jika belum request, tampilkan form
+    # 3️⃣ Jika belum pernah request, tampilkan form baru
     if request.method == 'POST':
-        logger.info("POST request, validating form")
-        form = PartnerRequestForm(request.POST, request.FILES)  # Selalu pass POST/FILES supaya sticky
+        form = PartnerRequestForm(request.POST, request.FILES)
         if form.is_valid():
-            logger.info("Form valid, saving...")
             new_partner = form.save(commit=False)
             new_partner.user = request.user
             new_partner.author = request.user
+            new_partner.status = 'pending'
             new_partner.save()
-            logger.info(f"Partner saved: {new_partner.id}")
+            logger.info(f"New partner request submitted: {new_partner.id}")
             return render(request, 'partner/request_success.html', {'partner': new_partner})
         else:
-            logger.info(f"Form invalid: {form.errors}")  # Log errors untuk debug
-            # Nggak perlu buat form baru — gunakan yang sama (data terjaga + errors tampil)
+            logger.warning(f"Form invalid: {form.errors}")
     else:
-        logger.info("GET request, creating empty form")
         form = PartnerRequestForm()
 
-    logger.info("Rendering request_partner.html")
+    logger.info("Rendering new partner request form")
     return render(request, 'partner/request_partner.html', {'form': form})
 
 

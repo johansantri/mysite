@@ -1,0 +1,40 @@
+{% extends "home/base.html" %}
+{% load static %}
+
+{% block meta %}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Your partner application has been rejected. Review the feedback to understand why.">
+<title>Partner Application Rejected - MyICE</title>
+{% endblock meta %}
+
+{% block content %}
+
+<section class="max-w-3xl mx-auto px-6 py-16 text-center">
+  <div class="flex justify-center mb-6">
+    <div class="bg-red-100 text-red-600 w-20 h-20 rounded-full flex items-center justify-center shadow-inner">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0a9 9 0 0118 0z" />
+      </svg>
+    </div>
+  </div>
+
+  <h1 class="text-3xl font-bold text-gray-900 mb-4">Application Rejected</h1>
+  <p class="text-gray-600 mb-6 max-w-xl mx-auto">
+    Unfortunately, your partner application could not be approved at this time. Please review the feedback below.
+  </p>
+
+  {% if partner.admin_note %}
+  <div class="bg-yellow-50 border border-yellow-300 text-yellow-800 rounded-md p-4 mb-6">
+    <h2 class="font-semibold mb-2">Admin Feedback:</h2>
+    <p class="whitespace-pre-line text-sm">{{ partner.admin_note }}</p>
+  </div>
+  {% endif %}
+
+  <p class="text-sm text-gray-500">If you believe this is a mistake, you may contact our support team at 
+    <a href="mailto:support@ini.icei.ac.id" class="text-red-600 underline hover:text-red-700">support@ini.icei.ac.id</a>.
+  </p>
+</section>
+
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "home/base.html" %}
+{% load static %}
+
+{% block meta %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Your partnership request with MyICE is being reviewed. We’ll notify you once your application is approved.">
+    <title>Partner Request Pending - MyICE</title>
+{% endblock meta %}
+
+{% block content %}
+
+<section class="max-w-3xl mx-auto px-6 py-16 text-center">
+    <!-- Icon -->
+    <div class="flex justify-center mb-6">
+        <div class="bg-yellow-100 text-yellow-600 w-20 h-20 rounded-full flex items-center justify-center shadow-inner">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M13 16h-1v-4h-1m1-4h.01M12 8v.01M12 20h.01M4 12h.01M20 12h.01M12 4h.01M12 20a8 8 0 100-16 8 8 0 000 16z"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Heading -->
+    <h1 class="text-3xl font-bold text-gray-900 mb-4">Your Partner Request Is Under Review</h1>
+    <p class="text-gray-600 mb-8 max-w-2xl mx-auto">
+        Thank you for submitting your partnership application. Our team is currently reviewing your information.
+        You’ll receive an email notification once your request is approved or if additional information is needed.
+    </p>
+
+    <!-- Application Details -->
+    <div class="bg-white rounded-lg shadow-md p-6 text-left max-w-xl mx-auto">
+        <h2 class="text-lg font-semibold text-gray-800 mb-3">Application Details</h2>
+        <dl class="divide-y divide-gray-200 text-sm">
+            <div class="flex justify-between py-2">
+                <dt class="font-medium text-gray-600">Partner Name</dt>
+                <dd class="text-gray-900">{{ partner.name }}</dd>
+            </div>
+            <div class="flex justify-between py-2">
+                <dt class="font-medium text-gray-600">Submitted By</dt>
+                <dd class="text-gray-900">{{ partner.user.get_full_name|default:partner.user.username }}</dd>
+            </div>
+            <div class="flex justify-between py-2">
+                <dt class="font-medium text-gray-600">Submitted On</dt>
+                <dd class="text-gray-900">{{ partner.created_ad|date:"F j, Y, g:i a" }}</dd>
+            </div>
+            <div class="flex justify-between py-2">
+                <dt class="font-medium text-gray-600">Current Status</dt>
+                <dd>
+                    <span class="inline-block px-3 py-1 text-xs font-semibold text-yellow-800 bg-yellow-100 rounded-full">
+                        Pending Review
+                    </span>
+                </dd>
+            </div>
+        </dl>
+    </div>
+
+    <!-- Optional Tip -->
+    <p class="text-sm text-gray-500 mt-6">
+        Need to update your information? Please wait until our team contacts you for revision.
+    </p>
+</section>
+
+{% endblock %}

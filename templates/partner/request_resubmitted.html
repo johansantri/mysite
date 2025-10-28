@@ -1,0 +1,33 @@
+{% extends "home/base.html" %}
+{% load static %}
+
+{% block meta %}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Your revised partner application has been successfully resubmitted to MyICE.">
+<title>Partner Request Resubmitted - MyICE</title>
+{% endblock meta %}
+
+{% block content %}
+
+<section class="max-w-2xl mx-auto px-6 py-20 text-center">
+  <div class="flex justify-center mb-6">
+    <div class="bg-green-100 text-green-600 w-20 h-20 rounded-full flex items-center justify-center shadow-inner">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M9 12l2 2l4-4m5 2a9 9 0 11-18 0a9 9 0 0118 0z" />
+      </svg>
+    </div>
+  </div>
+
+  <h1 class="text-3xl font-bold text-gray-900 mb-4">Revisions Submitted Successfully</h1>
+  <p class="text-gray-600 mb-8 max-w-md mx-auto">
+    Your updated application has been received. Our team will review your revisions and notify you once it’s approved.
+  </p>
+
+  <div class="text-sm text-gray-500">
+    Submitted on <strong>{{ partner.updated_ad|date:"F j, Y, g:i a" }}</strong>
+  </div>
+</section>
+
+{% endblock %}
