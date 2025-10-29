@@ -166,7 +166,9 @@ def create_tripay_transaction(transaction, payment_method, user):
 
     if result.get('success'):
         data = result.get('data', {})
-        
+        if not data or not isinstance(data, dict):
+            raise Exception("Data Tripay kosong atau tidak valid")
+
         va_number = (
             data.get('pay_code') or
             data.get('virtual_account') or
@@ -174,17 +176,13 @@ def create_tripay_transaction(transaction, payment_method, user):
             data.get('va_number') or
             ""
         )
-        
         bank_name = data.get('payment_name', '')
         payment_url = data.get('checkout_url') or data.get('pay_url') or ""
         tripay_transaction_id = data.get('reference', '')
         instructions = data.get('instructions', [])
-        tripay_expired_time = data.get('expired_time', expired_time)  # Dari response, fallback ke payload
+        tripay_expired_time = data.get('expired_time', expired_time)
         
-        logger.info(f"VA created: {va_number}, Bank: {bank_name}, Expired: {tripay_expired_time}")
-        
-        return va_number, bank_name, payment_url, tripay_transaction_id, instructions, tripay_expired_time  # Tambah expired_time
+        return va_number, bank_name, payment_url, tripay_transaction_id, instructions, tripay_expired_time
     else:
         error_msg = result.get('message', 'Tidak diketahui')
-        logger.error(f"Tripay API error: {error_msg}")
         raise Exception(f"Tripay error: {error_msg}")
