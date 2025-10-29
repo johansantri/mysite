@@ -879,3 +879,663 @@ django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'
 [INFO] 2025-10-29 13:43:10,100 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [INFO] 2025-10-29 13:43:10,175 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [INFO] 2025-10-29 13:43:10,196 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[DEBUG] 2025-10-29 13:44:47,970 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-10-29 13:44:47,974 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-29 05:44:47.970853+00:00
+[INFO] 2025-10-29 13:44:47,974 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36", path_info: "/logout/"}.
+[DEBUG] 2025-10-29 13:44:56,674 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-10-29 13:44:56,675 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-10-29 13:44:56,676 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-10-29 05:44:56.674390+00:00
+[INFO] 2025-10-29 13:44:57,639 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36", path_info: "/login/"}.
+[INFO] 2025-10-29 13:44:57,640 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-29 05:44:56.674390+00:00
+[DEBUG] 2025-10-29 13:44:57,661 [urllib3.connectionpool] Starting new HTTPS connection (1): ipinfo.io:443
+[DEBUG] 2025-10-29 13:44:58,044 [urllib3.connectionpool] https://ipinfo.io:443 "GET /203.217.140.215/json HTTP/1.1" 200 None
+[INFO] 2025-10-29 13:45:19,303 [learner.views] Redirecting to load_content: /@learn/16/kursus-uiux-design-dari-nol-hingga-mahir/material/78/
+[WARNING] 2025-10-29 13:45:19,430 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-29 13:45:19,471 [learner.views] Closed previous CourseSessionLog for user 4, course 16
+[DEBUG] 2025-10-29 13:45:19,501 [learner.views] Created CourseSessionLog for user 4, course 16, material 78
+[DEBUG] 2025-10-29 13:45:19,543 [learner.views] Updated LastAccessCourse for user 4, course 16, material 78
+[INFO] 2025-10-29 13:45:19,551 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna @learn, material 78
+[INFO] 2025-10-29 13:45:19,697 [learner.templatetags.learner_tags] Completion for user 4, course 16: is_completed=False, assessments=0/1, overall=0.00%, threshold=60.00, progress=50.00%
+[WARNING] 2025-10-29 13:45:51,592 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-29 13:45:51,625 [learner.views] Closed previous CourseSessionLog for user 4, course 16
+[DEBUG] 2025-10-29 13:45:51,653 [learner.views] Created CourseSessionLog for user 4, course 16, material 78
+[DEBUG] 2025-10-29 13:45:51,694 [learner.views] Updated LastAccessCourse for user 4, course 16, material 78
+[INFO] 2025-10-29 13:45:51,703 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna @learn, material 78
+[INFO] 2025-10-29 13:45:51,739 [learner.templatetags.learner_tags] Completion for user 4, course 16: is_completed=False, assessments=0/1, overall=0.00%, threshold=60.00, progress=50.00%
+[WARNING] 2025-10-29 13:46:21,418 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-29 13:46:21,541 [learner.views] Closed previous CourseSessionLog for user 4, course 16
+[DEBUG] 2025-10-29 13:46:21,571 [learner.views] Created CourseSessionLog for user 4, course 16, material 78
+[DEBUG] 2025-10-29 13:46:21,611 [learner.views] Updated LastAccessCourse for user 4, course 16, material 78
+[INFO] 2025-10-29 13:46:21,619 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna @learn, material 78
+[INFO] 2025-10-29 13:46:21,678 [learner.templatetags.learner_tags] Completion for user 4, course 16: is_completed=False, assessments=0/1, overall=0.00%, threshold=60.00, progress=50.00%
+[WARNING] 2025-10-29 13:47:22,017 [django.request] Not Found: /partner/ping-session/
+[WARNING] 2025-10-29 13:47:44,031 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-29 13:47:44,031 [django.request] Forbidden: /search/
+[ERROR] 2025-10-29 13:47:57,445 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-29 13:47:57,450 [django.request] Bad Request: /dns-query
+[ERROR] 2025-10-29 13:47:57,613 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-29 13:47:57,614 [django.request] Bad Request: /dns-query
+[ERROR] 2025-10-29 13:47:57,777 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-29 13:47:57,778 [django.request] Bad Request: /dns-query
+[ERROR] 2025-10-29 13:47:57,941 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-29 13:47:57,942 [django.request] Bad Request: /dns-query
+[ERROR] 2025-10-29 13:47:58,106 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-29 13:47:58,107 [django.request] Bad Request: /dns-query
+[ERROR] 2025-10-29 13:47:58,270 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-29 13:47:58,272 [django.request] Bad Request: /dns-query
+[ERROR] 2025-10-29 13:47:58,438 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-29 13:47:58,440 [django.request] Bad Request: /query
+[ERROR] 2025-10-29 13:47:58,603 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-29 13:47:58,603 [django.request] Bad Request: /query
+[ERROR] 2025-10-29 13:47:58,766 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-29 13:47:58,767 [django.request] Bad Request: /query
+[ERROR] 2025-10-29 13:47:58,931 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-29 13:47:58,931 [django.request] Bad Request: /query
+[ERROR] 2025-10-29 13:47:59,094 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-29 13:47:59,096 [django.request] Bad Request: /query
+[ERROR] 2025-10-29 13:47:59,259 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-29 13:47:59,259 [django.request] Bad Request: /query
+[ERROR] 2025-10-29 13:47:59,423 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-29 13:47:59,424 [django.request] Bad Request: /resolve
+[ERROR] 2025-10-29 13:47:59,587 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-29 13:47:59,587 [django.request] Bad Request: /resolve
+[ERROR] 2025-10-29 13:48:00,647 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-29 13:48:00,647 [django.request] Bad Request: /resolve
+[ERROR] 2025-10-29 13:48:00,810 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-29 13:48:00,811 [django.request] Bad Request: /resolve
+[ERROR] 2025-10-29 13:48:00,976 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-29 13:48:00,978 [django.request] Bad Request: /resolve
+[ERROR] 2025-10-29 13:48:01,141 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-29 13:48:01,142 [django.request] Bad Request: /resolve
+[ERROR] 2025-10-29 13:48:01,305 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-29 13:48:01,309 [django.request] Bad Request: /
+[ERROR] 2025-10-29 13:48:01,472 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-29 13:48:01,473 [django.request] Bad Request: /
+[ERROR] 2025-10-29 13:48:01,636 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-29 13:48:01,636 [django.request] Bad Request: /
+[ERROR] 2025-10-29 13:48:01,799 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-29 13:48:01,800 [django.request] Bad Request: /
+[ERROR] 2025-10-29 13:48:01,963 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-29 13:48:01,964 [django.request] Bad Request: /
+[ERROR] 2025-10-29 13:48:02,128 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/utils/deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/http/request.py", line 186, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[WARNING] 2025-10-29 13:48:02,128 [django.request] Bad Request: /
+[WARNING] 2025-10-29 13:48:22,024 [django.request] Not Found: /partner/ping-session/
+[INFO] 2025-10-29 13:48:26,731 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 13:48:26,934 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 13:48:27,008 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-29 13:48:27,643 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-29 13:48:27,682 [learner.views] Closed previous CourseSessionLog for user 4, course 16
+[DEBUG] 2025-10-29 13:48:27,714 [learner.views] Created CourseSessionLog for user 4, course 16, material 78
+[DEBUG] 2025-10-29 13:48:27,751 [learner.views] Updated LastAccessCourse for user 4, course 16, material 78
+[INFO] 2025-10-29 13:48:27,855 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna @learn, material 78
+[INFO] 2025-10-29 13:48:27,961 [learner.templatetags.learner_tags] Completion for user 4, course 16: is_completed=False, assessments=0/1, overall=0.00%, threshold=60.00, progress=50.00%
+[INFO] 2025-10-29 13:48:45,208 [learner.views] Redirecting to load_content: /@learn/16/kursus-uiux-design-dari-nol-hingga-mahir/material/78/
+[WARNING] 2025-10-29 13:48:46,134 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-29 13:48:46,192 [learner.views] Closed previous CourseSessionLog for user 4, course 16
+[DEBUG] 2025-10-29 13:48:46,220 [learner.views] Created CourseSessionLog for user 4, course 16, material 78
+[DEBUG] 2025-10-29 13:48:46,266 [learner.views] Updated LastAccessCourse for user 4, course 16, material 78
+[INFO] 2025-10-29 13:48:46,369 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna @learn, material 78
+[INFO] 2025-10-29 13:48:46,467 [learner.templatetags.learner_tags] Completion for user 4, course 16: is_completed=False, assessments=0/1, overall=0.00%, threshold=60.00, progress=50.00%
+[WARNING] 2025-10-29 13:49:31,515 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-29 13:49:31,552 [learner.views] Closed previous CourseSessionLog for user 4, course 16
+[DEBUG] 2025-10-29 13:49:31,586 [learner.views] Created CourseSessionLog for user 4, course 16, material 79
+[DEBUG] 2025-10-29 13:49:31,620 [learner.views] Updated LastAccessCourse for user 4, course 16, material 79
+[INFO] 2025-10-29 13:49:31,744 [learner.views] Progress updated for user @learn on course Kursus UI/UX Design: Dari Nol Hingga Mahir: 50.0%
+[INFO] 2025-10-29 13:49:31,745 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna @learn, material 79
+[INFO] 2025-10-29 13:49:31,777 [learner.templatetags.learner_tags] Completion for user 4, course 16: is_completed=False, assessments=0/1, overall=0.00%, threshold=60.00, progress=50.00%
+[WARNING] 2025-10-29 13:49:38,991 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-29 13:49:39,030 [learner.views] Closed previous CourseSessionLog for user 4, course 16
+[DEBUG] 2025-10-29 13:49:39,069 [learner.views] Created CourseSessionLog for user 4, course 16, material 79
+[DEBUG] 2025-10-29 13:49:39,105 [learner.views] Updated LastAccessCourse for user 4, course 16, material 79
+[INFO] 2025-10-29 13:49:39,140 [learner.views] Progress updated for user @learn on course Kursus UI/UX Design: Dari Nol Hingga Mahir: 50.0%
+[INFO] 2025-10-29 13:49:39,143 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna @learn, material 79
+[INFO] 2025-10-29 13:49:39,184 [learner.templatetags.learner_tags] Completion for user 4, course 16: is_completed=False, assessments=0/1, overall=0.00%, threshold=60.00, progress=50.00%
+[WARNING] 2025-10-29 13:50:39,457 [django.request] Not Found: /partner/ping-session/
+[DEBUG] 2025-10-29 13:50:47,706 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-10-29 13:50:47,708 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-29 05:50:47.706275+00:00
+[INFO] 2025-10-29 13:50:47,709 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36", path_info: "/logout/"}.
+[DEBUG] 2025-10-29 13:50:56,039 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-10-29 13:50:56,040 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-10-29 13:50:56,041 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-10-29 05:50:56.039622+00:00
+[INFO] 2025-10-29 13:50:57,033 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36", path_info: "/login/"}.
+[INFO] 2025-10-29 13:50:57,035 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-29 05:50:56.039622+00:00
+[DEBUG] 2025-10-29 13:50:57,054 [urllib3.connectionpool] Starting new HTTPS connection (1): ipinfo.io:443
+[DEBUG] 2025-10-29 13:50:57,323 [urllib3.connectionpool] https://ipinfo.io:443 "GET /203.217.140.215/json HTTP/1.1" 200 None
+[WARNING] 2025-10-29 13:53:15,958 [django.request] Not Found: /partymgr/control/main
+[WARNING] 2025-10-29 13:53:34,939 [django.request] Not Found: /helpdesk/WebObjects/Helpdesk.woa
+[WARNING] 2025-10-29 13:53:50,305 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-29 13:53:59,538 [django.request] Not Found: /Telerik.Web.UI.WebResource.axd
+[WARNING] 2025-10-29 13:54:04,555 [django.request] Not Found: /internal_forms_authentication
+[WARNING] 2025-10-29 13:54:10,662 [django.request] Not Found: /solr/
+[WARNING] 2025-10-29 13:54:16,620 [django.request] Not Found: /api/session/properties
+[WARNING] 2025-10-29 13:54:24,869 [django.request] Not Found: /cgi-bin/authLogin.cgi
+[WARNING] 2025-10-29 13:54:32,355 [django.request] Not Found: /favicon-32x32.png
+[WARNING] 2025-10-29 13:54:35,422 [django.request] Not Found: /OA_HTML/AppsLocalLogin.jsp
+[WARNING] 2025-10-29 13:54:41,098 [django.request] Not Found: /license.txt
+[WARNING] 2025-10-29 13:54:45,663 [django.request] Not Found: /wp-json
+[WARNING] 2025-10-29 13:54:49,544 [django.request] Not Found: /login.do
+[WARNING] 2025-10-29 13:54:53,090 [django.request] Not Found: /WebInterface/
+[WARNING] 2025-10-29 13:54:56,781 [django.request] Not Found: /console
+[WARNING] 2025-10-29 13:55:01,240 [django.request] Not Found: /owncloud/status.php
+[WARNING] 2025-10-29 13:55:04,248 [django.request] Not Found: /status.php
+[WARNING] 2025-10-29 13:55:07,527 [django.request] Not Found: /zabbix/favicon.ico
+[WARNING] 2025-10-29 13:55:11,041 [django.request] Not Found: /sugar_version.json
+[WARNING] 2025-10-29 13:55:14,551 [django.request] Not Found: /ssi.cgi/Login.htm
+[WARNING] 2025-10-29 13:55:18,963 [django.request] Not Found: /js/NewWindow_2_all.js
+[WARNING] 2025-10-29 13:55:20,178 [django.request] Not Found: /login.html
+[WARNING] 2025-10-29 13:55:23,171 [django.request] Not Found: /jasperserver/login.html
+[WARNING] 2025-10-29 13:55:25,010 [django.request] Not Found: /jasperserver-pro/login.html
+[WARNING] 2025-10-29 13:55:29,979 [django.request] Not Found: /jasperserverTest/login.html
+[WARNING] 2025-10-29 13:55:34,358 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-29 13:55:35,730 [django.request] Not Found: /webfig/
+[WARNING] 2025-10-29 13:55:38,709 [django.request] Not Found: /identity
+[WARNING] 2025-10-29 13:55:41,492 [django.request] Not Found: /index.jsp
+[WARNING] 2025-10-29 13:55:42,760 [django.request] Not Found: /sitecore/shell/sitecore.version.xml
+[WARNING] 2025-10-29 13:55:45,138 [django.request] Not Found: /showLogin.cc
+[WARNING] 2025-10-29 14:04:47,614 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-29 14:04:47,615 [django.request] Forbidden: /search/
+[DEBUG] 2025-10-29 14:06:00,691 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-10-29 14:06:00,693 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-29 06:06:00.691490+00:00
+[INFO] 2025-10-29 14:06:00,693 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36", path_info: "/logout/"}.
+[DEBUG] 2025-10-29 14:06:07,503 [urllib3.connectionpool] Starting new HTTPS connection (1): oauth2.googleapis.com:443
+[DEBUG] 2025-10-29 14:06:07,902 [urllib3.connectionpool] https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+[DEBUG] 2025-10-29 14:06:07,992 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-10-29 14:06:07,993 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36", path_info: "/accounts/google/login/callback/"}.
+[INFO] 2025-10-29 14:06:07,994 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-29 06:06:07.992785+00:00
+[WARNING] 2025-10-29 14:10:10,717 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-29 14:10:10,717 [django.request] Forbidden: /search/
+[INFO] 2025-10-29 14:18:31,749 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:18:32,076 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:18:32,115 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:20:00,570 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:20:00,889 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:20:00,958 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:20:40,476 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:20:40,660 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:20:40,726 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:20:46,737 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:20:46,742 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:20:46,755 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:21:44,260 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:21:44,473 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:21:44,497 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[ERROR] 2025-10-29 14:22:05,268 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[INFO] 2025-10-29 14:24:52,793 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:25:20,745 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:25:29,738 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:26:09,117 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:26:17,335 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:26:59,774 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:29:05,631 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:32:27,929 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:33:16,873 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:33:35,883 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[ERROR] 2025-10-29 14:34:41,928 [django.security.DisallowedHost] Invalid HTTP_HOST header: '20.11.247.222'. You may need to add '20.11.247.222' to ALLOWED_HOSTS.
+[INFO] 2025-10-29 14:35:41,697 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:36:15,523 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:36:18,269 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:36:40,362 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:38:41,744 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:39:36,903 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:39:57,178 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:40:30,173 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:40:30,218 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:40:30,257 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[DEBUG] 2025-10-29 14:40:33,615 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[INFO] 2025-10-29 14:40:33,617 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-29 06:40:33.615095+00:00
+[INFO] 2025-10-29 14:40:33,618 [axes.handlers.database] AXES: Successful logout by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:144.0) Gecko/20100101 Firefox/144.0", path_info: "/logout/"}.
+[INFO] 2025-10-29 14:42:44,517 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:42:44,736 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:42:44,788 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:43:06,846 [courses.views] [Enroll] User: jeingaciro@gmail.com, Course: Big Data Developer, Free: False, Has License: False
+[WARNING] 2025-10-29 14:43:06,846 [courses.views] [Enroll Blocked] jeingaciro@gmail.com tidak punya lisensi aktif untuk course Big Data Developer yang berbayar
+[INFO] 2025-10-29 14:43:06,848 [courses.views] [Enroll] Price type found: Free to enroll, pay only when taking the exam
+[DEBUG] 2025-10-29 14:43:06,848 [courses.models] Enrolling user jeingaciro@gmail.com (ID: 36878) for course Big Data Developer (ID: 11) with payment_model Free to enroll, pay only when taking the exam
+[INFO] 2025-10-29 14:43:06,884 [courses.models] User jeingaciro@gmail.com enrolled in course Big Data Developer with model Free to enroll, pay only when taking the exam
+[INFO] 2025-10-29 14:43:06,885 [courses.views] [Enroll Result] {'status': 'success', 'message': 'Berhasil mendaftar ke kursus ini.'}
+[INFO] 2025-10-29 14:43:07,140 [learner.views] Menampilkan pesan sapaan untuk pengguna jei pada kursus Big Data Developer
+[DEBUG] 2025-10-29 14:43:07,179 [learner.views] Created LastAccessCourse for user 36878, course 11, material 45
+[INFO] 2025-10-29 14:43:07,180 [learner.views] Redirecting to load_content: /jei/11/big-data-developer-2026/material/45/
+[WARNING] 2025-10-29 14:43:07,315 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-29 14:43:07,362 [learner.views] Created CourseSessionLog for user 36878, course 11, material 45
+[DEBUG] 2025-10-29 14:43:07,405 [learner.views] Updated LastAccessCourse for user 36878, course 11, material 45
+[INFO] 2025-10-29 14:43:07,437 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna jei, material 45
+[INFO] 2025-10-29 14:43:07,610 [learner.templatetags.learner_tags] Completion for user 36878, course 11: is_completed=False, assessments=0/5, overall=0.00%, threshold=64.00, progress=0.00%
+[WARNING] 2025-10-29 14:43:44,472 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-29 14:43:44,521 [learner.views] Closed previous CourseSessionLog for user 36878, course 11
+[DEBUG] 2025-10-29 14:43:44,547 [learner.views] Created CourseSessionLog for user 36878, course 11, assessment 45
+[DEBUG] 2025-10-29 14:43:44,581 [learner.views] Updated LastAccessCourse for user 36878, course 11, assessment 45
+[INFO] 2025-10-29 14:43:44,644 [learner.views] Progress updated for user jei on course Big Data Developer: 10.0%
+[INFO] 2025-10-29 14:43:44,651 [learner.views] Pembayaran diperlukan untuk penilaian 45 di kursus 11 untuk pengguna jei
+[INFO] 2025-10-29 14:43:44,659 [learner.views] load_content: Rendering learner/partials/content.html untuk pengguna jei, assessment 45
+[INFO] 2025-10-29 14:43:44,717 [learner.templatetags.learner_tags] Completion for user 36878, course 11: is_completed=False, assessments=0/5, overall=0.00%, threshold=64.00, progress=10.00%
+[INFO] 2025-10-29 14:43:46,698 [payments.views] Processing payment for course 11, payment_type: exam
+[DEBUG] 2025-10-29 14:43:52,575 [urllib3.connectionpool] Starting new HTTPS connection (1): tripay.co.id:443
+[DEBUG] 2025-10-29 14:43:53,888 [urllib3.connectionpool] https://tripay.co.id:443 "GET /api-sandbox/merchant/payment-channel HTTP/1.1" 200 None
+[DEBUG] 2025-10-29 14:44:04,441 [urllib3.connectionpool] Starting new HTTP connection (1): ip-api.com:80
+[DEBUG] 2025-10-29 14:44:04,997 [urllib3.connectionpool] http://ip-api.com:80 "GET /json/203.217.140.215 HTTP/1.1" 200 280
+[DEBUG] 2025-10-29 14:44:05,019 [urllib3.connectionpool] Starting new HTTPS connection (1): tripay.co.id:443
+[DEBUG] 2025-10-29 14:44:05,965 [urllib3.connectionpool] https://tripay.co.id:443 "POST /api-sandbox/transaction/create HTTP/1.1" 200 None
+[INFO] 2025-10-29 14:44:06,189 [payments.utils] Tripay response: {'success': True, 'message': '', 'data': {'reference': 'DEV-T454363041454RDRJ', 'merchant_ref': 'user-36878-1761723844', 'payment_selection_type': 'static', 'payment_method': 'MUAMALATVA', 'payment_name': 'Muamalat Virtual Account', 'customer_name': 'jei ngaciro', 'customer_email': 'jeingaciro@gmail.com', 'customer_phone': None, 'callback_url': 'https://ini.icei.ac.id/payments/tripay-callback/', 'return_url': 'https://ini.icei.ac.id/payments/return/', 'amount': 28400, 'fee_merchant': 4250, 'fee_customer': 0, 'total_fee': 4250, 'amount_received': 24150, 'pay_code': '618703181071608', 'pay_url': None, 'checkout_url': 'https://tripay.co.id/checkout/DEV-T454363041454RDRJ', 'status': 'UNPAID', 'expired_time': 1761727505, 'order_items': [{'sku': None, 'name': 'Big Data Developer', 'price': 23400, 'quantity': 1, 'subtotal': 23400, 'product_url': None, 'image_url': None}, {'sku': None, 'name': 'Platform Fee', 'price': 5000, 'quantity': 1, 'subtotal': 5000, 'product_url': None, 'image_url': None}], 'instructions': [{'title': 'Internet Banking', 'steps': ['Login ke IB Muamalat', 'Pilih menu <b>Payment</b>', 'pilih rekening Anda dan pilih <b>Virtual Account</b> pada bill type', 'masukkan Nomor Va (<b>618703181071608</b>)', 'Klik <b>Next</b>', 'Periksa kembali jumlah pembayaran', 'Apabila sudah sesuai, Masukkan mPasscode lalu klik <b>SUBMIT</b> jika setuju dengan informasi pembayaran', 'Transaksi Anda selesai. Silahkan cetak bukti transaksi']}, {'title': 'M-Banking', 'steps': ['Login ke Mobile Banking Muamalat', 'Pilih menu <b>Pembayaran</b>', 'masukkan Nomor Va (<b>618703181071608</b>), klik <b>Proses</b>', 'Periksa kembali jumlah pembayaran', 'Apabila sudah sesuai, masukkan Kode Verifikasi lalu klik <b>Proses</b> jika sudah setuju dengan informasi pembayaran', 'Transaksu Anda selesai, Simpan struk sebagai bukti transaksi']}, {'title': 'ATM Muamalat', 'steps': ['Masukkan kartu ATM, lalu input PIN Anda', 'Pilih menu <b>Transaksi Lain</b>', 'Pilih menu <b>Pembayaran</b> kemudian pilih menu <b>Virtual Account</b>', 'Masukkan Nomor VA (<b>618703181071608</b>)', 'Tekan <b>Bayar</b> jika setuju dengan informasi pembayaran', 'Periksa kembali jumlah Tagihan', 'Apabila sudah sesuai, tekan <b>Benar</b>, lalu tekan <b>Bayar</b>', 'Simpan struk ATM sebagai bukti pembayaran']}]}}
+[INFO] 2025-10-29 14:44:06,189 [payments.utils] VA created: 618703181071608, Bank: Muamalat Virtual Account, Expired: 1761727505
+[ERROR] 2025-10-29 14:44:06,195 [payments.views] Tripay error di checkout: 'int' object has no attribute 'merchant_ref'
+[DEBUG] 2025-10-29 14:53:14,204 [axes.helpers] Using request.META.get('REMOTE_ADDR', None) fallback method to get client IP address
+[DEBUG] 2025-10-29 14:53:14,207 [axes.helpers] Using parameter credentials to get username with key settings.AXES_USERNAME_FORM_FIELD
+[DEBUG] 2025-10-29 14:53:14,208 [axes.handlers.database] AXES: Getting access attempts that are newer than 2025-10-29 06:53:14.204773+00:00
+[INFO] 2025-10-29 14:53:15,169 [axes.handlers.database] AXES: Successful login by {username: "********************", ip_address: "********************", user_agent: "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:144.0) Gecko/20100101 Firefox/144.0", path_info: "/login/"}.
+[INFO] 2025-10-29 14:53:15,171 [axes.handlers.database] AXES: Cleaned up 0 expired access attempts from database that were older than 2025-10-29 06:53:14.204773+00:00
+[DEBUG] 2025-10-29 14:53:15,189 [urllib3.connectionpool] Starting new HTTPS connection (1): ipinfo.io:443
+[DEBUG] 2025-10-29 14:53:15,475 [urllib3.connectionpool] https://ipinfo.io:443 "GET /203.217.140.215/json HTTP/1.1" 200 None
+[INFO] 2025-10-29 14:59:53,514 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:59:53,754 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 14:59:53,822 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 15:00:59,722 [learner.views] Redirecting to load_content: /jei/11/big-data-developer-2026/assessment/45/
+[WARNING] 2025-10-29 15:00:59,849 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-29 15:00:59,894 [learner.views] Closed previous CourseSessionLog for user 36878, course 11
+[DEBUG] 2025-10-29 15:00:59,930 [learner.views] Created CourseSessionLog for user 36878, course 11, assessment 45
+[DEBUG] 2025-10-29 15:00:59,966 [learner.views] Updated LastAccessCourse for user 36878, course 11, assessment 45
+[INFO] 2025-10-29 15:00:59,979 [learner.views] Pembayaran diperlukan untuk penilaian 45 di kursus 11 untuk pengguna jei
+[INFO] 2025-10-29 15:00:59,988 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna jei, assessment 45
+[INFO] 2025-10-29 15:01:00,061 [learner.templatetags.learner_tags] Completion for user 36878, course 11: is_completed=False, assessments=0/5, overall=0.00%, threshold=64.00, progress=10.00%
+[INFO] 2025-10-29 15:01:01,683 [payments.views] Processing payment for course 11, payment_type: exam
+[DEBUG] 2025-10-29 15:01:06,586 [urllib3.connectionpool] Starting new HTTPS connection (1): tripay.co.id:443
+[DEBUG] 2025-10-29 15:01:07,881 [urllib3.connectionpool] https://tripay.co.id:443 "GET /api-sandbox/merchant/payment-channel HTTP/1.1" 200 None
+[DEBUG] 2025-10-29 15:01:13,104 [urllib3.connectionpool] Starting new HTTP connection (1): ip-api.com:80
+[DEBUG] 2025-10-29 15:01:13,147 [urllib3.connectionpool] http://ip-api.com:80 "GET /json/203.217.140.215 HTTP/1.1" 200 280
+[DEBUG] 2025-10-29 15:01:13,169 [urllib3.connectionpool] Starting new HTTPS connection (1): tripay.co.id:443
+[DEBUG] 2025-10-29 15:01:14,149 [urllib3.connectionpool] https://tripay.co.id:443 "POST /api-sandbox/transaction/create HTTP/1.1" 200 None
+[INFO] 2025-10-29 15:01:14,372 [payments.utils] Tripay response: {'success': True, 'message': '', 'data': {'reference': 'DEV-T45436304154XXGYM', 'merchant_ref': 'user-36878-1761724873', 'payment_selection_type': 'static', 'payment_method': 'BNIVA', 'payment_name': 'BNI Virtual Account', 'customer_name': 'jei ngaciro', 'customer_email': 'jeingaciro@gmail.com', 'customer_phone': None, 'callback_url': 'https://ini.icei.ac.id/payments/tripay-callback/', 'return_url': 'https://ini.icei.ac.id/payments/return/', 'amount': 28400, 'fee_merchant': 4250, 'fee_customer': 0, 'total_fee': 4250, 'amount_received': 24150, 'pay_code': '521769417514444', 'pay_url': None, 'checkout_url': 'https://tripay.co.id/checkout/DEV-T45436304154XXGYM', 'status': 'UNPAID', 'expired_time': 1761728473, 'order_items': [{'sku': None, 'name': 'Big Data Developer', 'price': 23400, 'quantity': 1, 'subtotal': 23400, 'product_url': None, 'image_url': None}, {'sku': None, 'name': 'Platform Fee', 'price': 5000, 'quantity': 1, 'subtotal': 5000, 'product_url': None, 'image_url': None}], 'instructions': [{'title': 'Wondr By BNI', 'steps': ['Buka Aplikasi Wondr By BNI', 'Pilih menu <b>Virtual Account</b>', 'Pilih <b>Tujuan Baru</b>', 'Masukkan Nomor <b>Virtual Account</b>', 'Klik tombol <b>Lanjut</b>', 'Akan ditampikan detail transaksi, Pilih rekening sumber dana', 'Klik tombol <b>Lanjut</b>', 'Pastikan semua informasi sudah sesuai kemudian klik <b>Transaksi Sekarang</b>', 'Masukan PIN Anda', 'Transaksi selesai, simpan bukti pembayaran Anda']}, {'title': 'Internet Banking', 'steps': ['Login ke internet banking Bank BNI Anda', 'Pilih menu <b>Transaksi</b> lalu klik menu <b>Virtual Account Billing</b>', 'Masukkan Nomor VA (<b>521769417514444</b>) lalu pilih <b>Rekening Debit</b>', 'Detail transaksi akan ditampilkan, pastikan data sudah sesuai', 'Masukkan respon key BNI appli 2', 'Transaksi sukses, simpan bukti transaksi Anda']}, {'title': 'ATM BNI', 'steps': ['Masukkan kartu Anda', 'Pilih Bahasa', 'Masukkan PIN ATM Anda', 'Kemudian, pilih <b>Menu Lainnya</b>', 'Pilih <b>Transfer</b> dan pilih jenis rekening yang akan digunakan (Contoh: Dari rekening Tabungan)', 'Pilih <b>Virtual Account Billing</b>. Masukkan Nomor VA (<b>521769417514444</b>)', 'Tagihan yang harus dibayarkan akan muncul pada layar konfirmasi', 'Konfirmasi, apabila telah selesai, lanjutkan transaksi', 'Transaksi Anda telah selesai']}, {'title': 'Mobile Banking BNI', 'steps': ['Akses BNI Mobile Banking dari handphone kemudian masukkan <b>User ID dan Password</b>', 'Pilih menu <b>Transfer</b>', 'Pilih menu <b>Virtual Account Billing</b> kemudian pilih rekening debet', 'Masukkan Nomor <b>Virtual Account</b>', 'Tagihan yang harus dibayarkan akan muncul pada layar konfirmasi', 'Konfirmasi transaksi dan masukkan Password Transaksi', 'Pembayaran Anda Telah Berhasil']}]}}
+[ERROR] 2025-10-29 15:01:14,373 [payments.views] Tripay error di checkout: 0
+[WARNING] 2025-10-29 15:01:32,653 [django.request] Not Found: /Collector/diagnostics/trace_route
+[WARNING] 2025-10-29 15:01:32,654 [django.request] Not Found: /Collector/diagnostics/ping
+[INFO] 2025-10-29 15:07:20,687 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 15:07:20,772 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 15:07:20,818 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 15:08:08,826 [learner.views] Redirecting to load_content: /jei/11/big-data-developer-2026/assessment/45/
+[WARNING] 2025-10-29 15:08:08,953 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-29 15:08:08,988 [learner.views] Closed previous CourseSessionLog for user 36878, course 11
+[DEBUG] 2025-10-29 15:08:09,021 [learner.views] Created CourseSessionLog for user 36878, course 11, assessment 45
+[DEBUG] 2025-10-29 15:08:09,061 [learner.views] Updated LastAccessCourse for user 36878, course 11, assessment 45
+[INFO] 2025-10-29 15:08:09,075 [learner.views] Pembayaran diperlukan untuk penilaian 45 di kursus 11 untuk pengguna jei
+[INFO] 2025-10-29 15:08:09,083 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna jei, assessment 45
+[INFO] 2025-10-29 15:08:09,148 [learner.templatetags.learner_tags] Completion for user 36878, course 11: is_completed=False, assessments=0/5, overall=0.00%, threshold=64.00, progress=10.00%
+[INFO] 2025-10-29 15:08:10,611 [payments.views] Processing payment for course 11, payment_type: exam
+[DEBUG] 2025-10-29 15:08:14,944 [urllib3.connectionpool] Starting new HTTPS connection (1): tripay.co.id:443
+[DEBUG] 2025-10-29 15:08:16,236 [urllib3.connectionpool] https://tripay.co.id:443 "GET /api-sandbox/merchant/payment-channel HTTP/1.1" 200 None
+[DEBUG] 2025-10-29 15:08:20,617 [urllib3.connectionpool] Starting new HTTP connection (1): ip-api.com:80
+[DEBUG] 2025-10-29 15:08:20,660 [urllib3.connectionpool] http://ip-api.com:80 "GET /json/203.217.140.215 HTTP/1.1" 200 280
+[DEBUG] 2025-10-29 15:08:20,686 [urllib3.connectionpool] Starting new HTTPS connection (1): tripay.co.id:443
+[DEBUG] 2025-10-29 15:08:21,620 [urllib3.connectionpool] https://tripay.co.id:443 "POST /api-sandbox/transaction/create HTTP/1.1" 200 None
+[INFO] 2025-10-29 15:08:21,841 [payments.utils] Tripay response: {'success': True, 'message': '', 'data': {'reference': 'DEV-T45436304162GD05D', 'merchant_ref': 'user-36878-1761725300', 'payment_selection_type': 'static', 'payment_method': 'MUAMALATVA', 'payment_name': 'Muamalat Virtual Account', 'customer_name': 'jei ngaciro', 'customer_email': 'jeingaciro@gmail.com', 'customer_phone': None, 'callback_url': 'https://ini.icei.ac.id/payments/tripay-callback/', 'return_url': 'https://ini.icei.ac.id/payments/return/', 'amount': 28400, 'fee_merchant': 4250, 'fee_customer': 0, 'total_fee': 4250, 'amount_received': 24150, 'pay_code': '464968502340063', 'pay_url': None, 'checkout_url': 'https://tripay.co.id/checkout/DEV-T45436304162GD05D', 'status': 'UNPAID', 'expired_time': 1761728961, 'order_items': [{'sku': None, 'name': 'Big Data Developer', 'price': 23400, 'quantity': 1, 'subtotal': 23400, 'product_url': None, 'image_url': None}, {'sku': None, 'name': 'Platform Fee', 'price': 5000, 'quantity': 1, 'subtotal': 5000, 'product_url': None, 'image_url': None}], 'instructions': [{'title': 'Internet Banking', 'steps': ['Login ke IB Muamalat', 'Pilih menu <b>Payment</b>', 'pilih rekening Anda dan pilih <b>Virtual Account</b> pada bill type', 'masukkan Nomor Va (<b>464968502340063</b>)', 'Klik <b>Next</b>', 'Periksa kembali jumlah pembayaran', 'Apabila sudah sesuai, Masukkan mPasscode lalu klik <b>SUBMIT</b> jika setuju dengan informasi pembayaran', 'Transaksi Anda selesai. Silahkan cetak bukti transaksi']}, {'title': 'M-Banking', 'steps': ['Login ke Mobile Banking Muamalat', 'Pilih menu <b>Pembayaran</b>', 'masukkan Nomor Va (<b>464968502340063</b>), klik <b>Proses</b>', 'Periksa kembali jumlah pembayaran', 'Apabila sudah sesuai, masukkan Kode Verifikasi lalu klik <b>Proses</b> jika sudah setuju dengan informasi pembayaran', 'Transaksu Anda selesai, Simpan struk sebagai bukti transaksi']}, {'title': 'ATM Muamalat', 'steps': ['Masukkan kartu ATM, lalu input PIN Anda', 'Pilih menu <b>Transaksi Lain</b>', 'Pilih menu <b>Pembayaran</b> kemudian pilih menu <b>Virtual Account</b>', 'Masukkan Nomor VA (<b>464968502340063</b>)', 'Tekan <b>Bayar</b> jika setuju dengan informasi pembayaran', 'Periksa kembali jumlah Tagihan', 'Apabila sudah sesuai, tekan <b>Benar</b>, lalu tekan <b>Bayar</b>', 'Simpan struk ATM sebagai bukti pembayaran']}]}}
+[ERROR] 2025-10-29 15:08:21,842 [payments.views] Tripay error di checkout: 0
+[INFO] 2025-10-29 15:09:34,332 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 15:09:34,359 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 15:09:34,420 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 15:10:09,839 [learner.views] Redirecting to load_content: /jei/11/big-data-developer-2026/assessment/45/
+[WARNING] 2025-10-29 15:10:09,967 [learner.views] Gagal mendapatkan lokasi untuk IP 203.217.140.215: [Errno 2] No such file or directory: b'/path/to/GeoLite2-City.mmdb'
+[DEBUG] 2025-10-29 15:10:10,012 [learner.views] Closed previous CourseSessionLog for user 36878, course 11
+[DEBUG] 2025-10-29 15:10:10,041 [learner.views] Created CourseSessionLog for user 36878, course 11, assessment 45
+[DEBUG] 2025-10-29 15:10:10,079 [learner.views] Updated LastAccessCourse for user 36878, course 11, assessment 45
+[INFO] 2025-10-29 15:10:10,094 [learner.views] Pembayaran diperlukan untuk penilaian 45 di kursus 11 untuk pengguna jei
+[INFO] 2025-10-29 15:10:10,104 [learner.views] load_content: Rendering learner/my_course.html untuk pengguna jei, assessment 45
+[INFO] 2025-10-29 15:10:10,161 [learner.templatetags.learner_tags] Completion for user 36878, course 11: is_completed=False, assessments=0/5, overall=0.00%, threshold=64.00, progress=10.00%
+[INFO] 2025-10-29 15:10:12,053 [payments.views] Processing payment for course 11, payment_type: exam
+[INFO] 2025-10-29 15:10:25,942 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 15:10:26,269 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-29 15:10:26,408 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[DEBUG] 2025-10-29 15:10:27,029 [urllib3.connectionpool] Starting new HTTPS connection (1): tripay.co.id:443
+[DEBUG] 2025-10-29 15:10:28,006 [urllib3.connectionpool] https://tripay.co.id:443 "GET /api-sandbox/merchant/payment-channel HTTP/1.1" 200 None
+[DEBUG] 2025-10-29 15:10:33,424 [urllib3.connectionpool] Starting new HTTP connection (1): ip-api.com:80
+[DEBUG] 2025-10-29 15:10:33,466 [urllib3.connectionpool] http://ip-api.com:80 "GET /json/203.217.140.215 HTTP/1.1" 200 280
+[INFO] 2025-10-29 15:10:33,490 [payments.utils] Tripay payload:
+{
+  "method": "CIMBVA",
+  "merchant_ref": "user-36878-1761725433",
+  "amount": 28400,
+  "customer_name": "jei ngaciro",
+  "customer_email": "jeingaciro@gmail.com",
+  "order_items": [
+    {
+      "name": "Big Data Developer",
+      "price": 23400,
+      "quantity": 1
+    },
+    {
+      "name": "Platform Fee",
+      "price": 5000,
+      "quantity": 1
+    }
+  ],
+  "return_url": "https://ini.icei.ac.id/payments/return/",
+  "callback_url": "https://ini.icei.ac.id/payments/tripay-callback/",
+  "expired_time": 1761729033,
+  "signature": "a911dde787ddb837065e59c0f609330e3b7425e0851576993a1c50f66453ae59"
+}
+[DEBUG] 2025-10-29 15:10:33,492 [urllib3.connectionpool] Starting new HTTPS connection (1): tripay.co.id:443
+[DEBUG] 2025-10-29 15:10:34,436 [urllib3.connectionpool] https://tripay.co.id:443 "POST /api-sandbox/transaction/create HTTP/1.1" 200 None
+[INFO] 2025-10-29 15:10:34,658 [payments.utils] Tripay response: {
+  "success": true,
+  "message": "",
+  "data": {
+    "reference": "DEV-T45436304164WW6WB",
+    "merchant_ref": "user-36878-1761725433",
+    "payment_selection_type": "static",
+    "payment_method": "CIMBVA",
+    "payment_name": "CIMB Niaga Virtual Account",
+    "customer_name": "jei ngaciro",
+    "customer_email": "jeingaciro@gmail.com",
+    "customer_phone": null,
+    "callback_url": "https://ini.icei.ac.id/payments/tripay-callback/",
+    "return_url": "https://ini.icei.ac.id/payments/return/",
+    "amount": 28400,
+    "fee_merchant": 4250,
+    "fee_customer": 0,
+    "total_fee": 4250,
+    "amount_received": 24150,
+    "pay_code": "218162780274273",
+    "pay_url": null,
+    "checkout_url": "https://tripay.co.id/checkout/DEV-T45436304164WW6WB",
+    "status": "UNPAID",
+    "expired_time": 1761729033,
+    "order_items": [
+      {
+        "sku": null,
+        "name": "Big Data Developer",
+        "price": 23400,
+        "quantity": 1,
+        "subtotal": 23400,
+        "product_url": null,
+        "image_url": null
+      },
+      {
+        "sku": null,
+        "name": "Platform Fee",
+        "price": 5000,
+        "quantity": 1,
+        "subtotal": 5000,
+        "product_url": null,
+        "image_url": null
+      }
+    ],
+    "instructions": [
+      {
+        "title": "Internet Banking",
+        "steps": [
+          "Login ke CIMB clicks",
+          "Pilih menu <b>Bayar Tagihan/Pay Bills</b>",
+          "Pilih <b>Rekening Sumber/Source Account</b> dan jenis Pembayaran/Payment Type > Virtual Account",
+          "Masukkan Nomor VA (<b>218162780274273</b>)",
+          "Nomor, nama virtual account dan jumlah billing ditampilkan pada layar",
+          "Masukkan 6 digit mPIN dan tekan tombol <b>Submit</b>",
+          "Konfirmasi pembayaran ditampilkan pada layar"
+        ]
+      },
+      {
+        "title": "Mobile Banking",
+        "steps": [
+          "Login ke Go Mobile",
+          "Pilih menu <b>Transfer</b>",
+          "Pilih Transfer <b>to Other CIMB Niaga Account</b>",
+          "Pilih rekening sumber Anda",
+          "Pilih CASA dan masukkan Nomor VA (<b>218162780274273</b>)",
+          "Masukkan Nominal (<b>28400</b>)",
+          "Masukkan Mobile Banking PIN",
+          "konfirmasi pembayaran ditampilkan pada layar"
+        ]
+      },
+      {
+        "title": "ATM CIMB",
+        "steps": [
+          "Masukkan Kartu ATM dan PIN CIMB Toppers",
+          "Pilih menu <b>Pembayaran > Lanjut > Virtual Account</b>",
+          "Masukkan Nomor VA (<b>218162780274273</b>)",
+          "Pilih rekening debit",
+          "Nomor, nama virtual account dan jumlah billing ditampilkan pada layar",
+          "Pilih <b>OK</b> untuk melakukan pembayaran",
+          "Konfirmasi pembayaran ditampilkan pada layar"
+        ]
+      }
+    ]
+  }
+}
+[ERROR] 2025-10-29 15:10:34,659 [payments.views] Tripay error di checkout: Data Tripay kosong atau tidak valid

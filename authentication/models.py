@@ -32,19 +32,21 @@ class Universiti(models.Model):
 
 
 class CustomUser(AbstractUser):
-    gen = {
-        "male":"male",
-        "female":"female",
-    }
-    edu = {
-        "Basic":"Basic",
-        "Secondary":"Secondary",
-        "Higher":"Higher",
-        "Diploma":"Diploma",
-        "Bachelor's":"Bachelor",
-        "Master":"Master",
-        "Doctorate":"Doctorate",
-    }
+    EDUCATION_CHOICES = [
+        ('basic', 'Basic'),
+        ('secondary', 'Secondary'),
+        ('higher', 'Higher'),
+        ('diploma', 'Diploma'),
+        ('bachelor', "Bachelor's"),
+        ('master', 'Master'),
+        ('doctorate', 'Doctorate'),
+    ]
+
+    GENDER_CHOICES = [
+        ('male', 'Male'),
+        ('female', 'Female'),
+    ]
+
     choice_country = [
         ('af', 'Afganistan'),
         ('al', 'Albania'),
@@ -235,7 +237,7 @@ class CustomUser(AbstractUser):
 
     email = models.EmailField(_("email address"), unique=True)  # Menambahkan unique=True
     phone = models.CharField(max_length=20, blank=True, null=True)
-    gender = models.CharField(max_length=10, choices=[('M', 'Male'), ('F', 'Female')], blank=True, null=True)
+    
     country = models.CharField(
         max_length=2,
         choices=choice_country,
@@ -247,8 +249,22 @@ class CustomUser(AbstractUser):
     photo = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
     address = models.TextField(blank=True, null=True)
     hobby = models.CharField(_("hobby"), max_length=150, blank=True)
-    education = models.CharField(_("education"), max_length=10, choices=edu,blank=True)
-    gender = models.CharField(_("gender"), max_length=8, choices=gen,blank=True)
+    education = models.CharField(
+        _("education"),
+        max_length=20,
+        choices=EDUCATION_CHOICES,
+        blank=True,
+        null=True
+    )
+
+    gender = models.CharField(
+        _("gender"),
+        max_length=10,
+        choices=GENDER_CHOICES,
+        blank=True,
+        null=True
+    )
+
     university = models.ForeignKey(Universiti, on_delete=models.CASCADE, blank=True, null=True, verbose_name=_("university"))
 
     # Social Media Fields
