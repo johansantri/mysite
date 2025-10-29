@@ -4,7 +4,7 @@
 <div class="mt-4">
     <h3><i class="bi bi-receipt-cutoff me-2"></i> Invoice & Receipt</h3>
     <a href="{% url 'payments:finance_data_export' %}" class="btn btn-primary">
-          Export Finance Data
+          Export Data
         </a>
     <hr>
 
@@ -30,6 +30,7 @@
         </div>
     </form>
 
+    <div class="table-responsive">
     <table class="table table-striped align-middle">
         <thead class="table-dark">
             <tr>
@@ -72,7 +73,7 @@
             {% endfor %}
         </tbody>
     </table>
-
+    </div>
     <nav>
         <ul class="pagination justify-content-center">
             {% if page_obj.has_previous %}

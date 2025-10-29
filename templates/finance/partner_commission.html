@@ -62,7 +62,7 @@
   <!-- ICE Admin Revenue -->
   <div class="card text-center">
     <div class="card-body">
-      <h5 class="card-title text-muted">ICE Revenue</h5>
+      <h5 class="card-title text-muted">LMSKu Revenue</h5>
       <p class="card-text fs-4 fw-bold text-primary">{{ net_income_admin|floatformat:2|intcomma }}</p>
     </div>
   </div>
@@ -79,6 +79,7 @@
 
 
 <!-- Payment Model Summary Table -->
+ <div class="table-responsive">
 <table class="table table-bordered table-striped">
   <thead>
     <tr>
@@ -93,7 +94,7 @@
       <tr>
         <td>{{ item.payment_model }}</td>
         <td>{{ item.status|capfirst }}</td>
-        <td>Rp {{ item.total_amount|floatformat:0|intcomma }}</td>
+        <td>{{ item.total_amount|floatformat:0|intcomma }}</td>
         <td>{{ item.count }}</td>
       </tr>
     {% empty %}
@@ -101,18 +102,18 @@
     {% endfor %}
   </tbody>
 </table>
-
+</div>
 <!-- Transaction Table -->
 <h4 class="mt-5">Recent Transactions</h4>
 <div class="table-responsive">
   <table class="table table-hover table-sm align-middle">
     <thead class="table-light">
       <tr>
-        <th>ID | Transaction ID</th>
+        <th>ID</th>
         <th>User</th>
         <th>Course</th>
-        <th>Partner Organization</th>
-        <th>Payment Model</th>
+        <th>Partner</th>
+        <th>Model</th>
         <th>Status</th>
         <th>Amount</th>
         <th>Date</th>
@@ -121,7 +122,7 @@
     <tbody>
       {% for p in page_obj %}
         <tr>
-          <td>{{ p.id }} | 
+          <td>
              <a href="{% url 'payments:payment_detail' p.id %}" class="btn btn-sm btn-outline-primary">
                 <i class="bi bi-receipt"></i> {{ p.transaction_id|default:p.linked_transaction.transaction_id|default:"-" }}
             </a>
@@ -143,7 +144,7 @@
               {{ p.status|capfirst }}
             </span>
           </td>
-          <td>Rp {{ p.amount|floatformat:0|intcomma }}</td>
+          <td> {{ p.amount|floatformat:0|intcomma }}</td>
           <td>{{ p.created_at|date:"Y-m-d H:i" }}</td>
         </tr>
       {% empty %}
@@ -191,7 +192,7 @@
   <table class="table table-bordered table-sm">
     <thead>
       <tr>
-        <th>Course Name</th>
+        <th>Name</th>
         <th>Partner</th>
         <th>Total Payment</th>
       </tr>
