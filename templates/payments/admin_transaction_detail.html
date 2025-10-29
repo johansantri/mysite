@@ -42,19 +42,19 @@
                 <td>{{ transaction.created_at|date:"d M Y H:i" }}</td>
             </tr>
             <tr>
-                <th>Total Paid</th>
-                <td><strong>IDR {{ total_paid|floatformat:2|intcomma }}</strong></td>
+                <th>Courses Total</th>
+                <td>IDR {{ course_total|floatformat:2|intcomma }}</td>
             </tr>
             <tr>
-                <th>Partner</th>
-                <td>
-                    {% if partner %}
-                        {{ partner.name }}
-                    {% else %}
-                        -
-                    {% endif %}
-                </td>
+                <th>Platform Fee</th>
+                <td>IDR {{ transaction.platform_fee|floatformat:2|intcomma }}</td>
             </tr>
+            <tr class="table-info">
+                <th><strong>Total Paid (Grand Total)</strong></th>
+                <td><strong>IDR {{ total_paid|floatformat:2|intcomma }}</strong></td>
+            </tr>
+
+           
         </table>
     </div>
 

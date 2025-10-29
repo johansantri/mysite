@@ -268,7 +268,6 @@ def payment_return(request):
 @login_required
 @user_passes_test(lambda u: u.is_superuser or getattr(u, 'is_partner', False) or getattr(u, 'is_finance', False))
 def payment_detail_view(request, pk):
-    # ambil payment + user + course + partner + transaction
     payment = get_object_or_404(
         Payment.objects.select_related(
             'user',
@@ -280,9 +279,27 @@ def payment_detail_view(request, pk):
 
     transaction = payment.linked_transaction  # bisa None kalau belum ada
 
+    # 🧮 Hitung total semua payment yang terhubung ke transaksi
+    total_course_amount = Decimal('0.00')
+    total_amount = payment.amount  # default
+
+    if transaction:
+        # Jumlahkan semua payment dalam transaksi
+        payments = transaction.payments.all()
+        total_course_amount = sum(p.amount for p in payments)
+
+        # Hitung total final (kursus + fee - voucher)
+        total_amount = (
+            total_course_amount
+            + (transaction.platform_fee or Decimal('0.00'))
+            - (transaction.voucher or Decimal('0.00'))
+        )
+
     context = {
         'payment': payment,
         'transaction': transaction,
+        'total_course_amount': total_course_amount,
+        'total_amount': total_amount,
     }
 
     return render(request, 'payments/payment_detail.html', context)
@@ -960,7 +977,9 @@ def cek_transaction_detail(request, pk):
     if partners:
         partner = Partner.objects.get(id=partners[0])
     # ✅ Hitung total pembayaran real-time dari snapshot Payment
-    total_paid = transaction.payments.aggregate(total=models.Sum('amount'))['total'] or 0
+    course_total = transaction.payments.aggregate(total=models.Sum('amount'))['total'] or 0
+    total_paid = course_total + (transaction.platform_fee or 0)
+
     if request.GET.get('download') == 'pdf':
         logger.info(f"[ADMIN] Generating PDF for transaction {pk} (status: {transaction.status})")
         
@@ -968,6 +987,7 @@ def cek_transaction_detail(request, pk):
             'transaction': transaction,
             'partner': partner,
             'request': request,
+            'course_total': course_total,
             'admin_view': True,  # Bisa digunakan di template kalau mau tampilkan info tambahan
         })
         html = HTML(string=html_string, base_url=request.build_absolute_uri())
@@ -982,6 +1002,7 @@ def cek_transaction_detail(request, pk):
         'transaction': transaction,
         'partner': partner,
         'total_paid': total_paid,
+        'course_total': course_total,
     })
 
 @login_required
