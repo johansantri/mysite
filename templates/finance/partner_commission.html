@@ -123,7 +123,7 @@
         <tr>
           <td>{{ p.id }} | 
              <a href="{% url 'payments:payment_detail' p.id %}" class="btn btn-sm btn-outline-primary">
-                <i class="bi bi-receipt"></i> {{ p.linked_transaction.id|default:"-" }}
+                <i class="bi bi-receipt"></i> {{ p.transaction_id|default:p.linked_transaction.transaction_id|default:"-" }}
             </a>
                         
               </td>
