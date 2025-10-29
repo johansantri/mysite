@@ -1,0 +1,133 @@
+{% load humanize %}
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Detail Transaksi</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f4f6f8;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        max-width: 650px;
+        margin: 20px auto;
+        background-color: #ffffff;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+    h2 {
+        color: #1a73e8;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+    .intro {
+        text-align: center;
+        font-size: 16px;
+        color: #333;
+        margin-bottom: 25px;
+    }
+    .details {
+        background-color: #f0f4ff;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+    }
+    .details li {
+        margin: 8px 0;
+        font-weight: bold;
+        color: #333;
+    }
+    .details li span {
+        color: #555;
+        font-weight: normal;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 25px;
+    }
+    table th, table td {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+        text-align: left;
+    }
+    table th {
+        background-color: #1a73e8;
+        color: #fff;
+        font-weight: 600;
+    }
+    table tr:last-child td {
+        border-bottom: none;
+    }
+    .button {
+        display: block;
+        width: 200px;
+        margin: 0 auto 30px auto;
+        padding: 12px 0;
+        background-color: #ff6b6b;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: bold;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        transition: all 0.3s ease;
+    }
+    .button:hover {
+        background-color: #ff4757;
+    }
+    .footer {
+        font-size: 12px;
+        color: #888;
+        text-align: center;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h2>Halo {{ user.get_full_name }}!</h2>
+    <p class="intro">Transaksi Anda berhasil dibuat. Berikut detailnya:</p>
+
+    <div class="details">
+        <ul>
+            <li>Merchant Reference: <span>{{ transaction.merchant_ref }}</span></li>
+            <li>VA / Bank: <span>{{ transaction.bank_name }} ({{ transaction.va_number }})</span></li>
+            <li>Total: <span>Rp {{ transaction.total_amount|floatformat:0|intcomma }}</span></li>
+            <li>Expired At: <span>{{ transaction.expired_at|date:"d M Y, H:i" }}</span></li>
+            <li>Metode Pembayaran: <span>{{ transaction.payment_method }}</span></li>
+        </ul>
+    </div>
+
+    <h3>Courses:</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Nama Course</th>
+                <th>Harga</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in cart_items %}
+            <tr>
+                <td>{{ item.course.course_name }}</td>
+                <td>Rp {{ item.get_course_price().portal_price|floatformat:0|intcomma }}</td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+
+    <a class="button" href="{{ transaction.payment_url }}" target="_blank">Bayar Sekarang</a>
+
+    <p class="footer">
+        Jika Anda memiliki pertanyaan, hubungi kami di <a href="mailto:support@domainanda.com">support@domainanda.com</a>.
+    </p>
+</div>
+</body>
+</html>

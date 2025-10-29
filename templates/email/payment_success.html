@@ -1,0 +1,105 @@
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pembayaran Berhasil</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f4f6f8;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        max-width: 600px;
+        margin: 20px auto;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    h2 {
+        color: #28a745;
+        text-align: center;
+    }
+    p {
+        font-size: 16px;
+        line-height: 1.5;
+    }
+    .details {
+        background-color: #e6f4ea;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 20px 0;
+    }
+    .details li {
+        margin: 8px 0;
+        font-weight: bold;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 15px 0;
+    }
+    table th, table td {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+    }
+    table th {
+        background-color: #28a745;
+        color: white;
+    }
+    .footer {
+        font-size: 12px;
+        color: #888;
+        text-align: center;
+        margin-top: 30px;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h2>Pembayaran Berhasil!</h2>
+
+    <p>Halo {{ user.get_full_name }}! Terima kasih telah melakukan pembayaran. Berikut detail transaksi Anda:</p>
+
+    <div class="details">
+        <ul>
+            <li>Merchant Reference: {{ transaction.merchant_ref }}</li>
+            <li>VA / Bank: {{ transaction.bank_name }} ({{ transaction.va_number }})</li>
+            <li>Total Pembayaran: Rp {{ transaction.total_amount|floatformat:0|intcomma }}</li>
+            <li>Tanggal Pembayaran: {{ transaction.paid_at|date:"d M Y, H:i" }}</li>
+            <li>Metode Pembayaran: {{ transaction.payment_method }}</li>
+            <li>Status: <span style="color:#28a745;font-weight:bold;">Sukses</span></li>
+        </ul>
+    </div>
+
+    <h3>Courses yang dibeli:</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Nama Course</th>
+                <th>Harga</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for course in cart_items %}
+            <tr>
+                <td>{{ course.course_name }}</td>
+                <td>Rp {{ course.get_course_price.portal_price|floatformat:0|intcomma }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <p>Selamat, Anda sekarang bisa mengakses materi course. Silakan login dan mulai belajar.</p>
+
+    <p class="footer">
+        Jika Anda memiliki pertanyaan, hubungi kami di <a href="mailto:support@domainanda.com">support@domainanda.com</a>.
+    </p>
+</div>
+</body>
+</html>

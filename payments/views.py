@@ -23,7 +23,7 @@ from datetime import timedelta
 from weasyprint import HTML
 from django.http import HttpResponse
 from django.template.loader import render_to_string
-from .utils import get_client_ip, get_geo_from_ip, validate_voucher, get_tripay_payment_channels,create_tripay_transaction
+from .utils import get_client_ip, get_geo_from_ip, validate_voucher, get_tripay_payment_channels,create_tripay_transaction,send_checkout_email,send_payment_confirmation_email
 from decimal import Decimal
 from django.db import transaction as db_transaction
 import uuid
@@ -255,15 +255,30 @@ def tripay_webhook(request):
 
     # Jalankan method status spesifik jika perlu
     if mapped_status == 'completed':
+        cart_items = []
+        for course in transaction.courses.all():
+            price_obj = course.get_course_price()  # Ambil sekali saja
+            if not price_obj:
+                continue  # Skip jika harga tidak tersedia
+
+            dummy_item = type('DummyCartItem', (object,), {
+                'course_name': course.course_name,
+                'get_course_price': price_obj  # Simpan objek harga langsung
+            })()
+            cart_items.append(dummy_item)
+
         for payment in payments:
             payment.mark_completed()
+        
+        send_payment_confirmation_email(transaction.user, transaction, cart_items)
+
     elif mapped_status in ['failed', 'cancelled']:
         for payment in payments:
             payment.mark_failed()
     else:
         for payment in payments:
             payment.save()
-
+    
     return JsonResponse({'success': True})
 def payment_return(request):
     return render(request, 'payments/return.html')
@@ -760,7 +775,7 @@ def checkout(request):
         for course in pending_tx.courses.all():
             dummy_item = type('DummyCartItem', (object,), {
                 'course': course,
-                'get_course_price': lambda: course.get_course_price()
+                'get_course_price': lambda c=course: c.get_course_price()  # bind c agar lambda tidak late binding
             })()
             cart_items.append(dummy_item)
         total_course_price = sum(course.get_course_price().portal_price for course in pending_tx.courses.all() if course.get_course_price())
@@ -935,6 +950,7 @@ def checkout(request):
 
                         selected_payment_method = payment_method
                         logger.info(f"Checkout sukses untuk {merchant_ref}: VA {va_number}, Expired {transaction.expired_at}")
+                        send_checkout_email(request.user, transaction)
 
                         return redirect('payments:transaction_detail', merchant_ref=merchant_ref)
                     except Exception as e:

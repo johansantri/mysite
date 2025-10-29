@@ -11,11 +11,41 @@ import json
 import time
 import requests
 from django.conf import settings
-
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.conf import settings
 logger = logging.getLogger(__name__)
 
+def send_payment_confirmation_email(user, transaction, cart_items):
+    subject = f"Pembayaran Berhasil - {transaction.merchant_ref}"
+    from_email = settings.DEFAULT_FROM_EMAIL
+    to_email = user.email
 
+    html_content = render_to_string('email/payment_success.html', {
+        'user': user,
+        'transaction': transaction,
+        'cart_items': cart_items
+    })
 
+    msg = EmailMultiAlternatives(subject, '', from_email, [to_email])
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()
+
+def send_checkout_email(user, transaction):
+    subject = f"Detail Transaksi Anda: {transaction.merchant_ref}"
+    from_email = settings.DEFAULT_FROM_EMAIL
+    to_email = [user.email]
+
+    # Gunakan template HTML, misal templates/emails/checkout.html
+    html_content = render_to_string("email/checkout.html", {
+        "user": user,
+        "transaction": transaction,
+        "cart_items": transaction.courses.all(),
+    })
+
+    msg = EmailMultiAlternatives(subject, "", from_email, to_email)
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()
 
 
 
