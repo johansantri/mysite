@@ -1052,6 +1052,35 @@ def transaction_history(request):
 
 
 
+@login_required
+def transaction_detail(request, merchant_ref):
+    trx = get_object_or_404(Transaction.objects.select_related('user'), merchant_ref=merchant_ref, user=request.user)
+
+    # Ambil instruksi pembayaran (kalau disimpan dalam JSONField)
+    try:
+        instructions = json.loads(trx.instructions_json) if trx.instructions_json else []
+    except (ValueError, TypeError):
+        instructions = []
+
+    context = {
+        'merchant_ref': trx.merchant_ref,
+        'bank_name': trx.bank_name or '-',
+        'selected_payment_method': trx.payment_method or '-',
+        'expired_at': trx.expired_at,
+        'total_price': trx.total_amount,
+        'va_number': trx.va_number,
+        'payment_url': trx.payment_url,
+        'platform_fee': trx.platform_fee or 0,
+        'voucher': getattr(trx, 'voucher', 0) or 0,
+        'instructions': instructions,
+        'cart_items': trx.courses.all(),
+    }
+
+    return render(request, 'payments/transaction_detail.html', context)
+
+
+
+
 #untuk user mengunduh invoice pdf
 @login_required
 def transaction_invoice_detail(request, pk):

@@ -86,12 +86,15 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
-                        {% for item in cart_items %}
+                        {% for course in cart_items %}
                         <tr>
-                            <td class="px-4 py-3">{{ item.course.course_name }}</td>
-                            <td class="px-4 py-3 font-medium">Rp{{ item.price.portal_price|intcomma }}</td>
+                        <td class="px-4 py-3">{{ course.course_name }}</td>
+                        <td class="px-4 py-3 font-medium">Rp{{ course.get_course_price.portal_price|intcomma }}</td>
+                        
+
                         </tr>
                         {% endfor %}
+                        
                         <tr>
                             <td class="px-4 py-3 font-medium">Platform Fee</td>
                             <td class="px-4 py-3">Rp {{ platform_fee|intcomma }}</td>
