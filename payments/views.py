@@ -34,6 +34,10 @@ import hashlib
 import json
 import time
 import csv
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.utils.decorators import method_decorator
+
+from django.views.generic import TemplateView
 from datetime import datetime, timezone as dt_timezone
 from payments.utils import create_tripay_transaction
 from django.db.models import F, Sum, Count,Value,DecimalField
@@ -1146,3 +1150,74 @@ def transaction_invoice_detail(request, pk):
         'transaction': transaction,
         'partner': partner,
     })
+
+
+
+@method_decorator(
+    [login_required,
+     user_passes_test(lambda u: u.is_superuser or getattr(u, 'is_finance', False) or getattr(u, 'is_partner', False))],
+    name='dispatch'
+)
+class CoursePaymentDetailView(TemplateView):
+    template_name = 'payments/report_per_course_detail.html'
+
+    def get_context_data(self, course_id=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        course = get_object_or_404(Course, id=course_id)
+
+        payments = Payment.objects.filter(course=course, status='completed').select_related('user')
+
+        context.update({
+            'course': course,
+            'payments': payments,
+            'summary': payments.aggregate(
+                total_transaksi=Count('id'),
+                total_amount=Sum('amount'),
+                total_voucher=Sum('snapshot_voucher'),
+                total_partner=Sum('snapshot_partner_earning'),
+                total_ice=Sum('snapshot_ice_earning'),
+                total_platform_fee=Sum('snapshot_platform_fee'),
+            )
+        })
+        return context
+
+@method_decorator(
+    [login_required,
+     user_passes_test(lambda u: u.is_superuser or getattr(u, 'is_finance', False) or getattr(u, 'is_partner', False))],
+    name='dispatch'
+)
+class CoursePaymentReportView(TemplateView):
+    template_name = 'payments/report_per_course.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Data utama per course
+        report = (
+            Payment.objects
+            .filter(status='completed')
+            .values('course__id', 'course__course_name')
+            .annotate(
+                total_transaksi=Count('id'),
+                total_amount=Sum('amount'),
+                total_voucher=Sum('snapshot_voucher'),
+                total_partner=Sum('snapshot_partner_earning'),
+                total_ice=Sum('snapshot_ice_earning'),
+                total_platform_fee=Sum('snapshot_platform_fee'),
+            )
+            .order_by('-total_amount')
+        )
+
+        # 🔹 Hitung total keseluruhan untuk summary footer
+        summary = {
+            'total_transaksi': sum([r['total_transaksi'] or 0 for r in report]),
+            'total_amount': sum([r['total_amount'] or 0 for r in report]),
+            'total_voucher': sum([r['total_voucher'] or 0 for r in report]),
+            'total_partner': sum([r['total_partner'] or 0 for r in report]),
+            'total_ice': sum([r['total_ice'] or 0 for r in report]),
+            'total_platform_fee': sum([r['total_platform_fee'] or 0 for r in report]),
+        }
+
+        context['report'] = report
+        context['summary'] = summary
+        return context

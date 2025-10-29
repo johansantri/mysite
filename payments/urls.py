@@ -24,5 +24,7 @@ urlpatterns = [
     path('dashboard/finance', views.finance_dashboard, name='dashboard'),
     path('export-csv/', views.export_finance_csv, name='export_csv'),
     path('transaction/<str:merchant_ref>/', views.transaction_detail, name='transaction_detail'),
+    path('reports/per-course/', views.CoursePaymentReportView.as_view(), name='report_per_course'),
+    path('reports/per-course/<int:course_id>/', views.CoursePaymentDetailView.as_view(), name='report_per_course_detail'),
     
 ]

@@ -187,7 +187,7 @@
 
 <!-- Superuser Course Summary -->
 {% if partner_courses %}
-  <h4 class="mt-5">Total Payment per Course (Superuser)</h4>
+  <h4 class="mt-5">Total Payment per Course </h4>
   <table class="table table-bordered table-sm">
     <thead>
       <tr>
@@ -199,7 +199,7 @@
     <tbody>
       {% for c in partner_courses %}
         <tr>
-          <td>{{ c.course_name }}</td>
+          <td> <a href="{% url 'payments:report_per_course_detail' c.id %}">{{ c.course_name }} </a></td>
           <td>{{ c.org_partner__name__name }}</td>
           <td>Rp {{ c.total_amount|floatformat:0|intcomma }}</td>
         </tr>

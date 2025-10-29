@@ -1,0 +1,84 @@
+{% extends 'home/tes.html' %}
+{% load humanize %}
+
+{% block content %}
+<div class=" my-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="fw-bold text-primary mb-0">
+      💳 Detail Transaksi — {{ course.course_name }}
+    </h2>
+    <a href="{% url 'payments:report_per_course' %}" class="btn btn-outline-secondary btn-sm">
+      ← Kembali ke Laporan
+    </a>
+  </div>
+
+  <!-- Summary Card -->
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-body">
+      <h5 class="card-title mb-3">📊 Ringkasan Transaksi</h5>
+      <div class="row g-3">
+        <div class="col-md-2 col-6">
+          <div class="fw-semibold text-muted small">Total Transaksi</div>
+          <div class="fs-5 fw-bold text-dark">{{ summary.total_transaksi }}</div>
+        </div>
+        <div class="col-md-2 col-6">
+          <div class="fw-semibold text-muted small">Total Amount</div>
+          <div class="fs-5 text-success fw-bold">Rp{{ summary.total_amount|floatformat:0|intcomma }}</div>
+        </div>
+        <div class="col-md-2 col-6">
+          <div class="fw-semibold text-muted small">Voucher</div>
+          <div class="fs-5 fw-bold text-danger">Rp{{ summary.total_voucher|floatformat:0|intcomma }}</div>
+        </div>
+        <div class="col-md-2 col-6">
+          <div class="fw-semibold text-muted small">Partner Earning</div>
+          <div class="fs-5 fw-bold text-info">Rp{{ summary.total_partner|floatformat:0|intcomma }}</div>
+        </div>
+        <div class="col-md-2 col-6">
+          <div class="fw-semibold text-muted small">ICE Earning</div>
+          <div class="fs-5 fw-bold text-primary">Rp{{ summary.total_ice|floatformat:0|intcomma }}</div>
+        </div>
+        <div class="col-md-2 col-6">
+          <div class="fw-semibold text-muted small">Platform Fee</div>
+          <div class="fs-5 fw-bold text-warning">Rp{{ summary.total_platform_fee|floatformat:0|intcomma }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="bg-light">
+          <tr>
+            <th>User</th>
+            <th>Metode </th>
+            <th>Bank / Channel</th>
+            <th>Amount</th>
+            <th>Partner</th>
+            <th>ICE</th>
+            <th>Platform Fee</th>
+            <th>Tanggal</th>
+            </tr>
+        </thead>
+        <tbody>
+         {% for p in payments %}
+        <tr>
+            <td>{{ p.user.get_full_name|default:p.user.username }}</td>
+            <td>{{ p.payment_model|default:"-" }}</td>
+            <td>{{ p.linked_transaction.bank_name|default:"-" }}</td>
+            <td>{{ p.amount|floatformat:0 }}</td>
+            <td>{{ p.snapshot_partner_earning|floatformat:0 }}</td>
+            <td>{{ p.snapshot_ice_earning|floatformat:0 }}</td>
+            <td>{{ p.snapshot_platform_fee|floatformat:0 }}</td>
+            <td>{{ p.payment_date|date:"d M Y H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="8">Belum ada pembayaran untuk course ini.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
