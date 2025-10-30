@@ -374,12 +374,22 @@ def partner_list_view(request):
 
 
 @login_required
-@user_passes_test(lambda u: u.is_superuser or u.is_partner)
 def top_courses_by_revenue_view(request):
-    courses = Course.objects.all()
+    user = request.user
 
-    if request.user.is_partner and not request.user.is_superuser:
-        courses = courses.filter(org_partner__user=request.user)
+    # cek role
+    if user.is_superuser or getattr(user, 'is_staff', False) \
+       or getattr(user, 'is_finance', False) or getattr(user, 'is_curatin', False):
+        courses = Course.objects.all()
+    elif getattr(user, 'is_partner', False):
+        try:
+            courses = Course.objects.filter(org_partner__user=user)
+        except Exception:
+            messages.error(request, "Akun Anda belum terhubung ke data Partner.")
+            return redirect('authentication:dashboard')
+    else:
+        messages.error(request, "Anda tidak memiliki akses ke halaman ini.")
+        return redirect('authentication:dashboard')
 
     courses = courses.annotate(
         revenue=Coalesce(
@@ -398,21 +408,28 @@ def top_courses_by_revenue_view(request):
     })
 
 @login_required
-@user_passes_test(lambda u: u.is_superuser or u.is_partner)
 def top_transaction_partners_view(request):
-    partners = Partner.objects.all()
+    user = request.user
 
-    if request.user.is_partner and not request.user.is_superuser:
-        partners = partners.filter(user=request.user)
+    # cek role
+    if user.is_superuser or getattr(user, 'is_staff', False) \
+       or getattr(user, 'is_finance', False) or getattr(user, 'is_curatin', False):
+        partners = Partner.objects.all()
+    elif getattr(user, 'is_partner', False):
+        try:
+            partners = Partner.objects.filter(user=user)
+        except Partner.DoesNotExist:
+            messages.error(request, "Akun Anda belum terhubung ke data Partner.")
+            return redirect('authentication:dashboard')
+    else:
+        messages.error(request, "Anda tidak memiliki akses ke halaman ini.")
+        return redirect('authentication:dashboard')
 
     partners = partners.annotate(
         total_transactions=Count('courses__payments', distinct=True),
-
-        # Completed = paid
         paid_transactions=Count('courses__payments', filter=Q(courses__payments__status='completed'), distinct=True),
         pending_transactions=Count('courses__payments', filter=Q(courses__payments__status='pending'), distinct=True),
         expired_transactions=Count('courses__payments', filter=Q(courses__payments__status='expired'), distinct=True),
-
         total_amount=Sum('courses__payments__amount'),
         paid_amount=Sum('courses__payments__amount', filter=Q(courses__payments__status='completed')),
         pending_amount=Sum('courses__payments__amount', filter=Q(courses__payments__status='pending')),
@@ -430,7 +447,6 @@ def top_transaction_partners_view(request):
     pending_totals = [float(partner.pending_amount or 0) for partner in partners]
     expired_totals = [float(partner.expired_amount or 0) for partner in partners]
 
-    # Untuk ditampilkan di tabel
     partner_data = list(zip(
         labels, transaction_counts,
         paid_counts, pending_counts, expired_counts,
@@ -454,13 +470,28 @@ def top_transaction_partners_view(request):
 
 
 @login_required
-@user_passes_test(lambda u: u.is_superuser or u.is_partner)
 def transaction_trends_view(request):
-    payments = Payment.objects.filter(status='completed')
+    user = request.user
 
-    if request.user.is_partner and not request.user.is_superuser:
-        payments = payments.filter(course__org_partner__user=request.user)
+    # cek role
+    if user.is_superuser or getattr(user, 'is_staff', False) \
+       or getattr(user, 'is_finance', False) or getattr(user, 'is_curatin', False):
+        payments = Payment.objects.filter(status='completed')
+    elif getattr(user, 'is_partner', False):
+        try:
+            partner = user.partner_user  # ambil relasi Partner
+            payments = Payment.objects.filter(
+                status='completed',
+                course__org_partner=partner
+            )
+        except Partner.DoesNotExist:
+            messages.error(request, "Akun Anda belum terhubung ke data Partner.")
+            return redirect('authentication:dashboard')
+    else:
+        messages.error(request, "Anda tidak memiliki akses ke halaman ini.")
+        return redirect('authentication:dashboard')
 
+    # Data bulanan
     monthly_data = payments.annotate(
         month=TruncMonth('created_at')
     ).values('month').annotate(
@@ -477,6 +508,7 @@ def transaction_trends_view(request):
         'transaction_totals': transaction_totals,
         'transaction_counts': transaction_counts,
     })
+
 
 
 def has_access(user):
