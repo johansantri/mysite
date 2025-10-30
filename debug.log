@@ -4686,3 +4686,62 @@ django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '20.11.247.222'
 [INFO] 2025-10-30 14:04:28,958 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [INFO] 2025-10-30 14:04:29,020 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
 [INFO] 2025-10-30 14:04:29,054 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-30 14:06:23,872 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-30 14:06:33,076 [django.request] Not Found: /favicon.ico
+[INFO] 2025-10-30 14:08:14,417 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-30 14:08:14,768 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-30 14:08:14,850 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-30 14:08:22,455 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-30 14:08:26,611 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-30 14:08:30,116 [django.request] Not Found: /favicon.ico
+[INFO] 2025-10-30 14:10:25,238 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-30 14:10:25,351 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-30 14:10:25,433 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-30 14:10:35,357 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-30 14:10:39,163 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-30 14:11:23,095 [django.request] Not Found: /favicon.ico
+[INFO] 2025-10-30 14:12:15,635 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-30 14:12:15,821 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-30 14:12:15,994 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-30 14:13:04,589 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-30 14:13:04,639 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-30 14:13:04,748 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[WARNING] 2025-10-30 14:13:47,765 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-30 14:14:51,557 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-30 14:14:53,070 [django.request] Not Found: /favicon.ico
+[WARNING] 2025-10-30 14:15:31,221 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-30 14:15:31,222 [django.request] Forbidden: /search/
+[WARNING] 2025-10-30 14:15:40,938 [authentication.views] Invalid referer:  from IP 
+[WARNING] 2025-10-30 14:15:40,939 [django.request] Forbidden: /search/
+[INFO] 2025-10-30 14:16:08,562 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-30 14:16:08,806 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-30 14:16:08,854 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[ERROR] 2025-10-30 14:16:13,059 [django.request] Internal Server Error: /partner/1/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 6010, in partner_detail
+    partner_univ_id = partner.university_id if partner.university else None
+AttributeError: 'Partner' object has no attribute 'university'
+[WARNING] 2025-10-30 14:16:14,779 [django.request] Not Found: /favicon.ico
+[ERROR] 2025-10-30 14:16:50,866 [django.request] Internal Server Error: /partner/2/
+Traceback (most recent call last):
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/TIM/mysite/.venv/lib/python3.10/site-packages/django/contrib/auth/decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "/home/TIM/mysite/courses/views.py", line 6010, in partner_detail
+    partner_univ_id = partner.university_id if partner.university else None
+AttributeError: 'Partner' object has no attribute 'university'
+[INFO] 2025-10-30 14:17:16,717 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-30 14:17:16,777 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-30 14:17:17,039 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-30 14:18:13,944 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-30 14:18:14,029 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address
+[INFO] 2025-10-30 14:18:14,089 [axes.apps] AXES: BEGIN version 8.0.0, blocking by username or ip_address

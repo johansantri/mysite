@@ -5957,84 +5957,62 @@ def partnerView(request):
 
 
 
-from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Avg, Sum
-from django.contrib import messages
 
+
+@login_required
 def partner_detail(request, partner_id):
-    # Redirect ke login kalau belum authenticated
-    if not request.user.is_authenticated:
-        return redirect(f"/login/?next={request.path}")
-
-    # Ambil objek Partner
     partner = get_object_or_404(Partner, id=partner_id)
-
-    # === 🔒 ACCESS CONTROL LOGIC ===
     user = request.user
 
-    # Jika superuser, staff, curation, atau finance -> akses bebas
-    allowed_roles = ['is_curation', 'is_finance']
-
-    # Asumsi kamu punya field "role" di CustomUser (misalnya user.role)
-    # atau grup (user.groups.filter(name='curation').exists())
-    is_allowed = (
+    # ==== 🔒 ACCESS CONTROL ====
+    # Semua yang boleh lihat: superuser, staff, curation, finance
+    has_role_access = (
         user.is_superuser or
         user.is_staff or
-        (hasattr(user, 'role') and user.role in allowed_roles) or
-        user.groups.filter(name__in=allowed_roles).exists()
+        getattr(user, 'is_curation', False) or
+        getattr(user, 'is_finance', False)
     )
 
-    # Kalau bukan role di atas, hanya bisa akses partner miliknya sendiri
-    if not is_allowed and hasattr(user, 'partner_user'):
-        if user.partner_user.id != partner.id:
+    # Partner hanya boleh akses data miliknya sendiri
+    if not has_role_access:
+        if hasattr(user, 'partner_user') and user.partner_user.id != partner.id:
             messages.error(request, "You are not authorized to view this partner detail.")
             return redirect('partner:verify_partner_list')
-    elif not is_allowed:
-        # Tidak punya partner dan bukan staff/curation/finance
-        messages.error(request, "You are not authorized to access this page.")
-        return redirect('partner:verify_partner_list')
+        elif not hasattr(user, 'partner_user'):
+            messages.error(request, "You are not authorized to access this page.")
+            return redirect('partner:verify_partner_list')
 
-    # === 🧮 DATA AGGREGATION ===
-    related_courses = Course.objects.filter(org_partner_id=partner.id)
+    # ==== 🧮 DATA AGGREGATION ====
+    related_courses = Course.objects.filter(org_partner=partner)
     total_courses = related_courses.count()
-
-    # Unique learners
     unique_learners = Enrollment.objects.filter(course__in=related_courses).values('user').distinct().count()
-
-    # Review stats
     course_ids = related_courses.values_list('id', flat=True)
     total_reviews = CourseRating.objects.filter(course_id__in=course_ids).count()
     average_rating = CourseRating.objects.filter(course_id__in=course_ids).aggregate(
         avg_rating=Avg('rating')
     )['avg_rating'] or 0
-
-    # Total instructors
     total_instructors = Instructor.objects.filter(courses__org_partner=partner).distinct().count()
-
-    # Payment info
     payments = Payment.objects.filter(course__org_partner=partner, status='completed')
     total_payments = payments.count()
     total_payment_amount = payments.aggregate(total_amount=Sum('snapshot_partner_earning'))['total_amount'] or 0
 
-    # Inbound, outbound, internal learners
+    # ==== LEARNER CLASSIFICATION ====
     enrollments = Enrollment.objects.filter(course__in=related_courses).select_related('user', 'course')
     inbound_learners, outbound_learners, internal_learners = set(), set(), set()
-    partner_univ_id = partner.name_id  # Universitas mitra (FK ke Universiti)
+    partner_univ_id = partner.name_id
 
     for enrollment in enrollments:
-        user = enrollment.user
-        course = enrollment.course
-        user_univ_id = getattr(user, 'university_id', None)
-        course_univ_id = course.org_partner.name_id if course.org_partner else None
+        user_univ_id = getattr(enrollment.user, 'university_id', None)
+        course_univ_id = enrollment.course.org_partner.name_id if enrollment.course.org_partner else None
 
         if user_univ_id == partner_univ_id and course_univ_id == partner_univ_id:
-            internal_learners.add(user.id)
+            internal_learners.add(enrollment.user.id)
         elif user_univ_id == partner_univ_id and course_univ_id != partner_univ_id:
-            outbound_learners.add(user.id)
+            outbound_learners.add(enrollment.user.id)
         elif user_univ_id != partner_univ_id and course_univ_id == partner_univ_id:
-            inbound_learners.add(user.id)
+            inbound_learners.add(enrollment.user.id)
 
-    # === CONTEXT ===
+    # ==== CONTEXT ====
     context = {
         'partner': partner,
         'total_courses': total_courses,
@@ -6050,7 +6028,6 @@ def partner_detail(request, partner_id):
     }
 
     return render(request, 'partner/partner_detail.html', context)
-
 
 #org partner from lms
 logger = logging.getLogger(__name__)
