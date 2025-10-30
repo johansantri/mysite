@@ -35,7 +35,6 @@ urlpatterns = [
     path('top-courses-revenue/', views.top_courses_by_revenue_view, name='top_courses_revenue'),
     path('analytics/partner/all/', views.partner_analytics_admin, name='partner_analytics_admin'),
     path('request-partner/', views.request_partner, name='request_partner'),
-    
-
-
+    path('verify-partner/', views.verify_partner_list, name='verify_partner_list'),
+    path('verify-partner/<int:pk>/', views.verify_partner_detail, name='verify_partner_detail'),
 ]

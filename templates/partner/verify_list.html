@@ -1,0 +1,62 @@
+{% extends 'home/tes.html' %}
+{% load static %}
+
+{% block content %}
+<div class=" mt-5">
+  <h2 class="mb-4">🧾 Daftar Mitra untuk Verifikasi</h2>
+
+  <!-- Pesan jika tidak ada data -->
+  {% if not partners %}
+    <div class="alert alert-info">
+      Belum ada mitra yang menunggu verifikasi.
+    </div>
+  {% else %}
+    <table class="table table-bordered table-striped align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>#</th>
+          <th>Nama Mitra</th>
+          <th>Jenis Usaha</th>
+          <th>Status</th>
+          <th>Verifikasi</th>
+          <th>Tanggal Dibuat</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for partner in partners %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ partner.name }}</td>
+          <td>{{ partner.get_business_type_display|default:"-" }}</td>
+          <td>
+            {% if partner.status == "approved" %}
+              <span class="badge bg-success">Approved</span>
+            {% elif partner.status == "rejected" %}
+              <span class="badge bg-danger">Rejected</span>
+            {% elif partner.status == "revision" %}
+              <span class="badge bg-warning text-dark">Revision</span>
+            {% else %}
+              <span class="badge bg-secondary">Pending</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if partner.is_verified %}
+              ✅ Sudah
+            {% else %}
+              ❌ Belum
+            {% endif %}
+          </td>
+          <td>{{ partner.created_ad|date:"d M Y H:i" }}</td>
+          <td>
+            <a href="{% url 'partner:verify_partner_detail' partner.pk %}" class="btn btn-sm btn-primary">
+              🔍 Review
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+</div>
+{% endblock %}

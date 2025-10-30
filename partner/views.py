@@ -47,6 +47,30 @@ from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 logger = logging.getLogger(__name__)
 
+
+@user_passes_test(lambda u: u.is_staff)
+def verify_partner_list(request):
+    partners = Partner.objects.filter(status='pending')
+    return render(request, 'partner/verify_list.html', {'partners': partners})
+
+@user_passes_test(lambda u: u.is_staff)
+def verify_partner_detail(request, pk):
+    partner = get_object_or_404(Partner, pk=pk)
+    
+    if request.method == "POST":
+        action = request.POST.get('action')
+        note = request.POST.get('note', '')
+        if action == 'approve':
+            partner.approve(request.user)
+        elif action == 'reject':
+            partner.reject(note, request.user)
+        elif action == 'revision':
+            partner.request_revision(note, request.user)
+        return redirect('verify_partner_list')
+
+    return render(request, 'partner/verify_detail.html', {'partner': partner})
+
+
 # Utility function untuk email HTML
 def send_partner_email_html(user, subject, template_name, context):
     """Kirim email HTML ke partner"""

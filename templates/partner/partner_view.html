@@ -58,6 +58,8 @@
                 <th>Email</th>
                 <th>Phone</th>
                 <th>PKP</th>
+                
+                <th>Verified</th>
                 <th>Type</th>
                 <th>Saldo</th>
                 <th>Courses</th>
@@ -81,6 +83,14 @@
                         <span class="badge bg-secondary">Non-PKP</span>
                     {% endif %}
                 </td>
+               
+                <td>
+                    {% if partner.is_verified %}
+                        <span class="badge bg-success">Verified</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark">Unverified</span>
+                    {% endif %}
+                </td>
                 <td>{{ partner.get_business_type_display }}</td>
                 <td>Rp {{ partner.balance_computed|floatformat:0|intcomma }}</td>
 
@@ -91,9 +101,20 @@
                 <td>{{ partner.created_ad|date:"d M Y" }}</td>
                 <td>
                     {% if request.user.is_superuser or request.user.is_staff %}
-                        <a href="{% url 'courses:update_partner' partner.id %}" class="btn btn-sm btn-warning">Update</a>
+                        <a href="{% url 'courses:update_partner' partner.id %}" 
+                        class="btn btn-sm btn-warning" 
+                        title="Edit Partner">
+                        <i class="bi bi-pencil-square"></i>
+                        </a>
+
+                        <a href="{% url 'partner:verify_partner_detail' partner.id %}" 
+                        class="btn btn-sm btn-danger" 
+                        title="Review Partner">
+                        <i class="bi bi-search"></i>
+                        </a>
+
                     {% elif request.user.is_authenticated and request.user.is_partner %}
-                        <a href="{% url 'partner:partner_update' partner.id partner.name.slug  %}" class="btn btn-sm btn-warning">Update</a>
+                        <a href="{% url 'partner:partner_update' partner.id partner.name.slug  %}" class="btn btn-sm btn-warning"><i class="bi bi-pencil-square"></i></a>
                     {% endif %}
                 </td>
             </tr>

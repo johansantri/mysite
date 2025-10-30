@@ -1,0 +1,167 @@
+{% extends 'home/tes.html' %}
+{% load static %}
+
+{% block content %}
+<div class="my-5">
+
+
+  <!-- Card -->
+  <div class="card shadow border-0 rounded-3 overflow-hidden bg-body text-body">
+    <div class="card-header bg-gradient bg-danger text-white">
+      <h4 class="mb-0">
+        <i class="bi bi-person-badge"></i> {{ partner.name }}
+      </h4>
+    </div>
+
+    <div class="card-body p-4">
+      <div class="row g-4">
+
+        <!-- Left Column -->
+        <div class="col-lg-6 col-md-12">
+
+          <!-- General Info -->
+          <div class="border-start border-4 border-primary ps-3 mb-4">
+            <h5 class="fw-semibold">📌 General Information</h5>
+          </div>
+          <table class="table table-hover align-middle table-bordered">
+            <tbody>
+              <tr><th>Username</th><td>{{ partner.user.username }}</td></tr>
+              <tr><th>Partner Name</th><td>{{ partner.name }}</td></tr>
+              <tr><th>Business Type</th><td>{{ partner.get_business_type_display|default:"-" }}</td></tr>
+              <tr><th>Description</th><td>{{ partner.description|safe|default:"-" }}</td></tr>
+              <tr><th>Address</th><td>{{ partner.address|default:"-" }}</td></tr>
+              <tr><th>Phone Number</th><td>{{ partner.phone|default:"-" }}</td></tr>
+              <tr><th>Partner Code</th><td>{{ partner.partner_code|default:"-" }}</td></tr>
+            </tbody>
+          </table>
+
+          <!-- Legal & Tax -->
+          <div class="border-start border-4 border-primary ps-3 mb-4 mt-5">
+            <h5 class="fw-semibold">💼 Tax & Legal Information</h5>
+          </div>
+          <table class="table table-hover align-middle table-bordered">
+            <tbody>
+              <tr><th>Tax ID (NPWP)</th><td>{{ partner.npwp|default:"-" }}</td></tr>
+              <tr>
+                <th>Tax Document</th>
+                <td>
+                  {% if partner.npwp_file %}
+                    <a href="{{ partner.npwp_file.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                      📄 View Document
+                    </a>
+                  {% else %}
+                    <span class="text-muted">No document uploaded</span>
+                  {% endif %}
+                </td>
+              </tr>
+              <tr><th>PKP Registered</th><td>{% if partner.is_pkp %}✅ Yes{% else %}❌ No{% endif %}</td></tr>
+              <tr><th>Tax (%)</th><td>{{ partner.tax }}</td></tr>
+              <tr><th>ICEI Share (%)</th><td>{{ partner.iceiprice }}</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-lg-6 col-md-12">
+
+          <!-- Bank Info -->
+          <div class="border-start border-4 border-primary ps-3 mb-4">
+            <h5 class="fw-semibold">🏦 Bank Information</h5>
+          </div>
+          <table class="table table-hover align-middle table-bordered">
+            <tbody>
+              <tr><th>Bank Name</th><td>{{ partner.bank_name|default:"-" }}</td></tr>
+              <tr><th>Account Number</th><td>{{ partner.account_number|default:"-" }}</td></tr>
+              <tr><th>Account Holder</th><td>{{ partner.account_holder_name|default:"-" }}</td></tr>
+              <tr><th>Payment Method</th><td>{{ partner.get_payment_method_display }}</td></tr>
+              <tr><th>Currency</th><td>{{ partner.currency }}</td></tr>
+              <tr><th>Balance</th><td><strong>Rp {{ partner.balance|floatformat:2 }}</strong></td></tr>
+            </tbody>
+          </table>
+
+          <!-- Social Media -->
+          <div class="border-start border-4 border-primary ps-3 mb-4 mt-5">
+            <h5 class="fw-semibold">🌐 Social Media</h5>
+          </div>
+          <table class="table table-hover align-middle table-bordered">
+            <tbody>
+              <tr><th>TikTok</th><td>{{ partner.tiktok|default:"-" }}</td></tr>
+              <tr><th>YouTube</th><td>{{ partner.youtube|default:"-" }}</td></tr>
+              <tr><th>Facebook</th><td>{{ partner.facebook|default:"-" }}</td></tr>
+              <tr><th>Instagram</th><td>{{ partner.instagram|default:"-" }}</td></tr>
+              <tr><th>LinkedIn</th><td>{{ partner.linkedin|default:"-" }}</td></tr>
+              <tr><th>Twitter / X</th><td>{{ partner.twitter|default:"-" }}</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <hr class="my-5">
+
+      <!-- Partner Status -->
+      <div class="border-start border-4 border-primary ps-3 mb-4">
+        <h5 class="fw-semibold">📋 Partner Status</h5>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-striped align-middle table-bordered">
+          <tbody>
+            <tr>
+              <th>Status</th>
+              <td>
+                {% if partner.status == "approved" %}
+                  <span class="badge bg-success px-3 py-2">Approved</span>
+                {% elif partner.status == "rejected" %}
+                  <span class="badge bg-danger px-3 py-2">Rejected</span>
+                {% elif partner.status == "revision" %}
+                  <span class="badge bg-warning text-dark px-3 py-2">Revision Required</span>
+                {% else %}
+                  <span class="badge bg-secondary px-3 py-2">Pending Review</span>
+                {% endif %}
+              </td>
+            </tr>
+            <tr><th>Verified</th><td>{% if partner.is_verified %}✅ Yes{% else %}❌ No{% endif %}</td></tr>
+            <tr><th>Verified At</th><td>{{ partner.verified_at|date:"d M Y H:i"|default:"-" }}</td></tr>
+            <tr><th>Admin Notes</th><td>{{ partner.admin_note|default:"-" }}</td></tr>
+            <tr><th>Last Updated By</th><td>{{ partner.updated_by|default:"-" }}</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Partner Logo -->
+      {% if partner.logo %}
+      <div class="text-center my-4">
+        <h5 class="fw-semibold mb-3">🖼️ Partner Logo</h5>
+        <img src="{{ partner.logo.url }}" alt="Logo" class="img-fluid rounded shadow" style="max-height:180px;">
+      </div>
+      {% endif %}
+
+      <!-- Verification Form -->
+      <div class="border-start border-4 border-success ps-3 mb-3 mt-5">
+        <h5 class="fw-semibold">✍️ Admin Verification</h5>
+      </div>
+
+      <form method="post" class="mt-3">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="note" class="form-label fw-semibold">Admin Note (optional):</label>
+          <textarea name="note" id="note" rows="3" class="form-control" placeholder="Write notes for revision or rejection reason..."></textarea>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2">
+          <button type="submit" name="action" value="approve" class="btn btn-success px-4">
+            ✅ Approve
+          </button>
+          <button type="submit" name="action" value="reject" class="btn btn-danger px-4">
+            ❌ Reject
+          </button>
+          <button type="submit" name="action" value="revision" class="btn btn-warning text-dark px-4">
+            📝 Request Revision
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

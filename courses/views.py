@@ -1023,15 +1023,35 @@ def course_list_enroll(request, id):
     # --- Cek course ---
     course = get_object_or_404(Course, id=id)
 
-    # --- Validasi akses ---
-    if not (
-        request.user.is_staff or
-        (course.instructor and course.instructor.user == request.user) or
-        getattr(request.user, 'is_partner', False) or
-        getattr(request.user, 'is_curation', False)
-    ):
+    user = request.user
 
-        messages.error(request, "Access denied. You do not have permission to view the participants of this course.")
+    # === 🔒 ACCESS CONTROL ===
+    allowed_roles = ['is_curation', 'is_finance']
+
+    is_allowed = (
+        user.is_superuser or
+        user.is_staff or
+        (hasattr(user, 'role') and user.role in allowed_roles) or
+        user.groups.filter(name__in=allowed_roles).exists()
+    )
+
+    # Partner bisa akses kalau course-nya milik partner dia
+    is_partner_owner = (
+        hasattr(user, 'partner_user') and
+        course.org_partner and
+        course.org_partner.user == user
+    )
+
+    # Instructor bisa akses kalau dia instruktur-nya
+    is_instructor = (
+        hasattr(course, 'instructor') and
+        course.instructor and
+        course.instructor.user == user
+    )
+
+    # Kalau tidak memenuhi semua kondisi, tolak akses
+    if not (is_allowed or is_partner_owner or is_instructor):
+        messages.error(request, "Access denied. You do not have permission to view this course’s participants.")
         return redirect('authentication:home')
 
 
@@ -4825,12 +4845,36 @@ def instructor_check(request, instructor_id):
 #instructor detail
 #@login_required
 def instructor_detail(request, id):
+    user = request.user
     # Check if the user is authenticated
     if not request.user.is_authenticated:
         return redirect("/login/?next=%s" % request.path)
     
     # Fetch the instructor object by the provided ID
     instructor = get_object_or_404(Instructor, id=id)
+      # === 🔒 ACCESS VALIDATION ===
+    allowed_roles = ['is_curation', 'is_finance']
+
+    is_allowed = (
+        user.is_superuser or
+        user.is_staff or
+        (hasattr(user, 'role') and user.role in allowed_roles) or
+        user.groups.filter(name__in=allowed_roles).exists()
+    )
+
+    # Partner: hanya bisa akses instructor di bawah partner-nya sendiri
+    is_partner_owner = (
+        hasattr(user, 'partner_user') and
+        instructor.provider and
+        instructor.provider.user == user
+    )
+
+    # Instructor itu sendiri boleh akses profilnya
+    is_self = hasattr(instructor, 'user') and instructor.user == user
+
+    if not (is_allowed or is_partner_owner or is_self):
+        messages.error(request, "Access denied. You do not have permission to view this instructor’s details.")
+        return redirect('authentication:home')
 
     # Ensure that the instructor has a provider (Partner) with a slug in the related Universiti
     if not instructor.provider or not hasattr(instructor.provider.name, 'slug'):
@@ -5913,50 +5957,74 @@ def partnerView(request):
 
 
 
-#detail_partner
+from django.shortcuts import render, get_object_or_404, redirect
+from django.db.models import Avg, Sum
+from django.contrib import messages
+
 def partner_detail(request, partner_id):
     # Redirect ke login kalau belum authenticated
     if not request.user.is_authenticated:
         return redirect(f"/login/?next={request.path}")
 
-    # Ambil objek Partner, atau 404 kalau tidak ada
+    # Ambil objek Partner
     partner = get_object_or_404(Partner, id=partner_id)
 
-    # Ambil course yang punya org_partner sesuai partner.id
-    related_courses = Course.objects.filter(org_partner_id=partner.id)
+    # === 🔒 ACCESS CONTROL LOGIC ===
+    user = request.user
 
-    # Hitung total kursus
+    # Jika superuser, staff, curation, atau finance -> akses bebas
+    allowed_roles = ['is_curation', 'is_finance']
+
+    # Asumsi kamu punya field "role" di CustomUser (misalnya user.role)
+    # atau grup (user.groups.filter(name='curation').exists())
+    is_allowed = (
+        user.is_superuser or
+        user.is_staff or
+        (hasattr(user, 'role') and user.role in allowed_roles) or
+        user.groups.filter(name__in=allowed_roles).exists()
+    )
+
+    # Kalau bukan role di atas, hanya bisa akses partner miliknya sendiri
+    if not is_allowed and hasattr(user, 'partner_user'):
+        if user.partner_user.id != partner.id:
+            messages.error(request, "You are not authorized to view this partner detail.")
+            return redirect('partner:verify_partner_list')
+    elif not is_allowed:
+        # Tidak punya partner dan bukan staff/curation/finance
+        messages.error(request, "You are not authorized to access this page.")
+        return redirect('partner:verify_partner_list')
+
+    # === 🧮 DATA AGGREGATION ===
+    related_courses = Course.objects.filter(org_partner_id=partner.id)
     total_courses = related_courses.count()
 
-    # Hitung unique learners yang enroll di courses partner
+    # Unique learners
     unique_learners = Enrollment.objects.filter(course__in=related_courses).values('user').distinct().count()
 
-    # Total review & rata-rata rating semua course partner
+    # Review stats
     course_ids = related_courses.values_list('id', flat=True)
     total_reviews = CourseRating.objects.filter(course_id__in=course_ids).count()
-    average_rating = CourseRating.objects.filter(course_id__in=course_ids).aggregate(avg_rating=Avg('rating'))['avg_rating'] or 0
+    average_rating = CourseRating.objects.filter(course_id__in=course_ids).aggregate(
+        avg_rating=Avg('rating')
+    )['avg_rating'] or 0
 
-    # Hitung total instruktur yang terkait dengan kursus partner
+    # Total instructors
     total_instructors = Instructor.objects.filter(courses__org_partner=partner).distinct().count()
-    logger.debug(f"Total instructors for partner {partner.id}: {total_instructors}")
 
-    # Hitung total pembayaran & jumlah transaksi
+    # Payment info
     payments = Payment.objects.filter(course__org_partner=partner, status='completed')
     total_payments = payments.count()
     total_payment_amount = payments.aggregate(total_amount=Sum('snapshot_partner_earning'))['total_amount'] or 0
 
-    # Hitung inbound, outbound, dan internal learners
+    # Inbound, outbound, internal learners
     enrollments = Enrollment.objects.filter(course__in=related_courses).select_related('user', 'course')
-    inbound_learners = set()
-    outbound_learners = set()
-    internal_learners = set()
-
+    inbound_learners, outbound_learners, internal_learners = set(), set(), set()
     partner_univ_id = partner.name_id  # Universitas mitra (FK ke Universiti)
 
     for enrollment in enrollments:
         user = enrollment.user
         course = enrollment.course
-        user_univ_id = user.university_id
+        user_univ_id = getattr(user, 'university_id', None)
         course_univ_id = course.org_partner.name_id if course.org_partner else None
 
         if user_univ_id == partner_univ_id and course_univ_id == partner_univ_id:
@@ -5966,6 +6034,7 @@ def partner_detail(request, partner_id):
         elif user_univ_id != partner_univ_id and course_univ_id == partner_univ_id:
             inbound_learners.add(user.id)
 
+    # === CONTEXT ===
     context = {
         'partner': partner,
         'total_courses': total_courses,
@@ -5981,6 +6050,7 @@ def partner_detail(request, partner_id):
     }
 
     return render(request, 'partner/partner_detail.html', context)
+
 
 #org partner from lms
 logger = logging.getLogger(__name__)

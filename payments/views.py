@@ -285,8 +285,9 @@ def payment_return(request):
 
 
 @login_required
-@user_passes_test(lambda u: u.is_superuser or getattr(u, 'is_partner', False) or getattr(u, 'is_finance', False))
+
 def payment_detail_view(request, pk):
+    user = request.user
     payment = get_object_or_404(
         Payment.objects.select_related(
             'user',
@@ -297,7 +298,20 @@ def payment_detail_view(request, pk):
     )
 
     transaction = payment.linked_transaction  # bisa None kalau belum ada
+     # === 🔒 Access Validation ===
+    # Finance & Superuser bisa akses semua
+    if user.is_superuser or getattr(user, 'is_finance', False):
+        has_access = True
+    # Partner hanya boleh akses payment yang terkait kursus partner-nya sendiri
+    elif getattr(user, 'is_partner', False):
+        course_partner_user = getattr(payment.course.org_partner, 'user', None)
+        has_access = course_partner_user == user
+    else:
+        has_access = False
 
+    if not has_access:
+        messages.error(request, "Access denied. You do not have permission to view this payment.")
+        return redirect('authentication:home')
     # 🧮 Hitung total semua payment yang terhubung ke transaksi
     total_course_amount = Decimal('0.00')
     total_amount = payment.amount  # default
@@ -983,14 +997,27 @@ def checkout(request):
 
 
 @login_required
-@user_passes_test(lambda u: u.is_superuser or getattr(u, 'is_finance', False) or getattr(u, 'is_partner', False))
+
 def cek_transaction_detail(request, pk):
+    user = request.user
     # Ambil transaksi berdasarkan PK (tanpa filter user)
     transaction = get_object_or_404(
         Transaction.objects.prefetch_related('courses__org_partner'),
         pk=pk
     )
+    # === 🔒 Access Validation ===
+    if user.is_superuser or getattr(user, 'is_finance', False):
+        has_access = True
+    elif getattr(user, 'is_partner', False):
+        # Cek apakah ada setidaknya 1 kursus dalam transaksi milik partner user
+        partner_courses = transaction.courses.filter(org_partner__user=user)
+        has_access = partner_courses.exists()
+    else:
+        has_access = False
 
+    if not has_access:
+        messages.error(request, "Access denied. You do not have permission to view this transaction.")
+        return redirect('authentication:home')
     # Ambil unique partners
     partners = transaction.courses.values_list('org_partner', flat=True).distinct()
     partner = None

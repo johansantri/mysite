@@ -70,15 +70,32 @@ def score_summary_view_detail(request, course_id):
     user = request.user
     course = get_object_or_404(Course, id=course_id)
 
-    # Access validation: only is_superuser, is_partner, is_curation, or instructor
-    is_privileged = (
+    # === 🔒 ACCESS VALIDATION ===
+    allowed_roles = ['curation', 'finance']
+
+    is_allowed = (
         user.is_superuser or
-        getattr(user, 'is_partner', False) or
-        getattr(user, 'is_curation', False) or
-        (course.instructor and course.instructor.user == user)
+        user.is_staff or
+        (hasattr(user, 'role') and user.role in allowed_roles) or
+        user.groups.filter(name__in=allowed_roles).exists()
     )
-    if not is_privileged:
-        messages.error(request, "Access denied. You do not have permission to view the participants of this course.")
+
+    # Partner bisa akses jika course-nya milik partner mereka
+    is_partner_owner = (
+        hasattr(user, 'partner_user') and
+        course.org_partner and
+        course.org_partner.user == user
+    )
+
+    # Instructor bisa akses jika dia pengajar di course ini
+    is_instructor = (
+        hasattr(course, 'instructor') and
+        course.instructor and
+        course.instructor.user == user
+    )
+
+    if not (is_allowed or is_partner_owner or is_instructor):
+        messages.error(request, "Access denied. You do not have permission to view this course’s scores.")
         return redirect('authentication:home')
 
 
