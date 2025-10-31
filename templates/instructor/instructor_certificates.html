@@ -432,7 +432,7 @@
     <div class="certificate-container">
         <div class="header">
             <!-- Add logo (replace with your logo path) -->
-            <img src="https://ini.icei.ac.id/static/assets/img/icon/badge.svg" alt="Logo" class="logo">
+            <img src="{% static 'assets/img/icon/badge.svg' %}" alt="Logo" class="logo">
             <h1>Instructor Certificate</h1>
             <h3>{{ instructor.user.get_full_name }}</h3>
             <p>Email: {{ instructor.user.email }}</p>

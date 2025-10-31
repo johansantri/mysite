@@ -22,8 +22,8 @@
   <meta property="og:site_name" content="MyICE">
   <meta property="og:title" content="MyICE - Learn New Skills with Expert-Led Online Courses">
   <meta property="og:description" content="Explore {{ total_courses|default:'hundreds of' }}+ expert-led courses and earn certifications anytime, anywhere.">
-  <meta property="og:image" content="https://ini.icei.ac.id/static/assets/img/logo/logo-five.png"> <!-- Hardcode untuk WhatsApp -->
-  <meta property="og:image:secure_url" content="https://ini.icei.ac.id/static/assets/img/logo/logo-five.png"> <!-- HTTPS untuk WhatsApp -->
+  <meta property="og:image" content="{% static 'assets/img/logo/logo-five.png' %}"> <!-- Hardcode untuk WhatsApp -->
+  <meta property="og:image:secure_url" content="{% static 'assets/img/logo/logo-five.png' %}"> <!-- HTTPS untuk WhatsApp -->
   <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -37,7 +37,7 @@
   <meta name="twitter:creator" content="@MyICE">
   <meta name="twitter:title" content="MyICE - Learn Anytime, Anywhere">
   <meta name="twitter:description" content="Join {{ total_users|default:'thousands of' }} learners taking {{ total_courses|default:'hundreds of' }} online courses with MyICE.">
-  <meta name="twitter:image" content="https://ini.icei.ac.id/static/assets/img/logo/logo-five.png"> <!-- Hardcode untuk konsistensi -->
+  <meta name="twitter:image" content="{% static 'assets/img/logo/logo-five.png' %}"> <!-- Hardcode untuk konsistensi -->
   <meta name="twitter:image:alt" content="Logo MyICE - Platform Pembelajaran Online">
 
   <!-- JSON-LD Structured Data -->
@@ -53,7 +53,7 @@
       "name": "MyICE",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://ini.icei.ac.id/static/assets/img/logo/logo-five.png",
+        "url": "/static/assets/img/logo/logo-five.png",
         "width": 1200,
         "height": 630
       }

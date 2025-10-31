@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +10,7 @@
     <div style="max-width: 600px; margin: 20px auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);">
         <div style="background: linear-gradient(135deg, #007bff, #00d4ff); padding: 40px 20px; text-align: center; color: #ffffff; position: relative;">
             <!-- Ganti dengan URL logo organisasi atau ikon sertifikat -->
-            <img src="https://ini.icei.ac.id/static/assets/img/icon/certificate.svg" alt="Certificate Icon" style="max-width: 80px; margin-bottom: 10px;">
+            <img src="{% static 'assets/img/icon/certificate.svg' %}" alt="Certificate Icon" style="max-width: 80px; margin-bottom: 10px;">
             <h1 style="margin: 0; font-size: 28px; font-weight: 600;">Congratulations, {{ user.get_full_name|default:user.username }}!</h1>
         </div>
         <div style="padding: 30px; line-height: 1.8; font-size: 16px;">
