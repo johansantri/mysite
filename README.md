@@ -1,18 +1,21 @@
 # MYSITE
 
-MYSITE adalah aplikasi LMS (Learning Management System) berbasis Python/Django yang dirancang khusus untuk kebutuhan multiple vendor.
+JakIja adalah aplikasi Learning Management System (LMS) berbasis Python/Django yang dirancang untuk mendukung multiple vendor.
+Dengan JakIja, setiap penyedia kursus dapat membuat, mengelola, dan menjual kursus online secara mandiri, mirip platform e-learning besar seperti Coursera, Udemy, dan edX.
+Aplikasi ini cocok untuk organisasi, institusi pendidikan, atau perusahaan yang ingin membangun ekosistem pembelajaran online multi-penyedia .
 
 ## Ringkasan
 - Repo asli: https://github.com/johansantri/mysite  
 - Tujuan: platform pembelajaran online untuk tim/organisasi
 
 ## Fitur utama
-- Manajemen pengguna (superuser, partner, instructor, learner, subscription, dsb)  
+- Manajemen pengguna (superuser, keuangan, kurasi, partner, instructor, learner, subscription, dsb)  
 - Modul kursus, kurasi, keuangan, langganan, sertifikat  
 - Mini sosial media mirip X  
 - Blog  
 - Belajar mandiri  
 - Metode kursus: gratis, bayar di depan, bayar ujian, bayar sertifikat, dan langganan
+- lti consumer
 
 ## Persyaratan
 - Python 3.8+ (disarankan)  
@@ -31,6 +34,15 @@ MYSITE adalah aplikasi LMS (Learning Management System) berbasis Python/Django y
 
 ## Catatan migrasi
 Jika ada migrasi lama bermasalah, cadangkan lalu hapus file migrasi non‑esensial sebelum menjalankan `makemigrations`.
+
+## Demo / Video
+<!-- Direct iframe (may not render on GitHub but works in many Markdown viewers / docs sites) -->
+<iframe width="560" height="315" src="https://www.youtube.com/embed/UXxBFmejhe8?si=vph4S-PCTeebwYpz" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+Fallback (recommended for GitHub): klik thumbnail di bawah untuk menonton di YouTube  
+[![MYSITE demo](https://img.youtube.com/vi/UXxBFmejhe8/maxresdefault.jpg)](https://www.youtube.com/watch?v=UXxBFmejhe8)
+
+> Catatan: GitHub strips iframes in README rendering for security. Gunakan thumbnail link di atas untuk memastikan pengunjung GitHub bisa melihat dan membuka video.
 
 ## Lisensi
 Proyek ini dilisensikan di bawah MIT License — lihat file `LICENSE` untuk teks lengkap.
