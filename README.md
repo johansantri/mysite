@@ -1,4 +1,4 @@
-// ...existing code...
+
 # MYSITE
 
 MYSITE adalah aplikasi LMS (Learning Management System) berbasis Python/Django.
@@ -42,8 +42,8 @@ Halaman resmi aplikasi wajib menampilkan baris atribusi di footer aplikasi (cont
 
 Kontak
 - Repository: https://github.com/johansantri/mysite
-// ...existing code...
-// ...existing code...
+
+
 MIT License
 
 Copyright (c) 2025 Johan Santri
@@ -65,8 +65,9 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-// ...existing code...
-// ...existing code...
+
+
+
 {% load static %}
 <!doctype html>
 <html lang="en">
@@ -98,4 +99,3 @@ THE SOFTWARE.
   {% block scripts %}{% endblock %}
 </body>
 </html>
-// ...existing code...
