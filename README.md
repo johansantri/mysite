@@ -40,7 +40,7 @@ Pull request dipersilakan. Sertakan deskripsi perubahan dan tes bila perlu. Pert
 
 ## Atribusi (wajib ditampilkan pada footer halaman resmi)
 Pembuat / Creator: Johan Santri  
-Halaman resmi aplikasi wajib menampilkan baris atribusi ini pada footer (contoh: `templates/base.html`).
+Halaman resmi aplikasi wajib menampilkan baris atribusi ini pada footer (contoh: `templates/base.html` atau `templates/home/base.html`).
 
 ## Kontak
 Repository: https://github.com/johansantri/mysite
