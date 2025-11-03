@@ -1,108 +1,101 @@
-# What is MYSITE
+// ...existing code...
+# MYSITE
 
-MYSITE is a Python Django-based LMS (Learning Management System) application.
+MYSITE adalah aplikasi LMS (Learning Management System) berbasis Python/Django.
 
-*******************
-Release Information
-*******************
+Ringkasan
+- Repo asli: https://github.com/johansantri/mysite
+- Tujuan: platform pembelajaran online untuk tim/organisasi
 
-This repository is designed for team collaboration in the development of the LMS.
-For more details, visit the [repository page](https://github.com/johansantri/mysite).
+Fitur utama
+- Manajemen pengguna (superuser, partner, instructor, learner, dsb)
+- Modul kursus, kurasi, keuangan, langganan, sertifikat
 
-**************************
-Changes and Development of LMS Application
-**************************
+Persyaratan
+- Python 3.8+ (disarankan)
+- Django 5.1
 
-*******************
-Requirements
-*******************
+Instalasi singkat (Linux)
+1. git clone https://github.com/johansantri/mysite.git  
+2. cd mysite  
+3. python3 -m venv .venv  
+4. source .venv/bin/activate  
+5. python3 -m pip install -r requirements.txt  
+6. python manage.py makemigrations  
+7. python manage.py migrate  
+8. python manage.py createsuperuser  
+9. python manage.py runserver
 
-- Django 5.1.
+Catatan migrasi
+- Jika ada migrasi lama bermasalah, cadangkan lalu hapus file migrasi non-esensial sebelum menjalankan makemigrations.
 
-This application runs on Python 3 with the Django 5.1 framework.
+Lisensi
+- Proyek ini dilisensikan di bawah MIT License. Lihat file LICENSE untuk detail.
 
-************
-Installation
-************
+Kontribusi
+- Pull request dipersilakan. Sertakan deskripsi perubahan dan tes bila perlu.
+- Pertimbangkan menambahkan CONTRIBUTING.md dan CODE_OF_CONDUCT.md.
 
-Follow the instructions below to get started with the application.
+Atribusi (wajib ditampilkan pada footer halaman resmi)
+Pembuat / Creator: Johan Santri  
+Halaman resmi aplikasi wajib menampilkan baris atribusi di footer aplikasi (contoh ada di templates/base.html).
 
-***************
-# Testing Website
-Python project exploration using the Django framework.
+Kontak
+- Repository: https://github.com/johansantri/mysite
+// ...existing code...
+// ...existing code...
+MIT License
 
-## Role Access
-- Superuser: admin@admin.com | admin
-- Partner: partner@partner.com | partner
-- Instructor: instructor@instructor.com | instructor
-- Learner: learn@learn.com | learn
-- subscription sub@sub.com | sub
-- curation curation@curation.com | curation
-- finances fin@fin.com |fin
-- And others
+Copyright (c) 2025 Johan Santri
 
-## Installation
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-Make sure you have **Python** and **pip** installed on your system before starting.
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
-### 1. Clone this repository:
-```shell
-git clone https://github.com/johansantri/mysite.git
-```
-### 2. Navigate to the project directory:
-```shell
-cd mysite
-```
-### 3. Create a virtual environment:
-Refer to this guide for setting up a virtual environment for your OS using linux: [Python Virtual Environment Installation Guide](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/)
-```shell
-python3 -m venv .venv
-```
-### 4. Activate the virtual environment:
-```shell
-source .venv/bin/activate
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+// ...existing code...
+// ...existing code...
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% block title %}MYSITE{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <header>
+    {% block header %}
+    <!-- navbar / header -->
+    {% endblock %}
+  </header>
 
-```
-### 5. Install requests package:
-```shell
-python3 -m pip install requests
-```
+  <main>
+    {% block content %}{% endblock %}
+  </main>
 
-### 6. Install dependencies from requirements.txt:
-```shell
-python3 -m pip install -r requirements.txt
-```
-### 7. Freeze requirements (to track package versions):
-```shell
-pip freeze > requirements.txt
+  <footer style="padding:16px;text-align:center;border-top:1px solid #eee;margin-top:32px;">
+    <div>
+      © {% now "Y" %} MYSITE — Pembuat / Creator: <a href="https://github.com/johansantri" target="_blank" rel="noopener noreferrer">Johan Santri</a>
+    </div>
+  </footer>
 
-```
-### 8.Run makemigrations:
-```shell
-python manage.py makemigrations
-```
-****
-Note: Make sure Python is installed before running this command, and that you have cleared the contents of the migrations folders (course, auth, authentication) in mysite\authentication\migrations. For example, remove all migration files like 001_ and any higher numbers.
-****
-
-### 9. Run database migrations:
-```shell
-python manage.py migrate
-```
-### 10. Run the server:
-```shell
-python manage.py runserver
-```
-### 11. To create a superuser:
-```shell
-python manage.py createsuperuser
-```
-****
-Steps to create a superuser:
-
-Enter your email, for example: admin@admin.com
-Enter your username, for example: admin
-Enter your password, for example: admin
-Re-enter your password
-Select "yes" to continue
-****
+  <script src="{% static 'js/main.js' %}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>
+// ...existing code...
