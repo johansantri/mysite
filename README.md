@@ -32,11 +32,7 @@ JakIja is a Learning Management System (LMS) built with Python and Django, desig
 9. python manage.py runserver
 
 ## Demo / Video
-(Note: GitHub README may not render iframes. Use the thumbnail link if iframe does not appear.)
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/UXxBFmejhe8?si=vph4S-PCTeebwYpz" title="MYSITE demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-Fallback (recommended for GitHub):  
+ 
 [![MYSITE demo](https://img.youtube.com/vi/UXxBFmejhe8/maxresdefault.jpg)](https://www.youtube.com/watch?v=UXxBFmejhe8)
 
 ## Migration notes
