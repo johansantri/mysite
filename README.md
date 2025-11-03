@@ -1,26 +1,26 @@
 # MYSITE
 
-JakIja adalah Learning Management System (LMS) berbasis Python/Django yang dirancang untuk mendukung multiple‑vendor. Dengan JakIja, penyedia kursus dapat membuat, mengelola, dan menjual kursus online secara mandiri — cocok untuk institusi pendidikan, perusahaan, dan tim pelatihan di indonesia.
+JakIja is a Learning Management System (LMS) built with Python and Django, designed for multi‑vendor use. With JakIja, course providers can create, manage, and sell courses independently — suitable for educational institutions, companies, and training teams.
 
-## Ringkasan
-- Repo asli: https://github.com/johansantri/mysite  
-- Tujuan: platform pembelajaran online untuk tim/organisasi yang mudah dan ringan
+## Overview
+- Original repo: https://github.com/johansantri/mysite  
+- Goal: lightweight, team‑oriented online learning platform
 
-## Fitur utama
-- Manajemen pengguna (superuser, keuangan, kurasi, partner, instructor, learner, subscription, dsb)  
-- Modul kursus, kurasi, keuangan, langganan, sertifikat  
-- Mini social media mirip X, blog, LTI consumer  
-- Metode kursus: gratis, bayar di depan, bayar ujian, bayar sertifikat, langganan
+## Key features
+- User management (superuser, finance, curation, partner, instructor, learner, subscription, etc.)  
+- Course, curation, finance, subscription, and certificate modules  
+- Mini social feed (similar to X), blog, LTI consumer  
+- Course delivery modes: free, upfront payment, exam payment, certificate payment, subscription
 
-## Fitur tambahan
-- Mendukung pembayaran dengan Tripay
-- Mendukung Microcredential kursus atau kursus profesional sertifikat
+## Additional features
+- Payment gateway support: Tripay  
+- Micro‑credentials / professional certificate support
 
-## Persyaratan
-- Python 3.8+ (disarankan)  
+## Requirements
+- Python 3.8+ (recommended)  
 - Django 5.1
 
-## Instalasi singkat (Linux)
+## Quick install (Linux)
 1. git clone https://github.com/johansantri/mysite.git  
 2. cd mysite  
 3. python3 -m venv .venv  
@@ -32,26 +32,30 @@ JakIja adalah Learning Management System (LMS) berbasis Python/Django yang diran
 9. python manage.py runserver
 
 ## Demo / Video
-<!-- iframe mungkin tidak dirender di GitHub, gunakan fallback thumbnail -->
+(Note: GitHub README may not render iframes. Use the thumbnail link if iframe does not appear.)
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/UXxBFmejhe8?si=vph4S-PCTeebwYpz" title="MYSITE demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+Fallback (recommended for GitHub):  
 [![MYSITE demo](https://img.youtube.com/vi/UXxBFmejhe8/maxresdefault.jpg)](https://www.youtube.com/watch?v=UXxBFmejhe8)
 
-## Catatan migrasi
-Jika ada migrasi lama bermasalah, cadangkan lalu hapus file migrasi non‑esensial sebelum menjalankan `makemigrations`.
+## Migration notes
+If you encounter issues with old migrations, back up and remove non‑essential migration files for the affected apps before running `makemigrations`.
 
-## Lisensi
-Proyek ini dilisensikan di bawah MIT License — lihat file `LICENSE` untuk teks lengkap.
+## License
+This project is licensed under the MIT License — see `LICENSE` for details.
 
-## Kontribusi
-Pull request dipersilakan. Sertakan deskripsi perubahan dan tes bila perlu. Pertimbangkan menambahkan `CONTRIBUTING.md` dan `CODE_OF_CONDUCT.md`.
+## Contributing
+Pull requests are welcome. Please include a description of changes and tests when applicable. Consider adding `CONTRIBUTING.md` and `CODE_OF_CONDUCT.md`.
 
-## Atribusi (wajib ditampilkan pada footer halaman resmi)
-Pembuat / Creator: Johan Santri
+## Attribution (must appear on the official site footer)
+Creator: Johan Santri  
+The official site must display this attribution in the footer (example: `templates/base.html`).
 
-## Kontak
+## Contact
 Repository: https://github.com/johansantri/mysite
 
-## Contoh akses dasar
+## Demo accounts
 - Superuser: admin@admin.com | admin  
 - Partner: partner@partner.com | partner  
 - Instructor: instructor@instructor.com | instructor  
