@@ -3,12 +3,12 @@
 {% load static %}
 {% block meta %}
     <!-- Standard Meta Tags -->
-    <title>{{ course.course_name }} - MyICE</title>
+    <title>{{ course.course_name }} - JakIja</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <meta name="description" content="{{ course.sort_description|default:'Pelajari kursus menarik ini di MyICE untuk meningkatkan keterampilan Anda dengan panduan dari instruktur ahli.'|truncatechars:160|safe }}">
-    <meta name="keywords" content="{{ course.course_name }}, {{ course.category.name }}, online course, e-learning, MyICE, {{ course.instructor.user.get_full_name }}, {{ course.get_language_display }}, {{ course.level }}">
-    <meta name="author" content="{{ course.instructor.user.get_full_name|default:'MyICE Team' }}">
+    <meta name="description" content="{{ course.sort_description|default:'Pelajari kursus menarik ini di JakIja untuk meningkatkan keterampilan Anda dengan panduan dari instruktur ahli.'|truncatechars:160|safe }}">
+    <meta name="keywords" content="{{ course.course_name }}, {{ course.category.name }}, online course, e-learning, JakIja, {{ course.instructor.user.get_full_name }}, {{ course.get_language_display }}, {{ course.level }}">
+    <meta name="author" content="{{ course.instructor.user.get_full_name|default:'JakIja Team' }}">
     <meta name="robots" content="index, follow">
     <link rel="canonical" content="{{ request.build_absolute_uri }}">
 
@@ -19,8 +19,8 @@
     <meta name="revisit-after" content="7 days">
 
     <!-- Open Graph (OG) Tags for Social Media (Facebook, LinkedIn, WhatsApp) -->
-    <meta property="og:title" content="{{ course.course_name }} - MyICE">
-    <meta property="og:description" content="{{ course.sort_description|default:'Pelajari kursus menarik ini di MyICE untuk meningkatkan keterampilan Anda dengan panduan dari instruktur ahli.'|truncatechars:256|safe }}">
+    <meta property="og:title" content="{{ course.course_name }} - JakIja">
+    <meta property="og:description" content="{{ course.sort_description|default:'Pelajari kursus menarik ini di JakIja untuk meningkatkan keterampilan Anda dengan panduan dari instruktur ahli.'|truncatechars:256|safe }}">
     <meta property="og:type" content="article">
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
     {% if course.image %}
@@ -30,16 +30,16 @@
         <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'assets/img/icon/course-default.jpg' %}">
         <meta property="og:image:secure_url" content="{{ request.scheme }}://{{ request.get_host }}{% static 'assets/img/icon/course-default.jpg' %}">
     {% endif %}
-    <meta property="og:image:alt" content="Gambar untuk kursus {{ course.course_name }} di MyICE">
+    <meta property="og:image:alt" content="Gambar untuk kursus {{ course.course_name }} di JakIja">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:site_name" content="MyICE">
+    <meta property="og:site_name" content="JakIja">
     <meta property="og:locale" content="id_ID">
 
     <!-- Twitter Card Tags (for X) -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ course.course_name }} - MyICE">
-    <meta name="twitter:description" content="{{ course.sort_description|default:'Pelajari kursus menarik ini di MyICE untuk meningkatkan keterampilan Anda dengan panduan dari instruktur ahli.'|truncatechars:200|safe }}">
+    <meta name="twitter:title" content="{{ course.course_name }} - JakIja">
+    <meta name="twitter:description" content="{{ course.sort_description|default:'Pelajari kursus menarik ini di JakIja untuk meningkatkan keterampilan Anda dengan panduan dari instruktur ahli.'|truncatechars:200|safe }}">
     {% if course.image %}
         <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ course.image.url }}">
         <meta name="twitter:image:src" content="{{ request.scheme }}://{{ request.get_host }}{{ course.image.url }}">
@@ -47,9 +47,9 @@
         <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'assets/img/icon/course-default.jpg' %}">
         <meta name="twitter:image:src" content="{{ request.scheme }}://{{ request.get_host }}{% static 'assets/img/icon/course-default.jpg' %}">
     {% endif %}
-    <meta name="twitter:image:alt" content="Gambar untuk kursus {{ course.course_name }} di MyICE">
-    <meta name="twitter:site" content="@MyICE">
-    <meta name="twitter:creator" content="@{{ course.instructor.user.username|default:'MyICE' }}">
+    <meta name="twitter:image:alt" content="Gambar untuk kursus {{ course.course_name }} di JakIja">
+    <meta name="twitter:site" content="@JakIja">
+    <meta name="twitter:creator" content="@{{ course.instructor.user.username|default:'JakIja' }}">
 
     <!-- Structured Data (JSON-LD) for Course -->
     <script type="application/ld+json">
@@ -57,17 +57,17 @@
         "@context": "https://schema.org",
         "@type": "Course",
         "name": "{{ course.course_name|safe }}",
-        "description": "{{ course.sort_description|default:'Pelajari kursus menarik ini di MyICE untuk meningkatkan keterampilan Anda dengan panduan dari instruktur ahli.'|truncatechars:256|safe }}",
+        "description": "{{ course.sort_description|default:'Pelajari kursus menarik ini di JakIja untuk meningkatkan keterampilan Anda dengan panduan dari instruktur ahli.'|truncatechars:256|safe }}",
         "url": "{{ request.build_absolute_uri }}",
         "image": "{% if course.image %}{{ request.scheme }}://{{ request.get_host }}{{ course.image.url }}{% else %}{{ request.scheme }}://{{ request.get_host }}{% static 'assets/img/icon/course-default.jpg' %}{% endif %}",
         "provider": {
             "@type": "Organization",
-            "name": "MyICE",
+            "name": "JakIja",
             "sameAs": "{{ request.scheme }}://{{ request.get_host }}"
         },
         "instructor": {
             "@type": "Person",
-            "name": "{{ course.instructor.user.get_full_name|default:'MyICE Instructor'|safe }}",
+            "name": "{{ course.instructor.user.get_full_name|default:'JakIja Instructor'|safe }}",
             "url": "{% url 'courses:instructor_profile' course.instructor.user.username %}"
         },
         "courseCode": "{{ course.course_number|safe }}",
@@ -729,7 +729,7 @@
                                     <span class="text-xs sm:text-sm"></span>
                                 </a>
                                 <!-- WhatsApp Share -->
-                                <a href="https://api.whatsapp.com/send?text={{ course.course_name|urlencode }}%0A{{ course.sort_description|default:'Pelajari kursus menarik ini di MyICE!'|truncatechars:200|urlencode }}%0A{{ request.build_absolute_uri|urlencode }}"
+                                <a href="https://api.whatsapp.com/send?text={{ course.course_name|urlencode }}%0A{{ course.sort_description|default:'Pelajari kursus menarik ini di JakIja!'|truncatechars:200|urlencode }}%0A{{ request.build_absolute_uri|urlencode }}"
                                 class="flex items-center justify-center border border-gray-300 text-gray-700 px-2 py-2 sm:px-3 sm:py-2 rounded-lg hover:bg-gray-100 transition-colors"
                                 target="_blank"
                                 rel="noopener noreferrer"
@@ -747,7 +747,7 @@
                                     <span class="text-xs sm:text-sm"></span>
                                 </a>
                                 <!-- LinkedIn Share -->
-                                <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri|urlencode }}&title={{ course.course_name|urlencode }}&summary={{ course.sort_description|default:'Pelajari kursus menarik ini di MyICE untuk meningkatkan keterampilan Anda dengan panduan dari instruktur ahli.'|truncatechars:256|urlencode }}&source={{ request.scheme }}://{{ request.get_host }}"
+                                <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri|urlencode }}&title={{ course.course_name|urlencode }}&summary={{ course.sort_description|default:'Pelajari kursus menarik ini di JakIja untuk meningkatkan keterampilan Anda dengan panduan dari instruktur ahli.'|truncatechars:256|urlencode }}&source={{ request.scheme }}://{{ request.get_host }}"
                                 class="flex items-center justify-center border border-gray-300 text-gray-700 px-2 py-2 sm:px-3 sm:py-2 rounded-lg hover:bg-gray-100 transition-colors"
                                 target="_blank"
                                 rel="noopener noreferrer"
@@ -756,7 +756,7 @@
                                     <span class="text-xs sm:text-sm"></span>
                                 </a>
                                 <!-- X Share -->
-                                <a href="https://x.com/intent/tweet?url={{ request.build_absolute_uri|urlencode }}&text={{ course.course_name|urlencode }}%20-%20{{ course.sort_description|default:'Pelajari kursus menarik ini di MyICE!'|truncatechars:200|urlencode }}"
+                                <a href="https://x.com/intent/tweet?url={{ request.build_absolute_uri|urlencode }}&text={{ course.course_name|urlencode }}%20-%20{{ course.sort_description|default:'Pelajari kursus menarik ini di JakIja!'|truncatechars:200|urlencode }}"
                                 class="flex items-center justify-center border border-gray-300 text-gray-700 px-2 py-2 sm:px-3 sm:py-2 rounded-lg hover:bg-gray-100 transition-colors"
                                 target="_blank"
                                 rel="noopener noreferrer"

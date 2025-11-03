@@ -4,9 +4,9 @@
 
 {% block meta %}
     <!-- Standard Meta Tags -->
-    <title>{{ instructor.user.first_name }} {{ instructor.user.last_name }} - Instructor Profile | MyICE</title>
-    <meta name="description" content="Learn more about {{ instructor.user.first_name }} {{ instructor.user.last_name }}, an expert instructor at MyICE offering {{ courses_count }} courses with {{ total_participants }} students.">
-    <meta name="keywords" content="{{ instructor.user.first_name }}, {{ instructor.user.last_name }}, MyICE, online courses, {{ instructor.user.university|default:'education' }}, {{ instructor.expertise|default:'instructor' }}, instructor profile">
+    <title>{{ instructor.user.first_name }} {{ instructor.user.last_name }} - Instructor Profile | JakIja</title>
+    <meta name="description" content="Learn more about {{ instructor.user.first_name }} {{ instructor.user.last_name }}, an expert instructor at JakIja offering {{ courses_count }} courses with {{ total_participants }} students.">
+    <meta name="keywords" content="{{ instructor.user.first_name }}, {{ instructor.user.last_name }}, JakIja, online courses, {{ instructor.user.university|default:'education' }}, {{ instructor.expertise|default:'instructor' }}, instructor profile">
     <meta name="author" content="{{ instructor.user.first_name }} {{ instructor.user.last_name }}">
     <meta name="robots" content="index, follow">
     <meta charset="UTF-8">
@@ -14,8 +14,8 @@
     <link rel="canonical" href="{{ request.build_absolute_uri }}">
 
     <!-- Open Graph (OG) Tags for Social Media -->
-    <meta property="og:title" content="{{ instructor.user.first_name }} {{ instructor.user.last_name }} - Instructor Profile | MyICE">
-    <meta property="og:description" content="{{ instructor.bio|striptags|truncatewords:50|default:'Learn more about '}}{{ instructor.user.first_name }} {{ instructor.user.last_name }}, an expert instructor at MyICE with {{ courses_count }} courses.">
+    <meta property="og:title" content="{{ instructor.user.first_name }} {{ instructor.user.last_name }} - Instructor Profile | JakIja">
+    <meta property="og:description" content="{{ instructor.bio|striptags|truncatewords:50|default:'Learn more about '}}{{ instructor.user.first_name }} {{ instructor.user.last_name }}, an expert instructor at JakIja with {{ courses_count }} courses.">
     <meta property="og:type" content="profile">
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
     {% if instructor.user.photo %}
@@ -26,20 +26,20 @@
     <meta property="og:image:alt" content="Profile photo of {{ instructor.user.first_name }} {{ instructor.user.last_name }}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:site_name" content="MyICE">
+    <meta property="og:site_name" content="JakIja">
     <meta property="og:locale" content="en_US">
 
     <!-- Twitter Card Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ instructor.user.first_name }} {{ instructor.user.last_name }} - Instructor Profile | MyICE">
-    <meta name="twitter:description" content="{{ instructor.bio|striptags|truncatewords:50|default:'Learn more about '}}{{ instructor.user.first_name }} {{ instructor.user.last_name }}, an expert instructor at MyICE with {{ courses_count }} courses.">
+    <meta name="twitter:title" content="{{ instructor.user.first_name }} {{ instructor.user.last_name }} - Instructor Profile | JakIja">
+    <meta name="twitter:description" content="{{ instructor.bio|striptags|truncatewords:50|default:'Learn more about '}}{{ instructor.user.first_name }} {{ instructor.user.last_name }}, an expert instructor at JakIja with {{ courses_count }} courses.">
     {% if instructor.user.photo %}
         <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ instructor.user.photo.url }}">
     {% else %}
         <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'images/default-profile.jpg' %}">
     {% endif %}
     <meta name="twitter:image:alt" content="Profile photo of {{ instructor.user.first_name }} {{ instructor.user.last_name }}">
-    <meta name="twitter:site" content="@MyICE">
+    <meta name="twitter:site" content="@JakIja">
 
     <!-- Additional SEO Meta Tags -->
     <meta name="geo.placename" content="{{ instructor.user.city|default:'Unknown' }}">

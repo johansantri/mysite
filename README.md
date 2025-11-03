@@ -1,21 +1,20 @@
 # MYSITE
 
-JakIja adalah aplikasi Learning Management System (LMS) berbasis Python/Django yang dirancang untuk mendukung multiple vendor.
-Dengan JakIja, setiap penyedia kursus dapat membuat, mengelola, dan menjual kursus online secara mandiri, mirip platform e-learning besar seperti Coursera, Udemy, dan edX.
-Aplikasi ini cocok untuk organisasi, institusi pendidikan, atau perusahaan yang ingin membangun ekosistem pembelajaran online multi-penyedia .
+JakIja adalah Learning Management System (LMS) berbasis Python/Django yang dirancang untuk mendukung multiple‑vendor. Dengan JakIja, penyedia kursus dapat membuat, mengelola, dan menjual kursus online secara mandiri — cocok untuk institusi pendidikan, perusahaan, dan tim pelatihan.
 
 ## Ringkasan
 - Repo asli: https://github.com/johansantri/mysite  
-- Tujuan: platform pembelajaran online untuk tim/organisasi
+- Tujuan: platform pembelajaran online untuk tim/organisasi yang mudah dan ringan
 
 ## Fitur utama
 - Manajemen pengguna (superuser, keuangan, kurasi, partner, instructor, learner, subscription, dsb)  
 - Modul kursus, kurasi, keuangan, langganan, sertifikat  
-- Mini sosial media mirip X  
-- Blog  
-- Belajar mandiri  
-- Metode kursus: gratis, bayar di depan, bayar ujian, bayar sertifikat, dan langganan
-- lti consumer
+- Mini social media mirip X, blog, LTI consumer  
+- Metode kursus: gratis, bayar di depan, bayar ujian, bayar sertifikat, langganan
+
+## Fitur tambahan
+- Mendukung pembayaran dengan Tripay
+- Mendukung Microcredential kursus atau kursus profesional sertifikat
 
 ## Persyaratan
 - Python 3.8+ (disarankan)  
@@ -32,17 +31,15 @@ Aplikasi ini cocok untuk organisasi, institusi pendidikan, atau perusahaan yang 
 8. python manage.py createsuperuser  
 9. python manage.py runserver
 
-## Catatan migrasi
-Jika ada migrasi lama bermasalah, cadangkan lalu hapus file migrasi non‑esensial sebelum menjalankan `makemigrations`.
-
 ## Demo / Video
-<!-- Direct iframe (may not render on GitHub but works in many Markdown viewers / docs sites) -->
-<iframe width="560" height="315" src="https://www.youtube.com/embed/UXxBFmejhe8?si=vph4S-PCTeebwYpz" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<!-- iframe mungkin tidak dirender di GitHub, gunakan fallback thumbnail -->
+<iframe width="560" height="315" src="https://www.youtube.com/embed/UXxBFmejhe8?si=vph4S-PCTeebwYpz" title="MYSITE demo" frameborder="0" allowfullscreen></iframe>
 
-Fallback (recommended for GitHub): klik thumbnail di bawah untuk menonton di YouTube  
+Fallback:  
 [![MYSITE demo](https://img.youtube.com/vi/UXxBFmejhe8/maxresdefault.jpg)](https://www.youtube.com/watch?v=UXxBFmejhe8)
 
-> Catatan: GitHub strips iframes in README rendering for security. Gunakan thumbnail link di atas untuk memastikan pengunjung GitHub bisa melihat dan membuka video.
+## Catatan migrasi
+Jika ada migrasi lama bermasalah, cadangkan lalu hapus file migrasi non‑esensial sebelum menjalankan `makemigrations`.
 
 ## Lisensi
 Proyek ini dilisensikan di bawah MIT License — lihat file `LICENSE` untuk teks lengkap.
@@ -51,8 +48,7 @@ Proyek ini dilisensikan di bawah MIT License — lihat file `LICENSE` untuk teks
 Pull request dipersilakan. Sertakan deskripsi perubahan dan tes bila perlu. Pertimbangkan menambahkan `CONTRIBUTING.md` dan `CODE_OF_CONDUCT.md`.
 
 ## Atribusi (wajib ditampilkan pada footer halaman resmi)
-Pembuat / Creator: Johan Santri  
-Halaman resmi aplikasi wajib menampilkan baris atribusi ini pada footer (contoh: `templates/base.html` atau `templates/home/base.html`).
+Pembuat / Creator: Johan Santri
 
 ## Kontak
 Repository: https://github.com/johansantri/mysite

@@ -1841,31 +1841,31 @@ def custom_password_reset_complete(request):
 
 
 def faq(request):
-    return render(request, 'home/myice/faq.html')
+    return render(request, 'home/JakIja/faq.html')
 
 def contact(request):
-    return render(request, 'home/myice/contact.html')
+    return render(request, 'home/JakIja/contact.html')
 
 def terms(request):
-    return render(request, 'home/myice/terms.html')
+    return render(request, 'home/JakIja/terms.html')
 
 def privacy(request):
-    return render(request, 'home/myice/privacy.html')
+    return render(request, 'home/JakIja/privacy.html')
 
 def instructor_agreement(request):
-    return render(request, 'home/myice/instructor_agreement.html')
+    return render(request, 'home/JakIja/instructor_agreement.html')
 
 def partnership_agreement(request):
-    return render(request, 'home/myice/partnership_agreement.html')
+    return render(request, 'home/JakIja/partnership_agreement.html')
 
 def cookie_policy(request):
-    return render(request, 'home/myice/cookie_policy.html')
+    return render(request, 'home/JakIja/cookie_policy.html')
 
 def refund_policy(request):
-    return render(request, 'home/myice/refund_policy.html')
+    return render(request, 'home/JakIja/refund_policy.html')
 
 def security(request):
-    return render(request, 'home/myice/security.html')
+    return render(request, 'home/JakIja/security.html')
 
 def partner_info(request):
-    return render(request, 'home/myice/partner_info.html')
+    return render(request, 'home/JakIja/partner_info.html')
