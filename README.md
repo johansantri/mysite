@@ -1,6 +1,6 @@
 # MYSITE
 
-JakIja adalah Learning Management System (LMS) berbasis Python/Django yang dirancang untuk mendukung multiple‑vendor. Dengan JakIja, penyedia kursus dapat membuat, mengelola, dan menjual kursus online secara mandiri — cocok untuk institusi pendidikan, perusahaan, dan tim pelatihan.
+JakIja adalah Learning Management System (LMS) berbasis Python/Django yang dirancang untuk mendukung multiple‑vendor. Dengan JakIja, penyedia kursus dapat membuat, mengelola, dan menjual kursus online secara mandiri — cocok untuk institusi pendidikan, perusahaan, dan tim pelatihan di indonesia.
 
 ## Ringkasan
 - Repo asli: https://github.com/johansantri/mysite  
@@ -33,9 +33,7 @@ JakIja adalah Learning Management System (LMS) berbasis Python/Django yang diran
 
 ## Demo / Video
 <!-- iframe mungkin tidak dirender di GitHub, gunakan fallback thumbnail -->
-<iframe width="560" height="315" src="https://www.youtube.com/embed/UXxBFmejhe8?si=vph4S-PCTeebwYpz" title="MYSITE demo" frameborder="0" allowfullscreen></iframe>
 
-Fallback:  
 [![MYSITE demo](https://img.youtube.com/vi/UXxBFmejhe8/maxresdefault.jpg)](https://www.youtube.com/watch?v=UXxBFmejhe8)
 
 ## Catatan migrasi
