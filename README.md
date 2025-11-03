@@ -36,6 +36,9 @@ Python project exploration using the Django framework.
 - Partner: partner@partner.com | partner
 - Instructor: instructor@instructor.com | instructor
 - Learner: learn@learn.com | learn
+- subscription sub@sub.com | sub
+- curation curation@curation.com | curation
+- finances fin@fin.com |fin
 - And others
 
 ## Installation

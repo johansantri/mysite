@@ -432,8 +432,10 @@ def course_list(request):
             if not published_status:
                 raise CourseStatus.DoesNotExist
         except CourseStatus.DoesNotExist:
-            logger.error("Published status not found")
-            return HttpResponseNotFound("Status 'published' tidak ditemukan")
+            logger.warning("Published status 'published' tidak ditemukan.")
+            messages.error(request, "Status 'published' belum tersedia. Silakan coba lagi nanti.")
+            return redirect('authentication:home')
+
 
         # Query courses
         courses = Course.objects.filter(
@@ -575,17 +577,24 @@ def course_list(request):
         return render(request, 'home/course_list.html', context)
 
     except CourseStatus.DoesNotExist:
-        logger.error("Published status not found")
-        return HttpResponseNotFound("Status 'published' tidak ditemukan")
+        logger.warning("Published status not found")
+        messages.warning(request, "Status 'published' belum tersedia.")
+        return redirect('authentication:home')
+
     except DatabaseError:
-        logger.exception("Database error in course_list")
-        return HttpResponseServerError("Terjadi kesalahan pada server. Silakan coba lagi nanti.")
+        logger.exception("Database error in partner_list_view")
+        messages.error(request, "Terjadi kesalahan pada server. Silakan coba lagi nanti.")
+        return redirect('authentication:home')
+
     except KeyError as e:
-        logger.exception(f"KeyError in course_list: {str(e)}")
-        return HttpResponseServerError("Terjadi kesalahan data. Silakan coba lagi nanti.")
+        logger.exception(f"KeyError in partner_list_view: {str(e)}")
+        messages.error(request, "Terjadi kesalahan data. Silakan coba lagi nanti.")
+        return redirect('authentication:home')
+
     except Exception as e:
-        logger.exception(f"Unexpected error in course_list: {str(e)}")
-        return HttpResponseServerError("Terjadi kesalahan yang tidak terduga.")
+        logger.exception(f"Unexpected error in partner_list_view: {str(e)}")
+        messages.error(request, "Terjadi kesalahan yang tidak terduga.")
+        return redirect('authentication:home')
 
 
 

@@ -150,7 +150,36 @@ class Partner(models.Model):
                 old_logo_path = os.path.join(settings.MEDIA_ROOT, old_logo)
                 if os.path.exists(old_logo_path):
                     os.remove(old_logo_path)
+     # === Tambahkan di bawah method save() ===
+    def approve(self, admin_user=None):
+        """Set partner sebagai approved"""
+        self.status = 'approved'
+        self.is_verified = True
+        self.verified_at = timezone.now()
+        self.updated_by = admin_user
+        self.save()
+        logger.info(f"Partner '{self}' approved by {admin_user}")
+        return True
 
+    def reject(self, note, admin_user=None):
+        """Tolak partner dan simpan catatan"""
+        self.status = 'rejected'
+        self.admin_note = note
+        self.is_verified = False
+        self.updated_by = admin_user
+        self.save()
+        logger.info(f"Partner '{self}' rejected by {admin_user} with note: {note}")
+        return True
+
+    def request_revision(self, note, admin_user=None):
+        """Minta revisi dari partner"""
+        self.status = 'revision'
+        self.admin_note = note
+        self.updated_by = admin_user
+        self.save()
+        logger.info(f"Partner '{self}' marked for revision by {admin_user} with note: {note}")
+        return True
+    
     def save(self, *args, **kwargs):
         self.delete_old_logo()
         super().save(*args, **kwargs)
@@ -239,6 +268,7 @@ class PricingType(models.Model):
         max_length=50,
         unique=True,
         null=True,
+        blank=True,  # biar tidak wajib diisi manual
         help_text="Kode unik sistem. Contoh: 'free', 'buy_first', 'subscription'"
     )
     name = models.CharField(
@@ -246,14 +276,26 @@ class PricingType(models.Model):
         unique=True,
         help_text="Nama tampilan. Contoh: 'Free', 'Buy First'"
     )
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(
+        blank=True,
+        null=True,
+        help_text="Deskripsi singkat tentang jenis harga (opsional)."
+    )
     created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.name
 
     class Meta:
         ordering = ['name']
+        verbose_name = "Pricing Type"
+        verbose_name_plural = "Pricing Types"
+
+    def save(self, *args, **kwargs):
+        # Isi otomatis field code jika belum diisi
+        if not self.code:
+            self.code = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
 
 class Course(models.Model):
     choice_language = [

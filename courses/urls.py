@@ -23,6 +23,7 @@ urlpatterns = [
     path('org-partner/<slug:slug>/',views.org_partner, name='org_partner'),
    
     path("course-add/", views.course_create_view, name= "course_create_view"),
+    path("category/add/", views.category_create_view, name= "category_create_view"),
     path("partner-add/", views.partner_create_view, name= "partner_create_view"),
     path('user-autocomplete/', views.UserAutocomplete.as_view(), name='user-autocomplete'),
     path('universiti-autocomplete/', views.UniversitiAutocomplete.as_view(), name='universiti-autocomplete'),

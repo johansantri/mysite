@@ -76,7 +76,7 @@ from .forms import (
     CoursePriceForm, CourseRatingForm, SosPostForm, MicroCredentialForm, AskOraForm,
     CourseForm, CourseRerunForm, PartnerForm, PartnerFormUpdate, CourseInstructorForm,
     SectionForm, GradeRangeForm, ProfilForm, InstructorForm, InstructorAddCoruseForm,
-    TeamMemberForm, MatrialForm, QuestionForm, ChoiceFormSet, AssessmentForm
+    TeamMemberForm, MatrialForm, QuestionForm, ChoiceFormSet, AssessmentForm,CategoryForm
 )
 
 # Internal imports - utils
@@ -5785,6 +5785,25 @@ def course_create_view(request):
         return redirect('/courses/')
 
     return render(request, 'courses/course_add.html', {'form': form})
+
+
+#add new category
+def category_create_view(request):
+    if not request.user.is_authenticated:
+        return redirect("/login/?next=%s" % request.path)
+
+    if request.method == "POST":
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            category = form.save(commit=False)
+            category.user = request.user  # <--- Tambahkan ini
+            category.save()
+            messages.success(request, "Category created successfully.") 
+            return redirect('/course-add/')  # Redirect to a course list page or success page
+    else:
+        form = CategoryForm()
+
+    return render(request, 'courses/category_add.html', {'form': form})
 
 #studio detail courses
 

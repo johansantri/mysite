@@ -25,7 +25,7 @@ import hashlib
 from django_select2.forms import ModelSelect2MultipleWidget
 from dal import autocomplete
 from decimal import Decimal
-
+from django.utils.safestring import mark_safe
 logger = logging.getLogger(__name__)
 
 
@@ -538,6 +538,10 @@ class CourseForm(forms.ModelForm):
 
         super().__init__(*args, **kwargs)
 
+        # Tambahkan link ke label category
+        self.fields['category'].label = mark_safe(
+            'Category (<a href="/category/add/" target="_blank">add new category</a>)'
+        )
 
         if user:
 
@@ -573,6 +577,32 @@ class CourseForm(forms.ModelForm):
 
                 self.fields['org_partner'].queryset = Partner.objects.none()  # No options for other users
                 
+
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'placeholder': 'Enter category name here',
+                'class': 'form-control w-50',  # setengah lebar form
+                'maxlength': '100',  # batasi maksimal 100 karakter
+            }),
+        }
+
+    def clean_name(self):
+        name = self.cleaned_data.get('name', '').strip()
+        # validasi tambahan: pastikan tidak lebih dari 100 karakter
+        if len(name) > 100:
+            raise forms.ValidationError("Nama kategori tidak boleh lebih dari 100 karakter.")
+        return name
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.slug = slugify(instance.name)
+        if commit:
+            instance.save()
+        return instance
 
 
 class PartnerForm(forms.ModelForm):

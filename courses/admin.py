@@ -3,6 +3,7 @@ from . import models
 from .models import  UserActivityLog,CourseSessionLog,InstructorCertificate,LTIResult,LastAccessCourse,LTIExternalTool1,MicroClaim,UserMicroProgress,MicroCredentialComment,Certificate,Submission,CourseRating,UserProfile,Hashtag,SosPost,AskOra,BlacklistedKeyword, PeerReview,MicroCredential, AssessmentScore,Partner,Comment,CourseComment,AssessmentRead,Choice,AssessmentSession,QuestionAnswer,CourseStatusHistory,CourseStatus,CourseProgress,MaterialRead,CalculateAdminPrice,Universiti,GradeRange,Enrollment,PricingType,CoursePrice, Instructor, Category, Course, TeamMember, Section, Material,Question, Choice, Score, AttemptedQuestion,Assessment
 from import_export.admin import ImportExportModelAdmin
 from django.utils.html import format_html
+from django.utils.text import slugify
 
 @admin.register(UserActivityLog)
 class UserActivityLogAdmin(admin.ModelAdmin):
@@ -260,7 +261,25 @@ admin.site.register(models.TeamMember)
 admin.site.register(GradeRange)
 
 admin.site.register(Enrollment)
-admin.site.register(PricingType)
+@admin.register(PricingType)
+class PricingTypeAdmin(admin.ModelAdmin):
+    list_display = ('name', 'code', 'description', 'created_at')
+    ordering = ('name',)
+    search_fields = ('name', 'code')
+    readonly_fields = ('name', 'code', 'description', 'created_at')
+
+    # ❌ Hilangkan tombol Add di admin
+    def has_add_permission(self, request):
+        return False
+
+    # ❌ Hilangkan tombol Delete di admin
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    # ❌ Hilangkan tombol Save/Edit di halaman detail
+    def has_change_permission(self, request, obj=None):
+        return False
+
 admin.site.register(CoursePrice)
 admin.site.register(CourseStatusHistory)
 admin.site.register(CourseStatus)

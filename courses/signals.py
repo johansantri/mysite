@@ -7,11 +7,37 @@ from django.core.mail import EmailMessage
 from django.conf import settings
 from courses.models import Partner
 
+from django.contrib import messages
 logger = logging.getLogger(__name__)
 
-def send_partner_email_html(user, subject, template_name, context):
-    """Kirim email HTML ke partner"""
-    if user.email:
+def send_partner_email_html(request, user, subject, template_name, context):
+    """
+    Kirim email HTML ke partner.
+    - Jika konfigurasi email belum diatur di settings.py → beri peringatan dan batal kirim.
+    - Jika user belum memiliki email → beri peringatan dan batal kirim.
+    """
+
+    # 🧩 1. Cek apakah konfigurasi email di settings sudah lengkap
+    required_settings = ['EMAIL_HOST', 'EMAIL_PORT', 'DEFAULT_FROM_EMAIL']
+    missing = [s for s in required_settings if not getattr(settings, s, None)]
+
+    if missing:
+        msg = f"Konfigurasi email belum lengkap di settings.py: {', '.join(missing)}"
+        logger.warning(msg)
+        if request:
+            messages.warning(request, msg)
+        return  # hentikan fungsi, jangan kirim email
+
+    # 🧩 2. Cek apakah user punya email
+    if not getattr(user, 'email', None):
+        msg = f"User '{getattr(user, 'username', 'Tanpa Nama')}' belum memiliki email, email tidak dikirim."
+        logger.warning(msg)
+        if request:
+            messages.warning(request, msg)
+        return
+
+    # 🧩 3. Kirim email jika semua aman
+    try:
         html_content = render_to_string(template_name, context)
         email = EmailMessage(
             subject=subject,
@@ -21,9 +47,13 @@ def send_partner_email_html(user, subject, template_name, context):
         )
         email.content_subtype = "html"
         email.send(fail_silently=False)
-        logger.info(f"Email sent to {user.email}: {subject}")
-    else:
-        logger.warning(f"User {user.username} has no email, cannot send '{subject}'")
+        logger.info(f"Email berhasil dikirim ke {user.email} dengan subjek '{subject}'.")
+        if request:
+            messages.success(request, f"Email berhasil dikirim ke {user.email}.")
+    except Exception as e:
+        logger.exception(f"Gagal mengirim email ke {user.email}: {str(e)}")
+        if request:
+            messages.error(request, "Terjadi kesalahan saat mengirim email.")
 
 # Simpan status lama sebelum disave
 @receiver(pre_save, sender=Partner)
@@ -37,28 +67,57 @@ def cache_old_status(sender, instance, **kwargs):
     else:
         instance._old_status = None
 
+def check_email_settings():
+    """Cek apakah konfigurasi email sudah lengkap di settings.py"""
+    required_settings = ['EMAIL_HOST', 'EMAIL_PORT', 'DEFAULT_FROM_EMAIL']
+    missing = [s for s in required_settings if not getattr(settings, s, None)]
+    if missing:
+        msg = f"Konfigurasi email belum lengkap di settings.py: {', '.join(missing)}"
+        logger.warning(msg)
+        return False, msg
+    return True, None
+
+
 @receiver(post_save, sender=Partner)
 def notify_partner_status_change(sender, instance, created, **kwargs):
     """
     Kirim notifikasi email otomatis saat partner dibuat atau status berubah.
+    - Jika konfigurasi email belum diatur → log & skip.
+    - Jika user tidak punya email → log & skip.
+    - Tangani error pengiriman email tanpa menghentikan signal.
     """
-    if created:
-        # Baru submit request
-        send_partner_email_html(
-            instance.user,
-            'Partner Request Submitted',
-            'email/partner_request_submitted.html',
-            {'user': instance.user, 'partner': instance}
-        )
-        logger.info(f"Partner request created for {instance.user.username}")
-    else:
-        # Status berubah
-        old_status = getattr(instance, '_old_status', None)
-        if old_status != instance.status:
-            logger.info(f"Partner status changed for {instance.user.username}: {instance.status}")
+
+    ok, msg = check_email_settings()
+    if not ok:
+        logger.warning(f"Email tidak dikirim karena konfigurasi belum lengkap: {msg}")
+        return
+
+    if not getattr(instance.user, 'email', None):
+        logger.warning(f"User '{instance.user.username}' belum memiliki email, abaikan pengiriman notifikasi.")
+        return
+
+    try:
+        if created:
+            # Partner baru dibuat
             send_partner_email_html(
-                instance.user,
-                'Partner Request Status Updated',
-                'email/partner_request_status_updated.html',
-                {'user': instance.user, 'partner': instance}
+                request=None,  # Signal tidak punya request
+                user=instance.user,
+                subject='Partner Request Submitted',
+                template_name='email/partner_request_submitted.html',
+                context={'user': instance.user, 'partner': instance},
             )
+            logger.info(f"Email notifikasi: Partner request created for {instance.user.username}")
+        else:
+            # Status berubah
+            old_status = getattr(instance, '_old_status', None)
+            if old_status != instance.status:
+                send_partner_email_html(
+                    request=None,
+                    user=instance.user,
+                    subject='Partner Request Status Updated',
+                    template_name='email/partner_request_status_updated.html',
+                    context={'user': instance.user, 'partner': instance},
+                )
+                logger.info(f"Email notifikasi: Partner status changed for {instance.user.username}: {instance.status}")
+    except Exception as e:
+        logger.exception(f"Gagal mengirim email ke {instance.user.username}: {str(e)}")

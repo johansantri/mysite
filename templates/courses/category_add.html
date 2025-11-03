@@ -1,0 +1,15 @@
+{% extends "home/tes.html" %}
+{% load static %}
+
+{% block title %}Add Category{% endblock %}
+
+{% block content %}
+<div class=" mt-4">
+    <h2>Add New Category</h2>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Save Category</button>
+    </form>
+</div>
+{% endblock %}
