@@ -1,4 +1,4 @@
-# MYSITE
+# JakIja
 
 JakIja is a Learning Management System (LMS) built with Python and Django, designed for multi‑vendor use. With JakIja, course providers can create, manage, and sell courses independently — suitable for educational institutions, companies, and training teams.
 
